@@ -11,8 +11,13 @@
 
 			$("#generateGame").click(function(){
 				var selectedPlayer = $("#playerInput").val();
-				$.getJSON('/generateGame/' + selectedPlayer, function(data){
+				$.post('/generateGame',
+				{
+					player : selectedPlayer
+				}, function(data){
 					$("#gameArea").val(JSON.stringify(data));
+				}).error(function(){
+					alert("Error Occured");
 				});
 			});
 			

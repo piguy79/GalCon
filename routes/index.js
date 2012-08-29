@@ -2,15 +2,14 @@
 /*
  * GET home page.
  */
-
 exports.index = function(req, res){
   res.render('index.html')
 };
 
 exports.generateGame = function(req, res){
-	console.log(req.body.player);
+	var player = req.body.player;
 	var game = {};
-	game['players'] = ["Matt","Conor"];
+	game['players'] = [player];
 	game['gameId'] = 12;
 
 
