@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf8">
+		<title>Space API</title>
+		 <script type="text/javascript" src="/javascripts/jquery.min.js"></script>          
+		<link href="/stylesheets/bootstrap.css" rel="stylesheet">
+
+	<script>
+		window.onload = function(){
+
+			$("#generateGame").click(function(){
+				var selectedPlayer = $("#playerInput").val();
+				$.getJSON('/generateGame/' + selectedPlayer, function(data){
+					$("#gameArea").val(JSON.stringify(data));
+				});
+			});
+			
+		};
+	</script>
+
+	</head>
+	<body>
+		<div class="container" style="padding-top: 5px;">
+			<div class="row">
+				<div class="span12">
+					<h2>Testing Game Interaction.</h2>
+					<p>Enter the names of two users and click generate to view a game board.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span6">
+  					<i class="icon-user"></i> <input type="text" id="playerInput"></input> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="span12">
+					<textarea id="gameArea" rows="18" class="span12"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span12">
+					<button id="generateGame" class="btn btn-success btn-large">Generate</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
