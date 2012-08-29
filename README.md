@@ -31,7 +31,10 @@ The games current sate needs to be stored in something similar to the following 
 {
 	"id" : 1234,
 	"createdDate" : "08/27/2012 12:00:00",
-	"currentRound" : 5,
+	"currentRound" : {
+		"roundNumber" : 5,
+		"player" : 0
+	},
 	"players" {
 		"player" : {
 			"emailAddress" : "conor.mullen@gmail.com"
@@ -43,6 +46,7 @@ The games current sate needs to be stored in something similar to the following 
 	"moves" {
 		"move" : {
 			"moveId" : 2,
+			"roundLaunched" : 2, 
 			"origin" : "A", 
 			"destination" : "B", 
 			"numberOfships" : 4,
@@ -59,21 +63,30 @@ The games current sate needs to be stored in something similar to the following 
 	"layout" : {
 		"world" : {
 			"world" : "A", 
-			"position" : 3, 
+			"position" : {
+				"x" : 9,
+				"y" : 32
+			}, 
 			"owner" : "none", 
 			"numberOfships" : 0, 
 			"shipRate" : 3
 		},
 		"world" : {
 			"world" : "B", 
-			"position" : 12, 
+			"position" : {
+				"x" : 12,
+				"y" : 3
+			}, 
 			"owner" : "conor.mullen@gmail.com", 
 			"numberOfships" : 20, 
 			"shipRate" : 10
 		},
 		"world" : {
 			"world" : "D",
-			"position" : 4, 
+			"position" : {
+				"x" : 45,
+				"y" : 12
+			}, 
 			"owner" : "matthew.pietal@gmail.com", 
 			"numberOfships" : 0, 
 			"shipRate" : 3
