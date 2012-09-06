@@ -66,8 +66,7 @@ The games current sate needs to be stored in something similar to the following 
 			"position" : {
 				"x" : 9,
 				"y" : 32
-			}, 
-			"owner" : "none", 
+			},  
 			"numberOfships" : 0, 
 			"shipRate" : 3
 		},

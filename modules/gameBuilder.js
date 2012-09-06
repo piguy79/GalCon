@@ -51,8 +51,8 @@ function assignHomePlanets(builder, callback){
 }
 
 function createPlanet(board, index, builder, callback){
-	var x = Math.floor((Math.random()*10));
-	var y = Math.floor((Math.random()*10));
+	var x = Math.floor((Math.random()*8));
+	var y = Math.floor((Math.random()*16));
 
 	var planet = {};
 	var position = {};
