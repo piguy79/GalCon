@@ -60,7 +60,7 @@ The games current sate needs to be stored in something similar to the following 
 			"matthew.pietal@gmail.com"
 		}
 	},
-	"layout" : {
+	"gameboard" : {
 		"world" : {
 			"world" : "A", 
 			"position" : {
