@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
-, db = mongoose.createConnection('localhost', 'galcon')
+, mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/galcon'
+, db = mongoose.connect(mongoUrl)
 gamebuilder = require('../gameBuilder');
 
 var schema = mongoose.Schema({
@@ -52,7 +53,7 @@ exports.findById = function(gameId, callback){
 exports.saveGame = function(game, callback){
 	game.save(function(err){
 		if(err){
-			console.log("Something went wrong");
+			console.log("Something went wrong. " + err);
 		}else{
 			console.log("Game Saved with ID : " + game.id);
 			callback();
