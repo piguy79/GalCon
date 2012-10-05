@@ -37,7 +37,19 @@ exports.createGame = function(players, numberOfPlanets, callback){
 	
 
 	
-}
+};
+
+exports.findAllGames = function(callback){
+	console.log("Call Database");
+	GameModel.find({}, function(err, games){
+		if(err){
+			console.log("Unable to find games");
+		}else{
+			console.log("Found games");
+			callback(games);
+		}
+	});
+};
 
 exports.findById = function(gameId, callback){
 	GameModel.find({id : gameId}, function(err, games){
@@ -48,7 +60,7 @@ exports.findById = function(gameId, callback){
 			callback(games);
 		}
 	});
-}
+};
 
 exports.saveGame = function(game, callback){
 	game.save(function(err){

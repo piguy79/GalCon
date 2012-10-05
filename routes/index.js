@@ -16,11 +16,11 @@ exports.generateGame = function(req, res){
 			res.json(game);
 		});
 	});
-	/*var game = gameBuilder.createGameBuilder([player], 10);
-	game.createBoard(function(createdGame){
-		gameDao.saveGame(createdGame, function(){
-			res.json(createdGame);
-		});
-		
-	});*/
+}
+
+exports.findAllGames = function(req, res){
+	console.log("Searching for all games.");
+	gameManager.findAllGames(function(games){
+		res.json(games);
+	});
 }
