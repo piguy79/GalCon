@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
 , mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/galcon'
 , db = mongoose.connect(mongoUrl)
+, ObjectId = require('mongoose').Types.ObjectId; 
 gamebuilder = require('../gameBuilder');
 
 var schema = mongoose.Schema({
@@ -52,12 +53,12 @@ exports.findAllGames = function(callback){
 };
 
 exports.findById = function(gameId, callback){
-	GameModel.find({id : gameId}, function(err, games){
+	GameModel.find({_id : new ObjectId(gameId)}, function(err, game){
 		if(err){
 			console.log("Unable to find games");
 		}else{
-			console.log("Found games");
-			callback(games);
+			console.log("Found game" + game);
+			callback(game);
 		}
 	});
 };

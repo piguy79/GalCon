@@ -24,3 +24,11 @@ exports.findAllGames = function(req, res){
 		res.json(games);
 	});
 }
+
+exports.findGameById = function(req, res){
+	var searchId = req.query['id'];
+	console.log("Searching for game by ID: " + searchId);
+	gameManager.findById(searchId, function(game){
+		res.json(game);
+	});
+}

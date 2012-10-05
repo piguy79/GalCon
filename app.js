@@ -33,6 +33,7 @@ app.configure('production', function(){
 app.get('/', routes.index);
 app.post('/generateGame', routes.generateGame);
 app.get('/findAllGames', routes.findAllGames);
+app.get('/findGameById', routes.findGameById);
 
 var port = process.env.PORT || 3000;
 
