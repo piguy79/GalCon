@@ -75,3 +75,10 @@ exports.saveGame = function(game, callback){
 	});
 }
 
+exports.addUser = function(gameId, player, callback){
+	GameModel.update({_id : new ObjectId(gameId)},
+				{$push : {players : player}}, function(){
+					callback();
+				})
+}
+

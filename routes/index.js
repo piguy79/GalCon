@@ -32,3 +32,14 @@ exports.findGameById = function(req, res){
 		res.json(game);
 	});
 }
+
+exports.joinGame = function(req, res){
+	var gameId = req.query['id'];
+	var player = req.query['player'];
+	gameManager.addUser(gameId, player,  function(game){
+		gameManager.findById(gameId, function(returnGame){
+			res.json(returnGame);
+		});
+	});
+
+}
