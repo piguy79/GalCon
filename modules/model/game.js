@@ -26,6 +26,7 @@ var schema = mongoose.Schema({
 	]
 });
 
+schema.set('toObject', { getters: true });
 var GameModel = db.model('Game', schema);
 
 exports.createGame = function(players, numberOfPlanets, callback){
@@ -53,15 +54,15 @@ exports.findAllGames = function(callback){
 };
 
 exports.findById = function(gameId, callback){
-	GameModel.find({_id : new ObjectId(gameId)}, function(err, game){
+	GameModel.findById(gameId, function(err, game){
 		if(err){
 			console.log("Unable to find games");
 		}else{
-			console.log("Found game" + game);
 			callback(game);
 		}
 	});
 };
+
 
 exports.saveGame = function(game, callback){
 	game.save(function(err){
