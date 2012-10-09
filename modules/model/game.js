@@ -63,6 +63,16 @@ exports.findById = function(gameId, callback){
 	});
 };
 
+exports.findAvailableGames = function(callback){
+	GameModel.find({players : {$size : 1}}, function(err, games){
+		if(err){
+			next();
+		}else{
+			callback(games);
+		}
+	});
+};
+
 
 exports.saveGame = function(game, callback){
 	game.save(function(err){

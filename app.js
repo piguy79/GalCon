@@ -35,6 +35,7 @@ app.post('/generateGame', routes.generateGame);
 app.get('/findAllGames', routes.findAllGames);
 app.get('/findGameById', routes.findGameById);
 app.get('/joinGame', routes.joinGame);
+app.get('/findAvailableGames', routes.findAvailableGames);
 
 var port = process.env.PORT || 3000;
 

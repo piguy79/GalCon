@@ -32,6 +32,7 @@ exports.findAllGames = function(req, res){
 	});
 }
 
+// Find a specific game by its object id
 exports.findGameById = function(req, res){
 	var searchId = req.query['id'];
 	console.log("Searching for game by ID: " + searchId);
@@ -40,7 +41,16 @@ exports.findGameById = function(req, res){
 	});
 }
 
+// Find where the number of players currently playing is 1
+exports.findAvailableGames = function(req, res){
+	gameManager.findAvailableGames(function(games){
+		var returnObj = {};
+		returnObj.items = games;
+		res.json(returnObj);
+	});
+}
 
+// JOin a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res){
 	var gameId = req.query['id'];
 	var player = req.query['player'];
