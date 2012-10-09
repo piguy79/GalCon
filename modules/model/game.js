@@ -15,7 +15,7 @@ var schema = mongoose.Schema({
 	planets : [
 		{
 			name : "String",
-			owner : String,
+			owner : "String",
 			position : {
 				x : "Number",
 				y : "Number"
@@ -77,9 +77,20 @@ exports.saveGame = function(game, callback){
 }
 
 exports.addUser = function(gameId, player, callback){
-	GameModel.update({_id : new ObjectId(gameId)},
-				{$push : {players : player}}, function(){
-					callback();
-				})
+	this.findById(gameId, function(game){
+		game.players.push(player);
+		var assigned = false;
+
+		while(!assigned){
+			var randomPlanetIndex = Math.floor((Math.random()*game.planets.length));
+			if(typeof game.planets[randomPlanetIndex].owner === "undefined"){
+				game.planets[randomPlanetIndex].owner = player;
+				assigned = true;
+			}
+		}
+		game.save(function(savedGame){
+			callback(savedGame);
+		});
+	});
 }
 

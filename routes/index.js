@@ -9,6 +9,10 @@ exports.index = function(req, res){
   res.render('index.html')
 };
 
+/*
+ * Create a new game for a player. This will assign the player a home planet and also return
+ * a gameboard object which will be stored in mongoDB
+ */
 exports.generateGame = function(req, res){
 	var player = req.body.player;
 	gameManager.createGame([player], 10,function(game){
@@ -18,6 +22,7 @@ exports.generateGame = function(req, res){
 	});
 }
 
+// Find all games currently available in the system.
 exports.findAllGames = function(req, res){
 	console.log("Searching for all games.");
 	gameManager.findAllGames(function(games){
