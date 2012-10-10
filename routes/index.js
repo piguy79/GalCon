@@ -70,7 +70,12 @@ exports.joinGame = function(req, res){
 	var player = req.query['player'];
 	gameManager.addUser(gameId, player,  function(game){
 		gameManager.findById(gameId, function(returnGame){
-			res.json(returnGame);
+			var user = new userManager.UserModel({
+				name : player			
+			});
+			user.createOrAdd(returnGame.id, function(user){
+				res.json(returnGame);
+			});
 		});
 	});
 
