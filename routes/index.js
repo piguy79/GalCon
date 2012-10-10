@@ -1,5 +1,6 @@
 var gameBuilder = require('../modules/gameBuilder')
-, gameManager = require('../modules/model/game');
+, gameManager = require('../modules/model/game')
+, userManager = require('../modules/model/user');
 
 
 /*
@@ -17,7 +18,13 @@ exports.generateGame = function(req, res){
 	var player = req.body.player;
 	gameManager.createGame([player], 10,function(game){
 		gameManager.saveGame(game, function(){
-			res.json(game);
+			var user = new userManager.UserModel({
+				name : player,
+				currentGames : [game.id]
+			});
+			user.createOrAdd(game.id, function(user){
+				res.json(game);
+			});
 		});
 	});
 }
@@ -47,6 +54,13 @@ exports.findAvailableGames = function(req, res){
 		var returnObj = {};
 		returnObj.items = games;
 		res.json(returnObj);
+	});
+}
+
+exports.findUserByUserName = function(req, res){
+	var userName = req.query['userName'];
+	userManager.findUserByName(userName, function(user){
+		res.json(user);
 	});
 }
 
