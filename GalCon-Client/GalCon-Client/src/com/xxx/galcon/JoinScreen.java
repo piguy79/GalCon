@@ -1,0 +1,91 @@
+package com.xxx.galcon;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.GameBoard;
+
+public class JoinScreen implements Screen {
+	private BitmapFont font;
+	private SpriteBatch spriteBatch;
+	private final Matrix4 viewMatrix = new Matrix4();
+	private final Matrix4 transformMatrix = new Matrix4();
+	private GameBoard returnValue;
+	private AvailableGames allGames;
+
+	public JoinScreen(GameAction action) {
+		font = new BitmapFont(Gdx.files.internal("data/fonts/font10.fnt"), Gdx.files.internal("data/fonts/font10.png"),
+				false);
+		spriteBatch = new SpriteBatch();
+
+		allGames = action.findAllGames();
+	}
+
+	@Override
+	public boolean render(GL20 gl, Camera camera) {
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		float width = Gdx.graphics.getWidth() / 2;
+		float height = Gdx.graphics.getHeight() / 2;
+
+		Integer touchX = null;
+		Integer touchY = null;
+		if (Gdx.input.isTouched()) {
+			int x = Gdx.input.getX() / 2;
+			int y = Gdx.input.getY() / 2;
+
+			y = (int) height - y;
+			touchX = x;
+			touchY = y;
+		}
+
+		viewMatrix.setToOrtho2D(0, 0, width, height);
+		spriteBatch.setProjectionMatrix(viewMatrix);
+		spriteBatch.setTransformMatrix(transformMatrix);
+		spriteBatch.begin();
+		spriteBatch.disableBlending();
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.enableBlending();
+		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+		float textY = 0.98f;
+		for (GameBoard gameBoard : allGames.getAllGames()) {
+			String text = gameBoard.players.toString();
+			float halfFontWidth = font.getBounds(text).width / 2;
+			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
+			if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
+				if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
+					returnValue = gameBoard;
+				}
+			}
+			
+			textY -= 0.05f;
+		}
+
+		spriteBatch.end();
+
+		if (returnValue != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public Object getRenderReturnValue() {
+		return returnValue;
+	}
+
+	@Override
+	public void dispose() {
+		font.dispose();
+		spriteBatch.dispose();
+	}
+}
