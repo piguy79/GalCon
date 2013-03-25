@@ -3,11 +3,13 @@
  */
 package com.xxx.galcon.http;
 
+import static com.xxx.galcon.http.UrlConstants.FIND_ALL_GAMES;
+import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
+import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
+
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,10 +26,6 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  * 
  */
-/**
- * @author conormullen
- * 
- */
 public class DesktopGameAction extends BaseDesktopGameAction implements GameAction {
 
 	public DesktopGameAction(String host, int port) {
@@ -36,14 +34,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public AvailableGames findAllGames() {
-		return (AvailableGames) callURL("/findAllGames", new HashMap<String, String>(), new AvailableGames());
+		return (AvailableGames) callURL(FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
 	}
 
 	@Override
 	public GameBoard generateGame(String player) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
-		return (GameBoard) callURL("/generateGame", args, new GameBoard());
+		return (GameBoard) callURL(GENERATE_GAME, args, new GameBoard());
 	}
 
 	@Override
@@ -51,7 +49,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
-		return (GameBoard) callURL("/joinGame", args, new GameBoard());
+		return (GameBoard) callURL(JOIN_GAME, args, new GameBoard());
 	}
 
 	private JsonConvertible callURL(String path, Map<String, String> parameters, JsonConvertible converter) {
