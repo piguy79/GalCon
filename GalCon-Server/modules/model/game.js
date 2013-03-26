@@ -44,12 +44,10 @@ exports.createGame = function(players, numberOfPlanets, callback){
 };
 
 exports.findAllGames = function(callback){
-	console.log("Call Database");
 	GameModel.find({}, function(err, games){
 		if(err){
 			console.log("Unable to find games");
 		}else{
-			console.log("Found games");
 			callback(games);
 		}
 	});
@@ -81,7 +79,6 @@ exports.saveGame = function(game, callback){
 		if(err){
 			console.log("Something went wrong. " + err);
 		}else{
-			console.log("Game Saved with ID : " + game.id);
 			callback();
 		}
 
