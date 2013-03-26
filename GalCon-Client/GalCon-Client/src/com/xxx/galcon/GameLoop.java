@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +39,7 @@ public class GameLoop implements Screen, ContactListener {
 	private ShaderProgram colorShader;
 	private ShaderProgram gridShader;
 
-	private Mesh planetMesh;
+	private StillModel planetModel;
 	private Matrix4 modelViewMatrix = new Matrix4();
 
 	boolean intro = true;
@@ -52,7 +52,8 @@ public class GameLoop implements Screen, ContactListener {
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
 
-		planetMesh = ObjLoader.loadObj(Gdx.files.internal("data/models/planet.obj").read());
+		ObjLoader loader = new ObjLoader();
+		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
 	}
 
 	/*
@@ -239,7 +240,7 @@ public class GameLoop implements Screen, ContactListener {
 		gridShader.setUniformf("uTilesWide", gameBoard.numberOfTilesWide);
 		gridShader.setUniformf("uTilesTall", gameBoard.numberOfTilesTall);
 
-		planetMesh.render(colorShader, GL20.GL_TRIANGLES);
+		planetModel.render(colorShader);
 
 		gridShader.end();
 	}
@@ -267,7 +268,7 @@ public class GameLoop implements Screen, ContactListener {
 		}
 		colorShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 
-		planetMesh.render(colorShader, GL20.GL_TRIANGLES);
+		planetModel.render(colorShader);
 		colorShader.end();
 
 		gl.glDisable(GL20.GL_BLEND);
