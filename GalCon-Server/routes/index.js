@@ -31,7 +31,6 @@ exports.generateGame = function(req, res){
 
 // Find all games currently available in the system.
 exports.findAllGames = function(req, res){
-	console.log("Searching for all games.");
 	gameManager.findAllGames(function(games){
 		var returnObj = {};
 		returnObj.items = games;
@@ -42,7 +41,6 @@ exports.findAllGames = function(req, res){
 // Find a specific game by its object id
 exports.findGameById = function(req, res){
 	var searchId = req.query['id'];
-	console.log("Searching for game by ID: " + searchId);
 	gameManager.findById(searchId, function(game){
 		res.json(game);
 	});
