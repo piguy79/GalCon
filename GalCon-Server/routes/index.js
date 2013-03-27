@@ -63,12 +63,21 @@ exports.findUserByUserName = function(req, res){
 }
 
 exports.performMoves = function(req, res){
-	var gameId = req.query['id'];
-	var moves = [];
-	gameManager.performMoves(gameId, moves, function(savedGame){
+	var gameId = req.body.id;
+	var moves = req.body.moves;
+	var player = req.body.player;
+	gameManager.performMoves(gameId, moves, player, function(savedGame){
 		res.json(savedGame);
 	});
 }
+
+exports.addPlanetsToGame = function(req, res){
+	var gameId = req.body.id;
+	var planetsToAdd = req.body.planets;
+	gameManager.addPlanetsToGame(gameId,planetsToAdd, function(updatedGame){
+		res.json(updatedGame);
+	});
+};
 
 // JOin a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res){

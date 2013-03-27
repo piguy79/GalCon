@@ -35,9 +35,10 @@ app.post('/generateGame', routes.generateGame);
 app.get('/findAllGames', routes.findAllGames);
 app.get('/findGameById', routes.findGameById);
 app.get('/joinGame', routes.joinGame);
+app.post('/addPlanetsToGame', routes.addPlanetsToGame);
 app.get('/findAvailableGames', routes.findAvailableGames);
 app.get('/findUserByUserName', routes.findUserByUserName);
-app.get('/performMoves', routes.performMoves);
+app.post('/performMoves', routes.performMoves);
 
 var port = process.env.PORT || 3000;
 
