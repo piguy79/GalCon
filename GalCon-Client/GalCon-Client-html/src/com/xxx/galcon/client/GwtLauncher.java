@@ -1,6 +1,6 @@
 package com.xxx.galcon.client;
 
-import com.xxx.galcon.GameEntry;
+import com.xxx.galcon.GameLoop;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
@@ -14,6 +14,6 @@ public class GwtLauncher extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new GameEntry();
+		return new GameLoop();
 	}
 }
