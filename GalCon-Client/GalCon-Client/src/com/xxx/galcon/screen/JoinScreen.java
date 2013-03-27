@@ -1,18 +1,17 @@
-package com.xxx.galcon;
+package com.xxx.galcon.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
-public class JoinScreen implements Screen {
+public class JoinScreen implements ScreenFeedback {
 	private BitmapFont font;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
@@ -29,8 +28,14 @@ public class JoinScreen implements Screen {
 	}
 
 	@Override
-	public boolean render(GL20 gl, Camera camera) {
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	public void dispose() {
+		font.dispose();
+		spriteBatch.dispose();
+	}
+
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
@@ -70,22 +75,40 @@ public class JoinScreen implements Screen {
 		}
 
 		spriteBatch.end();
-
-		if (returnValue != null) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override
-	public Object getRenderReturnValue() {
+	public void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getRenderResult() {
 		return returnValue;
-	}
-
-	@Override
-	public void dispose() {
-		font.dispose();
-		spriteBatch.dispose();
 	}
 }

@@ -3,7 +3,7 @@ package com.xxx.galcon.math;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.xxx.galcon.GameLoop.WorldPlane;
+import com.xxx.galcon.screen.BoardScreen.WorldPlane;
 
 public class WorldMath {
 
