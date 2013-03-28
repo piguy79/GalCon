@@ -23,10 +23,10 @@ public interface GameAction {
 	 * @param player
 	 * @return <GameBoard> Representing current state.
 	 */
-	public GameBoard generateGame(String player);
+	public GameBoard generateGame(String player) throws ConnectionException;
 	
-	public AvailableGames findAllGames();
+	public AvailableGames findAllGames() throws ConnectionException;
 	
-	public GameBoard joinGame(String id, String player);
+	public GameBoard joinGame(String id, String player) throws ConnectionException;
 	
 }

@@ -33,38 +33,37 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public AvailableGames findAllGames() {
+	public AvailableGames findAllGames() throws ConnectionException {
 		return (AvailableGames) callURL(FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
 	}
 
 	@Override
-	public GameBoard generateGame(String player) {
+	public GameBoard generateGame(String player) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		return (GameBoard) callURL(GENERATE_GAME, args, new GameBoard());
 	}
 
 	@Override
-	public GameBoard joinGame(String id, String player) {
+	public GameBoard joinGame(String id, String player) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
 		return (GameBoard) callURL(JOIN_GAME, args, new GameBoard());
 	}
 
-	private JsonConvertible callURL(String path, Map<String, String> parameters, JsonConvertible converter) {
+	private JsonConvertible callURL(String path, Map<String, String> parameters, JsonConvertible converter)
+			throws ConnectionException {
 		try {
 			String postResponse = executeHttpRequest(path, parameters);
 			return buildObjectsFromResponse(converter, postResponse);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		}
-
-		return null;
 	}
 
 	/**
@@ -75,21 +74,18 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	 * @param postResponse
 	 * @return
 	 */
-	private JsonConvertible buildObjectsFromResponse(JsonConvertible converter, String postResponse) {
+	private JsonConvertible buildObjectsFromResponse(JsonConvertible converter, String postResponse)
+			throws ConnectionException {
 		System.out.println(postResponse);
 
 		try {
 			JSONObject gameInformation = new JSONObject(postResponse);
-
 			converter.consume(gameInformation);
 
 			return converter;
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		}
-
-		return null;
 	}
 }

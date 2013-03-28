@@ -22,7 +22,7 @@ public class DesktopGameActionTest {
 	}
 
 	@Test
-	public void runJoinGameTest() {
+	public void runJoinGameTest() throws ConnectionException {
 		desktopGameAction.generateGame("conor");
 	}
 

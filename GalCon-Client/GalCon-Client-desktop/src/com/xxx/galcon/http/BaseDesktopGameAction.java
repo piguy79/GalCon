@@ -7,20 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  * @author conormullen
@@ -83,13 +77,19 @@ public class BaseDesktopGameAction {
 	 */
 	private String readConnectionData(InputStream is) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		InputStreamReader input = new InputStreamReader(is);
-		char[] buffer = new char[0x1000];
-		int read = 0;
-		while ((read = input.read(buffer, 0, buffer.length)) > 0) {
-			sb.append(buffer, 0, read);
+		InputStreamReader input = null;
+		try {
+			input = new InputStreamReader(is);
+			char[] buffer = new char[0x1000];
+			int read = 0;
+			while ((read = input.read(buffer, 0, buffer.length)) > 0) {
+				sb.append(buffer, 0, read);
+			}
+		} finally {
+			if (input != null) {
+				input.close();
+			}
 		}
-		input.close();
 
 		return sb.toString();
 	}

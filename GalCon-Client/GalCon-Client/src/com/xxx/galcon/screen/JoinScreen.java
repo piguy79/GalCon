@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
@@ -20,12 +19,11 @@ public class JoinScreen implements ScreenFeedback {
 	private GameBoard returnValue;
 	private AvailableGames allGames;
 
-	public JoinScreen(GameAction action) {
-		font = new BitmapFont(Gdx.files.internal("data/fonts/font10.fnt"), Gdx.files.internal("data/fonts/font10.png"),
-				false);
+	public JoinScreen(AvailableGames allGames) {
+		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
+				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 		spriteBatch = new SpriteBatch();
-
-		allGames = action.findAllGames();
+		this.allGames = allGames;
 	}
 
 	@Override
@@ -60,7 +58,6 @@ public class JoinScreen implements ScreenFeedback {
 		spriteBatch.disableBlending();
 		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.enableBlending();
-		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 

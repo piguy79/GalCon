@@ -83,8 +83,6 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
-		// spriteBatch.setBlendFunction(GL10.GL_ONE,
-		// GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (touchX != null) {
 			for (Map.Entry<String, TouchRegion> touchRegionEntry : touchRegions.entrySet()) {
