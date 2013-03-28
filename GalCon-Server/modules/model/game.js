@@ -105,21 +105,33 @@ exports.saveGame = function(game, callback){
 exports.performMoves = function(gameId, moves, player, callback){
 
 	this.findById(gameId, function(game){
-
-		game.moves.forEach(function(move){
+	if(game.moves){	
+	
+		var movesToRemove = [];
+		for(var i = 0 ; i < game.moves.length; i++){
+			var move = game.moves[i];
 			if(move.duration == 1){
 				// Update toPlanet
 				game.planets.forEach(function(planet){
 					if(planet.name == move.toPlanet && move.fleet >= planet.numberOfShips){
 						planet.owner = move.player;
+						planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
+					}else if(planet.name == move.toPlanet && move.fleet < planet.numberOfShips){
+						planet.numberOfShips = planet.numberOfShips - move.fleet; 
 					}
 				});
-				// Remove this move from the list
+				movesToRemove.push(i);
 			}else{
 				move.duration = move.duration -1;
 			}
 			
+		}
+		
+		movesToRemove.forEach(function(index){
+			game.moves.splice(index);
 		});
+	}
+		
 
 		game.planets.forEach(function(planet){
 			planet.numberOfShips += planet.shipRegenRate;
