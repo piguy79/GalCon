@@ -2,9 +2,8 @@ package com.xxx.galcon;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.BoardScreen;
@@ -50,20 +49,31 @@ public class GameLoop extends Game {
 		if (result != null) {
 			screen.dispose();
 
-			if (screen instanceof MainMenuScreen) {
+			setScreen(nextScreen(screen, result));
+		}
+	}
+
+	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
+		try {
+			if (currentScreen instanceof MainMenuScreen) {
 				String nextScreen = (String) result;
 				if (nextScreen.equals("Create")) {
-					boardScreen.newGame(gameAction, gl);
-					setScreen(boardScreen);
+					boardScreen.setGameBoard(gameAction.generateGame("desktopPlayer"));
+					return boardScreen;
 				} else if (nextScreen.equals("Join")) {
-					setScreen(new JoinScreen(gameAction));
+					return new JoinScreen(gameAction.findAllGames());
 				}
-			} else if (screen instanceof JoinScreen) {
+			} else if (currentScreen instanceof JoinScreen) {
 				GameBoard gameToJoin = (GameBoard) result;
-				boardScreen.joinGame(gameAction, gameToJoin, gl);
+				boardScreen.setGameBoard(gameAction.joinGame(gameToJoin.id, "NewPlayer"));
 				setScreen(boardScreen);
 			}
+		} catch (ConnectionException e) {
+			System.out.println(e);
+			// FIXME: turn this into an error the user can see
 		}
+
+		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
 	}
 
 	@Override

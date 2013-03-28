@@ -1,7 +1,6 @@
 package com.xxx.galcon.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,12 +21,13 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
 
-public class BoardScreen implements Screen, ContactListener {
+public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final float BOARD_WIDTH_RATIO = .95f;
 	private static final float BOARD_HEIGHT_RATIO = .7f;
 
@@ -128,13 +128,8 @@ public class BoardScreen implements Screen, ContactListener {
 
 	private WorldPlane worldPlane = new WorldPlane();
 
-	public void newGame(GameAction gameAction, GL20 gl) {
-		gameBoard = gameAction.generateGame("desktopPlayer");
-		processGameBoard();
-	}
-
-	public void joinGame(GameAction gameAction, GameBoard existingGameBoard, GL20 gl) {
-		this.gameBoard = gameAction.joinGame(existingGameBoard.id, "NewPlayer");
+	public void setGameBoard(GameBoard gameBoard) {
+		this.gameBoard = gameBoard;
 		processGameBoard();
 	}
 
@@ -318,7 +313,7 @@ public class BoardScreen implements Screen, ContactListener {
 
 		for (Planet planet : gameBoard.planets) {
 			renderPlanet(planet, Gdx.gl20, camera);
-		}		
+		}
 	}
 
 	@Override
@@ -332,7 +327,7 @@ public class BoardScreen implements Screen, ContactListener {
 		camera.update();
 
 		Gdx.gl.glViewport(0, 0, width, height);
-		
+
 		worldPlane.resize(camera);
 		boardPlane.resize();
 	}
@@ -340,24 +335,30 @@ public class BoardScreen implements Screen, ContactListener {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public Object getRenderResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -3,11 +3,11 @@ package com.xxx.galcon.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
@@ -19,12 +19,11 @@ public class JoinScreen implements ScreenFeedback {
 	private GameBoard returnValue;
 	private AvailableGames allGames;
 
-	public JoinScreen(GameAction action) {
-		font = new BitmapFont(Gdx.files.internal("data/fonts/font10.fnt"), Gdx.files.internal("data/fonts/font10.png"),
-				false);
+	public JoinScreen(AvailableGames allGames) {
+		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
+				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 		spriteBatch = new SpriteBatch();
-
-		allGames = action.findAllGames();
+		this.allGames = allGames;
 	}
 
 	@Override
@@ -35,6 +34,7 @@ public class JoinScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		float width = Gdx.graphics.getWidth() / 2;
@@ -58,7 +58,8 @@ public class JoinScreen implements ScreenFeedback {
 		spriteBatch.disableBlending();
 		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.enableBlending();
-		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
 		float textY = 0.98f;
 		for (GameBoard gameBoard : allGames.getAllGames()) {
@@ -70,7 +71,7 @@ public class JoinScreen implements ScreenFeedback {
 					returnValue = gameBoard;
 				}
 			}
-			
+
 			textY -= 0.05f;
 		}
 
@@ -80,31 +81,31 @@ public class JoinScreen implements ScreenFeedback {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
