@@ -34,14 +34,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public AvailableGames findAllGames() throws ConnectionException {
-		return (AvailableGames) callURL(FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
+		return (AvailableGames) callURL(GET, FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
 	}
 
 	@Override
 	public GameBoard generateGame(String player) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
-		return (GameBoard) callURL(GENERATE_GAME, args, new GameBoard());
+		return (GameBoard) callURL(POST, GENERATE_GAME, args, new GameBoard());
 	}
 
 	@Override
@@ -49,13 +49,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
-		return (GameBoard) callURL(JOIN_GAME, args, new GameBoard());
+		return (GameBoard) callURL(GET, JOIN_GAME, args, new GameBoard());
 	}
 
-	private JsonConvertible callURL(String path, Map<String, String> parameters, JsonConvertible converter)
-			throws ConnectionException {
+	private JsonConvertible callURL(String method, String path, Map<String, String> parameters,
+			JsonConvertible converter) throws ConnectionException {
 		try {
-			String postResponse = executeHttpRequest(path, parameters);
+			String postResponse = executeHttpRequest(method, path, parameters);
 			return buildObjectsFromResponse(converter, postResponse);
 		} catch (MalformedURLException e) {
 			throw new ConnectionException(e);

@@ -13,6 +13,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -40,7 +42,7 @@ public class BaseDesktopGameAction {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	protected String executeHttpRequest(String path, Map<String, String> parameters) throws IOException,
+	protected String executeHttpRequest(String method, String path, Map<String, String> parameters) throws IOException,
 			URISyntaxException {
 
 		URIBuilder builder = new URIBuilder();
@@ -50,10 +52,15 @@ public class BaseDesktopGameAction {
 			builder.setParameter(entry.getKey(), entry.getValue());
 		}
 
-		HttpGet httpGet = new HttpGet(builder.build());
+		HttpRequestBase request;
+		if (method.equals(GameAction.GET)) {
+			request = new HttpGet(builder.build());
+		} else {
+			request = new HttpPost(builder.build());
+		}
 
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpResponse response = httpclient.execute(httpGet);
+		HttpResponse response = httpclient.execute(request);
 		HttpEntity responseEntity = response.getEntity();
 		if (responseEntity != null) {
 			InputStream instream = responseEntity.getContent();
