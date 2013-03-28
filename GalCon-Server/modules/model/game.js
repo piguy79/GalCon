@@ -22,7 +22,17 @@ var gameSchema = mongoose.Schema({
 			shipRegenRate : "Number",
 			numberOfShips : "Number"
 		}
+	],
+	moves : [
+		{
+			player : "String",
+			fromPlanet : "String",
+			toPlanet : "String",
+			fleet : "Number",
+			duration : "Number"
+		}
 	]
+	
 });
 
 gameSchema.set('toObject', { getters: true });
@@ -85,12 +95,37 @@ exports.saveGame = function(game, callback){
 	});
 }
 
-exports.performMoves = function(gameId, moves, callback){
+exports.performMoves = function(gameId, moves, player, callback){
 
 	this.findById(gameId, function(game){
+
+		game.moves.forEach(function(move){
+			if(move.duration == 1){
+				// Update toPlanet
+				game.planets.forEach(function(planet){
+					if(planet.name == move.toPlanet && move.fleet >= planet.numberOfShips){
+						planet.owner = move.player;
+					}
+				});
+				// Remove this move from the list
+			}else{
+				move.duration = move.duration -1;
+			}
+			
+		});
+
 		game.planets.forEach(function(planet){
 			planet.numberOfShips += planet.shipRegenRate;
 		});
+		
+		
+		if(moves){
+			moves.forEach(function(move){
+			game.moves.push(move);
+		});
+		}
+		
+		
 		game.save(function(savedGame){
 			callback(game);
 		});
@@ -115,5 +150,18 @@ exports.addUser = function(gameId, player, callback){
 			callback(savedGame);
 		});
 	});
+}
+
+
+exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
+	this.findById(gameId, function(game){
+		planetsToAdd.forEach(function(planet){
+			game.planets.push(planet);
+		});
+		game.save(function(savedGame){
+			callback(savedGame);
+		});
+	});
+
 }
 
