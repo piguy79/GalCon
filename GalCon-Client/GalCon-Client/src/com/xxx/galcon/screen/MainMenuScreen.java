@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -22,9 +23,11 @@ public class MainMenuScreen implements ScreenFeedback {
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen() {
-		BitmapFont font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
+		BitmapFont font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
+				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
+
 		fontCache = new BitmapFontCache(font, false);
+		fontCache.getFont().getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		spriteBatch = new SpriteBatch();
 
 		updateFontCache();
@@ -37,20 +40,20 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private void updateFontCache() {
-		float width = Gdx.graphics.getWidth() / 2;
-		float height = Gdx.graphics.getHeight() / 2;
+		int width = Gdx.graphics.getWidth() / 2;
+		int height = Gdx.graphics.getHeight() / 2;
 
 		fontCache.clear();
 		touchRegions.clear();
 
-		addText("Galcon", height * .69f, false, width, height);
-		addText("Join", height * .4f, true, width, height);
-		addText("Create", height * .33f, true, width, height);
+		addText("Join", (int) (height * .4f), true, width, height);
+		addText("Create", (int) (height * .33f), true, width, height);
+		addText("Galcon", (int) (height * .7f), false, width, height);
 	}
 
-	private void addText(String text, float y, boolean isTouchable, float screenWidth, float screenHeight) {
+	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
 		TextBounds fontBounds = fontCache.getFont().getBounds(text);
-		float x = screenWidth / 2 - fontBounds.width / 2;
+		int x = screenWidth / 2 - (int) fontBounds.width / 2;
 		fontCache.addText(text, x, y);
 
 		if (isTouchable) {
@@ -60,9 +63,10 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		float width = Gdx.graphics.getWidth() / 2;
-		float height = Gdx.graphics.getHeight() / 2;
+		int width = Gdx.graphics.getWidth() / 2;
+		int height = Gdx.graphics.getHeight() / 2;
 
 		Integer touchX = null;
 		Integer touchY = null;
@@ -79,7 +83,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
-		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		// spriteBatch.setBlendFunction(GL10.GL_ONE,
+		// GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (touchX != null) {
 			for (Map.Entry<String, TouchRegion> touchRegionEntry : touchRegions.entrySet()) {

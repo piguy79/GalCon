@@ -3,6 +3,7 @@ package com.xxx.galcon.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -35,6 +36,7 @@ public class JoinScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		float width = Gdx.graphics.getWidth() / 2;
@@ -60,6 +62,8 @@ public class JoinScreen implements ScreenFeedback {
 		spriteBatch.enableBlending();
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
+		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
 		float textY = 0.98f;
 		for (GameBoard gameBoard : allGames.getAllGames()) {
 			String text = gameBoard.players.toString();
@@ -70,7 +74,7 @@ public class JoinScreen implements ScreenFeedback {
 					returnValue = gameBoard;
 				}
 			}
-			
+
 			textY -= 0.05f;
 		}
 
@@ -80,31 +84,31 @@ public class JoinScreen implements ScreenFeedback {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
