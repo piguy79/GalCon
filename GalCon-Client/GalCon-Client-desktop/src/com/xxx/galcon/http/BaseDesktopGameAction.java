@@ -7,16 +7,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  * @author conormullen
@@ -48,15 +53,22 @@ public class BaseDesktopGameAction {
 		URIBuilder builder = new URIBuilder();
 		builder.setScheme("http").setHost(host).setPort(port).setPath(path);
 
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			builder.setParameter(entry.getKey(), entry.getValue());
-		}
-
 		HttpRequestBase request;
 		if (method.equals(GameAction.GET)) {
+			for (Map.Entry<String, String> entry : parameters.entrySet()) {
+				builder.setParameter(entry.getKey(), entry.getValue());
+			}
+
 			request = new HttpGet(builder.build());
 		} else {
 			request = new HttpPost(builder.build());
+
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			for (Map.Entry<String, String> entry : parameters.entrySet()) {
+				nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+			}
+			((HttpPost) request).setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
 		}
 
 		HttpClient httpclient = new DefaultHttpClient();
