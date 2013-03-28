@@ -73,6 +73,13 @@ exports.findById = function(gameId, callback){
 	});
 };
 
+exports.deleteGame = function(gameId, callback){
+	GameModel.findById(gameId).remove();
+	callback();
+
+};
+
+
 exports.findAvailableGames = function(callback){
 	GameModel.find({players : {$size : 1}}, function(err, games){
 		if(err){

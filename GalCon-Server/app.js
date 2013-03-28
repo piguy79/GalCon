@@ -39,6 +39,7 @@ app.post('/addPlanetsToGame', routes.addPlanetsToGame);
 app.get('/findAvailableGames', routes.findAvailableGames);
 app.get('/findUserByUserName', routes.findUserByUserName);
 app.post('/performMoves', routes.performMoves);
+app.get('/deleteGame', routes.deleteGame);
 
 var port = process.env.PORT || 3000;
 

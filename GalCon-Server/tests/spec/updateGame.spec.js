@@ -1,12 +1,15 @@
-var needle = require("needle");
+var needle = require("needle"),
+apiRunner = require('../fixtures/apiRunner'),
+elementBuilder = require('../fixtures/elementbuilder'),
+Step = require('step');
 
 describe("Testing Game Updates", function(){
 
 	var game;
 
 	beforeEach(function(done){
-		needle.post("http://localhost:3000/generateGame","player=updateTest", function(err, response, body){
-			game = body;
+		apiRunner.generateGame(function(generatedGame){
+			game = generatedGame;
 			done();
 		});
 		
@@ -25,30 +28,28 @@ describe("Testing Game Updates", function(){
 	});
 	
 	it("Test update is a success", function(done){
-		var testPlanet = {
-			name : "test", 
-			owner : "", 
-			shipRegenRate : 3, 
-			numberOfShips : 4, 
-			position : {
-				x : 4, 
-				y: 8
-			}
-		}
-		game.planets.push(testPlanet);
-		
-		var postData = {
-			id : game._id,
-			planets : [testPlanet]
-		};
-		
-		needle.post("http://localhost:3000/addPlanetsToGame",postData, function(err, response, body){
-			needle.get("http://localhost:3000/findGameById?id=" + game._id, function(err, response, body){
 
-				expect(body.planets.length == 11).toBe(true);
-				expect(body.planets).toContainPlanet(testPlanet);
+		var testPlanet = elementBuilder.createPlanetForTest("test", "", 3, 4, {x: 4, y: 8});
+		
+		Step(
+			function addATestPlanet(){
+				apiRunner.addPlanets(game._id, [testPlanet], this);
+			},
+			function findTheUpdatedGame(){
+				apiRunner.findGame(game._id, this);
+			},
+			function validateGameIsUpdated(updatedGame){
+				expect(updatedGame.planets.length == 11).toBe(true);
+				expect(updatedGame.planets).toContainPlanet(testPlanet);
 				done();
-			});
+			}
+		
+		);
+	});
+	
+	afterEach(function(done){
+		apiRunner.deleteGame(game._id, function(){
+			done();
 		});
 	});
 	

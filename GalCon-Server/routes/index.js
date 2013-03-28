@@ -79,6 +79,13 @@ exports.addPlanetsToGame = function(req, res){
 	});
 };
 
+exports.deleteGame = function(req, res){
+	var gameId = req.query['id'];
+	gameManager.deleteGame(gameId, function(){
+		res.send("Game: " + gameId + " has been Deleted");
+	});
+};
+
 // JOin a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res){
 	var gameId = req.query['id'];
