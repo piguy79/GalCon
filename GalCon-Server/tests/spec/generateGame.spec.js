@@ -1,5 +1,5 @@
-var request = require("http"),
-needle = require('needle');
+var needle = require('needle'),
+apiRunner = require('../fixtures/apiRunner');
 
 describe("Testing the Game generation logic", function(){
 
@@ -8,8 +8,11 @@ describe("Testing the Game generation logic", function(){
 			expect(response.statusCode).toBe(200);
 			expect(body.players.length == 1).toBe(true);
 			expect(body.players).toContain('test');
-			done();
+			apiRunner.deleteGame(body._id, function(){
+				done();
+			});
 		});
 	});
+
 
 });

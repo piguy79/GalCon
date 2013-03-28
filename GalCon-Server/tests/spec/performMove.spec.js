@@ -1,101 +1,71 @@
-var needle = require("needle");
+var needle = require("needle"),
+Step = require('step'),
+apiRunner = require('../fixtures/apiRunner'),
+elementBuilder = require('../fixtures/elementbuilder');
 
-describe("Testing planet movement", function(){
+describe("Testing ship movement", function(){
 
 	var game;
 
 	beforeEach(function(done){
-		needle.post("http://localhost:3000/generateGame","player=moveTest", function(err, response, body){
-			game = body;
+		apiRunner.generateGame(function(generatedGame){
+			game = generatedGame;
 			done();
 		});
 		
 		this.addMatchers({
 			toBeOwnedBy : function(expected){
-				console.log(this.actual);
 				return this.actual.owner == expected;
 			}
 		});
-	});
-	
-	var createTestPlanet = function(name, owner, shipRegenRate, numberOfShips, position){
-		return  {
-			name : name,
-			owner : owner,
-			shipRegenRate : shipRegenRate,
-			numberOfShips : numberOfShips,
-			position : position
-		};
-	}
-	
-	var createMoveForTest = function(player, fromPlanet, toPlanet, fleet, duration){
-		return {
-			player : player,
-			fromPlanet : fromPlanet,
-			toPlanet : toPlanet,
-			fleet : fleet,
-			duration : duration
-		}
-	}
-	
-	var performMove = function(gameId, moves, player, callBack){
-
-		var postData = {
-			moves : moves,
-			id : gameId,
-			player : player
-		}
-	
-		needle.post("http://localhost:3000/performMoves",postData , function(err, response, body){
-				callBack();
-		});
-	}
-	
-	var addPlanets = function(gameId, planetsForTest, callback){
-		var postData = {
-			id : gameId,
-			planets : planetsForTest
-		};
-		
-		needle.post("http://localhost:3000/addPlanetsToGame",postData, function(err, response, body){
-			callback();
-		});
-		
-	}
-	
-	var findGame = function(gameId, callback){
-		needle.get("http://localhost:3000/findGameById?id=" + gameId, function(err, response, body){
-			callback(body);
-		});
-		
-	}
+	});	
 	
 	it("Planet should be owned by user after move.", function(done){
 		var planetsForTest = [
-			createTestPlanet("FromPlanet", "", 3,10,{x : 3, y : 4}),
-			createTestPlanet("toPlanet", "", 3, 2, {x : 3, y : 5})
+			elementBuilder.createPlanetForTest("FromPlanet", "", 3,10,{x : 3, y : 4}),
+			elementBuilder.createPlanetForTest("toPlanet", "", 3, 2, {x : 3, y : 5})
 		];
 		var moveHolder = [
-			createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1)
+			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1)
 		];	
 		
-		addPlanets(game._id, planetsForTest, function(){
-			performMove(game._id, moveHolder, "moveTest", function(){
-				findGame(game._id, function(game){
-					expect(game.moves.length == 1).toBe(true);
-					performMove(game._id, [], "otherPlayer", function(){
-						findGame(game._id, function(game){
-							game.planets.forEach(function(planet){
-								if(planet.name == "toPlanet"){
-									expect(planet).toBeOwnedBy("moveTest");
-								}
-							});
-							done();
-						});
-					});
-					
+		Step (
+			function addSomeTestPlanets(){
+			
+				apiRunner.addPlanets(game._id, planetsForTest, this);
+			},
+			function firstMove(){
+				apiRunner.performMove(game._id, moveHolder, "moveTest", this);
+			},
+			function findGameFromDb(){
+				apiRunner.findGame(game._id, this);
+			},
+			function validateMoveExists(dbGame){
+				expect(dbGame.moves.length == 1).toBe(true);
+				
+				return true;
+			},
+			function secondMove(result){
+				apiRunner.performMove(game._id, [], "otherPlayer", this);
+			},
+			function findGameFromDb(){
+				apiRunner.findGame(game._id, this);
+			},
+			function validatePlanetIsUpdatedAfterMoveWithNewOwner(dbGame){
+				dbGame.planets.forEach(function(planet){
+					if(planet.name == "toPlanet"){
+						expect(planet).toBeOwnedBy("moveTest");
+					}
 				});
-			});
+				done();
+			}
+		);
+		
+	});
+	
+	afterEach(function(done){
+		apiRunner.deleteGame(game._id, function(){
+			done();
 		});
 	});
 
