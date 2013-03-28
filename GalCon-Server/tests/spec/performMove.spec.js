@@ -20,15 +20,8 @@ describe("Testing ship movement", function(){
 		});
 	});	
 	
-	it("Planet should be owned by user after move.", function(done){
-		var planetsForTest = [
-			elementBuilder.createPlanetForTest("FromPlanet", "", 3,10,{x : 3, y : 4}),
-			elementBuilder.createPlanetForTest("toPlanet", "", 3, 2, {x : 3, y : 5})
-		];
-		var moveHolder = [
-			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1)
-		];	
-		
+	
+	var createMovesWithValidationSteps = function(game, moveHolder, planetsForTest, validationMethod){
 		Step (
 			function addSomeTestPlanets(){
 			
@@ -51,15 +44,29 @@ describe("Testing ship movement", function(){
 			function findGameFromDb(){
 				apiRunner.findGame(game._id, this);
 			},
-			function validatePlanetIsUpdatedAfterMoveWithNewOwner(dbGame){
+			function validate(dbGame){
+				validationMethod(dbGame);
+			}
+		);
+	}
+	
+	it("Planet should be owned by user after move.", function(done){
+		var planetsForTest = [
+			elementBuilder.createPlanetForTest("FromPlanet", "", 3,10,{x : 3, y : 4}),
+			elementBuilder.createPlanetForTest("toPlanet", "", 3, 2, {x : 3, y : 5})
+		];
+		var moveHolder = [
+			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1)
+		];	
+		
+		createMovesWithValidationSteps(game, moveHolder, planetsForTest, function(dbGame){
 				dbGame.planets.forEach(function(planet){
 					if(planet.name == "toPlanet"){
 						expect(planet).toBeOwnedBy("moveTest");
 					}
 				});
 				done();
-			}
-		);
+		});
 		
 	});
 	
