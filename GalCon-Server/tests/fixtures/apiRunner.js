@@ -22,7 +22,13 @@ exports.findGame = function(gameId, callback){
 }
 
 exports.generateGame = function(callback){
-	needle.post("http://localhost:3000/generateGame","player=moveTest", function(err, response, body){
+	var postData = {
+		width: 8,
+		height: 15,
+		player: "testPlayer"
+	}
+	
+	needle.post("http://localhost:3000/generateGame",postData, function(err, response, body){
 			callback(body);
 		});
 };

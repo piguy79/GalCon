@@ -1,6 +1,8 @@
 
-function GameBuilder(players, numberOfPlanets){
+function GameBuilder(players, width, height, numberOfPlanets){
 	this.players = players;
+	this.width = width;
+	this.height = height;
 	this.createdDate = new Date();
 	this.currentRound = {roundNumber : 0, player : 0};
 	this.numberOfPlanets = numberOfPlanets;
@@ -51,8 +53,8 @@ function assignHomePlanets(builder, callback){
 }
 
 function createPlanet(board, index, builder, callback){
-	var x = Math.floor((Math.random()*8));
-	var y = Math.floor((Math.random()*16));
+	var x = Math.floor((Math.random()*builder.width));
+	var y = Math.floor((Math.random()*builder.height));
 
 	var planet = {};
 	var position = {};
@@ -75,6 +77,6 @@ function createPlanet(board, index, builder, callback){
 
 
 
-exports.createGameBuilder = function(players, numberOfPlanets){
-	return new GameBuilder(players, numberOfPlanets);
+exports.createGameBuilder = function(players, width, height, numberOfPlanets){
+	return new GameBuilder(players, width, height, numberOfPlanets);
 }

@@ -16,7 +16,7 @@ exports.index = function(req, res){
  */
 exports.generateGame = function(req, res){
 	var player = req.body.player;
-	gameManager.createGame([player], 10,function(game){
+	gameManager.createGame([player], req.body.width, req.body.height, 10, function(game){
 		gameManager.saveGame(game, function(){
 			var user = new userManager.UserModel({
 				name : player,

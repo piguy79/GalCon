@@ -5,6 +5,8 @@ gamebuilder = require('../gameBuilder');
 
 var gameSchema = mongoose.Schema({
 	players : [String],
+	width: "Number",
+	height: "Number",
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
@@ -41,16 +43,12 @@ gameSchema.set('toObject', { getters: true });
 
 var GameModel = db.model('Game', gameSchema);
 
-exports.createGame = function(players, numberOfPlanets, callback){
-
-	var game = gamebuilder.createGameBuilder(players, 10);
+exports.createGame = function(players, width, height, numberOfPlanets, callback){
+	var game = gamebuilder.createGameBuilder(players, width, height, 10);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		callback(constructedGame);
 	});
-	
-
-	
 };
 
 exports.findAllGames = function(callback){
