@@ -45,6 +45,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private StillModel planetModel;
 	private Matrix4 modelViewMatrix = new Matrix4();
 
+	private BoardPlane boardPlane = new BoardPlane();
+	private WorldPlane worldPlane = new WorldPlane();
+
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
@@ -87,8 +90,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			modelViewMatrix.trn(0.0f, boardPlane.yShift, WorldPlane.Z);
 		}
 
-		// 0,0 is in the center of the tile, hence -0.5, -0.5 is the far left
-		// corner. Same logic applies to bottom right
+		/**
+		 * 0,0 is in the center of the top left tile, hence -0.5, -0.5 is the
+		 * far left corner. Same logic applies to bottom right
+		 */
 		public Vector2 worldXYToBoardXY(float worldX, float worldY, GameBoard gameBoard) {
 			float x = (worldX - leftInWorld) / widthInWorld;
 			if (x < 0 || x > 1) {
@@ -100,8 +105,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				return null;
 			}
 
-			x *= gameBoard.width;
-			y *= gameBoard.height;
+			x *= gameBoard.widthInTiles;
+			y *= gameBoard.heightInTiles;
 
 			x -= 0.5f;
 			y -= 0.5f;
@@ -109,8 +114,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			return new Vector2(x, y);
 		}
 	}
-
-	private BoardPlane boardPlane = new BoardPlane();
 
 	public class WorldPlane {
 		public static final float Z = -100.0f;
@@ -125,8 +128,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			bottomRight = new Vector3(worldXY.x, worldXY.y, WorldPlane.Z);
 		}
 	}
-
-	private WorldPlane worldPlane = new WorldPlane();
 
 	public void setGameBoard(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
@@ -205,8 +206,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
-		gridShader.setUniformf("uTilesWide", gameBoard.width);
-		gridShader.setUniformf("uTilesTall", gameBoard.height);
+		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
+		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
 
 		planetModel.render(colorShader);
 
@@ -222,11 +223,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 				PLANET_Z_COORD);
 
-		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.width;
-		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.height;
+		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
 		modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
 				* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
 
+		modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
+		
 		colorShader.setUniformMatrix("uPMatrix", camera.combined);
 		colorShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 		if (planet.touched) {
@@ -234,6 +237,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		} else {
 			colorShader.setUniformf("uColor", 0.8f, 0.8f, 1.0f, 1.0f);
 		}
+
 		colorShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 
 		planetModel.render(colorShader);

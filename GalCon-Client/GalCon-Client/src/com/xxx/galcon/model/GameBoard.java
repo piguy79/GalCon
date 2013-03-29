@@ -15,8 +15,8 @@ public class GameBoard implements JsonConvertible {
 	public String id;
 	public Date createdDate;
 	public List<String> players;
-	public int width = 0;
-	public int height = 0;
+	public int widthInTiles = 0;
+	public int heightInTiles = 0;
 	public List<Planet> planets = new ArrayList<Planet>();
 
 	public GameBoard() {
@@ -24,30 +24,23 @@ public class GameBoard implements JsonConvertible {
 	}
 
 	@Override
-	public void consume(JSONObject jsonObject) {
-		try {
-			this.players = new ArrayList<String>();
-			JSONArray playersJson = jsonObject.getJSONArray(Constants.PLAYERS);
-			for (int i = 0; i < playersJson.length(); i++) {
-				String player = playersJson.getString(i);
-				this.players.add(player);
-			}
-			this.planets = new ArrayList<Planet>();
-			JSONArray planetsJson = jsonObject.getJSONArray(Constants.PLANETS);
-			for (int i = 0; i < planetsJson.length(); i++) {
-				JSONObject jsonPlanet = planetsJson.getJSONObject(i);
-				Planet planet = new Planet();
-				planet.consume(jsonPlanet);
-				this.planets.add(planet);
-			}
-			this.id = jsonObject.getString(Constants.ID);
-			this.width = jsonObject.getInt(Constants.WIDTH);
-			this.height = jsonObject.getInt(Constants.HEIGHT);
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void consume(JSONObject jsonObject) throws JSONException {
+		this.players = new ArrayList<String>();
+		JSONArray playersJson = jsonObject.getJSONArray(Constants.PLAYERS);
+		for (int i = 0; i < playersJson.length(); i++) {
+			String player = playersJson.getString(i);
+			this.players.add(player);
 		}
-
+		this.planets = new ArrayList<Planet>();
+		JSONArray planetsJson = jsonObject.getJSONArray(Constants.PLANETS);
+		for (int i = 0; i < planetsJson.length(); i++) {
+			JSONObject jsonPlanet = planetsJson.getJSONObject(i);
+			Planet planet = new Planet();
+			planet.consume(jsonPlanet);
+			this.planets.add(planet);
+		}
+		this.id = jsonObject.getString(Constants.ID);
+		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
+		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 	}
 }
