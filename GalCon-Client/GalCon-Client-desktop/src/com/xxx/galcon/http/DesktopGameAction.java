@@ -38,9 +38,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public GameBoard generateGame(String player) throws ConnectionException {
+	public GameBoard generateGame(String player, int width, int height) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
+		args.put("width", Integer.toString(width));
+		args.put("height", Integer.toString(height));
 		return (GameBoard) callURL(POST, GENERATE_GAME, args, new GameBoard());
 	}
 

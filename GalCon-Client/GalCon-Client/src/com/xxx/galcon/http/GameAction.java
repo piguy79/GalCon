@@ -21,11 +21,9 @@ public interface GameAction {
 	 * needed is the username. A GameBoard object will be returned representing
 	 * the current state of the Game.
 	 * 
-	 * 
-	 * @param player
 	 * @return <GameBoard> Representing current state.
 	 */
-	public GameBoard generateGame(String player) throws ConnectionException;
+	public GameBoard generateGame(String player, int width, int height) throws ConnectionException;
 
 	public AvailableGames findAllGames() throws ConnectionException;
 

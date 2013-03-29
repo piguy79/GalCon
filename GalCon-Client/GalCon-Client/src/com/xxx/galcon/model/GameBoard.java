@@ -15,8 +15,8 @@ public class GameBoard implements JsonConvertible {
 	public String id;
 	public Date createdDate;
 	public List<String> players;
-	public int numberOfTilesWide = 0;
-	public int numberOfTilesTall = 0;
+	public int width = 0;
+	public int height = 0;
 	public List<Planet> planets = new ArrayList<Planet>();
 
 	public GameBoard() {
@@ -41,6 +41,8 @@ public class GameBoard implements JsonConvertible {
 				this.planets.add(planet);
 			}
 			this.id = jsonObject.getString(Constants.ID);
+			this.width = jsonObject.getInt(Constants.WIDTH);
+			this.height = jsonObject.getInt(Constants.HEIGHT);
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

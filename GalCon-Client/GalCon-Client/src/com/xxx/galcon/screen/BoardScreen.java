@@ -100,8 +100,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				return null;
 			}
 
-			x *= gameBoard.numberOfTilesWide;
-			y *= gameBoard.numberOfTilesTall;
+			x *= gameBoard.width;
+			y *= gameBoard.height;
 
 			x -= 0.5f;
 			y -= 0.5f;
@@ -134,9 +134,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void processGameBoard() {
-		gameBoard.numberOfTilesWide = 8;
-		gameBoard.numberOfTilesTall = 15;
-
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
 
@@ -147,7 +144,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private Body handleTouch(Camera camera) {
 		Body contactBody = null;
-		if (Gdx.input.isTouched()) {
+		if (Gdx.input.justTouched()) {
 			Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, Gdx.input.getX(), Gdx.input.getY());
 			Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
@@ -208,8 +205,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
-		gridShader.setUniformf("uTilesWide", gameBoard.numberOfTilesWide);
-		gridShader.setUniformf("uTilesTall", gameBoard.numberOfTilesTall);
+		gridShader.setUniformf("uTilesWide", gameBoard.width);
+		gridShader.setUniformf("uTilesTall", gameBoard.height);
 
 		planetModel.render(colorShader);
 
@@ -225,8 +222,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 				PLANET_Z_COORD);
 
-		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.numberOfTilesWide;
-		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.numberOfTilesTall;
+		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.width;
+		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.height;
 		modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
 				* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
 
@@ -301,7 +298,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Body contactBody = handleTouch(camera);
 
-		physicsWorld.step(Gdx.graphics.getDeltaTime(), 8, 3);
+		physicsWorld.step(delta, 8, 3);
 
 		if (contactBody != null) {
 			physicsWorld.destroyBody(contactBody);

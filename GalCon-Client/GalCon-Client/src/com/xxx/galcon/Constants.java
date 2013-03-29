@@ -14,4 +14,6 @@ public class Constants {
 	public static final String POSITION = "position";
 	public static final String X = "x";
 	public static final String Y = "y";
+	public static final String WIDTH = "width";
+	public static final String HEIGHT = "height";
 }
