@@ -313,7 +313,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet.touched) {
-			if (touchPlanets.size() == 2) {
+			if (touchPlanets.size() == 1) {
+				Planet alreadySelectedPlanet = touchPlanets.get(0);
+				if (planet.owner.equals(GameLoop.USER) && alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
+					planet.touched = false;
+				} else if (!planet.owner.equals(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
+					planet.touched = false;
+				}
+			} else if (touchPlanets.size() == 2) {
 				planet.touched = false;
 			} else {
 				touchPlanets.add(planet);
