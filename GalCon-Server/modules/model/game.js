@@ -128,6 +128,7 @@ exports.performMoves = function(gameId, moves, player, callback){
 			
 		}
 		
+		
 		movesToRemove.forEach(function(index){
 			game.moves.splice(index);
 		});
