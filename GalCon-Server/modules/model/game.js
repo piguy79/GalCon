@@ -111,7 +111,10 @@ exports.performMoves = function(gameId, moves, player, callback){
 			if(move.duration == 1){
 				// Update toPlanet
 				game.planets.forEach(function(planet){
-					if(planet.name == move.toPlanet && move.fleet >= planet.numberOfShips){
+					if(planet.owner == move.player){
+						planet.numberOfShips = planet.numberOfShips + move.fleet;
+					}
+					else if(planet.name == move.toPlanet && move.fleet >= planet.numberOfShips){
 						planet.owner = move.player;
 						planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
 					}else if(planet.name == move.toPlanet && move.fleet < planet.numberOfShips){
