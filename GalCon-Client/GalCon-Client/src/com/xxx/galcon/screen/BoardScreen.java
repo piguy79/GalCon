@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.math.WorldMath;
@@ -239,11 +240,30 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		colorShader.setUniformMatrix("uPMatrix", camera.combined);
 		colorShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+
+		float r = 0.0f, g = 0.0f, b = 0.0f;
 		if (planet.touched) {
-			colorShader.setUniformf("uColor", 0.8f, 0.0f, 0.0f, 1.0f);
+			if (planet.owner.equals(GameLoop.USER)) {
+				g = 0.9f;
+			} else if (!planet.owner.equals(Constants.NO_ONE)) {
+				r = 0.9f;
+			} else {
+				r = 0.9f;
+				g = 0.9f;
+				b = 0.9f;
+			}
 		} else {
-			colorShader.setUniformf("uColor", 0.8f, 0.8f, 1.0f, 1.0f);
+			if (planet.owner.equals(GameLoop.USER)) {
+				g = 0.6f;
+			} else if (!planet.owner.equals(Constants.NO_ONE)) {
+				r = 0.6f;
+			} else if (!planet.touched) {
+				r = 0.6f;
+				g = 0.6f;
+				b = 0.6f;
+			}
 		}
+		colorShader.setUniformf("uColor", r, g, b, 1.0f);
 
 		colorShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 

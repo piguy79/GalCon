@@ -11,6 +11,8 @@ import com.xxx.galcon.screen.JoinScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
 
 public class GameLoop extends Game {
+	// FIXME: this needs to be replaced by a unique user id
+	public static final String USER = "me";
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -58,7 +60,7 @@ public class GameLoop extends Game {
 			if (currentScreen instanceof MainMenuScreen) {
 				String nextScreen = (String) result;
 				if (nextScreen.equals("Create")) {
-					boardScreen.setGameBoard(gameAction.generateGame("desktopPlayer", 12, 16));
+					boardScreen.setGameBoard(gameAction.generateGame(USER, 12, 16));
 					return boardScreen;
 				} else if (nextScreen.equals("Join")) {
 					return new JoinScreen(gameAction.findAllGames());
