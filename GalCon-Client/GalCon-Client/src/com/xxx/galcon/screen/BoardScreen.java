@@ -1,5 +1,8 @@
 package com.xxx.galcon.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
@@ -34,6 +37,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final float PLANET_Z_COORD = -99.5f;
 	private static final float TILE_SIZE_IN_UNITS = 10.0f;
 
+	private static final String TOUCH_OBJECT = "touch";
+
 	private Camera camera;
 	private GameBoard gameBoard;
 	private GameAction gameAction;
@@ -47,6 +52,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private BoardPlane boardPlane = new BoardPlane();
 	private WorldPlane worldPlane = new WorldPlane();
+
+	List<Planet> touchPlanets = new ArrayList<Planet>(2);
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
@@ -155,7 +162,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				bodyDef.position.set(boardXY);
 
 				contactBody = physicsWorld.createBody(bodyDef);
-				contactBody.setUserData("touch");
+				contactBody.setUserData(TOUCH_OBJECT);
 
 				CircleShape shape = new CircleShape();
 				shape.setRadius(0.1f);
@@ -229,7 +236,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
 
 		modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
-		
+
 		colorShader.setUniformMatrix("uPMatrix", camera.combined);
 		colorShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 		if (planet.touched) {
@@ -273,11 +280,27 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Object userDataOne = contact.getFixtureA().getBody().getUserData();
 		Object userDataTwo = contact.getFixtureB().getBody().getUserData();
 
+		Planet planet = null;
 		if (userDataOne instanceof Planet) {
-			((Planet) userDataOne).touched = true;
+			planet = (Planet) userDataOne;
 		}
 		if (userDataTwo instanceof Planet) {
-			((Planet) userDataTwo).touched = true;
+			planet = (Planet) userDataTwo;
+		}
+
+		if (planet != null) {
+			planet.touched = !planet.touched;
+		}
+
+		if (planet.touched) {
+			if (touchPlanets.size() == 2) {
+				planet.touched = false;
+			} else {
+				touchPlanets.add(planet);
+			}
+		}
+		if (!planet.touched) {
+			touchPlanets.remove(planet);
 		}
 	}
 
