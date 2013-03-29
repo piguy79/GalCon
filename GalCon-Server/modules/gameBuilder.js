@@ -60,11 +60,12 @@ function createPlanet(board, index, builder, callback){
 	var position = {};
 	position.x = x;
 	position.y = y;
-	board.forEach(function(pos){
-		if(pos.x == position.x && pos.y == position.y){
-			callback();
+	
+	for(i in board) {
+		if(board[i].x == position.x && board[i].y == position.y) {
+			return;
 		}
-	});
+	}
 
 
 	planet.name = "Planet: " + index;
