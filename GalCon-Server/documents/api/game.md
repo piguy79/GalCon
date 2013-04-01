@@ -13,7 +13,7 @@ GET Game
 
 ```json
 {
-	"players" : [String],
+	"players" : ["String"],
 	"width": "Number",
 	"height": "Number",
 	"createdDate" : "Date",
@@ -87,7 +87,7 @@ Generate Game
 			}
 		}
 	],
-	,"currentRound":{
+	"currentRound":{
 		"roundNumber":0,
 		"player":0
 	},
@@ -159,7 +159,7 @@ Perform Moves
 			}
 		}
 	],
-	,"currentRound":{
+	"currentRound":{
 		"roundNumber":0,
 		"player":0
 	},
