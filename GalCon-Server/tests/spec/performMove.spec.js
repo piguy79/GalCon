@@ -151,6 +151,32 @@ describe("Testing ship movement", function(){
 		
 	});
 	
+	it("Should be able to send more ships to a friendly planet (owned by the same user)", function(done){		
+	
+		var planetsForTest = [
+			elementBuilder.createPlanetForTest("fromPlanet", "moveTest", 3,10,{x : 3, y : 4}),
+			elementBuilder.createPlanetForTest("toPlanet", "moveTest", 0, 20, {x : 3, y : 5})
+		];
+	
+		var testMove = elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",5, 1);
+		var moveHolder = [testMove];	
+		
+		
+		createMovesWithValidationSteps(game, moveHolder, planetsForTest, function(dbGame){
+				dbGame.planets.forEach(function(planet){
+					if(planet.name == "toPlanet"){
+						expect(planet).toBeOwnedBy("moveTest");
+						expect(planet).toHaveShipNumber(25);
+					}
+				});
+				expect(dbGame.moves).not.toContainMove(testMove);
+				done();
+		});
+		
+	});
+	
+	
+	
 	afterEach(function(done){
 		apiRunner.deleteGame(game._id, function(){
 			done();
