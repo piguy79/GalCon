@@ -168,3 +168,58 @@ Perform moves accepts an array of `move` objects. Each object must specify the f
 	"players":["conor"]
 }
 ```
+
+
+Join Game
+-----
+
+* `GET /joinGame?id=123456&player=conor`
+
+**Response:**
+
+```json
+{
+	"__v":0,
+	"width":10,
+	"height":15,
+	"createdDate":"2013-04-01T10:27:33.782Z",
+	"numberOfPlanets":10,
+	"_id":"515961150203ba0000000003",
+	"moves":[
+		{
+			"player" : "Conor",
+			"fromPlanet" : "Planet 5",
+			"toPlanet" : "Planet 1",
+			"fleet" : 23,
+			"duration" : 5
+		}
+	],
+	"planets":[
+		{	
+			"name":"Planet: 0",
+			"shipRegenRate":3,
+			"numberOfShips":0,
+			"_id":"515961150203ba000000000d",
+			"position":{
+				"x":8,
+				"y":3
+			}
+		},
+		{
+			"name":"Planet: 1",
+			"shipRegenRate":3,
+			"numberOfShips":5,
+			"_id":"515961150203ba000000000c",
+			"position":{
+				"x":1,
+				"y":13
+			}
+		}
+	],
+	"currentRound":{
+		"roundNumber":0,
+		"player":0
+	},
+	"players":["conor", "otherplayer"]
+}
+```
