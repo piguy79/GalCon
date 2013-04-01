@@ -12,7 +12,8 @@ GET Game
 **Response**
 
 ```json
-players : [String],
+{
+	players : [String],
 	width: "Number",
 	height: "Number",
 	createdDate : "Date",
@@ -90,5 +91,6 @@ Generate Game
 		"player":0
 	},
 	"players":["conor"]}
+}
 
 ```
