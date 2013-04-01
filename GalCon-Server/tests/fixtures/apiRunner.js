@@ -51,3 +51,11 @@ exports.addPlanets = function(gameId, planetsForTest, callback){
 	});
 		
 }
+
+exports.joinGame = function(gameId, playerToJoin, callback){
+		
+	needle.get("http://localhost:3000/joinGame?id=" + gameId + "&player=" + playerToJoin, function(err, response, body){
+		callback();
+	});
+		
+}
