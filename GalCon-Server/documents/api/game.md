@@ -100,6 +100,8 @@ Generate Game
 Perform Moves
 -----
 
+Perform moves accepts an array of `move` objects. Each object must specify the from and to planet, along with the fleet (represents the number of ships being sent) and the duration (distance between from and to planets).
+
 * `POST /performMoves`
 
 **Request:**
