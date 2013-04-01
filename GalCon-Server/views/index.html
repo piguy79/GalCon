@@ -13,7 +13,9 @@
 				var selectedPlayer = $("#playerInput").val();
 				$.post('/generateGame',
 				{
-					player : selectedPlayer
+					player : selectedPlayer,
+					width : 10,
+					height : 15
 				}, function(data){
 					$("#gameArea").val(JSON.stringify(data));
 				}).error(function(){
