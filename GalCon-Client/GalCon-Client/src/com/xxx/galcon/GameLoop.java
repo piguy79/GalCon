@@ -2,7 +2,11 @@ package com.xxx.galcon;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
@@ -17,6 +21,7 @@ public class GameLoop extends Game {
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
 	private GL20 gl;
+	private AssetManager assetManager = new AssetManager();
 
 	private GameAction gameAction;
 
@@ -37,7 +42,15 @@ public class GameLoop extends Game {
 
 		Gdx.input.setInputProcessor(inputProcessor);
 
-		boardScreen = new BoardScreen();
+		TextureParameter param = new TextureParameter();
+		param.minFilter = TextureFilter.Linear;
+		param.magFilter = TextureFilter.Linear;
+
+		assetManager.load("data/images/arrow_right.png", Texture.class, param);
+		assetManager.load("data/images/end_turn.png", Texture.class, param);
+		assetManager.finishLoading();
+
+		boardScreen = new BoardScreen(assetManager);
 
 		setScreen(new MainMenuScreen());
 	}

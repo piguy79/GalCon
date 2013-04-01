@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
@@ -42,7 +42,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private Camera camera;
 	private GameBoard gameBoard;
-	private GameAction gameAction;
 	private World physicsWorld;
 
 	private ShaderProgram colorShader;
@@ -56,11 +55,16 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	List<Planet> touchPlanets = new ArrayList<Planet>(2);
 
+	private AssetManager assetManager;
+	private BoardScreenHud boardScreenHud;
+
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
 
-	public BoardScreen() {
+	public BoardScreen(AssetManager assetManager) {
+		this.assetManager = assetManager;
+
 		colorShader = new ShaderProgram(Gdx.files.internal("data/shaders/color-vs.glsl"),
 				Gdx.files.internal("data/shaders/color-fs.glsl"));
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
@@ -68,6 +72,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
+
+		boardScreenHud = new BoardScreenHud(assetManager);
 	}
 
 	/*
@@ -365,6 +371,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		for (Planet planet : gameBoard.planets) {
 			renderPlanet(planet, Gdx.gl20, camera);
 		}
+		
+		boardScreenHud.render(delta);
 	}
 
 	@Override
