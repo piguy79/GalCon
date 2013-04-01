@@ -13,34 +13,34 @@ GET Game
 
 ```json
 {
-	players : [String],
-	width: "Number",
-	height: "Number",
-	createdDate : "Date",
-	currentRound : {
-		roundNumber : "Number",
-		player : "Number"
+	"players" : [String],
+	"width": "Number",
+	"height": "Number",
+	"createdDate" : "Date",
+	"currentRound" : {
+		"roundNumber" : "Number",
+		"player" : "Number"
 	},
-	numberOfPlanets : "Number",
-	planets : [
+	"numberOfPlanets" : "Number",
+	"planets" : [
 		{
-			name : "String",
-			owner : "String",
-			position : {
-				x : "Number",
-				y : "Number"
+			"name" : "String",
+			"owner" : "String",
+			"position" : {
+				"x" : "Number",
+				"y" : "Number"
 			},
-			shipRegenRate : "Number",
-			numberOfShips : "Number"
+			"shipRegenRate" : "Number",
+			"numberOfShips" : "Number"
 		}
 	],
-	moves : [
+	"moves" : [
 		{
-			player : "String",
-			fromPlanet : "String",
-			toPlanet : "String",
-			fleet : "Number",
-			duration : "Number"
+			"player" : "String",
+			"fromPlanet" : "String",
+			"toPlanet" : "String",
+			"fleet" : "Number",
+			"duration" : "Number"
 		}
 	]
 	
@@ -85,7 +85,8 @@ Generate Game
 				"x":1,
 				"y":13
 			}
-		}...,
+		}
+	],
 	,"currentRound":{
 		"roundNumber":0,
 		"player":0
@@ -105,13 +106,13 @@ Perform Moves
 
 ```json
 {
-	moves : [
+	"moves" : [
 		{
-			player : "Conor",
-			fromPlanet : "Planet 5",
-			toPlanet : "Planet 1",
-			fleet : 23,
-			duration : 5
+			"player" : "Conor",
+			"fromPlanet" : "Planet 5",
+			"toPlanet" : "Planet 1",
+			"fleet" : 23,
+			"duration" : 5
 		}	
 	]
 }
@@ -129,11 +130,11 @@ Perform Moves
 	"_id":"515961150203ba0000000003",
 	"moves":[
 		{
-			player : "Conor",
-			fromPlanet : "Planet 5",
-			toPlanet : "Planet 1",
-			fleet : 23,
-			duration : 5
+			"player" : "Conor",
+			"fromPlanet" : "Planet 5",
+			"toPlanet" : "Planet 1",
+			"fleet" : 23,
+			"duration" : 5
 		}
 	],
 	"planets":[
@@ -156,7 +157,8 @@ Perform Moves
 				"x":1,
 				"y":13
 			}
-		}...,
+		}
+	],
 	,"currentRound":{
 		"roundNumber":0,
 		"player":0
