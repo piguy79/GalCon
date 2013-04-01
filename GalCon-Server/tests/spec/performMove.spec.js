@@ -176,6 +176,19 @@ describe("Testing ship movement", function(){
 	});
 	
 	
+	it("Round Number should be updated after perform move is called..", function(done){
+		var testMove = elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1);
+		var moveHolder = [testMove];	
+		
+		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
+				expect(dbGame.currentRound.roundNumber).toBe(2);
+				expect(dbGame.currentRound.player).toBe("otherPlayer");
+				done();
+		});
+		
+	});
+	
+	
 	
 	afterEach(function(done){
 		apiRunner.deleteGame(game._id, function(){

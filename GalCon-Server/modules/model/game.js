@@ -10,7 +10,7 @@ var gameSchema = mongoose.Schema({
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
-		player : "Number"
+		player : "String"
 	},
 	numberOfPlanets : "Number",
 	planets : [
@@ -145,6 +145,9 @@ exports.performMoves = function(gameId, moves, player, callback){
 			game.moves.push(move);
 		});
 		}
+		
+		game.currentRound.roundNumber++;
+		game.currentRound.player = player;
 		
 		
 		game.save(function(savedGame){
