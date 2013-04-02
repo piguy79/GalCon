@@ -116,7 +116,9 @@ Perform moves accepts an array of `move` objects. Each object must specify the f
 			"fleet" : 23,
 			"duration" : 5
 		}	
-	]
+	],
+	"player" : "conor",
+	"id" : 1234
 }
 ```
 
