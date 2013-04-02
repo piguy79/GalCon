@@ -39,6 +39,48 @@ var gameSchema = mongoose.Schema({
 
 gameSchema.set('toObject', { getters: true });
 
+var hasSameOwner = function(planet, move){
+	return planet.owner == move.player;
+}
+
+var isSamePlanet = function(planet, planetName){
+	return planet.name == planetName;
+}
+
+var moveHasMoreOrTheSameShipsThenPlanet = function(move, planet){
+	return move.fleet >= planet.numberOfShips;
+}
+
+gameSchema.methods.applyMoveToPlanets = function(move){
+
+	this.planets.forEach(function(planet){
+		if(hasSameOwner(planet, move)){
+			planet.numberOfShips = planet.numberOfShips + move.fleet;
+		}
+		else if(isSamePlanet(move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+			planet.owner = move.player;
+			planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
+		}else if(isSamePlanet(move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+			planet.numberOfShips = planet.numberOfShips - move.fleet; 
+		}
+	});
+}
+
+gameSchema.methods.updateRegenRates = function(){
+	this.planets.forEach(function(planet){
+		planet.numberOfShips += planet.shipRegenRate;
+	});
+}
+
+gameSchema.methods.addMoves = function(moves){
+	var game = this;
+	if(moves){
+		moves.forEach(function(move){
+			game.moves.push(move);
+		});
+	}
+}
+
 
 
 var GameModel = db.model('Game', gameSchema);
@@ -109,21 +151,10 @@ exports.performMoves = function(gameId, moves, player, callback){
 		for(var i = 0 ; i < game.moves.length; i++){
 			var move = game.moves[i];
 			if(move.duration == 1){
-				// Update toPlanet
-				game.planets.forEach(function(planet){
-					if(planet.owner == move.player){
-						planet.numberOfShips = planet.numberOfShips + move.fleet;
-					}
-					else if(planet.name == move.toPlanet && move.fleet >= planet.numberOfShips){
-						planet.owner = move.player;
-						planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
-					}else if(planet.name == move.toPlanet && move.fleet < planet.numberOfShips){
-						planet.numberOfShips = planet.numberOfShips - move.fleet; 
-					}
-				});
+				game.applyMoveToPlanets(move);
 				movesToRemove.push(i);
 			}else{
-				move.duration = move.duration -1;
+				move.duration--;
 			}
 			
 		}
@@ -134,18 +165,8 @@ exports.performMoves = function(gameId, moves, player, callback){
 		});
 	}
 		
-
-		game.planets.forEach(function(planet){
-			planet.numberOfShips += planet.shipRegenRate;
-		});
-		
-		
-		if(moves){
-			moves.forEach(function(move){
-			game.moves.push(move);
-		});
-		}
-		
+		game.updateRegenRates();
+		game.addMoves(moves);
 		game.currentRound.roundNumber++;
 		game.currentRound.player = player;
 		
