@@ -20,6 +20,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -60,15 +62,19 @@ public class BaseDesktopGameAction {
 			}
 
 			request = new HttpGet(builder.build());
-		} else {
+		} else if (method.equals(GameAction.POST)) {
 			request = new HttpPost(builder.build());
 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			for (Map.Entry<String, String> entry : parameters.entrySet()) {
 				nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
 			}
-			((HttpPost) request).setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
+			((HttpPost) request).setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+		} else {
+			request = new HttpPost(builder.build());
+			StringEntity params = new StringEntity(parameters.get("json"));
+			params.setContentType(ContentType.APPLICATION_JSON.toString());
+			((HttpPost) request).setEntity(params);
 		}
 
 		HttpClient httpclient = new DefaultHttpClient();

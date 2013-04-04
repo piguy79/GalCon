@@ -27,6 +27,8 @@ public class GameLoop extends Game {
 
 	public GameLoop(GameAction gameAction) {
 		this.gameAction = gameAction;
+		
+		ConnectionWrapper.setGameAction(gameAction);
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class GameLoop extends Game {
 			if (currentScreen instanceof MainMenuScreen) {
 				String nextScreen = (String) result;
 				if (nextScreen.equals("Create")) {
-					boardScreen.setGameBoard(gameAction.generateGame(USER, 12, 16));
+					boardScreen.setGameBoard(gameAction.generateGame(USER, 10, 14));
 					return boardScreen;
 				} else if (nextScreen.equals("Join")) {
 					return new JoinScreen(gameAction.findAllGames());

@@ -18,6 +18,7 @@ public class GameBoard implements JsonConvertible {
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
 	public List<Planet> planets = new ArrayList<Planet>();
+	public List<Move> moves = new ArrayList<Move>();
 
 	public GameBoard() {
 

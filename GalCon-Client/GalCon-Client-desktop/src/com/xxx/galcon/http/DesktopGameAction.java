@@ -6,18 +6,23 @@ package com.xxx.galcon.http;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_GAMES;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
+import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -35,6 +40,35 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public AvailableGames findAllGames() throws ConnectionException {
 		return (AvailableGames) callURL(GET, FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
+	}
+
+	@Override
+	public GameBoard performMoves(String gameId, List<Move> moves) throws ConnectionException {
+		try {
+			JSONObject top = new JSONObject();
+			top.put("player", GameLoop.USER);
+			top.put("id", gameId);
+			JSONArray jsonMoves = new JSONArray();
+
+			for (Move move : moves) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("player", GameLoop.USER);
+				jsonObject.put("fromPlanet", move.fromPlanet);
+				jsonObject.put("toPlanet", move.toPlanet);
+				jsonObject.put("fleet", move.shipsToMove);
+				jsonObject.put("duration", 5);
+
+				jsonMoves.put(jsonObject);
+			}
+			top.put("moves", jsonMoves);
+			
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+			
+			return (GameBoard) callURL(JSON_POST, PERFORM_MOVES, args, new GameBoard());
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
 	}
 
 	@Override

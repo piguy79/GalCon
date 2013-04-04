@@ -24,11 +24,13 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
@@ -53,7 +55,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private BoardPlane boardPlane = new BoardPlane();
 	private WorldPlane worldPlane = new WorldPlane();
 
-	List<Planet> touchPlanets = new ArrayList<Planet>(2);
+	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
@@ -319,21 +321,23 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet.touched) {
-			if (touchPlanets.size() == 1) {
-				Planet alreadySelectedPlanet = touchPlanets.get(0);
+			if (touchedPlanets.size() == 1) {
+				Planet alreadySelectedPlanet = touchedPlanets.get(0);
 				if (planet.owner.equals(GameLoop.USER) && alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
 					planet.touched = false;
 				} else if (!planet.owner.equals(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
 					planet.touched = false;
+				} else {
+					touchedPlanets.add(planet);
 				}
-			} else if (touchPlanets.size() == 2) {
+			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
 			} else {
-				touchPlanets.add(planet);
+				touchedPlanets.add(planet);
 			}
 		}
 		if (!planet.touched) {
-			touchPlanets.remove(planet);
+			touchedPlanets.remove(planet);
 		}
 	}
 
@@ -371,8 +375,33 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		for (Planet planet : gameBoard.planets) {
 			renderPlanet(planet, Gdx.gl20, camera);
 		}
-		
+
 		boardScreenHud.render(delta);
+
+		String hudResult = (String) boardScreenHud.getRenderResult();
+		if (hudResult != null) {
+			processHudButtonTouch(hudResult);
+		}
+	}
+
+	private void processHudButtonTouch(String buttonId) {
+		if (buttonId.equals(BoardScreenHud.SEND_BUTTON)) {
+			Move move = new Move();
+
+			for (Planet planet : touchedPlanets) {
+				if (planet.owner.equals(GameLoop.USER) && move.fromPlanet == null) {
+					move.fromPlanet = planet.name;
+					move.shipsToMove = planet.numberOfShips;
+				} else {
+					move.toPlanet = planet.name;
+				}
+			}
+
+			gameBoard.moves.add(move);
+		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
+			ConnectionWrapper.performMoves(gameBoard.id, gameBoard.moves);
+			gameBoard.moves.clear();
+		}
 	}
 
 	@Override
@@ -389,6 +418,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		worldPlane.resize(camera);
 		boardPlane.resize();
+		boardScreenHud.resize(width, height);
 	}
 
 	@Override

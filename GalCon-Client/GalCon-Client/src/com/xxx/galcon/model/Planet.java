@@ -10,7 +10,7 @@ public class Planet implements JsonConvertible{
 	public int tileNumberX = 0, tileNumberY = 0;
 	public String owner = Constants.OWNER_NO_ONE;
 	public float shipRegenRate = 1.0f;
-	public Long numberOfShips;
+	public int numberOfShips;
 	public String name;
 	public String id;
 	public PlanetPosition position;
@@ -32,7 +32,7 @@ public class Planet implements JsonConvertible{
 		try {
 			this.name = jsonObject.getString(Constants.NAME);
 			this.shipRegenRate = (float)jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
-			this.numberOfShips = jsonObject.getLong(Constants.NUMBER_OF_SHIPS);
+			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
 			if(jsonObject.has(Constants.OWNER)){
 				this.owner = jsonObject.getString(Constants.OWNER);
 			}
