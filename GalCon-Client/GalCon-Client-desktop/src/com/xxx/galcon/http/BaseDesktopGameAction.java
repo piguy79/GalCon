@@ -7,24 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.xxx.galcon.http.request.ClientRequest;
 
@@ -41,17 +32,16 @@ public class BaseDesktopGameAction {
 		this.host = host;
 		this.port = port;
 	}
-	
+
 	/**
 	 * 
 	 * This method is used to establish a HTTP POST connection to a given url.
 	 * 
 	 */
-	protected String executeHttpRequest(ClientRequest clientRequest, String path, Map<String, String> parameters) throws IOException,
-			URISyntaxException {
+	protected String executeHttpRequest(ClientRequest clientRequest, String path, Map<String, String> parameters)
+			throws IOException, URISyntaxException {
 
-		HttpRequestBase request = createTheBaseHttpRequest(clientRequest, path,
-				parameters);
+		HttpRequestBase request = createTheBaseHttpRequest(clientRequest, path, parameters);
 
 		HttpResponse response = executeResponseOnClient(request);
 		HttpEntity responseEntity = response.getEntity();
@@ -68,15 +58,13 @@ public class BaseDesktopGameAction {
 		return "";
 	}
 
-	private HttpResponse executeResponseOnClient(HttpRequestBase request)
-			throws IOException, ClientProtocolException {
+	private HttpResponse executeResponseOnClient(HttpRequestBase request) throws IOException, ClientProtocolException {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpResponse response = httpclient.execute(request);
 		return response;
 	}
 
-	private HttpRequestBase createTheBaseHttpRequest(
-			ClientRequest clientRequest, String path,
+	private HttpRequestBase createTheBaseHttpRequest(ClientRequest clientRequest, String path,
 			Map<String, String> parameters) throws URISyntaxException {
 		URIBuilder builder = new URIBuilder();
 		builder.setScheme("http").setHost(host).setPort(port).setPath(path);
