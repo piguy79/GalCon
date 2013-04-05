@@ -1,6 +1,9 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Constants.OWNER_NO_ONE;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -56,6 +59,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private WorldPlane worldPlane = new WorldPlane();
 
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
+	List<Move> moves = new ArrayList<Move>();
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
@@ -151,8 +155,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void processGameBoard() {
-		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
-		physicsWorld.setContactListener(this);
+		if (physicsWorld == null) {
+			physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
+			physicsWorld.setContactListener(this);
+		}
+
+		List<Body> bodies = new ArrayList<Body>();
+		Iterator<Body> bodyIter = physicsWorld.getBodies();
+		while (bodyIter.hasNext()) {
+			bodies.add(bodyIter.next());
+		}
+
+		for (Body body : bodies) {
+			body.setUserData(null);
+			physicsWorld.destroyBody(body);
+		}
 
 		for (Planet planet : gameBoard.planets) {
 			addPhysicsToPlanet(planet);
@@ -253,7 +270,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (planet.touched) {
 			if (planet.owner.equals(GameLoop.USER)) {
 				g = 0.9f;
-			} else if (!planet.owner.equals(Constants.NO_ONE)) {
+			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 				r = 0.9f;
 			} else {
 				r = 0.9f;
@@ -263,7 +280,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		} else {
 			if (planet.owner.equals(GameLoop.USER)) {
 				g = 0.6f;
-			} else if (!planet.owner.equals(Constants.NO_ONE)) {
+			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 				r = 0.6f;
 			} else if (!planet.touched) {
 				r = 0.6f;
@@ -397,10 +414,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				}
 			}
 
-			gameBoard.moves.add(move);
+			moves.add(move);
 		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
-			ConnectionWrapper.performMoves(gameBoard.id, gameBoard.moves);
-			gameBoard.moves.clear();
+			setGameBoard(ConnectionWrapper.performMoves(gameBoard.id, moves));
+			moves.clear();
+			touchedPlanets.clear();
 		}
 	}
 
