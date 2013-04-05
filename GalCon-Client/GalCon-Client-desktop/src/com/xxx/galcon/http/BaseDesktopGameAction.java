@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -24,6 +25,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.xxx.galcon.http.request.ClientRequest;
 
 /**
  * @author conormullen
@@ -38,47 +41,19 @@ public class BaseDesktopGameAction {
 		this.host = host;
 		this.port = port;
 	}
-
+	
 	/**
 	 * 
 	 * This method is used to establish a HTTP POST connection to a given url.
 	 * 
-	 * @param url
-	 * @param urlParameters
-	 * @return
-	 * @throws IOException
-	 * @throws URISyntaxException
 	 */
-	protected String executeHttpRequest(String method, String path, Map<String, String> parameters) throws IOException,
+	protected String executeHttpRequest(ClientRequest clientRequest, String path, Map<String, String> parameters) throws IOException,
 			URISyntaxException {
 
-		URIBuilder builder = new URIBuilder();
-		builder.setScheme("http").setHost(host).setPort(port).setPath(path);
+		HttpRequestBase request = createTheBaseHttpRequest(clientRequest, path,
+				parameters);
 
-		HttpRequestBase request;
-		if (method.equals(GameAction.GET)) {
-			for (Map.Entry<String, String> entry : parameters.entrySet()) {
-				builder.setParameter(entry.getKey(), entry.getValue());
-			}
-
-			request = new HttpGet(builder.build());
-		} else if (method.equals(GameAction.POST)) {
-			request = new HttpPost(builder.build());
-
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			for (Map.Entry<String, String> entry : parameters.entrySet()) {
-				nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-			}
-			((HttpPost) request).setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-		} else {
-			request = new HttpPost(builder.build());
-			StringEntity params = new StringEntity(parameters.get("json"));
-			params.setContentType(ContentType.APPLICATION_JSON.toString());
-			((HttpPost) request).setEntity(params);
-		}
-
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpResponse response = httpclient.execute(request);
+		HttpResponse response = executeResponseOnClient(request);
 		HttpEntity responseEntity = response.getEntity();
 		if (responseEntity != null) {
 			InputStream instream = responseEntity.getContent();
@@ -91,6 +66,23 @@ public class BaseDesktopGameAction {
 		}
 
 		return "";
+	}
+
+	private HttpResponse executeResponseOnClient(HttpRequestBase request)
+			throws IOException, ClientProtocolException {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpResponse response = httpclient.execute(request);
+		return response;
+	}
+
+	private HttpRequestBase createTheBaseHttpRequest(
+			ClientRequest clientRequest, String path,
+			Map<String, String> parameters) throws URISyntaxException {
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme("http").setHost(host).setPort(port).setPath(path);
+
+		HttpRequestBase request = clientRequest.createHttpBaseRequest(builder, parameters);
+		return request;
 	}
 
 	/**

@@ -20,6 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.http.request.ClientRequest;
+import com.xxx.galcon.http.request.GetClientRequest;
+import com.xxx.galcon.http.request.JsonClientRequest;
+import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -39,7 +43,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public AvailableGames findAllGames() throws ConnectionException {
-		return (AvailableGames) callURL(GET, FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
+		return (AvailableGames) callURL(new GetClientRequest(), FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 			
-			return (GameBoard) callURL(JSON_POST, PERFORM_MOVES, args, new GameBoard());
+			return (GameBoard) callURL(new JsonClientRequest(), PERFORM_MOVES, args, new GameBoard());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -77,7 +81,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("player", player);
 		args.put("width", Integer.toString(width));
 		args.put("height", Integer.toString(height));
-		return (GameBoard) callURL(POST, GENERATE_GAME, args, new GameBoard());
+		return (GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard());
 	}
 
 	@Override
@@ -85,13 +89,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
-		return (GameBoard) callURL(GET, JOIN_GAME, args, new GameBoard());
+		return (GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard());
 	}
 
-	private JsonConvertible callURL(String method, String path, Map<String, String> parameters,
+	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
 			JsonConvertible converter) throws ConnectionException {
 		try {
-			String postResponse = executeHttpRequest(method, path, parameters);
+			String postResponse = executeHttpRequest(clientRequest, path, parameters);
 			return buildObjectsFromResponse(converter, postResponse);
 		} catch (MalformedURLException e) {
 			throw new ConnectionException(e);
@@ -103,12 +107,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	/**
-	 * This method us used to populate a Gameboard Object with attributes form a
+	 * This method us used to populate a GameBoard Object with attributes from a
 	 * JsonObject.
 	 * 
-	 * @param gameBoard
-	 * @param postResponse
-	 * @return
 	 */
 	private JsonConvertible buildObjectsFromResponse(JsonConvertible converter, String postResponse)
 			throws ConnectionException {
