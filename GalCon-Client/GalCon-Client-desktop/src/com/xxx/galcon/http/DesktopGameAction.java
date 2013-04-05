@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
-import com.xxx.galcon.http.request.JsonClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
@@ -69,7 +68,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 			
-			return (GameBoard) callURL(new JsonClientRequest(), PERFORM_MOVES, args, new GameBoard());
+			return (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -77,11 +76,21 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public GameBoard generateGame(String player, int width, int height) throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
-		args.put("player", player);
-		args.put("width", Integer.toString(width));
-		args.put("height", Integer.toString(height));
-		return (GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard());
+		try {
+			JSONObject top = new JSONObject();
+		
+			top.put("player", player);
+			top.put("width", width);
+			top.put("height", height);
+		
+			Map<String, String> args = new HashMap<String, String>();
+
+			args.put("json", top.toString());
+			return (GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard());
+			
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
 	}
 
 	@Override

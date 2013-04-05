@@ -11,6 +11,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 
 public class PostClientRequest implements ClientRequest {
@@ -20,25 +22,25 @@ public class PostClientRequest implements ClientRequest {
 			Map<String, String> parameters) throws URISyntaxException {
 		
 		HttpRequestBase request = new HttpPost(builder.build());
-
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-		}
+		StringEntity params = setJsonAsContentType(parameters);
 		
-		setUrlEncoding(request, nameValuePairs);
 		
+		((HttpPost) request).setEntity(params);
 		
 		return request;
 	}
 
-	private void setUrlEncoding(HttpRequestBase request,
-			List<NameValuePair> nameValuePairs) {
+	private StringEntity setJsonAsContentType(Map<String, String> parameters) {
+		StringEntity params = null;
 		try {
-			((HttpPost) request).setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+			params = new StringEntity(parameters.get("json"));
+			params.setContentType(ContentType.APPLICATION_JSON.toString());
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
+		return params;
 		
 	}
 
