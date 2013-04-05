@@ -10,7 +10,7 @@ import com.xxx.galcon.model.Move;
 
 public class AndroidGameAction implements GameAction {
 
-	public AvailableGames findAllGames() {
+	public AvailableGames findAvailableGames() {
 		// TODO Auto-generated method stub
 		return null;
 	}

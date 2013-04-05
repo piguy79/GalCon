@@ -9,7 +9,7 @@ package com.xxx.galcon.http;
  */
 public class UrlConstants {
 
-	public static final String FIND_ALL_GAMES = "/findAllGames";
+	public static final String FIND_AVAILABLE_GAMES = "/findAvailableGames";
 
 	public static final String GENERATE_GAME = "/generateGame";
 

@@ -29,7 +29,7 @@ public interface GameAction {
 	 */
 	public GameBoard generateGame(String player, int width, int height) throws ConnectionException;
 
-	public AvailableGames findAllGames() throws ConnectionException;
+	public AvailableGames findAvailableGames() throws ConnectionException;
 
 	public GameBoard joinGame(String id, String player) throws ConnectionException;
 

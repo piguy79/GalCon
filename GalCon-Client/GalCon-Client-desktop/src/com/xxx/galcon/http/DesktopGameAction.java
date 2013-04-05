@@ -3,7 +3,7 @@
  */
 package com.xxx.galcon.http;
 
-import static com.xxx.galcon.http.UrlConstants.FIND_ALL_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
@@ -41,8 +41,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public AvailableGames findAllGames() throws ConnectionException {
-		return (AvailableGames) callURL(new GetClientRequest(), FIND_ALL_GAMES, new HashMap<String, String>(), new AvailableGames());
+	public AvailableGames findAvailableGames() throws ConnectionException {
+		return (AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, new HashMap<String, String>(), new AvailableGames());
 	}
 
 	@Override
