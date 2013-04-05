@@ -16,4 +16,6 @@ public class UrlConstants {
 	public static final String PERFORM_MOVES = "/performMoves";
 
 	public static final String JOIN_GAME = "/joinGame";
+	
+	public static final String FIND_GAME_BY_ID = "/findGameById";
 }

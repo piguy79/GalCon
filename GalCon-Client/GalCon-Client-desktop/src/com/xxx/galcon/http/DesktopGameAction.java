@@ -4,6 +4,7 @@
 package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
@@ -42,7 +43,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public AvailableGames findAvailableGames() throws ConnectionException {
-		return (AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, new HashMap<String, String>(), new AvailableGames());
+		return (AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, new HashMap<String, String>(),
+				new AvailableGames());
 	}
 
 	@Override
@@ -64,10 +66,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 				jsonMoves.put(jsonObject);
 			}
 			top.put("moves", jsonMoves);
-			
+
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
-			
+
 			return (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
@@ -78,16 +80,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public GameBoard generateGame(String player, int width, int height) throws ConnectionException {
 		try {
 			JSONObject top = new JSONObject();
-		
+
 			top.put("player", player);
 			top.put("width", width);
 			top.put("height", height);
-		
+
 			Map<String, String> args = new HashMap<String, String>();
 
 			args.put("json", top.toString());
 			return (GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard());
-			
+
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -99,6 +101,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("player", player);
 		args.put("id", id);
 		return (GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard());
+	}
+
+	@Override
+	public GameBoard findGameById(String id) throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("id", id);
+		return (GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard());
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,

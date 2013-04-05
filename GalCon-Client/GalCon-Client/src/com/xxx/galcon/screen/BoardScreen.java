@@ -419,6 +419,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setGameBoard(ConnectionWrapper.performMoves(gameBoard.id, moves));
 			moves.clear();
 			touchedPlanets.clear();
+		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
+			setGameBoard(ConnectionWrapper.findGameById(gameBoard.id));
 		}
 	}
 

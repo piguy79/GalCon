@@ -30,4 +30,9 @@ public class AndroidGameAction implements GameAction {
 		return null;
 	}
 
+	public GameBoard findGameById(String id) throws ConnectionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

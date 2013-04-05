@@ -12,6 +12,7 @@ import com.xxx.galcon.ScreenFeedback;
 public class BoardScreenHud implements ScreenFeedback {
 	public static final String SEND_BUTTON = "send_button";
 	public static final String END_TURN_BUTTON = "end_turn_button";
+	public static final String REFRESH_BUTTON = "refresh_button";
 
 	private SpriteBatch spriteBatch;
 	private List<HudButton> hudButtons = new ArrayList<HudButton>();
@@ -85,12 +86,33 @@ public class BoardScreenHud implements ScreenFeedback {
 			this.height = 50;
 		}
 	}
+	
+	public static class RefreshHudButton extends HudButton {
+		public RefreshHudButton(Texture texture) {
+			super(texture);
+		}
+
+		@Override
+		public String getButtonId() {
+			return REFRESH_BUTTON;
+		}
+
+		@Override
+		public void updateLocationAndSize(int screenWidth, int screenHeight) {
+			int buttonWidth = 80;
+			this.x = screenWidth - buttonWidth - 15;
+			this.y = 80;
+			this.width = buttonWidth;
+			this.height = 80;
+		}
+	}
 
 	public BoardScreenHud(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
 
 		hudButtons.add(new SendHudButton(assetManager.get("data/images/arrow_right.png", Texture.class)));
 		hudButtons.add(new EndTurnHudButton(assetManager.get("data/images/end_turn.png", Texture.class)));
+		hudButtons.add(new RefreshHudButton(assetManager.get("data/images/refresh.png", Texture.class)));
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}

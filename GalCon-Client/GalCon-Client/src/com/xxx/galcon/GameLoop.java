@@ -50,6 +50,7 @@ public class GameLoop extends Game {
 
 		assetManager.load("data/images/arrow_right.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
+		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);

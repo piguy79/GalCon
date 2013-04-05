@@ -28,4 +28,15 @@ public class ConnectionWrapper {
 
 		return null;
 	}
+
+	public static GameBoard findGameById(String id) {
+		try {
+			return gameAction.findGameById(id);
+		} catch (ConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }
