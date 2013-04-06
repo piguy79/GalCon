@@ -1,6 +1,7 @@
 package com.xxx.galcon;
 
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
+import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +24,7 @@ import android.util.Log;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -55,25 +57,29 @@ public class AndroidGameAction implements GameAction {
 	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
-			JSONObject top = new JSONObject();
-
-			top.put("player", player);
-			top.put("width", width);
-			top.put("height", height);
+			JSONObject top = JsonConstructor.generateGame(player, width, height);
 
 			Map<String, String> args = new HashMap<String, String>();
-
 			args.put("json", top.toString());
-			callURL(callback, GENERATE_GAME, args, new GameBoard());
 
+			callURL(callback, GENERATE_GAME, args, new GameBoard());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
-	public GameBoard performMoves(String gameId, List<Move> moves) throws ConnectionException {
-		// TODO Auto-generated method stub
-		return null;
+	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+			throws ConnectionException {
+		try {
+			JSONObject top = JsonConstructor.performMove(gameId, moves);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callURL(callback, PERFORM_MOVES, args, new GameBoard());
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
 	}
 
 	public GameBoard findGameById(String id) throws ConnectionException {
@@ -117,9 +123,8 @@ public class AndroidGameAction implements GameAction {
 				connection.setRequestMethod("POST");
 				connection.connect();
 
-				byte[] outputBytes = params[0].getBytes("UTF-8");
 				OutputStream os = connection.getOutputStream();
-				os.write(outputBytes);
+				os.write(params[0].getBytes("UTF-8"));
 				os.close();
 
 				StringBuilder sb = new StringBuilder();

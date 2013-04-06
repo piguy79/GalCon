@@ -48,29 +48,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public GameBoard performMoves(String gameId, List<Move> moves) throws ConnectionException {
+	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+			throws ConnectionException {
 		try {
-			JSONObject top = new JSONObject();
-			top.put("player", GameLoop.USER);
-			top.put("id", gameId);
-			JSONArray jsonMoves = new JSONArray();
-
-			for (Move move : moves) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("player", GameLoop.USER);
-				jsonObject.put("fromPlanet", move.fromPlanet);
-				jsonObject.put("toPlanet", move.toPlanet);
-				jsonObject.put("fleet", move.shipsToMove);
-				jsonObject.put("duration", 5);
-
-				jsonMoves.put(jsonObject);
-			}
-			top.put("moves", jsonMoves);
+			JSONObject top = JsonConstructor.performMove(gameId, moves);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			return (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard());
+			callback.result((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard()));
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -80,17 +66,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
-			JSONObject top = new JSONObject();
-
-			top.put("player", player);
-			top.put("width", width);
-			top.put("height", height);
+			JSONObject top = JsonConstructor.generateGame(player, width, height);
 
 			Map<String, String> args = new HashMap<String, String>();
-
 			args.put("json", top.toString());
-			callback.result((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard()));
 
+			callback.result((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard()));
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}

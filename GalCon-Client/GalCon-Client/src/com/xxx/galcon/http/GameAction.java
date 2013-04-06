@@ -36,6 +36,7 @@ public interface GameAction {
 
 	public GameBoard joinGame(String id, String player) throws ConnectionException;
 
-	public GameBoard performMoves(String gameId, List<Move> moves) throws ConnectionException;
+	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+			throws ConnectionException;
 
 }

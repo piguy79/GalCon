@@ -31,6 +31,7 @@ import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -418,9 +419,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			moves.add(move);
 		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
-			setGameBoard(ConnectionWrapper.performMoves(gameBoard.id, moves));
-			moves.clear();
-			touchedPlanets.clear();
+			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
 			setGameBoard(ConnectionWrapper.findGameById(gameBoard.id));
 		}
@@ -471,5 +470,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public Object getRenderResult() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public class PerformMoveResultHandler implements ConnectionResultCallback<GameBoard> {
+
+		@Override
+		public void result(GameBoard result) {
+			setGameBoard(result);
+			moves.clear();
+			touchedPlanets.clear();
+		}
 	}
 }
