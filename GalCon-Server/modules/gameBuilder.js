@@ -4,7 +4,7 @@ function GameBuilder(players, width, height, numberOfPlanets){
 	this.width = width;
 	this.height = height;
 	this.createdDate = new Date();
-	this.currentRound = {roundNumber : 0, player : 0};
+	this.currentRound = {roundNumber : 0, player : players[0]};
 	this.numberOfPlanets = numberOfPlanets;
 	this.planets = [];
 }
@@ -12,7 +12,6 @@ GameBuilder.prototype.constructor = GameBuilder;
 GameBuilder.prototype.players = [];
 
 GameBuilder.prototype.createBoard = function(callback){
-	// Create Multidimensional Array To hold the game Piece
 	var board = [];
 	var currentPlanetCount = 0;
 
@@ -30,6 +29,7 @@ GameBuilder.prototype.createBoard = function(callback){
 	assignHomePlanets(this, function(builderWithAssignedHomePlanets){
 		callback(builderWithAssignedHomePlanets);
 	});
+	
 }
 
 function assignHomePlanets(builder, callback){

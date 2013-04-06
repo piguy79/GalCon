@@ -60,6 +60,9 @@ describe("Testing ship movement", function(){
 				
 				return true;
 			},
+			function addSecondPlayerToGame(){
+				apiRunner.joinGame(game._id,"otherPlayer", this);
+			},
 			function secondMove(result){
 				apiRunner.performMove(game._id, [], "otherPlayer", this);
 			},
@@ -181,8 +184,8 @@ describe("Testing ship movement", function(){
 		var moveHolder = [testMove];	
 		
 		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
-				expect(dbGame.currentRound.roundNumber).toBe(2);
-				expect(dbGame.currentRound.player).toBe("otherPlayer");
+				expect(dbGame.currentRound.roundNumber).toBe(1);
+				expect(dbGame.currentRound.player).toBe("testPlayer");
 				done();
 		});
 		
