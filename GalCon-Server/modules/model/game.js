@@ -90,10 +90,10 @@ gameSchema.methods.applyMoveToPlanets = function(move){
 		if(hasSameOwner(planet, move)){
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 		}
-		else if(isSamePlanet(move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+		else if(isSamePlanet(planet, move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
 			planet.owner = move.player;
 			planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
-		}else if(isSamePlanet(move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+		}else if(isSamePlanet(planet, move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
 			planet.numberOfShips = planet.numberOfShips - move.fleet; 
 		}
 	});
