@@ -27,10 +27,11 @@ public interface GameAction {
 	 * 
 	 * @return <GameBoard> Representing current state.
 	 */
-	public GameBoard generateGame(String player, int width, int height) throws ConnectionException;
+	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+			throws ConnectionException;
 
 	public AvailableGames findAvailableGames() throws ConnectionException;
-	
+
 	public GameBoard findGameById(String id) throws ConnectionException;
 
 	public GameBoard joinGame(String id, String player) throws ConnectionException;

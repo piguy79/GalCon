@@ -11,12 +11,13 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.BoardScreen;
+import com.xxx.galcon.screen.GenerateGameResultHandler;
 import com.xxx.galcon.screen.JoinScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
 
 public class GameLoop extends Game {
 	// FIXME: this needs to be replaced by a unique user id
-	public static final String USER = "me" +  Math.random() * 10000;
+	public static final String USER = "me" + Math.random() * 10000;
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -76,7 +77,7 @@ public class GameLoop extends Game {
 			if (currentScreen instanceof MainMenuScreen) {
 				String nextScreen = (String) result;
 				if (nextScreen.equals("Create")) {
-					boardScreen.setGameBoard(gameAction.generateGame(USER, 7, 10));
+					gameAction.generateGame(new GenerateGameResultHandler(boardScreen), USER, 7, 10);
 					return boardScreen;
 				} else if (nextScreen.equals("Join")) {
 					return new JoinScreen(gameAction.findAvailableGames());

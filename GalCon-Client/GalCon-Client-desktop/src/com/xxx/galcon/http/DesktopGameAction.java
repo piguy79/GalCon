@@ -77,7 +77,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public GameBoard generateGame(String player, int width, int height) throws ConnectionException {
+	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+			throws ConnectionException {
 		try {
 			JSONObject top = new JSONObject();
 
@@ -88,7 +89,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 
 			args.put("json", top.toString());
-			return (GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard());
+			callback.result((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard()));
 
 		} catch (JSONException e) {
 			throw new ConnectionException(e);

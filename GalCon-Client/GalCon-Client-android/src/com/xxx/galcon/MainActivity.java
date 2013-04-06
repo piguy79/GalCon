@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -13,6 +14,8 @@ public class MainActivity extends AndroidApplication {
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
 
-		initialize(new GameLoop(new AndroidGameAction()), cfg);
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+		initialize(new GameLoop(new AndroidGameAction(connectivityManager, "damp-crag-7750.herokuapp.com", "80")), cfg);
 	}
 }

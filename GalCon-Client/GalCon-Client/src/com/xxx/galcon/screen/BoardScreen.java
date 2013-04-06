@@ -80,6 +80,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
 
 		boardScreenHud = new BoardScreenHud(assetManager);
+
+		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
+		physicsWorld.setContactListener(this);
 	}
 
 	/*
@@ -155,11 +158,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void processGameBoard() {
-		if (physicsWorld == null) {
-			physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
-			physicsWorld.setContactListener(this);
-		}
-
 		List<Body> bodies = new ArrayList<Body>();
 		Iterator<Body> bodyIter = physicsWorld.getBodies();
 		while (bodyIter.hasNext()) {
@@ -383,6 +381,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		if (contactBody != null) {
 			physicsWorld.destroyBody(contactBody);
+		}
+
+		if (gameBoard == null) {
+			return;
 		}
 
 		moveCameraForIntro(camera);
