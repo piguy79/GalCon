@@ -16,11 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
@@ -86,10 +84,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public GameBoard findGameById(String id) throws ConnectionException {
+	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-		return (GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard());
+		callback.result((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,

@@ -16,10 +16,6 @@ import com.xxx.galcon.model.Move;
  */
 public interface GameAction {
 
-	public static final String POST = "post";
-	public static final String JSON_POST = "json_post";
-	public static final String GET = "get";
-
 	/**
 	 * This method allows the current user to join a game. The only parameter
 	 * needed is the username. A GameBoard object will be returned representing
@@ -32,7 +28,7 @@ public interface GameAction {
 
 	public AvailableGames findAvailableGames() throws ConnectionException;
 
-	public GameBoard findGameById(String id) throws ConnectionException;
+	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
 
 	public GameBoard joinGame(String id, String player) throws ConnectionException;
 

@@ -421,7 +421,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
-			setGameBoard(ConnectionWrapper.findGameById(gameBoard.id));
+			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
 		}
 	}
 
@@ -479,6 +479,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setGameBoard(result);
 			moves.clear();
 			touchedPlanets.clear();
+		}
+	}
+
+	public class FindGameByIdResultHandler implements ConnectionResultCallback<GameBoard> {
+
+		@Override
+		public void result(GameBoard result) {
+			setGameBoard(result);
 		}
 	}
 }

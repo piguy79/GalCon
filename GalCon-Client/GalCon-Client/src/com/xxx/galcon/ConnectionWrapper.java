@@ -28,14 +28,12 @@ public class ConnectionWrapper {
 		}
 	}
 
-	public static GameBoard findGameById(String id) {
+	public static void findGameById(ConnectionResultCallback<GameBoard> callback, String id) {
 		try {
-			return gameAction.findGameById(id);
+			gameAction.findGameById(callback, id);
 		} catch (ConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return null;
 	}
 }

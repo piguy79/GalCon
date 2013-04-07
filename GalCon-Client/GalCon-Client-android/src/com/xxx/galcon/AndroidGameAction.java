@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 
@@ -31,6 +32,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class AndroidGameAction implements GameAction {
+	public static final int CONNECTION_TIMEOUT = 20000;
 
 	private String host;
 	private String port;
@@ -58,11 +60,7 @@ public class AndroidGameAction implements GameAction {
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.generateGame(player, width, height);
-
-			Map<String, String> args = new HashMap<String, String>();
-			args.put("json", top.toString());
-
-			callURL(callback, GENERATE_GAME, args, new GameBoard());
+			new PostJsonRequestTask(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -72,31 +70,79 @@ public class AndroidGameAction implements GameAction {
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.performMove(gameId, moves);
-
-			Map<String, String> args = new HashMap<String, String>();
-			args.put("json", top.toString());
-
-			callURL(callback, PERFORM_MOVES, args, new GameBoard());
+			new PostJsonRequestTask(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
-	public GameBoard findGameById(String id) throws ConnectionException {
-		// TODO Auto-generated method stub
-		return null;
+	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("id", id);
+		new GetJsonRequestTask(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
 	}
 
-	private void callURL(ConnectionResultCallback<GameBoard> callback, String path, Map<String, String> parameters,
-			JsonConvertible converter) throws ConnectionException {
+	private class PostJsonRequestTask extends JsonRequestTask {
 
-		JsonRequestTask task = new JsonRequestTask(callback, path, converter);
-		task.execute(parameters.get("json"));
+		public PostJsonRequestTask(ConnectionResultCallback<GameBoard> callback, String path, JsonConvertible converter) {
+			super(callback, path, converter);
+		}
+
+		@Override
+		public HttpURLConnection establishConnection(String... params) throws IOException {
+			URL url = new URL("http://" + AndroidGameAction.this.host + ":" + AndroidGameAction.this.port + path);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setConnectTimeout(CONNECTION_TIMEOUT);
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setRequestMethod("POST");
+			connection.connect();
+
+			OutputStream os = connection.getOutputStream();
+			os.write(params[0].getBytes("UTF-8"));
+			os.close();
+
+			return connection;
+		}
 	}
 
-	private class JsonRequestTask extends AsyncTask<String, Void, JsonConvertible> {
+	private class GetJsonRequestTask extends JsonRequestTask {
+		private Map<String, String> args;
 
-		private String path;
+		public GetJsonRequestTask(Map<String, String> args, ConnectionResultCallback<GameBoard> callback, String path,
+				JsonConvertible converter) {
+			super(callback, path, converter);
+			this.args = args;
+		}
+
+		@Override
+		public HttpURLConnection establishConnection(String... params) throws IOException {
+			StringBuilder sb = new StringBuilder("?");
+			boolean first = true;
+			for (Map.Entry<String, String> arg : args.entrySet()) {
+				if (!first) {
+					sb.append("&");
+				} else {
+					first = false;
+				}
+				sb.append(arg.getKey()).append("=").append(arg.getValue());
+			}
+
+			URL url = new URL("http://" + AndroidGameAction.this.host + ":" + AndroidGameAction.this.port + path
+					+ sb.toString());
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setConnectTimeout(CONNECTION_TIMEOUT);
+			connection.setRequestMethod("GET");
+			connection.connect();
+
+			return connection;
+		}
+	}
+
+	private abstract class JsonRequestTask extends AsyncTask<String, Void, JsonConvertible> {
+
+		protected String path;
 		private JsonConvertible converter;
 		private ConnectionResultCallback<GameBoard> callback;
 
@@ -106,6 +152,8 @@ public class AndroidGameAction implements GameAction {
 			this.callback = callback;
 		}
 
+		public abstract HttpURLConnection establishConnection(String... params) throws IOException;
+
 		@Override
 		protected JsonConvertible doInBackground(String... params) {
 			NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -113,19 +161,9 @@ public class AndroidGameAction implements GameAction {
 				return null;
 			}
 
+			HttpURLConnection connection = null;
 			try {
-				URL url = new URL("http://" + AndroidGameAction.this.host + ":" + AndroidGameAction.this.port + path);
-				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-				connection.setConnectTimeout(20000);
-				connection.setDoOutput(true);
-				connection.setRequestProperty("Content-Type", "application/json");
-				connection.setRequestProperty("Accept", "application/json");
-				connection.setRequestMethod("POST");
-				connection.connect();
-
-				OutputStream os = connection.getOutputStream();
-				os.write(params[0].getBytes("UTF-8"));
-				os.close();
+				connection = establishConnection(params);
 
 				StringBuilder sb = new StringBuilder();
 				InputStreamReader reader = new InputStreamReader(connection.getInputStream());
@@ -143,6 +181,10 @@ public class AndroidGameAction implements GameAction {
 				Log.wtf("error", "error", e);
 			} catch (JSONException e) {
 				Log.wtf("error", "error", e);
+			} finally {
+				if (connection != null) {
+					connection.disconnect();
+				}
 			}
 
 			return converter;
