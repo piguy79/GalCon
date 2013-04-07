@@ -1,7 +1,9 @@
 package com.xxx.galcon;
 
+import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
+import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 
 import java.io.IOException;
@@ -44,23 +46,25 @@ public class AndroidGameAction implements GameAction {
 		this.connectivityManager = connectivityManager;
 	}
 
-	public AvailableGames findAvailableGames() {
-		// return (AvailableGames) callURL(new GetClientRequest(),
-		// FIND_AVAILABLE_GAMES, new HashMap<String, String>(),
-		// new AvailableGames());
-		return null;
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) {
+		Map<String, String> args = new HashMap<String, String>();
+
+		new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, new AvailableGames()).execute("");
 	}
 
-	public GameBoard joinGame(String id, String player) {
-		// TODO Auto-generated method stub
-		return null;
+	public void joinGame(ConnectionResultCallback<GameBoard> callback, String id, String player) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("player", player);
+		args.put("id", id);
+
+		new GetJsonRequestTask<GameBoard>(args, callback, JOIN_GAME, new GameBoard()).execute("");
 	}
 
 	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.generateGame(player, width, height);
-			new PostJsonRequestTask(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
+			new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -70,7 +74,7 @@ public class AndroidGameAction implements GameAction {
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.performMove(gameId, moves);
-			new PostJsonRequestTask(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
+			new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
@@ -79,12 +83,13 @@ public class AndroidGameAction implements GameAction {
 	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-		new GetJsonRequestTask(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
+
+		new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
 	}
 
-	private class PostJsonRequestTask extends JsonRequestTask {
+	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 
-		public PostJsonRequestTask(ConnectionResultCallback<GameBoard> callback, String path, JsonConvertible converter) {
+		public PostJsonRequestTask(ConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
 			super(callback, path, converter);
 		}
 
@@ -107,10 +112,10 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	private class GetJsonRequestTask extends JsonRequestTask {
+	private class GetJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 		private Map<String, String> args;
 
-		public GetJsonRequestTask(Map<String, String> args, ConnectionResultCallback<GameBoard> callback, String path,
+		public GetJsonRequestTask(Map<String, String> args, ConnectionResultCallback<T> callback, String path,
 				JsonConvertible converter) {
 			super(callback, path, converter);
 			this.args = args;
@@ -135,13 +140,13 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	private abstract class JsonRequestTask extends AsyncTask<String, Void, JsonConvertible> {
+	private abstract class JsonRequestTask<T extends JsonConvertible> extends AsyncTask<String, Void, JsonConvertible> {
 
 		protected String path;
 		private JsonConvertible converter;
-		private ConnectionResultCallback<GameBoard> callback;
+		private ConnectionResultCallback<T> callback;
 
-		public JsonRequestTask(ConnectionResultCallback<GameBoard> callback, String path, JsonConvertible converter) {
+		public JsonRequestTask(ConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
 			this.path = path;
 			this.converter = converter;
 			this.callback = callback;
@@ -187,7 +192,7 @@ public class AndroidGameAction implements GameAction {
 
 		@Override
 		protected void onPostExecute(JsonConvertible result) {
-			callback.result((GameBoard) result);
+			callback.result((T) result);
 		}
 	}
 }

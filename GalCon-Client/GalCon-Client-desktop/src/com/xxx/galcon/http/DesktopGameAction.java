@@ -40,9 +40,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public AvailableGames findAvailableGames() throws ConnectionException {
-		return (AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, new HashMap<String, String>(),
-				new AvailableGames());
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) throws ConnectionException {
+		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES,
+				new HashMap<String, String>(), new AvailableGames()));
 	}
 
 	@Override
@@ -76,11 +76,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public GameBoard joinGame(String id, String player) throws ConnectionException {
+	public void joinGame(ConnectionResultCallback<GameBoard> callback, String id, String player)
+			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
-		return (GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard());
+		callback.result((GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard()));
 	}
 
 	@Override

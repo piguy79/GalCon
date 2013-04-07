@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
-public class JoinScreen implements ScreenFeedback {
+public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
 	private BitmapFont font;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
@@ -19,11 +20,10 @@ public class JoinScreen implements ScreenFeedback {
 	private GameBoard returnValue;
 	private AvailableGames allGames;
 
-	public JoinScreen(AvailableGames allGames) {
+	public JoinScreen() {
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 		spriteBatch = new SpriteBatch();
-		this.allGames = allGames;
 	}
 
 	@Override
@@ -52,6 +52,11 @@ public class JoinScreen implements ScreenFeedback {
 		}
 
 		viewMatrix.setToOrtho2D(0, 0, width, height);
+
+		if (allGames == null) {
+			return;
+		}
+
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
@@ -111,5 +116,10 @@ public class JoinScreen implements ScreenFeedback {
 	@Override
 	public Object getRenderResult() {
 		return returnValue;
+	}
+
+	@Override
+	public void result(AvailableGames result) {
+		this.allGames = result;
 	}
 }
