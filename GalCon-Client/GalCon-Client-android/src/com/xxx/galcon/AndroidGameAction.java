@@ -119,14 +119,9 @@ public class AndroidGameAction implements GameAction {
 		@Override
 		public HttpURLConnection establishConnection(String... params) throws IOException {
 			StringBuilder sb = new StringBuilder("?");
-			boolean first = true;
+
 			for (Map.Entry<String, String> arg : args.entrySet()) {
-				if (!first) {
-					sb.append("&");
-				} else {
-					first = false;
-				}
-				sb.append(arg.getKey()).append("=").append(arg.getValue());
+				sb.append(arg.getKey()).append("=").append(arg.getValue()).append("&");
 			}
 
 			URL url = new URL("http://" + AndroidGameAction.this.host + ":" + AndroidGameAction.this.port + path
