@@ -53,10 +53,6 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 
 		viewMatrix.setToOrtho2D(0, 0, width, height);
 
-		if (allGames == null) {
-			return;
-		}
-
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
@@ -66,18 +62,24 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 
 		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-		float textY = 0.98f;
-		for (GameBoard gameBoard : allGames.getAllGames()) {
-			String text = gameBoard.players.toString();
+		if (allGames == null) {
+			String text = "Loading...";
 			float halfFontWidth = font.getBounds(text).width / 2;
-			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
-			if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
-				if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
-					returnValue = gameBoard;
+			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+		} else {
+			float textY = 0.98f;
+			for (GameBoard gameBoard : allGames.getAllGames()) {
+				String text = gameBoard.players.toString();
+				float halfFontWidth = font.getBounds(text).width / 2;
+				font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
+				if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
+					if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
+						returnValue = gameBoard;
+					}
 				}
-			}
 
-			textY -= 0.05f;
+				textY -= 0.05f;
+			}
 		}
 
 		spriteBatch.end();
