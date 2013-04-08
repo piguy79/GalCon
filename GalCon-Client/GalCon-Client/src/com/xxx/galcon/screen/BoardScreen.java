@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -53,6 +55,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram colorShader;
 	private ShaderProgram gridShader;
 
+	private BitmapFont font;
+
 	private StillModel planetModel;
 	private Matrix4 modelViewMatrix = new Matrix4();
 
@@ -76,6 +80,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				Gdx.files.internal("data/shaders/color-fs.glsl"));
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
+
+		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
+				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
@@ -176,6 +183,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private Body handleTouch(Camera camera) {
+		if (gameBoard == null) {
+			return null;
+		}
+
 		Body contactBody = null;
 		if (Gdx.input.justTouched()) {
 			Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, Gdx.input.getX(), Gdx.input.getY());
@@ -321,6 +332,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	@Override
 	public void beginContact(Contact contact) {
+		if (gameBoard == null) {
+			return;
+		}
+
 		Object userDataOne = contact.getFixtureA().getBody().getUserData();
 		Object userDataTwo = contact.getFixtureB().getBody().getUserData();
 
@@ -376,16 +391,26 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+		if (gameBoard == null) {
+			float width = Gdx.graphics.getWidth() / 2;
+			float height = Gdx.graphics.getHeight() / 2;
+
+			SpriteBatch spriteBatch = new SpriteBatch();
+			spriteBatch.begin();
+
+			String text = "Loading...";
+			float halfFontWidth = font.getBounds(text).width / 2;
+			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+			spriteBatch.end();
+			return;
+		}
+
 		Body contactBody = handleTouch(camera);
 
 		physicsWorld.step(delta, 8, 3);
 
 		if (contactBody != null) {
 			physicsWorld.destroyBody(contactBody);
-		}
-
-		if (gameBoard == null) {
-			return;
 		}
 
 		moveCameraForIntro(camera);
