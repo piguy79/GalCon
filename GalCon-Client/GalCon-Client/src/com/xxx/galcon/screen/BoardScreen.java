@@ -163,6 +163,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public void setGameBoard(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
 		processGameBoard();
+		associateHudInformation(gameBoard);
+	}
+
+	private void associateHudInformation(GameBoard gameBoard2) {
+		boardScreenHud.associateCurrentRoundInformation(gameBoard.currentPlayerToMove, gameBoard.roundNumber);
 	}
 
 	private void processGameBoard() {

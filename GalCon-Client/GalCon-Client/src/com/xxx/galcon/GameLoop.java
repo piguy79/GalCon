@@ -41,7 +41,6 @@ public class GameLoop extends Game {
 		gl = Gdx.graphics.getGL20();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		gl.glEnable(GL20.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		Gdx.input.setInputProcessor(inputProcessor);
 
