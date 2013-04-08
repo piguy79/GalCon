@@ -2,6 +2,7 @@ package com.xxx.galcon;
 
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -17,5 +18,7 @@ public class MainActivity extends AndroidApplication {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
 		initialize(new GameLoop(new AndroidGameAction(connectivityManager, "damp-crag-7750.herokuapp.com", "80")), cfg);
+
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
 }
