@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.xxx.galcon.ScreenFeedback;
 
@@ -15,8 +16,11 @@ public class BoardScreenHud implements ScreenFeedback {
 	public static final String REFRESH_BUTTON = "refresh_button";
 
 	private SpriteBatch spriteBatch;
+	private BitmapFont font;
 	private List<HudButton> hudButtons = new ArrayList<HudButton>();
 	private String returnResult = null;
+	private String currentPlayerToMove;
+	private int roundNumber;
 
 	private static abstract class HudButton {
 		protected int x, y, width, height;
@@ -109,12 +113,19 @@ public class BoardScreenHud implements ScreenFeedback {
 
 	public BoardScreenHud(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
+		font =new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
+				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 
 		hudButtons.add(new SendHudButton(assetManager.get("data/images/arrow_right.png", Texture.class)));
 		hudButtons.add(new EndTurnHudButton(assetManager.get("data/images/end_turn.png", Texture.class)));
 		hudButtons.add(new RefreshHudButton(assetManager.get("data/images/refresh.png", Texture.class)));
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+	
+	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber){
+		this.currentPlayerToMove = currentPlayerToMove;
+		this.roundNumber = roundNumber;
 	}
 
 	@Override
@@ -126,8 +137,22 @@ public class BoardScreenHud implements ScreenFeedback {
 		for (int i = 0; i < hudButtons.size(); ++i) {
 			hudButtons.get(i).render(spriteBatch);
 		}
+		
+		if(haveRoundInformation()){
+			font.setColor(1.0f, 0.5f, 1.0f, 0.5f);
+			font.draw(spriteBatch, "Current Player: " + currentPlayerToMove, 6, 150);
+			font.draw(spriteBatch, "Round Number: " + roundNumber, 6, 120);
+		}
+		
 
 		spriteBatch.end();
+	}
+
+	private boolean haveRoundInformation() {
+		if(currentPlayerToMove != null){
+			return true;
+		}
+		return false;
 	}
 
 	private void processTouch() {
