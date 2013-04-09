@@ -56,8 +56,6 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
-		spriteBatch.disableBlending();
-		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.enableBlending();
 
 		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
