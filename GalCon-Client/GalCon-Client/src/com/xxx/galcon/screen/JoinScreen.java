@@ -60,7 +60,7 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.enableBlending();
 
-		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		if (allGames == null) {
 			String text = "Loading...";
