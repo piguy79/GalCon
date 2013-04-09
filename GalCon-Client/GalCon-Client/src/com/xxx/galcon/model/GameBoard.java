@@ -20,6 +20,7 @@ public class GameBoard implements JsonConvertible {
 	public List<Planet> planets = new ArrayList<Planet>();
 	public int roundNumber;
 	public String currentPlayerToMove;
+	public List<Move> movesInProgress = new ArrayList<Move>();
 
 	public GameBoard() {
 
@@ -44,9 +45,24 @@ public class GameBoard implements JsonConvertible {
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
-		
+
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
 		currentPlayerToMove = roundInfo.getString(Constants.PLAYER);
+
+		JSONArray moves = jsonObject.optJSONArray("moves");
+		if (moves != null) {
+			for (int i = 0; i < moves.length(); ++i) {
+				JSONObject jsonMove = moves.getJSONObject(i);
+
+				Move move = new Move();
+				move.fromPlanet = jsonMove.getString("fromPlanet");
+				move.toPlanet = jsonMove.getString("toPlanet");
+				move.shipsToMove = jsonMove.getInt("fleet");
+				move.duration = jsonMove.getInt("duration");
+
+				movesInProgress.add(move);
+			}
+		}
 	}
 }

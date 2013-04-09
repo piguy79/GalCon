@@ -34,6 +34,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.ConnectionResultCallback;
+import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -54,10 +55,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private ShaderProgram colorShader;
 	private ShaderProgram gridShader;
+	private ShaderProgram shipShader;
 
 	private BitmapFont font;
 
 	private StillModel planetModel;
+	private StillModel shipModel;
 	private Matrix4 modelViewMatrix = new Matrix4();
 
 	private BoardPlane boardPlane = new BoardPlane();
@@ -80,12 +83,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				Gdx.files.internal("data/shaders/color-fs.glsl"));
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
+		shipShader = new ShaderProgram(Gdx.files.internal("data/shaders/ship-vs.glsl"),
+				Gdx.files.internal("data/shaders/ship-fs.glsl"));
 
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
+
+		loader = new ObjLoader();
+		shipModel = loader.loadObj(Gdx.files.internal("data/models/ship.obj"));
 
 		boardScreenHud = new BoardScreenHud(assetManager);
 
@@ -262,9 +270,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.end();
 	}
 
-	private void renderPlanet(Planet planet, GL20 gl, Camera camera) {
-		gl.glEnable(GL20.GL_BLEND);
-		gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+	private void renderPlanet(Planet planet, Camera camera) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		colorShader.begin();
 		modelViewMatrix.idt();
@@ -304,13 +312,62 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			}
 		}
 		colorShader.setUniformf("uColor", r, g, b, 1.0f);
-
 		colorShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 
 		planetModel.render(colorShader);
 		colorShader.end();
 
-		gl.glDisable(GL20.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
+
+		shipShader.begin();
+
+		for (Move move : moves) {
+			modelViewMatrix.idt();
+			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+					PLANET_Z_COORD);
+
+			int startX = 0, startY = 0, endX = 0, endY = 0;
+			for (Planet planet : planets) {
+				if (planet.name.equals(move.fromPlanet)) {
+					startX = planet.position.getX();
+					startY = planet.position.getY();
+				} else if (planet.name.equals(move.toPlanet)) {
+					endX = planet.position.getX();
+					endY = planet.position.getY();
+				}
+			}
+
+			int totalDuration = GalConMath.distance(startX, startY, endX, endY);
+			float percentTraveled = 1.0f - ((float) move.duration / (float) totalDuration);
+
+			float shipX = startX + (endX - startX) * percentTraveled;
+			float shipY = startY + (endY - startY) * percentTraveled;
+
+			modelViewMatrix.trn(tileWidthInWorld * shipX + tileWidthInWorld / 2, -tileHeightInWorld * shipY
+					- tileHeightInWorld / 2, 0.0f);
+
+			modelViewMatrix.scale(tileWidthInWorld / 4.0f, tileHeightInWorld / 4.0f, 1.0f);
+
+			shipShader.setUniformMatrix("uPMatrix", camera.combined);
+			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+
+			float r = 1.0f, g = 0.0f, b = 0.0f;
+			shipShader.setUniformf("uColor", r, g, b, 1.0f);
+
+			shipModel.render(shipShader);
+		}
+
+		shipShader.end();
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	private void addPhysicsToPlanet(Planet planet) {
@@ -423,8 +480,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderGrid(camera);
 
 		for (Planet planet : gameBoard.planets) {
-			renderPlanet(planet, Gdx.gl20, camera);
+			renderPlanet(planet, camera);
 		}
+
+		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		boardScreenHud.render(delta);
 
@@ -438,14 +497,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (buttonId.equals(BoardScreenHud.SEND_BUTTON)) {
 			Move move = new Move();
 
+			int startX = 0, startY = 0, endX = 0, endY = 0;
 			for (Planet planet : touchedPlanets) {
 				if (planet.owner.equals(GameLoop.USER) && move.fromPlanet == null) {
 					move.fromPlanet = planet.name;
 					move.shipsToMove = planet.numberOfShips;
+					startX = planet.position.getX();
+					startY = planet.position.getY();
 				} else {
 					move.toPlanet = planet.name;
+					endX = planet.position.getX();
+					endY = planet.position.getY();
 				}
 			}
+
+			move.duration = GalConMath.distance(startX, startY, endX, endY);
 
 			moves.add(move);
 		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
@@ -517,6 +583,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		@Override
 		public void result(GameBoard result) {
 			setGameBoard(result);
+			moves.clear();
+			touchedPlanets.clear();
 		}
 	}
 }

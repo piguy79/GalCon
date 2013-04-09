@@ -23,7 +23,7 @@ public class JsonConstructor {
 			jsonObject.put("fromPlanet", move.fromPlanet);
 			jsonObject.put("toPlanet", move.toPlanet);
 			jsonObject.put("fleet", move.shipsToMove);
-			jsonObject.put("duration", 5);
+			jsonObject.put("duration", move.duration);
 
 			jsonMoves.put(jsonObject);
 		}

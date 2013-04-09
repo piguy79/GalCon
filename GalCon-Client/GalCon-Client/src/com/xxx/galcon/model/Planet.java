@@ -6,8 +6,7 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class Planet implements JsonConvertible{
-	public int tileNumberX = 0, tileNumberY = 0;
+public class Planet implements JsonConvertible {
 	public String owner = Constants.OWNER_NO_ONE;
 	public float shipRegenRate = 1.0f;
 	public int numberOfShips;
@@ -15,25 +14,18 @@ public class Planet implements JsonConvertible{
 	public String id;
 	public PlanetPosition position;
 	public boolean touched = false;
-	
-	public Planet(){
-		
+
+	public Planet() {
+
 	}
 
-	public Planet(int tileNumberX, int tileNumberY, float shipRegenRate) {
-		super();
-		this.tileNumberX = tileNumberX;
-		this.tileNumberY = tileNumberY;
-		this.shipRegenRate = shipRegenRate;
-	}
-	
 	@Override
-	public void consume(JSONObject jsonObject){
+	public void consume(JSONObject jsonObject) {
 		try {
 			this.name = jsonObject.getString(Constants.NAME);
-			this.shipRegenRate = (float)jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
+			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
 			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
-			if(jsonObject.has(Constants.OWNER)){
+			if (jsonObject.has(Constants.OWNER)) {
 				this.owner = jsonObject.getString(Constants.OWNER);
 			}
 			JSONObject positionJson = jsonObject.getJSONObject(Constants.POSITION);
