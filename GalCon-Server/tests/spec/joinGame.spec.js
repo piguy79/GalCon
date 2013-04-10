@@ -7,7 +7,7 @@ describe("Testing Joining a game", function(){
 	var game;
 
 	beforeEach(function(done){
-		apiRunner.generateGame(function(generatedGame){
+		apiRunner.generateGame("joinTest",function(generatedGame){
 			game = generatedGame;
 			done();
 		});
@@ -26,6 +26,7 @@ describe("Testing Joining a game", function(){
 			},
 			function validateResponseHasMyPlayerInThePlayerList(res){
 				expect(res.players).toContain(playerToTest);
+				expect(res.currentRound.player).toBe(playerToTest);
 				done();
 			}
 		);

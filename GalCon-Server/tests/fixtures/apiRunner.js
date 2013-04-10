@@ -21,11 +21,11 @@ exports.findGame = function(gameId, callback){
 		
 }
 
-exports.generateGame = function(callback){
+exports.generateGame = function(player, callback){
 	var postData = {
 		width: 8,
 		height: 15,
-		player: "testPlayer"
+		player: player
 	}
 	
 	needle.post("http://localhost:3000/generateGame",postData, function(err, response, body){

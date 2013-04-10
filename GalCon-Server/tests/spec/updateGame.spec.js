@@ -8,7 +8,7 @@ describe("Testing Game Updates", function(){
 	var game;
 
 	beforeEach(function(done){
-		apiRunner.generateGame(function(generatedGame){
+		apiRunner.generateGame("updateTest",function(generatedGame){
 			game = generatedGame;
 			done();
 		});

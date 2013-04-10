@@ -7,15 +7,21 @@ elementMatcher = require('../fixtures/elementMatcher');
 describe("Testing ship movement", function(){
 
 	var game;
+	var defaultHomePlanet;
 	
 	var defaultPlanetsForTest = [
-			elementBuilder.createPlanetForTest("fromPlanet", "", 3,10,{x : 3, y : 4}),
+			elementBuilder.createPlanetForTest("fromPlanet", "moveTest", 3,10,{x : 3, y : 4}),
 			elementBuilder.createPlanetForTest("toPlanet", "", 3, 20, {x : 3, y : 5})
 	];
 
 	beforeEach(function(done){
-		apiRunner.generateGame(function(generatedGame){
+		apiRunner.generateGame("moveTest", function(generatedGame){
 			game = generatedGame;
+			game.planets.forEach(function(planet){
+				if(planet.owner == "moveTest"){
+					defaultHomePlanet = planet;
+				}
+			});
 			done();
 		});
 		
@@ -57,7 +63,6 @@ describe("Testing ship movement", function(){
 			},
 			function validateMoveExists(dbGame){
 				expect(dbGame.moves.length == 1).toBe(true);
-				
 				return true;
 			},
 			function addSecondPlayerToGame(){
@@ -67,6 +72,7 @@ describe("Testing ship movement", function(){
 				apiRunner.performMove(game._id, [], "otherPlayer", this);
 			},
 			function findGameFromDb(){
+			
 				apiRunner.findGame(game._id, this);
 			},
 			function validate(dbGame){
@@ -75,15 +81,28 @@ describe("Testing ship movement", function(){
 		);
 	}
 	
+	var notOneOfTheFollowingPlanets = function(planet, planetsToNotCheck){
+		for(var i = 0; i < planetsToNotCheck.length; i++){
+			if(planet.name = planetsToNotCheck[i]){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	
 	it("Planet should be owned by user after move.", function(done){
 		var moveHolder = [
 			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",40, 1)
 		];	
 		
 		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
-				dbGame.planets.forEach(function(planet){
+		
+				dbGame.planets.forEach(function(planet){				
 					if(planet.name == "toPlanet"){
 						expect(planet).toBeOwnedBy("moveTest");
+					} else if(notOneOfTheFollowingPlanets(planet, ["toPlanet","fromPlanet", defaultHomePlanet.name])){
+						expect(planet).not.toBeOwnedBy("moveTest");
 					}
 				});
 				done();
@@ -170,6 +189,8 @@ describe("Testing ship movement", function(){
 					if(planet.name == "toPlanet"){
 						expect(planet).toBeOwnedBy("moveTest");
 						expect(planet).toHaveShipNumber(25);
+					}else if(notOneOfTheFollowingPlanets(planet, ["toPlanet","fromPlanet", defaultHomePlanet.name])){
+						expect(planet).not.toBeOwnedBy("moveTest");
 					}
 				});
 				expect(dbGame.moves).not.toContainMove(testMove);
@@ -179,13 +200,13 @@ describe("Testing ship movement", function(){
 	});
 	
 	
-	it("Round Number should be updated after perform move is called..", function(done){
+	it("Round Number should be updated after perform move is called.", function(done){
 		var testMove = elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",6, 1);
 		var moveHolder = [testMove];	
 		
 		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
 				expect(dbGame.currentRound.roundNumber).toBe(1);
-				expect(dbGame.currentRound.player).toBe("testPlayer");
+				expect(dbGame.currentRound.player).toBe("moveTest");
 				done();
 		});
 		
