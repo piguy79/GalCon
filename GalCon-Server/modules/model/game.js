@@ -118,6 +118,10 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
 
+gameSchema.methods.hasAnyExistingMoves = function(){
+	return this.moves.length > 0;
+}
+
 gameSchema.methods.isLastPlayer = function(player) {
 	var currentIndex = findIndexOfPlayer(this.players, player);
 	
@@ -192,7 +196,27 @@ exports.saveGame = function(game, callback){
 exports.performMoves = function(gameId, moves, player, callback){
 
 	this.findById(gameId, function(game){
-	if(game.moves && game.isLastPlayer(player)){	
+	if(game.hasAnyExistingMoves() && game.isLastPlayer(player)){
+	
+		processMoves(game, moves);
+		
+		game.currentRound.roundNumber++;
+		
+	}else{
+		game.addMoves(moves);	
+	}
+		assignNextCurrentRoundPlayer(game, player);
+		game.updateRegenRates();
+		
+		game.save(function(savedGame){
+			callback(game);
+		});
+	})
+
+}
+
+var processMoves = function(game, newMoves){
+		game.addMoves(newMoves);	
 	
 		var movesToRemove = [];
 		for(var i = 0 ; i < game.moves.length; i++){
@@ -203,26 +227,10 @@ exports.performMoves = function(gameId, moves, player, callback){
 				movesToRemove.push(i);
 			}
 		}
-		
-		
+			
 		movesToRemove.forEach(function(index){
 			game.moves.splice(index);
 		});
-		
-		game.currentRound.roundNumber++;
-		
-	}
-		assignNextCurrentRoundPlayer(game, player);
-		game.updateRegenRates();
-		game.addMoves(moves);
-		
-		
-		
-		game.save(function(savedGame){
-			callback(game);
-		});
-	})
-
 }
 
 // Add User adds a user to a current Games players List also assigning a random planet to that user.

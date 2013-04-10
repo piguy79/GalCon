@@ -7,7 +7,7 @@ describe("Testing Game Deletion", function(){
 	var game;
 
 	beforeEach(function(done){
-		apiRunner.generateGame(function(generatedGame){
+		apiRunner.generateGame("deleteTest", function(generatedGame){
 			game = generatedGame;
 			done();
 		});
