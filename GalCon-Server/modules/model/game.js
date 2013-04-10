@@ -181,6 +181,16 @@ exports.findAvailableGames = function(callback){
 	});
 };
 
+exports.findCollectionOfGames = function(searchIds, callback){
+	GameModel.find({_id : {$in : searchIds}}, function(err, games){
+		if(err){
+			next();		
+		}else{
+			callback(games);
+		}
+	});
+}
+
 
 exports.saveGame = function(game, callback){
 	game.save(function(err){

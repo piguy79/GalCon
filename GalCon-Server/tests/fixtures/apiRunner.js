@@ -59,3 +59,9 @@ exports.joinGame = function(gameId, playerToJoin, callback){
 	});
 		
 }
+
+exports.findCurrentGamesByUserName = function(userName, callback){
+	needle.get("http://localhost:3000/findActiveGamesForUser?userName=" + userName, function(err, response, body){
+		callback(body);
+	});
+}
