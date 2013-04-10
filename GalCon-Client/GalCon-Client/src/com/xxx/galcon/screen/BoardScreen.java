@@ -531,12 +531,20 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			move.duration = GalConMath.distance(startX, startY, endX, endY);
 
 			moves.add(move);
+			clearTouchedPlanets();
 		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
 			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
 		} else if (buttonId.equals(BoardScreenHud.BACK_BUTTON)) {
 			returnCode = ReturnCode.BACK;
+		}
+	}
+	
+	private void clearTouchedPlanets() {
+		touchedPlanets.clear();
+		for (Planet planet : gameBoard.planets) {
+			planet.touched = false;
 		}
 	}
 
@@ -592,7 +600,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		public void result(GameBoard result) {
 			setGameBoard(result);
 			moves.clear();
-			touchedPlanets.clear();
+			clearTouchedPlanets();
 		}
 	}
 
@@ -602,14 +610,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		public void result(GameBoard result) {
 			setGameBoard(result);
 			moves.clear();
-			touchedPlanets.clear();
+			clearTouchedPlanets();
 		}
 	}
-	
+
 	@Override
 	public void resetState() {
 		returnCode = null;
 		moves.clear();
-		touchedPlanets.clear();
+		clearTouchedPlanets();
 	}
 }
