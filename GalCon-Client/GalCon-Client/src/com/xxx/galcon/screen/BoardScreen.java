@@ -292,23 +292,23 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		float r = 0.0f, g = 0.0f, b = 0.0f;
 		if (planet.touched) {
 			if (planet.owner.equals(GameLoop.USER)) {
-				g = 0.9f;
+				g = 1.0f;
 			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-				r = 0.9f;
+				r = 1.0f;
 			} else {
-				r = 0.9f;
-				g = 0.9f;
-				b = 0.9f;
+				r = 1.0f;
+				g = 1.0f;
+				b = 1.0f;
 			}
 		} else {
 			if (planet.owner.equals(GameLoop.USER)) {
-				g = 0.6f;
+				g = 0.5f;
 			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-				r = 0.6f;
+				r = 0.5f;
 			} else if (!planet.touched) {
-				r = 0.6f;
-				g = 0.6f;
-				b = 0.6f;
+				r = 0.5f;
+				g = 0.5f;
+				b = 0.5f;
 			}
 		}
 		colorShader.setUniformf("uColor", r, g, b, 1.0f);
@@ -351,10 +351,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			float shipX = startX + (endX - startX) * percentTraveled;
 			float shipY = startY + (endY - startY) * percentTraveled;
 
+			float angle = new Vector2(endX - startX, endY - startY).angle();
+
 			modelViewMatrix.trn(tileWidthInWorld * shipX + tileWidthInWorld / 2, -tileHeightInWorld * shipY
 					- tileHeightInWorld / 2, 0.0f);
 
-			modelViewMatrix.scale(tileWidthInWorld / 4.0f, tileHeightInWorld / 4.0f, 1.0f);
+			modelViewMatrix.rotate(0, 0, 1, 180 - angle);
+
+			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
 
 			shipShader.setUniformMatrix("uPMatrix", camera.combined);
 			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
