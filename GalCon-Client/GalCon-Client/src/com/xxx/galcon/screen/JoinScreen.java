@@ -117,6 +117,11 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 	public Object getRenderResult() {
 		return returnValue;
 	}
+	
+	@Override
+	public void resetState() {
+		returnValue = null;
+	}
 
 	@Override
 	public void result(AvailableGames result) {

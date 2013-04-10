@@ -121,6 +121,11 @@ public class MainMenuScreen implements ScreenFeedback {
 	public void resume() {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+	public void resetState() {
+		returnValue = null;
+	}
 
 	@Override
 	public Object getRenderResult() {

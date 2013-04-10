@@ -41,6 +41,10 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
+	public enum ReturnCode {
+		BACK
+	};
+
 	private static final float BOARD_WIDTH_RATIO = .95f;
 	private static final float BOARD_HEIGHT_RATIO = .7f;
 
@@ -75,6 +79,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
+
+	private ReturnCode returnCode = null;
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -529,6 +535,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
 			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
+		} else if (buttonId.equals(BoardScreenHud.BACK_BUTTON)) {
+			returnCode = ReturnCode.BACK;
 		}
 	}
 
@@ -575,8 +583,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	@Override
 	public Object getRenderResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return returnCode;
 	}
 
 	public class PerformMoveResultHandler implements ConnectionResultCallback<GameBoard> {
@@ -597,5 +604,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			moves.clear();
 			touchedPlanets.clear();
 		}
+	}
+	
+	@Override
+	public void resetState() {
+		returnCode = null;
+		moves.clear();
+		touchedPlanets.clear();
 	}
 }

@@ -11,9 +11,10 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.BoardScreen;
-import com.xxx.galcon.screen.SetGameBoardResultHandler;
+import com.xxx.galcon.screen.BoardScreen.ReturnCode;
 import com.xxx.galcon.screen.JoinScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
+import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
 	// FIXME: this needs to be replaced by a unique user id
@@ -49,13 +50,14 @@ public class GameLoop extends Game {
 		param.magFilter = TextureFilter.Linear;
 
 		assetManager.load("data/images/arrow_right.png", Texture.class, param);
+		assetManager.load("data/images/arrow_left.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
 		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);
-
-		setScreen(new MainMenuScreen());
+		mainMenuScreen = new MainMenuScreen();
+		setScreen(mainMenuScreen);
 	}
 
 	@Override
@@ -65,9 +67,9 @@ public class GameLoop extends Game {
 		ScreenFeedback screen = getScreen();
 		Object result = screen.getRenderResult();
 		if (result != null) {
-			screen.dispose();
-
-			setScreen(nextScreen(screen, result));
+			ScreenFeedback nextScreen = nextScreen(screen, result);
+			nextScreen.resetState();
+			setScreen(nextScreen);
 		}
 	}
 
@@ -87,6 +89,11 @@ public class GameLoop extends Game {
 				GameBoard gameToJoin = (GameBoard) result;
 				gameAction.joinGame(new SetGameBoardResultHandler(boardScreen), gameToJoin.id, USER);
 				return boardScreen;
+			} else if (currentScreen instanceof BoardScreen) {
+				ReturnCode returnCode = (ReturnCode) result;
+				if (returnCode == ReturnCode.BACK) {
+					return mainMenuScreen;
+				}
 			}
 		} catch (ConnectionException e) {
 			System.out.println(e);

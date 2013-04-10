@@ -9,4 +9,10 @@ public interface ScreenFeedback extends Screen {
 	 *         object that can drive the next screen to show.
 	 */
 	public Object getRenderResult();
+
+	/**
+	 * Screens can be reused rather than disposed. Before being reused,
+	 * resetState will be called to clean up any old stuff.
+	 */
+	public void resetState();
 }
