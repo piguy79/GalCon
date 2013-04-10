@@ -503,6 +503,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processHudButtonTouch(String buttonId) {
 		if (buttonId.equals(BoardScreenHud.SEND_BUTTON)) {
+			if (touchedPlanets.size() != 2) {
+				return;
+			}
 			Move move = new Move();
 
 			int startX = 0, startY = 0, endX = 0, endY = 0;
