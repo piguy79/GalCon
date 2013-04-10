@@ -330,6 +330,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		shipShader.begin();
 
 		for (Move move : moves) {
+			if (!move.player.equals(GameLoop.USER)) {
+				continue;
+			}
+
 			modelViewMatrix.idt();
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 					PLANET_Z_COORD);

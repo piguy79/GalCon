@@ -5,4 +5,5 @@ public class Move {
 	public String toPlanet;
 	public int shipsToMove = 0;
 	public int duration = 0;
+	public String player;
 }

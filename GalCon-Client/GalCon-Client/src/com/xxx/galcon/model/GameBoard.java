@@ -60,6 +60,7 @@ public class GameBoard implements JsonConvertible {
 				move.toPlanet = jsonMove.getString("toPlanet");
 				move.shipsToMove = jsonMove.getInt("fleet");
 				move.duration = jsonMove.getInt("duration");
+				move.player = jsonMove.getString("player");
 
 				movesInProgress.add(move);
 			}
