@@ -62,6 +62,15 @@ exports.findUserByUserName = function(req, res){
 	});
 }
 
+exports.findCurrentGamesByUserName = function(req, res){
+	var userName = req.query['userName'];
+	userManager.findUserByName(userName, function(user){
+		gameManager.findCollectionOfGames(user.currentGames, function(games){
+			res.json(games);
+		});
+	});
+}
+
 exports.performMoves = function(req, res){
 	var gameId = req.body.id;
 	var moves = req.body.moves;
