@@ -57,7 +57,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		fontCache.addText(text, x, y);
 
 		if (isTouchable) {
-			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height));
+			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height, true));
 		}
 	}
 
@@ -121,7 +121,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	public void resume() {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void resetState() {
 		returnValue = null;

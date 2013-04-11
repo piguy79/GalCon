@@ -11,15 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.xxx.galcon.ScreenFeedback;
 
 public class BoardScreenHud implements ScreenFeedback {
-	public static final String SEND_BUTTON = "send_button";
-	public static final String BACK_BUTTON = "back_button";
-	public static final String END_TURN_BUTTON = "end_turn_button";
-	public static final String REFRESH_BUTTON = "refresh_button";
-
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private List<HudButton> hudButtons = new ArrayList<HudButton>();
-	private String returnResult = null;
+	private Action returnResult = null;
 	private String currentPlayerToMove;
 	private int roundNumber;
 
@@ -34,7 +29,7 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		abstract public void updateLocationAndSize(int screenWidth, int screenHeight);
 
-		abstract public String getButtonId();
+		abstract public Action getActionOnClick();
 
 		public boolean isTouched(int touchX, int touchY) {
 			if (touchX >= x && touchX <= x + width) {
@@ -58,8 +53,8 @@ public class BoardScreenHud implements ScreenFeedback {
 		}
 
 		@Override
-		public String getButtonId() {
-			return SEND_BUTTON;
+		public Action getActionOnClick() {
+			return Action.SEND;
 		}
 
 		@Override
@@ -70,7 +65,7 @@ public class BoardScreenHud implements ScreenFeedback {
 			this.height = 80;
 		}
 	}
-	
+
 	public static class BackHudButton extends HudButton {
 
 		public BackHudButton(Texture texture) {
@@ -78,8 +73,8 @@ public class BoardScreenHud implements ScreenFeedback {
 		}
 
 		@Override
-		public String getButtonId() {
-			return BACK_BUTTON;
+		public Action getActionOnClick() {
+			return Action.BACK;
 		}
 
 		@Override
@@ -98,8 +93,8 @@ public class BoardScreenHud implements ScreenFeedback {
 		}
 
 		@Override
-		public String getButtonId() {
-			return END_TURN_BUTTON;
+		public Action getActionOnClick() {
+			return Action.END_TURN;
 		}
 
 		@Override
@@ -111,15 +106,15 @@ public class BoardScreenHud implements ScreenFeedback {
 			this.height = 50;
 		}
 	}
-	
+
 	public static class RefreshHudButton extends HudButton {
 		public RefreshHudButton(Texture texture) {
 			super(texture);
 		}
 
 		@Override
-		public String getButtonId() {
-			return REFRESH_BUTTON;
+		public Action getActionOnClick() {
+			return Action.REFRESH;
 		}
 
 		@Override
@@ -134,7 +129,7 @@ public class BoardScreenHud implements ScreenFeedback {
 
 	public BoardScreenHud(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
-		font =new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
+		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 
 		hudButtons.add(new SendHudButton(assetManager.get("data/images/arrow_right.png", Texture.class)));
@@ -144,8 +139,8 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
-	
-	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber){
+
+	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber) {
 		this.currentPlayerToMove = currentPlayerToMove;
 		this.roundNumber = roundNumber;
 	}
@@ -159,19 +154,18 @@ public class BoardScreenHud implements ScreenFeedback {
 		for (int i = 0; i < hudButtons.size(); ++i) {
 			hudButtons.get(i).render(spriteBatch);
 		}
-		
-		if(haveRoundInformation()){
+
+		if (haveRoundInformation()) {
 			font.setColor(1.0f, 0.5f, 1.0f, 0.5f);
 			font.draw(spriteBatch, "Current Player: " + currentPlayerToMove, 6, 150);
 			font.draw(spriteBatch, "Round Number: " + roundNumber, 6, 120);
 		}
-		
 
 		spriteBatch.end();
 	}
 
 	private boolean haveRoundInformation() {
-		if(currentPlayerToMove != null){
+		if (currentPlayerToMove != null) {
 			return true;
 		}
 		return false;
@@ -186,7 +180,7 @@ public class BoardScreenHud implements ScreenFeedback {
 
 			for (int i = 0; i < hudButtons.size(); ++i) {
 				if (hudButtons.get(i).isTouched(x, y)) {
-					returnResult = hudButtons.get(i).getButtonId();
+					returnResult = hudButtons.get(i).getActionOnClick();
 				}
 			}
 		}
@@ -233,7 +227,7 @@ public class BoardScreenHud implements ScreenFeedback {
 	public Object getRenderResult() {
 		return returnResult;
 	}
-	
+
 	@Override
 	public void resetState() {
 		returnResult = null;

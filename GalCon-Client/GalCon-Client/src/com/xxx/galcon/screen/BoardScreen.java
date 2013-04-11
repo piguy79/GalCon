@@ -75,6 +75,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
+	private ShipSelectionDialog shipSelectionDialog;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
@@ -208,23 +209,34 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Body contactBody = null;
 		if (Gdx.input.justTouched()) {
-			Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, Gdx.input.getX(), Gdx.input.getY());
-			Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
+			if (shipSelectionDialog != null) {
+				int x = Gdx.input.getX();
+				int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+				if (shipSelectionDialog.contains(x, y)) {
+					return null;
+				} else {
+					shipSelectionDialog.dispose();
+					shipSelectionDialog = null;
+				}
+			} else {
+				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, Gdx.input.getX(), Gdx.input.getY());
+				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
-			if (boardXY != null) {
-				BodyDef bodyDef = new BodyDef();
-				bodyDef.type = BodyDef.BodyType.DynamicBody;
-				bodyDef.position.set(boardXY);
+				if (boardXY != null) {
+					BodyDef bodyDef = new BodyDef();
+					bodyDef.type = BodyDef.BodyType.DynamicBody;
+					bodyDef.position.set(boardXY);
 
-				contactBody = physicsWorld.createBody(bodyDef);
-				contactBody.setUserData(TOUCH_OBJECT);
+					contactBody = physicsWorld.createBody(bodyDef);
+					contactBody.setUserData(TOUCH_OBJECT);
 
-				CircleShape shape = new CircleShape();
-				shape.setRadius(0.2f);
+					CircleShape shape = new CircleShape();
+					shape.setRadius(0.2f);
 
-				FixtureDef fixtureDef = new FixtureDef();
-				fixtureDef.shape = shape;
-				contactBody.createFixture(fixtureDef);
+					FixtureDef fixtureDef = new FixtureDef();
+					fixtureDef.shape = shape;
+					contactBody.createFixture(fixtureDef);
+				}
 			}
 		}
 
@@ -501,17 +513,27 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		boardScreenHud.render(delta);
 
-		String hudResult = (String) boardScreenHud.getRenderResult();
+		renderDialogs(delta);
+
+		Action hudResult = (Action) boardScreenHud.getRenderResult();
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
 	}
 
-	private void processHudButtonTouch(String buttonId) {
-		if (buttonId.equals(BoardScreenHud.SEND_BUTTON)) {
-			if (touchedPlanets.size() != 2) {
-				return;
+	private void renderDialogs(float delta) {
+		if (shipSelectionDialog != null) {
+			shipSelectionDialog.render(delta);
+
+			Action action = (Action) shipSelectionDialog.getRenderResult();
+			if (action != null) {
+				processShipSelectionTouch(action);
 			}
+		}
+	}
+
+	private void processShipSelectionTouch(Action action) {
+		if (action == Action.DIALOG_OK) {
 			Move move = new Move();
 
 			int startX = 0, startY = 0, endX = 0, endY = 0;
@@ -532,15 +554,30 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			moves.add(move);
 			clearTouchedPlanets();
-		} else if (buttonId.equals(BoardScreenHud.END_TURN_BUTTON)) {
+			shipSelectionDialog.dispose();
+			shipSelectionDialog = null;
+		} else if (action == Action.DIALOG_CANCEL) {
+			shipSelectionDialog.dispose();
+			shipSelectionDialog = null;
+		}
+	}
+
+	private void processHudButtonTouch(Action action) {
+		if (action == Action.SEND) {
+			if (touchedPlanets.size() != 2) {
+				return;
+			}
+			shipSelectionDialog = new ShipSelectionDialog(assetManager);
+
+		} else if (action == Action.END_TURN) {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
-		} else if (buttonId.equals(BoardScreenHud.REFRESH_BUTTON)) {
+		} else if (action == Action.REFRESH) {
 			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
-		} else if (buttonId.equals(BoardScreenHud.BACK_BUTTON)) {
+		} else if (action == Action.BACK) {
 			returnCode = ReturnCode.BACK;
 		}
 	}
-	
+
 	private void clearTouchedPlanets() {
 		touchedPlanets.clear();
 		for (Planet planet : gameBoard.planets) {
