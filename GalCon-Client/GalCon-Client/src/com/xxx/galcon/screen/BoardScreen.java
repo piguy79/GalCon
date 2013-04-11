@@ -57,7 +57,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private GameBoard gameBoard;
 	private World physicsWorld;
 
-	private ShaderProgram colorShader;
+	private ShaderProgram planetShader;
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
 
@@ -86,8 +86,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
 
-		colorShader = new ShaderProgram(Gdx.files.internal("data/shaders/color-vs.glsl"),
-				Gdx.files.internal("data/shaders/color-fs.glsl"));
+		planetShader = new ShaderProgram(Gdx.files.internal("data/shaders/planet-vs.glsl"),
+				Gdx.files.internal("data/shaders/planet-fs.glsl"));
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
 		shipShader = new ShaderProgram(Gdx.files.internal("data/shaders/ship-vs.glsl"),
@@ -283,7 +283,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
 
-		planetModel.render(colorShader);
+		planetModel.render(planetShader);
 
 		gridShader.end();
 	}
@@ -292,7 +292,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-		colorShader.begin();
+		planetShader.begin();
 		modelViewMatrix.idt();
 		modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 				PLANET_Z_COORD);
@@ -304,8 +304,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
 
-		colorShader.setUniformMatrix("uPMatrix", camera.combined);
-		colorShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+		planetShader.setUniformMatrix("uPMatrix", camera.combined);
+		planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 
 		float r = 0.0f, g = 0.0f, b = 0.0f;
 		if (planet.touched) {
@@ -329,11 +329,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				b = 0.5f;
 			}
 		}
-		colorShader.setUniformf("uColor", r, g, b, 1.0f);
-		colorShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
+		planetShader.setUniformf("uColor", r, g, b, 1.0f);
+		planetShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 
-		planetModel.render(colorShader);
-		colorShader.end();
+		planetModel.render(planetShader);
+		planetShader.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
