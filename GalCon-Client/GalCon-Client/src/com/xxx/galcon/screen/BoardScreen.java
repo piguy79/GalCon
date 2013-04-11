@@ -541,6 +541,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				if (planet.owner.equals(GameLoop.USER) && move.fromPlanet == null) {
 					move.fromPlanet = planet.name;
 					move.shipsToMove = shipSelectionDialog.getShipsToSend();
+					planet.numberOfShips -= move.shipsToMove;
 					startX = planet.position.getX();
 					startY = planet.position.getY();
 				} else {
