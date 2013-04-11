@@ -22,9 +22,12 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private BitmapFont font;
 	private Texture dialogTexture;
 
+	private int shipsToSend = 0;
+	private int max;
+
 	private Action returnResult;
 
-	public ShipSelectionDialog(AssetManager assetManager) {
+	public ShipSelectionDialog(AssetManager assetManager, int max) {
 		super(20, 500, 500, 320, false);
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
@@ -36,6 +39,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		touchRegions.put(CANCEL, new TouchRegion(x + width * .1f, y + height * .1f, width * .4f, height * .25f, false));
 		touchRegions.put(UP, new TouchRegion(x + width * .6f, y + height * .7f, width * .3f, height * .2f, false));
 		touchRegions.put(DOWN, new TouchRegion(x + width * .6f, y + height * .4f, width * .3f, height * .2f, false));
+
+		this.max = max;
 	}
 
 	@Override
@@ -45,6 +50,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		spriteBatch.begin();
 
 		spriteBatch.draw(dialogTexture, x, y, width, height);
+		font.draw(spriteBatch, "" + shipsToSend, x + width * .3f, y + height * .8f);
+		font.draw(spriteBatch, "" + max, x + width * .3f, y + height * .48f);
 
 		spriteBatch.end();
 	}
@@ -62,6 +69,12 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 						returnResult = Action.DIALOG_OK;
 					} else if (entry.getKey().equals(CANCEL)) {
 						returnResult = Action.DIALOG_CANCEL;
+					} else if (entry.getKey().equals(UP)) {
+						shipsToSend++;
+						shipsToSend = Math.min(shipsToSend, max);
+					} else if (entry.getKey().equals(DOWN)) {
+						shipsToSend--;
+						shipsToSend = Math.max(shipsToSend, 0);
 					}
 				}
 			}
@@ -107,6 +120,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	@Override
 	public Object getRenderResult() {
 		return returnResult;
+	}
+
+	public int getShipsToSend() {
+		return shipsToSend;
 	}
 
 	@Override

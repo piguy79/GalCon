@@ -540,7 +540,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			for (Planet planet : touchedPlanets) {
 				if (planet.owner.equals(GameLoop.USER) && move.fromPlanet == null) {
 					move.fromPlanet = planet.name;
-					move.shipsToMove = planet.numberOfShips;
+					move.shipsToMove = shipSelectionDialog.getShipsToSend();
 					startX = planet.position.getX();
 					startY = planet.position.getY();
 				} else {
@@ -567,7 +567,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (touchedPlanets.size() != 2) {
 				return;
 			}
-			shipSelectionDialog = new ShipSelectionDialog(assetManager);
+
+			int shipsOnPlanet = 0;
+			for (Planet planet : touchedPlanets) {
+				if (planet.owner.equals(GameLoop.USER)) {
+					shipsOnPlanet = planet.numberOfShips;
+				}
+			}
+			shipSelectionDialog = new ShipSelectionDialog(assetManager, shipsOnPlanet);
 
 		} else if (action == Action.END_TURN) {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
