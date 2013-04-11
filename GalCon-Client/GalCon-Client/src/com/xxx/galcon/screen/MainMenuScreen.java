@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
 
 public class MainMenuScreen implements ScreenFeedback {
@@ -46,8 +47,9 @@ public class MainMenuScreen implements ScreenFeedback {
 		fontCache.clear();
 		touchRegions.clear();
 
-		addText("Join", (int) (height * .4f), true, width, height);
-		addText("Create", (int) (height * .33f), true, width, height);
+		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
+		addText(Constants.CREATE, (int) (height * .33f), true, width, height);
+		addText(Constants.CURRENT_GAMES, (int) (height * .25f), true, width, height);
 		addText("Galcon", (int) (height * .7f), false, width, height);
 	}
 

@@ -86,6 +86,15 @@ public class AndroidGameAction implements GameAction {
 
 		new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
 	}
+	
+	public void findActiveGamesForAUser(
+			ConnectionResultCallback<AvailableGames> callback, String player)
+			throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+
+		new GetJsonRequestTask<GameBoard>(args, callback, FIND_ACTIVE_GAMES_FOR_A_USER, new GameBoard()).execute("");
+	}
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 

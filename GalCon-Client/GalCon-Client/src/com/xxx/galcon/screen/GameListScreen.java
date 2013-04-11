@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.ConnectionResultCallback;
+import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
-public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
+public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
 	private BitmapFont font;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
@@ -20,7 +22,7 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 	private GameBoard returnValue;
 	private AvailableGames allGames;
 
-	public JoinScreen() {
+	public GameListScreen() {
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 		spriteBatch = new SpriteBatch();
@@ -81,6 +83,15 @@ public class JoinScreen implements ScreenFeedback, ConnectionResultCallback<Avai
 		}
 
 		spriteBatch.end();
+	}
+	
+	public  BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user, BoardScreen boardScreen){
+		try {
+			gameAction.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
+		return boardScreen;
 	}
 
 	@Override

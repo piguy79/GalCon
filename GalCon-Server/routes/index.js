@@ -66,7 +66,9 @@ exports.findCurrentGamesByUserName = function(req, res){
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user){
 		gameManager.findCollectionOfGames(user.currentGames, function(games){
-			res.json(games);
+			var returnObj = {};
+			returnObj.items = games;
+			res.json(returnObj);
 		});
 	});
 }

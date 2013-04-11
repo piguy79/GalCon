@@ -35,5 +35,8 @@ public interface GameAction {
 
 	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException;
+	
+	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
+			throws ConnectionException;
 
 }
