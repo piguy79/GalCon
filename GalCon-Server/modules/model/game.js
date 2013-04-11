@@ -192,58 +192,58 @@ exports.findCollectionOfGames = function(searchIds, callback){
 }
 
 
-exports.saveGame = function(game, callback){
-	game.save(function(err){
-		if(err){
+exports.saveGame = function(game, callback) {
+	game.save(function(err) {
+		if (err) {
 			console.log("Something went wrong. " + err);
-		}else{
+		} else {
 			callback();
 		}
 
 	});
 }
 
-exports.performMoves = function(gameId, moves, player, callback){
+exports.performMoves = function(gameId, moves, player, callback) {
+	this.findById(gameId, function(game) {
+		if (game.hasAnyExistingMoves() && game.isLastPlayer(player)) {
 
-	this.findById(gameId, function(game){
-	if(game.hasAnyExistingMoves() && game.isLastPlayer(player)){
-	
-		processMoves(game, moves);
-		
-		game.currentRound.roundNumber++;
-		
-	}else{
-		game.addMoves(moves);	
-	}
+			processMoves(game, moves);
+
+			game.currentRound.roundNumber++;
+
+		} else {
+			game.addMoves(moves);
+		}
+
 		assignNextCurrentRoundPlayer(game, player);
 		game.updateRegenRates();
-		
-		game.save(function(savedGame){
+
+		game.save(function(savedGame) {
 			callback(game);
 		});
 	})
-
 }
 
-var processMoves = function(game, newMoves){
-		game.addMoves(newMoves);	
-	
-		var movesToRemove = [];
-		for(var i = 0 ; i < game.moves.length; i++){
-			var move = game.moves[i];
-			move.duration--;
-			if(move.duration == 0){
-				game.applyMoveToPlanets(move);
-				movesToRemove.push(i);
-			}
+var processMoves = function(game, newMoves) {
+	game.addMoves(newMoves);
+
+	var movesToRemove = [];
+	for ( var i = 0; i < game.moves.length; i++) {
+		var move = game.moves[i];
+		move.duration--;
+		if (move.duration == 0) {
+			game.applyMoveToPlanets(move);
+			movesToRemove.push(i);
 		}
-			
-		movesToRemove.forEach(function(index){
-			game.moves.splice(index);
-		});
+	}
+
+	movesToRemove.forEach(function(index) {
+		game.moves.splice(index);
+	});
 }
 
-// Add User adds a user to a current Games players List also assigning a random planet to that user.
+// Add User adds a user to a current Games players List also assigning a random
+// planet to that user.
 exports.addUser = function(gameId, player, callback){
 	this.findById(gameId, function(game){
 		game.players.push(player);
