@@ -87,7 +87,7 @@ var findIndexOfPlayer = function(players, playerToFindIndexOf){
 gameSchema.methods.applyMoveToPlanets = function(move){
 
 	this.planets.forEach(function(planet){
-		if(hasSameOwner(planet, move)){
+		if(hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet)){
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 		}
 		else if(isSamePlanet(planet, move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
@@ -205,23 +205,56 @@ exports.saveGame = function(game, callback) {
 
 exports.performMoves = function(gameId, moves, player, callback) {
 	this.findById(gameId, function(game) {
+	
+		decrementCurrentShipCountOnFromPLanets(game, moves);
+		
+		
+	
 		if (game.hasAnyExistingMoves() && game.isLastPlayer(player)) {
-
 			processMoves(game, moves);
+			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
+			console.log("Num ships " + fromPlanet.numberOfShips);
 
 			game.currentRound.roundNumber++;
+			game.updateRegenRates();
+			
 
 		} else {
 			game.addMoves(moves);
 		}
 
 		assignNextCurrentRoundPlayer(game, player);
-		game.updateRegenRates();
+		
+		//var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
+		//console.log("Num ships " + fromPlanet.numberOfShips);
+		
 
 		game.save(function(savedGame) {
 			callback(game);
 		});
 	})
+}
+
+var decrementCurrentShipCountOnFromPLanets = function(game, moves){
+
+	if(moves){
+		for(var i = 0; i < moves.length; i++){
+			var fromPlanet = findFromPlanet(game.planets, moves[i].fromPlanet);
+			fromPlanet.numberOfShips = fromPlanet.numberOfShips - moves[i].fleet;			
+		}
+	}
+	
+}
+
+var findFromPlanet = function(planets, fromPlanetName){
+	for(var i = 0; i < planets.length; i++){
+		
+		if(planets[i].name == fromPlanetName){
+			return planets[i];
+		}
+	}
+	
+	return "No PLanet Found";
 }
 
 var processMoves = function(game, newMoves) {

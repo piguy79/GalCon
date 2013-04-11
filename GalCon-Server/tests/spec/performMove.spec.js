@@ -10,7 +10,7 @@ describe("Testing ship movement", function(){
 	var defaultHomePlanet;
 	
 	var defaultPlanetsForTest = [
-			elementBuilder.createPlanetForTest("fromPlanet", "moveTest", 3,10,{x : 3, y : 4}),
+			elementBuilder.createPlanetForTest("fromPlanet", "moveTest", 3,30,{x : 3, y : 4}),
 			elementBuilder.createPlanetForTest("toPlanet", "", 3, 20, {x : 3, y : 5})
 	];
 
@@ -93,7 +93,7 @@ describe("Testing ship movement", function(){
 	
 	it("Planet should be owned by user after move.", function(done){
 		var moveHolder = [
-			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",40, 1)
+			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet",30, 1)
 		];	
 		
 		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
@@ -112,14 +112,17 @@ describe("Testing ship movement", function(){
 	
 	it("Planet should not be owned by user after move as not sending enough fleet.", function(done){
 		var moveHolder = [
-			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet", 21, 1)
+			elementBuilder.createMoveForTest("moveTest", "fromPlanet", "toPlanet", 19, 1)
 		];	
 		
 		createMovesWithValidationSteps(game, moveHolder, defaultPlanetsForTest, function(dbGame){
 				dbGame.planets.forEach(function(planet){
 					if(planet.name == "toPlanet"){
 						expect(planet).not.toBeOwnedBy("moveTest");
-						expect(planet).toHaveShipNumber(5);
+						expect(planet).toHaveShipNumber(4);
+					}else if(planet.name == "fromPlanet"){
+						expect(planet).toBeOwnedBy("moveTest");
+						expect(planet).toHaveShipNumber(14);
 					}
 				});
 				done();
@@ -136,7 +139,7 @@ describe("Testing ship movement", function(){
 				dbGame.planets.forEach(function(planet){
 					if(planet.name == "toPlanet"){
 						expect(planet).toBeOwnedBy("");
-						expect(planet).toHaveShipNumber(20);
+						expect(planet).toHaveShipNumber(17);
 					}
 				});
 				done();
@@ -164,7 +167,7 @@ describe("Testing ship movement", function(){
 				dbGame.planets.forEach(function(planet){
 					if(planet.name == "toPlanet"){
 						expect(planet).toBeOwnedBy("moveTest");
-						expect(planet).toHaveShipNumber(4);
+						expect(planet).toHaveShipNumber(7);
 					}
 				});
 				expect(dbGame.moves).not.toContainMove(testMove);
