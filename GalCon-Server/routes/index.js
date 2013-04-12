@@ -46,9 +46,9 @@ exports.findGameById = function(req, res){
 	});
 }
 
-// Find where the number of players currently playing is 1
 exports.findAvailableGames = function(req, res){
-	gameManager.findAvailableGames(function(games){
+	var player = req.query['player'];
+	gameManager.findAvailableGames(player, function(games){
 		var returnObj = {};
 		returnObj.items = games;
 		res.json(returnObj);
