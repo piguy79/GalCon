@@ -84,7 +84,7 @@ public class GameLoop extends Game {
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen();
-					gameAction.findAvailableGames(joinScreen);
+					gameAction.findAvailableGames(joinScreen, USER);
 					return joinScreen;
 				} else if(nextScreen.equals(Constants.CURRENT_GAMES)){
 					GameListScreen currentGameScreen = new GameListScreen();

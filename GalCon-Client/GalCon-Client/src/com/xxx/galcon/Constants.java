@@ -5,6 +5,7 @@ public class Constants {
 	public static final String PLANETS = "planets";
 	public static final String CURRENT_ROUND = "currentRound";
 	public static final String ROUND_NUMBER = "roundNumber";
+	public static final String CREATED_DATE = "createdDate";
 	public static final String PLAYER = "player";
 	public static final String PLAYERS = "players";
 	public static final String ITEMS = "items";

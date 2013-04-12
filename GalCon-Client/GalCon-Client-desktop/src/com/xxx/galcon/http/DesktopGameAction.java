@@ -41,9 +41,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) throws ConnectionException {
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) throws ConnectionException {
+		
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("player", player);
+		
 		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES,
-				new HashMap<String, String>(), new AvailableGames()));
+				args, new AvailableGames()));
 	}
 
 	@Override

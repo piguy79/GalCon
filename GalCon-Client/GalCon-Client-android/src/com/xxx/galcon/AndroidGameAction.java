@@ -46,9 +46,9 @@ public class AndroidGameAction implements GameAction {
 		this.connectivityManager = connectivityManager;
 	}
 
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) {
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) {
 		Map<String, String> args = new HashMap<String, String>();
-
+		args.put("player", player);
 		new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, new AvailableGames()).execute("");
 	}
 

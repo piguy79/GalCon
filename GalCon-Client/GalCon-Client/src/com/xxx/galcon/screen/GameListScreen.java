@@ -1,12 +1,17 @@
 package com.xxx.galcon.screen;
 
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.ConnectionResultCallback;
@@ -69,7 +74,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		} else {
 			float textY = 0.98f;
 			for (GameBoard gameBoard : allGames.getAllGames()) {
-				String text = gameBoard.players.toString();
+				String text = createLabelTestForAGame(gameBoard);
 				float halfFontWidth = font.getBounds(text).width / 2;
 				font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
 				if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
@@ -85,6 +90,18 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		spriteBatch.end();
 	}
 	
+	private String createLabelTestForAGame(GameBoard gameBoard) {
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		String labelForGame = format.format(gameBoard.createdDate);
+		List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
+		if(otherPlayers.size() == 0){
+			return labelForGame + " waiting for opponent";
+		
+		}
+		
+		return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
+	}
+
 	public  BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user, BoardScreen boardScreen){
 		try {
 			gameAction.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
