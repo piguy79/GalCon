@@ -90,22 +90,22 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		planetShader = new ShaderProgram(Gdx.files.internal("data/shaders/planet-vs.glsl"),
 				Gdx.files.internal("data/shaders/planet-fs.glsl"));
-		if (!planetShader.getLog().isEmpty()) {
+		if (!planetShader.isCompiled() && !planetShader.getLog().isEmpty()) {
 			throw new IllegalStateException("Shader compilation fail: " + planetShader.getLog());
 		}
 
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
-		if (!gridShader.getLog().isEmpty()) {
+		if (!gridShader.isCompiled() && !gridShader.getLog().isEmpty()) {
 			throw new IllegalStateException("Shader compilation fail: " + gridShader.getLog());
 		}
-		
+
 		shipShader = new ShaderProgram(Gdx.files.internal("data/shaders/ship-vs.glsl"),
 				Gdx.files.internal("data/shaders/ship-fs.glsl"));
-		if (!shipShader.getLog().isEmpty()) {
+		if (!shipShader.isCompiled() && !shipShader.getLog().isEmpty()) {
 			throw new IllegalStateException("Shader compilation fail: " + shipShader.getLog());
 		}
-		
+
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 
@@ -609,6 +609,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void clearTouchedPlanets() {
 		touchedPlanets.clear();
+
+		if (gameBoard == null || gameBoard.planets == null) {
+			return;
+		}
 		for (Planet planet : gameBoard.planets) {
 			planet.touched = false;
 		}
