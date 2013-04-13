@@ -1,5 +1,8 @@
 package com.xxx.galcon.model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +48,9 @@ public class GameBoard implements JsonConvertible {
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
+		
+		assignCreatedDate(jsonObject);
+
 
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
@@ -65,5 +71,30 @@ public class GameBoard implements JsonConvertible {
 				movesInProgress.add(move);
 			}
 		}
+	}
+
+	private void assignCreatedDate(JSONObject jsonObject) {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
+		try {
+			this.createdDate = format.parse(jsonObject.getString(Constants.CREATED_DATE));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public List<String> allPlayersExcept(String playerToExclude){
+		List<String> otherPlayers = new ArrayList<String>();
+		
+		for(String player : players){
+			if(!player.equals(playerToExclude)){
+				otherPlayers.add(player);
+			}
+		}
+		
+		return otherPlayers;
 	}
 }

@@ -65,3 +65,10 @@ exports.findCurrentGamesByUserName = function(userName, callback){
 		callback(body);
 	});
 }
+
+
+exports.findAvailableGamesForUser = function(player, callback){
+	needle.get("http://localhost:3000/findAvailableGames?player=" + player, function(err, response, body){
+		callback(body.items);
+	});
+}

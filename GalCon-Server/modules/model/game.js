@@ -171,9 +171,10 @@ exports.deleteGame = function(gameId, callback){
 };
 
 
-exports.findAvailableGames = function(callback){
-	GameModel.find({players : {$size : 1}}, function(err, games){
+exports.findAvailableGames = function(player, callback){
+	GameModel.find({players : {$ne : player}}, function(err, games){
 		if(err){
+			console.log(err);
 			next();
 		}else{
 			callback(games);

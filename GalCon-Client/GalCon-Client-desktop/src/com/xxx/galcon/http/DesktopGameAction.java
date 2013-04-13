@@ -3,6 +3,7 @@
  */
 package com.xxx.galcon.http;
 
+import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
@@ -40,9 +41,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) throws ConnectionException {
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) throws ConnectionException {
+		
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("player", player);
+		
 		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES,
-				new HashMap<String, String>(), new AvailableGames()));
+				args, new AvailableGames()));
 	}
 
 	@Override
@@ -123,5 +128,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
+	}
+
+	@Override
+	public void findActiveGamesForAUser(
+			ConnectionResultCallback<AvailableGames> callback, String player)
+			throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER,
+				args, new AvailableGames()));		
 	}
 }

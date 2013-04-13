@@ -26,7 +26,7 @@ public interface GameAction {
 	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException;
 
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback) throws ConnectionException;
+	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) throws ConnectionException;
 
 	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
 
@@ -34,6 +34,9 @@ public interface GameAction {
 			throws ConnectionException;
 
 	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+			throws ConnectionException;
+	
+	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
 
 }
