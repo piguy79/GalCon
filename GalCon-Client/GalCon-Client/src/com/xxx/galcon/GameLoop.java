@@ -54,6 +54,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
 		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.load("data/images/ship_selection_dialog.png", Texture.class, param);
+		assetManager.load("data/fonts/planet_numbers.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);

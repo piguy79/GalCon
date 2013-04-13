@@ -9,10 +9,11 @@
 #endif
 
 attribute vec4 a_position;
+attribute MEDP vec2 a_texCoord0;
+
 uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
 
-attribute MEDP vec2 a_texCoord0;
 varying MEDP vec2 vTexCoords;
 
 void main() {

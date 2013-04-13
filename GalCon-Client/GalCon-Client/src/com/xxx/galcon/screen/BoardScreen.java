@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
@@ -62,6 +63,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram shipShader;
 
 	private BitmapFont font;
+	private Texture planetNumbersTexture;
 
 	private StillModel planetModel;
 	private StillModel shipModel;
@@ -88,11 +90,22 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		planetShader = new ShaderProgram(Gdx.files.internal("data/shaders/planet-vs.glsl"),
 				Gdx.files.internal("data/shaders/planet-fs.glsl"));
+		if (!planetShader.getLog().isEmpty()) {
+			throw new IllegalStateException("Shader compilation fail: " + planetShader.getLog());
+		}
+
 		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
 				Gdx.files.internal("data/shaders/grid-fs.glsl"));
+		if (!gridShader.getLog().isEmpty()) {
+			throw new IllegalStateException("Shader compilation fail: " + gridShader.getLog());
+		}
+		
 		shipShader = new ShaderProgram(Gdx.files.internal("data/shaders/ship-vs.glsl"),
 				Gdx.files.internal("data/shaders/ship-fs.glsl"));
-
+		if (!shipShader.getLog().isEmpty()) {
+			throw new IllegalStateException("Shader compilation fail: " + shipShader.getLog());
+		}
+		
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 
@@ -101,6 +114,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		loader = new ObjLoader();
 		shipModel = loader.loadObj(Gdx.files.internal("data/models/ship.obj"));
+
+		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
 
@@ -288,52 +303,62 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.end();
 	}
 
-	private void renderPlanet(Planet planet, Camera camera) {
+	private void renderPlanets(List<Planet> planets, Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
+		planetNumbersTexture.bind(1);
+
 		planetShader.begin();
-		modelViewMatrix.idt();
-		modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
-				PLANET_Z_COORD);
+		planetShader.setUniformi("numbersTex", 1);
 
-		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
-		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
-		modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
-				* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
+		for (Planet planet : planets) {
 
-		modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
+			modelViewMatrix.idt();
+			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+					PLANET_Z_COORD);
 
-		planetShader.setUniformMatrix("uPMatrix", camera.combined);
-		planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+			float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
+			modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
+					* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
 
-		float r = 0.0f, g = 0.0f, b = 0.0f;
-		if (planet.touched) {
-			if (planet.owner.equals(GameLoop.USER)) {
-				g = 1.0f;
-			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-				r = 1.0f;
+			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
+
+			planetShader.setUniformMatrix("uPMatrix", camera.combined);
+			planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			planetShader.setUniformi("shipCount", planet.numberOfShips);
+
+			float r = 0.0f, g = 0.0f, b = 0.0f;
+			if (planet.touched) {
+				if (planet.owner.equals(GameLoop.USER)) {
+					g = 1.0f;
+				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					r = 1.0f;
+				} else {
+					r = 1.0f;
+					g = 1.0f;
+					b = 1.0f;
+				}
 			} else {
-				r = 1.0f;
-				g = 1.0f;
-				b = 1.0f;
+				if (planet.owner.equals(GameLoop.USER)) {
+					g = 0.5f;
+				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					r = 0.5f;
+				} else if (!planet.touched) {
+					r = 0.5f;
+					g = 0.5f;
+					b = 0.5f;
+				}
 			}
-		} else {
-			if (planet.owner.equals(GameLoop.USER)) {
-				g = 0.5f;
-			} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-				r = 0.5f;
-			} else if (!planet.touched) {
-				r = 0.5f;
-				g = 0.5f;
-				b = 0.5f;
-			}
-		}
-		planetShader.setUniformf("uColor", r, g, b, 1.0f);
-		planetShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
+			planetShader.setUniformf("uColor", r, g, b, 1.0f);
+			planetShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
 
-		planetModel.render(planetShader);
+			planetModel.render(planetShader);
+		}
 		planetShader.end();
+
+		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
@@ -504,11 +529,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		moveCameraForIntro(camera);
 
 		renderGrid(camera);
-
-		for (Planet planet : gameBoard.planets) {
-			renderPlanet(planet, camera);
-		}
-
+		renderPlanets(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		boardScreenHud.render(delta);
