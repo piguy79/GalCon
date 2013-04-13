@@ -272,7 +272,7 @@ var processMoves = function(game, newMoves) {
 	}
 
 	movesToRemove.forEach(function(index) {
-		game.moves.splice(index);
+		game.moves.splice(index,1);
 	});
 }
 
