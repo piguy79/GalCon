@@ -12,6 +12,6 @@ public class Main {
 		cfg.width = 540;
 		cfg.height = 860;
 
-		new LwjglApplication(new GameLoop(new DesktopGameAction("localhost", 3000)), cfg);
+		new LwjglApplication(new GameLoop("me" + Math.random() * 10000, new DesktopGameAction("localhost", 3000)), cfg);
 	}
 }

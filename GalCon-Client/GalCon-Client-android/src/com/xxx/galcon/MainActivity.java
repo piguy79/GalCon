@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -17,8 +19,16 @@ public class MainActivity extends AndroidApplication {
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
-		initialize(new GameLoop(new AndroidGameAction(connectivityManager, "damp-crag-7750.herokuapp.com", "80")), cfg);
+		initialize(new GameLoop(getUser(), new AndroidGameAction(connectivityManager, "damp-crag-7750.herokuapp.com",
+				"80")), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	}
+
+	private String getUser() {
+		AccountManager am = AccountManager.get(this);
+		Account[] accounts = am.getAccountsByType("com.google");
+		
+		return accounts[0].name;
 	}
 }

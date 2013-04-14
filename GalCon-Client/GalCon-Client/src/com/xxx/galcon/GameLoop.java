@@ -18,8 +18,7 @@ import com.xxx.galcon.screen.MainMenuScreen;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
-	// FIXME: this needs to be replaced by a unique user id
-	public static final String USER = "me" + Math.random() * 10000;
+	public static String USER;
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -28,9 +27,9 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 
-	public GameLoop(GameAction gameAction) {
+	public GameLoop(String user, GameAction gameAction) {
 		this.gameAction = gameAction;
-
+		GameLoop.USER = user;
 		ConnectionWrapper.setGameAction(gameAction);
 	}
 
