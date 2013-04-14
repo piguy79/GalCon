@@ -48,8 +48,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		touchRegions.clear();
 
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
-		addText(Constants.CREATE, (int) (height * .33f), true, width, height);
-		addText(Constants.CURRENT_GAMES, (int) (height * .25f), true, width, height);
+		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
+		addText(Constants.CURRENT_GAMES, (int) (height * .22f), true, width, height);
 		addText("Galcon", (int) (height * .7f), false, width, height);
 	}
 
