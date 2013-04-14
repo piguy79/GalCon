@@ -53,8 +53,12 @@ void main() {
 		xDistToNumberCenter = (xDistToNumberCenter + halfWidth) * (1.0 / (1.0-(halfWidth + halfWidth)));
 		yDistToNumberCenter = (yDistToNumberCenter + halfHeight) * (1.0 / (1.0-(halfHeight + halfHeight)));
 				
+		float xMult = 0.18;
+		if(numberToShow == 1) {
+			xMult = 0.13;
+		}
 		numberTexColor = texture2D(numbersTex, 
-									vec2(numberOffset(numberToShow) + xDistToNumberCenter * 0.18, yDistToNumberCenter * 0.2));
+									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.2));
 	}
 	
 	if(numberTexColor.a == 0.0) {
