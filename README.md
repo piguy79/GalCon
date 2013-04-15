@@ -16,6 +16,7 @@ __Advancement__
 * Get enough XP to unlock a new level, which adds a new technique/element to the game.
 * When you play against another player, the game will be played at the min level of all players.
 * Players can pay to unlock levels if they choose.  Maybe don't allow people to buy into the upper-most levels?
+* Bonus XP for achievements
 
 Heroku
 ----
