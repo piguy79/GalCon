@@ -12,10 +12,10 @@ __Multiplayer__
 
 __Advancement__
 * Should be a well thought-out advancement strategy.
-* Every XX number of victories earns you a level.
-* Each level adds a new technique/element to the game.
+* Every victory earns you XP.  You get more XP from beating higher ranked opponents.
+* Get enough XP to unlock a new level, which adds a new technique/element to the game.
 * When you play against another player, the game will be played at the min level of all players.
-* Players can pay to unlock all levels if they choose.
+* Players can pay to unlock levels if they choose.  Maybe don't allow people to buy into the upper-most levels?
 
 Heroku
 ----
