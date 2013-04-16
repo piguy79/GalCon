@@ -600,7 +600,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					shipsOnPlanet = planet.numberOfShips;
 				}
 			}
-			shipSelectionDialog = new ShipSelectionDialog(assetManager, shipsOnPlanet);
+
+			int width = Gdx.graphics.getWidth();
+			int height = Gdx.graphics.getHeight();
+			int xMargin = (int) (width * .15f);
+			int dialogWidth = width - 2 * xMargin;
+			shipSelectionDialog = new ShipSelectionDialog(xMargin, (int) (height * .6f), dialogWidth,
+					(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
 
 		} else if (action == Action.END_TURN) {
 			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
@@ -691,6 +697,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	@Override
 	public void resetState() {
 		returnCode = null;
+		gameBoard = null;
 		moves.clear();
 		clearTouchedPlanets();
 	}

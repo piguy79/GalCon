@@ -27,8 +27,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	private Action returnResult;
 
-	public ShipSelectionDialog(AssetManager assetManager, int max) {
-		super(20, 500, 500, 320, false);
+	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max) {
+		super(x, y, width, height, false);
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);

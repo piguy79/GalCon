@@ -9,8 +9,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "GalCon-Client";
 		cfg.useGL20 = true;
-		cfg.width = 540;
-		cfg.height = 860;
+		cfg.width = 480;
+		cfg.height = 800;
 
 		new LwjglApplication(new GameLoop("me" + Math.random() * 10000, new DesktopGameAction("localhost", 3000)), cfg);
 	}

@@ -6,8 +6,10 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 
 public class BoardScreenHud implements ScreenFeedback {
@@ -19,6 +21,10 @@ public class BoardScreenHud implements ScreenFeedback {
 	private int roundNumber;
 
 	private static abstract class HudButton {
+		protected static final float BUTTON_SIZE_RATIO = 0.15f;
+		protected static final int MARGIN = 30;
+		private boolean disabled = false;
+
 		protected int x, y, width, height;
 		private Texture texture;
 
@@ -31,7 +37,13 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		abstract public Action getActionOnClick();
 
+		abstract protected boolean disabledWhenNotMyTurn();
+
 		public boolean isTouched(int touchX, int touchY) {
+			if (disabled) {
+				return false;
+			}
+
 			if (touchX >= x && touchX <= x + width) {
 				if (touchY >= y && touchY <= y + height) {
 					return true;
@@ -41,8 +53,11 @@ public class BoardScreenHud implements ScreenFeedback {
 			return false;
 		}
 
-		public void render(SpriteBatch spriteBatch) {
-			spriteBatch.draw(texture, x, y, width, height);
+		public void render(SpriteBatch spriteBatch, boolean isMyTurn) {
+			disabled = !isMyTurn && disabledWhenNotMyTurn();
+			if (!disabled) {
+				spriteBatch.draw(texture, x, y, width, height);
+			}
 		}
 	}
 
@@ -59,10 +74,16 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		@Override
 		public void updateLocationAndSize(int screenWidth, int screenHeight) {
-			this.x = 15;
-			this.y = 150;
-			this.width = 80;
-			this.height = 80;
+			int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
+			this.x = MARGIN;
+			this.y = MARGIN + buttonWidth + MARGIN;
+			this.width = buttonWidth;
+			this.height = buttonWidth;
+		}
+
+		@Override
+		protected boolean disabledWhenNotMyTurn() {
+			return true;
 		}
 	}
 
@@ -79,10 +100,16 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		@Override
 		public void updateLocationAndSize(int screenWidth, int screenHeight) {
-			this.x = 15;
-			this.y = 60;
-			this.width = 80;
-			this.height = 80;
+			int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
+			this.x = MARGIN;
+			this.y = MARGIN;
+			this.width = buttonWidth;
+			this.height = buttonWidth;
+		}
+
+		@Override
+		protected boolean disabledWhenNotMyTurn() {
+			return false;
 		}
 	}
 
@@ -99,11 +126,16 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		@Override
 		public void updateLocationAndSize(int screenWidth, int screenHeight) {
-			int buttonWidth = 80;
-			this.x = screenWidth - buttonWidth - 15;
-			this.y = 160;
+			int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
+			this.x = screenWidth - buttonWidth - MARGIN;
+			this.y = MARGIN + buttonWidth + MARGIN + 15;
 			this.width = buttonWidth;
-			this.height = 50;
+			this.height = (int) (buttonWidth * 0.6f);
+		}
+
+		@Override
+		protected boolean disabledWhenNotMyTurn() {
+			return true;
 		}
 	}
 
@@ -119,11 +151,16 @@ public class BoardScreenHud implements ScreenFeedback {
 
 		@Override
 		public void updateLocationAndSize(int screenWidth, int screenHeight) {
-			int buttonWidth = 80;
-			this.x = screenWidth - buttonWidth - 15;
-			this.y = 80;
+			int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
+			this.x = screenWidth - buttonWidth - MARGIN;
+			this.y = MARGIN;
 			this.width = buttonWidth;
-			this.height = 80;
+			this.height = buttonWidth;
+		}
+
+		@Override
+		protected boolean disabledWhenNotMyTurn() {
+			return false;
 		}
 	}
 
@@ -131,6 +168,7 @@ public class BoardScreenHud implements ScreenFeedback {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
+		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		hudButtons.add(new SendHudButton(assetManager.get("data/images/arrow_right.png", Texture.class)));
 		hudButtons.add(new BackHudButton(assetManager.get("data/images/arrow_left.png", Texture.class)));
@@ -147,18 +185,19 @@ public class BoardScreenHud implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
+		boolean isMyTurn = haveRoundInformation() && currentPlayerToMove.equals(GameLoop.USER);
 		processTouch();
 
 		spriteBatch.begin();
 
-		for (int i = 0; i < hudButtons.size(); ++i) {
-			hudButtons.get(i).render(spriteBatch);
+		if (!isMyTurn) {
+			int height = Gdx.graphics.getHeight();
+			font.draw(spriteBatch, "Current Player: " + currentPlayerToMove, 5, height * .26f);
+			font.draw(spriteBatch, "Round Number: " + roundNumber, 5, height * .2f);
 		}
 
-		if (haveRoundInformation()) {
-			font.setColor(1.0f, 0.5f, 1.0f, 0.5f);
-			font.draw(spriteBatch, "Current Player: " + currentPlayerToMove, 6, 150);
-			font.draw(spriteBatch, "Round Number: " + roundNumber, 6, 120);
+		for (int i = 0; i < hudButtons.size(); ++i) {
+			hudButtons.get(i).render(spriteBatch, isMyTurn);
 		}
 
 		spriteBatch.end();
