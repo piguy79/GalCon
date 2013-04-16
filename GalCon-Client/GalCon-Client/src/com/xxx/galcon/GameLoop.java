@@ -69,9 +69,7 @@ public class GameLoop extends Game {
 		ScreenFeedback screen = getScreen();
 		Object result = screen.getRenderResult();
 		if (result != null) {
-			ScreenFeedback nextScreen = nextScreen(screen, result);
-			nextScreen.resetState();
-			setScreen(nextScreen);
+			setScreen(nextScreen(screen, result));
 		}
 	}
 
@@ -80,18 +78,20 @@ public class GameLoop extends Game {
 			if (currentScreen instanceof MainMenuScreen) {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
+					boardScreen.resetState();
 					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER, 7, 10);
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen();
 					gameAction.findAvailableGames(joinScreen, USER);
 					return joinScreen;
-				} else if(nextScreen.equals(Constants.CURRENT_GAMES)){
+				} else if (nextScreen.equals(Constants.CURRENT_GAMES)) {
 					GameListScreen currentGameScreen = new GameListScreen();
 					gameAction.findActiveGamesForAUser(currentGameScreen, USER);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
+				boardScreen.resetState();
 				GameBoard toTakeActionOn = (GameBoard) result;
 				((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER, boardScreen);
 				return boardScreen;

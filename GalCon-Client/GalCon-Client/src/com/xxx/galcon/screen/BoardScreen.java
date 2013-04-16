@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
@@ -68,6 +69,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private StillModel planetModel;
 	private StillModel shipModel;
 	private Matrix4 modelViewMatrix = new Matrix4();
+	private final Matrix4 fontViewMatrix = new Matrix4();
 
 	private BoardPlane boardPlane = new BoardPlane();
 	private WorldPlane worldPlane = new WorldPlane();
@@ -108,6 +110,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
+		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
@@ -514,6 +517,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			SpriteBatch spriteBatch = new SpriteBatch();
 			spriteBatch.begin();
+			fontViewMatrix.setToOrtho2D(0, 0, width, height);
+			spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 			String text = "Loading...";
 			float halfFontWidth = font.getBounds(text).width / 2;
