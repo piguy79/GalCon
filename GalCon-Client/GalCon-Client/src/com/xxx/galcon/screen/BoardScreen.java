@@ -222,6 +222,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			return null;
 		}
 
+		if (!gameBoard.currentPlayerToMove.equals(GameLoop.USER)) {
+			return null;
+		}
+
 		Body contactBody = null;
 		if (Gdx.input.justTouched()) {
 			if (shipSelectionDialog != null) {
