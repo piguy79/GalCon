@@ -41,12 +41,9 @@ import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
+import com.xxx.galcon.screen.hud.BoardScreenHud;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
-	public enum ReturnCode {
-		BACK
-	};
-
 	private static final float BOARD_WIDTH_RATIO = .95f;
 	private static final float BOARD_HEIGHT_RATIO = .7f;
 
@@ -85,7 +82,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
 
-	private ReturnCode returnCode = null;
+	private Action returnCode = null;
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -618,7 +615,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		} else if (action == Action.REFRESH) {
 			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
 		} else if (action == Action.BACK) {
-			returnCode = ReturnCode.BACK;
+			returnCode = Action.BACK;
 		}
 	}
 

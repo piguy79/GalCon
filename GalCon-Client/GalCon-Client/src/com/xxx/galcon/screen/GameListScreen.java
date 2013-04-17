@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +18,8 @@ import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.screen.hud.GameListHud;
+import com.xxx.galcon.screen.hud.Hud;
 
 public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
 	private BitmapFont smallFont;
@@ -24,13 +27,15 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
-	private GameBoard returnValue;
+	private Object returnValue;
 	private AvailableGames allGames;
+	private Hud gameListHud;
 
-	public GameListScreen() {
+	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
 		smallFont = Fonts.getInstance().smallFont();
 		mediumFont = Fonts.getInstance().mediumFont();
+		gameListHud = new GameListHud(assetManager);
 	}
 
 	@Override
@@ -89,6 +94,12 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		}
 
 		spriteBatch.end();
+
+		gameListHud.render(delta);
+
+		if (gameListHud.getRenderResult() != null) {
+			returnValue = gameListHud.getRenderResult();
+		}
 	}
 
 	private String createLabelTestForAGame(GameBoard gameBoard) {

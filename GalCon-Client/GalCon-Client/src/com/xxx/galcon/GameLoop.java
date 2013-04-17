@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
-import com.xxx.galcon.screen.BoardScreen.ReturnCode;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.JoinGameListScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
@@ -82,22 +82,31 @@ public class GameLoop extends Game {
 					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER, 7, 10);
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
-					GameListScreen joinScreen = new JoinGameListScreen();
+					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
 					gameAction.findAvailableGames(joinScreen, USER);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT_GAMES)) {
-					GameListScreen currentGameScreen = new GameListScreen();
+					GameListScreen currentGameScreen = new GameListScreen(assetManager);
 					gameAction.findActiveGamesForAUser(currentGameScreen, USER);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
-				boardScreen.resetState();
-				GameBoard toTakeActionOn = (GameBoard) result;
-				((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER, boardScreen);
-				return boardScreen;
+				if (result instanceof GameBoard) {
+					boardScreen.resetState();
+					GameBoard toTakeActionOn = (GameBoard) result;
+					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER,
+							boardScreen);
+					return boardScreen;
+				} else if (result instanceof Action) {
+					Action action = (Action) result;
+					if (action == Action.BACK) {
+						mainMenuScreen.resetState();
+						return mainMenuScreen;
+					}
+				}
 			} else if (currentScreen instanceof BoardScreen) {
-				ReturnCode returnCode = (ReturnCode) result;
-				if (returnCode == ReturnCode.BACK) {
+				Action action = (Action) result;
+				if (action == Action.BACK) {
 					mainMenuScreen.resetState();
 					return mainMenuScreen;
 				}
