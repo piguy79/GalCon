@@ -699,8 +699,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	@Override
 	public void resetState() {
 		returnCode = null;
-		gameBoard = null;
 		moves.clear();
 		clearTouchedPlanets();
+		
+		gameBoard = null;
 	}
 }
