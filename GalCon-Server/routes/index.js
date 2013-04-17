@@ -62,14 +62,19 @@ exports.findUserByUserName = function(req, res){
 	});
 }
 
-exports.findCurrentGamesByUserName = function(req, res){
+exports.findCurrentGamesByUserName = function(req, res) {
 	var userName = req.query['userName'];
-	userManager.findUserByName(userName, function(user){
-		gameManager.findCollectionOfGames(user.currentGames, function(games){
-			var returnObj = {};
-			returnObj.items = games;
-			res.json(returnObj);
-		});
+	userManager.findUserByName(userName, function(user) {
+		if (!user) {
+			res.json({});
+		} else {
+			gameManager.findCollectionOfGames(user.currentGames,
+					function(games) {
+						var returnObj = {};
+						returnObj.items = games;
+						res.json(returnObj);
+					});
+		}
 	});
 }
 
