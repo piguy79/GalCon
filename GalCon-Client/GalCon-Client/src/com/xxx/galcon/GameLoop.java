@@ -98,6 +98,7 @@ public class GameLoop extends Game {
 			} else if (currentScreen instanceof BoardScreen) {
 				ReturnCode returnCode = (ReturnCode) result;
 				if (returnCode == ReturnCode.BACK) {
+					mainMenuScreen.resetState();
 					return mainMenuScreen;
 				}
 			}

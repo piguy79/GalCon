@@ -1,16 +1,15 @@
 package com.xxx.galcon.screen;
 
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.ConnectionException;
@@ -20,7 +19,8 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 
 public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
-	private BitmapFont font;
+	private BitmapFont smallFont;
+	private BitmapFont mediumFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -28,14 +28,13 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	private AvailableGames allGames;
 
 	public GameListScreen() {
-		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
 		spriteBatch = new SpriteBatch();
+		smallFont = Fonts.getInstance().smallFont();
+		mediumFont = Fonts.getInstance().mediumFont();
 	}
 
 	@Override
 	public void dispose() {
-		font.dispose();
 		spriteBatch.dispose();
 	}
 
@@ -65,18 +64,20 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		spriteBatch.begin();
 		spriteBatch.enableBlending();
 
-		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
 		if (allGames == null) {
 			String text = "Loading...";
-			float halfFontWidth = font.getBounds(text).width / 2;
-			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+			float halfFontWidth = mediumFont.getBounds(text).width / 2;
+			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+		} else if (allGames.getAllGames().isEmpty()) {
+			String text = "No games available";
+			float halfFontWidth = mediumFont.getBounds(text).width / 2;
+			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 		} else {
 			float textY = 0.98f;
 			for (GameBoard gameBoard : allGames.getAllGames()) {
 				String text = createLabelTestForAGame(gameBoard);
-				float halfFontWidth = font.getBounds(text).width / 2;
-				font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
+				float halfFontWidth = smallFont.getBounds(text).width / 2;
+				smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
 				if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 					if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 						returnValue = gameBoard;
@@ -89,20 +90,21 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 		spriteBatch.end();
 	}
-	
+
 	private String createLabelTestForAGame(GameBoard gameBoard) {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 		List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
-		if(otherPlayers.size() == 0){
+		if (otherPlayers.size() == 0) {
 			return labelForGame + " waiting for opponent";
-		
+
 		}
-		
+
 		return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
 	}
 
-	public  BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user, BoardScreen boardScreen){
+	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user,
+			BoardScreen boardScreen) {
 		try {
 			gameAction.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
 		} catch (ConnectionException e) {
@@ -145,7 +147,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	public Object getRenderResult() {
 		return returnValue;
 	}
-	
+
 	@Override
 	public void resetState() {
 		returnValue = null;
