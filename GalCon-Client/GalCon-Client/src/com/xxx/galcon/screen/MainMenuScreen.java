@@ -5,17 +5,18 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
 
 public class MainMenuScreen implements ScreenFeedback {
 	private BitmapFontCache fontCache;
+	private BitmapFont extraLargeFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -24,14 +25,14 @@ public class MainMenuScreen implements ScreenFeedback {
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen() {
-		BitmapFont font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
+		BitmapFont font = Fonts.getInstance().largeFont();
+		fontCache = new BitmapFontCache(font);
 
-		fontCache = new BitmapFontCache(font, false);
-		fontCache.getFont().getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		extraLargeFont = Fonts.getInstance().extraLargeFont();
+
 		spriteBatch = new SpriteBatch();
 
-		updateFontCache();
+		updateFont();
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.dispose();
 	}
 
-	private void updateFontCache() {
+	private void updateFont() {
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
@@ -50,7 +51,6 @@ public class MainMenuScreen implements ScreenFeedback {
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
 		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
 		addText(Constants.CURRENT_GAMES, (int) (height * .22f), true, width, height);
-		addText("Galcon", (int) (height * .7f), false, width, height);
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
@@ -65,7 +65,6 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
@@ -96,17 +95,21 @@ public class MainMenuScreen implements ScreenFeedback {
 		}
 
 		fontCache.draw(spriteBatch);
+
+		String galcon = "GalCon";
+		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
+		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .7f));
 		spriteBatch.end();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		updateFontCache();
+		updateFont();
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 	}
 
 	@Override
