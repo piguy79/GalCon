@@ -14,18 +14,15 @@ public class AvailableGames implements JsonConvertible {
 	List<GameBoard> allGames = new ArrayList<GameBoard>();
 
 	@Override
-	public void consume(JSONObject jsonObject) {
-		try {
-			JSONArray games = jsonObject.getJSONArray(Constants.ITEMS);
+	public void consume(JSONObject jsonObject) throws JSONException {
+		JSONArray games = jsonObject.optJSONArray(Constants.ITEMS);
 
+		if (games != null) {
 			for (int i = 0; i < games.length(); ++i) {
 				GameBoard gameBoard = new GameBoard();
 				gameBoard.consume(games.getJSONObject(i));
 				allGames.add(gameBoard);
 			}
-
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
 	}
 
