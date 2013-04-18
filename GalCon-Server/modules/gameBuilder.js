@@ -6,6 +6,7 @@ function GameBuilder(players, width, height, numberOfPlanets){
 	this.createdDate = new Date();
 	this.currentRound = {roundNumber : 0, player : players[0]};
 	this.numberOfPlanets = numberOfPlanets;
+	this.winner = '';
 	this.planets = [];
 }
 GameBuilder.prototype.constructor = GameBuilder;
@@ -42,8 +43,6 @@ function assignHomePlanets(builder, callback){
 				homePlanet.owner = player;
 				homePlanet.numberOfShips = 30;
 				homePlanet.shipRegenRate = 5;
-				console.log(homeIndex  + " : " + homePlanet.owner)
-				console.log(builder.planets[homeIndex].owner)
 				planetAssigned = true;
 			}
 		}
