@@ -235,8 +235,8 @@ var processPossibleEndGame = function(game){
 		var playersWhoOwnAPlanet = [];
 		for(var i = 0;i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.owner != '' && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
-				playersWhoOwnAPlanet.push(planet);
+			if(planet.owner && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
+				playersWhoOwnAPlanet.push(planet.owner);
 			}
 		}
 		
