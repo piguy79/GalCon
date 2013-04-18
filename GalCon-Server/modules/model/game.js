@@ -118,10 +118,6 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
 
-gameSchema.methods.hasAnyExistingMoves = function(){
-	return this.moves.length > 0;
-}
-
 gameSchema.methods.isLastPlayer = function(player) {
 	var currentIndex = findIndexOfPlayer(this.players, player);
 	
@@ -207,19 +203,15 @@ exports.saveGame = function(game, callback) {
 exports.performMoves = function(gameId, moves, player, callback) {
 	this.findById(gameId, function(game) {
 	
-		decrementCurrentShipCountOnFromPLanets(game, moves);
+		decrementCurrentShipCountOnFromPlanets(game, moves);
 		
-		
-	
-		if (game.hasAnyExistingMoves() && game.isLastPlayer(player)) {
+		if (game.isLastPlayer(player)) {
 			processMoves(game, moves);
 			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
 			console.log("Num ships " + fromPlanet.numberOfShips);
 
 			game.currentRound.roundNumber++;
 			game.updateRegenRates();
-			
-
 		} else {
 			game.addMoves(moves);
 		}
@@ -236,7 +228,7 @@ exports.performMoves = function(gameId, moves, player, callback) {
 	})
 }
 
-var decrementCurrentShipCountOnFromPLanets = function(game, moves){
+var decrementCurrentShipCountOnFromPlanets = function(game, moves){
 
 	if(moves){
 		for(var i = 0; i < moves.length; i++){
@@ -255,25 +247,21 @@ var findFromPlanet = function(planets, fromPlanetName){
 		}
 	}
 	
-	return "No PLanet Found";
+	return "No Planet Found";
 }
 
 var processMoves = function(game, newMoves) {
 	game.addMoves(newMoves);
 
-	var movesToRemove = [];
-	for ( var i = 0; i < game.moves.length; i++) {
+	var i = game.moves.length;
+	while (i--) {
 		var move = game.moves[i];
 		move.duration--;
 		if (move.duration == 0) {
 			game.applyMoveToPlanets(move);
-			movesToRemove.push(i);
+			game.moves.splice(i, 1)
 		}
 	}
-
-	movesToRemove.forEach(function(index) {
-		game.moves.splice(index,1);
-	});
 }
 
 // Add User adds a user to a current Games players List also assigning a random
