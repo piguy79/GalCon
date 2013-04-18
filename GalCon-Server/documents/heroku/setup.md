@@ -8,7 +8,7 @@ Installation
 
 * Download the [Heroku toolbelt](https://toolbelt.heroku.com/) 
 * Add the Heroku git repo as a remote dependancy
-  * `git add remote heroku git@heroku.com:damp-crag-7750.git`
+  * `heroku git:remote -a damp-crag-7750`
 
 
 Basic Setup
