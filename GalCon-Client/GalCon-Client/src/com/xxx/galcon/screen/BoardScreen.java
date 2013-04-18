@@ -561,7 +561,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		winner = "Victor! " + winner;
 		float halfFontWidth = font.getBounds(winner).width / 2;
-		font.draw(spriteBatch, winner, width / 2 - halfFontWidth, height * .4f);
+		font.draw(spriteBatch, winner, width / 2 - halfFontWidth, height * .25f);
 		spriteBatch.end();
 	}
 
