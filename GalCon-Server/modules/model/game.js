@@ -7,7 +7,7 @@ var gameSchema = mongoose.Schema({
 	players : [String],
 	width: "Number",
 	height: "Number",
-	winner: "String"
+	winner: "String",
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
@@ -209,7 +209,6 @@ exports.performMoves = function(gameId, moves, player, callback) {
 		if (game.isLastPlayer(player)) {
 			processMoves(game, moves);
 			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
-			console.log("Num ships " + fromPlanet.numberOfShips);
 			
 			processPossibleEndGame(game);
 
