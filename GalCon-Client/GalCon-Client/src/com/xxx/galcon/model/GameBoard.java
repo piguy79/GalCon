@@ -23,6 +23,7 @@ public class GameBoard implements JsonConvertible {
 	public List<Planet> planets = new ArrayList<Planet>();
 	public int roundNumber;
 	public String currentPlayerToMove;
+	public String winner = "";
 	public List<Move> movesInProgress = new ArrayList<Move>();
 
 	public GameBoard() {
@@ -48,6 +49,7 @@ public class GameBoard implements JsonConvertible {
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
+		this.winner = jsonObject.optString(Constants.WINNER);
 		
 		assignCreatedDate(jsonObject);
 

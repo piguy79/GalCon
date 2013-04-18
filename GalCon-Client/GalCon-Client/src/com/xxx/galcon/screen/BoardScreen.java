@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.ConnectionResultCallback;
@@ -105,9 +105,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			throw new IllegalStateException("Shader compilation fail: " + shipShader.getLog());
 		}
 
-		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
-		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		font = Fonts.getInstance().mediumFont();
 
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
@@ -538,14 +536,33 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderPlanets(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
-		boardScreenHud.render(delta);
+		if (!gameBoard.winner.isEmpty()) {
+			displayWinner(gameBoard.winner);
+		} else {
+			boardScreenHud.render(delta);
 
-		renderDialogs(delta);
+			renderDialogs(delta);
 
-		Action hudResult = (Action) boardScreenHud.getRenderResult();
-		if (hudResult != null) {
-			processHudButtonTouch(hudResult);
+			Action hudResult = (Action) boardScreenHud.getRenderResult();
+			if (hudResult != null) {
+				processHudButtonTouch(hudResult);
+			}
 		}
+	}
+
+	private void displayWinner(String winner) {
+		float width = Gdx.graphics.getWidth() / 2;
+		float height = Gdx.graphics.getHeight() / 2;
+
+		SpriteBatch spriteBatch = new SpriteBatch();
+		spriteBatch.begin();
+		fontViewMatrix.setToOrtho2D(0, 0, width, height);
+		spriteBatch.setProjectionMatrix(fontViewMatrix);
+
+		winner = "Victor! " + winner;
+		float halfFontWidth = font.getBounds(winner).width / 2;
+		font.draw(spriteBatch, winner, width / 2 - halfFontWidth, height * .4f);
+		spriteBatch.end();
 	}
 
 	private void renderDialogs(float delta) {
@@ -701,7 +718,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		returnCode = null;
 		moves.clear();
 		clearTouchedPlanets();
-		
+
 		gameBoard = null;
 	}
 }
