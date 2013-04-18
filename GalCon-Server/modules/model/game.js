@@ -169,7 +169,7 @@ exports.deleteGame = function(gameId, callback){
 
 
 exports.findAvailableGames = function(player, callback){
-	GameModel.find({players : {$ne : player}}, function(err, games){
+	GameModel.find({players : {$nin: [player]}}).where('players').size(1).exec(function(err, games){
 		if(err){
 			console.log(err);
 			next();
