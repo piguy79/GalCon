@@ -40,6 +40,8 @@ function assignHomePlanets(builder, callback){
 			var homePlanet = builder.planets[homeIndex];
 			if(homePlanet && !homePlanet.owner){
 				homePlanet.owner = player;
+				homePlanet.numberOfShips = 30;
+				homePlanet.shipRegenRate = 5;
 				console.log(homeIndex  + " : " + homePlanet.owner)
 				console.log(builder.planets[homeIndex].owner)
 				planetAssigned = true;

@@ -275,6 +275,8 @@ exports.addUser = function(gameId, player, callback){
 			var randomPlanetIndex = Math.floor((Math.random()*game.planets.length));
 			if(typeof game.planets[randomPlanetIndex].owner === "undefined"){
 				game.planets[randomPlanetIndex].owner = player;
+				game.planets[randomPlanetIndex].numberOfShips = 30;
+				game.planets[randomPlanetIndex].shipRegenRate = 5;
 				assigned = true;
 			}
 		}
