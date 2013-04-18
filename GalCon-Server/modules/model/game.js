@@ -7,6 +7,7 @@ var gameSchema = mongoose.Schema({
 	players : [String],
 	width: "Number",
 	height: "Number",
+	winner: "String"
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
@@ -209,6 +210,8 @@ exports.performMoves = function(gameId, moves, player, callback) {
 			processMoves(game, moves);
 			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
 			console.log("Num ships " + fromPlanet.numberOfShips);
+			
+			processPossibleEndGame(game);
 
 			game.currentRound.roundNumber++;
 			game.updateRegenRates();
@@ -226,6 +229,22 @@ exports.performMoves = function(gameId, moves, player, callback) {
 			callback(game);
 		});
 	})
+}
+
+var processPossibleEndGame = function(game){
+	if(!game.hasOnlyOnePlayer()){
+		var playersWhoOwnAPlanet = [];
+		for(var i = 0;i < game.planets.length; i++){
+			var planet = game.planets[i];
+			if(planet.owner != '' && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
+				playersWhoOwnAPlanet.push(planet);
+			}
+		}
+		
+		if(playersWhoOwnAPlanet.length == 1){
+			game.winner = playersWhoOwnAPlanet[0];
+		}
+	}
 }
 
 var decrementCurrentShipCountOnFromPlanets = function(game, moves){
