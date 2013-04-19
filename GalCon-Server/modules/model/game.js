@@ -211,7 +211,7 @@ exports.performMoves = function(gameId, moves, player, callback) {
 	
 		decrementCurrentShipCountOnFromPlanets(game, moves);
 		
-		if (game.isLastPlayer(player)) {
+		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(player)) {
 			processMoves(game, moves);
 			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
 			
