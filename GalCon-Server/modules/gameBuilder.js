@@ -99,7 +99,7 @@ function createPlanet(board, index, builder, callback){
 	planet.position = {};
 	planet.position = position;
 	planet.shipRegenRate = Math.floor((Math.random()*5)+1);
-	planet.numberOfShips = Math.floor((Math.random()*20));
+	planet.numberOfShips = Math.floor((Math.random()*10));
 	callback(board,planet, builder);
 }
 
