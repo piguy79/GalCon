@@ -470,9 +470,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (planet.touched) {
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
-				if (planet.owner.equals(GameLoop.USER) && alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
-					planet.touched = false;
-				} else if (!planet.owner.equals(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
+				if (!planet.owner.equals(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
@@ -621,6 +619,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			for (Planet planet : touchedPlanets) {
 				if (planet.owner.equals(GameLoop.USER)) {
 					shipsOnPlanet = planet.numberOfShips;
+					break;
 				}
 			}
 
