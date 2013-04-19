@@ -17,7 +17,6 @@ GameBuilder.prototype.createBoard = function(callback){
 	var currentPlanetCount = 0;
 
 	while(currentPlanetCount < this.numberOfPlanets){
-
 		createPlanet(board, currentPlanetCount, this, function(board,planet,builder){
 			if(planet){
 				currentPlanetCount++;
@@ -26,29 +25,56 @@ GameBuilder.prototype.createBoard = function(callback){
 			}
 		});	
 	}
+	
+	this.createHomePlanets();
 
 	assignHomePlanets(this, function(builderWithAssignedHomePlanets){
 		callback(builderWithAssignedHomePlanets);
 	});
-	
 }
 
-function assignHomePlanets(builder, callback){
-	builder.players.forEach(function(player){
-		var planetAssigned = false;
-		while(!planetAssigned){
-			var homeIndex = Math.floor((Math.random()*builder.planets.length)+1);
-			var homePlanet = builder.planets[homeIndex];
-			if(homePlanet && !homePlanet.owner){
-				homePlanet.owner = player;
+GameBuilder.prototype.createHomePlanets = function() {
+	var homePlanets = [];
+	while (homePlanets.length != 2) {
+		var homeIndex = Math
+				.floor((Math.random() * this.planets.length) + 1);
+		var homePlanet = this.planets[homeIndex];
+		
+		if (homePlanet && !homePlanet.owner) {
+			var tooClose = false;
+			for(var i in homePlanets) {
+				var createdPlanet = homePlanets[i];
+				
+				var xDist = createdPlanet.position.x - homePlanet.position.x;
+				var yDist = createdPlanet.position.y - homePlanet.position.y;
+				
+				var distance = Math.sqrt(xDist*xDist + yDist*yDist);
+				if(distance < 4) {
+					tooClose = true;
+					break;
+				}
+			}
+			
+			if(!tooClose) {
 				homePlanet.numberOfShips = 30;
 				homePlanet.shipRegenRate = 5;
-				planetAssigned = true;
+				homePlanet.isHome = "Y";
+				homePlanets.push(homePlanet);
 			}
 		}
-		
-	});
+	}
+}
 
+function assignHomePlanets(builder, callback) {
+	builder.players.forEach(function(player) {
+		for(var i in builder.planets) {
+			var planet = builder.planets[i];
+			if(!planet.owner && planet.isHome == "Y") {
+				planet.owner = player;
+				break;
+			}
+		}
+	});
 
 	callback(builder);
 }

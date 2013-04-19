@@ -18,6 +18,7 @@ var gameSchema = mongoose.Schema({
 		{
 			name : "String",
 			owner : "String",
+			isHome : "String",
 			position : {
 				x : "Number",
 				y : "Number"
@@ -291,15 +292,12 @@ var processMoves = function(game, newMoves) {
 exports.addUser = function(gameId, player, callback){
 	this.findById(gameId, function(game){
 		game.players.push(player);
-		var assigned = false;
-
-		while(!assigned){
-			var randomPlanetIndex = Math.floor((Math.random()*game.planets.length));
-			if(typeof game.planets[randomPlanetIndex].owner === "undefined"){
-				game.planets[randomPlanetIndex].owner = player;
-				game.planets[randomPlanetIndex].numberOfShips = 30;
-				game.planets[randomPlanetIndex].shipRegenRate = 5;
-				assigned = true;
+		
+		for(var i in game.planets) {
+			var planet = game.planets[i];
+			if(!planet.owner && planet.isHome == "Y") {
+				planet.owner = player;
+				break;
 			}
 		}
 		
