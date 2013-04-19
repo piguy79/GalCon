@@ -191,11 +191,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public void setGameBoard(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
 		processGameBoard();
-		associateHudInformation(gameBoard);
+		associateHudInformation();
 	}
 
-	private void associateHudInformation(GameBoard gameBoard2) {
-		boardScreenHud.associateCurrentRoundInformation(gameBoard.currentPlayerToMove, gameBoard.roundNumber);
+	private void associateHudInformation() {
+		boardScreenHud.associateCurrentRoundInformation(gameBoard.currentPlayerToMove, gameBoard.roundNumber,
+				gameBoard.winner);
 	}
 
 	private void processGameBoard() {
@@ -538,15 +539,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		if (!gameBoard.winner.isEmpty()) {
 			displayWinner(gameBoard.winner);
-		} else {
-			boardScreenHud.render(delta);
+		}
 
-			renderDialogs(delta);
+		boardScreenHud.render(delta);
 
-			Action hudResult = (Action) boardScreenHud.getRenderResult();
-			if (hudResult != null) {
-				processHudButtonTouch(hudResult);
-			}
+		renderDialogs(delta);
+
+		Action hudResult = (Action) boardScreenHud.getRenderResult();
+		if (hudResult != null) {
+			processHudButtonTouch(hudResult);
 		}
 	}
 

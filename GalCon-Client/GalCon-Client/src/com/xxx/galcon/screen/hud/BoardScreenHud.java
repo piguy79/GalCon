@@ -11,6 +11,7 @@ public class BoardScreenHud extends Hud {
 	private BitmapFont font;
 	private String currentPlayerToMove;
 	private int roundNumber;
+	private String winner;
 
 	private HudButton backButton;
 	private HudButton endTurnButton;
@@ -34,9 +35,10 @@ public class BoardScreenHud extends Hud {
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber) {
+	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber, String winner) {
 		this.currentPlayerToMove = currentPlayerToMove;
 		this.roundNumber = roundNumber;
+		this.winner = winner;
 	}
 
 	@Override
@@ -45,7 +47,11 @@ public class BoardScreenHud extends Hud {
 
 		getSpriteBatch().begin();
 
-		if (!isMyTurn) {
+		if (winner != null && !winner.isEmpty()) {
+			sendButton.setEnabled(false);
+			endTurnButton.setEnabled(false);
+			refreshButton.setEnabled(false);
+		} else if (!isMyTurn) {
 			int height = Gdx.graphics.getHeight();
 			font.draw(getSpriteBatch(), "Current Player: " + currentPlayerToMove, 5, height * .26f);
 			font.draw(getSpriteBatch(), "Round Number: " + roundNumber, 5, height * .2f);
