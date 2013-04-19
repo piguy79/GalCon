@@ -559,9 +559,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		fontViewMatrix.setToOrtho2D(0, 0, width, height);
 		spriteBatch.setProjectionMatrix(fontViewMatrix);
 
-		winner = "Victor! " + winner;
-		float halfFontWidth = font.getBounds(winner).width / 2;
-		font.draw(spriteBatch, winner, width / 2 - halfFontWidth, height * .25f);
+		String text = "You Lost";
+		if (GameLoop.USER.equals(winner)) {
+			text = "Victory!";
+		}
+		float halfFontWidth = font.getBounds(text).width / 2;
+		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		spriteBatch.end();
 	}
 
