@@ -238,14 +238,22 @@ exports.performMoves = function(gameId, moves, player, callback) {
 var processPossibleEndGame = function(game){
 	if(!game.hasOnlyOnePlayer()){
 		var playersWhoOwnAPlanet = [];
-		for(var i = 0;i < game.planets.length; i++){
+		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
 			if(planet.owner && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
 				playersWhoOwnAPlanet.push(planet.owner);
 			}
 		}
 		
-		if(playersWhoOwnAPlanet.length == 1){
+		var playersWhoHaveAMove = [];
+		for(var i = 0; i < game.moves.length; i++){
+			var move = game.moves[i];
+			if(playersWhoHaveAMove.indexOf(move.player) < 0){
+				playersWhoHaveAMove.push(move.player);
+			}
+		}
+		
+		if(playersWhoOwnAPlanet.length == 1 && playersWhoHaveAMove.length == 1){
 			game.winner = playersWhoOwnAPlanet[0];
 		}
 	}
