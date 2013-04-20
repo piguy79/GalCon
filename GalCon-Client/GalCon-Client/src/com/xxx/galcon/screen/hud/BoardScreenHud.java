@@ -47,6 +47,7 @@ public class BoardScreenHud extends Hud {
 
 		getSpriteBatch().begin();
 
+		refreshButton.setEnabled(true);
 		if (winner != null && !winner.isEmpty()) {
 			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
