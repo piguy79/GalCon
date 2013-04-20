@@ -23,4 +23,8 @@ public class JoinGameListScreen extends GameListScreen {
 		return boardScreen;
 	}
 
+	@Override
+	protected boolean showGamesThatHaveBeenWon() {
+		return false;
+	}
 }

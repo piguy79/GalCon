@@ -2,7 +2,10 @@ package com.xxx.galcon.screen;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -43,6 +46,10 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		spriteBatch.dispose();
 	}
 
+	protected boolean showGamesThatHaveBeenWon() {
+		return true;
+	}
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -73,23 +80,36 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 			String text = "Loading...";
 			float halfFontWidth = mediumFont.getBounds(text).width / 2;
 			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
-		} else if (allGames.getAllGames().isEmpty()) {
-			String text = "No games available";
-			float halfFontWidth = mediumFont.getBounds(text).width / 2;
-			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 		} else {
-			float textY = 0.98f;
-			for (GameBoard gameBoard : allGames.getAllGames()) {
-				String text = createLabelTestForAGame(gameBoard);
-				float halfFontWidth = smallFont.getBounds(text).width / 2;
-				smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
-				if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
-					if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
-						returnValue = gameBoard;
+			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
+			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
+				GameBoard board = iter.next();
+				if (board.winner != null && !board.winner.isEmpty()) {
+					if (!showGamesThatHaveBeenWon()
+							|| board.createdDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
+						iter.remove();
 					}
 				}
+			}
 
-				textY -= 0.05f;
+			if (games.isEmpty()) {
+				String text = "No games available";
+				float halfFontWidth = mediumFont.getBounds(text).width / 2;
+				mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+			} else {
+				float textY = 0.98f;
+				for (GameBoard gameBoard : games) {
+					String text = createLabelTestForAGame(gameBoard);
+					float halfFontWidth = smallFont.getBounds(text).width / 2;
+					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
+					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
+						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
+							returnValue = gameBoard;
+						}
+					}
+
+					textY -= 0.05f;
+				}
 			}
 		}
 
@@ -105,13 +125,23 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	private String createLabelTestForAGame(GameBoard gameBoard) {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
-		List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
-		if (otherPlayers.size() == 0) {
-			return labelForGame + " waiting for opponent";
 
+		if (gameBoard.winner != null && !gameBoard.winner.isEmpty()) {
+			String winningText = "You Lost";
+			if (gameBoard.winner.equals(GameLoop.USER)) {
+				winningText = "You Won!!";
+			}
+			return labelForGame + " " + winningText;
+		} else {
+
+			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
+			if (otherPlayers.size() == 0) {
+				return labelForGame + " waiting for opponent";
+
+			}
+
+			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
 		}
-
-		return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
 	}
 
 	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user,
