@@ -20,6 +20,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -40,61 +41,87 @@ public class AndroidGameAction implements GameAction {
 	private String host;
 	private String port;
 	private ConnectivityManager connectivityManager;
+	private Activity activity;
 
-	public AndroidGameAction(ConnectivityManager connectivityManager, String host, String port) {
+	public AndroidGameAction(Activity activity, ConnectivityManager connectivityManager, String host, String port) {
 		this.host = host;
 		this.port = port;
 		this.connectivityManager = connectivityManager;
+		this.activity = activity;
 	}
 
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) {
-		Map<String, String> args = new HashMap<String, String>();
+	public void findAvailableGames(final ConnectionResultCallback<AvailableGames> callback, String player) {
+		final Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
-		new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, new AvailableGames()).execute("");
+
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, new AvailableGames())
+						.execute("");
+			}
+		});
 	}
 
-	public void joinGame(ConnectionResultCallback<GameBoard> callback, String id, String player) {
-		Map<String, String> args = new HashMap<String, String>();
+	public void joinGame(final ConnectionResultCallback<GameBoard> callback, String id, String player) {
+		final Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
 
-		new GetJsonRequestTask<GameBoard>(args, callback, JOIN_GAME, new GameBoard()).execute("");
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<GameBoard>(args, callback, JOIN_GAME, new GameBoard()).execute("");
+			}
+		});
 	}
 
-	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(final ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.generateGame(player, width, height);
-			new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
+			final JSONObject top = JsonConstructor.generateGame(player, width, height);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
+				}
+			});
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
-	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+	public void performMoves(final ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.performMove(gameId, moves);
-			new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
+			final JSONObject top = JsonConstructor.performMove(gameId, moves);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
+				}
+			});
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
-	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
+	public void findGameById(final ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
+		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-
-		new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
+			}
+		});
 	}
 
-	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findActiveGamesForAUser(final ConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
+		final Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-
-		new GetJsonRequestTask<AvailableGames>(args, callback, FIND_ACTIVE_GAMES_FOR_A_USER, new AvailableGames())
-				.execute("");
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_ACTIVE_GAMES_FOR_A_USER,
+						new AvailableGames()).execute("");
+			}
+		});
 	}
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
