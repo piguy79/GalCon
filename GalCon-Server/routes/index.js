@@ -92,7 +92,17 @@ exports.performMoves = function(req, res){
 	var moves = req.body.moves;
 	var player = req.body.player;
 	gameManager.performMoves(gameId, moves, player, function(savedGame){
-		res.json(savedGame);
+		if(savedGame.winner){
+			userManager.findUserByName(savedGame.winner, function(user){
+					user.xp += 10;
+					user.save(function(){
+						res.json(savedGame);
+					});	
+				
+			});
+		}else{
+			res.json(savedGame);
+		}
 	});
 }
 
