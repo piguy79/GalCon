@@ -1,6 +1,7 @@
 var gameBuilder = require('../modules/gameBuilder')
 , gameManager = require('../modules/model/game')
-, userManager = require('../modules/model/user');
+, userManager = require('../modules/model/user')
+, rankManager = require('../modules/model/rank');
 
 
 /*
@@ -95,10 +96,12 @@ exports.performMoves = function(req, res){
 		if(savedGame.winner){
 			userManager.findUserByName(savedGame.winner, function(user){
 					user.xp += 10;
-					user.save(function(){
-						res.json(savedGame);
-					});	
-				
+					rankManager.findRankForXp(user.xp, function(rank){
+						user.rank = rank.name;
+						user.save(function(){
+							res.json(savedGame);
+						});
+					});
 			});
 		}else{
 			res.json(savedGame);
@@ -127,11 +130,21 @@ exports.joinGame = function(req, res){
 	var player = req.query['player'];
 	gameManager.addUser(gameId, player,  function(game){
 		gameManager.findById(gameId, function(returnGame){
-			var user = new userManager.UserModel({
-				name : player			
-			});
-			user.createOrAdd(returnGame.id, function(user){
-				res.json(returnGame);
+			userManager.findUserByName(player, function(user){
+				if(user){
+					user.currentGames.push(gameId);
+				}else{
+					user = new userManager.UserModel({
+						name : player,
+						currentGames : [gameId],
+						xp : 0,
+						rank : "Rookie"					
+					});
+				}
+				user.save(function(){
+					res.json(returnGame);
+				});
+				
 			});
 		});
 	});
