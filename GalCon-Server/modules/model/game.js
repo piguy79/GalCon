@@ -212,9 +212,7 @@ exports.performMoves = function(gameId, moves, player, callback) {
 		decrementCurrentShipCountOnFromPlanets(game, moves);
 		
 		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(player)) {
-			processMoves(game, moves);
-			var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
-			
+			processMoves(game, moves);			
 			processPossibleEndGame(game);
 
 			game.currentRound.roundNumber++;
@@ -224,10 +222,6 @@ exports.performMoves = function(gameId, moves, player, callback) {
 		}
 
 		assignNextCurrentRoundPlayer(game, player);
-		
-		//var fromPlanet = findFromPlanet(game.planets, "fromPlanet");
-		//console.log("Num ships " + fromPlanet.numberOfShips);
-		
 
 		game.save(function(savedGame) {
 			callback(game);
