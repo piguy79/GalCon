@@ -18,12 +18,21 @@ exports.generateGame = function(req, res){
 	var player = req.body.player;
 	gameManager.createGame([player], req.body.width, req.body.height, 10, function(game){
 		gameManager.saveGame(game, function(){
-			var user = new userManager.UserModel({
-				name : player,
-				currentGames : [game.id]
-			});
-			user.createOrAdd(game.id, function(user){
-				res.json(game);
+			userManager.findUserByName(player, function(user){
+				if(user){
+					user.currentGames.push(game.id);
+				}else{
+					user = new userManager.UserModel({
+						name : player,
+						currentGames : [game.id],
+						xp : 0,
+						rank : "Rookie"					
+					});
+				}
+				user.save(function(){
+					res.json(game);
+				});
+				
 			});
 		});
 	});

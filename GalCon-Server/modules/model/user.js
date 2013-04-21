@@ -5,7 +5,8 @@ var mongoose = require('./mongooseConnection').mongoose
 var userSchema = mongoose.Schema({
 	name : "String",
 	createdDate : "Date",
-	highScore : "Number",
+	xp : "Number",
+	rank : "String",
 	currentGames : ["String"]
 });
 
