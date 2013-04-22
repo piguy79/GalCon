@@ -79,7 +79,7 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER, 7, 10);
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER, 6, 8);
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
