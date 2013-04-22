@@ -9,6 +9,7 @@ import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -104,9 +105,14 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 			} else {
 				float textY = 0.98f;
 				for (GameBoard gameBoard : games) {
-					String text = createLabelTestForAGame(gameBoard);
+					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
+
+					if (GameLoop.USER.equals(gameBoard.currentPlayerToMove) && gameBoard.winner.isEmpty()) {
+						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
+					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
+					smallFont.setColor(Color.WHITE);
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 							returnValue = gameBoard;
@@ -131,7 +137,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		}
 	}
 
-	private String createLabelTestForAGame(GameBoard gameBoard) {
+	private String createLabelTextForAGame(GameBoard gameBoard) {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 
@@ -146,7 +152,6 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
-
 			}
 
 			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
