@@ -27,3 +27,18 @@ API
 ----
 
 * [Game Endpoint](https://github.com/piguy79/GalCon/blob/master/GalCon-Server/documents/api/game.md)
+
+
+Versions
+-----
+
+__V0.01__
+* Basic Game setup.
+* Ability to create a new game.
+* Ability to join an existing game.
+* Ability to make a move within a game.
+
+__V0.02__
+* Ranking concept introduced.
+* Notification system.
+* Multiple levels to play.
