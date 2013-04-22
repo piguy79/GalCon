@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
@@ -48,6 +49,10 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	protected boolean showGamesThatHaveBeenWon() {
 		return true;
+	}
+
+	protected void refreshScreen() {
+		ConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER);
 	}
 
 	@Override
@@ -116,9 +121,13 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		spriteBatch.end();
 
 		gameListHud.render(delta);
-
 		if (gameListHud.getRenderResult() != null) {
-			returnValue = gameListHud.getRenderResult();
+			Action result = (Action) gameListHud.getRenderResult();
+			if (result == Action.REFRESH) {
+				refreshScreen();
+			} else {
+				returnValue = result;
+			}
 		}
 	}
 

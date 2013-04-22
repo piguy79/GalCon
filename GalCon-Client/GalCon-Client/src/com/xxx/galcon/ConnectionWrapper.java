@@ -5,6 +5,7 @@ import java.util.List;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 
@@ -31,6 +32,24 @@ public class ConnectionWrapper {
 	public static void findGameById(ConnectionResultCallback<GameBoard> callback, String id) {
 		try {
 			gameAction.findGameById(callback, id);
+		} catch (ConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player) {
+		try {
+			gameAction.findActiveGamesForAUser(callback, player);
+		} catch (ConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) {
+		try {
+			gameAction.findAvailableGames(callback, player);
 		} catch (ConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

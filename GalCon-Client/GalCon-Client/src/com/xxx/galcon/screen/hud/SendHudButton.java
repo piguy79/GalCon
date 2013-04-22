@@ -1,12 +1,13 @@
 package com.xxx.galcon.screen.hud;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.screen.Action;
 
 public class SendHudButton extends HudButton {
 
-	public SendHudButton(Texture texture) {
-		super(texture);
+	public SendHudButton(AssetManager assetManager) {
+		super(assetManager.get("data/images/arrow_right.png", Texture.class));
 	}
 
 	@Override

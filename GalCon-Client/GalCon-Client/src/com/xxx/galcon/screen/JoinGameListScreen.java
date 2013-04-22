@@ -1,6 +1,8 @@
 package com.xxx.galcon.screen;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.xxx.galcon.ConnectionWrapper;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
@@ -26,5 +28,10 @@ public class JoinGameListScreen extends GameListScreen {
 	@Override
 	protected boolean showGamesThatHaveBeenWon() {
 		return false;
+	}
+
+	@Override
+	protected void refreshScreen() {
+		ConnectionWrapper.findAvailableGames(this, GameLoop.USER);
 	}
 }

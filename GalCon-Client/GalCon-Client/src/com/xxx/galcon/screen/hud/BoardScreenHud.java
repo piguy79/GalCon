@@ -2,7 +2,6 @@ package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
@@ -22,10 +21,10 @@ public class BoardScreenHud extends Hud {
 		super();
 		font = Fonts.getInstance().largeFont();
 
-		sendButton = new SendHudButton(assetManager.get("data/images/arrow_right.png", Texture.class));
-		backButton = new BackHudButton(assetManager.get("data/images/arrow_left.png", Texture.class));
-		endTurnButton = new EndTurnHudButton(assetManager.get("data/images/end_turn.png", Texture.class));
-		refreshButton = new RefreshHudButton(assetManager.get("data/images/refresh.png", Texture.class));
+		sendButton = new SendHudButton(assetManager);
+		backButton = new BackHudButton(assetManager);
+		endTurnButton = new EndTurnHudButton(assetManager);
+		refreshButton = new RefreshHudButton(assetManager);
 
 		addHudButton(sendButton);
 		addHudButton(backButton);

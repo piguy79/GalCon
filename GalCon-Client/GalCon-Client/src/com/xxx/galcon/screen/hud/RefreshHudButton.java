@@ -1,11 +1,12 @@
 package com.xxx.galcon.screen.hud;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.screen.Action;
 
 public class RefreshHudButton extends HudButton {
-	public RefreshHudButton(Texture texture) {
-		super(texture);
+	public RefreshHudButton(AssetManager assetManager) {
+		super(assetManager.get("data/images/refresh.png", Texture.class));
 	}
 
 	@Override

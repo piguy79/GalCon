@@ -83,11 +83,11 @@ public class GameLoop extends Game {
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					gameAction.findAvailableGames(joinScreen, USER);
+					ConnectionWrapper.findAvailableGames(joinScreen, USER);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT_GAMES)) {
 					GameListScreen currentGameScreen = new GameListScreen(assetManager);
-					gameAction.findActiveGamesForAUser(currentGameScreen, USER);
+					ConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
