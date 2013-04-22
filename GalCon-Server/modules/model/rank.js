@@ -2,6 +2,15 @@ var mongoose = require('./mongooseConnection').mongoose
 ,db = require('./mongooseConnection').db
 ,ObjectId = require('mongoose').Types.ObjectId;
 
+var populateDefaultRanks = function(){
+	var defaultRanks = require('./seed/ranks.json');
+			
+	for(var  i = 0 ; i < defaultRanks.ranks.length; i++){
+		var rank = new RankModel(defaultRanks.ranks[i]);
+		rank.save();
+	}
+}
+
 var rankSchema = mongoose.Schema({
 	level : "Number",
 	startFrom : "Number",
@@ -12,6 +21,12 @@ rankSchema.set('toObject', { getters: true });
 rankSchema.index({level : 1});
 
 var RankModel = db.model('Rank', rankSchema);
+
+
+RankModel.find().remove();
+populateDefaultRanks();
+
+
 
 
 exports.saveRank = function(rank, callback){
