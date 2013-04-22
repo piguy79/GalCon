@@ -3,13 +3,13 @@ var mongoose = require('./mongooseConnection').mongoose
 ,ObjectId = require('mongoose').Types.ObjectId;
 
 var rankSchema = mongoose.Schema({
-	name : "String",
+	level : "Number",
 	startFrom : "Number",
 	endAt : "Number"
 });
 
 rankSchema.set('toObject', { getters: true });
-rankSchema.index({name : 1});
+rankSchema.index({level : 1});
 
 var RankModel = db.model('Rank', rankSchema);
 
@@ -22,7 +22,7 @@ exports.saveRank = function(rank, callback){
 
 
 exports.findRankForXp = function(xp, callback){
-	RankModel.findOne({startFrom : {$lt : xp }, endAt : {$gt : xp}}, function(err, rank){
+	RankModel.findOne({startFrom : {$lte : xp }, endAt : {$gt : xp}}, function(err, rank){
 		if(err){
 			console.log("Unable to find a rank for xp: " + xp);
 		}else{
