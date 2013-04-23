@@ -65,6 +65,28 @@ exports.findAvailableGames = function(req, res){
 	});
 }
 
+exports.findGamesWithPendingMove = function(req, res) {
+	var userName = req.query['userName'];
+	userManager.findUserByName(userName, function(user) {
+		if (!user) {
+			res.json({});
+		} else {
+			gameManager.findCollectionOfGames(user.currentGames,
+					function(games) {
+						var returnObj = {};
+						var len = games.length;
+						while(len--) {
+							if(games[len].currentRound.player != user.name) {
+								games.splice(len, 1);
+							}
+						}
+						returnObj.items = games;
+						res.json(returnObj);
+					});
+		}
+	});
+}
+
 exports.findUserByUserName = function(req, res){
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user){
