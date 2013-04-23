@@ -24,7 +24,6 @@ public class ConnectionWrapper {
 		try {
 			gameAction.performMoves(callback, gameId, moves);
 		} catch (ConnectionException e) {
-			// FIXME: handle
 			e.printStackTrace();
 		}
 	}
@@ -33,7 +32,6 @@ public class ConnectionWrapper {
 		try {
 			gameAction.findGameById(callback, id);
 		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -42,7 +40,6 @@ public class ConnectionWrapper {
 		try {
 			gameAction.findActiveGamesForAUser(callback, player);
 		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -51,7 +48,6 @@ public class ConnectionWrapper {
 		try {
 			gameAction.findAvailableGames(callback, player);
 		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

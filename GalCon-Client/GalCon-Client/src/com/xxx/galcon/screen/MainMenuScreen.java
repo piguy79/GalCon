@@ -50,7 +50,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
 		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
-		addText(Constants.CURRENT_GAMES, (int) (height * .22f), true, width, height);
+		addText(Constants.CURRENT, (int) (height * .22f), true, width, height);
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {

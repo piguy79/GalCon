@@ -22,6 +22,11 @@ public class Constants {
 	public static final String WINNER = "winner";
 	public static final String HEIGHT = "height";
 	public static final String JOIN = "Join";
-	public static final String CURRENT_GAMES = "Current";
+	public static final String CURRENT = "Current";
 	public static final String CREATE = "Create";
+	public static final String RANK = "rank";
+	public static final String XP = "xp";
+	public static final String CURRENT_GAMES = "currentGames";
+
+
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.GameListScreen;
@@ -18,7 +19,7 @@ import com.xxx.galcon.screen.MainMenuScreen;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
-	public static String USER;
+	public static Player USER;
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -27,10 +28,11 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 
-	public GameLoop(String user, GameAction gameAction) {
+	public GameLoop(Player player, GameAction gameAction) {
 		this.gameAction = gameAction;
-		GameLoop.USER = user;
-		ConnectionWrapper.setGameAction(gameAction);
+		GameLoop.USER = player;
+ 		ConnectionWrapper.setGameAction(gameAction);
+		
 	}
 
 	@Override
@@ -79,22 +81,22 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER, 6, 8);
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.name, 6, 8);
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					ConnectionWrapper.findAvailableGames(joinScreen, USER);
+					ConnectionWrapper.findAvailableGames(joinScreen, USER.name);
 					return joinScreen;
-				} else if (nextScreen.equals(Constants.CURRENT_GAMES)) {
+				} else if (nextScreen.equals(Constants.CURRENT)) {
 					GameListScreen currentGameScreen = new GameListScreen(assetManager);
-					ConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER);
+					ConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER.name);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					GameBoard toTakeActionOn = (GameBoard) result;
-					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER,
+					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.name,
 							boardScreen);
 					return boardScreen;
 				} else if (result instanceof Action) {

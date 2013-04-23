@@ -20,4 +20,7 @@ public class UrlConstants {
 	public static final String FIND_GAME_BY_ID = "/findGameById";
 	
 	public static final String FIND_ACTIVE_GAMES_FOR_A_USER = "/findActiveGamesForUser";
+	
+	public static final String FIND_USER_BY_USER_NAME = "/findUserByUserName";
+
 }
