@@ -8,7 +8,8 @@ Installation
 
 * Download the [Heroku toolbelt](https://toolbelt.heroku.com/) 
 * Add the Heroku git repo as a remote dependancy
-  * `heroku git:remote -a damp-crag-7750`
+  * PROD - `heroku git:remote -a damp-crag-7750`
+  * DEV - `git remote add heroku-dev git@heroku.com:stormy-sands-7424.git`
 
 
 Basic Setup
@@ -28,4 +29,5 @@ The following files are used to configure the Heroku deployment
 Deployment
 -----
 
-* Run a `git push heroku master`
+* PROD - Run a `git push heroku master`
+* DEV - Run a `git push heroku-dev master`
