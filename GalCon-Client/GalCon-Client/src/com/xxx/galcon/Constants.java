@@ -25,6 +25,7 @@ public class Constants {
 	public static final String CURRENT = "Current";
 	public static final String CREATE = "Create";
 	public static final String RANK = "rank";
+	public static final String LEVEL = "level";
 	public static final String XP = "xp";
 	public static final String CURRENT_GAMES = "currentGames";
 

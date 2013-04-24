@@ -23,7 +23,7 @@ public class MainActivity extends AndroidApplication {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		
 		AndroidGameAction gameAction = new AndroidGameAction(this, connectivityManager,
-		"damp-crag-7750.herokuapp.com", "80");
+		"stormy-sands-7424.herokuapp.com", "80");
 		
 		Player player = new Player();
 		player.name = getUser();

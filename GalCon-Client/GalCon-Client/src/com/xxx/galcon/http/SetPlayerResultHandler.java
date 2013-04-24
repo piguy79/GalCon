@@ -13,7 +13,9 @@ public class SetPlayerResultHandler implements ConnectionResultCallback<Player> 
 
 	@Override
 	public void result(Player result) {
-		this.player = result;
+		this.player.rank = result.rank;
+		this.player.currentGames = result.currentGames;
+		this.player.xp = result.xp;
 	}
 	
 	

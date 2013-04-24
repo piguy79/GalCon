@@ -12,11 +12,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 
 public class MainMenuScreen implements ScreenFeedback {
 	private BitmapFontCache fontCache;
 	private BitmapFont extraLargeFont;
+	private BitmapFont smallFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -29,6 +31,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		fontCache = new BitmapFontCache(font);
 
 		extraLargeFont = Fonts.getInstance().extraLargeFont();
+		smallFont = Fonts.getInstance().smallFont();
 
 		spriteBatch = new SpriteBatch();
 
@@ -51,6 +54,11 @@ public class MainMenuScreen implements ScreenFeedback {
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
 		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
 		addText(Constants.CURRENT, (int) (height * .22f), true, width, height);
+
+	}
+
+	private String currentUserText() {
+		return "(Level " + GameLoop.USER.rank + ")";
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
@@ -62,6 +70,8 @@ public class MainMenuScreen implements ScreenFeedback {
 			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height, true));
 		}
 	}
+	
+	
 
 	@Override
 	public void render(float delta) {
@@ -99,6 +109,11 @@ public class MainMenuScreen implements ScreenFeedback {
 		String galcon = "GalCon";
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .7f));
+		
+		x = width / 2 - (int) smallFont.getBounds(currentUserText()).width / 2;
+		smallFont.draw(spriteBatch, currentUserText(), x, (int) (height * .57f));
+		
+		
 		spriteBatch.end();
 	}
 
