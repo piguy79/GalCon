@@ -73,7 +73,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	List<Move> moves = new ArrayList<Move>();
-
+	
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
 	private ShipSelectionDialog shipSelectionDialog;
@@ -86,32 +86,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
-
-		planetShader = new ShaderProgram(Gdx.files.internal("data/shaders/planet-vs.glsl"),
-				Gdx.files.internal("data/shaders/planet-fs.glsl"));
-		if (!planetShader.isCompiled() && !planetShader.getLog().isEmpty()) {
-			throw new IllegalStateException("Shader compilation fail: " + planetShader.getLog());
-		}
-
-		gridShader = new ShaderProgram(Gdx.files.internal("data/shaders/grid-vs.glsl"),
-				Gdx.files.internal("data/shaders/grid-fs.glsl"));
-		if (!gridShader.isCompiled() && !gridShader.getLog().isEmpty()) {
-			throw new IllegalStateException("Shader compilation fail: " + gridShader.getLog());
-		}
-
-		shipShader = new ShaderProgram(Gdx.files.internal("data/shaders/ship-vs.glsl"),
-				Gdx.files.internal("data/shaders/ship-fs.glsl"));
-		if (!shipShader.isCompiled() && !shipShader.getLog().isEmpty()) {
-			throw new IllegalStateException("Shader compilation fail: " + shipShader.getLog());
-		}
-
-		font = Fonts.getInstance().mediumFont();
-
-		ObjLoader loader = new ObjLoader();
-		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
-
-		loader = new ObjLoader();
-		shipModel = loader.loadObj(Gdx.files.internal("data/models/ship.obj"));
+		
+		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");		
+		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
+		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
+		
+		font = Fonts.getInstance().mediumFont();	
+		
+		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
+		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 
@@ -119,6 +102,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
+	}
+	
+	private StillModel generateStillModelFromObjectFile(String objectFile){
+		ObjLoader loader = new ObjLoader();
+		return loader.loadObj(Gdx.files.internal(objectFile));
+	}
+	
+	private ShaderProgram createShaderUsingFiles(String vertexShader, String fragmentShader){
+		ShaderProgram shader = new ShaderProgram(Gdx.files.internal(vertexShader),
+				Gdx.files.internal(fragmentShader));
+		if (!shader.isCompiled() && !shader.getLog().isEmpty()) {
+			throw new IllegalStateException("Shader compilation fail: " + shader.getLog());
+		}
+		
+		return shader;
 	}
 
 	/*
@@ -214,7 +212,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		for (Planet planet : gameBoard.planets) {
 			addPhysicsToPlanet(planet);
 		}
+		
 	}
+
 
 	private Body handleTouch(Camera camera) {
 		if (gameBoard == null) {

@@ -14,6 +14,9 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.http.ConnectionException;
+import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 
 public class MainMenuScreen implements ScreenFeedback {
 	private BitmapFontCache fontCache;
@@ -23,10 +26,12 @@ public class MainMenuScreen implements ScreenFeedback {
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
 	private String returnValue;
+	private GameAction gameAction;
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
-	public MainMenuScreen() {
+	public MainMenuScreen(GameAction gameAction) {
+		this.gameAction = gameAction;
 		BitmapFont font = Fonts.getInstance().largeFont();
 		fontCache = new BitmapFontCache(font);
 
@@ -111,7 +116,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .7f));
 		
 		x = width / 2 - (int) smallFont.getBounds(currentUserText()).width / 2;
-		smallFont.draw(spriteBatch, currentUserText(), x, (int) (height * .57f));
+		smallFont.draw(spriteBatch, currentUserText(), x, (int) (height * .6f));
 		
 		
 		spriteBatch.end();
@@ -145,6 +150,11 @@ public class MainMenuScreen implements ScreenFeedback {
 	@Override
 	public void resetState() {
 		returnValue = null;
+		try {
+			gameAction.findUserInformation(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.name);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

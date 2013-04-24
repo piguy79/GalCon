@@ -60,7 +60,7 @@ public class GameLoop extends Game {
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);
-		mainMenuScreen = new MainMenuScreen();
+		mainMenuScreen = new MainMenuScreen(gameAction);
 		setScreen(mainMenuScreen);
 	}
 
