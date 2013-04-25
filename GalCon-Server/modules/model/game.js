@@ -248,7 +248,8 @@ var processPossibleEndGame = function(game){
 		}
 		
 		if(playersWhoOwnAPlanet.length == 1) {
-			if(playersWhoHaveAMove.length == 0 || playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0) {
+			if(playersWhoHaveAMove.length == 0 || 
+					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
 				game.winner = playersWhoOwnAPlanet[0];
 			}
 		}
