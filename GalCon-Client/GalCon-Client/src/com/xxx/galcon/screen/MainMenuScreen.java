@@ -25,19 +25,11 @@ public class MainMenuScreen implements ScreenFeedback {
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen() {
-		BitmapFont font = Fonts.getInstance().largeFont();
-		fontCache = new BitmapFontCache(font);
-
-		extraLargeFont = Fonts.getInstance().extraLargeFont();
-
-		spriteBatch = new SpriteBatch();
-
-		updateFont();
+		resume();
 	}
 
 	@Override
 	public void dispose() {
-		fontCache.getFont().dispose();
 		spriteBatch.dispose();
 	}
 
@@ -104,7 +96,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-		updateFont();
+
 	}
 
 	@Override
@@ -124,7 +116,14 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+		BitmapFont font = Fonts.getInstance().largeFont();
+		fontCache = new BitmapFontCache(font);
+
+		extraLargeFont = Fonts.getInstance().extraLargeFont();
+
+		spriteBatch = new SpriteBatch();
+
+		updateFont();
 	}
 
 	@Override
