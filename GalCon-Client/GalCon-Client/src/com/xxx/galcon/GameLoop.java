@@ -24,7 +24,7 @@ public class GameLoop extends Game {
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
 	private GL20 gl;
-	private AssetManager assetManager = new AssetManager();
+	public AssetManager assetManager = new AssetManager();
 
 	private GameAction gameAction;
 
@@ -60,7 +60,7 @@ public class GameLoop extends Game {
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);
-		mainMenuScreen = new MainMenuScreen(gameAction);
+		mainMenuScreen = new MainMenuScreen(this, gameAction);
 		setScreen(mainMenuScreen);
 	}
 
