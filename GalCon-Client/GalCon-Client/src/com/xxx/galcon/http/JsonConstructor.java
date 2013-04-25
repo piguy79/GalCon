@@ -13,13 +13,13 @@ public class JsonConstructor {
 
 	public static JSONObject performMove(String gameId, List<Move> moves) throws JSONException {
 		JSONObject top = new JSONObject();
-		top.put("player", GameLoop.USER);
+		top.put("player", GameLoop.USER.name);
 		top.put("id", gameId);
 		JSONArray jsonMoves = new JSONArray();
 
 		for (Move move : moves) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("player", GameLoop.USER);
+			jsonObject.put("player", GameLoop.USER.name);
 			jsonObject.put("fromPlanet", move.fromPlanet);
 			jsonObject.put("toPlanet", move.toPlanet);
 			jsonObject.put("fleet", move.shipsToMove);

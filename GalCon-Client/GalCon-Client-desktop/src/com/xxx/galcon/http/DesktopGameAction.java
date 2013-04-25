@@ -7,6 +7,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
@@ -27,6 +28,7 @@ import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -149,5 +151,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
 				new AvailableGames()));
 
+	}
+
+	@Override
+	public void findUserInformation(ConnectionResultCallback<Player> callback,
+			String player) throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		callback.result((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME,
+				args, new Player()));
+		
 	}
 }

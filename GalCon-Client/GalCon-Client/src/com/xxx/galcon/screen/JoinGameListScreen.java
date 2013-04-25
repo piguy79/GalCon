@@ -32,6 +32,6 @@ public class JoinGameListScreen extends GameListScreen {
 
 	@Override
 	protected void refreshScreen() {
-		ConnectionWrapper.findAvailableGames(this, GameLoop.USER);
+		ConnectionWrapper.findAvailableGames(this, GameLoop.USER.name);
 	}
 }

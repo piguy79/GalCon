@@ -60,7 +60,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
 
-	private BitmapFont font;
 	private Texture planetNumbersTexture;
 
 	private StillModel planetModel;
@@ -105,8 +104,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			throw new IllegalStateException("Shader compilation fail: " + shipShader.getLog());
 		}
 
-		font = Fonts.getInstance().mediumFont();
-
 		ObjLoader loader = new ObjLoader();
 		planetModel = loader.loadObj(Gdx.files.internal("data/models/planet.obj"));
 
@@ -119,6 +116,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
+
+		resume();
 	}
 
 	/*
@@ -221,7 +220,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			return null;
 		}
 
-		if (!gameBoard.currentPlayerToMove.equals(GameLoop.USER)) {
+		if (!GameLoop.USER.isCurrentPlayerForGame(gameBoard)) {
 			return null;
 		}
 
@@ -334,7 +333,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float r = 0.0f, g = 0.0f, b = 0.0f;
 			if (planet.touched) {
-				if (planet.owner.equals(GameLoop.USER)) {
+				if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 1.0f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 1.0f;
@@ -344,7 +343,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					b = 1.0f;
 				}
 			} else {
-				if (planet.owner.equals(GameLoop.USER)) {
+				if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 0.5f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 0.5f;
@@ -376,7 +375,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		shipShader.begin();
 
 		for (Move move : moves) {
-			if (!move.player.equals(GameLoop.USER)) {
+			if (!move.belongsToPlayer(GameLoop.USER)) {
 				continue;
 			}
 
@@ -470,7 +469,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (planet.touched) {
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
-				if (!planet.owner.equals(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER)) {
+				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.name)) {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
@@ -515,6 +514,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 			String text = "Loading...";
+			BitmapFont font = Fonts.getInstance().mediumFont();
 			float halfFontWidth = font.getBounds(text).width / 2;
 			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 			spriteBatch.end();
@@ -559,9 +559,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "You Lost";
-		if (GameLoop.USER.equals(winner)) {
+		if (GameLoop.USER.name.equals(winner)) {
 			text = "Victory!";
 		}
+
+		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		spriteBatch.end();
@@ -584,7 +586,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			int startX = 0, startY = 0, endX = 0, endY = 0;
 			for (Planet planet : touchedPlanets) {
-				if (planet.owner.equals(GameLoop.USER) && move.fromPlanet == null) {
+				if (planet.isOwnedBy(GameLoop.USER) && move.fromPlanet == null) {
 					move.fromPlanet = planet.name;
 					move.shipsToMove = shipSelectionDialog.getShipsToSend();
 					planet.numberOfShips -= move.shipsToMove;
@@ -617,7 +619,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			int shipsOnPlanet = 0;
 			for (Planet planet : touchedPlanets) {
-				if (planet.owner.equals(GameLoop.USER)) {
+				if (planet.isOwnedBy(GameLoop.USER)) {
 					shipsOnPlanet = planet.numberOfShips;
 					break;
 				}
@@ -687,7 +689,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -20,16 +20,8 @@ exports.generateGame = function(req, res){
 	gameManager.createGame([player], req.body.width, req.body.height, 10, function(game){
 		gameManager.saveGame(game, function(){
 			userManager.findUserByName(player, function(user){
-				if(user){
-					user.currentGames.push(game.id);
-				}else{
-					user = new userManager.UserModel({
-						name : player,
-						currentGames : [game.id],
-						xp : 0,
-						rank : "Rookie"					
-					});
-				}
+				user.currentGames.push(game.id);
+				
 				user.save(function(){
 					res.json(game);
 				});
@@ -90,7 +82,20 @@ exports.findGamesWithPendingMove = function(req, res) {
 exports.findUserByUserName = function(req, res){
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user){
-		res.json(user);
+		if(user){
+			res.json(user);
+		}else{
+			user = new userManager.UserModel({
+				name : userName,
+				currentGames : [],
+				xp : 0,
+				rank : 1					
+			});
+			
+			user.save(function(){
+				res.json(user);
+			});
+		}		
 	});
 }
 
@@ -153,16 +158,7 @@ exports.joinGame = function(req, res){
 	gameManager.addUser(gameId, player,  function(game){
 		gameManager.findById(gameId, function(returnGame){
 			userManager.findUserByName(player, function(user){
-				if(user){
-					user.currentGames.push(gameId);
-				}else{
-					user = new userManager.UserModel({
-						name : player,
-						currentGames : [gameId],
-						xp : 0,
-						rank : "Rookie"					
-					});
-				}
+				user.currentGames.push(gameId);
 				user.save(function(){
 					res.json(returnGame);
 				});

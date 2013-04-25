@@ -38,9 +38,9 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
-		smallFont = Fonts.getInstance().smallFont();
-		mediumFont = Fonts.getInstance().mediumFont();
 		gameListHud = new GameListHud(assetManager);
+
+		resume();
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	}
 
 	protected void refreshScreen() {
-		ConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER);
+		ConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER.name);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
 
-					if (GameLoop.USER.equals(gameBoard.currentPlayerToMove) && gameBoard.winner.isEmpty()) {
+					if (GameLoop.USER.name.equals(gameBoard.currentPlayerToMove) && gameBoard.winner.isEmpty()) {
 						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
@@ -143,18 +143,18 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 		if (gameBoard.winner != null && !gameBoard.winner.isEmpty()) {
 			String winningText = "You Lost";
-			if (gameBoard.winner.equals(GameLoop.USER)) {
+			if (gameBoard.winner.equals(GameLoop.USER.name)) {
 				winningText = "You Won!!";
 			}
 			return labelForGame + " " + winningText;
 		} else {
 
-			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER);
+			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.name);
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
 			}
 
-			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER);
+			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER.name);
 		}
 	}
 
@@ -194,8 +194,8 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
+		smallFont = Fonts.getInstance().smallFont();
+		mediumFont = Fonts.getInstance().mediumFont();
 	}
 
 	@Override

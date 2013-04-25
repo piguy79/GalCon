@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Planet implements JsonConvertible {
@@ -39,5 +40,10 @@ public class Planet implements JsonConvertible {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean isOwnedBy(Player player){
+		return owner.equals(player.name);	
+	}
+	
 
 }

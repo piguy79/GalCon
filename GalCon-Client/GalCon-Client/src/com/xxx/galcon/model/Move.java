@@ -6,4 +6,8 @@ public class Move {
 	public int shipsToMove = 0;
 	public int duration = 0;
 	public String player;
+	
+	public boolean belongsToPlayer(Player player){
+		return this.player.equals(player.name);
+	}
 }

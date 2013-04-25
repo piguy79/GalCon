@@ -1,6 +1,5 @@
 package com.xxx.galcon;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -8,6 +7,9 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.xxx.galcon.http.ConnectionException;
+import com.xxx.galcon.http.SetPlayerResultHandler;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
@@ -18,9 +20,19 @@ public class MainActivity extends AndroidApplication {
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
 
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
-		initialize(new GameLoop(UserInfo.getUser(this), new AndroidGameAction(this, connectivityManager)), cfg);
+		AndroidGameAction gameAction = new AndroidGameAction(this, connectivityManager);
+
+		Player player = new Player();
+		player.name = UserInfo.getUser(getBaseContext());
+		try {
+			gameAction.findUserInformation(new SetPlayerResultHandler(player), player.name);
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
+
+		initialize(new GameLoop(player, gameAction), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 

@@ -5,6 +5,7 @@ import java.util.List;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Player;
 
 /**
  * This class defines a set of methods used to interact with the server side
@@ -39,6 +40,8 @@ public interface GameAction {
 
 	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
+	
+	public void findUserInformation(ConnectionResultCallback<Player> callback, String player) throws ConnectionException;
 
 	public void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
