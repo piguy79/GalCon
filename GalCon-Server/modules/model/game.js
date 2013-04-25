@@ -247,8 +247,10 @@ var processPossibleEndGame = function(game){
 			}
 		}
 		
-		if(playersWhoOwnAPlanet.length == 1 && playersWhoHaveAMove.length == 1){
-			game.winner = playersWhoOwnAPlanet[0];
+		if(playersWhoOwnAPlanet.length == 1) {
+			if(playersWhoHaveAMove.length == 0 || playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0) {
+				game.winner = playersWhoOwnAPlanet[0];
+			}
 		}
 	}
 }
