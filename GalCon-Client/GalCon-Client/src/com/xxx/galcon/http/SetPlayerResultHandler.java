@@ -2,7 +2,7 @@ package com.xxx.galcon.http;
 
 import com.xxx.galcon.model.Player;
 
-public class SetPlayerResultHandler implements ConnectionResultCallback<Player> {
+public class SetPlayerResultHandler implements UIConnectionResultCallback<Player> {
 	
 	private Player player;
 
@@ -12,12 +12,14 @@ public class SetPlayerResultHandler implements ConnectionResultCallback<Player> 
 	}
 
 	@Override
-	public void result(Player result) {
+	public void onConnectionResult(Player result) {
 		this.player.rank = result.rank;
 		this.player.currentGames = result.currentGames;
 		this.player.xp = result.xp;
 	}
-	
-	
 
+	@Override
+	public void onConnectionError(String msg) {
+		// TODO Auto-generated method stub
+	}
 }

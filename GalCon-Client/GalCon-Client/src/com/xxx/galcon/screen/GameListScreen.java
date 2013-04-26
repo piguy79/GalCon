@@ -14,19 +14,18 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
-import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.ConnectionException;
-import com.xxx.galcon.http.ConnectionResultCallback;
+import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.hud.GameListHud;
 import com.xxx.galcon.screen.hud.Hud;
 
-public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<AvailableGames> {
+public class GameListScreen implements ScreenFeedback, UIConnectionResultCallback<AvailableGames> {
 	private BitmapFont smallFont;
 	private BitmapFont mediumFont;
 	private SpriteBatch spriteBatch;
@@ -35,6 +34,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	private Object returnValue;
 	private AvailableGames allGames;
 	private Hud gameListHud;
+	private String loadingMessage = "Loading...";
 
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
@@ -53,7 +53,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	}
 
 	protected void refreshScreen() {
-		ConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER.name);
+		UIConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER.name);
 	}
 
 	@Override
@@ -83,9 +83,8 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 		spriteBatch.enableBlending();
 
 		if (allGames == null) {
-			String text = "Loading...";
-			float halfFontWidth = mediumFont.getBounds(text).width / 2;
-			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+			float halfFontWidth = mediumFont.getBounds(loadingMessage).width / 2;
+			mediumFont.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
 		} else {
 			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
 			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
@@ -160,11 +159,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user,
 			BoardScreen boardScreen) {
-		try {
-			gameAction.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
-		} catch (ConnectionException e) {
-			e.printStackTrace();
-		}
+		UIConnectionWrapper.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
 		return boardScreen;
 	}
 
@@ -206,10 +201,16 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 	@Override
 	public void resetState() {
 		returnValue = null;
+		loadingMessage = "Loading...";
 	}
 
 	@Override
-	public void result(AvailableGames result) {
+	public void onConnectionResult(AvailableGames result) {
 		this.allGames = result;
+	}
+
+	@Override
+	public void onConnectionError(String msg) {
+		loadingMessage = "Unable to connect at the moment";
 	}
 }

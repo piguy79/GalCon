@@ -1,9 +1,9 @@
 package com.xxx.galcon.screen;
 
-import com.xxx.galcon.http.ConnectionResultCallback;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.GameBoard;
 
-public class SetGameBoardResultHandler implements ConnectionResultCallback<GameBoard> {
+public class SetGameBoardResultHandler implements UIConnectionResultCallback<GameBoard> {
 
 	private BoardScreen boardScreen;
 
@@ -12,7 +12,12 @@ public class SetGameBoardResultHandler implements ConnectionResultCallback<GameB
 	}
 
 	@Override
-	public void result(GameBoard result) {
+	public void onConnectionResult(GameBoard result) {
 		boardScreen.setGameBoard(result);
+	}
+
+	@Override
+	public void onConnectionError(String msg) {
+		boardScreen.setConnectionError(msg);
 	}
 }

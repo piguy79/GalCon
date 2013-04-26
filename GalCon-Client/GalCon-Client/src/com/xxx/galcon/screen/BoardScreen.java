@@ -30,18 +30,20 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.xxx.galcon.ConnectionWrapper;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.ConnectionResultCallback;
+import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final float BOARD_WIDTH_RATIO = .95f;
@@ -76,10 +78,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
 	private ShipSelectionDialog shipSelectionDialog;
+	private Overlay textOverlay;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
+
+	private String connectionError;
 
 	private Action returnCode = null;
 
@@ -505,19 +510,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		if (gameBoard == null) {
-			float width = Gdx.graphics.getWidth() / 2;
-			float height = Gdx.graphics.getHeight() / 2;
-
-			SpriteBatch spriteBatch = new SpriteBatch();
-			spriteBatch.begin();
-			fontViewMatrix.setToOrtho2D(0, 0, width, height);
-			spriteBatch.setProjectionMatrix(fontViewMatrix);
-
-			String text = "Loading...";
-			BitmapFont font = Fonts.getInstance().mediumFont();
-			float halfFontWidth = font.getBounds(text).width / 2;
-			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
-			spriteBatch.end();
+			renderLoadingText();
 			return;
 		}
 
@@ -539,6 +532,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			displayWinner(gameBoard.winner);
 		}
 
+		boardScreenHud.setTouchEnabled(true);
+		if (textOverlay != null) {
+			boardScreenHud.setTouchEnabled(false);
+		}
+
 		boardScreenHud.render(delta);
 
 		renderDialogs(delta);
@@ -547,6 +545,26 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
+
+		if (textOverlay != null) {
+			textOverlay.render(delta);
+		}
+	}
+
+	private void renderLoadingText() {
+		float width = Gdx.graphics.getWidth() / 2;
+		float height = Gdx.graphics.getHeight() / 2;
+
+		SpriteBatch spriteBatch = new SpriteBatch();
+		spriteBatch.begin();
+		fontViewMatrix.setToOrtho2D(0, 0, width, height);
+		spriteBatch.setProjectionMatrix(fontViewMatrix);
+
+		String text = connectionError != null ? connectionError : "Loading...";
+		BitmapFont font = Fonts.getInstance().mediumFont();
+		float halfFontWidth = font.getBounds(text).width / 2;
+		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+		spriteBatch.end();
 	}
 
 	private void displayWinner(String winner) {
@@ -633,9 +651,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
 
 		} else if (action == Action.END_TURN) {
-			ConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
+			textOverlay = new TextOverlay("Sending ships to their doom", assetManager);
+			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (action == Action.REFRESH) {
-			ConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
+			textOverlay = new TextOverlay("Refreshing...", assetManager);
+			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
 		} else if (action == Action.BACK) {
 			returnCode = Action.BACK;
 		}
@@ -697,29 +717,46 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		return returnCode;
 	}
 
-	public class PerformMoveResultHandler implements ConnectionResultCallback<GameBoard> {
+	public void setConnectionError(String msg) {
+		connectionError = msg;
+	}
+
+	public class PerformMoveResultHandler implements UIConnectionResultCallback<GameBoard> {
 
 		@Override
-		public void result(GameBoard result) {
+		public void onConnectionResult(GameBoard result) {
 			setGameBoard(result);
 			moves.clear();
 			clearTouchedPlanets();
+			textOverlay = null;
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			textOverlay = null;
 		}
 	}
 
-	public class FindGameByIdResultHandler implements ConnectionResultCallback<GameBoard> {
+	public class FindGameByIdResultHandler implements UIConnectionResultCallback<GameBoard> {
 
 		@Override
-		public void result(GameBoard result) {
+		public void onConnectionResult(GameBoard result) {
 			setGameBoard(result);
 			moves.clear();
 			clearTouchedPlanets();
+			textOverlay = null;
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			textOverlay = null;
 		}
 	}
 
 	@Override
 	public void resetState() {
 		returnCode = null;
+		connectionError = null;
 		moves.clear();
 		clearTouchedPlanets();
 

@@ -24,10 +24,11 @@ import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 
+import com.badlogic.gdx.Gdx;
 import com.xxx.galcon.http.ConnectionException;
-import com.xxx.galcon.http.ConnectionResultCallback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -43,7 +44,7 @@ public class AndroidGameAction implements GameAction {
 		this.activity = activity;
 	}
 
-	public void findAvailableGames(final ConnectionResultCallback<AvailableGames> callback, String player) {
+	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String player) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 
@@ -55,7 +56,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void joinGame(final ConnectionResultCallback<GameBoard> callback, String id, String player) {
+	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String player) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
@@ -67,7 +68,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void generateGame(final ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
 			final JSONObject top = JsonConstructor.generateGame(player, width, height);
@@ -81,7 +82,7 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	public void performMoves(final ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException {
 		try {
 			final JSONObject top = JsonConstructor.performMove(gameId, moves);
@@ -95,7 +96,8 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	public void findGameById(final ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
+	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id)
+			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		activity.runOnUiThread(new Runnable() {
@@ -105,7 +107,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findActiveGamesForAUser(final ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findActiveGamesForAUser(final UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
@@ -117,7 +119,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findGamesWithPendingMove(final ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
@@ -131,7 +133,7 @@ public class AndroidGameAction implements GameAction {
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 
-		public PostJsonRequestTask(ConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
+		public PostJsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
 			super(callback, path, converter);
 		}
 
@@ -144,7 +146,7 @@ public class AndroidGameAction implements GameAction {
 	private class GetJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 		private Map<String, String> args;
 
-		public GetJsonRequestTask(Map<String, String> args, ConnectionResultCallback<T> callback, String path,
+		public GetJsonRequestTask(Map<String, String> args, UIConnectionResultCallback<T> callback, String path,
 				JsonConvertible converter) {
 			super(callback, path, converter);
 			this.args = args;
@@ -160,9 +162,10 @@ public class AndroidGameAction implements GameAction {
 
 		protected String path;
 		private JsonConvertible converter;
-		private ConnectionResultCallback<T> callback;
+		private UIConnectionResultCallback<T> callback;
+		private String error = null;
 
-		public JsonRequestTask(ConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
+		public JsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
 			this.path = path;
 			this.converter = converter;
 			this.callback = callback;
@@ -175,20 +178,31 @@ public class AndroidGameAction implements GameAction {
 			try {
 				return Connection.doRequest(connectivityManager, establishConnection(params), converter);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				error = e.getMessage();
 			}
 
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(JsonConvertible result) {
-			callback.result((T) result);
+		protected void onPostExecute(final JsonConvertible result) {
+			if (error == null) {
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						callback.onConnectionResult((T) result);
+					}
+				});
+			} else {
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						callback.onConnectionError(error);
+					}
+				});
+			}
 		}
 	}
 
-	public void findUserInformation(final ConnectionResultCallback<Player> callback, String player)
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String player)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);

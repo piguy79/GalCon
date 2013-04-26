@@ -31,8 +31,8 @@ public class GameLoop extends Game {
 	public GameLoop(Player player, GameAction gameAction) {
 		this.gameAction = gameAction;
 		GameLoop.USER = player;
- 		ConnectionWrapper.setGameAction(gameAction);
-		
+		UIConnectionWrapper.setGameAction(gameAction);
+
 	}
 
 	@Override
@@ -63,6 +63,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.load("data/images/ship_selection_dialog.png", Texture.class, param);
 		assetManager.load("data/fonts/planet_numbers.png", Texture.class, param);
+		assetManager.load("data/images/transparent_square.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);
@@ -91,11 +92,11 @@ public class GameLoop extends Game {
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					ConnectionWrapper.findAvailableGames(joinScreen, USER.name);
+					UIConnectionWrapper.findAvailableGames(joinScreen, USER.name);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
 					GameListScreen currentGameScreen = new GameListScreen(assetManager);
-					ConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER.name);
+					UIConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER.name);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {

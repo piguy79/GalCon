@@ -24,25 +24,25 @@ public interface GameAction {
 	 * 
 	 * @return <GameBoard> Representing current state.
 	 */
-	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException;
 
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
 
-	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
 
-	public void joinGame(ConnectionResultCallback<GameBoard> callback, String id, String player)
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String player)
 			throws ConnectionException;
 
-	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException;
 
-	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findActiveGamesForAUser(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
 	
-	public void findUserInformation(ConnectionResultCallback<Player> callback, String player) throws ConnectionException;
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player) throws ConnectionException;
 
-	public void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
 }

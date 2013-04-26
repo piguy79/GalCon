@@ -12,6 +12,7 @@ public abstract class Hud implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
 	private Action returnResult = null;
 	private List<HudButton> hudButtons = new ArrayList<HudButton>();
+	private boolean touchEnabled = true;
 
 	public Hud() {
 		spriteBatch = new SpriteBatch();
@@ -19,13 +20,19 @@ public abstract class Hud implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		processTouch();
+		if (touchEnabled) {
+			processTouch();
+		}
 
 		spriteBatch.begin();
 		for (int i = 0; i < hudButtons.size(); ++i) {
 			hudButtons.get(i).render(spriteBatch);
 		}
 		spriteBatch.end();
+	}
+
+	public void setTouchEnabled(boolean touchEnabled) {
+		this.touchEnabled = touchEnabled;
 	}
 
 	private void processTouch() {

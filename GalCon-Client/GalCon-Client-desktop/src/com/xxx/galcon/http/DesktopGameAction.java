@@ -44,18 +44,18 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
 
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 
-		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, args,
+		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, args,
 				new AvailableGames()));
 	}
 
 	@Override
-	public void performMoves(ConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.performMove(gameId, moves);
@@ -63,14 +63,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.result((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard()));
+			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard()));
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
 	@Override
-	public void generateGame(ConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.generateGame(player, width, height);
@@ -78,26 +78,26 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.result((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard()));
+			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args, new GameBoard()));
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
 	}
 
 	@Override
-	public void joinGame(ConnectionResultCallback<GameBoard> callback, String id, String player)
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String player)
 			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("player", player);
 		args.put("id", id);
-		callback.result((GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard()));
+		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), JOIN_GAME, args, new GameBoard()));
 	}
 
 	@Override
-	public void findGameById(ConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-		callback.result((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
+		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
@@ -135,30 +135,30 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findActiveGamesForAUser(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER, args,
+		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER, args,
 				new AvailableGames()));
 	}
 
 	@Override
-	public void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player)
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
+		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
 				new AvailableGames()));
 
 	}
 
 	@Override
-	public void findUserInformation(ConnectionResultCallback<Player> callback,
+	public void findUserInformation(UIConnectionResultCallback<Player> callback,
 			String player) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-		callback.result((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME,
+		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME,
 				args, new Player()));
 		
 	}

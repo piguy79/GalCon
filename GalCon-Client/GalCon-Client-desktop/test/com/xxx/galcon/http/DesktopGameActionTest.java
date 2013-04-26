@@ -25,10 +25,16 @@ public class DesktopGameActionTest {
 
 	@Test
 	public void runJoinGameTest() throws ConnectionException {
-		desktopGameAction.generateGame(new ConnectionResultCallback<GameBoard>() {
+		desktopGameAction.generateGame(new UIConnectionResultCallback<GameBoard>() {
 
 			@Override
-			public void result(GameBoard result) {
+			public void onConnectionResult(GameBoard result) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
 				// TODO Auto-generated method stub
 
 			}
