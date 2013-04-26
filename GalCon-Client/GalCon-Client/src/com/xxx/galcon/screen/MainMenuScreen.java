@@ -19,9 +19,6 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 
 public class MainMenuScreen implements ScreenFeedback {
-	private BitmapFontCache fontCache;
-	private BitmapFont extraLargeFont;
-	private BitmapFont smallFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -29,6 +26,9 @@ public class MainMenuScreen implements ScreenFeedback {
 	private GameAction gameAction;
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
+	private BitmapFontCache fontCache;
+	private BitmapFont extraLargeFont;
+	private BitmapFont smallFont;
 
 	public MainMenuScreen(GameAction gameAction) {
 		this.gameAction = gameAction;
@@ -39,13 +39,10 @@ public class MainMenuScreen implements ScreenFeedback {
 		smallFont = Fonts.getInstance().smallFont();
 
 		spriteBatch = new SpriteBatch();
-
-		updateFont();
 	}
 
 	@Override
 	public void dispose() {
-		fontCache.getFont().dispose();
 		spriteBatch.dispose();
 	}
 
@@ -53,13 +50,9 @@ public class MainMenuScreen implements ScreenFeedback {
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
-		fontCache.clear();
-		touchRegions.clear();
-
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
 		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
 		addText(Constants.CURRENT, (int) (height * .22f), true, width, height);
-
 	}
 
 	private String currentUserText() {
@@ -67,16 +60,15 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
-		TextBounds fontBounds = fontCache.getFont().getBounds(text);
+		BitmapFont font = Fonts.getInstance().largeFont();
+		TextBounds fontBounds = font.getBounds(text);
 		int x = screenWidth / 2 - (int) fontBounds.width / 2;
-		fontCache.addText(text, x, y);
+		font.draw(spriteBatch, text, x, y);
 
-		if (isTouchable) {
+		if (isTouchable && touchRegions.size() != 3) {
 			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height, true));
 		}
 	}
-	
-	
 
 	@Override
 	public void render(float delta) {
@@ -109,12 +101,14 @@ public class MainMenuScreen implements ScreenFeedback {
 			}
 		}
 
-		fontCache.draw(spriteBatch);
+		updateFont();
 
 		String galcon = "GalCon";
+		BitmapFont extraLargeFont = Fonts.getInstance().extraLargeFont();
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .7f));
-		
+
+		BitmapFont smallFont = Fonts.getInstance().smallFont();
 		x = width / 2 - (int) smallFont.getBounds(currentUserText()).width / 2;
 		smallFont.draw(spriteBatch, currentUserText(), x, (int) (height * .6f));
 		
@@ -124,7 +118,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-		updateFont();
+		touchRegions.clear();
 	}
 
 	@Override
@@ -144,7 +138,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class ConnectionWrapper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player) {
 		try {
 			gameAction.findActiveGamesForAUser(callback, player);
@@ -43,7 +43,16 @@ public class ConnectionWrapper {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public static void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player) {
+		try {
+			gameAction.findGamesWithPendingMove(callback, player);
+		} catch (ConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public static void findAvailableGames(ConnectionResultCallback<AvailableGames> callback, String player) {
 		try {
 			gameAction.findAvailableGames(callback, player);

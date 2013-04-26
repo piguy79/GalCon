@@ -7,7 +7,6 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 
 public class BoardScreenHud extends Hud {
-	private BitmapFont font;
 	private String currentPlayerToMove;
 	private int roundNumber;
 	private String winner;
@@ -19,7 +18,6 @@ public class BoardScreenHud extends Hud {
 
 	public BoardScreenHud(AssetManager assetManager) {
 		super();
-		font = Fonts.getInstance().largeFont();
 
 		sendButton = new SendHudButton(assetManager);
 		backButton = new BackHudButton(assetManager);
@@ -53,6 +51,7 @@ public class BoardScreenHud extends Hud {
 			refreshButton.setEnabled(false);
 		} else if (!isMyTurn) {
 			int height = Gdx.graphics.getHeight();
+			BitmapFont font = Fonts.getInstance().largeFont();
 			font.draw(getSpriteBatch(), "Current Player: " + currentPlayerToMove, 5, height * .26f);
 			font.draw(getSpriteBatch(), "Round Number: " + roundNumber, 5, height * .2f);
 

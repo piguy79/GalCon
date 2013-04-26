@@ -36,6 +36,12 @@ public class GameLoop extends Game {
 	}
 
 	@Override
+	public void resume() {
+		Fonts.dispose();
+		super.resume();
+	}
+
+	@Override
 	public void create() {
 		/*
 		 * Assume OpenGL ES 2.0 support has been validated by platform specific
