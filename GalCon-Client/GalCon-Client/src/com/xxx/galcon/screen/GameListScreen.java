@@ -92,7 +92,7 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 				GameBoard board = iter.next();
 				if (board.winner != null && !board.winner.isEmpty()) {
 					if (!showGamesThatHaveBeenWon()
-							|| board.createdDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
+							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
 						iter.remove();
 					}
 				}

@@ -8,6 +8,7 @@ var gameSchema = mongoose.Schema({
 	width: "Number",
 	height: "Number",
 	winner: "String",
+	winningDate: "Date",
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
@@ -139,7 +140,7 @@ gameSchema.methods.isLastPlayer = function(player) {
 var GameModel = db.model('Game', gameSchema);
 
 exports.createGame = function(players, width, height, numberOfPlanets, callback){
-	var game = gamebuilder.createGameBuilder(players, width, height, 10);
+	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		callback(constructedGame);
@@ -247,8 +248,12 @@ var processPossibleEndGame = function(game){
 			}
 		}
 		
-		if(playersWhoOwnAPlanet.length == 1 && playersWhoHaveAMove.length == 1){
-			game.winner = playersWhoOwnAPlanet[0];
+		if(playersWhoOwnAPlanet.length == 1) {
+			if(playersWhoHaveAMove.length == 0 || 
+					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
+				game.winner = playersWhoOwnAPlanet[0];
+				game.winningDate = new Date();
+			}
 		}
 	}
 }

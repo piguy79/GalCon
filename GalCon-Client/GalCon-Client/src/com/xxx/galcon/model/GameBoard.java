@@ -24,6 +24,7 @@ public class GameBoard implements JsonConvertible {
 	public int roundNumber;
 	public String currentPlayerToMove;
 	public String winner = "";
+	public Date winningDate = null;
 	public List<Move> movesInProgress = new ArrayList<Move>();
 
 	public GameBoard() {
@@ -50,9 +51,9 @@ public class GameBoard implements JsonConvertible {
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.winner = jsonObject.optString(Constants.WINNER);
-		
-		assignCreatedDate(jsonObject);
 
+		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
+		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
 
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
@@ -75,28 +76,29 @@ public class GameBoard implements JsonConvertible {
 		}
 	}
 
-	private void assignCreatedDate(JSONObject jsonObject) {
+	private Date formatDate(JSONObject jsonObject, String field) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
 		try {
-			this.createdDate = format.parse(jsonObject.getString(Constants.CREATED_DATE));
+			String date = jsonObject.optString(field);
+			if (date != null && date.length() > 0) {
+				return format.parse(date);
+			}
+
 		} catch (ParseException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
-		
+		return null;
 	}
-	
-	
-	public List<String> allPlayersExcept(String playerToExclude){
+
+	public List<String> allPlayersExcept(String playerToExclude) {
 		List<String> otherPlayers = new ArrayList<String>();
-		
-		for(String player : players){
-			if(!player.equals(playerToExclude)){
+
+		for (String player : players) {
+			if (!player.equals(playerToExclude)) {
 				otherPlayers.add(player);
 			}
 		}
-		
+
 		return otherPlayers;
 	}
 
