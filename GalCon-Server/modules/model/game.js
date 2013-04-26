@@ -8,6 +8,7 @@ var gameSchema = mongoose.Schema({
 	width: "Number",
 	height: "Number",
 	winner: "String",
+	winningDate: "Date",
 	createdDate : "Date",
 	currentRound : {
 		roundNumber : "Number",
@@ -251,6 +252,7 @@ var processPossibleEndGame = function(game){
 			if(playersWhoHaveAMove.length == 0 || 
 					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
 				game.winner = playersWhoOwnAPlanet[0];
+				game.winningDate = new Date();
 			}
 		}
 	}

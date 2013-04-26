@@ -6,6 +6,7 @@ public class Constants {
 	public static final String CURRENT_ROUND = "currentRound";
 	public static final String ROUND_NUMBER = "roundNumber";
 	public static final String CREATED_DATE = "createdDate";
+	public static final String WINNING_DATE = "winningDate";
 	public static final String PLAYER = "player";
 	public static final String PLAYERS = "players";
 	public static final String ITEMS = "items";
@@ -28,6 +29,5 @@ public class Constants {
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
 	public static final String CURRENT_GAMES = "currentGames";
-
 
 }
