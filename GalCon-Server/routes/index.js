@@ -133,7 +133,7 @@ exports.performMoves = function(req, res){
 					user.wins++;
 					user.xp += 10;
 					rankManager.findRankForXp(user.xp, function(rank){
-						user.rank = rank.name;
+						user.rank = rank.level;
 						user.save(function(){
 							res.json(savedGame);
 						});

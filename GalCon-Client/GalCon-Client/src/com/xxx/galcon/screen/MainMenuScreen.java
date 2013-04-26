@@ -51,14 +51,11 @@ public class MainMenuScreen implements ScreenFeedback {
 		this.gameAction = gameAction;
 		smallFont = Fonts.getInstance().smallFont();
 		mediumFont = Fonts.getInstance().mediumFont();
-
-		spriteBatch = new SpriteBatch();
-		
-		stage = new Stage();
-		addElementsToStage();
 	}
 
 	private void addElementsToStage() {
+		
+		stage = new Stage();
 		gameLoop.assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		gameLoop.assetManager.finishLoading();
 		
@@ -153,13 +150,15 @@ public class MainMenuScreen implements ScreenFeedback {
 			String toNextLevel = "To Next Level..." + (GameLoop.USER.rank.endAt - GameLoop.USER.xp + "xp");
 			x = width / 2 - (int) smallFont.getBounds(toNextLevel).width / 2;
 			smallFont.draw(spriteBatch, toNextLevel, x, (int) (height * .76f));
+			
+			spriteBatch.end();
 	        
 			// Interpolate the percentage to make it more smooth
 			float percentToUse = 0;
 			if(GameLoop.USER.xp == 0){
 				percentToUse = 0f;
 			} else{
-				percentToUse = (float)(GameLoop.USER.xp / GameLoop.USER.rank.endAt);
+				percentToUse = (float)((float)GameLoop.USER.xp / (float)GameLoop.USER.rank.endAt);
 			}
 			
 			
@@ -171,7 +170,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	        loadingBg.setWidth(450 - 450 * percent);
 	        loadingBg.invalidate();
 	        
-	        spriteBatch.end();
+	        
 			
 	        stage.draw();
 	        
@@ -231,11 +230,12 @@ public class MainMenuScreen implements ScreenFeedback {
 	@Override
 	public void show() {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
+		addElementsToStage();
+		spriteBatch = new SpriteBatch();
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
