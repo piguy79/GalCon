@@ -83,7 +83,10 @@ exports.findUserByUserName = function(req, res){
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user){
 		if(user){
-			res.json(user);
+			rankManager.findRankByName(user.rank, function(dbRank){
+				user.rankInfo = dbRank;
+				res.json(user);
+			});
 		}else{
 			user = new userManager.UserModel({
 				name : userName,
@@ -95,7 +98,10 @@ exports.findUserByUserName = function(req, res){
 			});
 			
 			user.save(function(){
-				res.json(user);
+				rankManager.findRankByName(user.rank, function(dbRank){				
+					user.rankInfo = dbRank;
+					res.json(user);
+				});
 			});
 		}		
 	});

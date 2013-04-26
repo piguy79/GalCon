@@ -9,7 +9,12 @@ var userSchema = mongoose.Schema({
 	rank : "String",
 	wins : "Number",
 	losses : "Number",
-	currentGames : ["String"]
+	currentGames : ["String"],
+	rankInfo : {
+		level : "Number",
+		startFrom : "Number",
+		endAt : "Number"
+	}
 });
 
 userSchema.set('toObject', { getters: true });

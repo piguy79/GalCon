@@ -7,6 +7,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_RANK_INFORMATION;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
@@ -29,6 +30,7 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Rank;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -100,6 +102,38 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		callback.result((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
 	}
 
+	
+
+	@Override
+	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
+			throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER, args,
+				new AvailableGames()));
+	}
+
+	@Override
+	public void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player)
+			throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
+				new AvailableGames()));
+
+	}
+
+	@Override
+	public void findUserInformation(ConnectionResultCallback<Player> callback,
+			String player) throws ConnectionException {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		callback.result((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME,
+				args, new Player()));
+		
+	}
+
+	
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
 			JsonConvertible converter) throws ConnectionException {
 		try {
@@ -132,34 +166,5 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}
-	}
-
-	@Override
-	public void findActiveGamesForAUser(ConnectionResultCallback<AvailableGames> callback, String player)
-			throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
-		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER, args,
-				new AvailableGames()));
-	}
-
-	@Override
-	public void findGamesWithPendingMove(ConnectionResultCallback<AvailableGames> callback, String player)
-			throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
-		callback.result((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
-				new AvailableGames()));
-
-	}
-
-	@Override
-	public void findUserInformation(ConnectionResultCallback<Player> callback,
-			String player) throws ConnectionException {
-		Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
-		callback.result((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME,
-				args, new Player()));
-		
 	}
 }

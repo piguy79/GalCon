@@ -24,6 +24,6 @@ public class Main {
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		}
-		new LwjglApplication(new GameLoop(player, gameAction), cfg);
+		new LwjglApplication(new GameLoop(player,  gameAction), cfg);
 	}
 }

@@ -29,5 +29,10 @@ public class Constants {
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
 	public static final String CURRENT_GAMES = "currentGames";
+	public static final String START_FROM = "startFrom";
+	public static final String END_AT = "endAt";
+	public static final String RANK_INFO = "rankInfo";
+
+
 
 }

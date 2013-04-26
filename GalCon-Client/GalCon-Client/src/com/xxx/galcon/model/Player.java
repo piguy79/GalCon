@@ -26,15 +26,20 @@ public class Player implements JsonConvertible{
 	
 	public String name;
 	public Integer xp;
-	public String rank;
 	public List<String> currentGames;
+	public Rank rank;
 	
 	
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
 		this.name = jsonObject.getString(Constants.NAME);
-		this.rank  = jsonObject.getString(Constants.RANK);
 		this.xp  = Integer.parseInt(jsonObject.getString(Constants.XP));
+		
+		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
+		this.rank = new Rank();
+		this.rank.level = rankInfo.getInt(Constants.LEVEL);
+		this.rank.startFrom = rankInfo.getInt(Constants.START_FROM);
+		this.rank.endAt = rankInfo.getInt(Constants.END_AT);
 		
 		this.currentGames = new ArrayList<String>();
 		

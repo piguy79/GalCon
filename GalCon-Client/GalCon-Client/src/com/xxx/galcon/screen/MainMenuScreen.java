@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
@@ -94,7 +91,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private String currentUserText() {
-		return "Level " + GameLoop.USER.rank;
+		return "Level " + GameLoop.USER.rank.level;
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
@@ -153,12 +150,20 @@ public class MainMenuScreen implements ScreenFeedback {
 			mediumFont.draw(spriteBatch, currentUserText(), x, (int) (height * .8f));
 			
 			
-			String toNextLevel = "To Next Level...";
+			String toNextLevel = "To Next Level..." + (GameLoop.USER.rank.endAt - GameLoop.USER.xp + "xp");
 			x = width / 2 - (int) smallFont.getBounds(toNextLevel).width / 2;
 			smallFont.draw(spriteBatch, toNextLevel, x, (int) (height * .76f));
 	        
 			// Interpolate the percentage to make it more smooth
-	        percent = Interpolation.linear.apply(percent, 0.6f, 0.1f);
+			float percentToUse = 0;
+			if(GameLoop.USER.xp == 0){
+				percentToUse = 0f;
+			} else{
+				percentToUse = (float)(GameLoop.USER.xp / GameLoop.USER.rank.endAt);
+			}
+			
+			
+	        percent = Interpolation.linear.apply(percent, percentToUse, 0.1f);
 
 	        // Update positions (and size) to match the percentage
 	        loadingBarHidden.setX(startX + endX * percent);
