@@ -68,7 +68,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 						var returnObj = {};
 						var len = games.length;
 						while(len--) {
-							if(games[len].currentRound.player != user.name) {
+							if(games[len].currentRound.player != user.name  && !games[len].winner) {
 								games.splice(len, 1);
 							}
 						}
