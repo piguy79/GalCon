@@ -80,7 +80,7 @@ public class GameBoard implements JsonConvertible {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
 		try {
 			String date = jsonObject.optString(field);
-			if (date != null) {
+			if (date != null && date.length() > 0) {
 				return format.parse(date);
 			}
 
