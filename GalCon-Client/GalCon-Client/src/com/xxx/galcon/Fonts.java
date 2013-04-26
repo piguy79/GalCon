@@ -26,7 +26,7 @@ public class Fonts {
 		largeFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 		largeFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
+
 		extraLargeFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 		extraLargeFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -34,7 +34,21 @@ public class Fonts {
 	}
 
 	public static Fonts getInstance() {
+		if (instance == null) {
+			instance = new Fonts();
+		}
 		return instance;
+	}
+
+	public static void dispose() {
+		if (instance != null) {
+			instance.smallFont.dispose();
+			instance.extraLargeFont.dispose();
+			instance.largeFont.dispose();
+			instance.mediumFont.dispose();
+		}
+
+		instance = null;
 	}
 
 	public BitmapFont smallFont() {
@@ -48,7 +62,7 @@ public class Fonts {
 	public BitmapFont largeFont() {
 		return largeFont;
 	}
-	
+
 	public BitmapFont extraLargeFont() {
 		return extraLargeFont;
 	}

@@ -26,9 +26,6 @@ var RankModel = db.model('Rank', rankSchema);
 RankModel.find().remove();
 populateDefaultRanks();
 
-
-
-
 exports.saveRank = function(rank, callback){
 	rank.save(function(err, savedRank){
 		callback(savedRank);
@@ -47,7 +44,7 @@ exports.findRankForXp = function(xp, callback){
 }
 
 exports.findRankByName = function(rankName, callback){
-	RankModel.findOne({name : rankName}, function(err, rank){
+	RankModel.findOne({level : rankName}, function(err, rank){
 		if(err){
 			console.log("Unable to find Rank information");
 		}else{

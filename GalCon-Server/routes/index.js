@@ -89,7 +89,9 @@ exports.findUserByUserName = function(req, res){
 				name : userName,
 				currentGames : [],
 				xp : 0,
-				rank : 1					
+				rank : 1,
+				wins : 0,
+				losses : 0					
 			});
 			
 			user.save(function(){
@@ -122,6 +124,7 @@ exports.performMoves = function(req, res){
 	gameManager.performMoves(gameId, moves, player, function(savedGame){
 		if(savedGame.winner){
 			userManager.findUserByName(savedGame.winner, function(user){
+					user.wins++;
 					user.xp += 10;
 					rankManager.findRankForXp(user.xp, function(rank){
 						user.rank = rank.name;
@@ -151,7 +154,7 @@ exports.deleteGame = function(req, res){
 	});
 };
 
-// JOin a game will use the game ID to add a player to a game.
+// Join a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res){
 	var gameId = req.query['id'];
 	var player = req.query['player'];
@@ -167,4 +170,11 @@ exports.joinGame = function(req, res){
 		});
 	});
 
+}
+
+exports.findRankInformation = function(req, res){
+	var rank = req.query['rank'];
+	rankManager.findRankByName(rank, function(dbRank){
+		res.json(dbRank);
+	});
 }

@@ -1,7 +1,6 @@
 package com.xxx.galcon;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
 	@Override
@@ -21,12 +21,11 @@ public class MainActivity extends AndroidApplication {
 		cfg.useGL20 = true;
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		
-		AndroidGameAction gameAction = new AndroidGameAction(this, connectivityManager,
-		"stormy-sands-7424.herokuapp.com", "80");
-		
+
+		AndroidGameAction gameAction = new AndroidGameAction(this, connectivityManager);
+
 		Player player = new Player();
-		player.name = getUser();
+		player.name = UserInfo.getUser(getBaseContext());
 		try {
 			gameAction.findUserInformation(new SetPlayerResultHandler(player), player.name);
 		} catch (ConnectionException e) {
@@ -36,16 +35,13 @@ public class MainActivity extends AndroidApplication {
 		initialize(new GameLoop(player, gameAction), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		Intent intent = new Intent(this, PingService.class);
+		startService(intent);
 	}
 
-	private String getUser() {
-		AccountManager am = AccountManager.get(this);
-		Account[] accounts = am.getAccountsByType("com.google");
-
-		if (accounts == null || accounts.length == 0) {
-			return "testUser";
-		}
-
-		return accounts[0].name;
+	@Override
+	protected void onResume() {
+		super.onResume();
 	}
 }

@@ -26,9 +26,6 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 
 public class MainMenuScreen implements ScreenFeedback {
-	private BitmapFontCache fontCache;
-	private BitmapFont extraLargeFont;
-	private BitmapFont smallFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -49,18 +46,16 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
+	private BitmapFont smallFont;
+	private BitmapFont mediumFont;
+
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
 		this.gameLoop = gameLoop;
 		this.gameAction = gameAction;
-		BitmapFont font = Fonts.getInstance().largeFont();
-		fontCache = new BitmapFontCache(font);
-
-		extraLargeFont = Fonts.getInstance().extraLargeFont();
 		smallFont = Fonts.getInstance().smallFont();
+		mediumFont = Fonts.getInstance().mediumFont();
 
 		spriteBatch = new SpriteBatch();
-
-		updateFont();
 		
 		stage = new Stage();
 		addElementsToStage();
@@ -86,7 +81,6 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void dispose() {
-		fontCache.getFont().dispose();
 		spriteBatch.dispose();
 	}
 
@@ -94,30 +88,25 @@ public class MainMenuScreen implements ScreenFeedback {
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
-		fontCache.clear();
-		touchRegions.clear();
-
 		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
 		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
 		addText(Constants.CURRENT, (int) (height * .22f), true, width, height);
-
 	}
 
 	private String currentUserText() {
-		return "(Level " + GameLoop.USER.rank + ")";
+		return "Level " + GameLoop.USER.rank;
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
-		TextBounds fontBounds = fontCache.getFont().getBounds(text);
+		BitmapFont font = Fonts.getInstance().largeFont();
+		TextBounds fontBounds = font.getBounds(text);
 		int x = screenWidth / 2 - (int) fontBounds.width / 2;
-		fontCache.addText(text, x, y);
+		font.draw(spriteBatch, text, x, y);
 
-		if (isTouchable) {
+		if (isTouchable && touchRegions.size() != 3) {
 			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height, true));
 		}
 	}
-	
-	
 
 	@Override
 	public void render(float delta) {
@@ -150,26 +139,34 @@ public class MainMenuScreen implements ScreenFeedback {
 			}
 		}
 
-		fontCache.draw(spriteBatch);
+		updateFont();
 
 		String galcon = "GalCon";
+		BitmapFont extraLargeFont = Fonts.getInstance().extraLargeFont();
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
-		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .7f));
+		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .9f));
 		
 		if(hasUserInformation()){
-			x = width / 2 - (int) smallFont.getBounds(currentUserText()).width / 2;
-			smallFont.draw(spriteBatch, currentUserText(), x, (int) (height * .6f));
+			mediumFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
+			smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
+			x = width / 2 - (int) mediumFont.getBounds(currentUserText()).width / 2;
+			mediumFont.draw(spriteBatch, currentUserText(), x, (int) (height * .8f));
 			
+			
+			String toNextLevel = "To Next Level...";
+			x = width / 2 - (int) smallFont.getBounds(toNextLevel).width / 2;
+			smallFont.draw(spriteBatch, toNextLevel, x, (int) (height * .76f));
+	        
 			// Interpolate the percentage to make it more smooth
-	        percent = Interpolation.linear.apply(percent, .6f, 0.1f);
+	        percent = Interpolation.linear.apply(percent, 0.6f, 0.1f);
 
 	        // Update positions (and size) to match the percentage
 	        loadingBarHidden.setX(startX + endX * percent);
 	        loadingBg.setX(loadingBarHidden.getX() + 30);
-	        int subractionWidth = (int)(Gdx.graphics.getWidth() * 0.2f);
-	        loadingBg.setWidth(subractionWidth - subractionWidth * percent);
-	        loadingBg.setHeight((int)(Gdx.graphics.getHeight() * .05f));
+	        loadingBg.setWidth(450 - 450 * percent);
 	        loadingBg.invalidate();
+	        
+	        spriteBatch.end();
 			
 	        stage.draw();
 	        
@@ -179,9 +176,12 @@ public class MainMenuScreen implements ScreenFeedback {
 			String loadingUserInfo = "Loading User Information...";
 			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
 			smallFont.draw(spriteBatch, loadingUserInfo, x, (int) (height * .6f));
+			
+			spriteBatch.end();
 		}
+
 		
-		spriteBatch.end();
+		
 		
 	}
 
@@ -191,42 +191,36 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-		updateFont();
-		updateRankProgressBar();
+
+		touchRegions.clear();
+		updateRankProgressBar(width, height);
 	}
 
-	private void updateRankProgressBar() {
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
+	private void updateRankProgressBar(int width, int height) {
+		int gdxHeight = Gdx.graphics.getHeight();
 		
-        stage.setViewport((int)(width * .2f),(int)(height * .9f), false);
-
-
-        // Place the loading frame in the middle of the screen
-        loadingFrame.setX(0);
-        loadingFrame.setY((int) (height * .45f));
-        loadingFrame.setWidth((int)(width * .2f));
-        loadingFrame.setHeight((int)(height * .02f));
-
-        // Place the loading bar at the same spot as the frame, adjusted a few px
-        loadingBar.setX(loadingFrame.getX() + 5);
-        loadingBar.setY(loadingFrame.getY()+5);
-        loadingBar.setSize(loadingFrame.getWidth(), loadingFrame.getHeight() - 10);
-
-        // Place the image that will hide the bar on top of the bar, adjusted a few px
+		width =  gdxHeight * width / height;
+        height = gdxHeight;
+        stage.setViewport(width, height + 300, false);
+        
+        loadingFrame.setX((stage.getWidth() - loadingFrame.getWidth()) / 2);
+        loadingFrame.setY((int)(gdxHeight * 0.82f));
+        
+        loadingBar.setX(loadingFrame.getX() + 15);
+        loadingBar.setY(loadingFrame.getY() + 5);
+        
         loadingBarHidden.setX(loadingBar.getX() + 35);
         loadingBarHidden.setY(loadingBar.getY() - 3);
-        loadingBarHidden.setSize(loadingFrame.getWidth(), loadingFrame.getHeight());
-
+        
         // The start position and how far to move the hidden loading bar
         startX = loadingBarHidden.getX();
-        endX = (int)(width * .2f);
+        endX = 440;
 
         // The rest of the hidden bar
-        //loadingBg.setSize((int)(width * .2f), (int) (height * .01f));
-        loadingBg.setSize(loadingFrame.getWidth(), loadingFrame.getHeight());
+        loadingBg.setSize(450, 50);
         loadingBg.setX(loadingBarHidden.getX() + 30);
         loadingBg.setY(loadingBarHidden.getY() + 3);
+
 	}
 
 	@Override
@@ -246,7 +240,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override

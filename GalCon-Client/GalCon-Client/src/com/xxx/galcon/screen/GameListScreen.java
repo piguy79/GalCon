@@ -38,9 +38,9 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
-		smallFont = Fonts.getInstance().smallFont();
-		mediumFont = Fonts.getInstance().mediumFont();
 		gameListHud = new GameListHud(assetManager);
+
+		resume();
 	}
 
 	@Override
@@ -194,8 +194,8 @@ public class GameListScreen implements ScreenFeedback, ConnectionResultCallback<
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
+		smallFont = Fonts.getInstance().smallFont();
+		mediumFont = Fonts.getInstance().mediumFont();
 	}
 
 	@Override

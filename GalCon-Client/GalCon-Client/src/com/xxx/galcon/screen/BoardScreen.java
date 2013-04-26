@@ -60,7 +60,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
 
-	private BitmapFont font;
 	private Texture planetNumbersTexture;
 
 	private StillModel planetModel;
@@ -91,10 +90,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
 		
-		font = Fonts.getInstance().mediumFont();	
+		BitmapFont font = Fonts.getInstance().mediumFont();	
 		
 		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
 		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
+
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 
@@ -102,6 +102,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
+
 	}
 	
 	private StillModel generateStillModelFromObjectFile(String objectFile){
@@ -117,6 +118,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 		
 		return shader;
+
 	}
 
 	/*
@@ -515,6 +517,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 			String text = "Loading...";
+			BitmapFont font = Fonts.getInstance().mediumFont();
 			float halfFontWidth = font.getBounds(text).width / 2;
 			font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 			spriteBatch.end();
@@ -562,6 +565,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (GameLoop.USER.name.equals(winner)) {
 			text = "Victory!";
 		}
+
+		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		spriteBatch.end();
@@ -687,7 +692,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -7,6 +7,8 @@ var userSchema = mongoose.Schema({
 	createdDate : "Date",
 	xp : "Number",
 	rank : "String",
+	wins : "Number",
+	losses : "Number",
 	currentGames : ["String"]
 });
 

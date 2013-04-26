@@ -16,11 +16,13 @@ public class UrlConstants {
 	public static final String PERFORM_MOVES = "/performMoves";
 
 	public static final String JOIN_GAME = "/joinGame";
-	
+
 	public static final String FIND_GAME_BY_ID = "/findGameById";
-	
+
 	public static final String FIND_ACTIVE_GAMES_FOR_A_USER = "/findActiveGamesForUser";
-	
+
+	public static final String FIND_GAMES_WITH_A_PENDING_MOVE = "/findGamesWithPendingMove";
+
 	public static final String FIND_USER_BY_USER_NAME = "/findUserByUserName";
 
 }
