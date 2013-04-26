@@ -140,7 +140,7 @@ gameSchema.methods.isLastPlayer = function(player) {
 var GameModel = db.model('Game', gameSchema);
 
 exports.createGame = function(players, width, height, numberOfPlanets, callback){
-	var game = gamebuilder.createGameBuilder(players, width, height, 10);
+	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		callback(constructedGame);
