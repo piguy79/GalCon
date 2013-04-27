@@ -131,6 +131,18 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String player)
+			throws ConnectionException {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("userName", player);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_USER_NAME, new Player()).execute("");
+			}
+		});
+
+	}
+
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 
 		public PostJsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
@@ -200,17 +212,5 @@ public class AndroidGameAction implements GameAction {
 				});
 			}
 		}
-	}
-
-	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String player)
-			throws ConnectionException {
-		final Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_USER_NAME, new Player()).execute("");
-			}
-		});
-
 	}
 }

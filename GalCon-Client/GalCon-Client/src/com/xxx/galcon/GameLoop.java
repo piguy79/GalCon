@@ -11,6 +11,7 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Rank;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.GameListScreen;
@@ -24,7 +25,7 @@ public class GameLoop extends Game {
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
 	private GL20 gl;
-	private AssetManager assetManager = new AssetManager();
+	public AssetManager assetManager = new AssetManager();
 
 	private GameAction gameAction;
 
@@ -67,7 +68,7 @@ public class GameLoop extends Game {
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);
-		mainMenuScreen = new MainMenuScreen();
+		mainMenuScreen = new MainMenuScreen(this, gameAction);
 		setScreen(mainMenuScreen);
 	}
 

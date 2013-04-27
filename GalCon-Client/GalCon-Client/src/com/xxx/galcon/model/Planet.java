@@ -36,7 +36,6 @@ public class Planet implements JsonConvertible {
 			this.id = jsonObject.getString(Constants.ID);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

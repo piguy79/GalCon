@@ -6,6 +6,7 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Rank;
 
 /**
  * This class defines a set of methods used to interact with the server side
@@ -45,4 +46,5 @@ public interface GameAction {
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
+	
 }

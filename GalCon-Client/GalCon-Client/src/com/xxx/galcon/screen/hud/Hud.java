@@ -20,9 +20,7 @@ public abstract class Hud implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		if (touchEnabled) {
-			processTouch();
-		}
+		processTouch();
 
 		spriteBatch.begin();
 		for (int i = 0; i < hudButtons.size(); ++i) {
@@ -37,6 +35,9 @@ public abstract class Hud implements ScreenFeedback {
 
 	private void processTouch() {
 		returnResult = null;
+		if (!touchEnabled) {
+			return;
+		}
 
 		if (Gdx.input.justTouched()) {
 			int x = Gdx.input.getX();

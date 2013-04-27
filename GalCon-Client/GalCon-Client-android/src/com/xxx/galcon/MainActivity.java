@@ -30,7 +30,7 @@ public class MainActivity extends AndroidApplication {
 			gameAction.findUserInformation(new SetPlayerResultHandler(player), player.name);
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-		}
+		} 
 
 		initialize(new GameLoop(player, gameAction), cfg);
 

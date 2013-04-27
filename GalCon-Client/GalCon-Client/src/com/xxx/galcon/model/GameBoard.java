@@ -101,4 +101,8 @@ public class GameBoard implements JsonConvertible {
 
 		return otherPlayers;
 	}
+
+	public boolean hasWinner() {
+		return !winner.isEmpty();
+	}
 }

@@ -7,7 +7,14 @@ var userSchema = mongoose.Schema({
 	createdDate : "Date",
 	xp : "Number",
 	rank : "String",
-	currentGames : ["String"]
+	wins : "Number",
+	losses : "Number",
+	currentGames : ["String"],
+	rankInfo : {
+		level : "Number",
+		startFrom : "Number",
+		endAt : "Number"
+	}
 });
 
 userSchema.set('toObject', { getters: true });
