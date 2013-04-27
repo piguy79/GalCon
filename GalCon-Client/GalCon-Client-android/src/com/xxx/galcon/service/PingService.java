@@ -14,11 +14,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.Process;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -107,13 +109,18 @@ public class PingService extends Service {
 		}
 
 		private boolean isMainActivityActive() {
-			ActivityManager am = (ActivityManager) PingService.this.getSystemService(ACTIVITY_SERVICE);
-			List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+			PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+			boolean isScreenOn = powerManager.isScreenOn();
 
-			String name = MainActivity.class.getName();
-			String activityName = taskInfo.get(0).topActivity.getClassName();
-			if (activityName.equals(name)) {
-				return true;
+			if (isScreenOn) {
+				ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+				List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+
+				String name = MainActivity.class.getName();
+				String activityName = taskInfo.get(0).topActivity.getClassName();
+				if (activityName.equals(name)) {
+					return true;
+				}
 			}
 
 			return false;
