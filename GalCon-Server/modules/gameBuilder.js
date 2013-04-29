@@ -35,6 +35,7 @@ GameBuilder.prototype.createBoard = function(callback){
 
 GameBuilder.prototype.createHomePlanets = function() {
 	var homePlanets = [];
+	var minDistanceBetweenPlanets = Math.floor(this.width / 2) + 1;
 	while (homePlanets.length != 2) {
 		var homeIndex = Math
 				.floor((Math.random() * this.planets.length) + 1);
@@ -49,7 +50,7 @@ GameBuilder.prototype.createHomePlanets = function() {
 				var yDist = createdPlanet.position.y - homePlanet.position.y;
 				
 				var distance = Math.sqrt(xDist*xDist + yDist*yDist);
-				if(distance < 4) {
+				if(distance < minDistanceBetweenPlanets) {
 					tooClose = true;
 					break;
 				}
