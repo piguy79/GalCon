@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -145,6 +146,8 @@ public class MainMenuScreen implements ScreenFeedback {
 			String toNextLevel = "To Next Level..." + (GameLoop.USER.rank.endAt - GameLoop.USER.xp + "xp");
 			x = width / 2 - (int) smallFont.getBounds(toNextLevel).width / 2;
 			smallFont.draw(spriteBatch, toNextLevel, x, (int) (height * .76f));
+			smallFont.setColor(Color.WHITE);
+			mediumFont.setColor(Color.WHITE);
 
 			spriteBatch.end();
 
