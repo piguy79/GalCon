@@ -74,7 +74,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	List<Move> moves = new ArrayList<Move>();
-	
+
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
 	private ShipSelectionDialog shipSelectionDialog;
@@ -90,16 +90,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
-		
-		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");		
+
+		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
 		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
-		
-		BitmapFont font = Fonts.getInstance().mediumFont();	
-		
+
 		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
 		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
-
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 
@@ -109,21 +106,19 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		physicsWorld.setContactListener(this);
 
 	}
-	
-	private StillModel generateStillModelFromObjectFile(String objectFile){
+
+	private StillModel generateStillModelFromObjectFile(String objectFile) {
 		ObjLoader loader = new ObjLoader();
 		return loader.loadObj(Gdx.files.internal(objectFile));
 	}
-	
-	private ShaderProgram createShaderUsingFiles(String vertexShader, String fragmentShader){
-		ShaderProgram shader = new ShaderProgram(Gdx.files.internal(vertexShader),
-				Gdx.files.internal(fragmentShader));
+
+	private ShaderProgram createShaderUsingFiles(String vertexShader, String fragmentShader) {
+		ShaderProgram shader = new ShaderProgram(Gdx.files.internal(vertexShader), Gdx.files.internal(fragmentShader));
 		if (!shader.isCompiled() && !shader.getLog().isEmpty()) {
 			throw new IllegalStateException("Shader compilation fail: " + shader.getLog());
 		}
-		
-		return shader;
 
+		return shader;
 	}
 
 	/*
@@ -219,9 +214,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		for (Planet planet : gameBoard.planets) {
 			addPhysicsToPlanet(planet);
 		}
-		
-	}
 
+	}
 
 	private Body handleTouch(Camera camera) {
 		if (gameBoard == null) {
