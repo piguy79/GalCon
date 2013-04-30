@@ -1,0 +1,32 @@
+exports.processPossibleEndGame = function(game){
+	if(!game.hasOnlyOnePlayer()){
+		var playersWhoOwnAPlanet = [];
+		for(var i = 0; i < game.planets.length; i++){
+			var planet = game.planets[i];
+			if(planet.owner && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
+				playersWhoOwnAPlanet.push(planet.owner);
+			}
+		}
+		
+		var playersWhoHaveAMove = [];
+		for(var i = 0; i < game.moves.length; i++){
+			var move = game.moves[i];
+			if(playersWhoHaveAMove.indexOf(move.player) < 0){
+				playersWhoHaveAMove.push(move.player);
+			}
+		}
+		
+		if(playersWhoOwnAPlanet.length == 1) {
+			if(playersWhoHaveAMove.length == 0 || 
+					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
+				game.winner = playersWhoOwnAPlanet[0];
+				game.winningDate = new Date();
+			}
+		}
+	}
+}
+
+exports.processRoundInformation = function(game) {
+	game.currentRound.roundNumber++;
+    game.updateRegenRates();
+}

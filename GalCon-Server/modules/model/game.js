@@ -1,7 +1,20 @@
 var mongoose = require('./mongooseConnection').mongoose
 ,db = require('./mongooseConnection').db
 , ObjectId = require('mongoose').Types.ObjectId; 
-gamebuilder = require('../gameBuilder');
+gamebuilder = require('../gameBuilder'),
+standardGameType = require('./gameType/standardGameType'),
+countdownGameType = require('./gameType/countdownGameType');
+
+var gameTypes = {
+	standardGame : {
+		endGameScenario : standardGameType.processPossibleEndGame,
+		roundProcesser : standardGameType.processRoundInformation
+	},
+	countDownGame : {
+		endGameScenario : countdownGameType.processPossibleEndGame,
+		roundProcesser : countdownGameType.processRoundInformation
+	}
+};
 
 var gameSchema = mongoose.Schema({
 	players : [String],
@@ -10,6 +23,7 @@ var gameSchema = mongoose.Schema({
 	winner: "String",
 	winningDate: "Date",
 	createdDate : "Date",
+	level : "String",
 	currentRound : {
 		roundNumber : "Number",
 		player : "String"
@@ -214,10 +228,11 @@ exports.performMoves = function(gameId, moves, player, callback) {
 		
 		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(player)) {
 			processMoves(game, moves);			
-			processPossibleEndGame(game);
+			var level = "standardGame";
+			
+			gameTypes[level].endGameScenario(game);
+			gameTypes[level].roundProcesser(game);
 
-			game.currentRound.roundNumber++;
-			game.updateRegenRates();
 		} else {
 			game.addMoves(moves);
 		}
@@ -228,34 +243,6 @@ exports.performMoves = function(gameId, moves, player, callback) {
 			callback(game);
 		});
 	})
-}
-
-var processPossibleEndGame = function(game){
-	if(!game.hasOnlyOnePlayer()){
-		var playersWhoOwnAPlanet = [];
-		for(var i = 0; i < game.planets.length; i++){
-			var planet = game.planets[i];
-			if(planet.owner && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
-				playersWhoOwnAPlanet.push(planet.owner);
-			}
-		}
-		
-		var playersWhoHaveAMove = [];
-		for(var i = 0; i < game.moves.length; i++){
-			var move = game.moves[i];
-			if(playersWhoHaveAMove.indexOf(move.player) < 0){
-				playersWhoHaveAMove.push(move.player);
-			}
-		}
-		
-		if(playersWhoOwnAPlanet.length == 1) {
-			if(playersWhoHaveAMove.length == 0 || 
-					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
-				game.winner = playersWhoOwnAPlanet[0];
-				game.winningDate = new Date();
-			}
-		}
-	}
 }
 
 var decrementCurrentShipCountOnFromPlanets = function(game, moves){
