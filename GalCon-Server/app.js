@@ -38,6 +38,7 @@ app.get('/joinGame', routes.joinGame);
 app.post('/addPlanetsToGame', routes.addPlanetsToGame);
 app.get('/findAvailableGames', routes.findAvailableGames);
 app.get('/findUserByUserName', routes.findUserByUserName);
+app.post('/requestHandleForUserName', routes.requestHandleForUserName);
 app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);
 app.post('/performMoves', routes.performMoves);
 app.get('/deleteGame', routes.deleteGame);

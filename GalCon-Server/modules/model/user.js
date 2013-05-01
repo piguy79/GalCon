@@ -4,6 +4,7 @@ var mongoose = require('./mongooseConnection').mongoose
 
 var userSchema = mongoose.Schema({
 	name : "String",
+	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
 	rank : "String",
@@ -19,6 +20,7 @@ var userSchema = mongoose.Schema({
 
 userSchema.set('toObject', { getters: true });
 userSchema.index({name : 1});
+userSchema.index({handle: 1});
 
 userSchema.methods.createOrAdd = function(gameId, callback){
 	this.model('User').update({name : this.name}, {$set : {name : this.name}, $pushAll : {currentGames : [gameId]}}, {upsert : true}, function(err){
@@ -44,6 +46,16 @@ exports.findUserByName = function(userName, callback){
 		if(err){
 			console.log("Unable to find User information");
 		}else{
+			callback(user);
+		}
+	});
+}
+
+exports.findUserByHandle = function(reqHandle, callback){
+	UserModel.findOne({handle : reqHandle}, function(err, user){
+		if(err) {
+			callback();
+		} else {
 			callback(user);
 		}
 	});
