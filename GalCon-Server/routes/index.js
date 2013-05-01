@@ -106,8 +106,8 @@ exports.findUserByUserName = function(req, res) {
 }
 
 exports.requestHandleForUserName = function(req, res) {
-	var userName = req.query['userName'];
-	var handle = req.query['handle'];
+	var userName = req.body['userName'];
+	var handle = req.body['handle'];
 	userManager.findUserByHandle(handle, function(user) {
 		if (user) {
 			res.json({

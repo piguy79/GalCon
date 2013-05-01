@@ -51,8 +51,8 @@ exports.findUserByName = function(userName, callback){
 	});
 }
 
-exports.findUserByHandle = function(reqHandle, callback){
-	UserModel.findOne({handle : reqHandle}, function(err, user){
+exports.findUserByHandle = function(handle, callback){
+	UserModel.findOne({handle : handle}, function(err, user){
 		if(err) {
 			callback();
 		} else {
