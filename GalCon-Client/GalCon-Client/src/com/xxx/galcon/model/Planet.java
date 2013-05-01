@@ -7,7 +7,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class Planet implements JsonConvertible {
+public class Planet extends JsonConvertible {
 	public String owner = Constants.OWNER_NO_ONE;
 	public float shipRegenRate = 1.0f;
 	public int numberOfShips;

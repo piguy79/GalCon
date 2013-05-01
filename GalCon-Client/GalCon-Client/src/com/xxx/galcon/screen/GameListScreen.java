@@ -89,9 +89,9 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
 			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
 				GameBoard board = iter.next();
-				if (board.winner != null && !board.winner.isEmpty()) {
+				if (board.hasWinner()) {
 					if (!showGamesThatHaveBeenWon()
-							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
+							|| board.endGameInformation.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
 						iter.remove();
 					}
 				}
@@ -107,7 +107,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
 
-					if (GameLoop.USER.name.equals(gameBoard.currentPlayerToMove) && gameBoard.winner.isEmpty()) {
+					if (GameLoop.USER.name.equals(gameBoard.currentPlayerToMove) && !gameBoard.hasWinner()) {
 						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
@@ -140,9 +140,9 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 
-		if (gameBoard.winner != null && !gameBoard.winner.isEmpty()) {
+		if (gameBoard.hasWinner()) {
 			String winningText = "You Lost";
-			if (gameBoard.winner.equals(GameLoop.USER.name)) {
+			if (gameBoard.endGameInformation.winner.equals(GameLoop.USER.name)) {
 				winningText = "You Won!!";
 			}
 			return labelForGame + " " + winningText;

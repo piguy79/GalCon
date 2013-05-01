@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class Rank implements JsonConvertible {
+public class Rank extends JsonConvertible {
 	
 	public int level;
 	public int startFrom;

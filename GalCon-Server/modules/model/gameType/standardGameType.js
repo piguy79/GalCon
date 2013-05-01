@@ -19,8 +19,8 @@ exports.processPossibleEndGame = function(game){
 		if(playersWhoOwnAPlanet.length == 1) {
 			if(playersWhoHaveAMove.length == 0 || 
 					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
-				game.winner = playersWhoOwnAPlanet[0];
-				game.winningDate = new Date();
+				game.endGameInformation.winner = playersWhoOwnAPlanet[0];
+				game.endGameInformation.winningDate = new Date();
 			}
 		}
 	}
@@ -29,4 +29,7 @@ exports.processPossibleEndGame = function(game){
 exports.processRoundInformation = function(game) {
 	game.currentRound.roundNumber++;
     game.updateRegenRates();
+}
+
+exports.create = function(game, players, width, height, numberOfPlanets){
 }

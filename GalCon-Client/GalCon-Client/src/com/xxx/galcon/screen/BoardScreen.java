@@ -195,8 +195,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void associateHudInformation() {
-		boardScreenHud.associateCurrentRoundInformation(gameBoard.currentPlayerToMove, gameBoard.roundNumber,
-				gameBoard.winner);
+		boardScreenHud.associateCurrentRoundInformation(
+				gameBoard);
 	}
 
 	private void processGameBoard() {
@@ -525,8 +525,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderPlanets(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
-		if (!gameBoard.winner.isEmpty()) {
-			displayWinner(gameBoard.winner);
+		if (gameBoard.hasWinner()) {
+			displayWinner(gameBoard.endGameInformation.winner);
+		} else if(gameBoard.wasADraw()){
+			displayDraw();
+			
 		}
 
 		boardScreenHud.setTouchEnabled(true);
@@ -561,6 +564,24 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+		spriteBatch.end();
+	}
+	
+	
+	private void displayDraw() {
+		float width = Gdx.graphics.getWidth() / 2;
+		float height = Gdx.graphics.getHeight() / 2;
+
+		SpriteBatch spriteBatch = new SpriteBatch();
+		spriteBatch.begin();
+		fontViewMatrix.setToOrtho2D(0, 0, width, height);
+		spriteBatch.setProjectionMatrix(fontViewMatrix);
+
+		String text = "Draw Game";
+
+		BitmapFont font = Fonts.getInstance().mediumFont();
+		float halfFontWidth = font.getBounds(text).width / 2;
+		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		spriteBatch.end();
 	}
 

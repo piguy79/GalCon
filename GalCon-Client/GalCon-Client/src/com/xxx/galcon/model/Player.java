@@ -22,7 +22,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  *
  */
-public class Player implements JsonConvertible{
+public class Player extends JsonConvertible{
 	
 	public String name;
 	public Integer xp;

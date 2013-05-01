@@ -17,7 +17,7 @@ exports.index = function(req, res){
  */
 exports.generateGame = function(req, res){
 	var player = req.body.player;
-	gameManager.createGame([player], req.body.width, req.body.height, 12, function(game){
+	gameManager.createGame([player], req.body.width, req.body.height, 12,req.body.gameType, function(game){
 		gameManager.saveGame(game, function(){
 			userManager.findUserByName(player, function(user){
 				user.currentGames.push(game.id);
@@ -128,8 +128,8 @@ exports.performMoves = function(req, res){
 	var moves = req.body.moves;
 	var player = req.body.player;
 	gameManager.performMoves(gameId, moves, player, function(savedGame){
-		if(savedGame.winner){
-			userManager.findUserByName(savedGame.winner, function(user){
+		if(savedGame.endGameInformation.winner){
+			userManager.findUserByName(savedGame.endGameInformation.winner, function(user){
 					user.wins++;
 					user.xp += 10;
 					rankManager.findRankForXp(user.xp, function(rank){

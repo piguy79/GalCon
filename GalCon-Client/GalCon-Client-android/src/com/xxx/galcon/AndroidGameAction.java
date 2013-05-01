@@ -68,10 +68,10 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String player, int width, int height, String gameType)
 			throws ConnectionException {
 		try {
-			final JSONObject top = JsonConstructor.generateGame(player, width, height);
+			final JSONObject top = JsonConstructor.generateGame(player, width, height, gameType);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());

@@ -1,7 +1,10 @@
+gameTypeAssembler = require('./model/gameType/gameTypeAssembler');
+
+
 var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
 
-function GameBuilder(players, width, height, numberOfPlanets) {
+function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.currentPlanetNum = 0;
 	this.players = players;
 	this.width = width;
@@ -11,9 +14,15 @@ function GameBuilder(players, width, height, numberOfPlanets) {
 		roundNumber : 0,
 		player : players[0]
 	};
+	this.endGameInformation = {
+		winner : "",
+		losers : [],
+		draw : false
+	}
 	this.numberOfPlanets = numberOfPlanets;
-	this.winner = '';
+	this.gameType = gameType;
 	this.planets = [];
+	gameTypeAssembler.gameTypes[gameType].constructGameBoard(this,players, width, height, numberOfPlanets);
 }
 GameBuilder.prototype.constructor = GameBuilder;
 GameBuilder.prototype.players = [];
@@ -222,6 +231,6 @@ function assignHomePlanets(builder) {
 	});
 }
 
-exports.createGameBuilder = function(players, width, height, numberOfPlanets) {
-	return new GameBuilder(players, width, height, numberOfPlanets);
+exports.createGameBuilder = function(players, width, height, numberOfPlanets, gameType) {
+	return new GameBuilder(players, width, height, numberOfPlanets, gameType);
 }

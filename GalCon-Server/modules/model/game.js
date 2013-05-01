@@ -2,28 +2,22 @@ var mongoose = require('./mongooseConnection').mongoose
 ,db = require('./mongooseConnection').db
 , ObjectId = require('mongoose').Types.ObjectId; 
 gamebuilder = require('../gameBuilder'),
-standardGameType = require('./gameType/standardGameType'),
-countdownGameType = require('./gameType/countdownGameType');
+gameTypeAssembler = require('./gameType/gameTypeAssembler');
 
-var gameTypes = {
-	standardGame : {
-		endGameScenario : standardGameType.processPossibleEndGame,
-		roundProcesser : standardGameType.processRoundInformation
-	},
-	countDownGame : {
-		endGameScenario : countdownGameType.processPossibleEndGame,
-		roundProcesser : countdownGameType.processRoundInformation
-	}
-};
+
 
 var gameSchema = mongoose.Schema({
 	players : [String],
 	width: "Number",
 	height: "Number",
-	winner: "String",
-	winningDate: "Date",
+	endGameInformation : {
+		winner : "String",
+		winningDate : "Date",
+		losers : [String],
+		draw : "Boolean"
+	},
 	createdDate : "Date",
-	level : "String",
+	gameType : "String",
 	currentRound : {
 		roundNumber : "Number",
 		player : "String"
@@ -153,8 +147,8 @@ gameSchema.methods.isLastPlayer = function(player) {
 
 var GameModel = db.model('Game', gameSchema);
 
-exports.createGame = function(players, width, height, numberOfPlanets, callback){
-	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets);
+exports.createGame = function(players, width, height, numberOfPlanets,gameType, callback){
+	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets, gameType);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		callback(constructedGame);
@@ -228,10 +222,9 @@ exports.performMoves = function(gameId, moves, player, callback) {
 		
 		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(player)) {
 			processMoves(game, moves);			
-			var level = "standardGame";
 			
-			gameTypes[level].endGameScenario(game);
-			gameTypes[level].roundProcesser(game);
+			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
+			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 
 		} else {
 			game.addMoves(moves);

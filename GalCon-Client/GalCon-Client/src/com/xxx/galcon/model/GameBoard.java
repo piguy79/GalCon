@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class GameBoard implements JsonConvertible {
+public class GameBoard extends JsonConvertible {
 	public String id;
 	public Date createdDate;
 	public List<String> players;
@@ -23,8 +23,7 @@ public class GameBoard implements JsonConvertible {
 	public List<Planet> planets = new ArrayList<Planet>();
 	public int roundNumber;
 	public String currentPlayerToMove;
-	public String winner = "";
-	public Date winningDate = null;
+	public EndGameInformation endGameInformation = new EndGameInformation();
 	public List<Move> movesInProgress = new ArrayList<Move>();
 
 	public GameBoard() {
@@ -50,10 +49,11 @@ public class GameBoard implements JsonConvertible {
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
-		this.winner = jsonObject.optString(Constants.WINNER);
 
+		JSONObject endGame = jsonObject.getJSONObject(Constants.END_GAME_INFO);
+		
+		this.endGameInformation.consume(endGame);
 		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
-		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
 
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
@@ -76,19 +76,7 @@ public class GameBoard implements JsonConvertible {
 		}
 	}
 
-	private Date formatDate(JSONObject jsonObject, String field) {
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
-		try {
-			String date = jsonObject.optString(field);
-			if (date != null && date.length() > 0) {
-				return format.parse(date);
-			}
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 
 	public List<String> allPlayersExcept(String playerToExclude) {
 		List<String> otherPlayers = new ArrayList<String>();
@@ -103,6 +91,10 @@ public class GameBoard implements JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return !winner.isEmpty();
+		return endGameInformation.winner != null && !endGameInformation.winner.isEmpty();
+	}
+	
+	public boolean wasADraw(){
+		return endGameInformation.draw;
 	}
 }

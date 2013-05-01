@@ -25,7 +25,7 @@ public interface GameAction {
 	 * 
 	 * @return <GameBoard> Representing current state.
 	 */
-	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height, String gameType)
 			throws ConnectionException;
 
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String player)

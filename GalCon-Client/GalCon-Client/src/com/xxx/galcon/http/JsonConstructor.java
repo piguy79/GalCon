@@ -32,12 +32,13 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject generateGame(String player, int width, int height) throws JSONException {
+	public static JSONObject generateGame(String player, int width, int height, String gameType) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("player", player);
 		top.put("width", width);
 		top.put("height", height);
+		top.put("gameType", gameType);
 
 		return top;
 	}

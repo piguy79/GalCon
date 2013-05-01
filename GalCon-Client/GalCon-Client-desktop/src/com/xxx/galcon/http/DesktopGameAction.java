@@ -71,10 +71,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
+	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height, String gameType)
 			throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.generateGame(player, width, height);
+			JSONObject top = JsonConstructor.generateGame(player, width, height, gameType);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
