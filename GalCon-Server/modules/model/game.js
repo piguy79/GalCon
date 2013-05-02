@@ -115,9 +115,7 @@ gameSchema.methods.updateRegenRates = function(){
 	this.planets.forEach(function(planet){
 		if(planet.owner) {
 			planet.numberOfShips += planet.shipRegenRate;
-		} else {
-			planet.numberOfShips += Math.min(planet.shipRegenRate, 2);
-		}
+		} 
 	});
 }
 
