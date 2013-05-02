@@ -15,6 +15,7 @@ public class Planet extends JsonConvertible {
 	public String id;
 	public PlanetPosition position;
 	public boolean touched = false;
+	public String ability;
 
 	public Planet() {
 
@@ -26,6 +27,7 @@ public class Planet extends JsonConvertible {
 			this.name = jsonObject.getString(Constants.NAME);
 			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
 			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
+			this.ability = jsonObject.getString(Constants.ABILITY);
 			if (jsonObject.has(Constants.OWNER)) {
 				this.owner = jsonObject.getString(Constants.OWNER);
 			}
@@ -42,6 +44,10 @@ public class Planet extends JsonConvertible {
 	
 	public boolean isOwnedBy(Player player){
 		return owner.equals(player.name);	
+	}
+	
+	public boolean hasAbility(){
+		return ability != null && !ability.isEmpty();
 	}
 	
 

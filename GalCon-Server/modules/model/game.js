@@ -33,7 +33,8 @@ var gameSchema = mongoose.Schema({
 				y : "Number"
 			},
 			shipRegenRate : "Number",
-			numberOfShips : "Number"
+			numberOfShips : "Number",
+			ability : "String"
 		}
 	],
 	moves : [
@@ -263,15 +264,7 @@ var findFromPlanet = function(planets, fromPlanetName){
 var processMoves = function(game, newMoves) {
 	game.addMoves(newMoves);
 
-	var i = game.moves.length;
-	while (i--) {
-		var move = game.moves[i];
-		move.duration--;
-		if (move.duration == 0) {
-			game.applyMoveToPlanets(move);
-			game.moves.splice(i, 1)
-		}
-	}
+	gameTypeAssembler.gameTypes[game.gameType].processMoves(game);
 }
 
 // Add User adds a user to a current Games players List also assigning a random

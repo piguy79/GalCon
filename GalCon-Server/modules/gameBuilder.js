@@ -19,10 +19,14 @@ function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 		losers : [],
 		draw : false
 	}
+	this.ability = "";
 	this.numberOfPlanets = numberOfPlanets;
 	this.gameType = gameType;
 	this.planets = [];
-	gameTypeAssembler.gameTypes[gameType].constructGameBoard(this,players, width, height, numberOfPlanets);
+	
+	if(gameTypeAssembler.gameTypes[gameType].constructGameBoard){
+			gameTypeAssembler.gameTypes[gameType].constructGameBoard(this,players, width, height, numberOfPlanets);
+	}
 }
 GameBuilder.prototype.constructor = GameBuilder;
 GameBuilder.prototype.players = [];
@@ -43,6 +47,8 @@ GameBuilder.prototype.createBoard = function(callback) {
 
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 	var tooCloseToHomeRadius = Math.floor(this.width / 2);
+	
+	var extraPlanets = [];
 	while(this.planets.length < this.numberOfPlanets) {
 		var newPosition = this.createRandomPosition();
 		var noGood = false;
@@ -65,7 +71,12 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 			planet.shipRegenRate = Math.floor((Math.random() * MAX_REGEN) + 1);
 			planet.numberOfShips = Math.floor(Math.random() * MAX_STARTING_SHIPS);
 			this.planets.push(planet);
+			extraPlanets.push(planet);
 		}
+	}
+	
+	if(gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities){
+		gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities(extraPlanets);
 	}
 }
 
@@ -206,6 +217,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	planet.position = position;
 	planet.shipRegenRate = 0;
 	planet.numberOfShips = 0;
+	planet.ability = "";
 
 	return planet;
 }

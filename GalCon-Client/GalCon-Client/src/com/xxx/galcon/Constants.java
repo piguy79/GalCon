@@ -15,6 +15,7 @@ public class Constants {
 	public static final String SHIP_REGEN_RATE = "shipRegenRate";
 	public static final float SHIP_REGEN_RATE_MAX = 5.0f;
 	public static final String NUMBER_OF_SHIPS = "numberOfShips";
+	public static final String ABILITY = "ability";
 	public static final String OWNER = "owner";
 	public static final String POSITION = "position";
 	public static final String X = "x";

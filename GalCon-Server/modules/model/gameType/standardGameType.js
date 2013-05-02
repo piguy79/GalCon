@@ -31,5 +31,16 @@ exports.processRoundInformation = function(game) {
     game.updateRegenRates();
 }
 
-exports.create = function(game, players, width, height, numberOfPlanets){
+exports.applyMovesToGame = function(game){
+
+	var i = game.moves.length;
+	while (i--) {
+		var move = game.moves[i];
+		move.duration--;
+		if (move.duration == 0) {
+			game.applyMoveToPlanets(move);
+			game.moves.splice(i, 1)
+		}
+	}
+
 }

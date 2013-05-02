@@ -335,21 +335,45 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float r = 0.0f, g = 0.0f, b = 0.0f;
 			if (planet.touched) {
-				if (planet.isOwnedBy(GameLoop.USER)) {
+				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
 					g = 1.0f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					b = 1.0f;
+				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
 					r = 1.0f;
+					b = 1.0f;
+				}
+				else if (planet.isOwnedBy(GameLoop.USER)) {
+					g = 1.0f;
+				} 
+				else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					r = 1.0f;
+				} else if(planet.hasAbility()){
+					r = 0.5f;
+					g = 0.5f;
+					b = 1.0f;
 				} else {
 					r = 1.0f;
 					g = 1.0f;
 					b = 1.0f;
 				}
+				
+				
 			} else {
-				if (planet.isOwnedBy(GameLoop.USER)) {
+				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
+					g = 1.0f;
+					b = 1.0f;
+				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
+					r = 1.0f;
+					b = 1.0f;
+				}
+				else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 0.5f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 0.5f;
-				} else if (!planet.touched) {
+				} else if(planet.hasAbility()){
+					b = 1.0f;
+				}
+				else if (!planet.touched) {
 					r = 0.5f;
 					g = 0.5f;
 					b = 0.5f;
