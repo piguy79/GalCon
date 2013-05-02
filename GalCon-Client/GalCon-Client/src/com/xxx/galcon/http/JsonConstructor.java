@@ -41,4 +41,13 @@ public class JsonConstructor {
 
 		return top;
 	}
+
+	public static JSONObject requestHandle(String userName, String handle) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("userName", userName);
+		top.put("handle", handle);
+
+		return top;
+	}
 }

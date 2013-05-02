@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.xxx.galcon.http.ConnectionException;
-import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
@@ -27,10 +26,10 @@ public class MainActivity extends AndroidApplication {
 		Player player = new Player();
 		player.name = UserInfo.getUser(getBaseContext());
 		try {
-			gameAction.findUserInformation(new SetPlayerResultHandler(player), player.name);
+			gameAction.findUserInformation(new SetOrPromptResultHandler(this, gameAction, player), player.name);
 		} catch (ConnectionException e) {
 			e.printStackTrace();
-		} 
+		}
 
 		initialize(new GameLoop(player, gameAction), cfg);
 

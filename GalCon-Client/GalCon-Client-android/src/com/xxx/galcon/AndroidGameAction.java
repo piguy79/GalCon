@@ -10,6 +10,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -31,6 +32,7 @@ import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -140,7 +142,21 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_USER_NAME, new Player()).execute("");
 			}
 		});
+	}
 
+	public void requestHandleForUserName(final UIConnectionResultCallback<HandleResponse> callback, String userName,
+			String handle) throws ConnectionException {
+		try {
+			final JSONObject top = JsonConstructor.requestHandle(userName, handle);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_USER_NAME,
+							new HandleResponse()).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
 	}
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {

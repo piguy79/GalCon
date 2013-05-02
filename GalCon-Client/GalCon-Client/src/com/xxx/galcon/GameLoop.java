@@ -11,7 +11,6 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.Rank;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.GameListScreen;

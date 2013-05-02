@@ -11,6 +11,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -27,6 +28,7 @@ import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -65,6 +67,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args,
 					new GameBoard()));
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
+	}
+
+	@Override
+	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
+			String handle) throws ConnectionException {
+		try {
+			JSONObject top = JsonConstructor.requestHandle(userName, handle);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_USER_NAME,
+					args, new HandleResponse()));
 		} catch (JSONException e) {
 			throw new ConnectionException(e);
 		}

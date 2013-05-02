@@ -12,6 +12,8 @@ public class Constants {
 	public static final String ITEMS = "items";
 	public static final String ID = "_id";
 	public static final String NAME = "name";
+	public static final String CREATED = "created";
+	public static final String HANDLE = "handle";
 	public static final String SHIP_REGEN_RATE = "shipRegenRate";
 	public static final float SHIP_REGEN_RATE_MAX = 5.0f;
 	public static final String NUMBER_OF_SHIPS = "numberOfShips";

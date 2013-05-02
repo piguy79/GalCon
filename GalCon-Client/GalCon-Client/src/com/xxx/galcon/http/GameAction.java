@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.Rank;
 
 /**
  * This class defines a set of methods used to interact with the server side
@@ -41,10 +41,14 @@ public interface GameAction {
 
 	public void findActiveGamesForAUser(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
-	
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player) throws ConnectionException;
+
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player)
+			throws ConnectionException;
+
+	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
+			String handle) throws ConnectionException;
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player)
 			throws ConnectionException;
-	
+
 }
