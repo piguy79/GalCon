@@ -21,7 +21,7 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	while(!speedIncreasePlanetSet){
 	
 		var planetToAddTo = planetsFarFromHomes[0];
-		planetToAddTo.regenRate = 1;
+		planetToAddTo.shipRegenRate = 1;
 		
 		planetToAddTo.ability = 'SPEED';
 		speedIncreasePlanetSet = true;
