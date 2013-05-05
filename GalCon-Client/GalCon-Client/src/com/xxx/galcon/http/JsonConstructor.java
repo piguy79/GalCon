@@ -13,13 +13,13 @@ public class JsonConstructor {
 
 	public static JSONObject performMove(String gameId, List<Move> moves) throws JSONException {
 		JSONObject top = new JSONObject();
-		top.put("player", GameLoop.USER.name);
+		top.put("playerHandle", GameLoop.USER.handle);
 		top.put("id", gameId);
 		JSONArray jsonMoves = new JSONArray();
 
 		for (Move move : moves) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("player", GameLoop.USER.name);
+			jsonObject.put("playerHandle", GameLoop.USER.handle);
 			jsonObject.put("fromPlanet", move.fromPlanet);
 			jsonObject.put("toPlanet", move.toPlanet);
 			jsonObject.put("fleet", move.shipsToMove);
@@ -32,12 +32,14 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject generateGame(String player, int width, int height) throws JSONException {
+	public static JSONObject generateGame(String playerHandle, int width, int height, String gameType)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("player", player);
+		top.put("playerHandle", playerHandle);
 		top.put("width", width);
 		top.put("height", height);
+		top.put("gameType", gameType);
 
 		return top;
 	}

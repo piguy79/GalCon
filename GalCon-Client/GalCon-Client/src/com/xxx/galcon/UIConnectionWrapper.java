@@ -36,9 +36,10 @@ public class UIConnectionWrapper {
 		}
 	}
 
-	public static void findActiveGamesForAUser(UIConnectionResultCallback<AvailableGames> callback, String player) {
+	public static void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback,
+			String playerHandle) {
 		try {
-			gameAction.findActiveGamesForAUser(callback, player);
+			gameAction.findCurrentGamesByPlayerHandle(callback, playerHandle);
 		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
@@ -52,17 +53,17 @@ public class UIConnectionWrapper {
 		}
 	}
 
-	public static void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String player) {
+	public static void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		try {
-			gameAction.findAvailableGames(callback, player);
+			gameAction.findAvailableGames(callback, playerHandle);
 		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
 	}
 
-	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String player) {
+	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		try {
-			gameAction.joinGame(callback, id, player);
+			gameAction.joinGame(callback, id, playerHandle);
 		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}

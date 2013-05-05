@@ -12,20 +12,20 @@ exports.index = function(req, res) {
  * also return a gameboard object which will be stored in mongoDB
  */
 exports.generateGame = function(req, res) {
-	var player = req.body.player;
-	gameManager.createGame([ player ], req.body.width, req.body.height, 12,
-			function(game) {
-				gameManager.saveGame(game, function() {
-					userManager.findUserByName(player, function(user) {
-						user.currentGames.push(game.id);
+	var playerHandle = req.body.playerHandle;
 
+	userManager.findUserByHandle(playerHandle, function(user) {
+		gameManager.createGame([ user ], req.body.width, req.body.height, 12,
+				req.body.gameType, function(game) {
+					gameManager.saveGame(game, function() {
+						user.currentGames.push(game.id);
 						user.save(function() {
 							res.json(game);
 						});
 
 					});
 				});
-			});
+	});
 }
 
 // Find all games currently available in the system.
@@ -46,8 +46,8 @@ exports.findGameById = function(req, res) {
 }
 
 exports.findAvailableGames = function(req, res) {
-	var player = req.query['player'];
-	gameManager.findAvailableGames(player, function(games) {
+	var playerHandle = req.query['playerHandle'];
+	gameManager.findAvailableGames(playerHandle, function(games) {
 		var returnObj = {};
 		returnObj.items = games;
 		res.json(returnObj);
@@ -55,8 +55,8 @@ exports.findAvailableGames = function(req, res) {
 }
 
 exports.findGamesWithPendingMove = function(req, res) {
-	var userName = req.query['userName'];
-	userManager.findUserByName(userName, function(user) {
+	var playerHandle = req.query['playerHandle'];
+	userManager.findUserByHandle(playerHandle, function(user) {
 		if (!user) {
 			res.json({});
 		} else {
@@ -65,7 +65,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 						var returnObj = {};
 						var len = games.length;
 						while (len--) {
-							if (games[len].currentRound.player != user.name
+							if (games[len].currentRound.playerHandle != user.handle
 									|| games[len].winner) {
 								games.splice(len, 1);
 							}
@@ -81,24 +81,21 @@ exports.findUserByUserName = function(req, res) {
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user) {
 		if (user) {
-			rankManager.findRankByName(user.rank, function(dbRank) {
-				user.rankInfo = dbRank;
-				res.json(user);
-			});
+			res.json(user);
 		} else {
 			user = new userManager.UserModel({
 				name : userName,
 				currentGames : [],
 				xp : 0,
-				rank : 1,
 				wins : 0,
 				losses : 0
 			});
-
-			user.save(function() {
-				rankManager.findRankByName(user.rank, function(dbRank) {
-					user.rankInfo = dbRank;
-					res.json(user);
+			rankManager.findRankByName("1", function(dbRank) {
+				user.rankInfo = dbRank;
+				user.save(function() {
+					user.populate('rankInfo', function(err, user) {
+						res.json(user);
+					});
 				});
 			});
 		}
@@ -119,7 +116,7 @@ exports.requestHandleForUserName = function(req, res) {
 				user.save(function() {
 					res.json({
 						created : true,
-						player: user
+						player : user
 					})
 				});
 			});
@@ -127,8 +124,8 @@ exports.requestHandleForUserName = function(req, res) {
 	});
 }
 
-exports.findCurrentGamesByUserName = function(req, res) {
-	var userName = req.query['userName'];
+exports.findCurrentGamesByPlayerHandle = function(req, res) {
+	var playerHandle = req.query['playerHandle'];
 	userManager.findUserByName(userName, function(user) {
 		if (!user) {
 			res.json({});
@@ -146,10 +143,11 @@ exports.findCurrentGamesByUserName = function(req, res) {
 exports.performMoves = function(req, res) {
 	var gameId = req.body.id;
 	var moves = req.body.moves;
-	var player = req.body.player;
-	gameManager.performMoves(gameId, moves, player, function(savedGame) {
-		if (savedGame.winner) {
-			userManager.findUserByName(savedGame.winner, function(user) {
+	var playerHandle = req.body.playerHandle;
+
+	gameManager.performMoves(gameId, moves, playerHandle, function(savedGame) {
+		if (savedGame.endGameInformation.winner) {
+			userManager.findUserByHandle(savedGame.endGameInformation.winner, function(user) {
 				user.wins++;
 				user.xp += 10;
 				rankManager.findRankForXp(user.xp, function(rank) {
@@ -183,19 +181,18 @@ exports.deleteGame = function(req, res) {
 // Join a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
-	var player = req.query['player'];
-	gameManager.addUser(gameId, player, function(game) {
-		gameManager.findById(gameId, function(returnGame) {
-			userManager.findUserByName(player, function(user) {
+	var playerHandle = req.query['playerHandle'];
+
+	userManager.findUserByHandle(playerHandle, function(user) {
+		gameManager.addUser(gameId, user, function(game) {
+			gameManager.findById(gameId, function(returnGame) {
 				user.currentGames.push(gameId);
 				user.save(function() {
 					res.json(returnGame);
 				});
-
 			});
 		});
 	});
-
 }
 
 exports.findRankInformation = function(req, res) {

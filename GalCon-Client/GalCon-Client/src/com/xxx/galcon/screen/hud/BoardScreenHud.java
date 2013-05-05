@@ -5,11 +5,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.model.EndGameInformation;
+import com.xxx.galcon.model.GameBoard;
 
 public class BoardScreenHud extends Hud {
-	private String currentPlayerToMove;
-	private int roundNumber;
-	private String winner;
+	private GameBoard gameBoard;
 
 	private HudButton backButton;
 	private HudButton endTurnButton;
@@ -32,20 +32,19 @@ public class BoardScreenHud extends Hud {
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	public void associateCurrentRoundInformation(String currentPlayerToMove, int roundNumber, String winner) {
-		this.currentPlayerToMove = currentPlayerToMove;
-		this.roundNumber = roundNumber;
-		this.winner = winner;
+	public void associateCurrentRoundInformation(GameBoard gameBoard) {
+		this.gameBoard = gameBoard;
 	}
 
 	@Override
 	public void render(float delta) {
-		boolean isMyTurn = haveRoundInformation() && currentPlayerToMove.equals(GameLoop.USER.name);
+		boolean isMyTurn = haveRoundInformation() && gameBoard.currentPlayerToMove.equals(GameLoop.USER.handle);
 
 		getSpriteBatch().begin();
 
 		refreshButton.setEnabled(true);
-		if (winner != null && !winner.isEmpty()) {
+
+		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
 			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
 			refreshButton.setEnabled(false);
@@ -53,8 +52,8 @@ public class BoardScreenHud extends Hud {
 			int height = Gdx.graphics.getHeight();
 			BitmapFont font = Fonts.getInstance().largeFont();
 			font.draw(getSpriteBatch(), "Current Player: "
-					+ (currentPlayerToMove.isEmpty() ? "Waiting for opponent" : currentPlayerToMove), 5, height * .26f);
-			font.draw(getSpriteBatch(), "Round Number: " + roundNumber, 5, height * .2f);
+					+ (gameBoard.currentPlayerToMove.isEmpty() ? "Waiting for opponent" : gameBoard.currentPlayerToMove), 5, height * .26f);
+			font.draw(getSpriteBatch(), "Round Number: " + gameBoard.roundNumber, 5, height * .2f);
 
 			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
@@ -69,7 +68,7 @@ public class BoardScreenHud extends Hud {
 	}
 
 	private boolean haveRoundInformation() {
-		if (currentPlayerToMove != null) {
+		if (gameBoard.currentPlayerToMove != null) {
 			return true;
 		}
 		return false;

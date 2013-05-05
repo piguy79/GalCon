@@ -195,8 +195,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void associateHudInformation() {
-		boardScreenHud.associateCurrentRoundInformation(gameBoard.currentPlayerToMove, gameBoard.roundNumber,
-				gameBoard.winner);
+		boardScreenHud.associateCurrentRoundInformation(
+				gameBoard);
 	}
 
 	private void processGameBoard() {
@@ -335,21 +335,45 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float r = 0.0f, g = 0.0f, b = 0.0f;
 			if (planet.touched) {
-				if (planet.isOwnedBy(GameLoop.USER)) {
+				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
 					g = 1.0f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					b = 1.0f;
+				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
 					r = 1.0f;
+					b = 1.0f;
+				}
+				else if (planet.isOwnedBy(GameLoop.USER)) {
+					g = 1.0f;
+				} 
+				else if (!planet.owner.equals(OWNER_NO_ONE)) {
+					r = 1.0f;
+				} else if(planet.hasAbility()){
+					r = 0.5f;
+					g = 0.5f;
+					b = 1.0f;
 				} else {
 					r = 1.0f;
 					g = 1.0f;
 					b = 1.0f;
 				}
+				
+				
 			} else {
-				if (planet.isOwnedBy(GameLoop.USER)) {
+				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
+					g = 1.0f;
+					b = 1.0f;
+				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
+					r = 1.0f;
+					b = 1.0f;
+				}
+				else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 0.5f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 0.5f;
-				} else if (!planet.touched) {
+				} else if(planet.hasAbility()){
+					b = 1.0f;
+				}
+				else if (!planet.touched) {
 					r = 0.5f;
 					g = 0.5f;
 					b = 0.5f;
@@ -471,7 +495,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (planet.touched) {
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
-				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.name)) {
+				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.handle)) {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
@@ -525,8 +549,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderPlanets(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
-		if (!gameBoard.winner.isEmpty()) {
-			displayWinner(gameBoard.winner);
+		if (gameBoard.hasWinner()) {
+			displayWinner(gameBoard.endGameInformation.winner);
+		} else if(gameBoard.wasADraw()){
+			displayDraw();
+			
 		}
 
 		boardScreenHud.setTouchEnabled(true);
@@ -563,6 +590,24 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 		spriteBatch.end();
 	}
+	
+	
+	private void displayDraw() {
+		float width = Gdx.graphics.getWidth() / 2;
+		float height = Gdx.graphics.getHeight() / 2;
+
+		SpriteBatch spriteBatch = new SpriteBatch();
+		spriteBatch.begin();
+		fontViewMatrix.setToOrtho2D(0, 0, width, height);
+		spriteBatch.setProjectionMatrix(fontViewMatrix);
+
+		String text = "Draw Game";
+
+		BitmapFont font = Fonts.getInstance().mediumFont();
+		float halfFontWidth = font.getBounds(text).width / 2;
+		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
+		spriteBatch.end();
+	}
 
 	private void displayWinner(String winner) {
 		float width = Gdx.graphics.getWidth() / 2;
@@ -574,7 +619,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "You Lost";
-		if (GameLoop.USER.name.equals(winner)) {
+		if (GameLoop.USER.handle.equals(winner)) {
 			text = "Victory!";
 		}
 

@@ -1,7 +1,10 @@
+gameTypeAssembler = require('./model/gameType/gameTypeAssembler');
+
+
 var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
 
-function GameBuilder(players, width, height, numberOfPlanets) {
+function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.currentPlanetNum = 0;
 	this.players = players;
 	this.width = width;
@@ -9,11 +12,21 @@ function GameBuilder(players, width, height, numberOfPlanets) {
 	this.createdDate = new Date();
 	this.currentRound = {
 		roundNumber : 0,
-		player : players[0]
+		playerHandle : players[0].handle
 	};
+	this.endGameInformation = {
+		winner : "",
+		losers : [],
+		draw : false
+	}
+	this.ability = "";
 	this.numberOfPlanets = numberOfPlanets;
-	this.winner = '';
+	this.gameType = gameType;
 	this.planets = [];
+	
+	if(gameTypeAssembler.gameTypes[gameType].constructGameBoard){
+			gameTypeAssembler.gameTypes[gameType].constructGameBoard(this,players, width, height, numberOfPlanets);
+	}
 }
 GameBuilder.prototype.constructor = GameBuilder;
 GameBuilder.prototype.players = [];
@@ -34,6 +47,8 @@ GameBuilder.prototype.createBoard = function(callback) {
 
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 	var tooCloseToHomeRadius = Math.floor(this.width / 2);
+	
+	var extraPlanets = [];
 	while(this.planets.length < this.numberOfPlanets) {
 		var newPosition = this.createRandomPosition();
 		var noGood = false;
@@ -56,7 +71,12 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 			planet.shipRegenRate = Math.floor((Math.random() * MAX_REGEN) + 1);
 			planet.numberOfShips = Math.floor(Math.random() * MAX_STARTING_SHIPS);
 			this.planets.push(planet);
+			extraPlanets.push(planet);
 		}
+	}
+	
+	if(gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities){
+		gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities(extraPlanets);
 	}
 }
 
@@ -197,6 +217,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	planet.position = position;
 	planet.shipRegenRate = 0;
 	planet.numberOfShips = 0;
+	planet.ability = "";
 
 	return planet;
 }
@@ -214,14 +235,14 @@ function assignHomePlanets(builder) {
 	builder.players.forEach(function(player) {
 		for ( var i in builder.planets) {
 			var planet = builder.planets[i];
-			if (!planet.owner && planet.isHome == "Y") {
-				planet.owner = player;
+			if (!planet.ownerHandle && planet.isHome == "Y") {
+				planet.ownerHandle = player.handle;
 				break;
 			}
 		}
 	});
 }
 
-exports.createGameBuilder = function(players, width, height, numberOfPlanets) {
-	return new GameBuilder(players, width, height, numberOfPlanets);
+exports.createGameBuilder = function(players, width, height, numberOfPlanets, gameType) {
+	return new GameBuilder(players, width, height, numberOfPlanets, gameType);
 }

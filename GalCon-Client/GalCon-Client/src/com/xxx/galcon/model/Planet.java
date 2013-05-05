@@ -7,7 +7,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class Planet implements JsonConvertible {
+public class Planet extends JsonConvertible {
 	public String owner = Constants.OWNER_NO_ONE;
 	public float shipRegenRate = 1.0f;
 	public int numberOfShips;
@@ -15,6 +15,7 @@ public class Planet implements JsonConvertible {
 	public String id;
 	public PlanetPosition position;
 	public boolean touched = false;
+	public String ability;
 
 	public Planet() {
 
@@ -26,6 +27,7 @@ public class Planet implements JsonConvertible {
 			this.name = jsonObject.getString(Constants.NAME);
 			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
 			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
+			this.ability = jsonObject.getString(Constants.ABILITY);
 			if (jsonObject.has(Constants.OWNER)) {
 				this.owner = jsonObject.getString(Constants.OWNER);
 			}
@@ -41,7 +43,11 @@ public class Planet implements JsonConvertible {
 	}
 	
 	public boolean isOwnedBy(Player player){
-		return owner.equals(player.name);	
+		return owner.equals(player.handle);	
+	}
+	
+	public boolean hasAbility(){
+		return ability != null && !ability.isEmpty();
 	}
 	
 

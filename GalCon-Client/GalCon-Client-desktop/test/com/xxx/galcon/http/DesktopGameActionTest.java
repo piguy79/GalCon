@@ -38,7 +38,7 @@ public class DesktopGameActionTest {
 				// TODO Auto-generated method stub
 
 			}
-		}, "conor", 8, 15);
+		}, "conor", 8, 15, "standardGame");
 	}
 
 }

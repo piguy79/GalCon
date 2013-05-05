@@ -25,21 +25,21 @@ public interface GameAction {
 	 * 
 	 * @return <GameBoard> Representing current state.
 	 */
-	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String player, int width, int height)
-			throws ConnectionException;
+	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
+			int height, String gameType) throws ConnectionException;
 
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String player)
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
 	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
 
-	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String player)
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
 			throws ConnectionException;
 
 	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException;
 
-	public void findActiveGamesForAUser(UIConnectionResultCallback<AvailableGames> callback, String player)
+	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player)
@@ -48,7 +48,7 @@ public interface GameAction {
 	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
 			String handle) throws ConnectionException;
 
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player)
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
 }

@@ -7,15 +7,10 @@ var userSchema = mongoose.Schema({
 	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
-	rank : "String",
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
-	rankInfo : {
-		level : "Number",
-		startFrom : "Number",
-		endAt : "Number"
-	}
+	rankInfo : {type: mongoose.Schema.ObjectId, ref: 'Rank'}
 });
 
 userSchema.set('toObject', { getters: true });
@@ -42,7 +37,7 @@ exports.saveUser = function(user, callback){
 }
 
 exports.findUserByName = function(userName, callback){
-	UserModel.findOne({name : userName}, function(err, user){
+	UserModel.findOne({name : userName}).populate('rankInfo').exec(function(err, user){
 		if(err){
 			console.log("Unable to find User information");
 		}else{
@@ -52,7 +47,7 @@ exports.findUserByName = function(userName, callback){
 }
 
 exports.findUserByHandle = function(handle, callback){
-	UserModel.findOne({handle : handle}, function(err, user){
+	UserModel.findOne({handle : handle}).populate('rankInfo').exec(function(err, user){
 		if(err) {
 			callback();
 		} else {

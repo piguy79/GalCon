@@ -8,6 +8,6 @@ public class Move {
 	public String player;
 	
 	public boolean belongsToPlayer(Player player){
-		return this.player.equals(player.name);
+		return this.player.equals(player.handle);
 	}
 }

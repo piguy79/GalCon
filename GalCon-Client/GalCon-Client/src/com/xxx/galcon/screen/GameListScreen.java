@@ -53,7 +53,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	protected void refreshScreen() {
-		UIConnectionWrapper.findActiveGamesForAUser(this, GameLoop.USER.name);
+		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
 	}
 
 	@Override
@@ -89,9 +89,10 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
 			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
 				GameBoard board = iter.next();
-				if (board.winner != null && !board.winner.isEmpty()) {
+				if (board.hasWinner()) {
 					if (!showGamesThatHaveBeenWon()
-							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
+							|| board.endGameInformation.winningDate.before(new Date(System.currentTimeMillis() - 1000
+									* 60 * 60 * 24))) {
 						iter.remove();
 					}
 				}
@@ -107,7 +108,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
 
-					if (GameLoop.USER.name.equals(gameBoard.currentPlayerToMove) && gameBoard.winner.isEmpty()) {
+					if (GameLoop.USER.handle.equals(gameBoard.currentPlayerToMove) && !gameBoard.hasWinner()) {
 						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
@@ -140,24 +141,24 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 
-		if (gameBoard.winner != null && !gameBoard.winner.isEmpty()) {
+		if (gameBoard.hasWinner()) {
 			String winningText = "You Lost";
-			if (gameBoard.winner.equals(GameLoop.USER.name)) {
+			if (gameBoard.endGameInformation.winner.equals(GameLoop.USER.handle)) {
 				winningText = "You Won!!";
 			}
 			return labelForGame + " " + winningText;
 		} else {
 
-			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.name);
+			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.handle);
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
 			}
 
-			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER.name);
+			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER.handle);
 		}
 	}
 
-	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user,
+	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
 			BoardScreen boardScreen) {
 		UIConnectionWrapper.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
 		return boardScreen;

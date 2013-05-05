@@ -22,7 +22,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  *
  */
-public class Player implements JsonConvertible{
+public class Player extends JsonConvertible{
 	
 	public String name;
 	public String handle;
@@ -54,7 +54,7 @@ public class Player implements JsonConvertible{
 	}
 	
 	public boolean isCurrentPlayerForGame(GameBoard gameBoard){
-		return gameBoard.currentPlayerToMove.equals(name);
+		return gameBoard.currentPlayerToMove.equals(handle);
 	}
 	
 

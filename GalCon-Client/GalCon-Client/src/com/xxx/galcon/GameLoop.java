@@ -88,22 +88,23 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.name, 6, 8);
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 6, 8,
+							"speedIncrease");
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					UIConnectionWrapper.findAvailableGames(joinScreen, USER.name);
+					UIConnectionWrapper.findAvailableGames(joinScreen, USER.handle);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
 					GameListScreen currentGameScreen = new GameListScreen(assetManager);
-					UIConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER.name);
+					UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					GameBoard toTakeActionOn = (GameBoard) result;
-					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.name,
+					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.handle,
 							boardScreen);
 					return boardScreen;
 				} else if (result instanceof Action) {

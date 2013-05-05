@@ -15,7 +15,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  *
  */
-public class PlanetPosition implements JsonConvertible{
+public class PlanetPosition extends JsonConvertible{
 	
 	private int x;
 	private int y;

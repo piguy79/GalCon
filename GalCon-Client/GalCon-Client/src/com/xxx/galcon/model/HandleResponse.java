@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class HandleResponse implements JsonConvertible {
+public class HandleResponse extends JsonConvertible {
 
 	public boolean handleCreated;
 	public Player player;

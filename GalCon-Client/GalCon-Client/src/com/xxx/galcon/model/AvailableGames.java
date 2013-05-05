@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class AvailableGames implements JsonConvertible {
+public class AvailableGames extends JsonConvertible {
 	List<GameBoard> allGames = new ArrayList<GameBoard>();
 
 	@Override
