@@ -550,7 +550,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		if (gameBoard.hasWinner()) {
-			displayWinner(gameBoard.endGameInformation.winner);
+			displayWinner(gameBoard.endGameInformation.winnerHandle);
 		} else if(gameBoard.wasADraw()){
 			displayDraw();
 			

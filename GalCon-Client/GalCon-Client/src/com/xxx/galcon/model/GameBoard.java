@@ -55,7 +55,7 @@ public class GameBoard extends JsonConvertible {
 
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
-		currentPlayerToMove = roundInfo.getString(Constants.PLAYER);
+		currentPlayerToMove = roundInfo.getString(Constants.PLAYER_HANDLE);
 
 		JSONArray moves = jsonObject.optJSONArray("moves");
 		if (moves != null) {
@@ -67,7 +67,7 @@ public class GameBoard extends JsonConvertible {
 				move.toPlanet = jsonMove.getString("toPlanet");
 				move.shipsToMove = jsonMove.getInt("fleet");
 				move.duration = jsonMove.getInt("duration");
-				move.player = jsonMove.getString("player");
+				move.playerHandle = jsonMove.getString("playerHandle");
 
 				movesInProgress.add(move);
 			}
@@ -87,7 +87,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return endGameInformation.winner != null && !endGameInformation.winner.isEmpty();
+		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty();
 	}
 
 	public boolean wasADraw() {

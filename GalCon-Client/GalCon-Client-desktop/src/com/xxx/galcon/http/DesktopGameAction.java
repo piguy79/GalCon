@@ -3,7 +3,7 @@
  */
 package com.xxx.galcon.http;
 
-import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
+import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
@@ -123,7 +123,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
-		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_ACTIVE_GAMES_FOR_A_USER,
+		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,
 				args, new AvailableGames()));
 	}
 

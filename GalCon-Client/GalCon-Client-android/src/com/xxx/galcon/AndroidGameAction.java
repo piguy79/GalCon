@@ -2,7 +2,7 @@ package com.xxx.galcon;
 
 import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
-import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
+import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
@@ -115,7 +115,7 @@ public class AndroidGameAction implements GameAction {
 		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_ACTIVE_GAMES_FOR_A_USER,
+				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,
 						new AvailableGames()).execute("");
 			}
 		});

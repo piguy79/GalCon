@@ -93,9 +93,7 @@ exports.findUserByUserName = function(req, res) {
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;
 				user.save(function() {
-					user.populate('rankInfo', function(err, user) {
-						res.json(user);
-					});
+					res.json(user);
 				});
 			});
 		}
@@ -126,7 +124,7 @@ exports.requestHandleForUserName = function(req, res) {
 
 exports.findCurrentGamesByPlayerHandle = function(req, res) {
 	var playerHandle = req.query['playerHandle'];
-	userManager.findUserByName(userName, function(user) {
+	userManager.findUserByHandle(playerHandle, function(user) {
 		if (!user) {
 			res.json({});
 		} else {
@@ -146,12 +144,12 @@ exports.performMoves = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 
 	gameManager.performMoves(gameId, moves, playerHandle, function(savedGame) {
-		if (savedGame.endGameInformation.winner) {
-			userManager.findUserByHandle(savedGame.endGameInformation.winner, function(user) {
+		if (savedGame.endGameInformation.winnerHandle) {
+			userManager.findUserByHandle(savedGame.endGameInformation.winnerHandle, function(user) {
 				user.wins++;
 				user.xp += 10;
 				rankManager.findRankForXp(user.xp, function(rank) {
-					user.rank = rank.level;
+					user.rankInfo = rank;
 					user.save(function() {
 						res.json(savedGame);
 					});

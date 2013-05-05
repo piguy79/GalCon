@@ -143,7 +143,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		if (gameBoard.hasWinner()) {
 			String winningText = "You Lost";
-			if (gameBoard.endGameInformation.winner.equals(GameLoop.USER.handle)) {
+			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)) {
 				winningText = "You Won!!";
 			}
 			return labelForGame + " " + winningText;

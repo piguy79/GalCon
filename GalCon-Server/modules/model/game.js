@@ -82,9 +82,9 @@ gameSchema.methods.nextPlayer = function(playerHandleToSearchFrom){
 	var currentIndex = findIndexOfPlayer(this.players, playerHandleToSearchFrom);
 	
 	if(currentIndex == (this.players.length - 1)){
-		return this.players[0];
+		return this.players[0].handle;
 	}else {
-		return this.players[currentIndex + 1]
+		return this.players[currentIndex + 1].handle;
 	}
 }
 
@@ -152,9 +152,7 @@ exports.createGame = function(players, width, height, numberOfPlanets,gameType, 
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		constructedGame.populate('players', function(err, game) {
-			rank.RankModel.populate(game.players, {path: 'rankInfo'}, function(err, player) {
-				callback(game);
-			});
+			callback(game);
 		});
 	});
 };
@@ -185,16 +183,22 @@ exports.deleteGame = function(gameId, callback){
 };
 
 
-exports.findAvailableGames = function(player, callback){
-	GameModel.find().where('players').size(1).populate('players').exec(function(err, games){
-		if(err){
-			console.log(err);
-			next();
-		}else{
-			// TODO: filter out current player
-			callback(games);
-		}
-	});
+exports.findAvailableGames = function(player, callback) {
+	GameModel.find().where('players').size(1).populate('players').exec(
+			function(err, games) {
+				if (err) {
+					console.log(err);
+					next();
+				} else {
+					var filteredGames = [];
+					games.forEach(function(game) {
+						if(game.players[0].handle != player) {
+							filteredGames.push(game);
+						}
+					});
+					callback(filteredGames);
+				}
+			});
 };
 
 exports.findCollectionOfGames = function(searchIds, callback){
