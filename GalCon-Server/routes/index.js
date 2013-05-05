@@ -55,8 +55,8 @@ exports.findAvailableGames = function(req, res) {
 }
 
 exports.findGamesWithPendingMove = function(req, res) {
-	var playerHandle = req.query['playerHandle'];
-	userManager.findUserByHandle(playerHandle, function(user) {
+	var userName = req.query['userName'];
+	userManager.findUserByName(userName, function(user) {
 		if (!user) {
 			res.json({});
 		} else {
