@@ -59,7 +59,11 @@ var isSamePlanet = function(planet, planetName){
 	return planet.name == planetName;
 }
 
-var moveHasMoreOrTheSameShipsThenPlanet = function(move, planet){
+var moveHasMoreOrTheSameShipsThenPlanet = function(move, planet, enhancedAttackFleet){
+
+	if(enhancedAttackFleet){
+		return enhancedAttackFleet >= planet.numberOfShips;
+	}
 	return move.fleet >= planet.numberOfShips;
 }
 
@@ -96,16 +100,27 @@ var findIndexOfPlayer = function(players, playerToFindIndexOf){
 }
 
 
-gameSchema.methods.applyMoveToPlanets = function(move){
+gameSchema.methods.applyMoveToPlanets = function(game, move){
+
+	var enhancedAttackFleet;
+
+	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, move.player, move.fleet);
+	}
 
 	this.planets.forEach(function(planet){
 		if(hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet)){
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 		}
-		else if(isSamePlanet(planet, move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+		else if(isSamePlanet(planet, move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet,enhancedAttackFleet)){
 			planet.owner = move.player;
+			if(enhancedAttackFleet){
+				planet.numberOfShips = Math.abs(planet.numberOfShips - enhancedAttackFleet); 
+			}else{
+				planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
+			}
 			planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
-		}else if(isSamePlanet(planet, move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet)){
+		}else if(isSamePlanet(planet, move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet,enhancedAttackFleet)){
 			planet.numberOfShips = planet.numberOfShips - move.fleet; 
 		}
 	});

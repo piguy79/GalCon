@@ -1,6 +1,7 @@
 standardGameType = require('./standardGameType'),
 countdownGameType = require('./countdownGameType'),
-speedIncreaseGameType = require('./speedIncreaseGameType');
+speedIncreaseGameType = require('./speedIncreaseGameType'),
+attackStrengthIncreaseGameType = require('./attackStrengthIncreaseGameType');
 
 exports.gameTypes = {
 	standardGame : {
@@ -19,5 +20,12 @@ exports.gameTypes = {
 		roundProcesser : standardGameType.processRoundInformation,
 		addPlanetAbilities : speedIncreaseGameType.addPlanetAbilities,
 		processMoves : speedIncreaseGameType.applyMovesToGame
+	},
+	attackIncrease : {
+		endGameScenario : standardGameType.processPossibleEndGame,
+		roundProcesser : standardGameType.processRoundInformation,
+		processMoves : standardGameType.applyMovesToGame,
+		addPlanetAbilities : attackStrengthIncreaseGameType.addPlanetAbilities,
+		findCorrectFleetToAttackEnemyPlanet : attackStrengthIncreaseGameType.findCorrectFleetToAttackEnemyPlanet
 	}
 };
