@@ -15,7 +15,8 @@ exports.generateGame = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 
 	userManager.findUserByHandle(playerHandle, function(user) {
-		gameManager.createGame([ user ], req.body.width, req.body.height, 12,
+		var numPlanets = req.body.width * req.body.height / 4;
+		gameManager.createGame([ user ], req.body.width, req.body.height, numPlanets,
 				req.body.gameType, function(game) {
 					gameManager.saveGame(game, function() {
 						user.currentGames.push(game.id);
