@@ -7,7 +7,6 @@ var userSchema = mongoose.Schema({
 	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
-	rank : "String",
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
@@ -42,7 +41,7 @@ exports.saveUser = function(user, callback){
 }
 
 exports.findUserByName = function(userName, callback){
-	UserModel.findOne({name : userName}, function(err, user){
+	UserModel.findOne({name : userName}).exec(function(err, user){
 		if(err){
 			console.log("Unable to find User information");
 		}else{
@@ -52,7 +51,7 @@ exports.findUserByName = function(userName, callback){
 }
 
 exports.findUserByHandle = function(handle, callback){
-	UserModel.findOne({handle : handle}, function(err, user){
+	UserModel.findOne({handle : handle}).exec(function(err, user){
 		if(err) {
 			callback();
 		} else {

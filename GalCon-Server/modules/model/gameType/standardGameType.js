@@ -3,16 +3,16 @@ exports.processPossibleEndGame = function(game){
 		var playersWhoOwnAPlanet = [];
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.owner && playersWhoOwnAPlanet.indexOf(planet.owner) < 0){
-				playersWhoOwnAPlanet.push(planet.owner);
+			if(planet.ownerHandle && playersWhoOwnAPlanet.indexOf(planet.ownerHandle) < 0){
+				playersWhoOwnAPlanet.push(planet.ownerHandle);
 			}
 		}
 		
 		var playersWhoHaveAMove = [];
 		for(var i = 0; i < game.moves.length; i++){
 			var move = game.moves[i];
-			if(playersWhoHaveAMove.indexOf(move.player) < 0){
-				playersWhoHaveAMove.push(move.player);
+			if(playersWhoHaveAMove.indexOf(move.playerHandle) < 0){
+				playersWhoHaveAMove.push(move.playerHandle);
 			}
 		}
 		

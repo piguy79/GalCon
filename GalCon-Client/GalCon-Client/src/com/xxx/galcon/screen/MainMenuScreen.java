@@ -119,17 +119,6 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
 
-		if (touchX != null) {
-			for (Map.Entry<String, TouchRegion> touchRegionEntry : touchRegions.entrySet()) {
-				TouchRegion touchRegion = touchRegionEntry.getValue();
-				if (touchRegion.contains(touchX, touchY)) {
-					returnValue = touchRegionEntry.getKey();
-				}
-			}
-		}
-
-		updateFont();
-
 		String galcon = "GalCon";
 		BitmapFont extraLargeFont = Fonts.getInstance().extraLargeFont();
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
@@ -148,7 +137,6 @@ public class MainMenuScreen implements ScreenFeedback {
 			smallFont.draw(spriteBatch, toNextLevel, x, (int) (height * .76f));
 			smallFont.setColor(Color.WHITE);
 			mediumFont.setColor(Color.WHITE);
-
 			spriteBatch.end();
 
 			// Interpolate the percentage to make it more smooth
@@ -168,17 +156,30 @@ public class MainMenuScreen implements ScreenFeedback {
 			loadingBg.invalidate();
 
 			stage.draw();
+			
+			spriteBatch.begin();
+
+			if (touchX != null) {
+				for (Map.Entry<String, TouchRegion> touchRegionEntry : touchRegions.entrySet()) {
+					TouchRegion touchRegion = touchRegionEntry.getValue();
+					if (touchRegion.contains(touchX, touchY)) {
+						returnValue = touchRegionEntry.getKey();
+					}
+				}
+			}
+
+			updateFont();
 		} else {
 			String loadingUserInfo = "Loading User Information...";
 			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
 			smallFont.draw(spriteBatch, loadingUserInfo, x, (int) (height * .6f));
-
-			spriteBatch.end();
 		}
+
+		spriteBatch.end();
 	}
 
 	private boolean hasUserInformation() {
-		return GameLoop.USER.rank != null;
+		return GameLoop.USER.handle != null;
 	}
 
 	@Override

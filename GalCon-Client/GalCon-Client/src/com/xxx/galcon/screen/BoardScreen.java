@@ -495,7 +495,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (planet.touched) {
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
-				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.name)) {
+				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.handle)) {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
@@ -550,7 +550,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		if (gameBoard.hasWinner()) {
-			displayWinner(gameBoard.endGameInformation.winner);
+			displayWinner(gameBoard.endGameInformation.winnerHandle);
 		} else if(gameBoard.wasADraw()){
 			displayDraw();
 			
@@ -619,7 +619,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "You Lost";
-		if (GameLoop.USER.name.equals(winner)) {
+		if (GameLoop.USER.handle.equals(winner)) {
 			text = "Victory!";
 		}
 

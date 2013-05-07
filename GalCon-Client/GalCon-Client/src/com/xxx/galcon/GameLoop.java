@@ -11,7 +11,6 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.Rank;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.GameListScreen;
@@ -89,22 +88,23 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.name, 6, 8, "attackIncrease");
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 6, 8, "defenceIncrease");
+
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					UIConnectionWrapper.findAvailableGames(joinScreen, USER.name);
+					UIConnectionWrapper.findAvailableGames(joinScreen, USER.handle);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
 					GameListScreen currentGameScreen = new GameListScreen(assetManager);
-					UIConnectionWrapper.findActiveGamesForAUser(currentGameScreen, USER.name);
+					UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					GameBoard toTakeActionOn = (GameBoard) result;
-					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.name,
+					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.handle,
 							boardScreen);
 					return boardScreen;
 				} else if (result instanceof Action) {

@@ -1,8 +1,5 @@
 package com.xxx.galcon.model;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +14,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
 public class GameBoard extends JsonConvertible {
 	public String id;
 	public Date createdDate;
-	public List<String> players;
+	public List<Player> players;
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
 	public List<Planet> planets = new ArrayList<Planet>();
@@ -32,10 +29,11 @@ public class GameBoard extends JsonConvertible {
 
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
-		this.players = new ArrayList<String>();
+		this.players = new ArrayList<Player>();
 		JSONArray playersJson = jsonObject.getJSONArray(Constants.PLAYERS);
 		for (int i = 0; i < playersJson.length(); i++) {
-			String player = playersJson.getString(i);
+			Player player = new Player();
+			player.consume(playersJson.getJSONObject(i));
 			this.players.add(player);
 		}
 		this.planets = new ArrayList<Planet>();
@@ -51,13 +49,13 @@ public class GameBoard extends JsonConvertible {
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 
 		JSONObject endGame = jsonObject.getJSONObject(Constants.END_GAME_INFO);
-		
+
 		this.endGameInformation.consume(endGame);
 		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
 		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
-		currentPlayerToMove = roundInfo.getString(Constants.PLAYER);
+		currentPlayerToMove = roundInfo.getString(Constants.PLAYER_HANDLE);
 
 		JSONArray moves = jsonObject.optJSONArray("moves");
 		if (moves != null) {
@@ -69,21 +67,19 @@ public class GameBoard extends JsonConvertible {
 				move.toPlanet = jsonMove.getString("toPlanet");
 				move.shipsToMove = jsonMove.getInt("fleet");
 				move.duration = jsonMove.getInt("duration");
-				move.player = jsonMove.getString("player");
+				move.playerHandle = jsonMove.getString("playerHandle");
 
 				movesInProgress.add(move);
 			}
 		}
 	}
 
-	
-
-	public List<String> allPlayersExcept(String playerToExclude) {
+	public List<String> allPlayersExcept(String playerHandleToExclude) {
 		List<String> otherPlayers = new ArrayList<String>();
 
-		for (String player : players) {
-			if (!player.equals(playerToExclude)) {
-				otherPlayers.add(player);
+		for (Player player : players) {
+			if (!player.handle.equals(playerHandleToExclude)) {
+				otherPlayers.add(player.handle);
 			}
 		}
 
@@ -91,10 +87,10 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return endGameInformation.winner != null && !endGameInformation.winner.isEmpty();
+		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty();
 	}
-	
-	public boolean wasADraw(){
+
+	public boolean wasADraw() {
 		return endGameInformation.draw;
 	}
 }

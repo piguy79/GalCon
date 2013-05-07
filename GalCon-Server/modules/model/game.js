@@ -2,31 +2,32 @@ var mongoose = require('./mongooseConnection').mongoose
 ,db = require('./mongooseConnection').db
 , ObjectId = require('mongoose').Types.ObjectId; 
 gamebuilder = require('../gameBuilder'),
-gameTypeAssembler = require('./gameType/gameTypeAssembler');
+gameTypeAssembler = require('./gameType/gameTypeAssembler'),
+rank = require('./rank');
 
 
 
 var gameSchema = mongoose.Schema({
-	players : [String],
+	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
 	endGameInformation : {
-		winner : "String",
+		winnerHandle : "String",
 		winningDate : "Date",
-		losers : [String],
+		loserHandles : [String],
 		draw : "Boolean"
 	},
 	createdDate : "Date",
 	gameType : "String",
 	currentRound : {
 		roundNumber : "Number",
-		player : "String"
+		playerHandle : "String"
 	},
 	numberOfPlanets : "Number",
 	planets : [
 		{
 			name : "String",
-			owner : "String",
+			ownerHandle : "String",
 			isHome : "String",
 			position : {
 				x : "Number",
@@ -39,7 +40,7 @@ var gameSchema = mongoose.Schema({
 	],
 	moves : [
 		{
-			player : "String",
+			playerHandle : "String",
 			fromPlanet : "String",
 			toPlanet : "String",
 			fleet : "Number",
@@ -52,48 +53,44 @@ var gameSchema = mongoose.Schema({
 gameSchema.set('toObject', { getters: true });
 
 var hasSameOwner = function(planet, move){
-	return planet.owner == move.player;
+	return planet.ownerHandle == move.playerHandle;
 }
 
 var isSamePlanet = function(planet, planetName){
 	return planet.name == planetName;
 }
 
-var moveHasMoreOrTheSameShipsThenPlanet = function(move, planet, enhancedAttackFleet){
-
-	if(enhancedAttackFleet){
-		return enhancedAttackFleet >= planet.numberOfShips;
-	}
-	return move.fleet >= planet.numberOfShips;
+var moveHasMoreOrTheSameShipsThenPlanet = function(fleet, planet){
+	return fleet >= planet.numberOfShips;
 }
 
 var assignPlayerOnJoinGame = function(game, playerWhoJoined){
-	if(game.currentRound.player == ""){
-		game.currentRound.player = playerWhoJoined;
+	if(game.currentRound.playerHandle == ""){
+		game.currentRound.playerHandle = playerWhoJoined.handle;
 	}
 }
 
-var assignNextCurrentRoundPlayer = function(game, playerWhoJustMoved){
+var assignNextCurrentRoundPlayer = function(game, playerWhoJustMovedHandle){
 	if(game.hasOnlyOnePlayer()){
-		game.currentRound.player = "";
+		game.currentRound.playerHandle = "";
 	} else {
-		game.currentRound.player = game.nextPlayer(playerWhoJustMoved);
+		game.currentRound.playerHandle = game.nextPlayer(playerWhoJustMovedHandle);
 	}
 }
 
-gameSchema.methods.nextPlayer = function(playerToSearchFrom){
-	var currentIndex = findIndexOfPlayer(this.players, playerToSearchFrom);
+gameSchema.methods.nextPlayer = function(playerHandleToSearchFrom){
+	var currentIndex = findIndexOfPlayer(this.players, playerHandleToSearchFrom);
 	
 	if(currentIndex == (this.players.length - 1)){
-		return this.players[0];
+		return this.players[0].handle;
 	}else {
-		return this.players[currentIndex + 1]
+		return this.players[currentIndex + 1].handle;
 	}
 }
 
-var findIndexOfPlayer = function(players, playerToFindIndexOf){
+var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 	for(var i = 0; i < players.length; i++){
-		if(players[i] == playerToFindIndexOf){
+		if(players[i].handle == playerHandleToFindIndexOf){
 			return i
 		}		
 	}
@@ -101,34 +98,65 @@ var findIndexOfPlayer = function(players, playerToFindIndexOf){
 
 
 gameSchema.methods.applyMoveToPlanets = function(game, move){
-
-	var enhancedAttackFleet;
-
-	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, move.player, move.fleet);
-	}
-
 	this.planets.forEach(function(planet){
-		if(hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet)){
+		if(isADefensiveMoveToThisPlanet(planet, move)){
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
-		}
-		else if(isSamePlanet(planet, move.toPlanet) && moveHasMoreOrTheSameShipsThenPlanet(move, planet,enhancedAttackFleet)){
-			planet.owner = move.player;
-			if(enhancedAttackFleet){
-				planet.numberOfShips = Math.abs(planet.numberOfShips - enhancedAttackFleet); 
+		} else if (isSamePlanet(planet, move.toPlanet)){		
+			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game);
+			var attackStrength = calculateAttackStrengthForMove(move, game);
+			var battleResult = defenceStrength - attackStrength;	
+						
+			if(battleResult <= 0){
+				planet.ownerHandle = move.playerHandle;
+				planet.numberOfShips = Math.abs(battleResult); 
+				planet.conquered = true;
 			}else{
-				planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
+				var shipsToLose = (planet.numberOfShips / battleResult) * (1 + getDefenceMutlipler(planet, game));
+				planet.numberOfShips = planet.numberOFShips - shipsToLose;
 			}
-			planet.numberOfShips = Math.abs(planet.numberOfShips - move.fleet); 
-		}else if(isSamePlanet(planet, move.toPlanet) && !moveHasMoreOrTheSameShipsThenPlanet(move, planet,enhancedAttackFleet)){
-			planet.numberOfShips = planet.numberOfShips - move.fleet; 
 		}
+		
 	});
 }
 
+var getDefenceMutlipler = function(planet, game){
+	var enhancedDefence = 0;
+
+	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
+		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.planets, planet);	
+	}
+	
+	return enhancedDefence;
+}
+
+var getAttackMultipler = function(move, game){
+	var enhancedAttackFleet = 0;
+
+	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, move.playerHandle, move.fleet);	
+	}
+	
+	return enhancedAttackFleet;
+}
+
+var calculateAttackStrengthForMove = function(move, game){
+	return move.fleet + (move.fleet * getAttackMultipler(move, game));
+}
+
+var calculateDefenceStrengthForPlanet = function(planet, game){
+	return planet.numberOfShips + (planet.numberOfShips * getDefenceMutlipler(planet, game));
+}
+
+
+
+var isADefensiveMoveToThisPlanet = function(planet, move){
+	return hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet);
+}
+
+
 gameSchema.methods.updateRegenRates = function(){
 	this.planets.forEach(function(planet){
-		if(planet.owner) {
+		if(planet.ownerHandle && !planet.conquered) {
 			planet.numberOfShips += planet.shipRegenRate;
 		} 
 	});
@@ -147,8 +175,8 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
 
-gameSchema.methods.isLastPlayer = function(player) {
-	var currentIndex = findIndexOfPlayer(this.players, player);
+gameSchema.methods.isLastPlayer = function(playerHandle) {
+	var currentIndex = findIndexOfPlayer(this.players, playerHandle);
 	
 	if(currentIndex == (this.players.length - 1)){
 		return true;
@@ -165,12 +193,14 @@ exports.createGame = function(players, width, height, numberOfPlanets,gameType, 
 	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets, gameType);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
-		callback(constructedGame);
+		constructedGame.populate('players', function(err, game) {
+			callback(game);
+		});
 	});
 };
 
 exports.findAllGames = function(callback){
-	GameModel.find({}, function(err, games){
+	GameModel.find({}).populate('players').exec(function(err, games){
 		if(err){
 			console.log("Unable to find games");
 		}else{
@@ -180,7 +210,7 @@ exports.findAllGames = function(callback){
 };
 
 exports.findById = function(gameId, callback){
-	GameModel.findById(gameId, function(err, game){
+	GameModel.findById(gameId).populate('players').exec(function(err, game){
 		if(err){
 			console.log("Unable to find games");
 		}else{
@@ -192,23 +222,29 @@ exports.findById = function(gameId, callback){
 exports.deleteGame = function(gameId, callback){
 	GameModel.findById(gameId).remove();
 	callback();
-
 };
 
 
-exports.findAvailableGames = function(player, callback){
-	GameModel.find({players : {$nin: [player]}}).where('players').size(1).exec(function(err, games){
-		if(err){
-			console.log(err);
-			next();
-		}else{
-			callback(games);
-		}
-	});
+exports.findAvailableGames = function(player, callback) {
+	GameModel.find().where('players').size(1).populate('players').exec(
+			function(err, games) {
+				if (err) {
+					console.log(err);
+					next();
+				} else {
+					var filteredGames = [];
+					games.forEach(function(game) {
+						if(game.players[0].handle != player) {
+							filteredGames.push(game);
+						}
+					});
+					callback(filteredGames);
+				}
+			});
 };
 
 exports.findCollectionOfGames = function(searchIds, callback){
-	GameModel.find({_id : {$in : searchIds}}, function(err, games){
+	GameModel.find({_id : {$in : searchIds}}).populate('players').exec(function(err, games){
 		if(err){
 			next();		
 		}else{
@@ -229,12 +265,12 @@ exports.saveGame = function(game, callback) {
 	});
 }
 
-exports.performMoves = function(gameId, moves, player, callback) {
+exports.performMoves = function(gameId, moves, playerHandle, callback) {
 	this.findById(gameId, function(game) {
 	
 		decrementCurrentShipCountOnFromPlanets(game, moves);
 		
-		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(player)) {
+		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(playerHandle)) {
 			processMoves(game, moves);			
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
@@ -244,7 +280,7 @@ exports.performMoves = function(gameId, moves, player, callback) {
 			game.addMoves(moves);
 		}
 
-		assignNextCurrentRoundPlayer(game, player);
+		assignNextCurrentRoundPlayer(game, playerHandle);
 
 		game.save(function(savedGame) {
 			callback(game);
@@ -288,8 +324,8 @@ exports.addUser = function(gameId, player, callback){
 		
 		for(var i in game.planets) {
 			var planet = game.planets[i];
-			if(!planet.owner && planet.isHome == "Y") {
-				planet.owner = player;
+			if(!planet.ownerHandle && planet.isHome == "Y") {
+				planet.ownerHandle = player.handle;
 				break;
 			}
 		}

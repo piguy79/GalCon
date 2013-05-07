@@ -12,7 +12,7 @@ function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.createdDate = new Date();
 	this.currentRound = {
 		roundNumber : 0,
-		player : players[0]
+		playerHandle : players[0].handle
 	};
 	this.endGameInformation = {
 		winner : "",
@@ -235,8 +235,8 @@ function assignHomePlanets(builder) {
 	builder.players.forEach(function(player) {
 		for ( var i in builder.planets) {
 			var planet = builder.planets[i];
-			if (!planet.owner && planet.isHome == "Y") {
-				planet.owner = player;
+			if (!planet.ownerHandle && planet.isHome == "Y") {
+				planet.ownerHandle = player.handle;
 				break;
 			}
 		}

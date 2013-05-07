@@ -16,12 +16,12 @@ exports.findCorrectFleetToAttackEnemyPlanet = function(planets, player, currentF
 
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if((planet.ability && planet.ability == ATTACK_INC_ABIBILITY) && planet.owner == player){
+		if((planet.ability && planet.ability == ATTACK_INC_ABIBILITY) && planet.ownerHandle == player){
 			attackMultiplier = attackMultiplier + ATTACK_BOOST;
 		}
 	}
 	
-	return currentFleet + (currentFleet * attackMultiplier);
+	return attackMultiplier;
 	
 }
 

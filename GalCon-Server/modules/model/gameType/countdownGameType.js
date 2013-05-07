@@ -4,10 +4,10 @@ exports.processPossibleEndGame = function(game){
 		var playersToPlanetTheyOwn = {};
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.owner && !playersToPlanetTheyOwn[planet.owner]){
-				playersToPlanetTheyOwn[planet.owner] = 1;
+			if(planet.ownerHandle && !playersToPlanetTheyOwn[planet.ownerHandle]){
+				playersToPlanetTheyOwn[planet.ownerHandle] = 1;
 			}else{
-				playersToPlanetTheyOwn[planet.owner]++;
+				playersToPlanetTheyOwn[planet.ownerHandle]++;
 			}
 		}
 		console.log(playersToPlanetTheyOwn);
@@ -17,10 +17,10 @@ exports.processPossibleEndGame = function(game){
 		
 		for(var i = 0; i < game.players.length; i++){
 			var player = game.players[i];
-			if(playersToPlanetTheyOwn[player] && playersToPlanetTheyOwn[player] > playerWithTheMostPlanets.count){
-				playerWithTheMostPlanets.name = player;
-				playerWithTheMostPlanets.count = playersToPlanetTheyOwn[player];
-			}else if(playersToPlanetTheyOwn[player] && playersToPlanetTheyOwn[player] == playerWithTheMostPlanets.count){
+			if(playersToPlanetTheyOwn[player.handle] && playersToPlanetTheyOwn[player.handle] > playerWithTheMostPlanets.count){
+				playerWithTheMostPlanets.name = player.handle;
+				playerWithTheMostPlanets.count = playersToPlanetTheyOwn[player.handle];
+			}else if(playersToPlanetTheyOwn[player.handle] && playersToPlanetTheyOwn[player.handle] == playerWithTheMostPlanets.count){
 				draw = true;
 			}
 		}
@@ -48,6 +48,6 @@ exports.processRoundInformation = function(game) {
 exports.create = function(game, players, width, height, numberOfPlanets){
 	game.currentRound = {
 		roundNumber : 10,
-		player : players[0]
+		playerHandle : players[0].handle
 	};
 }

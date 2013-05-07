@@ -25,6 +25,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
 public class Player extends JsonConvertible{
 	
 	public String name;
+	public String handle;
 	public Integer xp;
 	public List<String> currentGames;
 	public Rank rank;
@@ -33,6 +34,7 @@ public class Player extends JsonConvertible{
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
 		this.name = jsonObject.getString(Constants.NAME);
+		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp  = Integer.parseInt(jsonObject.getString(Constants.XP));
 		
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
@@ -52,7 +54,7 @@ public class Player extends JsonConvertible{
 	}
 	
 	public boolean isCurrentPlayerForGame(GameBoard gameBoard){
-		return gameBoard.currentPlayerToMove.equals(name);
+		return gameBoard.currentPlayerToMove.equals(handle);
 	}
 	
 

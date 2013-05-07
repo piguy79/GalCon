@@ -11,26 +11,26 @@ import org.json.JSONObject;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
-public class EndGameInformation extends JsonConvertible{
-	
-	public String winner;
-	public List<String> losers = new ArrayList<String>();
+public class EndGameInformation extends JsonConvertible {
+
+	public String winnerHandle;
+	public List<String> loserHandles = new ArrayList<String>();
 	public Date winningDate = null;
 	public boolean draw;
-	
-	
+
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
-		this.winner = jsonObject.getString(Constants.WINNER);
+		this.winnerHandle = jsonObject.optString(Constants.WINNER_HANDLE);
 		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
-		this.draw = jsonObject.getBoolean(Constants.DRAW);
-		
-		this.losers = new ArrayList<String>();
-		JSONArray losersJson = jsonObject.getJSONArray(Constants.LOSERS);
-		for (int i = 0; i < losersJson.length(); i++) {
-			String player = losersJson.getString(i);
-			this.losers.add(player);
+		this.draw = jsonObject.optBoolean(Constants.DRAW);
+
+		this.loserHandles = new ArrayList<String>();
+		JSONArray losersJson = jsonObject.optJSONArray(Constants.LOSER_HANDLES);
+		if (losersJson != null) {
+			for (int i = 0; i < losersJson.length(); i++) {
+				String player = losersJson.getString(i);
+				this.loserHandles.add(player);
+			}
 		}
 	}
-
 }

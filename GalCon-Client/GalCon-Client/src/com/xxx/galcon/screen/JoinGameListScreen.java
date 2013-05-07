@@ -13,9 +13,9 @@ public class JoinGameListScreen extends GameListScreen {
 	}
 
 	@Override
-	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String user,
+	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
 			BoardScreen boardScreen) {
-		UIConnectionWrapper.joinGame(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id, user);
+		UIConnectionWrapper.joinGame(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id, playerHandle);
 		return boardScreen;
 	}
 
@@ -26,6 +26,6 @@ public class JoinGameListScreen extends GameListScreen {
 
 	@Override
 	protected void refreshScreen() {
-		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.name);
+		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}
 }

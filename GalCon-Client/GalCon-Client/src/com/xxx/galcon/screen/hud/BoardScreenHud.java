@@ -38,7 +38,7 @@ public class BoardScreenHud extends Hud {
 
 	@Override
 	public void render(float delta) {
-		boolean isMyTurn = haveRoundInformation() && gameBoard.currentPlayerToMove.equals(GameLoop.USER.name);
+		boolean isMyTurn = haveRoundInformation() && gameBoard.currentPlayerToMove.equals(GameLoop.USER.handle);
 
 		getSpriteBatch().begin();
 

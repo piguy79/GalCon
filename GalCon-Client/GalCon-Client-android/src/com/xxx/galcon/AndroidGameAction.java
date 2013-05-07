@@ -2,7 +2,7 @@ package com.xxx.galcon;
 
 import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
-import static com.xxx.galcon.http.UrlConstants.FIND_ACTIVE_GAMES_FOR_A_USER;
+import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
@@ -10,6 +10,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -31,6 +32,7 @@ import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -44,9 +46,9 @@ public class AndroidGameAction implements GameAction {
 		this.activity = activity;
 	}
 
-	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String player) {
+	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("player", player);
+		args.put("playerHandle", playerHandle);
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -56,9 +58,9 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String player) {
+	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("player", player);
+		args.put("playerHandle", playerHandle);
 		args.put("id", id);
 
 		activity.runOnUiThread(new Runnable() {
@@ -68,10 +70,10 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String player, int width, int height, String gameType)
+	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width, int height, String gameType)
 			throws ConnectionException {
 		try {
-			final JSONObject top = JsonConstructor.generateGame(player, width, height, gameType);
+			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
@@ -107,22 +109,22 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findActiveGamesForAUser(final UIConnectionResultCallback<AvailableGames> callback, String player)
+	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
+		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_ACTIVE_GAMES_FOR_A_USER,
+				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,
 						new AvailableGames()).execute("");
 			}
 		});
 	}
 
-	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String player)
+	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
+		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
@@ -140,7 +142,21 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_USER_NAME, new Player()).execute("");
 			}
 		});
+	}
 
+	public void requestHandleForUserName(final UIConnectionResultCallback<HandleResponse> callback, String userName,
+			String handle) throws ConnectionException {
+		try {
+			final JSONObject top = JsonConstructor.requestHandle(userName, handle);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_USER_NAME,
+							new HandleResponse()).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			throw new ConnectionException(e);
+		}
 	}
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {

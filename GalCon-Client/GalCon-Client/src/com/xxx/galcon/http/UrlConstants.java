@@ -19,11 +19,13 @@ public class UrlConstants {
 
 	public static final String FIND_GAME_BY_ID = "/findGameById";
 
-	public static final String FIND_ACTIVE_GAMES_FOR_A_USER = "/findActiveGamesForUser";
+	public static final String FIND_CURRENT_GAMES_BY_PLAYER_HANDLE = "/findCurrentGamesByPlayerHandle";
 
 	public static final String FIND_GAMES_WITH_A_PENDING_MOVE = "/findGamesWithPendingMove";
 
 	public static final String FIND_USER_BY_USER_NAME = "/findUserByUserName";
+	
+	public static final String REQUEST_HANDLE_FOR_USER_NAME = "/requestHandleForUserName";
 	
 	public static final String FIND_RANK_INFORMATION = "/rank";
 
