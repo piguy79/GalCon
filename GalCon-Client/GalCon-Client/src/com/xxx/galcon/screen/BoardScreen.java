@@ -339,10 +339,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (planet.touched) {
 				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
 					g = 1.0f;
-					b = 1.0f;
+					b = 0.6f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
 					r = 1.0f;
-					b = 1.0f;
+					b = 0.6f;
 				} else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 1.0f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
@@ -358,11 +358,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				}
 			} else {
 				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
-					g = 1.0f;
-					b = 1.0f;
+					g = 0.5f;
+					b = 0.3f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
-					r = 1.0f;
-					b = 1.0f;
+					r = 0.5f;
+					b = 0.3f;
 				} else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 0.5f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
