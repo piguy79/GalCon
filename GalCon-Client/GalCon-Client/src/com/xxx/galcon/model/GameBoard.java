@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class GameBoard extends JsonConvertible {
@@ -84,6 +85,21 @@ public class GameBoard extends JsonConvertible {
 		}
 
 		return otherPlayers;
+	}
+
+	private List<String> ownedPlanetAbilities = new ArrayList<String>();
+
+	public List<String> ownedPlanetAbilities() {
+		ownedPlanetAbilities.clear();
+
+		for (int i = 0; i < planets.size(); ++i) {
+			Planet planet = planets.get(i);
+			if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
+				ownedPlanetAbilities.add(planet.ability);
+			}
+		}
+
+		return ownedPlanetAbilities;
 	}
 
 	public boolean hasWinner() {

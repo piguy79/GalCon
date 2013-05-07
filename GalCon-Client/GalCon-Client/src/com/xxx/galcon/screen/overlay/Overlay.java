@@ -19,14 +19,10 @@ public abstract class Overlay {
 		spriteBatch.begin();
 		spriteBatch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		doCustomRender(delta);
+		doCustomRender(delta, spriteBatch);
 
 		spriteBatch.end();
 	}
 
-	protected abstract void doCustomRender(float delta);
-
-	public SpriteBatch getSpriteBatch() {
-		return spriteBatch;
-	}
+	protected abstract void doCustomRender(float delta, SpriteBatch spriteBatch);
 }

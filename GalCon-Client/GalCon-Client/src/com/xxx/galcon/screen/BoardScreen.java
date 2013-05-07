@@ -1,6 +1,8 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.Constants.OWNER_NO_ONE;
+import static com.xxx.galcon.Constants.PLANET_ABILITIES;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
@@ -78,7 +81,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
 	private ShipSelectionDialog shipSelectionDialog;
-	private Overlay textOverlay;
+	private Overlay overlay;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
@@ -195,8 +198,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void associateHudInformation() {
-		boardScreenHud.associateCurrentRoundInformation(
-				gameBoard);
+		boardScreenHud.associateCurrentRoundInformation(gameBoard);
 	}
 
 	private void processGameBoard() {
@@ -335,19 +337,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float r = 0.0f, g = 0.0f, b = 0.0f;
 			if (planet.touched) {
-				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
+				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
 					g = 1.0f;
 					b = 1.0f;
-				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
+				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
 					r = 1.0f;
 					b = 1.0f;
-				}
-				else if (planet.isOwnedBy(GameLoop.USER)) {
+				} else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 1.0f;
-				} 
-				else if (!planet.owner.equals(OWNER_NO_ONE)) {
+				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 1.0f;
-				} else if(planet.hasAbility()){
+				} else if (planet.hasAbility()) {
 					r = 0.5f;
 					g = 0.5f;
 					b = 1.0f;
@@ -356,24 +356,20 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					g = 1.0f;
 					b = 1.0f;
 				}
-				
-				
 			} else {
-				if(planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()){
+				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
 					g = 1.0f;
 					b = 1.0f;
-				}else if(!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()){
+				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
 					r = 1.0f;
 					b = 1.0f;
-				}
-				else if (planet.isOwnedBy(GameLoop.USER)) {
+				} else if (planet.isOwnedBy(GameLoop.USER)) {
 					g = 0.5f;
 				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
 					r = 0.5f;
-				} else if(planet.hasAbility()){
+				} else if (planet.hasAbility()) {
 					b = 1.0f;
-				}
-				else if (!planet.touched) {
+				} else if (!planet.touched) {
 					r = 0.5f;
 					g = 0.5f;
 					b = 0.5f;
@@ -551,13 +547,27 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		if (gameBoard.hasWinner()) {
 			displayWinner(gameBoard.endGameInformation.winnerHandle);
-		} else if(gameBoard.wasADraw()){
+		} else if (gameBoard.wasADraw()) {
 			displayDraw();
-			
+		}
+
+		if (overlay == null) {
+			List<String> ownedPlanetAbilities = gameBoard.ownedPlanetAbilities();
+			for (int i = 0; i < ownedPlanetAbilities.size(); ++i) {
+				String ability = ownedPlanetAbilities.get(i);
+
+				if (!Gdx.app.getPreferences(GALCON_PREFS).getBoolean(ability + "_SHOWN", false)) {
+					overlay = new DismissableOverlay(assetManager, new TextOverlay(
+							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n"
+									+ PLANET_ABILITIES.get(ability), assetManager));
+					Gdx.app.getPreferences(GALCON_PREFS).putBoolean(ability + "_SHOWN", true);
+					break;
+				}
+			}
 		}
 
 		boardScreenHud.setTouchEnabled(true);
-		if (textOverlay != null) {
+		if (overlay != null) {
 			boardScreenHud.setTouchEnabled(false);
 		}
 
@@ -570,8 +580,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			processHudButtonTouch(hudResult);
 		}
 
-		if (textOverlay != null) {
-			textOverlay.render(delta);
+		if (overlay != null) {
+			if (overlay instanceof DismissableOverlay && ((DismissableOverlay) overlay).isDismissed()) {
+				overlay = null;
+			} else {
+				overlay.render(delta);
+			}
 		}
 	}
 
@@ -590,8 +604,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 		spriteBatch.end();
 	}
-	
-	
+
 	private void displayDraw() {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
@@ -693,10 +706,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
 
 		} else if (action == Action.END_TURN) {
-			textOverlay = new TextOverlay("Sending ships to their doom", assetManager);
+			overlay = new TextOverlay("Sending ships to their doom", assetManager);
 			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (action == Action.REFRESH) {
-			textOverlay = new TextOverlay("Refreshing...", assetManager);
+			overlay = new TextOverlay("Refreshing...", assetManager);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
 		} else if (action == Action.BACK) {
 			returnCode = Action.BACK;
@@ -770,12 +783,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setGameBoard(result);
 			moves.clear();
 			clearTouchedPlanets();
-			textOverlay = null;
+			overlay = null;
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-			textOverlay = null;
+			overlay = null;
 		}
 	}
 
@@ -786,12 +799,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setGameBoard(result);
 			moves.clear();
 			clearTouchedPlanets();
-			textOverlay = null;
+			overlay = null;
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-			textOverlay = null;
+			overlay = null;
 		}
 	}
 

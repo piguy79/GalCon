@@ -1,6 +1,10 @@
 package com.xxx.galcon;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constants {
+	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
 	public static final String PLANETS = "planets";
 	public static final String CURRENT_ROUND = "currentRound";
@@ -39,8 +43,12 @@ public class Constants {
 	public static final String END_AT = "endAt";
 	public static final String RANK_INFO = "rankInfo";
 	public static final String WINNER_HANDLE = "winnerHandle";
+	public static final String ABILITY_SPEED = "SPEED";
 
-
-
+	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
+		{
+			put(ABILITY_SPEED, "Increased ship movement speed");
+		}
+	};
 
 }

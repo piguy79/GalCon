@@ -41,14 +41,17 @@ public class Planet extends JsonConvertible {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean isOwnedBy(Player player){
-		return owner.equals(player.handle);	
+
+	public boolean isOwnedBy(Player player) {
+		return owner.equals(player.handle);
 	}
-	
-	public boolean hasAbility(){
+
+	public boolean hasAbility() {
 		return ability != null && !ability.isEmpty();
 	}
-	
+
+	public String getAbilityDescription() {
+		return Constants.PLANET_ABILITIES.get(ability);
+	}
 
 }
