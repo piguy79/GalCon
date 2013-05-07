@@ -1,7 +1,7 @@
 var abilityBasedGameType = require('./abilityBasedGameType');
 
 var SPEED_BOOST = 0.5;
-var SPEED_ABIBILITY = 'SPEED';
+var SPEED_ABILITY = 'SPEED';
 
 
 var speedIncreasePlanetsHeldByPlayer = function(playerHandle, planets){
@@ -20,7 +20,7 @@ var speedIncreasePlanetsHeldByPlayer = function(playerHandle, planets){
 
 exports.addPlanetAbilities = function(planetsFarFromHomes){
 
-	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,SPEED_ABIBILITY);
+	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,SPEED_ABILITY);
 }
 
 exports.applyMovesToGame = function(game){
