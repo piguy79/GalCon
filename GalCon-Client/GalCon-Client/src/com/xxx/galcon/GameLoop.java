@@ -88,7 +88,10 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 6, 8,
+
+					int width = 5 + (int) (Math.random() * 4.0f);
+					int height = (int) Math.ceil(width * 1.33f);
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, width, height,
 							"speedIncrease");
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
