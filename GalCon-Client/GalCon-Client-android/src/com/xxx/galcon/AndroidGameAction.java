@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 
@@ -36,6 +38,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
+import com.xxx.galcon.service.PingService;
 
 public class AndroidGameAction implements GameAction {
 	private ConnectivityManager connectivityManager;
@@ -70,8 +73,8 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width, int height, String gameType)
-			throws ConnectionException {
+	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
+			int height, String gameType) throws ConnectionException {
 		try {
 			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
 			activity.runOnUiThread(new Runnable() {
@@ -91,6 +94,9 @@ public class AndroidGameAction implements GameAction {
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
+					NotificationManager mNotificationManager = (NotificationManager) activity
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {
@@ -109,8 +115,8 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException {
+	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback,
+			String playerHandle) throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {

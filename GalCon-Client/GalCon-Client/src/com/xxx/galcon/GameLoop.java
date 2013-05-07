@@ -88,8 +88,11 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
-					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 6, 8, "defenceIncrease");
-
+					int width = 5 + (int) (Math.random() * 4.0f);
+					int height = (int) Math.ceil(width * 1.33f);
+					int gameTypeToUse = (int) (Math.random() * Constants.gameTypes.size());
+					gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, width, height,
+							Constants.gameTypes.get(gameTypeToUse));
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					GameListScreen joinScreen = new JoinGameListScreen(assetManager);

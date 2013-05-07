@@ -14,7 +14,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -35,6 +34,7 @@ import com.xxx.galcon.http.UrlConstants;
 import com.xxx.galcon.model.AvailableGames;
 
 public class PingService extends Service {
+	public static final int NOTIFICATION_ID = 29484;
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private static final int SLEEP_TIME = 120 * 1000;
@@ -105,7 +105,7 @@ public class PingService extends Service {
 					PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT));
 
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			mNotificationManager.notify(1, mBuilder.build());
+			mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 		}
 
 		private boolean isMainActivityActive() {
