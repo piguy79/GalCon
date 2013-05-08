@@ -26,7 +26,14 @@ public abstract class Hud implements ScreenFeedback {
 		for (int i = 0; i < hudButtons.size(); ++i) {
 			hudButtons.get(i).render(spriteBatch);
 		}
+
+		doRender(delta, spriteBatch);
+
 		spriteBatch.end();
+	}
+
+	public void doRender(float delta, SpriteBatch spriteBatch) {
+
 	}
 
 	public void setTouchEnabled(boolean touchEnabled) {

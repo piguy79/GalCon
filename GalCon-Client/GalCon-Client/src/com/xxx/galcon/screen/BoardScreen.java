@@ -45,13 +45,14 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
+import com.xxx.galcon.screen.hud.PlayerInfoHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final float BOARD_WIDTH_RATIO = .95f;
-	private static final float BOARD_HEIGHT_RATIO = .7f;
+	private static final float BOARD_HEIGHT_RATIO = .68f;
 
 	private static final float PLANET_Z_COORD = -99.5f;
 	private static final float TILE_SIZE_IN_UNITS = 10.0f;
@@ -81,6 +82,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
+	private PlayerInfoHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
 
@@ -105,6 +107,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
+		playerInfoHud = new PlayerInfoHud();
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
@@ -142,7 +145,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			heightInWorld = (worldPlane.topLeft.y - worldPlane.bottomRight.y) * BOARD_HEIGHT_RATIO;
 
 			yShift = worldPlane.topLeft.y - boardPlane.heightInWorld / 2.0f
-					- (0.02f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
+					- (0.05f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
 
 			topInWorld = heightInWorld / 2.0f + boardPlane.yShift;
 			leftInWorld = -widthInWorld / 2.0f;
@@ -178,6 +181,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
+	/**
+	 * (0,0) is in the middle of the screen... +y is UP, +x is right.
+	 */
 	public class WorldPlane {
 		public static final float Z = -100.0f;
 		public Vector3 topLeft;
@@ -553,10 +559,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (overlay == null) {
-			List<String> ownedPlanetAbilities = gameBoard.ownedPlanetAbilities();
+			List<String> ownedPlanetAbilities = gameBoard.ownedPlanetAbilities(GameLoop.USER);
 			for (int i = 0; i < ownedPlanetAbilities.size(); ++i) {
 				String ability = ownedPlanetAbilities.get(i);
-				
+
 				Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 				if (!prefs.getBoolean(ability + "_SHOWN", false)) {
 					overlay = new DismissableOverlay(assetManager, new TextOverlay(
@@ -575,6 +581,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		boardScreenHud.render(delta);
+		playerInfoHud.setGameBoard(gameBoard);
+		playerInfoHud.render(delta);
 
 		renderDialogs(delta);
 

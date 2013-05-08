@@ -52,7 +52,7 @@ public class Constants {
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{
 			put(ABILITY_SPEED, "Increased ship movement speed");
-			put(ABILITY_DEFENCE_INCREASE, "Increased planet Defence");
+			put(ABILITY_DEFENCE_INCREASE, "Increased planet defence");
 			put(ABILITY_ATTACK_INCREASE, "Increased attack power");
 		}
 	};

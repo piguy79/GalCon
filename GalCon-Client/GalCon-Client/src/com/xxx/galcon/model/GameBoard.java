@@ -89,12 +89,12 @@ public class GameBoard extends JsonConvertible {
 
 	private List<String> ownedPlanetAbilities = new ArrayList<String>();
 
-	public List<String> ownedPlanetAbilities() {
+	public List<String> ownedPlanetAbilities(Player player) {
 		ownedPlanetAbilities.clear();
 
 		for (int i = 0; i < planets.size(); ++i) {
 			Planet planet = planets.get(i);
-			if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
+			if (planet.isOwnedBy(player) && planet.hasAbility()) {
 				ownedPlanetAbilities.add(planet.ability);
 			}
 		}

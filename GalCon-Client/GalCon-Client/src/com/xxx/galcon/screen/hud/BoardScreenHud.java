@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
 
 public class BoardScreenHud extends Hud {
