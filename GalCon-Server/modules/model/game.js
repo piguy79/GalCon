@@ -273,11 +273,11 @@ exports.findCollectionOfGames = function(searchIds, callback){
 
 
 exports.saveGame = function(game, callback) {
-	game.save(function(err) {
+	game.save(function(err, savedGame) {
 		if (err) {
 			console.log("Something went wrong. " + err);
 		} else {
-			callback();
+			callback(savedGame);
 		}
 
 	});
@@ -300,7 +300,11 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 
 		assignNextCurrentRoundPlayer(game, playerHandle);
 
-		game.save(function(savedGame) {
+		game.save(function(err, savedGame) {
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(game);
 		});
 	})
@@ -349,7 +353,11 @@ exports.addUser = function(gameId, player, callback){
 		}
 		
 		assignPlayerOnJoinGame(game, player);
-		game.save(function(savedGame){
+		game.save(function(err, savedGame){
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(savedGame);
 		});
 	});
@@ -361,7 +369,11 @@ exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
 		planetsToAdd.forEach(function(planet){
 			game.planets.push(planet);
 		});
-		game.save(function(savedGame){
+		game.save(function(err, savedGame){
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(savedGame);
 		});
 	});
