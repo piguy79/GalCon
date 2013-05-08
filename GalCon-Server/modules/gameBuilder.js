@@ -34,8 +34,9 @@ GameBuilder.prototype.players = [];
 GameBuilder.prototype.createBoard = function(callback) {
 	this.createHomePlanets();
 	
-	var regenAroundHomePlanet = 10;
-	var shipsAroundHomePlanet = 12;
+	var boardSize = this.width * this.height;
+	var regenAroundHomePlanet = Math.floor(boardSize / 4); 
+	var shipsAroundHomePlanet = Math.floor(boardSize / 3);
 	this.createPlanetsAroundHomePlanet(this.planets[0], regenAroundHomePlanet, shipsAroundHomePlanet);
 	this.createPlanetsAroundHomePlanet(this.planets[1], regenAroundHomePlanet, shipsAroundHomePlanet, this.planets[0]);
 	
