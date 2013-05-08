@@ -155,9 +155,27 @@ var isADefensiveMoveToThisPlanet = function(planet, move){
 
 
 gameSchema.methods.updateRegenRates = function(){
+
+	var currentGame = this;
 	this.planets.forEach(function(planet){
 		if(planet.ownerHandle && !planet.conquered) {
-			planet.numberOfShips += planet.shipRegenRate;
+		
+			var regenBy = planet.shipRegenRate;
+		
+			if(gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock){
+				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
+				
+				if(blockRegen){
+					regenBy =  planet.shipRegenRate * 0.5;
+				}
+			}
+			
+			if(regenBy < 1){
+				regenBy = 1;
+			}
+			
+			planet.numberOfShips += regenBy;
+			
 		} 
 	});
 }
@@ -255,11 +273,11 @@ exports.findCollectionOfGames = function(searchIds, callback){
 
 
 exports.saveGame = function(game, callback) {
-	game.save(function(err) {
+	game.save(function(err, savedGame) {
 		if (err) {
 			console.log("Something went wrong. " + err);
 		} else {
-			callback();
+			callback(savedGame);
 		}
 
 	});
@@ -282,7 +300,11 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 
 		assignNextCurrentRoundPlayer(game, playerHandle);
 
-		game.save(function(savedGame) {
+		game.save(function(err, savedGame) {
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(game);
 		});
 	})
@@ -331,7 +353,11 @@ exports.addUser = function(gameId, player, callback){
 		}
 		
 		assignPlayerOnJoinGame(game, player);
-		game.save(function(savedGame){
+		game.save(function(err, savedGame){
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(savedGame);
 		});
 	});
@@ -343,7 +369,11 @@ exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
 		planetsToAdd.forEach(function(planet){
 			game.planets.push(planet);
 		});
-		game.save(function(savedGame){
+		game.save(function(err, savedGame){
+			if(err){
+				console.log("Error [ " + err + "] saving Game" + game);
+			
+			}
 			callback(savedGame);
 		});
 	});
