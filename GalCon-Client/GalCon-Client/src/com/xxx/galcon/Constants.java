@@ -48,7 +48,7 @@ public class Constants {
 	public static final String ABILITY_SPEED = "SPEED";
 	public static final String ABILITY_ATTACK_INCREASE = "ATTACK_INC";
 	public static final String ABILITY_DEFENCE_INCREASE = "DEF_INC";
-	public static final String REGEN_BLOCK_ABILITY = "REGEN_BLOCK";
+	public static final String ABILITY_REGEN_BLOCK = "REGEN_BLOCK";
 	
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
@@ -56,7 +56,7 @@ public class Constants {
 			put(ABILITY_SPEED, "Increased ship movement speed");
 			put(ABILITY_DEFENCE_INCREASE, "Increased planet defence");
 			put(ABILITY_ATTACK_INCREASE, "Increased attack power");
-			put(REGEN_BLOCK_ABILITY, "The ability to block opponents Regen");
+			put(ABILITY_REGEN_BLOCK, "The ability to block opponents Regen");
 		}
 	};
 	

@@ -20,6 +20,7 @@ public class PlayerInfoHud extends Hud {
 			put(Constants.ABILITY_ATTACK_INCREASE, "A");
 			put(Constants.ABILITY_DEFENCE_INCREASE, "D");
 			put(Constants.ABILITY_SPEED, "S");
+			put(Constants.ABILITY_REGEN_BLOCK, "B");
 		}
 	};
 
