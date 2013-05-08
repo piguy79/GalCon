@@ -2,7 +2,8 @@ standardGameType = require('./standardGameType'),
 countdownGameType = require('./countdownGameType'),
 speedIncreaseGameType = require('./speedIncreaseGameType'),
 attackStrengthIncreaseGameType = require('./attackStrengthIncreaseGameType'),
-defenceStrengthIncreaseGameType = require('./defenceStrengthIncreaseGameType');
+defenceStrengthIncreaseGameType = require('./defenceStrengthIncreaseGameType'),
+regenBlockGameType = require('./regenBlockGameType');
 
 exports.gameTypes = {
 	standardGame : {
@@ -35,5 +36,12 @@ exports.gameTypes = {
 		processMoves : standardGameType.applyMovesToGame,
 		addPlanetAbilities : defenceStrengthIncreaseGameType.addPlanetAbilities,
 		findCorrectDefenseForAPlanet : defenceStrengthIncreaseGameType.findCorrectDefenseForAPlanet
+	},
+	regenBlock : {
+		endGameScenario : standardGameType.processPossibleEndGame,
+		roundProcesser : standardGameType.processRoundInformation,
+		processMoves : standardGameType.applyMovesToGame,
+		addPlanetAbilities : regenBlockGameType.addPlanetAbilities,
+		determineIfAnOpponentHasTheRegenBlock : regenBlockGameType.determineIfAnOpponentHasTheRegenBlock
 	}
 };

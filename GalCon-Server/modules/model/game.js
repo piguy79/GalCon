@@ -155,9 +155,27 @@ var isADefensiveMoveToThisPlanet = function(planet, move){
 
 
 gameSchema.methods.updateRegenRates = function(){
+
+	var currentGame = this;
 	this.planets.forEach(function(planet){
 		if(planet.ownerHandle && !planet.conquered) {
-			planet.numberOfShips += planet.shipRegenRate;
+		
+			var regenBy = planet.shipRegenRate;
+		
+			if(gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock){
+				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
+				
+				if(blockRegen){
+					regenBy =  planet.shipRegenRate * 0.5;
+				}
+			}
+			
+			if(regenBy < 1){
+				regenBy = 1;
+			}
+			
+			planet.numberOfShips += regenBy;
+			
 		} 
 	});
 }
