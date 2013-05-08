@@ -5,6 +5,10 @@ var SHIP_NUMBER = 10;
 exports.addPlanetAbilities = function(planetsFarFromHomes, abilityToAdd){
 
 	var abilitiesToAdd = planetsFarFromHomes.length * 0.2;
+	
+	if(abilitiesToAdd < 1){
+		abilitiesToAdd = 1;
+	}
 	var addedAbilities = 0;
 
 	for(var i=0; i < planetsFarFromHomes.length; i++){
