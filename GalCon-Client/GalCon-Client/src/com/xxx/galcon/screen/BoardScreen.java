@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
@@ -555,12 +556,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			List<String> ownedPlanetAbilities = gameBoard.ownedPlanetAbilities();
 			for (int i = 0; i < ownedPlanetAbilities.size(); ++i) {
 				String ability = ownedPlanetAbilities.get(i);
-
-				if (!Gdx.app.getPreferences(GALCON_PREFS).getBoolean(ability + "_SHOWN", false)) {
+				
+				Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+				if (!prefs.getBoolean(ability + "_SHOWN", false)) {
 					overlay = new DismissableOverlay(assetManager, new TextOverlay(
 							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n"
 									+ PLANET_ABILITIES.get(ability), assetManager));
-					Gdx.app.getPreferences(GALCON_PREFS).putBoolean(ability + "_SHOWN", true);
+					prefs.putBoolean(ability + "_SHOWN", true);
+					prefs.flush();
 					break;
 				}
 			}
