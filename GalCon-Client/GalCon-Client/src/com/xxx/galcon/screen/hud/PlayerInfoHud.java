@@ -44,10 +44,11 @@ public class PlayerInfoHud extends Hud {
 		}
 
 		String info = sb.toString();
-		int width = (int) (font.getBounds(info).width / 4);
+		int fontHalfWidth = (int) (font.getBounds(info).width) / 2;
 
 		int y = (int) (Gdx.graphics.getHeight() * .98f);
-		font.draw(spriteBatch, info, width, y);
+		int width = Gdx.graphics.getWidth() / 2;
+		font.draw(spriteBatch, info, width - fontHalfWidth, y);
 	}
 
 	private String abilitiesToString(List<String> planetAbilities) {
