@@ -162,11 +162,11 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	private String playerInfoText(List<Player> otherPlayers) {
-		
-	String playerDescription = "";
-	for(Player player : otherPlayers){
-		playerDescription = playerDescription + " [" + player.handle + " (Lvl " + player.rank.level + ") ]";
-	}
+			
+		String playerDescription = "";
+		for(Player player : otherPlayers){
+			playerDescription = playerDescription + " [" + player.handle + " (Lvl " + player.rank.level + ") ]";
+		}
 		return playerDescription;
 	}
 
