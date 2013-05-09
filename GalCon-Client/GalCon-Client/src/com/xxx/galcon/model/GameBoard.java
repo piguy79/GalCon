@@ -75,12 +75,12 @@ public class GameBoard extends JsonConvertible {
 		}
 	}
 
-	public List<String> allPlayersExcept(String playerHandleToExclude) {
-		List<String> otherPlayers = new ArrayList<String>();
+	public List<Player> allPlayersExcept(String playerHandleToExclude) {
+		List<Player> otherPlayers = new ArrayList<Player>();
 
 		for (Player player : players) {
 			if (!player.handle.equals(playerHandleToExclude)) {
-				otherPlayers.add(player.handle);
+				otherPlayers.add(player);
 			}
 		}
 
