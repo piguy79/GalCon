@@ -22,6 +22,7 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.hud.GameListHud;
 import com.xxx.galcon.screen.hud.Hud;
 
@@ -138,7 +139,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	private String createLabelTextForAGame(GameBoard gameBoard) {
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		DateFormat format = new SimpleDateFormat("MM/dd HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 
 		if (gameBoard.hasWinner()) {
@@ -149,13 +150,24 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			return labelForGame + " " + winningText;
 		} else {
 
-			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.handle);
+			List<Player> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.handle);
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
 			}
+			
+			
 
-			return labelForGame + " vs " + gameBoard.allPlayersExcept(GameLoop.USER.handle);
+			return labelForGame + " vs " + playerInfoText(otherPlayers);
 		}
+	}
+
+	private String playerInfoText(List<Player> otherPlayers) {
+			
+		String playerDescription = "";
+		for(Player player : otherPlayers){
+			playerDescription = playerDescription + " [" + player.handle + " (Lvl " + player.rank.level + ") ]";
+		}
+		return playerDescription;
 	}
 
 	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
