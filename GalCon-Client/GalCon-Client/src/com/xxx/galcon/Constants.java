@@ -49,6 +49,7 @@ public class Constants {
 	public static final String ABILITY_ATTACK_INCREASE = "ATTACK_INC";
 	public static final String ABILITY_DEFENCE_INCREASE = "DEF_INC";
 	public static final String ABILITY_REGEN_BLOCK = "REGEN_BLOCK";
+	public static final String XP_AWARD_TO_WINNER ="xpAwardToWinner";
 	
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {

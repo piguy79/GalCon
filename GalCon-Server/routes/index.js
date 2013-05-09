@@ -149,6 +149,7 @@ exports.performMoves = function(req, res) {
 			userManager.findUserByHandle(savedGame.endGameInformation.winnerHandle, function(user) {
 				user.wins++;
 				user.xp += 10;
+				savedGame.endGameInformation.xpAwardToWinner = 10;
 				rankManager.findRankForXp(user.xp, function(rank) {
 					user.rankInfo = rank;
 					user.save(function() {

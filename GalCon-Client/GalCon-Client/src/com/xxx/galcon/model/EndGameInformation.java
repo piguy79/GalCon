@@ -16,6 +16,7 @@ public class EndGameInformation extends JsonConvertible {
 	public String winnerHandle;
 	public List<String> loserHandles = new ArrayList<String>();
 	public Date winningDate = null;
+	public int xpAwardToWinner;
 	public boolean draw;
 
 	@Override
@@ -23,6 +24,7 @@ public class EndGameInformation extends JsonConvertible {
 		this.winnerHandle = jsonObject.optString(Constants.WINNER_HANDLE);
 		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
 		this.draw = jsonObject.optBoolean(Constants.DRAW);
+		this.xpAwardToWinner = jsonObject.getInt(Constants.XP_AWARD_TO_WINNER);
 
 		this.loserHandles = new ArrayList<String>();
 		JSONArray losersJson = jsonObject.optJSONArray(Constants.LOSER_HANDLES);

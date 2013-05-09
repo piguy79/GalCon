@@ -17,7 +17,8 @@ function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.endGameInformation = {
 		winner : "",
 		losers : [],
-		draw : false
+		draw : false,
+		xpAwardToWinner : 0
 	}
 	this.ability = "";
 	this.numberOfPlanets = numberOfPlanets;

@@ -41,6 +41,7 @@ import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
+import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
@@ -553,7 +554,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		if (gameBoard.hasWinner()) {
-			displayWinner(gameBoard.endGameInformation.winnerHandle);
+			displayWinner(gameBoard.endGameInformation);
 		} else if (gameBoard.wasADraw()) {
 			displayDraw();
 		}
@@ -633,7 +634,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		spriteBatch.end();
 	}
 
-	private void displayWinner(String winner) {
+	private void displayWinner(EndGameInformation endGameInfo) {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
 
@@ -643,8 +644,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		spriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "You Lost";
-		if (GameLoop.USER.handle.equals(winner)) {
-			text = "Victory!";
+		if (GameLoop.USER.handle.equals(endGameInfo.winnerHandle)) {
+			text = "Victory! Gained " + endGameInfo.xpAwardToWinner + "xp";
 		}
 
 		BitmapFont font = Fonts.getInstance().mediumFont();

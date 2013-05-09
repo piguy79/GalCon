@@ -13,6 +13,7 @@ var gameSchema = mongoose.Schema({
 	height: "Number",
 	endGameInformation : {
 		winnerHandle : "String",
+		xpAwardToWinner : "Number",
 		winningDate : "Date",
 		loserHandles : [String],
 		draw : "Boolean"
@@ -287,6 +288,7 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 	this.findById(gameId, function(game) {
 	
 		decrementCurrentShipCountOnFromPlanets(game, moves);
+		console.log(game.planets);
 		
 		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(playerHandle)) {
 			processMoves(game, moves);			
