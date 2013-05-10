@@ -25,6 +25,8 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.hud.GameListHud;
 import com.xxx.galcon.screen.hud.Hud;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class GameListScreen implements ScreenFeedback, UIConnectionResultCallback<AvailableGames> {
 	private BitmapFont smallFont;
@@ -36,10 +38,13 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	private AvailableGames allGames;
 	private Hud gameListHud;
 	private String loadingMessage = "Loading...";
+	private Overlay overlay;
+	private AssetManager assetManager;
 
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
 		gameListHud = new GameListHud(assetManager);
+		this.assetManager = assetManager;
 
 		resume();
 	}
@@ -54,6 +59,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	protected void refreshScreen() {
+		overlay = new TextOverlay("Refreshing...", assetManager);
 		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
 	}
 
@@ -127,6 +133,13 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		spriteBatch.end();
 
+		if (overlay != null) {
+			gameListHud.setTouchEnabled(false);
+			overlay.render(delta);
+		} else {
+			gameListHud.setTouchEnabled(true);
+		}
+
 		gameListHud.render(delta);
 		if (gameListHud.getRenderResult() != null) {
 			Action result = (Action) gameListHud.getRenderResult();
@@ -154,17 +167,15 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
 			}
-			
-			
 
 			return labelForGame + " vs " + playerInfoText(otherPlayers);
 		}
 	}
 
 	private String playerInfoText(List<Player> otherPlayers) {
-			
+
 		String playerDescription = "";
-		for(Player player : otherPlayers){
+		for (Player player : otherPlayers) {
 			playerDescription = playerDescription + " [" + player.handle + " (Lvl " + player.rank.level + ") ]";
 		}
 		return playerDescription;
@@ -220,6 +231,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	@Override
 	public void onConnectionResult(AvailableGames result) {
 		this.allGames = result;
+		overlay = null;
 	}
 
 	@Override
