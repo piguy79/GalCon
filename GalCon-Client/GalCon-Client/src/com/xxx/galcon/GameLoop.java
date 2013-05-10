@@ -36,6 +36,12 @@ public class GameLoop extends Game {
 	}
 
 	@Override
+	public void pause() {
+		Fonts.dispose();
+		super.pause();
+	}
+	
+	@Override
 	public void resume() {
 		Fonts.dispose();
 		super.resume();
