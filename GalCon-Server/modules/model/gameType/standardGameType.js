@@ -37,7 +37,7 @@ exports.applyMovesToGame = function(game){
 	while (i--) {
 		var move = game.moves[i];
 		move.duration--;
-		if (move.duration == 0) {
+		if (move.duration <= 0) {
 			game.applyMoveToPlanets(game, move);
 			game.moves.splice(i, 1)
 		}
