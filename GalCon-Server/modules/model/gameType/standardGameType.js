@@ -18,8 +18,8 @@ exports.processPossibleEndGame = function(game){
 		
 		if(playersWhoOwnAPlanet.length == 1) {
 			if(playersWhoHaveAMove.length == 0 || 
-					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) >= 0)) {
-				game.endGameInformation.winner = playersWhoOwnAPlanet[0];
+					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) == 0)) {
+				game.endGameInformation.winnerHandle = playersWhoOwnAPlanet[0];
 				game.endGameInformation.winningDate = new Date();
 			}
 		}

@@ -27,12 +27,12 @@ exports.processPossibleEndGame = function(game){
 
 			
 		if(draw){
-			game.endGameInformation.winner = "";
+			game.endGameInformation.winnerHandle = "";
 			game.endGameInformation.winningDate = new Date();
 			game.endGameInformation.draw = true;
 			
 		}else{
-			game.endGameInformation.winner = playerWithTheMostPlanets.name;
+			game.endGameInformation.winnerHandle = playerWithTheMostPlanets.name;
 			game.endGameInformation.winningDate = new Date();
 		}
 	
