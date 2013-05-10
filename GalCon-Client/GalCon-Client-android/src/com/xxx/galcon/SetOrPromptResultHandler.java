@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.badlogic.gdx.Gdx;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
@@ -46,7 +45,7 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getBaseContext().getResources()
 							.getString(R.string.create), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							String handle = userNameEditText.getText().toString();
+							String handle = userNameEditText.getText().toString().trim();
 							try {
 								gameAction.requestHandleForUserName(new NewHandleResultCallback(player, alertDialog),
 										playerFromServer.name, handle);
