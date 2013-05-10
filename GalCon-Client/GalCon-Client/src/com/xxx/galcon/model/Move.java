@@ -4,7 +4,7 @@ public class Move {
 	public String fromPlanet;
 	public String toPlanet;
 	public int shipsToMove = 0;
-	public int duration = 0;
+	public float duration = 0;
 	public String playerHandle;
 	
 	public boolean belongsToPlayer(Player player){

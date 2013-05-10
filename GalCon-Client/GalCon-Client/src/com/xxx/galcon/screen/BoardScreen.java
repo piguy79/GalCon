@@ -424,7 +424,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				}
 			}
 
-			int totalDuration = GalConMath.distance(startX, startY, endX, endY);
+			float totalDuration = GalConMath.distance(startX, startY, endX, endY);
 			float percentTraveled = 1.0f - ((float) move.duration / (float) totalDuration);
 
 			float shipX = startX + (endX - startX) * percentTraveled;
