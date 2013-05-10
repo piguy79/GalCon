@@ -112,8 +112,7 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 				planet.numberOfShips = Math.abs(battleResult); 
 				planet.conquered = true;
 			}else{
-				var shipsToLose = (planet.numberOfShips / battleResult) * (1 + getDefenceMutlipler(planet, game));
-				planet.numberOfShips = planet.numberOfShips - shipsToLose;
+				planet.numberOfShips = battleResult * (1 / (1 + getDefenceMutlipler(planet, game)));
 			}
 		}
 		
