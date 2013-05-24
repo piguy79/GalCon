@@ -112,9 +112,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException {
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
+		args.put("playerHandle", playerHandle);
 		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
 	}
 

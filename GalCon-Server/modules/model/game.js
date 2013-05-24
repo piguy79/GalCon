@@ -45,7 +45,8 @@ var gameSchema = mongoose.Schema({
 			fromPlanet : "String",
 			toPlanet : "String",
 			fleet : "Number",
-			duration : "Number"
+			duration : "Number",
+			startingRound : "Number"
 		}
 	]
 	
@@ -184,6 +185,7 @@ gameSchema.methods.addMoves = function(moves){
 	var game = this;
 	if(moves){
 		moves.forEach(function(move){
+			move.startingRound = game.currentRound.roundNumber;
 			game.moves.push(move);
 		});
 	}
@@ -285,19 +287,18 @@ exports.saveGame = function(game, callback) {
 
 exports.performMoves = function(gameId, moves, playerHandle, callback) {
 	this.findById(gameId, function(game) {
-	
-		decrementCurrentShipCountOnFromPlanets(game, moves);
-		console.log(game.planets);
 		
+		game.addMoves(moves);
+			
 		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(playerHandle)) {
-			processMoves(game, moves);			
+			decrementCurrentShipCountOnFromPlanets(game);
+			
+			processMoves(game);			
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 
-		} else {
-			game.addMoves(moves);
-		}
+		} 
 
 		assignNextCurrentRoundPlayer(game, playerHandle);
 
@@ -311,12 +312,16 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 	})
 }
 
-var decrementCurrentShipCountOnFromPlanets = function(game, moves){
+var decrementCurrentShipCountOnFromPlanets = function(game){
 
-	if(moves){
-		for(var i = 0; i < moves.length; i++){
-			var fromPlanet = findFromPlanet(game.planets, moves[i].fromPlanet);
-			fromPlanet.numberOfShips = fromPlanet.numberOfShips - moves[i].fleet;			
+	if(game.moves){
+		for(var i = 0; i < game.moves.length; i++){
+			var move = game.moves[i];
+			
+			if(move.startingRound == game.currentRound.roundNumber){
+				var fromPlanet = findFromPlanet(game.planets, game.moves[i].fromPlanet);
+				fromPlanet.numberOfShips = fromPlanet.numberOfShips - game.moves[i].fleet;
+			}			
 		}
 	}
 	
@@ -333,8 +338,7 @@ var findFromPlanet = function(planets, fromPlanetName){
 	return "No Planet Found";
 }
 
-var processMoves = function(game, newMoves) {
-	game.addMoves(newMoves);
+var processMoves = function(game) {
 
 	gameTypeAssembler.gameTypes[game.gameType].processMoves(game);
 }

@@ -183,7 +183,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
 			BoardScreen boardScreen) {
-		UIConnectionWrapper.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id);
+		UIConnectionWrapper.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id, GameLoop.USER.handle);
 		return boardScreen;
 	}
 

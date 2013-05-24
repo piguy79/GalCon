@@ -31,7 +31,7 @@ public interface GameAction {
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) throws ConnectionException;
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) throws ConnectionException;
 
 	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
 			throws ConnectionException;

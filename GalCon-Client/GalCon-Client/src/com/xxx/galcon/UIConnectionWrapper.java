@@ -28,9 +28,9 @@ public class UIConnectionWrapper {
 		}
 	}
 
-	public static void findGameById(UIConnectionResultCallback<GameBoard> callback, String id) {
+	public static void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		try {
-			gameAction.findGameById(callback, id);
+			gameAction.findGameById(callback, id,playerHandle);
 		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}

@@ -42,8 +42,9 @@ exports.findAllGames = function(req, res) {
 // Find a specific game by its object id
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
+	var playerHandle = req.query['playerHandle'];
 	gameManager.findById(searchId, function(game) {
-		res.json(game);
+		res.json(processGameReturn(game, playerHandle));
 	});
 }
 
@@ -154,14 +155,38 @@ exports.performMoves = function(req, res) {
 				rankManager.findRankForXp(user.xp, function(rank) {
 					user.rankInfo = rank;
 					user.save(function() {
-						res.json(savedGame);
+						res.json(processGameReturn(savedGame, playerHandle));
 					});
 				});
 			});
 		} else {
-			res.json(savedGame);
+			res.json(processGameReturn(savedGame, playerHandle));
 		}
 	});
+}
+
+processGameReturn = function(game, playerWhoCalledTheUrl){
+
+	for(var i = 0 ; i < game.moves.length; i++){
+		var move = game.moves[i];
+		
+		if((move.playerHandle == playerWhoCalledTheUrl) && move.startingRound == game.currentRound.roundNumber){
+			decrementPlanetShipNumber(game,move);
+		}
+	}
+	
+	return game;
+}
+
+decrementPlanetShipNumber = function(game, move){
+	for(var i = 0; i < game.planets.length; i++){
+		var planet = game.planets[i];
+		console.log(planet.name  + " : " + move.fromPlanet);
+		if(planet.name == move.fromPlanet){
+			planet.numberOfShips = planet.numberOfShips - move.fleet;
+			console.log("Decresaing for planet " + planet.name);
+		}
+	}
 }
 
 exports.addPlanetsToGame = function(req, res) {
