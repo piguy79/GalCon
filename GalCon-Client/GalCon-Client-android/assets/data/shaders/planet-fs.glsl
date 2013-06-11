@@ -1,102 +1,47 @@
 #ifdef GL_ES
-#define LOWP lowp
-#define MEDP mediump
-#define HIGP highp
-precision lowp float;
-#else
-#define LOWP
-#define MEDP
-#define HIGP
+	#ifdef GL_FRAGMENT_PRECISION_HIGH 
+		precision highp float;
+	#else
+		precision mediump float;
+	#endif
 #endif
 
-uniform int shipCount;
-uniform vec4 uColor;
-uniform float uRadius;
-uniform sampler2D numbersTex;
+uniform float uPlanetBits[4];
+uniform sampler2D planetTex;
+uniform sampler2D planetTouchTex;
+uniform sampler2D planetGlowTex;
 
 varying vec2 vTexCoords;
 
-const float IMAGE_WIDTH = 512.0; 
+const int INDEX_PLANET_OWNED_BY_USER = 0;
+const int INDEX_PLANET_OWNED_BY_ENEMY = 1;
+const int INDEX_PLANET_TOUCHED = 2;
+const int INDEX_PLANET_ABILITY = 3;
 
-float numberOffset(int number);
-
-void main() {
-	float xDistToCenter = 0.5 - vTexCoords.x;
-	float yDistToCenter = 0.5 - vTexCoords.y;
-	float halfWidth = 0.08;
-	float halfHeight = 0.1;
-	
-	float textAreaHalfWidth = 0.08;
-	if(shipCount > 9) {
-		textAreaHalfWidth *= 2.0;
-	}
-	
-	vec4 numberTexColor = vec4(0,0,0,0);
-	if(xDistToCenter < textAreaHalfWidth && xDistToCenter > -textAreaHalfWidth 
-		&& yDistToCenter < halfHeight && yDistToCenter > -halfHeight) {
-		
-		int numberToShow = shipCount;
-		
-		float xNumberCenter = 0.5;
-		if(shipCount > 9) {
-			if(xDistToCenter > 0.0) {
-				xNumberCenter = 0.5 - halfWidth;
-				numberToShow = numberToShow - (numberToShow / 10) * 10;
-			} else {
-				xNumberCenter = 0.5 + halfWidth;
-				numberToShow = numberToShow / 10;
-			}
-		}
-			
-		float xDistToNumberCenter = xNumberCenter - vTexCoords.x;
-		float yDistToNumberCenter = yDistToCenter;
-		xDistToNumberCenter = (xDistToNumberCenter + halfWidth) * (1.0 / (1.0-(halfWidth + halfWidth)));
-		yDistToNumberCenter = (yDistToNumberCenter + halfHeight) * (1.0 / (1.0-(halfHeight + halfHeight)));
-				
-		float xMult = 0.18;
-		if(numberToShow == 1) {
-			xMult = 0.13;
-		}
-		numberTexColor = texture2D(numbersTex, 
-									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.2));
-	}
-	
-	if(numberTexColor.a == 0.0) {
-		numberTexColor = vec4(0,0,0,0);
-	}
-	
-	float dist = distance(vec2(0.5, 0.5), vTexCoords);
-	gl_FragColor = mix(uColor, vec4(0, 0, 0, 0), smoothstep(uRadius, uRadius + 0.05, dist)) + numberTexColor;
+vec4 blendOneMinusSourceAlpha(vec4 src, vec4 dest) {
+	return src*src.a + dest*(1.0 - src.a);
 }
 
-float numberOffset(int number) {
-	if(number == 0) {
-		return 173.0/IMAGE_WIDTH;
-	}
-	if(number == 1) {
-		return 160.0/IMAGE_WIDTH;
-	}
-	if(number == 2) {
-		return 142.0/IMAGE_WIDTH;
-	}
-	if(number == 3) {
-		return 122.0/IMAGE_WIDTH;
-	}
-	if(number == 4) {
-		return 100.0/IMAGE_WIDTH;
-	}
-	if(number == 5) {
-		return 80.0/IMAGE_WIDTH;
-	}
-	if(number == 6) {
-		return 60.0/IMAGE_WIDTH;
-	}
-	if(number == 7) {
-		return 41.0/IMAGE_WIDTH;
-	}
-	if(number == 8) {
-		return 20.0/IMAGE_WIDTH;
+void main() {	
+	vec4 planetTexColor = texture2D(planetTex, vTexCoords);
+	vec4 planetTexTouchColor = texture2D(planetTouchTex, vTexCoords);
+	
+	vec4 pixel;
+	if(uPlanetBits[INDEX_PLANET_TOUCHED] == 1.0) {
+		vec4 planetTexGlowColor = texture2D(planetGlowTex, vTexCoords);
+		vec4 blend = blendOneMinusSourceAlpha(planetTexColor, planetTexGlowColor);
+		pixel = blendOneMinusSourceAlpha(planetTexTouchColor, blend);
+	} else {
+		pixel = blendOneMinusSourceAlpha(planetTexTouchColor, planetTexColor);
 	}
 	
-	return 0.0;
+	if(uPlanetBits[INDEX_PLANET_OWNED_BY_USER] == 1.0) {
+		pixel += vec4(-0.5, 0.5, -0.5, 0.0);
+	} else if(uPlanetBits[INDEX_PLANET_OWNED_BY_ENEMY] == 1.0) {
+		pixel += vec4(0.5, -0.5, -0.5, 0.0);
+	} else if (uPlanetBits[INDEX_PLANET_TOUCHED] != 1.0) {
+		pixel += vec4(-0.4, -0.4, -0.4, 0.0);
+	}
+	
+	gl_FragColor = pixel;
 }

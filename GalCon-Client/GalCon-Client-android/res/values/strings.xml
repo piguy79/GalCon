@@ -8,6 +8,6 @@
     <string name="welcome_text">Choose a username to continue your conquest</string>
     <string name="create">Create</string>
     <string name="usernameTaken">Username is already in use. Please try another.</string>
-    <string name="connectionError">Unable to connect. Please try again.</string>
+    <string name="connectionError">Unable to connect. Please try again. hi there.</string>
 
 </resources>

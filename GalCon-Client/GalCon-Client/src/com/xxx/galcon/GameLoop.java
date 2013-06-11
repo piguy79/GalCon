@@ -70,6 +70,9 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/ship_selection_dialog.png", Texture.class, param);
 		assetManager.load("data/fonts/planet_numbers.png", Texture.class, param);
 		assetManager.load("data/images/transparent_square.png", Texture.class, param);
+		assetManager.load("data/images/planets/planet2.png", Texture.class, param);
+		assetManager.load("data/images/planets/planet2-touch.png", Texture.class, param);
+		assetManager.load("data/images/planets/planet2-glow.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);

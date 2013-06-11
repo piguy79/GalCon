@@ -1,11 +1,11 @@
-font.size=32
-font.bold=false
+font.size=66
+font.bold=true
 font.italic=false
 
 pad.top=0
 pad.right=0
 pad.bottom=0
-pad.left=0
+pad.left=10
 pad.advance.x=0
 pad.advance.y=0
 

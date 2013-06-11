@@ -52,6 +52,11 @@ import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
+	private static final int INDEX_PLANET_OWNED_BY_USER = 0;
+	private static final int INDEX_PLANET_OWNED_BY_ENEMY = 1;
+	private static final int INDEX_PLANET_TOUCHED = 2;
+	private static final int INDEX_PLANET_ABILITY = 3;
+
 	private static final float BOARD_WIDTH_RATIO = .95f;
 	private static final float BOARD_HEIGHT_RATIO = .68f;
 
@@ -65,10 +70,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private World physicsWorld;
 
 	private ShaderProgram planetShader;
+	private ShaderProgram planetNumberShader;
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
 
 	private Texture planetNumbersTexture;
+	private Texture planetTexture;
+	private Texture planetTouchTexture;
+	private Texture planetGlowTexture;
 
 	private StillModel planetModel;
 	private StillModel shipModel;
@@ -99,6 +108,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.assetManager = assetManager;
 
 		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
+		planetNumberShader = createShaderUsingFiles("data/shaders/planet-numbers-vs.glsl",
+				"data/shaders/planet-numbers-fs.glsl");
 		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
 
@@ -106,13 +117,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
+		planetTexture = assetManager.get("data/images/planets/planet2.png", Texture.class);
+		planetTouchTexture = assetManager.get("data/images/planets/planet2-touch.png", Texture.class);
+		planetGlowTexture = assetManager.get("data/images/planets/planet2-glow.png", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
 		playerInfoHud = new PlayerInfoHud();
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
-
 	}
 
 	private StillModel generateStillModelFromObjectFile(String objectFile) {
@@ -304,6 +317,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
+	private float [] touchedPlanetsCoords = new float[4];
 	private void renderGrid(Camera camera) {
 		gridShader.begin();
 
@@ -311,23 +325,41 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
+		
+		touchedPlanetsCoords[0] = -1;
+		touchedPlanetsCoords[1] = -1;
+		touchedPlanetsCoords[2] = -1;
+		touchedPlanetsCoords[3] = -1;
+		
+		int size = touchedPlanets.size();
+		if(size > 0) {
+			Planet planet = touchedPlanets.get(0);
+			touchedPlanetsCoords[0] = planet.position.getX();
+			touchedPlanetsCoords[1] = planet.position.getY();
+			
+			if(size > 1) {
+				planet = touchedPlanets.get(1);
+				touchedPlanetsCoords[2] = planet.position.getX();
+				touchedPlanetsCoords[3] = planet.position.getY();
+			}
+		}
+		gridShader.setUniform1fv("uTouchPlanetsCoords", touchedPlanetsCoords, 0, 4);
 
 		planetModel.render(planetShader);
 
 		gridShader.end();
 	}
 
-	private void renderPlanets(List<Planet> planets, Camera camera) {
+	private void renderPlanetNumbers(List<Planet> planets, Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		planetNumbersTexture.bind(1);
 
-		planetShader.begin();
-		planetShader.setUniformi("numbersTex", 1);
+		planetNumberShader.begin();
+		planetNumberShader.setUniformi("numbersTex", 1);
 
 		for (Planet planet : planets) {
-
 			modelViewMatrix.idt();
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 					PLANET_Z_COORD);
@@ -339,52 +371,53 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
 
+			planetNumberShader.setUniformMatrix("uPMatrix", camera.combined);
+			planetNumberShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			planetNumberShader.setUniformi("shipCount", planet.numberOfShips);
+
+			planetModel.render(planetNumberShader);
+		}
+		planetNumberShader.end();
+
+		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	private void renderPlanets(List<Planet> planets, Camera camera) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+		planetTexture.bind(1);
+		planetTouchTexture.bind(2);
+		planetGlowTexture.bind(3);
+
+		planetShader.begin();
+		planetShader.setUniformi("planetTex", 1);
+		planetShader.setUniformi("planetTouchTex", 2);
+		planetShader.setUniformi("planetGlowTex", 3);
+
+		for (Planet planet : planets) {
+			modelViewMatrix.idt();
+			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+					PLANET_Z_COORD);
+
+			float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+			float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
+			modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
+					* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
+
+			float radius = (float) 0.48f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX);
+
+			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
+			modelViewMatrix.scl(radius * 2.2f, radius * 2.2f, 1.0f);
+
 			planetShader.setUniformMatrix("uPMatrix", camera.combined);
 			planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
-			planetShader.setUniformi("shipCount", planet.numberOfShips);
 
-			float r = 0.0f, g = 0.0f, b = 0.0f;
-			if (planet.touched) {
-				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
-					g = 1.0f;
-					b = 0.6f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
-					r = 1.0f;
-					b = 0.6f;
-				} else if (planet.isOwnedBy(GameLoop.USER)) {
-					g = 1.0f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-					r = 1.0f;
-				} else if (planet.hasAbility()) {
-					r = 0.5f;
-					g = 0.5f;
-					b = 1.0f;
-				} else {
-					r = 1.0f;
-					g = 1.0f;
-					b = 1.0f;
-				}
-			} else {
-				if (planet.isOwnedBy(GameLoop.USER) && planet.hasAbility()) {
-					g = 0.5f;
-					b = 0.3f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE) && planet.hasAbility()) {
-					r = 0.5f;
-					b = 0.3f;
-				} else if (planet.isOwnedBy(GameLoop.USER)) {
-					g = 0.5f;
-				} else if (!planet.owner.equals(OWNER_NO_ONE)) {
-					r = 0.5f;
-				} else if (planet.hasAbility()) {
-					b = 1.0f;
-				} else if (!planet.touched) {
-					r = 0.5f;
-					g = 0.5f;
-					b = 0.5f;
-				}
-			}
-			planetShader.setUniformf("uColor", r, g, b, 1.0f);
-			planetShader.setUniformf("uRadius", (float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
+			float[] planetBits = new float[4];
+			setPlanetBits(planet, planetBits);
+			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
 
 			planetModel.render(planetShader);
 		}
@@ -393,6 +426,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	private void setPlanetBits(Planet planet, float[] planetBits) {
+		planetBits[INDEX_PLANET_TOUCHED] = planet.touched ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_ABILITY] = planet.hasAbility() ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_USER] = planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planet.owner.equals(OWNER_NO_ONE)
+				&& !planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
 	}
 
 	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
@@ -551,6 +592,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		renderGrid(camera);
 		renderPlanets(gameBoard.planets, camera);
+		renderPlanetNumbers(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 
 		if (gameBoard.hasWinner()) {

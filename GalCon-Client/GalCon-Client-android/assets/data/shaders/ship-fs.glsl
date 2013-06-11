@@ -1,12 +1,9 @@
 #ifdef GL_ES
-#define LOWP lowp
-#define MEDP mediump
-#define HIGP highp
-precision lowp float;
-#else
-#define LOWP
-#define MEDP
-#define HIGP
+	#ifdef GL_FRAGMENT_PRECISION_HIGH 
+		precision highp float;
+	#else
+		precision mediump float;
+	#endif
 #endif
 
 uniform vec4 uColor;

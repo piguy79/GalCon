@@ -1,8 +1,8 @@
 package com.xxx.galcon;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Fonts {
 
@@ -14,23 +14,14 @@ public class Fonts {
 	private BitmapFont extraLargeFont;
 
 	private Fonts() {
-		mediumFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
-		mediumFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		smallFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_16.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_16.png"), false);
-		smallFont.scale(-0.3f);
-		smallFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		largeFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
-		largeFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		extraLargeFont = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
-				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
-		extraLargeFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		extraLargeFont.scale(0.5f);
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/crackdr2.ttf"));
+		
+		smallFont = generator.generateFont(12);
+		mediumFont = generator.generateFont(22);
+		largeFont = generator.generateFont(30);
+		extraLargeFont = generator.generateFont(40);
+		
+		generator.dispose();
 	}
 
 	public static Fonts getInstance() {

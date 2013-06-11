@@ -1,11 +1,9 @@
 #ifdef GL_ES
-#define LOWP lowp
-#define MEDP mediump
-#define HIGP highp
-#else
-#define LOWP
-#define MEDP
-#define HIGP
+	#ifdef GL_FRAGMENT_PRECISION_HIGH 
+		precision highp float;
+	#else
+		precision mediump float;
+	#endif
 #endif
 
 attribute vec4 a_position;
