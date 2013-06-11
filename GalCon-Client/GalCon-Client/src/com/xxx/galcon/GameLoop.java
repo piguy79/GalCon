@@ -73,6 +73,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/planets/planet2.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet2-touch.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet2-glow.png", Texture.class, param);
+		assetManager.load("data/images/bg1.jpg", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);

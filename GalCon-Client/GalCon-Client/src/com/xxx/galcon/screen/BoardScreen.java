@@ -78,6 +78,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private Texture planetTexture;
 	private Texture planetTouchTexture;
 	private Texture planetGlowTexture;
+	private Texture bg1Texture;
 
 	private StillModel planetModel;
 	private StillModel shipModel;
@@ -120,6 +121,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetTexture = assetManager.get("data/images/planets/planet2.png", Texture.class);
 		planetTouchTexture = assetManager.get("data/images/planets/planet2-touch.png", Texture.class);
 		planetGlowTexture = assetManager.get("data/images/planets/planet2-glow.png", Texture.class);
+		bg1Texture = assetManager.get("data/images/bg1.jpg", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
 		playerInfoHud = new PlayerInfoHud();
@@ -319,8 +321,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private float [] touchedPlanetsCoords = new float[4];
 	private void renderGrid(Camera camera) {
-		gridShader.begin();
+		bg1Texture.bind(1);
 
+		gridShader.begin();
+		gridShader.setUniformi("bgTex", 1);
+		
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
