@@ -104,10 +104,11 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id)
+	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
 			throws ConnectionException {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
+		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");

@@ -764,7 +764,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (action == Action.REFRESH) {
 			overlay = new TextOverlay("Refreshing...", assetManager);
-			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id);
+			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
 		} else if (action == Action.BACK) {
 			returnCode = Action.BACK;
 		}
