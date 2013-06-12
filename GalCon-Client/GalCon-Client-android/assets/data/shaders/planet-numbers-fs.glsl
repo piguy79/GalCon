@@ -18,10 +18,10 @@ float numberOffset(int number);
 void main() {
 	float xDistToCenter = 0.5 - vTexCoords.x;
 	float yDistToCenter = vTexCoords.y - 0.5;
-	float halfWidth = 0.08;
-	float halfHeight = 0.1;
+	float halfWidth = 0.1;
+	float halfHeight = 0.12;
 	
-	float textAreaHalfWidth = 0.08;
+	float textAreaHalfWidth = halfWidth;
 	if(shipCount > 9) {
 		textAreaHalfWidth *= 2.0;
 	}
@@ -48,12 +48,12 @@ void main() {
 		xDistToNumberCenter = (xDistToNumberCenter + halfWidth) * (1.0 / (1.0-(halfWidth + halfWidth)));
 		yDistToNumberCenter = (yDistToNumberCenter + halfHeight) * (1.0 / (1.0-(halfHeight + halfHeight)));
 				
-		float xMult = 0.48;
+		float xMult = 0.42;
 		if(numberToShow == 1) {
-			xMult = 0.4;
+			xMult = 0.36;
 		}
 		numberTexColor = texture2D(numbersTex, 
-									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.45));
+									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.4));
 	}
 	
 	if(numberTexColor.a == 0.0) {

@@ -36,15 +36,19 @@ void main() {
 	}
 	
 	if(uPlanetBits[INDEX_PLANET_OWNED_BY_USER] == 1.0) {
-		pixel += vec4(-0.6, 0.5, -0.6, 0.0);
+		pixel += vec4(-0.5, 0.3, -0.5, 0.0);
 	} else if(uPlanetBits[INDEX_PLANET_OWNED_BY_ENEMY] == 1.0) {
-		pixel += vec4(0.5, -0.6, -0.6, 0.0);
+		pixel += vec4(0.3, -0.5, -0.5, 0.0);
 	} else if (uPlanetBits[INDEX_PLANET_TOUCHED] != 1.0) {
 		pixel += vec4(-0.4, -0.4, -0.4, 0.0);
 	}
 	
+	if(uPlanetBits[INDEX_PLANET_TOUCHED] == 1.0) {
+		pixel += vec4(0.1, 0.1, 0.1, 0.0);
+	}
+	
 	if(uPlanetBits[INDEX_PLANET_ABILITY] == 1.0) {
-		pixel += vec4(0.0, 0.0, 0.6, 0.0);
+		pixel += vec4(-0.1, -0.1, 0.6, 0.0);
 	}
 	
 	gl_FragColor = pixel;
