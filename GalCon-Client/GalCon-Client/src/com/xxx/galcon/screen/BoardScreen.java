@@ -412,7 +412,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
 					* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
 
-			float radius = (float) 0.48f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX);
+			float radius = scaleRegenToRadius(planet, 0.25f, 0.48f);
 
 			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
 			modelViewMatrix.scl(radius * 2.2f, radius * 2.2f, 1.0f);
@@ -431,6 +431,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+	
+	private float scaleRegenToRadius(Planet planet, float minRadius, float maxRadius) {
+		 float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
+		 return minRadius + (maxRadius - minRadius) * regenRatio;
 	}
 
 	private void setPlanetBits(Planet planet, float[] planetBits) {

@@ -33,10 +33,10 @@ void main() {
 	
 	if(tileX < (uTouchPlanetsCoords[0] + 1.0) && tileX > uTouchPlanetsCoords[0]
 		&& tileY < (uTouchPlanetsCoords[1] + 1.0) && tileY > uTouchPlanetsCoords[1]) {			
-		color = vec4(.2, .2, .2, .2); 
+		color = vec4(.3, .3, .3, .2); 
 	} else if(tileX < (uTouchPlanetsCoords[2] + 1.0) && tileX > uTouchPlanetsCoords[2]
 		&& tileY < (uTouchPlanetsCoords[3] + 1.0) && tileY > uTouchPlanetsCoords[3]) {			
-		color = vec4(.2, .2, .2, .2); 
+		color = vec4(.3, .3, .3, .2); 
 	}
 	
 	vec4 bgColor = texture2D(bgTex, vTexCoords);
