@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -319,30 +320,31 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
-	private float [] touchedPlanetsCoords = new float[4];
+	private float[] touchedPlanetsCoords = new float[4];
+
 	private void renderGrid(Camera camera) {
 		bg1Texture.bind(1);
 
 		gridShader.begin();
 		gridShader.setUniformi("bgTex", 1);
-		
+
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
-		
+
 		touchedPlanetsCoords[0] = -1;
 		touchedPlanetsCoords[1] = -1;
 		touchedPlanetsCoords[2] = -1;
 		touchedPlanetsCoords[3] = -1;
-		
+
 		int size = touchedPlanets.size();
-		if(size > 0) {
+		if (size > 0) {
 			Planet planet = touchedPlanets.get(0);
 			touchedPlanetsCoords[0] = planet.position.getX();
 			touchedPlanetsCoords[1] = planet.position.getY();
-			
-			if(size > 1) {
+
+			if (size > 1) {
 				planet = touchedPlanets.get(1);
 				touchedPlanetsCoords[2] = planet.position.getX();
 				touchedPlanetsCoords[3] = planet.position.getY();
@@ -432,10 +434,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
-	
+
 	private float scaleRegenToRadius(Planet planet, float minRadius, float maxRadius) {
-		 float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
-		 return minRadius + (maxRadius - minRadius) * regenRatio;
+		float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
+		return minRadius + (maxRadius - minRadius) * regenRatio;
 	}
 
 	private void setPlanetBits(Planet planet, float[] planetBits) {
@@ -460,10 +462,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				continue;
 			}
 
-			modelViewMatrix.idt();
-			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
-					PLANET_Z_COORD);
-
 			int startX = 0, startY = 0, endX = 0, endY = 0;
 			for (Planet planet : planets) {
 				if (planet.name.equals(move.fromPlanet)) {
@@ -482,11 +480,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			float shipY = startY + (endY - startY) * percentTraveled;
 
 			float angle = new Vector2(endX - startX, endY - startY).angle();
+			
+			modelViewMatrix.idt();
+			
+			modelViewMatrix.trn(1.0f, -0.4f, 0.0f);
+			Matrix4 multMat = new Matrix4();
+			new Quaternion(new Vector3(0, 0, 1), 180 - angle).toMatrix(multMat.getValues());
+			modelViewMatrix = multMat.mul(modelViewMatrix);
+			
+			modelViewMatrix.trn(1.0f, -0.4f, 0.0f);
+
+			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+					PLANET_Z_COORD);
 
 			modelViewMatrix.trn(tileWidthInWorld * shipX + tileWidthInWorld / 2, -tileHeightInWorld * shipY
 					- tileHeightInWorld / 2, 0.0f);
-
-			modelViewMatrix.rotate(0, 0, 1, 180 - angle);
 
 			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
 
