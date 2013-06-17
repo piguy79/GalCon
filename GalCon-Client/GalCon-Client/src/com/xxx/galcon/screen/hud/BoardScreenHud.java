@@ -2,8 +2,6 @@ package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.GameBoard;
 
@@ -45,12 +43,6 @@ public class BoardScreenHud extends Hud {
 			endTurnButton.setEnabled(false);
 			refreshButton.setEnabled(false);
 		} else if (!isMyTurn) {
-			int height = Gdx.graphics.getHeight();
-			BitmapFont font = Fonts.getInstance().largeFont();
-			font.draw(getSpriteBatch(), "Current Player: "
-					+ (gameBoard.currentPlayerToMove.isEmpty() ? "Waiting for opponent" : gameBoard.currentPlayerToMove), 5, height * .26f);
-			font.draw(getSpriteBatch(), "Round Number: " + gameBoard.roundNumber, 5, height * .2f);
-
 			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
 		} else {

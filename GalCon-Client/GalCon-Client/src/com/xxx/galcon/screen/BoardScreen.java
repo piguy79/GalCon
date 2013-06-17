@@ -223,6 +223,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void associateHudInformation() {
 		boardScreenHud.associateCurrentRoundInformation(gameBoard);
+		playerInfoHud.associateCurrentRoundInformation(gameBoard);
 	}
 
 	private void processGameBoard() {
