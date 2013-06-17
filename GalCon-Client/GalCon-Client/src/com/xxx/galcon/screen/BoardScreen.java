@@ -47,7 +47,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
-import com.xxx.galcon.screen.hud.PlayerInfoHud;
+import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -94,7 +94,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
-	private PlayerInfoHud playerInfoHud;
+	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
 
@@ -125,7 +125,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		bg1Texture = assetManager.get("data/images/bg1.jpg", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
-		playerInfoHud = new PlayerInfoHud();
+		playerInfoHud = new HeaderHud(assetManager);
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
@@ -162,7 +162,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			heightInWorld = (worldPlane.topLeft.y - worldPlane.bottomRight.y) * BOARD_HEIGHT_RATIO;
 
 			yShift = worldPlane.topLeft.y - boardPlane.heightInWorld / 2.0f
-					- (0.05f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
+					- (0.1f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
 
 			topInWorld = heightInWorld / 2.0f + boardPlane.yShift;
 			leftInWorld = -widthInWorld / 2.0f;
@@ -480,14 +480,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			float shipY = startY + (endY - startY) * percentTraveled;
 
 			float angle = new Vector2(endX - startX, endY - startY).angle();
-			
+
 			modelViewMatrix.idt();
-			
+
 			modelViewMatrix.trn(1.0f, -0.4f, 0.0f);
 			Matrix4 multMat = new Matrix4();
 			new Quaternion(new Vector3(0, 0, 1), 180 - angle).toMatrix(multMat.getValues());
 			modelViewMatrix = multMat.mul(modelViewMatrix);
-			
+
 			modelViewMatrix.trn(1.0f, -0.4f, 0.0f);
 
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
@@ -648,6 +648,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderDialogs(delta);
 
 		Action hudResult = (Action) boardScreenHud.getRenderResult();
+		if (hudResult != null) {
+			processHudButtonTouch(hudResult);
+		}
+
+		hudResult = (Action) playerInfoHud.getRenderResult();
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}

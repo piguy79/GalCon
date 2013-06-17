@@ -10,7 +10,6 @@ import com.xxx.galcon.model.GameBoard;
 public class BoardScreenHud extends Hud {
 	private GameBoard gameBoard;
 
-	private HudButton backButton;
 	private HudButton endTurnButton;
 	private HudButton sendButton;
 	private HudButton refreshButton;
@@ -19,12 +18,10 @@ public class BoardScreenHud extends Hud {
 		super();
 
 		sendButton = new SendHudButton(assetManager);
-		backButton = new BackHudButton(assetManager);
 		endTurnButton = new EndTurnHudButton(assetManager);
 		refreshButton = new RefreshHudButton(assetManager);
 
 		addHudButton(sendButton);
-		addHudButton(backButton);
 		addHudButton(endTurnButton);
 		addHudButton(refreshButton);
 
