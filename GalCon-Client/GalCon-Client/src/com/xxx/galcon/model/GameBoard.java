@@ -64,11 +64,7 @@ public class GameBoard extends JsonConvertible {
 				JSONObject jsonMove = moves.getJSONObject(i);
 
 				Move move = new Move();
-				move.fromPlanet = jsonMove.getString("fromPlanet");
-				move.toPlanet = jsonMove.getString("toPlanet");
-				move.shipsToMove = jsonMove.getInt("fleet");
-				move.duration = jsonMove.getInt("duration");
-				move.playerHandle = jsonMove.getString("playerHandle");
+				move.consume(jsonMove);
 
 				movesInProgress.add(move);
 			}

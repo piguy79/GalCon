@@ -39,12 +39,12 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
+import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.PlayerInfoHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -104,6 +104,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private String connectionError;
 
 	private Action returnCode = null;
+	private MoveFactory moveFactory;
+	
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -128,6 +130,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
+
+		
+		this.moveFactory = new MoveFactory();
+
 	}
 
 	private StillModel generateStillModelFromObjectFile(String objectFile) {
@@ -339,13 +345,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int size = touchedPlanets.size();
 		if(size > 0) {
 			Planet planet = touchedPlanets.get(0);
-			touchedPlanetsCoords[0] = planet.position.getX();
-			touchedPlanetsCoords[1] = planet.position.getY();
+			touchedPlanetsCoords[0] = planet.position.x;
+			touchedPlanetsCoords[1] = planet.position.y;
 			
 			if(size > 1) {
 				planet = touchedPlanets.get(1);
-				touchedPlanetsCoords[2] = planet.position.getX();
-				touchedPlanetsCoords[3] = planet.position.getY();
+				touchedPlanetsCoords[2] = planet.position.x;
+				touchedPlanetsCoords[3] = planet.position.y;
 			}
 		}
 		gridShader.setUniform1fv("uTouchPlanetsCoords", touchedPlanetsCoords, 0, 4);
@@ -371,8 +377,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
 			float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
-			modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
-					* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
+			modelViewMatrix.trn(tileWidthInWorld * planet.position.x + tileWidthInWorld / 2, -tileHeightInWorld
+					* planet.position.y - tileHeightInWorld / 2, 0.0f);
 
 			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
 
@@ -409,8 +415,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
 			float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
-			modelViewMatrix.trn(tileWidthInWorld * planet.position.getX() + tileWidthInWorld / 2, -tileHeightInWorld
-					* planet.position.getY() - tileHeightInWorld / 2, 0.0f);
+			modelViewMatrix.trn(tileWidthInWorld * planet.position.x + tileWidthInWorld / 2, -tileHeightInWorld
+					* planet.position.y - tileHeightInWorld / 2, 0.0f);
 
 			float radius = scaleRegenToRadius(planet, 0.25f, 0.48f);
 
@@ -462,31 +468,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			modelViewMatrix.idt();
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
-					PLANET_Z_COORD);
+					PLANET_Z_COORD);	
+			
+			move.animate(0.1f);
 
-			int startX = 0, startY = 0, endX = 0, endY = 0;
-			for (Planet planet : planets) {
-				if (planet.name.equals(move.fromPlanet)) {
-					startX = planet.position.getX();
-					startY = planet.position.getY();
-				} else if (planet.name.equals(move.toPlanet)) {
-					endX = planet.position.getX();
-					endY = planet.position.getY();
-				}
-			}
-
-			float totalDuration = GalConMath.distance(startX, startY, endX, endY);
-			float percentTraveled = 1.0f - ((float) move.duration / (float) totalDuration);
-
-			float shipX = startX + (endX - startX) * percentTraveled;
-			float shipY = startY + (endY - startY) * percentTraveled;
-
-			float angle = new Vector2(endX - startX, endY - startY).angle();
-
-			modelViewMatrix.trn(tileWidthInWorld * shipX + tileWidthInWorld / 2, -tileHeightInWorld * shipY
+			modelViewMatrix.trn(tileWidthInWorld * move.animationx + tileWidthInWorld / 2, -tileHeightInWorld * move.animationy
 					- tileHeightInWorld / 2, 0.0f);
 
-			modelViewMatrix.rotate(0, 0, 1, 180 - angle);
+			modelViewMatrix.rotate(0, 0, 1, 180 - move.angleOfMovement());
 
 			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
 
@@ -507,7 +496,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void addPhysicsToPlanet(Planet planet) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		bodyDef.position.set(new Vector2(planet.position.getX(), planet.position.getY()));
+		bodyDef.position.set(new Vector2(planet.position.x, planet.position.y));
 
 		Body characterBody = physicsWorld.createBody(bodyDef);
 		characterBody.setUserData(planet);
@@ -719,24 +708,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processShipSelectionTouch(Action action) {
 		if (action == Action.DIALOG_OK) {
-			Move move = new Move();
-
-			int startX = 0, startY = 0, endX = 0, endY = 0;
-			for (Planet planet : touchedPlanets) {
-				if (planet.isOwnedBy(GameLoop.USER) && move.fromPlanet == null) {
-					move.fromPlanet = planet.name;
-					move.shipsToMove = shipSelectionDialog.getShipsToSend();
-					planet.numberOfShips -= move.shipsToMove;
-					startX = planet.position.getX();
-					startY = planet.position.getY();
-				} else {
-					move.toPlanet = planet.name;
-					endX = planet.position.getX();
-					endY = planet.position.getY();
-				}
-			}
-
-			move.duration = GalConMath.distance(startX, startY, endX, endY);
+			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
 
 			moves.add(move);
 			clearTouchedPlanets();

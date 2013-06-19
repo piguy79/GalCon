@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.model.base.JsonConstructable;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -15,47 +16,21 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  *
  */
-public class PlanetPosition extends JsonConvertible{
+public class Position extends JsonConvertible implements JsonConstructable{
 	
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 
-	public PlanetPosition(int x, int y){
+	public Position(int x, int y){
 		this.x = x;
 		this.y = y;
 	}
 	
-	public PlanetPosition(){
+	public Position(){
 		super();
 	}
 
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * @param x the x to set
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * @param y the y to set
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
+	
 	
 	@Override
 	public void consume(JSONObject jsonObject){
@@ -68,5 +43,13 @@ public class PlanetPosition extends JsonConvertible{
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public JSONObject asJson() throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("x", x);
+		jsonObject.put("y", y);
+		return jsonObject;
 	}
 }
