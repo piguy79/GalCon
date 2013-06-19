@@ -82,7 +82,7 @@ public class HeaderHud extends Hud {
 		font.setColor(1.0f, 0.9f, 0.0f, 1.0f);
 		font.draw(spriteBatch, info1, xTextMidPoint - fontHalfWidth, y);
 
-		renderPlayersTurn(player1, xTextMidPoint - fontHalfWidth, y - fontHeight, spriteBatch);
+		renderPlayersTurn(player1, xTextMidPoint - fontHalfWidth, y - fontHeight, fontHalfWidth * 2, spriteBatch);
 
 		String vs = "vs";
 		fontHalfWidth = (int) (font.getBounds(vs).width) / 2;
@@ -95,25 +95,17 @@ public class HeaderHud extends Hud {
 		font.setColor(1.0f, 0.9f, 0.0f, 1.0f);
 		font.draw(spriteBatch, info2, xTextMidPoint - fontHalfWidth, y);
 
-		renderPlayersTurn(player2, xTextMidPoint - fontHalfWidth, y - fontHeight, spriteBatch);
+		renderPlayersTurn(player2, xTextMidPoint - fontHalfWidth, y - fontHeight, fontHalfWidth * 2, spriteBatch);
 
 		font.setColor(Color.WHITE);
 	}
 
-	private void renderPlayersTurn(Player player, int x, int y, SpriteBatch spriteBatch) {
+	private void renderPlayersTurn(Player player, int x, int y, int width, SpriteBatch spriteBatch) {
 		if (isPlayersTurn(player) || isUnspecifiedPlayersTurn(player)) {
 			int arrowWidth = (int) (Gdx.graphics.getWidth() * .04f);
 			int arrowBarHeight = (int) (arrowWidth * 0.35f);
 			spriteBatch.draw(arrowSolidLine, x - arrowWidth - 5, y + 2, arrowWidth, arrowBarHeight);
-
-			Matrix4 transform = new Matrix4();
-			new Quaternion(new Vector3(0, 0, 1), 30).toMatrix(transform.getValues());
-			spriteBatch.setTransformMatrix(transform);
-
-			arrowWidth = (int) (arrowWidth * 0.66f);
-			spriteBatch.draw(arrowSolidLine, x - arrowWidth - 5, 350, arrowWidth, arrowBarHeight);
-
-			spriteBatch.setTransformMatrix(transform.idt());
+			spriteBatch.draw(arrowSolidLine, x + width + 5, y + 2, arrowWidth, arrowBarHeight);
 		}
 	}
 
@@ -143,11 +135,11 @@ public class HeaderHud extends Hud {
 
 	private String getPlayerInfoText(Player player) {
 		if (player == null) {
-			return "--Waiting for player--";
+			return "Waiting for opponent";
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(player.handle + " [" + player.rank.level + "]");
+		sb.append(player.handle + " [" + player.rank.level + "] ");
 		sb.append(abilitiesToString(gameBoard.ownedPlanetAbilities(player)));
 
 		return sb.toString();
