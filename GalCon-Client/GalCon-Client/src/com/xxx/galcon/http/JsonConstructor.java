@@ -18,14 +18,7 @@ public class JsonConstructor {
 		JSONArray jsonMoves = new JSONArray();
 
 		for (Move move : moves) {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("playerHandle", GameLoop.USER.handle);
-			jsonObject.put("fromPlanet", move.fromPlanet);
-			jsonObject.put("toPlanet", move.toPlanet);
-			jsonObject.put("fleet", move.shipsToMove);
-			jsonObject.put("duration", move.duration);
-
-			jsonMoves.put(jsonObject);
+			jsonMoves.put(move.asJson());
 		}
 		top.put("moves", jsonMoves);
 

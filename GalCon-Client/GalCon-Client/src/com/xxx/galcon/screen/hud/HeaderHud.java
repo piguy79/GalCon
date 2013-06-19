@@ -110,8 +110,8 @@ public class HeaderHud extends Hud {
 			new Quaternion(new Vector3(0, 0, 1), 30).toMatrix(transform.getValues());
 			spriteBatch.setTransformMatrix(transform);
 
-			arrowWidth = (int) (arrowWidth * 2.66f);
-			spriteBatch.draw(arrowSolidLine, x - arrowWidth - 5, y, arrowWidth, arrowBarHeight);
+			arrowWidth = (int) (arrowWidth * 0.66f);
+			spriteBatch.draw(arrowSolidLine, x - arrowWidth - 5, 350, arrowWidth, arrowBarHeight);
 
 			spriteBatch.setTransformMatrix(transform.idt());
 		}

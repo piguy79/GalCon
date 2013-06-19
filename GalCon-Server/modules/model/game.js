@@ -3,7 +3,8 @@ var mongoose = require('./mongooseConnection').mongoose
 , ObjectId = require('mongoose').Types.ObjectId; 
 gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
-rank = require('./rank');
+rank = require('./rank'),
+positionAdjuster = require('../movement/PositionAdjuster');
 
 
 
@@ -46,7 +47,23 @@ var gameSchema = mongoose.Schema({
 			toPlanet : "String",
 			fleet : "Number",
 			duration : "Number",
-			startingRound : "Number"
+			startingRound : "Number",
+			previousPosition : {
+				x : "Number",
+				y : "Number"
+			},
+			currentPosition : {
+				x : "Number",
+				y : "Number"
+			},
+			startPosition : {
+				x : "Number",
+				y : "Number"
+			},
+			endPosition : {
+				x : "Number",
+				y : "Number"
+			}
 		}
 	]
 	
@@ -341,7 +358,10 @@ var findFromPlanet = function(planets, fromPlanetName){
 var processMoves = function(game) {
 
 	gameTypeAssembler.gameTypes[game.gameType].processMoves(game);
+	
+	positionAdjuster.adjustMovePositions(game);
 }
+
 
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
