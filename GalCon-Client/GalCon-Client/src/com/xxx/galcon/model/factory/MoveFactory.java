@@ -12,7 +12,7 @@ public class MoveFactory {
 	public Move createMove(List<Planet> availablePlanets, int fleetToSend){
 		Move move = new Move();
 
-		int startX = 0, startY = 0, endX = 0, endY = 0;
+		float startX = 0, startY = 0, endX = 0, endY = 0;
 		for (Planet planet : availablePlanets) {
 			if (planet.isOwnedBy(GameLoop.USER) && move.fromPlanet == null) {
 				move.fromPlanet = planet.name;

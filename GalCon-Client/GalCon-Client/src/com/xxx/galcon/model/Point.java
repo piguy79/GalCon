@@ -16,17 +16,17 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * @author conormullen
  *
  */
-public class Position extends JsonConvertible implements JsonConstructable{
+public class Point extends JsonConvertible implements JsonConstructable{
 	
-	public int x;
-	public int y;
+	public float x;
+	public float y;
 
-	public Position(int x, int y){
+	public Point(float x, float y){
 		this.x = x;
 		this.y = y;
 	}
 	
-	public Position(){
+	public Point(){
 		super();
 	}
 
@@ -35,8 +35,8 @@ public class Position extends JsonConvertible implements JsonConstructable{
 	@Override
 	public void consume(JSONObject jsonObject){
 		try {
-			this.x = jsonObject.getInt(Constants.X);
-			this.y = jsonObject.getInt(Constants.Y);
+			this.x = Float.parseFloat(jsonObject.getString(Constants.X));
+			this.y = Float.parseFloat(jsonObject.getString(Constants.Y));
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
