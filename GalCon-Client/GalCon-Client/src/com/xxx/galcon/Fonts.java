@@ -15,12 +15,15 @@ public class Fonts {
 
 	private Fonts() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/crackdr2.ttf"));
-		
-		smallFont = generator.generateFont(12);
-		mediumFont = generator.generateFont(22);
-		largeFont = generator.generateFont(30);
-		extraLargeFont = generator.generateFont(40);
-		
+
+		float width = Gdx.graphics.getWidth();
+		float scaleFactor = width / 720.0f;
+
+		smallFont = generator.generateFont((int) (12.0f * scaleFactor));
+		mediumFont = generator.generateFont((int) (22.0f * scaleFactor));
+		largeFont = generator.generateFont((int) (28.0f * scaleFactor));
+		extraLargeFont = generator.generateFont((int) (36.0f * scaleFactor));
+
 		generator.dispose();
 	}
 

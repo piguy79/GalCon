@@ -6,7 +6,7 @@ import com.xxx.galcon.screen.Action;
 
 public abstract class HudButton {
 	protected static final float BUTTON_SIZE_RATIO = 0.15f;
-	protected static final int MARGIN = 30;
+	protected static final int MARGIN = 20;
 	private boolean enabled = true;
 
 	protected int x, y, width, height;

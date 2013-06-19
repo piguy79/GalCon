@@ -65,6 +65,7 @@ public class GameLoop extends Game {
 
 		assetManager.load("data/images/arrow_right.png", Texture.class, param);
 		assetManager.load("data/images/arrow_left.png", Texture.class, param);
+		assetManager.load("data/images/back.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
 		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.load("data/images/ship_selection_dialog.png", Texture.class, param);
@@ -74,6 +75,9 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/planets/planet2-touch.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet2-glow.png", Texture.class, param);
 		assetManager.load("data/images/bg1.jpg", Texture.class, param);
+		assetManager.load("data/images/bg_dark_gray_10x10.png", Texture.class, param);
+		assetManager.load("data/images/slash_line.png", Texture.class, param);
+		assetManager.load("data/images/arrow_solid_line.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager);

@@ -23,11 +23,12 @@ public abstract class Hud implements ScreenFeedback {
 		processTouch();
 
 		spriteBatch.begin();
+
+		doRender(delta, spriteBatch);
+
 		for (int i = 0; i < hudButtons.size(); ++i) {
 			hudButtons.get(i).render(spriteBatch);
 		}
-
-		doRender(delta, spriteBatch);
 
 		spriteBatch.end();
 	}

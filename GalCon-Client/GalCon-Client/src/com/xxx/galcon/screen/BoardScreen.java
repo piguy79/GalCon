@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -46,7 +47,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
-import com.xxx.galcon.screen.hud.PlayerInfoHud;
+import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -93,7 +94,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private AssetManager assetManager;
 	private BoardScreenHud boardScreenHud;
-	private PlayerInfoHud playerInfoHud;
+	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
 
@@ -126,7 +127,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		bg1Texture = assetManager.get("data/images/bg1.jpg", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(assetManager);
-		playerInfoHud = new PlayerInfoHud();
+		playerInfoHud = new HeaderHud(assetManager);
 
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
@@ -167,7 +168,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			heightInWorld = (worldPlane.topLeft.y - worldPlane.bottomRight.y) * BOARD_HEIGHT_RATIO;
 
 			yShift = worldPlane.topLeft.y - boardPlane.heightInWorld / 2.0f
-					- (0.05f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
+					- (0.1f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
 
 			topInWorld = heightInWorld / 2.0f + boardPlane.yShift;
 			leftInWorld = -widthInWorld / 2.0f;
@@ -228,6 +229,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void associateHudInformation() {
 		boardScreenHud.associateCurrentRoundInformation(gameBoard);
+		playerInfoHud.associateCurrentRoundInformation(gameBoard);
 	}
 
 	private void processGameBoard() {
@@ -325,30 +327,32 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
-	private float [] touchedPlanetsCoords = new float[4];
+	private float[] touchedPlanetsCoords = new float[4];
+
 	private void renderGrid(Camera camera) {
 		bg1Texture.bind(1);
 
 		gridShader.begin();
 		gridShader.setUniformi("bgTex", 1);
-		
+
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
-		
+
 		touchedPlanetsCoords[0] = -1;
 		touchedPlanetsCoords[1] = -1;
 		touchedPlanetsCoords[2] = -1;
 		touchedPlanetsCoords[3] = -1;
-		
+
 		int size = touchedPlanets.size();
-		if(size > 0) {
+		if (size > 0) {
 			Planet planet = touchedPlanets.get(0);
 			touchedPlanetsCoords[0] = planet.position.x;
 			touchedPlanetsCoords[1] = planet.position.y;
 			
 			if(size > 1) {
+
 				planet = touchedPlanets.get(1);
 				touchedPlanetsCoords[2] = planet.position.x;
 				touchedPlanetsCoords[3] = planet.position.y;
@@ -438,10 +442,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
-	
+
 	private float scaleRegenToRadius(Planet planet, float minRadius, float maxRadius) {
-		 float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
-		 return minRadius + (maxRadius - minRadius) * regenRatio;
+		float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
+		return minRadius + (maxRadius - minRadius) * regenRatio;
 	}
 
 	private void setPlanetBits(Planet planet, float[] planetBits) {
@@ -629,6 +633,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderDialogs(delta);
 
 		Action hudResult = (Action) boardScreenHud.getRenderResult();
+		if (hudResult != null) {
+			processHudButtonTouch(hudResult);
+		}
+
+		hudResult = (Action) playerInfoHud.getRenderResult();
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
