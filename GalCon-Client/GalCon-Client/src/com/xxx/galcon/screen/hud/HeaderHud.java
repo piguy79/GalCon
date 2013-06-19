@@ -10,9 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
@@ -20,6 +17,8 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 
 public class HeaderHud extends Hud {
+	public static final float HEADER_HEIGHT_PERCENT = 0.1f;
+
 	private GameBoard gameBoard;
 	private HudButton backButton;
 	private Texture darkGrayBg10x10;

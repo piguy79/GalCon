@@ -1,5 +1,6 @@
 package com.xxx.galcon.screen.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.screen.Action;
@@ -17,10 +18,10 @@ public class BackHudButton extends HudButton {
 
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
-		int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
+		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_PERCENT * 0.88f));
 		this.x = 10;
-		this.y = screenHeight - buttonWidth - 5;
-		this.width = buttonWidth;
-		this.height = buttonWidth;
+		this.y = screenHeight - buttonHeight - 5;
+		this.width = buttonHeight;
+		this.height = buttonHeight;
 	}
 }
