@@ -13,7 +13,7 @@ public class Planet extends JsonConvertible {
 	public int numberOfShips;
 	public String name;
 	public String id;
-	public Position position;
+	public Point position;
 	public boolean touched = false;
 	public String ability;
 
@@ -32,7 +32,7 @@ public class Planet extends JsonConvertible {
 				this.owner = jsonObject.getString(Constants.OWNER_HANDLE);
 			}
 			JSONObject positionJson = jsonObject.getJSONObject(Constants.POSITION);
-			Position position = new Position();
+			Point position = new Point();
 			position.consume(positionJson);
 			this.position = position;
 			this.id = jsonObject.getString(Constants.ID);

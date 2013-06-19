@@ -15,10 +15,10 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public int shipsToMove = 0;
 	public float duration = 0;
 	public String playerHandle;
-	public Position previousPosition = new Position();
-	public Position currentPosition = new Position();
-	public Position startPosition = new Position();
-	public Position endPosition = new Position();
+	public Point previousPosition = new Point();
+	public Point currentPosition = new Point();
+	public Point startPosition = new Point();
+	public Point endPosition = new Point();
 	
 	public float animationx;
 	public float animationy;
@@ -54,7 +54,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		fromPlanet = jsonObject.getString("fromPlanet");
 		toPlanet = jsonObject.getString("toPlanet");
 		shipsToMove = jsonObject.getInt("fleet");
-		duration = jsonObject.getInt("duration");
+		duration = Float.parseFloat(jsonObject.getString("duration"));
 		playerHandle = jsonObject.getString("playerHandle");
 		this.currentPosition.consume(jsonObject.getJSONObject("currentPosition"));
 		this.previousPosition.consume(jsonObject.getJSONObject("previousPosition"));
