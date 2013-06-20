@@ -11,7 +11,6 @@ public class Fonts {
 	private BitmapFont smallFont;
 	private BitmapFont mediumFont;
 	private BitmapFont largeFont;
-	private BitmapFont extraLargeFont;
 
 	private Fonts() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/crackdr2.ttf"));
@@ -22,7 +21,6 @@ public class Fonts {
 		smallFont = generator.generateFont((int) (12.0f * scaleFactor));
 		mediumFont = generator.generateFont((int) (22.0f * scaleFactor));
 		largeFont = generator.generateFont((int) (28.0f * scaleFactor));
-		extraLargeFont = generator.generateFont((int) (36.0f * scaleFactor));
 
 		generator.dispose();
 	}
@@ -37,7 +35,6 @@ public class Fonts {
 	public static void dispose() {
 		if (instance != null) {
 			instance.smallFont.dispose();
-			instance.extraLargeFont.dispose();
 			instance.largeFont.dispose();
 			instance.mediumFont.dispose();
 		}
@@ -55,9 +52,5 @@ public class Fonts {
 
 	public BitmapFont largeFont() {
 		return largeFont;
-	}
-
-	public BitmapFont extraLargeFont() {
-		return extraLargeFont;
 	}
 }

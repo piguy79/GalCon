@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -58,8 +57,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final int INDEX_PLANET_TOUCHED = 2;
 	private static final int INDEX_PLANET_ABILITY = 3;
 
-	private static final float BOARD_WIDTH_RATIO = .95f;
-	private static final float BOARD_HEIGHT_RATIO = .68f;
+	private static final float BOARD_WIDTH_RATIO = .98f;
+	private static final float BOARD_HEIGHT_RATIO = .75f;
+	private static final float BOARD_TOP_OFFSET = 0.1f;
 
 	private static final float PLANET_Z_COORD = -99.5f;
 	private static final float TILE_SIZE_IN_UNITS = 10.0f;
@@ -106,7 +106,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private Action returnCode = null;
 	private MoveFactory moveFactory;
-	
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -132,7 +131,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		physicsWorld = new World(new Vector2(0.0f, 0.0f), true);
 		physicsWorld.setContactListener(this);
 
-		
 		this.moveFactory = new MoveFactory();
 
 	}
@@ -168,7 +166,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			heightInWorld = (worldPlane.topLeft.y - worldPlane.bottomRight.y) * BOARD_HEIGHT_RATIO;
 
 			yShift = worldPlane.topLeft.y - boardPlane.heightInWorld / 2.0f
-					- (0.1f * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
+					- (BOARD_TOP_OFFSET * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
 
 			topInWorld = heightInWorld / 2.0f + boardPlane.yShift;
 			leftInWorld = -widthInWorld / 2.0f;
@@ -350,8 +348,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			Planet planet = touchedPlanets.get(0);
 			touchedPlanetsCoords[0] = planet.position.x;
 			touchedPlanetsCoords[1] = planet.position.y;
-			
-			if(size > 1) {
+
+			if (size > 1) {
 
 				planet = touchedPlanets.get(1);
 				touchedPlanetsCoords[2] = planet.position.x;
@@ -472,12 +470,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			modelViewMatrix.idt();
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
-					PLANET_Z_COORD);	
-			
+					PLANET_Z_COORD);
+
 			move.animate(0.1f);
 
-			modelViewMatrix.trn(tileWidthInWorld * move.animationx + tileWidthInWorld / 2, -tileHeightInWorld * move.animationy
-					- tileHeightInWorld / 2, 0.0f);
+			modelViewMatrix.trn(tileWidthInWorld * move.animationx + tileWidthInWorld / 2, -tileHeightInWorld
+					* move.animationy - tileHeightInWorld / 2, 0.0f);
 
 			modelViewMatrix.rotate(0, 0, 1, 180 - move.angleOfMovement());
 

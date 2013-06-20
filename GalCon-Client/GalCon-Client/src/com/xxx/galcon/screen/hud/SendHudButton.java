@@ -19,7 +19,7 @@ public class SendHudButton extends HudButton {
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
 		int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
 		this.x = MARGIN;
-		this.y = MARGIN + buttonWidth + MARGIN;
+		this.y = MARGIN;
 		this.width = buttonWidth;
 		this.height = buttonWidth;
 	}

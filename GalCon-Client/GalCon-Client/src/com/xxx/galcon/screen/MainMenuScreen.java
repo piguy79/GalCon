@@ -120,7 +120,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.begin();
 
 		String galcon = "GalCon";
-		BitmapFont extraLargeFont = Fonts.getInstance().extraLargeFont();
+		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .9f));
 
