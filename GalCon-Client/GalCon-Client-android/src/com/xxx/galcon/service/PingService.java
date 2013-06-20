@@ -38,6 +38,8 @@ public class PingService extends Service {
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private static final int SLEEP_TIME = 120 * 1000;
+	private static final int LONG_SLEEP_TIME = 30 * 60 * 1000;
+	private static final String DELETE_KEY = "DELETE";
 
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -53,7 +55,7 @@ public class PingService extends Service {
 			synchronized (this) {
 				PingService.this.mServiceHandler.post(new Runnable() {
 					public void run() {
-						PingService.this.post();
+						PingService.this.post(SLEEP_TIME);
 					}
 				});
 			}
@@ -104,6 +106,11 @@ public class PingService extends Service {
 			mBuilder.setContentIntent(PendingIntent.getActivity(PingService.this.getBaseContext(), 0, resultIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT));
 
+			Intent deleteIntent = new Intent(PingService.this, PingService.class);
+			deleteIntent.putExtra(DELETE_KEY, DELETE_KEY);
+			mBuilder.setDeleteIntent(PendingIntent.getService(PingService.this, 0, deleteIntent,
+					PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT));
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 		}
@@ -138,14 +145,21 @@ public class PingService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		post();
+		if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(DELETE_KEY)) {
+			post(LONG_SLEEP_TIME);
+		} else {
+			post(SLEEP_TIME);
+		}
 
 		return START_STICKY;
 	}
 
-	protected void post() {
+	protected void post(int sleepTime) {
 		Message msg = mServiceHandler.obtainMessage();
-		mServiceHandler.sendMessageAtTime(msg, SystemClock.uptimeMillis() + SLEEP_TIME);
+		msg.what = 1;
+
+		mServiceHandler.removeMessages(msg.what);
+		mServiceHandler.sendMessageAtTime(msg, SystemClock.uptimeMillis() + sleepTime);
 	}
 
 	@Override
