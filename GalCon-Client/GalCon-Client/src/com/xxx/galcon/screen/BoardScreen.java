@@ -265,6 +265,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				if (shipSelectionDialog.contains(x, y)) {
 					return null;
 				} else {
+					clearTouchedPlanets();
 					shipSelectionDialog.dispose();
 					shipSelectionDialog = null;
 				}
@@ -291,38 +292,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		return contactBody;
-	}
-
-	private void moveCameraForIntro(Camera camera) {
-		if (intro) {
-			if (introTimeBegin == 0.0f) {
-				int width = Gdx.graphics.getWidth();
-				int height = Gdx.graphics.getHeight();
-				camera = new PerspectiveCamera(67f, width, height);
-				camera.near = 1.0f;
-				camera.far = 5000f;
-				camera.translate(0.0f, -120.0f, 20.0f);
-				camera.lookAt(0.0f, -100.0f, 0.0f);
-
-				camera.update();
-			}
-			introTimeBegin += Gdx.graphics.getDeltaTime();
-
-			camera.position.set(new Vector3(0, 0, 0));
-			camera.translate(0.0f, -40.0f * (introElapsedTime - introTimeBegin),
-					3.33f * (introElapsedTime - introTimeBegin) + 10.0f);
-			camera.lookAt(0.0f, -33.3f * (introElapsedTime - introTimeBegin), 0.0f);
-			camera.update();
-
-			if (introTimeBegin > introElapsedTime) {
-				intro = false;
-
-				camera.position.set(new Vector3(0, 0, 0));
-				camera.translate(0.0f, 0.0f, 10.0f);
-				camera.lookAt(0.0f, 0.0f, 0.0f);
-				camera.update();
-			}
-		}
 	}
 
 	private float[] touchedPlanetsCoords = new float[4];
@@ -607,8 +576,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			physicsWorld.destroyBody(contactBody);
 		}
 
-		moveCameraForIntro(camera);
-
 		renderGrid(camera);
 		renderPlanets(gameBoard.planets, camera);
 		renderPlanetNumbers(gameBoard.planets, camera);
@@ -774,9 +741,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		camera = new PerspectiveCamera(67f, width, height);
 		camera.near = 1.0f;
 		camera.far = 5000f;
+
+		camera.position.set(new Vector3(0, 0, 0));
 		camera.translate(0.0f, 0.0f, 10.0f);
 		camera.lookAt(0.0f, 0.0f, 0.0f);
-
 		camera.update();
 
 		Gdx.gl.glViewport(0, 0, width, height);
