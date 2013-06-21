@@ -49,6 +49,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.tween.MoveTween;
+import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -99,12 +100,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	List<Move> moves = new ArrayList<Move>();
 
 	private AssetManager assetManager;
+	private TweenManager tweenManager;
 	private BoardScreenHud boardScreenHud;
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
 	
-	TweenManager manager;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
@@ -116,8 +117,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private MoveFactory moveFactory;
 
 
-	public BoardScreen(AssetManager assetManager) {
+	public BoardScreen(AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
+		this.tweenManager = tweenManager;
 
 		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
 		planetNumberShader = createShaderUsingFiles("data/shaders/planet-numbers-vs.glsl",
@@ -143,8 +145,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.moveFactory = new MoveFactory();
 		
 		Tween.registerAccessor(Move.class, new MoveTween());
+		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
 		
-		manager = new TweenManager();
 
 	}
 
@@ -458,7 +460,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			
 			if(!move.animation.isStarted()){
-				move.animation.start(manager);
+				move.animation.start(tweenManager);
 			}
 			
 			float xToDraw = move.animationx, yToDraw = move.animationy;
@@ -471,9 +473,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			else if(move.animation.isFinished()){
 				roundAnimated = gameBoard.roundNumber;
 			}
-			
-			manager.update(Gdx.graphics.getDeltaTime());
-			
+						
 			
 			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw
 					- tileHeightInWorld / 2, 0.0f);
@@ -590,8 +590,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int height = Gdx.graphics.getHeight();
 		int xMargin = (int) (width * .15f);
 		int dialogWidth = width - 2 * xMargin;
-		shipSelectionDialog = new ShipSelectionDialog(xMargin, (int) (height * .6f), dialogWidth,
-				(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
+		
+		
+		
+		shipSelectionDialog = new ShipSelectionDialog((int) (width * -1), (int) (height * .6f), dialogWidth,
+				(int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager);
+		
+		
 	}
 
 	@Override
@@ -735,16 +740,26 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processShipSelectionTouch(Action action) {
 		if (action == Action.DIALOG_OK) {
-			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend(), manager);
+			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
 
 			moves.add(move);
 			clearTouchedPlanets();
-			shipSelectionDialog.dispose();
-			shipSelectionDialog = null;
+			
+			shipSelectionDialog.hideAnimation.start(tweenManager);
+			
+			if(shipSelectionDialog.hideAnimation.isFinished()){
+				shipSelectionDialog.dispose();
+				shipSelectionDialog = null;
+			}
+			
 		} else if (action == Action.DIALOG_CANCEL) {
 			clearTouchedPlanets();
-			shipSelectionDialog.dispose();
-			shipSelectionDialog = null;
+			shipSelectionDialog.hideAnimation.start(tweenManager);
+			
+			if(shipSelectionDialog.hideAnimation.isFinished()){
+				shipSelectionDialog.dispose();
+				shipSelectionDialog = null;
+			}
 		}
 	}
 
