@@ -282,7 +282,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					contactBody.setUserData(TOUCH_OBJECT);
 
 					CircleShape shape = new CircleShape();
-					shape.setRadius(0.18f);
+					shape.setRadius(0.16f);
 
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
