@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
@@ -45,6 +48,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
+import com.xxx.galcon.model.tween.MoveTween;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -65,7 +69,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final float TILE_SIZE_IN_UNITS = 10.0f;
 
 	private static final String TOUCH_OBJECT = "touch";
-
+	
+	private int roundAnimated = -2;
+	
 	private Camera camera;
 	private GameBoard gameBoard;
 	private World physicsWorld;
@@ -97,6 +103,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
+	
+	TweenManager manager;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
@@ -106,6 +114,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private Action returnCode = null;
 	private MoveFactory moveFactory;
+
 
 	public BoardScreen(AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -132,6 +141,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		physicsWorld.setContactListener(this);
 
 		this.moveFactory = new MoveFactory();
+		
+		Tween.registerAccessor(Move.class, new MoveTween());
+		
+		manager = new TweenManager();
 
 	}
 
@@ -432,7 +445,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		shipShader.begin();
 
-		for (Move move : moves) {
+		for (int i = 0; i < moves.size(); i++) {
+			Move move = moves.get(i);
+			
 			if (!move.belongsToPlayer(GameLoop.USER)) {
 				continue;
 			}
@@ -441,10 +456,28 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 					PLANET_Z_COORD);
 
-			move.animate(0.1f);
+			
+			if(!move.animation.isStarted()){
+				move.animation.start(manager);
+			}
+			
+			float xToDraw = move.animationx, yToDraw = move.animationy;
 
-			modelViewMatrix.trn(tileWidthInWorld * move.animationx + tileWidthInWorld / 2, -tileHeightInWorld
-					* move.animationy - tileHeightInWorld / 2, 0.0f);
+			
+			if(roundAnimated == gameBoard.roundNumber){
+				xToDraw = move.currentPosition.x;
+				yToDraw = move.currentPosition.y;
+			}
+			else if(move.animation.isFinished()){
+				roundAnimated = gameBoard.roundNumber;
+			}
+			
+			manager.update(Gdx.graphics.getDeltaTime());
+			
+			
+			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw
+					- tileHeightInWorld / 2, 0.0f);
+			
 
 			modelViewMatrix.rotate(0, 0, 1, 180 - move.angleOfMovement());
 
@@ -452,6 +485,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			shipShader.setUniformMatrix("uPMatrix", camera.combined);
 			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			
+			
 
 			float r = 1.0f, g = 0.0f, b = 0.0f;
 			shipShader.setUniformf("uColor", r, g, b, 1.0f);
@@ -700,7 +735,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processShipSelectionTouch(Action action) {
 		if (action == Action.DIALOG_OK) {
-			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
+			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend(), manager);
 
 			moves.add(move);
 			clearTouchedPlanets();
@@ -822,6 +857,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public void resetState() {
 		returnCode = null;
 		connectionError = null;
+		roundAnimated = -2;
 		moves.clear();
 		clearTouchedPlanets();
 

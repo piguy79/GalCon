@@ -133,6 +133,7 @@ public class GameLoop extends Game {
 			} else if (currentScreen instanceof BoardScreen) {
 				Action action = (Action) result;
 				if (action == Action.BACK) {
+					currentScreen.resetState();
 					mainMenuScreen.resetState();
 					return mainMenuScreen;
 				}
