@@ -281,7 +281,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					contactBody.setUserData(TOUCH_OBJECT);
 
 					CircleShape shape = new CircleShape();
-					shape.setRadius(0.2f);
+					shape.setRadius(0.18f);
 
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
@@ -545,6 +545,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
+					showShipSelectionDialog();
 				}
 			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
@@ -570,6 +571,23 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 
+	}
+
+	private void showShipSelectionDialog() {
+		int shipsOnPlanet = 0;
+		for (Planet planet : touchedPlanets) {
+			if (planet.isOwnedBy(GameLoop.USER)) {
+				shipsOnPlanet = planet.numberOfShips;
+				break;
+			}
+		}
+
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		int xMargin = (int) (width * .15f);
+		int dialogWidth = width - 2 * xMargin;
+		shipSelectionDialog = new ShipSelectionDialog(xMargin, (int) (height * .6f), dialogWidth,
+				(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
 	}
 
 	@Override
@@ -722,33 +740,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			shipSelectionDialog.dispose();
 			shipSelectionDialog = null;
 		} else if (action == Action.DIALOG_CANCEL) {
+			clearTouchedPlanets();
 			shipSelectionDialog.dispose();
 			shipSelectionDialog = null;
 		}
 	}
 
 	private void processHudButtonTouch(Action action) {
-		if (action == Action.SEND) {
-			if (touchedPlanets.size() != 2) {
-				return;
-			}
-
-			int shipsOnPlanet = 0;
-			for (Planet planet : touchedPlanets) {
-				if (planet.isOwnedBy(GameLoop.USER)) {
-					shipsOnPlanet = planet.numberOfShips;
-					break;
-				}
-			}
-
-			int width = Gdx.graphics.getWidth();
-			int height = Gdx.graphics.getHeight();
-			int xMargin = (int) (width * .15f);
-			int dialogWidth = width - 2 * xMargin;
-			shipSelectionDialog = new ShipSelectionDialog(xMargin, (int) (height * .6f), dialogWidth,
-					(int) (dialogWidth * .8f), assetManager, shipsOnPlanet);
-
-		} else if (action == Action.END_TURN) {
+		if (action == Action.END_TURN) {
 			overlay = new TextOverlay("Sending ships to their doom", assetManager);
 			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
 		} else if (action == Action.REFRESH) {

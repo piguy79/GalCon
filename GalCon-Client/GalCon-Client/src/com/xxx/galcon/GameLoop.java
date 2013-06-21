@@ -63,7 +63,6 @@ public class GameLoop extends Game {
 		param.minFilter = TextureFilter.Linear;
 		param.magFilter = TextureFilter.Linear;
 
-		assetManager.load("data/images/arrow_right.png", Texture.class, param);
 		assetManager.load("data/images/arrow_left.png", Texture.class, param);
 		assetManager.load("data/images/back.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);

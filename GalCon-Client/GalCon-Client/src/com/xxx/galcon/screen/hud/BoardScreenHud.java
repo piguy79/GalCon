@@ -9,17 +9,14 @@ public class BoardScreenHud extends Hud {
 	private GameBoard gameBoard;
 
 	private HudButton endTurnButton;
-	private HudButton sendButton;
 	private HudButton refreshButton;
 
 	public BoardScreenHud(AssetManager assetManager) {
 		super();
 
-		sendButton = new SendHudButton(assetManager);
 		endTurnButton = new EndTurnHudButton(assetManager);
 		refreshButton = new RefreshHudButton(assetManager);
 
-		addHudButton(sendButton);
 		addHudButton(endTurnButton);
 		addHudButton(refreshButton);
 
@@ -39,14 +36,11 @@ public class BoardScreenHud extends Hud {
 		refreshButton.setEnabled(true);
 
 		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
-			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
 			refreshButton.setEnabled(false);
 		} else if (!isMyTurn) {
-			sendButton.setEnabled(false);
 			endTurnButton.setEnabled(false);
 		} else {
-			sendButton.setEnabled(true);
 			endTurnButton.setEnabled(true);
 		}
 
