@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="libs/gdx-freetype-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype.jar"/>
 	<classpathentry kind="lib" path="libs/tween-engine-api-sources.jar"/>
-	<classpathentry kind="lib" path="libs/tween-engine-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -7,7 +7,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.GameBoard;
 
 public class BoardScreenHud extends Hud {
-	private static final float BOTTOM_HEIGHT_RATIO = 0.13f;
+	public static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
 	private HudButton endTurnButton;

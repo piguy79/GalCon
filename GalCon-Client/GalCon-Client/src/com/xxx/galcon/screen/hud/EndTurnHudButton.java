@@ -18,8 +18,12 @@ public class EndTurnHudButton extends HudButton {
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
 		int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
-		this.x = screenWidth - buttonWidth - MARGIN - MARGIN;
-		this.y = MARGIN;
+
+		int midX = (int) (screenWidth * .9f);
+		int midY = (int) (screenHeight * .06f);
+
+		this.x = midX - buttonWidth / 2;
+		this.y = midY - buttonWidth / 2;
 		this.width = buttonWidth;
 		this.height = buttonWidth;
 	}
