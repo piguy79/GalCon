@@ -17,10 +17,11 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 
 public class HeaderHud extends Hud {
-	public static final float HEADER_HEIGHT_PERCENT = 0.1f;
+	public static final float HEADER_HEIGHT_RATIO = 0.1f;
 
 	private GameBoard gameBoard;
 	private HudButton backButton;
+	private HudButton refreshButton;
 	private Texture darkGrayBg10x10;
 	private Texture slashLine;
 	private Texture arrowSolidLine;
@@ -42,7 +43,9 @@ public class HeaderHud extends Hud {
 		super();
 
 		backButton = new BackHudButton(assetManager);
+		refreshButton = new RefreshHudButton(assetManager);
 		addHudButton(backButton);
+		addHudButton(refreshButton);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -97,6 +100,12 @@ public class HeaderHud extends Hud {
 		renderPlayersTurn(player2, xTextMidPoint - fontHalfWidth, y - fontHeight, fontHalfWidth * 2, spriteBatch);
 
 		font.setColor(Color.WHITE);
+
+		refreshButton.setEnabled(true);
+
+		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
+			refreshButton.setEnabled(false);
+		}
 	}
 
 	private void renderPlayersTurn(Player player, int x, int y, int width, SpriteBatch spriteBatch) {

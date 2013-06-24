@@ -18,7 +18,7 @@ public class BackHudButton extends HudButton {
 
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_PERCENT * 0.88f));
+		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 		this.x = 10;
 		this.y = screenHeight - buttonHeight - 5;
 		this.width = buttonHeight;

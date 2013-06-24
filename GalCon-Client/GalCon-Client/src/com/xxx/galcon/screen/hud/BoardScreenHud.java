@@ -2,23 +2,25 @@ package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.GameBoard;
 
 public class BoardScreenHud extends Hud {
+	private static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
 	private HudButton endTurnButton;
-	private HudButton refreshButton;
+	private Texture bottomBar;
 
 	public BoardScreenHud(AssetManager assetManager) {
 		super();
 
 		endTurnButton = new EndTurnHudButton(assetManager);
-		refreshButton = new RefreshHudButton(assetManager);
+		
+		bottomBar = assetManager.get("data/images/bottom_bar.png", Texture.class);
 
 		addHudButton(endTurnButton);
-		addHudButton(refreshButton);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
@@ -33,11 +35,10 @@ public class BoardScreenHud extends Hud {
 
 		getSpriteBatch().begin();
 
-		refreshButton.setEnabled(true);
+		getSpriteBatch().draw(bottomBar, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO);
 
 		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
 			endTurnButton.setEnabled(false);
-			refreshButton.setEnabled(false);
 		} else if (!isMyTurn) {
 			endTurnButton.setEnabled(false);
 		} else {
