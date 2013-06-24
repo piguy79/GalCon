@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -25,6 +27,8 @@ public class GameLoop extends Game {
 	private MainMenuScreen mainMenuScreen;
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
+	public TweenManager tweenManager;
+
 
 	private GameAction gameAction;
 
@@ -32,6 +36,7 @@ public class GameLoop extends Game {
 		this.gameAction = gameAction;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
+		tweenManager = new TweenManager();
 
 	}
 
@@ -80,7 +85,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/bottom_bar.png", Texture.class, param);
 		assetManager.finishLoading();
 
-		boardScreen = new BoardScreen(assetManager);
+		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);
 		setScreen(mainMenuScreen);
 	}
@@ -88,6 +93,7 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
+		tweenManager.update(Gdx.graphics.getDeltaTime());
 
 		ScreenFeedback screen = getScreen();
 		Object result = screen.getRenderResult();
@@ -134,6 +140,7 @@ public class GameLoop extends Game {
 			} else if (currentScreen instanceof BoardScreen) {
 				Action action = (Action) result;
 				if (action == Action.BACK) {
+					currentScreen.resetState();
 					mainMenuScreen.resetState();
 					return mainMenuScreen;
 				}

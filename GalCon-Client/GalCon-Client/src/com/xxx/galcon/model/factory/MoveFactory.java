@@ -33,6 +33,7 @@ public class MoveFactory {
 
 		move.duration = GalConMath.distance(startX, startY, endX, endY);
 		
+		
 		return move;
 	}
 	

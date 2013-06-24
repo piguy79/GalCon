@@ -2,6 +2,10 @@ package com.xxx.galcon.screen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -9,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private static final String OK = "ok";
@@ -16,7 +21,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private static final String UP = "up";
 	private static final String DOWN = "down";
 
-	private Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
+	private Map<String, UpdatingTouchRegion> touchRegions = new HashMap<String, UpdatingTouchRegion>();
 
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
@@ -26,28 +31,98 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private int max;
 
 	private Action returnResult;
+	
+	public Tween showAnimation;
+	public Tween hideAnimation;
+	private TweenManager tweenManager;
 
-	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max) {
+	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max, TweenManager tweenManager) {
 		super(x, y, width, height, false);
+		this.tweenManager = tweenManager;
+		
+		int targetwidth = Gdx.graphics.getWidth();
+		int targetheight = Gdx.graphics.getHeight();
+		int xMargin = (int) (targetwidth * .15f);
+		
+		
+		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(xMargin, (int) (targetheight * .6f));
+		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(targetwidth * -1, (int) (targetheight * .6f));
+
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 
 		dialogTexture = assetManager.get("data/images/ship_selection_dialog.png", Texture.class);
-
-		touchRegions.put(OK, new TouchRegion(x + width * .5f, y + height * .1f, width * .4f, height * .25f, false));
-		touchRegions.put(CANCEL, new TouchRegion(x + width * .1f, y + height * .1f, width * .4f, height * .25f, false));
-		touchRegions.put(UP, new TouchRegion(x + width * .6f, y + height * .7f, width * .3f, height * .2f, false));
-		touchRegions.put(DOWN, new TouchRegion(x + width * .6f, y + height * .4f, width * .3f, height * .2f, false));
+		
+		touchRegions.put(OK, new UpdatingTouchRegion(x,y,width * .4f, height * .25f, width, height, false) {
+			
+			@Override
+			protected void updateToPoint(float x, float y) {
+				this.x = x + startingWidth * 0.5f;;
+				this.y = y + startingHeight * .1f;
+				
+			}
+		});
+		touchRegions.put(CANCEL, new UpdatingTouchRegion(x,y,width * .4f, height * .25f, width, height, false) {
+			
+			@Override
+			protected void updateToPoint(float x, float y) {
+				this.x = x + startingWidth * .1f;
+				this.y  = y + startingHeight * .1f;
+			}
+		});
+		touchRegions.put(UP, new UpdatingTouchRegion(x,y,width * .3f, height * .2f, width, height, false) {
+			
+			@Override
+			protected void updateToPoint(float x, float y) {
+				this.x = x + startingWidth * .6f;
+				this.y  = y + startingHeight * .7f;		
+			}
+		});
+		touchRegions.put(DOWN, new UpdatingTouchRegion(x,y,width * .3f, height * .2f, width, height, false) {
+			
+			@Override
+			protected void updateToPoint(float x, float y) {
+				this.x = x + startingWidth * .6f;
+				this.y  = y + startingHeight * .4f;		
+			}
+		});
 
 		this.max = max;
 	}
+	
+	
+	
+	
+	public float getX(){
+		return super.x;
+	}
+	
+	public void setX(float x){
+		super.x = x;
+	}
+	
+	
+	public float getY(){
+		return super.y;
+	}
+	
+	public void setY(float y){
+		super.y = y;
+	}
+	
 
 	@Override
 	public void render(float delta) {
 		processTouch();
 
 		spriteBatch.begin();
+		
+		if(showAnimation != null && !showAnimation.isStarted()){
+			showAnimation.start(tweenManager);
+		}
+		
+		updateTouchRegions(x, y);
 
 		spriteBatch.draw(dialogTexture, x, y, width, height);
 		font.draw(spriteBatch, "" + shipsToSend, x + width * .3f, y + height * .8f);
@@ -56,14 +131,21 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		spriteBatch.end();
 	}
 
+	private void updateTouchRegions(float x, float y) {
+		for(Entry<String, UpdatingTouchRegion> entry : touchRegions.entrySet()){
+			UpdatingTouchRegion region = entry.getValue();
+			region.updatePoint(x, y);
+		}
+	}
+
 	private void processTouch() {
 		returnResult = null;
 
-		if (Gdx.input.justTouched()) {
+		if (Gdx.input.justTouched() && showAnimation.isFinished()) {
 			int x = Gdx.input.getX();
 			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-			for (Map.Entry<String, TouchRegion> entry : touchRegions.entrySet()) {
+			for (Map.Entry<String, UpdatingTouchRegion> entry : touchRegions.entrySet()) {
 				if (entry.getValue().contains(x, y)) {
 					if (entry.getKey().equals(OK)) {
 						returnResult = Action.DIALOG_OK;

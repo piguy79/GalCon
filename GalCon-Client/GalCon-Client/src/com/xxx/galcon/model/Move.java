@@ -1,15 +1,23 @@
 package com.xxx.galcon.model;
 
+import java.awt.LinearGradientPaint;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import aurelienribon.tweenengine.Tween;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.model.base.JsonConstructable;
 import com.xxx.galcon.model.base.JsonConvertible;
+import com.xxx.galcon.model.tween.MoveTween;
 
 public class Move extends JsonConvertible implements JsonConstructable {
+	
 	public String fromPlanet;
 	public String toPlanet;
 	public int shipsToMove = 0;
@@ -19,11 +27,21 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public Point currentPosition = new Point();
 	public Point startPosition = new Point();
 	public Point endPosition = new Point();
+	public int startingRound;
+	
+	public Tween animation;
 	
 	public float animationx;
 	public float animationy;
+	
+	
 
 	
+	public Move() {
+		super();
+		this.animation =  Tween.to(this, MoveTween.POSITION_XY, 0.4f);
+	}
+
 	public boolean belongsToPlayer(Player player){
 		return this.playerHandle.equals(player.handle);
 	}
@@ -60,21 +78,20 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		this.previousPosition.consume(jsonObject.getJSONObject("previousPosition"));
 		this.startPosition.consume(jsonObject.getJSONObject("startPosition"));
 		this.endPosition.consume(jsonObject.getJSONObject("endPosition"));
+		startingRound = jsonObject.getInt("startingRound");
 		
 		animationx = previousPosition.x;
 		animationy = previousPosition.y;
-
+		
+		animation.target(currentPosition.x, currentPosition.y);
 		
 	}
 	
-	public void animate(float duration){
-		animationx = Interpolation.linear.apply(animationx, currentPosition.x, duration);
-		animationy = Interpolation.linear.apply(animationy, currentPosition.y, duration);
-	}
 	
 	public float angleOfMovement(){
 		return new Vector2(endPosition.x - currentPosition.x, endPosition.y - currentPosition.y).angle();
 		
 	}
+
 	
 }
