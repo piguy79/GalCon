@@ -227,6 +227,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	public void resetState() {
 		returnValue = null;
 		loadingMessage = "Loading...";
+		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
 	}
 
 	@Override

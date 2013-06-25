@@ -151,6 +151,7 @@ public class GameLoop extends Game {
 				if (action.equals(Action.BACK)) {
 					currentScreen.resetState();
 					((BoardScreen) currentScreen).previousScreen.resetState();
+					
 					return ((BoardScreen) currentScreen).previousScreen;
 				}
 			}
