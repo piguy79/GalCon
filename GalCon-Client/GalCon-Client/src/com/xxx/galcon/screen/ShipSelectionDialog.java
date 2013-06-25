@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Elastic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -45,8 +48,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		int xMargin = (int) (targetwidth * .15f);
 		
 		
-		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(xMargin, (int) (targetheight * .6f));
+		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.5f).target(xMargin, (int) (targetheight * .6f));
+		TweenManager.setAutoStart(showAnimation, false);
 		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(targetwidth * -1, (int) (targetheight * .6f));
+		TweenManager.setAutoStart(hideAnimation, false);
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
@@ -119,6 +124,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		spriteBatch.begin();
 		
 		if(showAnimation != null && !showAnimation.isStarted()){
+			TweenManager.setAutoStart(showAnimation, true);
 			showAnimation.start(tweenManager);
 		}
 		
