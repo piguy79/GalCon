@@ -115,6 +115,7 @@ public class GameLoop extends Game {
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
+					boardScreen.previousScreen = mainMenuScreen;
 					int width = 5 + (int) (Math.random() * 4.0f);
 					int height = (int) Math.ceil(width * 1.33f);
 					int gameTypeToUse = (int) (Math.random() * Constants.gameTypes.size());
@@ -122,15 +123,18 @@ public class GameLoop extends Game {
 							Constants.gameTypes.get(gameTypeToUse));
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
+					joinGameScreen.resetState();
 					UIConnectionWrapper.findAvailableGames(joinGameScreen, USER.handle);
 					return joinGameScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
+					currentGameScreen.resetState();
 					UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
+					boardScreen.previousScreen = currentScreen;
 					GameBoard toTakeActionOn = (GameBoard) result;
 					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.handle,
 							boardScreen);
@@ -146,8 +150,8 @@ public class GameLoop extends Game {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
 					currentScreen.resetState();
-					mainMenuScreen.resetState();
-					return mainMenuScreen;
+					((BoardScreen) currentScreen).previousScreen.resetState();
+					return ((BoardScreen) currentScreen).previousScreen;
 				}
 			}
 		} catch (ConnectionException e) {

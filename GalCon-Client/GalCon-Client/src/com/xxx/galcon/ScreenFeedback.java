@@ -15,4 +15,5 @@ public interface ScreenFeedback extends Screen {
 	 * resetState will be called to clean up any old stuff.
 	 */
 	public void resetState();
+
 }

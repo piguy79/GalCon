@@ -105,6 +105,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
+	
+	public ScreenFeedback previousScreen;
 
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
