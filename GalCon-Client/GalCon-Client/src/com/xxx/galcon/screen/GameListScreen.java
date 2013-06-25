@@ -110,7 +110,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 				float halfFontWidth = mediumFont.getBounds(text).width / 2;
 				mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 			} else {
-				float textY = 0.98f;
+				float textY = 0.87f;
 				for (GameBoard gameBoard : games) {
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
