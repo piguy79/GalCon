@@ -13,7 +13,6 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.GameListScreen;
@@ -26,6 +25,9 @@ public class GameLoop extends Game {
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
+	private GameListScreen currentGameScreen;
+	
+	private ScreenFeedback previousScreen;
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
 	public TweenManager tweenManager;
@@ -89,6 +91,7 @@ public class GameLoop extends Game {
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);
+		currentGameScreen = new GameListScreen(assetManager);
 		setScreen(mainMenuScreen);
 	}
 
@@ -107,6 +110,7 @@ public class GameLoop extends Game {
 	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
 		try {
 			if (currentScreen instanceof MainMenuScreen) {
+				previousScreen = mainMenuScreen;
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
@@ -121,11 +125,11 @@ public class GameLoop extends Game {
 					UIConnectionWrapper.findAvailableGames(joinScreen, USER.handle);
 					return joinScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
-					GameListScreen currentGameScreen = new GameListScreen(assetManager);
 					UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
+				previousScreen = currentGameScreen;
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					GameBoard toTakeActionOn = (GameBoard) result;
@@ -143,8 +147,8 @@ public class GameLoop extends Game {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
 					currentScreen.resetState();
-					mainMenuScreen.resetState();
-					return mainMenuScreen;
+					previousScreen.resetState();
+					return previousScreen;
 				}
 			}
 		} catch (ConnectionException e) {
