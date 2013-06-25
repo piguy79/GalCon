@@ -6,11 +6,10 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.screen.Action;
 
 public abstract class Hud implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
-	private Action returnResult = null;
+	private String returnResult = null;
 	private List<HudButton> hudButtons = new ArrayList<HudButton>();
 	private boolean touchEnabled = true;
 
@@ -72,6 +71,10 @@ public abstract class Hud implements ScreenFeedback {
 
 	public void addHudButton(HudButton button) {
 		hudButtons.add(button);
+	}
+
+	public List<HudButton> getHudButtons() {
+		return hudButtons;
 	}
 
 	@Override

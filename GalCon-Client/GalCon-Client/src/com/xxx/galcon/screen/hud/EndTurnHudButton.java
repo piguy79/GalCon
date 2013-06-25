@@ -11,7 +11,7 @@ public class EndTurnHudButton extends HudButton {
 	}
 
 	@Override
-	public Action getActionOnClick() {
+	public String getActionOnClick() {
 		return Action.END_TURN;
 	}
 

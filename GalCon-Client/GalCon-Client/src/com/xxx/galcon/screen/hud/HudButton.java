@@ -2,7 +2,6 @@ package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.xxx.galcon.screen.Action;
 
 public abstract class HudButton {
 	protected static final float BUTTON_SIZE_RATIO = 0.15f;
@@ -19,7 +18,7 @@ public abstract class HudButton {
 
 	abstract public void updateLocationAndSize(int screenWidth, int screenHeight);
 
-	abstract public Action getActionOnClick();
+	abstract public String getActionOnClick();
 
 	public boolean isTouched(int touchX, int touchY) {
 		if (!enabled) {
@@ -37,6 +36,10 @@ public abstract class HudButton {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	public void render(SpriteBatch spriteBatch) {

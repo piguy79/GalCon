@@ -31,6 +31,7 @@ public class MoveFactory {
 			} 
 		}
 
+		move.playerHandle = GameLoop.USER.handle;
 		move.duration = GalConMath.distance(startX, startY, endX, endY);
 		
 		

@@ -1,5 +1,10 @@
 package com.xxx.galcon.screen;
 
-public enum Action {
-	END_TURN, REFRESH, BACK, DIALOG_OK, DIALOG_CANCEL;
+public final class Action {
+	public static final String END_TURN = "END_TURN";
+	public static final String REFRESH = "REFRESH";
+	public static final String BACK = "BACK";
+	public static final String DIALOG_OK = "DIALOG_OK";
+	public static final String DIALOG_CANCEL = "DIALOG_CANCEL";
+	public static final String SHIP_MOVE = "SHIP_MOVE";
 }

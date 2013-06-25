@@ -29,7 +29,6 @@ public class GameLoop extends Game {
 	public AssetManager assetManager = new AssetManager();
 	public TweenManager tweenManager;
 
-
 	private GameAction gameAction;
 
 	public GameLoop(Player player, GameAction gameAction) {
@@ -45,7 +44,7 @@ public class GameLoop extends Game {
 		Fonts.dispose();
 		super.pause();
 	}
-	
+
 	@Override
 	public void resume() {
 		Fonts.dispose();
@@ -83,6 +82,8 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/slash_line.png", Texture.class, param);
 		assetManager.load("data/images/arrow_solid_line.png", Texture.class, param);
 		assetManager.load("data/images/bottom_bar.png", Texture.class, param);
+		assetManager.load("data/images/bottom_bar_expand_button.png", Texture.class, param);
+		assetManager.load("data/images/bottom_bar_ship_button.png", Texture.class, param);
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
@@ -130,16 +131,16 @@ public class GameLoop extends Game {
 					((GameListScreen) currentScreen).takeActionOnGameboard(gameAction, toTakeActionOn, USER.handle,
 							boardScreen);
 					return boardScreen;
-				} else if (result instanceof Action) {
-					Action action = (Action) result;
-					if (action == Action.BACK) {
+				} else if (result instanceof String) {
+					String action = (String) result;
+					if (action.equals(Action.BACK)) {
 						mainMenuScreen.resetState();
 						return mainMenuScreen;
 					}
 				}
 			} else if (currentScreen instanceof BoardScreen) {
-				Action action = (Action) result;
-				if (action == Action.BACK) {
+				String action = (String) result;
+				if (action.equals(Action.BACK)) {
 					currentScreen.resetState();
 					mainMenuScreen.resetState();
 					return mainMenuScreen;

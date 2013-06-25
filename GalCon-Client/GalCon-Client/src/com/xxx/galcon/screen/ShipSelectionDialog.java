@@ -30,98 +30,96 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private int shipsToSend = 0;
 	private int max;
 
-	private Action returnResult;
-	
+	private String returnResult;
+
 	public Tween showAnimation;
 	public Tween hideAnimation;
 	private TweenManager tweenManager;
 
-	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max, TweenManager tweenManager) {
+	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max,
+			TweenManager tweenManager) {
 		super(x, y, width, height, false);
 		this.tweenManager = tweenManager;
-		
+
 		int targetwidth = Gdx.graphics.getWidth();
 		int targetheight = Gdx.graphics.getHeight();
 		int xMargin = (int) (targetwidth * .15f);
-		
-		
-		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(xMargin, (int) (targetheight * .6f));
-		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(targetwidth * -1, (int) (targetheight * .6f));
+
+		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(xMargin,
+				(int) (targetheight * .6f));
+		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(targetwidth * -1,
+				(int) (targetheight * .6f));
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
 				Gdx.files.internal("data/fonts/tahoma_32.png"), false);
 
 		dialogTexture = assetManager.get("data/images/ship_selection_dialog.png", Texture.class);
-		
-		touchRegions.put(OK, new UpdatingTouchRegion(x,y,width * .4f, height * .25f, width, height, false) {
-			
+
+		touchRegions.put(OK, new UpdatingTouchRegion(x, y, width * .4f, height * .25f, width, height, false) {
+
 			@Override
 			protected void updateToPoint(float x, float y) {
-				this.x = x + startingWidth * 0.5f;;
+				this.x = x + startingWidth * 0.5f;
+				;
 				this.y = y + startingHeight * .1f;
-				
+
 			}
 		});
-		touchRegions.put(CANCEL, new UpdatingTouchRegion(x,y,width * .4f, height * .25f, width, height, false) {
-			
+		touchRegions.put(CANCEL, new UpdatingTouchRegion(x, y, width * .4f, height * .25f, width, height, false) {
+
 			@Override
 			protected void updateToPoint(float x, float y) {
 				this.x = x + startingWidth * .1f;
-				this.y  = y + startingHeight * .1f;
+				this.y = y + startingHeight * .1f;
 			}
 		});
-		touchRegions.put(UP, new UpdatingTouchRegion(x,y,width * .3f, height * .2f, width, height, false) {
-			
+		touchRegions.put(UP, new UpdatingTouchRegion(x, y, width * .3f, height * .2f, width, height, false) {
+
 			@Override
 			protected void updateToPoint(float x, float y) {
 				this.x = x + startingWidth * .6f;
-				this.y  = y + startingHeight * .7f;		
+				this.y = y + startingHeight * .7f;
 			}
 		});
-		touchRegions.put(DOWN, new UpdatingTouchRegion(x,y,width * .3f, height * .2f, width, height, false) {
-			
+		touchRegions.put(DOWN, new UpdatingTouchRegion(x, y, width * .3f, height * .2f, width, height, false) {
+
 			@Override
 			protected void updateToPoint(float x, float y) {
 				this.x = x + startingWidth * .6f;
-				this.y  = y + startingHeight * .4f;		
+				this.y = y + startingHeight * .4f;
 			}
 		});
 
 		this.max = max;
 	}
-	
-	
-	
-	
-	public float getX(){
+
+	public float getX() {
 		return super.x;
 	}
-	
-	public void setX(float x){
+
+	public void setX(float x) {
 		super.x = x;
 	}
-	
-	
-	public float getY(){
+
+	public float getY() {
 		return super.y;
 	}
-	
-	public void setY(float y){
+
+	public void setY(float y) {
 		super.y = y;
 	}
-	
 
 	@Override
 	public void render(float delta) {
 		processTouch();
 
 		spriteBatch.begin();
-		
-		if(showAnimation != null && !showAnimation.isStarted()){
+
+		if (showAnimation != null && !showAnimation.isStarted()) {
 			showAnimation.start(tweenManager);
 		}
-		
+
 		updateTouchRegions(x, y);
 
 		spriteBatch.draw(dialogTexture, x, y, width, height);
@@ -132,7 +130,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	}
 
 	private void updateTouchRegions(float x, float y) {
-		for(Entry<String, UpdatingTouchRegion> entry : touchRegions.entrySet()){
+		for (Entry<String, UpdatingTouchRegion> entry : touchRegions.entrySet()) {
 			UpdatingTouchRegion region = entry.getValue();
 			region.updatePoint(x, y);
 		}

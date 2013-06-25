@@ -11,7 +11,7 @@ public class RefreshHudButton extends HudButton {
 	}
 
 	@Override
-	public Action getActionOnClick() {
+	public String getActionOnClick() {
 		return Action.REFRESH;
 	}
 
