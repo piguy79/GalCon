@@ -24,7 +24,7 @@ public class ShipMoveHudButton extends HudButton {
 
 	@Override
 	public String getActionOnClick() {
-		return Action.SHIP_MOVE;
+		return Action.SHIP_MOVE + "-" + move.hashCode();
 	}
 
 	@Override

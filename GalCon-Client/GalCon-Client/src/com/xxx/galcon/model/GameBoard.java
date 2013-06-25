@@ -97,6 +97,17 @@ public class GameBoard extends JsonConvertible {
 		return ownedPlanetAbilities;
 	}
 
+	public Planet getPlanet(String name) {
+		for (int i = 0; i < planets.size(); ++i) {
+			Planet planet = planets.get(i);
+			if (planet.name.equals(name)) {
+				return planet;
+			}
+		}
+
+		return null;
+	}
+
 	public boolean hasWinner() {
 		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty();
 	}

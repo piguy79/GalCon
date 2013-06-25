@@ -7,6 +7,7 @@ import static com.xxx.galcon.Constants.PLANET_ABILITIES;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -567,7 +568,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	}
 
-	private void showShipSelectionDialog() {
+	private void showShipSelectionDialog(Move moveToEdit) {
 		int shipsOnPlanet = 0;
 		for (Planet planet : touchedPlanets) {
 			if (planet.isOwnedBy(GameLoop.USER)) {
@@ -576,14 +577,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			}
 		}
 
+		if (moveToEdit != null) {
+			shipsOnPlanet = moveToEdit.shipsToMove + gameBoard.getPlanet(moveToEdit.fromPlanet).numberOfShips;
+		}
+
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
 		int xMargin = (int) (width * .15f);
 		int dialogWidth = width - 2 * xMargin;
 
-		shipSelectionDialog = new ShipSelectionDialog((int) (width * -1), (int) (height * .6f), dialogWidth,
-				(int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager);
+		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
+				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager);
+	}
 
+	private void showShipSelectionDialog() {
+		this.showShipSelectionDialog(null);
 	}
 
 	@Override
@@ -733,21 +741,31 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void processShipSelectionTouch(String action) {
 		if (action.equals(Action.DIALOG_OK)) {
 			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
-
 			moves.add(move);
-			clearTouchedPlanets();
-
-			TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
-			shipSelectionDialog.hideAnimation.start(tweenManager);
-
-		} else if (action == Action.DIALOG_CANCEL) {
-
-			clearTouchedPlanets();
-			TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
-			shipSelectionDialog.hideAnimation.start(tweenManager);
-
+		} else if (action.equals(Action.DIALOG_UPDATE)) {
+			Move move = shipSelectionDialog.getCurrentMoveToEdit();
+			
+			int priorShipsToMove = move.shipsToMove;
+			move.shipsToMove = shipSelectionDialog.getShipsToSend();
+			
+			Planet planet = gameBoard.getPlanet(move.fromPlanet);
+			planet.numberOfShips += (priorShipsToMove - move.shipsToMove);
+		} else if (action.equals(Action.DIALOG_DELETE)) {
+			for (ListIterator<Move> iter = moves.listIterator(); iter.hasNext();) {
+				Move move = iter.next();
+				if (move.equals(shipSelectionDialog.getCurrentMoveToEdit())) {
+					Planet planet = gameBoard.getPlanet(move.fromPlanet);
+					planet.numberOfShips += move.shipsToMove;
+					iter.remove();
+				}
+			}
 		}
 
+		clearTouchedPlanets();
+		TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
+		shipSelectionDialog.hideAnimation.start(tweenManager);
+
+		boardScreenHud.associateCurrentRoundInformation(gameBoard);
 	}
 
 	private void processHudButtonTouch(String action) {
@@ -759,6 +777,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
 		} else if (action.equals(Action.BACK)) {
 			returnCode = Action.BACK;
+		} else if (action.startsWith(Action.SHIP_MOVE)) {
+			if (action.contains("-")) {
+				Integer moveHashCode = Integer.valueOf(action.split("-")[1]);
+				for (int i = 0; i < moves.size(); ++i) {
+					Move move = moves.get(i);
+					if (move.hashCode() == moveHashCode) {
+						showShipSelectionDialog(move);
+						break;
+					}
+				}
+			}
 		}
 	}
 

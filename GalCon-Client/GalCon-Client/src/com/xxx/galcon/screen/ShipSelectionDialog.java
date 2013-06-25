@@ -12,7 +12,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
@@ -28,6 +30,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private Texture dialogTexture;
 
 	private int shipsToSend = 0;
+	private Move currentMoveToEdit = null;
 	private int max;
 
 	private String returnResult;
@@ -35,6 +38,15 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	public Tween showAnimation;
 	public Tween hideAnimation;
 	private TweenManager tweenManager;
+
+	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
+			int max, TweenManager tweenManager) {
+		this(x, y, width, height, assetManager, max, tweenManager);
+		if (currentMoveToEdit != null) {
+			this.shipsToSend = currentMoveToEdit.shipsToMove;
+			this.currentMoveToEdit = currentMoveToEdit;
+		}
+	}
 
 	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max,
 			TweenManager tweenManager) {
@@ -203,6 +215,13 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	@Override
 	public Object getRenderResult() {
+		if (currentMoveToEdit != null && returnResult != null) {
+			if (returnResult.equals(Action.DIALOG_OK)) {
+				return Action.DIALOG_UPDATE;
+			} else {
+				return Action.DIALOG_DELETE;
+			}
+		}
 		return returnResult;
 	}
 
@@ -212,7 +231,15 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	@Override
 	public void resetState() {
-		returnResult = null;
+
+	}
+
+	public void setCurrentMoveToEdit(Move currentMoveToEdit) {
+		this.currentMoveToEdit = currentMoveToEdit;
+	}
+
+	public Move getCurrentMoveToEdit() {
+		return currentMoveToEdit;
 	}
 
 }
