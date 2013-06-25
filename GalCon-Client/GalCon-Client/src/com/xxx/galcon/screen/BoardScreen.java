@@ -722,6 +722,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (action != null) {
 				processShipSelectionTouch(action);
 			}
+
+			if (shipSelectionDialog.hideAnimation.isFinished()) {
+				shipSelectionDialog.dispose();
+				shipSelectionDialog = null;
+			}
 		}
 	}
 
@@ -732,22 +737,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			moves.add(move);
 			clearTouchedPlanets();
 
+			TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
 			shipSelectionDialog.hideAnimation.start(tweenManager);
 
-			if (shipSelectionDialog.hideAnimation.isFinished()) {
-				shipSelectionDialog.dispose();
-				shipSelectionDialog = null;
-			}
+		} else if (action == Action.DIALOG_CANCEL) {
 
-		} else if (action.equals(Action.DIALOG_CANCEL)) {
 			clearTouchedPlanets();
+			TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
 			shipSelectionDialog.hideAnimation.start(tweenManager);
 
-			if (shipSelectionDialog.hideAnimation.isFinished()) {
-				shipSelectionDialog.dispose();
-				shipSelectionDialog = null;
-			}
 		}
+
 	}
 
 	private void processHudButtonTouch(String action) {

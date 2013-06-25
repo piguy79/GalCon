@@ -45,10 +45,12 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		int targetheight = Gdx.graphics.getHeight();
 		int xMargin = (int) (targetwidth * .15f);
 
-		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(xMargin,
+		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.5f).target(xMargin,
 				(int) (targetheight * .6f));
+		TweenManager.setAutoStart(showAnimation, false);
 		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f).target(targetwidth * -1,
 				(int) (targetheight * .6f));
+		TweenManager.setAutoStart(hideAnimation, false);
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/fonts/tahoma_32.fnt"),
@@ -117,6 +119,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		spriteBatch.begin();
 
 		if (showAnimation != null && !showAnimation.isStarted()) {
+			TweenManager.setAutoStart(showAnimation, true);
+
 			showAnimation.start(tweenManager);
 		}
 
