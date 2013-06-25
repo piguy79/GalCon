@@ -26,6 +26,7 @@ public class GameLoop extends Game {
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
 	private GameListScreen currentGameScreen;
+	private GameListScreen joinGameScreen;
 	
 	private ScreenFeedback previousScreen;
 	private GL20 gl;
@@ -92,6 +93,7 @@ public class GameLoop extends Game {
 		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);
 		currentGameScreen = new GameListScreen(assetManager);
+		joinGameScreen = new JoinGameListScreen(assetManager);
 		setScreen(mainMenuScreen);
 	}
 
@@ -110,7 +112,6 @@ public class GameLoop extends Game {
 	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
 		try {
 			if (currentScreen instanceof MainMenuScreen) {
-				previousScreen = mainMenuScreen;
 				String nextScreen = (String) result;
 				if (nextScreen.equals(Constants.CREATE)) {
 					boardScreen.resetState();
@@ -121,15 +122,13 @@ public class GameLoop extends Game {
 							Constants.gameTypes.get(gameTypeToUse));
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
-					GameListScreen joinScreen = new JoinGameListScreen(assetManager);
-					UIConnectionWrapper.findAvailableGames(joinScreen, USER.handle);
-					return joinScreen;
+					UIConnectionWrapper.findAvailableGames(joinGameScreen, USER.handle);
+					return joinGameScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
 					UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 					return currentGameScreen;
 				}
 			} else if (currentScreen instanceof GameListScreen) {
-				previousScreen = currentGameScreen;
 				if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					GameBoard toTakeActionOn = (GameBoard) result;
@@ -147,8 +146,8 @@ public class GameLoop extends Game {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
 					currentScreen.resetState();
-					previousScreen.resetState();
-					return previousScreen;
+					mainMenuScreen.resetState();
+					return mainMenuScreen;
 				}
 			}
 		} catch (ConnectionException e) {
