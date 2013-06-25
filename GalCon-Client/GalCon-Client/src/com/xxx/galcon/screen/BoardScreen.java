@@ -63,7 +63,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private static final int INDEX_PLANET_ABILITY = 3;
 
 	private static final float BOARD_WIDTH_RATIO = .98f;
-	private static final float BOARD_HEIGHT_RATIO = .75f;
+	private static final float BOARD_HEIGHT_RATIO = .76f;
 	private static final float BOARD_TOP_OFFSET = 0.1f;
 
 	private static final float PLANET_Z_COORD = -99.5f;
