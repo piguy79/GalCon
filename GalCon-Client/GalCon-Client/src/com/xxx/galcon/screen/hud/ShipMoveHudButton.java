@@ -1,6 +1,5 @@
 package com.xxx.galcon.screen.hud;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,7 +30,7 @@ public class ShipMoveHudButton extends HudButton {
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
 		int bottomHeight = (int) (screenHeight * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
-		int maxMinimizedBarWidth = (int) (screenWidth * 0.66f);
+		int maxMinimizedBarWidth = (int) (screenWidth * 0.75f);
 		int buttonHeight = (int) (bottomHeight * 0.65f);
 
 		int margin = (int) (screenWidth * 0.015f);
@@ -55,7 +54,7 @@ public class ShipMoveHudButton extends HudButton {
 		spriteBatch.setColor(Color.WHITE);
 
 		if (isEnabled()) {
-			BitmapFont font = Fonts.getInstance().mediumFont();
+			BitmapFont font = Fonts.getInstance().largeFont();
 			if (!isPending) {
 				font.setColor(Color.BLACK);
 			}
