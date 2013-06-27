@@ -23,6 +23,11 @@
 				{
 					"level" : 5,
 					"startFrom" : 140,
+					"endAt" : 200 
+				},
+				{
+					"level" : 6,
+					"startFrom" : 200,
 					"endAt" : 2000 
 				}
 				
