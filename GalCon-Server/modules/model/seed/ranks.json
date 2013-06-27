@@ -3,27 +3,27 @@
 				{
 					"level" : 1,
 					"startFrom" : 0,
-					"endAt" : 50 
+					"endAt" : 20 
 				},
 				{
 					"level" : 2,
-					"startFrom" : 50,
-					"endAt" : 100 
+					"startFrom" : 20,
+					"endAt" : 50 
 				},
 				{
 					"level" : 3,
-					"startFrom" : 100,
-					"endAt" : 200 
+					"startFrom" : 50,
+					"endAt" : 80 
 				},
 				{
 					"level" : 4,
-					"startFrom" : 200,
-					"endAt" : 400 
+					"startFrom" : 80,
+					"endAt" : 140 
 				},
 				{
 					"level" : 5,
-					"startFrom" : 400,
-					"endAt" : 1000 
+					"startFrom" : 140,
+					"endAt" : 2000 
 				}
 				
 			]
