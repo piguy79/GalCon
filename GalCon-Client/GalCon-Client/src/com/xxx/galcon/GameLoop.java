@@ -125,7 +125,6 @@ public class GameLoop extends Game {
 					return boardScreen;
 				} else if (nextScreen.equals(Constants.JOIN)) {
 					joinGameScreen.resetState();
-					UIConnectionWrapper.findAvailableGames(joinGameScreen, USER.handle);
 					return joinGameScreen;
 				} else if (nextScreen.equals(Constants.CURRENT)) {
 					currentGameScreen.resetState();

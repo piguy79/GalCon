@@ -28,4 +28,10 @@ public class JoinGameListScreen extends GameListScreen {
 	protected void refreshScreen() {
 		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}
+	
+	@Override
+	public void resetState(){
+		super.resetState();
+		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
+	}
 }
