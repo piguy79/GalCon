@@ -9,10 +9,14 @@ import com.xxx.galcon.model.Planet;
 
 public class MoveFactory {
 
-	public Move createMove(List<Planet> availablePlanets, int fleetToSend){
+	public Move createMove(List<Planet> availablePlanets, int fleetToSend) {
+		if (fleetToSend <= 0) {
+			return null;
+		}
+
 		Move move = new Move();
 
-		float startX = 0, startY = 0, endX = 0, endY = 0;
+		float startX = -1, startY = -1, endX = 1, endY = -1;
 		for (Planet planet : availablePlanets) {
 			if (planet.isOwnedBy(GameLoop.USER) && move.fromPlanet == null) {
 				move.fromPlanet = planet.name;
@@ -28,14 +32,18 @@ public class MoveFactory {
 				move.endPosition = planet.position;
 				endX = planet.position.x;
 				endY = planet.position.y;
-			} 
+			}
 		}
 
-		move.playerHandle = GameLoop.USER.handle;
-		move.duration = GalConMath.distance(startX, startY, endX, endY);
-		
-		
-		return move;
+		if (startX == -1 || startY == -1) {
+			throw new RuntimeException("Could not find start planet for move creation");
+		} else if (endX == -1 || endY == -1) {
+			throw new RuntimeException("Could not find end planet for move creation");
+		} else {
+			move.playerHandle = GameLoop.USER.handle;
+			move.duration = GalConMath.distance(startX, startY, endX, endY);
+
+			return move;
+		}
 	}
-	
 }

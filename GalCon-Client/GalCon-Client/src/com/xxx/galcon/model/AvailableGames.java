@@ -18,10 +18,19 @@ public class AvailableGames extends JsonConvertible {
 		JSONArray games = jsonObject.optJSONArray(Constants.ITEMS);
 
 		if (games != null) {
+			List<JSONException> exceptions = new ArrayList<JSONException>();
 			for (int i = 0; i < games.length(); ++i) {
-				GameBoard gameBoard = new GameBoard();
-				gameBoard.consume(games.getJSONObject(i));
-				allGames.add(gameBoard);
+				try {
+					GameBoard gameBoard = new GameBoard();
+					gameBoard.consume(games.getJSONObject(i));
+					allGames.add(gameBoard);
+				} catch (JSONException e) {
+					exceptions.add(e);
+				}
+			}
+
+			if (!exceptions.isEmpty()) {
+				throw new JSONException(exceptions.toString());
 			}
 		}
 	}

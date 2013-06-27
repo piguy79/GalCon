@@ -106,7 +106,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
 	private Overlay overlay;
-	
+
 	public ScreenFeedback previousScreen;
 
 	boolean intro = true;
@@ -743,13 +743,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void processShipSelectionTouch(String action) {
 		if (action.equals(Action.DIALOG_OK)) {
 			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
-			moves.add(move);
+			if (move != null) {
+				moves.add(move);
+			}
 		} else if (action.equals(Action.DIALOG_UPDATE)) {
 			Move move = shipSelectionDialog.getCurrentMoveToEdit();
-			
+
 			int priorShipsToMove = move.shipsToMove;
 			move.shipsToMove = shipSelectionDialog.getShipsToSend();
-			
+
 			Planet planet = gameBoard.getPlanet(move.fromPlanet);
 			planet.numberOfShips += (priorShipsToMove - move.shipsToMove);
 		} else if (action.equals(Action.DIALOG_DELETE)) {
