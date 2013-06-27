@@ -15,6 +15,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
+import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.JoinGameListScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
@@ -92,7 +93,7 @@ public class GameLoop extends Game {
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);
-		currentGameScreen = new GameListScreen(assetManager);
+		currentGameScreen = new CurrentGameScreen(assetManager);
 		joinGameScreen = new JoinGameListScreen(assetManager);
 		setScreen(mainMenuScreen);
 	}
