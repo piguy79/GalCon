@@ -53,7 +53,10 @@ __Advancement__
  2. Move bar - Show all moves in progress, with touch to highlight move on screen
  2. Asteroid game type
  3. Black hole game type
-1. Security and perf testing
+1. Security
+2. Heroku scaling? How many users do we expect to fit on a node.
+3. Graceful error handling
+4. iOS?
 
 Heroku
 ----
