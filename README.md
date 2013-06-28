@@ -47,6 +47,13 @@ __Advancement__
  2. Google+
  3. Post to twitter
 7. Admin UI
+8. Join screen redo - Basic player matching system
+9. Game screen enhancements
+ 1. New ship selection dialog with slider to select # of ships
+ 2. Move bar - Show all moves in progress, with touch to highlight move on screen
+ 2. Asteroid game type
+ 3. Black hole game type
+1. Security and perf testing
 
 Heroku
 ----
