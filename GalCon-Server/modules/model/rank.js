@@ -25,7 +25,7 @@ var RankModel = db.model('Rank', rankSchema);
 
 RankModel.remove(function(err, doc) {
 	if(err) {
-		console.log("Could not delete ranks");
+		console.error("Could not delete ranks");
 	} else {
 		populateDefaultRanks();		
 	}
