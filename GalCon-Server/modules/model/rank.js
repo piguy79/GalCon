@@ -23,8 +23,13 @@ rankSchema.index({level : 1});
 var RankModel = db.model('Rank', rankSchema);
 
 
-RankModel.find().remove();
-populateDefaultRanks();
+RankModel.remove(function(err, doc) {
+	if(err) {
+		console.log("Could not delete ranks");
+	} else {
+		populateDefaultRanks();		
+	}
+});
 
 exports.saveRank = function(rank, callback){
 	rank.save(function(err, savedRank){
