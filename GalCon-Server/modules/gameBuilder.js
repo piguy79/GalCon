@@ -12,7 +12,7 @@ function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.createdDate = new Date();
 	this.currentRound = {
 		roundNumber : 0,
-		playerHandle : players[0].handle
+		playersWhoMoved : []
 	};
 	this.endGameInformation = {
 		winnerHandle : "",

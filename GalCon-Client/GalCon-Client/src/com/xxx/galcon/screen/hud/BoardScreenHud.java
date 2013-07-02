@@ -53,7 +53,7 @@ public class BoardScreenHud extends Hud {
 
 	@Override
 	public void render(float delta) {
-		boolean isMyTurn = haveRoundInformation() && gameBoard.currentPlayerToMove.equals(GameLoop.USER.handle);
+		
 
 		getSpriteBatch().begin();
 
@@ -61,7 +61,7 @@ public class BoardScreenHud extends Hud {
 
 		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
 			endTurnButton.setEnabled(false);
-		} else if (!isMyTurn) {
+		} else if (GameLoop.USER.hasMoved(gameBoard)) {
 			endTurnButton.setEnabled(false);
 		} else {
 			endTurnButton.setEnabled(true);
@@ -94,10 +94,4 @@ public class BoardScreenHud extends Hud {
 		}
 	}
 
-	private boolean haveRoundInformation() {
-		if (gameBoard.currentPlayerToMove != null) {
-			return true;
-		}
-		return false;
-	}
 }

@@ -52,10 +52,12 @@ public class Player extends JsonConvertible{
 		}
 		
 	}
-	
-	public boolean isCurrentPlayerForGame(GameBoard gameBoard){
-		return gameBoard.currentPlayerToMove.equals(handle);
+
+
+	public boolean hasMoved(GameBoard gameBoard) {
+		return gameBoard.roundInformation.players.contains(handle);
 	}
+	
 	
 
 }

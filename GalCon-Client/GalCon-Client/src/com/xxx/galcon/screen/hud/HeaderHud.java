@@ -109,7 +109,7 @@ public class HeaderHud extends Hud {
 	}
 
 	private void renderPlayersTurn(Player player, int x, int y, int width, SpriteBatch spriteBatch) {
-		if (isPlayersTurn(player) || isUnspecifiedPlayersTurn(player)) {
+		if (player == null || !player.hasMoved(gameBoard) || isUnspecifiedPlayersTurn(player)) {
 			int arrowWidth = (int) (Gdx.graphics.getWidth() * .04f);
 			int arrowBarHeight = (int) (arrowWidth * 0.35f);
 			spriteBatch.draw(arrowSolidLine, x - arrowWidth - 5, y + 2, arrowWidth, arrowBarHeight);
@@ -119,7 +119,7 @@ public class HeaderHud extends Hud {
 
 	private boolean isUnspecifiedPlayersTurn(Player player) {
 		if (player == null) {
-			if (haveRoundInformation() && !gameBoard.currentPlayerToMove.equals(GameLoop.USER.handle)) {
+			if ( !GameLoop.USER.hasMoved(gameBoard)) {
 				return true;
 			}
 		}
@@ -127,20 +127,7 @@ public class HeaderHud extends Hud {
 		return false;
 	}
 
-	private boolean isPlayersTurn(Player player) {
-		if (player == null) {
-			return false;
-		}
-		return haveRoundInformation() && gameBoard.currentPlayerToMove.equals(player.handle);
-	}
-
-	private boolean haveRoundInformation() {
-		if (gameBoard.currentPlayerToMove != null) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	private String getPlayerInfoText(Player player) {
 		if (player == null) {
 			return "Waiting for opponent";
