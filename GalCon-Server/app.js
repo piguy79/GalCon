@@ -1,10 +1,11 @@
 
-//if(process.env.NODETIME_ACCOUNT_KEY) {
- // require('nodetime').profile({
-  //  accountKey: process.env.NODETIME_ACCOUNT_KEY,
-   // appName: 'Galcon Server'
- // });
-//}
+if(process.env.NODETIME_ACCOUNT_KEY) {
+  require('nodetime').profile({
+    accountKey: process.env.NODETIME_ACCOUNT_KEY,
+    appName: 'Galcon Server',
+    debug : true
+  });
+}
 
 var express = require('express')
   , routes = require('./routes')
