@@ -395,6 +395,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
+	private float[] planetBits = new float[4];
+
 	private void renderPlanets(List<Planet> planets, Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -408,7 +410,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetShader.setUniformi("planetTouchTex", 2);
 		planetShader.setUniformi("planetGlowTex", 3);
 
-		for (Planet planet : planets) {
+		int size = planets.size();
+		for (int i = 0; i < size; ++i) {
+			Planet planet = planets.get(i);
 			modelViewMatrix.idt();
 			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
 					PLANET_Z_COORD);
@@ -426,7 +430,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			planetShader.setUniformMatrix("uPMatrix", camera.combined);
 			planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 
-			float[] planetBits = new float[4];
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
 
