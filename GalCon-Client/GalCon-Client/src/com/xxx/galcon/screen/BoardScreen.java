@@ -248,17 +248,24 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		playerInfoHud.associateCurrentRoundInformation(gameBoard);
 	}
 
-	private void processGameBoard() {
-		List<Body> bodies = new ArrayList<Body>();
+	private List<Body> bodyClearList = new ArrayList<Body>();
+
+	private void clearPhysicsWorld() {
+		bodyClearList.clear();
 		Iterator<Body> bodyIter = physicsWorld.getBodies();
 		while (bodyIter.hasNext()) {
-			bodies.add(bodyIter.next());
+			Body body = bodyIter.next();
+			bodyClearList.add(body);
 		}
 
-		for (Body body : bodies) {
+		for (Body body : bodyClearList) {
 			body.setUserData(null);
 			physicsWorld.destroyBody(body);
 		}
+	}
+
+	private void processGameBoard() {
+		clearPhysicsWorld();
 
 		for (Planet planet : gameBoard.planets) {
 			addPhysicsToPlanet(planet);
@@ -307,7 +314,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
 					contactBody.createFixture(fixtureDef);
-					
+
 					ip.consumeTouch();
 				}
 			}
@@ -679,6 +686,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private SpriteBatch textSpriteBatch = new SpriteBatch();
+
 	private void renderLoadingText() {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
@@ -732,6 +740,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void renderDialogs(float delta) {
 		if (shipSelectionDialog != null) {
 			shipSelectionDialog.render(delta);
+
+			if (!shipSelectionDialog.hideAnimation.isStarted() && touchedPlanets.size() < 2) {
+				shipSelectionDialog.showAnimation.kill();
+				TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
+				shipSelectionDialog.hideAnimation.start();
+			}
 
 			String action = (String) shipSelectionDialog.getRenderResult();
 			if (action != null) {
