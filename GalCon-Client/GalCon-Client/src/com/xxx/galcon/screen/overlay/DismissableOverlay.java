@@ -3,6 +3,7 @@ package com.xxx.galcon.screen.overlay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.xxx.galcon.InGameInputProcessor;
 
 public class DismissableOverlay extends Overlay {
 
@@ -18,8 +19,10 @@ public class DismissableOverlay extends Overlay {
 	protected void doCustomRender(float delta, SpriteBatch spriteBatch) {
 		delegate.doCustomRender(delta, spriteBatch);
 
-		if (Gdx.input.justTouched()) {
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch()) {
 			dismissed = true;
+			ip.consumeTouch();
 		}
 	}
 

@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.GameAction;
@@ -73,9 +75,11 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		Integer touchX = null;
 		Integer touchY = null;
-		if (Gdx.input.isTouched()) {
-			int x = Gdx.input.getX() / 2;
-			int y = Gdx.input.getY() / 2;
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch()) {
+			TouchPoint touchPoint = ip.getTouch();
+			int x = touchPoint.x / 2;
+			int y = touchPoint.y / 2;
 
 			y = (int) height - y;
 			touchX = x;
@@ -122,6 +126,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					smallFont.setColor(Color.WHITE);
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
+							ip.consumeTouch();
 							returnValue = gameBoard;
 						}
 					}

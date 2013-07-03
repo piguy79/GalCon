@@ -12,7 +12,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
@@ -155,12 +156,15 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private void processTouch() {
 		returnResult = null;
 
-		if (Gdx.input.justTouched() && showAnimation.isFinished()) {
-			int x = Gdx.input.getX();
-			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch() && showAnimation.isFinished()) {
+			TouchPoint touchPoint = ip.getTouch();
+			int x = touchPoint.x;
+			int y = Gdx.graphics.getHeight() - touchPoint.y;
 
 			for (Map.Entry<String, UpdatingTouchRegion> entry : touchRegions.entrySet()) {
 				if (entry.getValue().contains(x, y)) {
+					ip.consumeTouch();
 					if (entry.getKey().equals(OK)) {
 						returnResult = Action.DIALOG_OK;
 					} else if (entry.getKey().equals(CANCEL)) {

@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
@@ -105,13 +107,16 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		Integer touchX = null;
 		Integer touchY = null;
-		if (Gdx.input.isTouched()) {
-			int x = Gdx.input.getX() / 2;
-			int y = Gdx.input.getY() / 2;
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch()) {
+			TouchPoint touchPoint = ip.getTouch();
+			int x = touchPoint.x / 2;
+			int y = touchPoint.y / 2;
 
 			y = (int) height - y;
 			touchX = x;
 			touchY = y;
+			ip.consumeTouch();
 		}
 
 		viewMatrix.setToOrtho2D(0, 0, width, height);
@@ -156,7 +161,7 @@ public class MainMenuScreen implements ScreenFeedback {
 			loadingBg.invalidate();
 
 			stage.draw();
-			
+
 			spriteBatch.begin();
 
 			if (touchX != null) {

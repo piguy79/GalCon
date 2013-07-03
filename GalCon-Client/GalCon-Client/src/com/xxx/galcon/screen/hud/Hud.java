@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 
 public abstract class Hud implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
@@ -46,12 +48,15 @@ public abstract class Hud implements ScreenFeedback {
 			return;
 		}
 
-		if (Gdx.input.justTouched()) {
-			int x = Gdx.input.getX();
-			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch()) {
+			TouchPoint touchPoint = ip.getTouch();
+			int x = touchPoint.x;
+			int y = Gdx.graphics.getHeight() - touchPoint.y;
 
 			for (int i = 0; i < hudButtons.size(); ++i) {
 				if (hudButtons.get(i).isTouched(x, y)) {
+					ip.consumeTouch();
 					returnResult = hudButtons.get(i).getActionOnClick();
 				}
 			}

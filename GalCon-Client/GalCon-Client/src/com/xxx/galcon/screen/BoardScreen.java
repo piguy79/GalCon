@@ -40,6 +40,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -183,7 +185,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			yShift = worldPlane.topLeft.y - boardPlane.heightInWorld / 2.0f
 					- (BOARD_TOP_OFFSET * (worldPlane.topLeft.y - worldPlane.bottomRight.y));
 
-			topInWorld = heightInWorld / 2.0f + boardPlane.yShift;
+			topInWorld = -heightInWorld / 2.0f + yShift;
 			leftInWorld = -widthInWorld / 2.0f;
 
 			modelViewMatrix.idt();
@@ -202,10 +204,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				return null;
 			}
 
-			float y = Math.abs((worldY - topInWorld) / heightInWorld);
+			float y = (worldY - topInWorld) / heightInWorld;
 			if (y < 0 || y > 1) {
 				return null;
 			}
+			y = 1.0f - y;
 
 			x *= gameBoard.widthInTiles;
 			y *= gameBoard.heightInTiles;
@@ -273,10 +276,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		Body contactBody = null;
-		if (Gdx.input.justTouched()) {
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.didTouch()) {
+			TouchPoint touchPoint = ip.getTouch();
 			if (shipSelectionDialog != null) {
-				int x = Gdx.input.getX();
-				int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+				int x = touchPoint.x;
+				int y = Gdx.graphics.getHeight() - touchPoint.y;
 				if (shipSelectionDialog.contains(x, y)) {
 					return null;
 				} else {
@@ -285,7 +290,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					shipSelectionDialog = null;
 				}
 			} else {
-				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, Gdx.input.getX(), Gdx.input.getY());
+				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, touchPoint.y);
 				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
 				if (boardXY != null) {
@@ -302,6 +307,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
 					contactBody.createFixture(fixtureDef);
+					
+					ip.consumeTouch();
 				}
 			}
 		}
@@ -671,47 +678,45 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
+	private SpriteBatch textSpriteBatch = new SpriteBatch();
 	private void renderLoadingText() {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
 
-		SpriteBatch spriteBatch = new SpriteBatch();
-		spriteBatch.begin();
+		textSpriteBatch.begin();
 		fontViewMatrix.setToOrtho2D(0, 0, width, height);
-		spriteBatch.setProjectionMatrix(fontViewMatrix);
+		textSpriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = connectionError != null ? connectionError : "Loading...";
 		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
-		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
-		spriteBatch.end();
+		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .4f);
+		textSpriteBatch.end();
 	}
 
 	private void displayDraw() {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
 
-		SpriteBatch spriteBatch = new SpriteBatch();
-		spriteBatch.begin();
+		textSpriteBatch.begin();
 		fontViewMatrix.setToOrtho2D(0, 0, width, height);
-		spriteBatch.setProjectionMatrix(fontViewMatrix);
+		textSpriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "Draw Game";
 
 		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
-		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
-		spriteBatch.end();
+		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .25f);
+		textSpriteBatch.end();
 	}
 
 	private void displayWinner(EndGameInformation endGameInfo) {
 		float width = Gdx.graphics.getWidth() / 2;
 		float height = Gdx.graphics.getHeight() / 2;
 
-		SpriteBatch spriteBatch = new SpriteBatch();
-		spriteBatch.begin();
+		textSpriteBatch.begin();
 		fontViewMatrix.setToOrtho2D(0, 0, width, height);
-		spriteBatch.setProjectionMatrix(fontViewMatrix);
+		textSpriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = "You Lost";
 		if (GameLoop.USER.handle.equals(endGameInfo.winnerHandle)) {
@@ -720,8 +725,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		BitmapFont font = Fonts.getInstance().mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
-		font.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .25f);
-		spriteBatch.end();
+		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .25f);
+		textSpriteBatch.end();
 	}
 
 	private void renderDialogs(float delta) {
