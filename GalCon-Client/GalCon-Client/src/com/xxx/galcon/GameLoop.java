@@ -29,7 +29,6 @@ public class GameLoop extends Game {
 	private GameListScreen currentGameScreen;
 	private GameListScreen joinGameScreen;
 	
-	private ScreenFeedback previousScreen;
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
 	public TweenManager tweenManager;

@@ -119,7 +119,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
 
-					if (GameLoop.USER.handle.equals(gameBoard.currentPlayerToMove) && !gameBoard.hasWinner()) {
+					if (!GameLoop.USER.hasMoved(gameBoard) && !gameBoard.hasWinner()) {
 						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);

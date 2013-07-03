@@ -19,8 +19,7 @@ public class GameBoard extends JsonConvertible {
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
 	public List<Planet> planets = new ArrayList<Planet>();
-	public int roundNumber;
-	public String currentPlayerToMove;
+	public RoundInformation roundInformation = new RoundInformation();
 	public EndGameInformation endGameInformation = new EndGameInformation();
 	public List<Move> movesInProgress = new ArrayList<Move>();
 
@@ -54,9 +53,7 @@ public class GameBoard extends JsonConvertible {
 		this.endGameInformation.consume(endGame);
 		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
-		JSONObject roundInfo = jsonObject.getJSONObject(Constants.CURRENT_ROUND);
-		roundNumber = roundInfo.getInt(Constants.ROUND_NUMBER);
-		currentPlayerToMove = roundInfo.getString(Constants.PLAYER_HANDLE);
+		this.roundInformation.consume(jsonObject.getJSONObject(Constants.CURRENT_ROUND));
 
 		JSONArray moves = jsonObject.optJSONArray("moves");
 		if (moves != null) {

@@ -278,7 +278,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			return null;
 		}
 
-		if (!GameLoop.USER.isCurrentPlayerForGame(gameBoard)) {
+		if (GameLoop.USER.hasMoved(gameBoard)) {
 			return null;
 		}
 
@@ -478,11 +478,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			float xToDraw = move.animationx, yToDraw = move.animationy;
 
-			if (roundAnimated == gameBoard.roundNumber) {
+			if (roundAnimated == gameBoard.roundInformation.currentRound) {
 				xToDraw = move.currentPosition.x;
 				yToDraw = move.currentPosition.y;
 			} else if (move.animation.isFinished()) {
-				roundAnimated = gameBoard.roundNumber;
+				roundAnimated = gameBoard.roundInformation.currentRound;
 			}
 
 			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw

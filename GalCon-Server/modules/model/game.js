@@ -23,7 +23,7 @@ var gameSchema = mongoose.Schema({
 	gameType : "String",
 	currentRound : {
 		roundNumber : "Number",
-		playerHandle : "String"
+		playersWhoMoved : [String]
 	},
 	numberOfPlanets : "Number",
 	planets : [
@@ -83,29 +83,7 @@ var moveHasMoreOrTheSameShipsThenPlanet = function(fleet, planet){
 	return fleet >= planet.numberOfShips;
 }
 
-var assignPlayerOnJoinGame = function(game, playerWhoJoined){
-	if(game.currentRound.playerHandle == ""){
-		game.currentRound.playerHandle = playerWhoJoined.handle;
-	}
-}
 
-var assignNextCurrentRoundPlayer = function(game, playerWhoJustMovedHandle){
-	if(game.hasOnlyOnePlayer()){
-		game.currentRound.playerHandle = "";
-	} else {
-		game.currentRound.playerHandle = game.nextPlayer(playerWhoJustMovedHandle);
-	}
-}
-
-gameSchema.methods.nextPlayer = function(playerHandleToSearchFrom){
-	var currentIndex = findIndexOfPlayer(this.players, playerHandleToSearchFrom);
-	
-	if(currentIndex == (this.players.length - 1)){
-		return this.players[0].handle;
-	}else {
-		return this.players[currentIndex + 1].handle;
-	}
-}
 
 var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 	for(var i = 0; i < players.length; i++){
@@ -135,6 +113,10 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 		}
 		
 	});
+}
+
+gameSchema.methods.allPlayersHaveTakenAMove = function(){
+	return this.currentRound.playersWhoMoved.length == this.players.length;
 }
 
 var getDefenceMutlipler = function(planet, game){
@@ -212,15 +194,7 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
 
-gameSchema.methods.isLastPlayer = function(playerHandle) {
-	var currentIndex = findIndexOfPlayer(this.players, playerHandle);
-	
-	if(currentIndex == (this.players.length - 1)){
-		return true;
-	}
-	
-	return false;
-}
+
 
 
 
@@ -306,9 +280,11 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 	this.findById(gameId, function(game) {
 		
 		game.addMoves(moves);
+		game.currentRound.playersWhoMoved.push(playerHandle);
 			
-		if (!game.hasOnlyOnePlayer() && game.isLastPlayer(playerHandle)) {
+		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
 			decrementCurrentShipCountOnFromPlanets(game);
+			game.currentRound.playersWhoMoved = [];
 			
 			processMoves(game);			
 			
@@ -316,8 +292,6 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 
 		} 
-
-		assignNextCurrentRoundPlayer(game, playerHandle);
 
 		game.save(function(err, savedGame) {
 			if(err){
@@ -377,7 +351,6 @@ exports.addUser = function(gameId, player, callback){
 			}
 		}
 		
-		assignPlayerOnJoinGame(game, player);
 		game.save(function(err, savedGame){
 			if(err){
 				console.log("Error [ " + err + "] saving Game" + game);
