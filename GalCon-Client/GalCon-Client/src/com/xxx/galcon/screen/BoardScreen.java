@@ -508,7 +508,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void addPhysicsToPlanet(Planet planet) {
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.type = BodyDef.BodyType.StaticBody;
 		bodyDef.position.set(new Vector2(planet.position.x, planet.position.y));
 
 		Body characterBody = physicsWorld.createBody(bodyDef);
@@ -621,7 +621,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Body contactBody = handleTouch(camera);
 
-		physicsWorld.step(delta, 8, 3);
+		physicsWorld.step(1.0f / 60.0f, 6, 2);
 
 		if (contactBody != null) {
 			physicsWorld.destroyBody(contactBody);
@@ -741,7 +741,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (shipSelectionDialog != null) {
 			shipSelectionDialog.render(delta);
 
-			if (!shipSelectionDialog.hideAnimation.isStarted() && touchedPlanets.size() < 2) {
+			if (!shipSelectionDialog.hideAnimation.isStarted() && touchedPlanets.size() == 1) {
 				shipSelectionDialog.showAnimation.kill();
 				TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
 				shipSelectionDialog.hideAnimation.start();
