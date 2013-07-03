@@ -559,7 +559,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
-					showShipSelectionDialog();
+					showShipSelectionDialog(touchedPlanets);
 				}
 			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
@@ -587,7 +587,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	}
 
-	private void showShipSelectionDialog(Move moveToEdit) {
+	private void showShipSelectionDialog(Move moveToEdit, List<Planet> touchedPlanets) {
 		int shipsOnPlanet = 0;
 		for (Planet planet : touchedPlanets) {
 			if (planet.isOwnedBy(GameLoop.USER)) {
@@ -606,11 +606,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager);
+				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager, touchedPlanets);
 	}
 
-	private void showShipSelectionDialog() {
-		this.showShipSelectionDialog(null);
+	private void showShipSelectionDialog(List<Planet> touchedPlanets) {
+		this.showShipSelectionDialog(null,touchedPlanets);
 	}
 
 	@Override
@@ -809,7 +809,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				for (int i = 0; i < moves.size(); ++i) {
 					Move move = moves.get(i);
 					if (move.hashCode() == moveHashCode) {
-						showShipSelectionDialog(move);
+						showShipSelectionDialog(move, touchedPlanets);
 						break;
 					}
 				}

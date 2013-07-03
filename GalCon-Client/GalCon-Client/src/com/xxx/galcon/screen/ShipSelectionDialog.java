@@ -1,6 +1,7 @@
 package com.xxx.galcon.screen;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,6 +17,7 @@ import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
@@ -39,10 +41,11 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	public Tween showAnimation;
 	public Tween hideAnimation;
 	private TweenManager tweenManager;
+	private List<Planet> touchedPlanets;
 
 	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
-			int max, TweenManager tweenManager) {
-		this(x, y, width, height, assetManager, max, tweenManager);
+			int max, TweenManager tweenManager, List<Planet> touchedPlanets) {
+		this(x, y, width, height, assetManager, max, tweenManager, touchedPlanets);
 		if (currentMoveToEdit != null) {
 			this.shipsToSend = currentMoveToEdit.shipsToMove;
 			this.currentMoveToEdit = currentMoveToEdit;
@@ -50,9 +53,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	}
 
 	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, int max,
-			TweenManager tweenManager) {
+			TweenManager tweenManager, List<Planet> touchedPlanets) {
 		super(x, y, width, height, false);
 		this.tweenManager = tweenManager;
+		this.touchedPlanets = touchedPlanets;
 
 		int targetwidth = Gdx.graphics.getWidth();
 		int targetheight = Gdx.graphics.getHeight();
