@@ -274,7 +274,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private Body handleTouch(Camera camera) {
-		if (gameBoard == null) {
+		if (gameBoard == null || overlay != null) {
 			return null;
 		}
 
