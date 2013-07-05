@@ -73,7 +73,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
-			String handle) throws ConnectionException {
+			String handle) {
 		try {
 			JSONObject top = JsonConstructor.requestHandle(userName, handle);
 
@@ -83,7 +83,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_USER_NAME,
 					args, new HandleResponse()));
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
+		} catch (ConnectionException e) {
+			System.out.println(e);
 		}
 	}
 
@@ -112,7 +114,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) throws ConnectionException {
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
+			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		args.put("playerHandle", playerHandle);
@@ -124,8 +127,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			throws ConnectionException {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
-		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,
-				args, new AvailableGames()));
+		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(),
+				FIND_CURRENT_GAMES_BY_PLAYER_HANDLE, args, new AvailableGames()));
 	}
 
 	@Override
@@ -139,11 +142,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player)
-			throws ConnectionException {
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args, new Player()));
+
+		try {
+			callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args,
+					new Player()));
+		} catch (ConnectionException e) {
+			System.out.println(e);
+		}
 
 	}
 

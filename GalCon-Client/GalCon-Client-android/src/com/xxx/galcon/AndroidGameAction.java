@@ -2,8 +2,9 @@ package com.xxx.galcon;
 
 import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
-import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
+import static com.xxx.galcon.MainActivity.LOG_NAME;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
@@ -26,6 +27,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
 import com.xxx.galcon.http.ConnectionException;
@@ -140,8 +142,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String player)
-			throws ConnectionException {
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String player) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
 		activity.runOnUiThread(new Runnable() {
@@ -152,7 +153,7 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	public void requestHandleForUserName(final UIConnectionResultCallback<HandleResponse> callback, String userName,
-			String handle) throws ConnectionException {
+			String handle) {
 		try {
 			final JSONObject top = JsonConstructor.requestHandle(userName, handle);
 			activity.runOnUiThread(new Runnable() {
@@ -162,7 +163,7 @@ public class AndroidGameAction implements GameAction {
 				}
 			});
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 

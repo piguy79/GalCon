@@ -245,11 +245,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	@Override
 	public void resetState() {
 		returnValue = null;
-		try {
-			gameAction.findUserInformation(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.name);
-		} catch (ConnectionException e) {
-			e.printStackTrace();
-		}
+		gameAction.findUserInformation(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.name);
 	}
 
 	@Override

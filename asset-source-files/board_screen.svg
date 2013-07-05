@@ -339,7 +339,7 @@
      inkscape:cx="360"
      inkscape:cy="640"
      inkscape:document-units="px"
-     inkscape:current-layer="layer12"
+     inkscape:current-layer="layer13"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
@@ -413,7 +413,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Background"
-     style="display:inline">
+     style="display:none">
     <rect
        style="fill:#000000;fill-opacity:1;stroke:none"
        id="rect8717"
@@ -8962,18 +8962,22 @@ eCd/WPwAAAAASUVORK5CYII=
   <g
      inkscape:groupmode="layer"
      id="layer12"
-     inkscape:label="BottomTabBar">
+     inkscape:label="BottomTabBar"
+     style="display:none">
     <g
        id="g4199"
        transform="matrix(0.89967066,0,0,1,536.6767,320.03982)"
-       style="fill-rule:evenodd">
+       style="fill-rule:evenodd"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/bottom_bar.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687">
       <rect
          y="807.71332"
          x="-597.55103"
          height="155.55203"
          width="804.89795"
          id="rect4189"
-         style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:0.86142355000000004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;fill-rule:evenodd" />
+         style="fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:0.86142355;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          inkscape:connector-curvature="0"
          id="path4197"
@@ -8981,29 +8985,38 @@ eCd/WPwAAAAASUVORK5CYII=
          style="fill:#cccccc;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.46991789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          sodipodi:nodetypes="ccssssscscccccc" />
     </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer13"
+     inkscape:label="Minimized Move Buttons"
+     style="display:inline">
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1.00914359;stroke-opacity:1"
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1.00914359;stroke-opacity:1;display:inline"
        id="rect4209"
        width="119.17453"
        height="109.37861"
        x="14.698487"
-       y="1144.4943"
-       ry="13.672326" />
+       y="1142.4943"
+       ry="13.672326"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/bottom_bar_ship_button.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
     <path
        sodipodi:nodetypes="cccccc"
        inkscape:connector-curvature="0"
        id="path4211"
-       d="m 119.84785,1187.15 2.6726,3.9412 -36.64859,56.4967 1.46935,-35.5176 -33.54064,-11.7766 z"
-       style="fill:#ff0000;fill-opacity:1;stroke:none" />
+       d="m -177.29501,1172.4561 2.6726,3.9412 -36.64859,56.4967 1.46935,-35.5176 -33.54064,-11.7766 z"
+       style="fill:#ff0000;fill-opacity:1;stroke:none;display:inline" />
     <text
        sodipodi:linespacing="125%"
        id="text4213"
-       y="1185.3062"
-       x="26.122375"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       y="1098.7755"
+       x="-166.53069"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
        xml:space="preserve"><tspan
-         y="1185.3062"
-         x="26.122375"
+         y="1098.7755"
+         x="-166.53069"
          id="tspan4215"
          sodipodi:role="line">36</tspan></text>
     <rect
@@ -9013,13 +9026,19 @@ eCd/WPwAAAAASUVORK5CYII=
        height="109.37861"
        width="61.120213"
        id="rect4248"
-       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:0.72269273;stroke-opacity:1" />
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:0.72269273;stroke-opacity:1;display:inline"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/bottom_bar_expand_button.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
     <path
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#c9ff8f;stroke-width:0.89999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#c9ff8f;stroke-width:0.89999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;display:inline"
        d="m 492.24489,1170.6123 20.40817,57.6735 -40.81633,0 z"
        id="rect4878"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/bottom_bar_expand_button.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -9108,7 +9127,7 @@ eCd/WPwAAAAASUVORK5CYII=
      inkscape:groupmode="layer"
      id="layer11"
      inkscape:label="SendButton"
-     style="display:inline">
+     style="display:none">
     <path
        inkscape:export-ydpi="123.81687"
        inkscape:export-xdpi="123.81687"

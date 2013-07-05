@@ -31,7 +31,8 @@ public interface GameAction {
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) throws ConnectionException;
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
+			throws ConnectionException;
 
 	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
 			throws ConnectionException;
@@ -42,11 +43,10 @@ public interface GameAction {
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player)
-			throws ConnectionException;
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player);
 
 	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
-			String handle) throws ConnectionException;
+			String handle);
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;

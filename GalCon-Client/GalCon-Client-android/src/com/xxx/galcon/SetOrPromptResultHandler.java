@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -46,12 +45,8 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 							.getString(R.string.create), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							String handle = userNameEditText.getText().toString().trim();
-							try {
-								gameAction.requestHandleForUserName(new NewHandleResultCallback(player, alertDialog),
-										playerFromServer.name, handle);
-							} catch (ConnectionException e) {
-								// TODO Auto-generated catch block
-							}
+							gameAction.requestHandleForUserName(new NewHandleResultCallback(activity, player,
+									alertDialog), playerFromServer.name, handle);
 						}
 					});
 					alertDialog.show();
@@ -61,34 +56,61 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 	}
 
 	public void onConnectionError(String msg) {
-		// TODO Auto-generated method stub
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
+				LayoutInflater inflater = activity.getLayoutInflater();
+				final ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.error_retry_dialog, null);
+				builder.setView(viewGroup);
+
+				alertDialog = builder.create();
+				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getBaseContext().getResources()
+						.getString(R.string.retry), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						gameAction.findUserInformation(new SetOrPromptResultHandler(activity, gameAction, player),
+								player.name);
+					}
+				});
+				alertDialog.show();
+			}
+		});
 	}
 
 	private static class NewHandleResultCallback implements UIConnectionResultCallback<HandleResponse> {
 
 		private AlertDialog dialog;
 		private Player gamePlayer;
+		private Activity activity;
 
-		public NewHandleResultCallback(Player gamePlayer, AlertDialog dialog) {
+		public NewHandleResultCallback(Activity activity, Player gamePlayer, AlertDialog dialog) {
 			this.dialog = dialog;
 			this.gamePlayer = gamePlayer;
+			this.activity = activity;
 		}
 
 		public void onConnectionResult(final HandleResponse result) {
 			if (result.handleCreated) {
 				new SetPlayerResultHandler(gamePlayer).onConnectionResult(result.player);
 			} else {
-				TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
-				textView.setText(R.string.usernameTaken);
-				dialog.show();
+				activity.runOnUiThread(new Runnable() {
+					public void run() {
+						TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
+						textView.setText(R.string.username_taken);
+						dialog.show();
+					}
+				});
 			}
 		}
 
 		public void onConnectionError(String msg) {
-			TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
-			textView.setText(R.string.usernameTaken);
-			dialog.show();
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
+					textView.setText(R.string.username_taken);
+					dialog.show();
+				}
+			});
 		}
 	}
 }

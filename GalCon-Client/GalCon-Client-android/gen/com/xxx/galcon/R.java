@@ -21,19 +21,22 @@ public final class R {
     }
     public static final class layout {
         public static final int create_username=0x7f030000;
-        public static final int main=0x7f030001;
+        public static final int error_retry_dialog=0x7f030001;
+        public static final int main=0x7f030002;
     }
     public static final class menu {
         public static final int activity_launch_screen=0x7f060000;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int connectionError=0x7f040008;
+        public static final int connection_error=0x7f040009;
+        public static final int connection_error_title=0x7f040008;
         public static final int create=0x7f040006;
         public static final int menu_settings=0x7f040001;
+        public static final int retry=0x7f04000a;
         public static final int title_activity_launch_screen=0x7f040002;
         public static final int username=0x7f040003;
-        public static final int usernameTaken=0x7f040007;
+        public static final int username_taken=0x7f040007;
         public static final int welcome_header=0x7f040004;
         public static final int welcome_text=0x7f040005;
     }

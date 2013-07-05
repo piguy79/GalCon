@@ -7,7 +7,9 @@
     <string name="welcome_header">Welcome Galactic Explorer</string>
     <string name="welcome_text">Choose a username to continue your conquest</string>
     <string name="create">Create</string>
-    <string name="usernameTaken">Username is already in use. Please try another.</string>
-    <string name="connectionError">Unable to connect. Please try again. hi there.</string>
+    <string name="username_taken">Username is already in use. Please try another.</string>
+    <string name="connection_error_title">Connection Error</string>
+    <string name="connection_error">Unable to connect. Please try again.</string>
+    <string name="retry">Retry</string>
 
 </resources>
