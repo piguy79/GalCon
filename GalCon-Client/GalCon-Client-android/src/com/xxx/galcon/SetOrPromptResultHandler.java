@@ -17,7 +17,6 @@ import com.xxx.galcon.model.Player;
 public class SetOrPromptResultHandler implements UIConnectionResultCallback<Player> {
 
 	private Activity activity;
-	private AlertDialog alertDialog;
 	private GameAction gameAction;
 	private Player player;
 
@@ -40,7 +39,7 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 					final EditText userNameEditText = (EditText) viewGroup.findViewById(R.id.username);
 					builder.setView(viewGroup);
 
-					alertDialog = builder.create();
+					final AlertDialog alertDialog = builder.create();
 					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getBaseContext().getResources()
 							.getString(R.string.create), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
@@ -64,7 +63,7 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 				final ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.error_retry_dialog, null);
 				builder.setView(viewGroup);
 
-				alertDialog = builder.create();
+				final AlertDialog alertDialog = builder.create();
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getBaseContext().getResources()
 						.getString(R.string.retry), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
@@ -77,7 +76,7 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 		});
 	}
 
-	private static class NewHandleResultCallback implements UIConnectionResultCallback<HandleResponse> {
+	private class NewHandleResultCallback implements UIConnectionResultCallback<HandleResponse> {
 
 		private AlertDialog dialog;
 		private Player gamePlayer;
@@ -96,7 +95,7 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 				activity.runOnUiThread(new Runnable() {
 					public void run() {
 						TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
-						textView.setText(R.string.username_taken);
+						textView.setText(result.reason);
 						dialog.show();
 					}
 				});
@@ -106,9 +105,21 @@ public class SetOrPromptResultHandler implements UIConnectionResultCallback<Play
 		public void onConnectionError(String msg) {
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					TextView textView = (TextView) dialog.findViewById(R.id.usernameErrorMsg);
-					textView.setText(R.string.username_taken);
-					dialog.show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+					LayoutInflater inflater = activity.getLayoutInflater();
+					final ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.error_retry_dialog, null);
+					builder.setView(viewGroup);
+
+					final AlertDialog alertDialog = builder.create();
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getBaseContext().getResources()
+							.getString(R.string.retry), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							SetOrPromptResultHandler.this.gameAction.findUserInformation(new SetOrPromptResultHandler(
+									activity, gameAction, player), player.name);
+						}
+					});
+					alertDialog.show();
 				}
 			});
 		}

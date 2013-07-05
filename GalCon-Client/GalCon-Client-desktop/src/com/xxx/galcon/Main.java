@@ -19,7 +19,7 @@ public class Main {
 		DesktopGameAction gameAction = new DesktopGameAction("localhost", 3000);
 
 		final Player player = new Player();
-		int rand = (int) (Math.random() * 1000);
+		int rand = (int) (Math.random() * 10000);
 		player.name = "me" + rand;
 
 		gameAction.findUserInformation(new SetPlayerResultHandler(player), player.name);
@@ -27,12 +27,15 @@ public class Main {
 
 			@Override
 			public void onConnectionResult(HandleResponse result) {
+				if (result.reason != null) {
+					System.out.println(result.reason);
+				}
 				player.handle = result.player.handle;
 			}
 
 			@Override
 			public void onConnectionError(String msg) {
-				// TODO Auto-generated method stub
+				System.out.println(msg);
 
 			}
 		}, player.name, "Handle" + rand);

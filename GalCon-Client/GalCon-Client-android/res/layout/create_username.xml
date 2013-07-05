@@ -20,6 +20,7 @@
         android:paddingLeft="4dp"
         android:text="@string/welcome_text"
         android:textSize="14sp" />
+
     <TextView
         android:id="@+id/usernameErrorMsg"
         android:layout_width="wrap_content"

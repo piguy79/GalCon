@@ -5,7 +5,7 @@
     <string name="title_activity_launch_screen">GalCon</string>
     <string name="username">Username</string>
     <string name="welcome_header">Welcome Galactic Explorer</string>
-    <string name="welcome_text">Choose a username to continue your conquest</string>
+    <string name="welcome_text">Choose a username to continue your conquest, between 3 &#8211; 16 alphanumeric characters.</string>
     <string name="create">Create</string>
     <string name="username_taken">Username is already in use. Please try another.</string>
     <string name="connection_error_title">Connection Error</string>

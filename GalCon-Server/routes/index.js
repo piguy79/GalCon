@@ -106,23 +106,36 @@ exports.findUserByUserName = function(req, res) {
 exports.requestHandleForUserName = function(req, res) {
 	var userName = req.body['userName'];
 	var handle = req.body['handle'];
-	userManager.findUserByHandle(handle, function(user) {
-		if (user) {
-			res.json({
-				created : false
-			});
-		} else {
-			userManager.findUserByName(userName, function(user) {
-				user.handle = handle;
-				user.save(function() {
-					res.json({
-						created : true,
-						player : user
-					})
+	
+	var updatedHandle = handle.replace(/^\s+/,'');
+	updatedHandle = updatedHandle.replace(/\s+$/,'');
+	updatedHandle = updatedHandle.replace(/[^a-z0-9_]/i);
+	
+	if (handle.length < 3 || handle.length > 16 || updatedHandle !== handle) {
+		res.json({
+			created : false,
+			reason : "Invalid username"
+		});
+	} else {
+		userManager.findUserByHandle(handle, function(user) {
+			if (user) {
+				res.json({
+					created : false,
+					reason : "Username already chosen by another player"
 				});
-			});
-		}
-	});
+			} else {
+				userManager.findUserByName(userName, function(user) {
+					user.handle = handle;
+					user.save(function() {
+						res.json({
+							created : true,
+							player : user
+						})
+					});
+				});
+			}
+		});
+	}
 }
 
 exports.findCurrentGamesByPlayerHandle = function(req, res) {
