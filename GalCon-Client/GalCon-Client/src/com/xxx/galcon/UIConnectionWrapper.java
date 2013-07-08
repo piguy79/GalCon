@@ -30,7 +30,7 @@ public class UIConnectionWrapper {
 
 	public static void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		try {
-			gameAction.findGameById(callback, id,playerHandle);
+			gameAction.findGameById(callback, id, playerHandle);
 		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
@@ -38,11 +38,7 @@ public class UIConnectionWrapper {
 
 	public static void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback,
 			String playerHandle) {
-		try {
-			gameAction.findCurrentGamesByPlayerHandle(callback, playerHandle);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+		gameAction.findCurrentGamesByPlayerHandle(callback, playerHandle);
 	}
 
 	public static void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player) {
@@ -54,11 +50,7 @@ public class UIConnectionWrapper {
 	}
 
 	public static void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
-		try {
-			gameAction.findAvailableGames(callback, playerHandle);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+		gameAction.findAvailableGames(callback, playerHandle);
 	}
 
 	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {

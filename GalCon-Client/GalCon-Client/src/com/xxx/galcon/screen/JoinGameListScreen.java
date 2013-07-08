@@ -5,6 +5,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class JoinGameListScreen extends GameListScreen {
 
@@ -26,6 +27,7 @@ public class JoinGameListScreen extends GameListScreen {
 
 	@Override
 	protected void refreshScreen() {
+		overlay = new TextOverlay("Refreshing...", assetManager);
 		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}
 	

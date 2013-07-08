@@ -46,8 +46,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException {
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
@@ -83,8 +82,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_USER_NAME,
 					args, new HandleResponse()));
 		} catch (JSONException e) {
-			System.out.println(e);
-		} catch (ConnectionException e) {
 			System.out.println(e);
 		}
 	}
@@ -123,8 +120,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException {
+	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(),
@@ -145,28 +141,23 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("userName", player);
-
-		try {
-			callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args,
-					new Player()));
-		} catch (ConnectionException e) {
-			System.out.println(e);
-		}
-
+		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args, new Player()));
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
-			JsonConvertible converter) throws ConnectionException {
+			JsonConvertible converter) {
 		try {
 			String postResponse = executeHttpRequest(clientRequest, path, parameters);
 			return buildObjectsFromResponse(converter, postResponse);
 		} catch (MalformedURLException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		} catch (IOException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		} catch (URISyntaxException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		}
+
+		return null;
 	}
 
 	/**
@@ -174,8 +165,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	 * JsonObject.
 	 * 
 	 */
-	private JsonConvertible buildObjectsFromResponse(JsonConvertible converter, String postResponse)
-			throws ConnectionException {
+	private JsonConvertible buildObjectsFromResponse(JsonConvertible converter, String postResponse) {
 		System.out.println(postResponse);
 
 		try {
@@ -185,7 +175,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			return converter;
 
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		}
+
+		return null;
 	}
 }

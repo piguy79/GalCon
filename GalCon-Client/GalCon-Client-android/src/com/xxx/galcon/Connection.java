@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.ConnectivityManager;
@@ -21,7 +19,7 @@ import android.util.Log;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Connection {
-	public static final int CONNECTION_TIMEOUT = 20000;
+	public static final int CONNECTION_TIMEOUT = 10000;
 
 	public static HttpURLConnection establishGetConnection(String host, String port, String path,
 			Map<String, String> args) throws IOException {

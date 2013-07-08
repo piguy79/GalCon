@@ -120,7 +120,7 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback,
-			String playerHandle) throws ConnectionException {
+			String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {

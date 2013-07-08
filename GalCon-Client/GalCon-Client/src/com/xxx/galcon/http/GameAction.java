@@ -28,8 +28,7 @@ public interface GameAction {
 	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
 			int height, String gameType) throws ConnectionException;
 
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException;
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
 	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
 			throws ConnectionException;
@@ -40,8 +39,7 @@ public interface GameAction {
 	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException;
 
-	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException;
+	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player);
 

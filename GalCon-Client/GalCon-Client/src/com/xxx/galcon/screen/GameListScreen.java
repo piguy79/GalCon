@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
@@ -31,8 +32,6 @@ import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class GameListScreen implements ScreenFeedback, UIConnectionResultCallback<AvailableGames> {
-	private BitmapFont smallFont;
-	private BitmapFont mediumFont;
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -40,8 +39,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	private AvailableGames allGames;
 	private Hud gameListHud;
 	private String loadingMessage = "Loading...";
-	private Overlay overlay;
-	private AssetManager assetManager;
+	protected Overlay overlay;
+	protected AssetManager assetManager;
 
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
@@ -93,9 +92,16 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		spriteBatch.begin();
 		spriteBatch.enableBlending();
 
+		BitmapFont mediumFont = Fonts.getInstance().mediumFont();
+		BitmapFont smallFont = Fonts.getInstance().smallFont();
+
 		if (allGames == null) {
-			float halfFontWidth = mediumFont.getBounds(loadingMessage).width / 2;
-			mediumFont.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
+			BitmapFont font = mediumFont;
+			if (loadingMessage.length() > 15) {
+				font = smallFont;
+			}
+			float halfFontWidth = font.getBounds(loadingMessage).width / 2;
+			font.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
 		} else {
 			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
 			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
@@ -219,8 +225,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 	@Override
 	public void resume() {
-		smallFont = Fonts.getInstance().smallFont();
-		mediumFont = Fonts.getInstance().mediumFont();
+
 	}
 
 	@Override
@@ -232,17 +237,23 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	public void resetState() {
 		returnValue = null;
 		allGames = null;
+		overlay = null;
 		loadingMessage = "Loading...";
 	}
 
 	@Override
 	public void onConnectionResult(AvailableGames result) {
-		this.allGames = result;
+		returnValue = null;
+		allGames = null;
 		overlay = null;
+		allGames = result;
 	}
 
 	@Override
 	public void onConnectionError(String msg) {
-		loadingMessage = "Unable to connect at the moment";
+		returnValue = null;
+		allGames = null;
+		overlay = null;
+		loadingMessage = Constants.CONNECTION_ERROR_MESSAGE;
 	}
 }
