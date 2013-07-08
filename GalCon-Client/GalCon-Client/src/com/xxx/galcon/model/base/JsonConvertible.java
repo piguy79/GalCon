@@ -12,21 +12,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * This interface defines a set of methods which make a class convertible from a JSONObject.
+ * This interface defines a set of methods which make a class convertible from a
+ * JSONObject.
  * 
  * @author conormullen
- *
+ * 
  */
 public abstract class JsonConvertible {
-	
+
+	public String errorMessage;
+
 	/**
 	 * This method is used to add attributs to a class from a JsonObject.
 	 * 
 	 * @param jsonObject
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	abstract public void consume(JSONObject jsonObject) throws JSONException;
-	
+
 	protected Date formatDate(JSONObject jsonObject, String field) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
 		try {

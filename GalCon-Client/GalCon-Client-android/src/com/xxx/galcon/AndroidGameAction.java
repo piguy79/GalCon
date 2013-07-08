@@ -2,6 +2,7 @@ package com.xxx.galcon;
 
 import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
+import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
@@ -199,7 +200,6 @@ public class AndroidGameAction implements GameAction {
 		protected String path;
 		private JsonConvertible converter;
 		private UIConnectionResultCallback<T> callback;
-		private String error = null;
 
 		public JsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
 			this.path = path;
@@ -214,15 +214,16 @@ public class AndroidGameAction implements GameAction {
 			try {
 				return Connection.doRequest(connectivityManager, establishConnection(params), converter);
 			} catch (IOException e) {
-				error = e.getMessage();
+				Log.wtf(LOG_NAME, e);
+				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 			}
 
-			return null;
+			return converter;
 		}
 
 		@Override
 		protected void onPostExecute(final JsonConvertible result) {
-			if (error == null) {
+			if (result.errorMessage == null) {
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
 						callback.onConnectionResult((T) result);
@@ -231,7 +232,7 @@ public class AndroidGameAction implements GameAction {
 			} else {
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
-						callback.onConnectionError(error);
+						callback.onConnectionError(result.errorMessage);
 					}
 				});
 			}

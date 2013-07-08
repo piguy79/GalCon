@@ -1,5 +1,8 @@
 package com.xxx.galcon;
 
+import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
+import static com.xxx.galcon.MainActivity.LOG_NAME;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -59,7 +62,8 @@ public class Connection {
 			JsonConvertible converter) {
 		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 		if (networkInfo == null || !networkInfo.isConnected()) {
-			return null;
+			converter.errorMessage = CONNECTION_ERROR_MESSAGE;
+			return converter;
 		}
 
 		try {
@@ -73,12 +77,9 @@ public class Connection {
 			reader.close();
 
 			converter.consume(new JSONObject(sb.toString()));
-		} catch (MalformedURLException e) {
-			Log.wtf("error", "error", e);
-		} catch (IOException e) {
-			Log.wtf("error", "error", e);
-		} catch (JSONException e) {
-			Log.wtf("error", "error", e);
+		} catch (Exception e) {
+			Log.wtf(LOG_NAME, "error", e);
+			converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
