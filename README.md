@@ -57,6 +57,7 @@ __Advancement__
 2. Heroku scaling? How many users do we expect to fit on a node.
 3. Graceful error handling
 4. iOS?
+5. Sounds (and music?)
 
 Heroku
 ----
