@@ -3,7 +3,6 @@ package com.xxx.galcon.screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UIConnectionWrapper;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
@@ -14,10 +13,8 @@ public class JoinGameListScreen extends GameListScreen {
 	}
 
 	@Override
-	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
-			BoardScreen boardScreen) {
-		UIConnectionWrapper.joinGame(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id, playerHandle);
-		return boardScreen;
+	public void takeActionOnGameboard(GameBoard toTakeActionOn, String playerHandle) {
+		UIConnectionWrapper.joinGame(new SelectGameResultHander(), toTakeActionOn.id, playerHandle);
 	}
 
 	@Override
@@ -30,9 +27,9 @@ public class JoinGameListScreen extends GameListScreen {
 		overlay = new TextOverlay("Refreshing...", assetManager);
 		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}
-	
+
 	@Override
-	public void resetState(){
+	public void resetState() {
 		super.resetState();
 		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}

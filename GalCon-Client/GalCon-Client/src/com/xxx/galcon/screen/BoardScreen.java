@@ -1,5 +1,6 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.Constants.OWNER_NO_ONE;
 import static com.xxx.galcon.Constants.PLANET_ABILITIES;
@@ -890,7 +891,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = null;
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+					assetManager));
 		}
 	}
 
@@ -906,7 +908,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = null;
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+					assetManager));
 		}
 	}
 

@@ -87,7 +87,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType) throws ConnectionException {
+			int height, String gameType) {
 		try {
 			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
 
@@ -97,13 +97,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args,
 					new GameBoard()));
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		}
 	}
 
 	@Override
-	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
-			throws ConnectionException {
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		args.put("id", id);
@@ -111,8 +110,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
-			throws ConnectionException {
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		args.put("playerHandle", playerHandle);

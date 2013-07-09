@@ -12,29 +12,18 @@ import com.xxx.galcon.model.Player;
  * This class defines a set of methods used to interact with the server side
  * code.
  * 
- * 
  * @author conormullen
- * 
  */
 public interface GameAction {
 
-	/**
-	 * This method allows the current user to join a game. The only parameter
-	 * needed is the username. A GameBoard object will be returned representing
-	 * the current state of the Game.
-	 * 
-	 * @return <GameBoard> Representing current state.
-	 */
 	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType) throws ConnectionException;
+			int height, String gameType);
 
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
-			throws ConnectionException;
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
 
-	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
-			throws ConnectionException;
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
 
 	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
 			throws ConnectionException;

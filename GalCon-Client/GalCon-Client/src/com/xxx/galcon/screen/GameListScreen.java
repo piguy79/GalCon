@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,13 +23,13 @@ import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.hud.GameListHud;
 import com.xxx.galcon.screen.hud.Hud;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
@@ -133,7 +135,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 							ip.consumeTouch();
-							returnValue = gameBoard;
+							overlay = new TextOverlay("Joining...", assetManager);
+							takeActionOnGameboard(gameBoard, GameLoop.USER.handle);
 						}
 					}
 
@@ -147,6 +150,12 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		if (overlay != null) {
 			gameListHud.setTouchEnabled(false);
 			overlay.render(delta);
+
+			if (overlay instanceof DismissableOverlay) {
+				if (((DismissableOverlay) overlay).isDismissed()) {
+					overlay = null;
+				}
+			}
 		} else {
 			gameListHud.setTouchEnabled(true);
 		}
@@ -192,11 +201,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		return playerDescription;
 	}
 
-	public BoardScreen takeActionOnGameboard(GameAction gameAction, GameBoard toTakeActionOn, String playerHandle,
-			BoardScreen boardScreen) {
-		UIConnectionWrapper.findGameById(new SetGameBoardResultHandler(boardScreen), toTakeActionOn.id,
-				GameLoop.USER.handle);
-		return boardScreen;
+	public void takeActionOnGameboard(GameBoard toTakeActionOn, String playerHandle) {
+		UIConnectionWrapper.findGameById(new SelectGameResultHander(), toTakeActionOn.id, GameLoop.USER.handle);
 	}
 
 	@Override
@@ -255,5 +261,20 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		allGames = null;
 		overlay = null;
 		loadingMessage = Constants.CONNECTION_ERROR_MESSAGE;
+	}
+
+	protected class SelectGameResultHander implements UIConnectionResultCallback<GameBoard> {
+
+		@Override
+		public void onConnectionResult(GameBoard result) {
+			returnValue = result;
+			overlay = null;
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+					assetManager));
+		}
 	}
 }

@@ -9,6 +9,12 @@ import com.xxx.galcon.Fonts;
 public class TextOverlay extends Overlay {
 
 	private String[] textLines;
+	private String fontSize = "large";
+
+	public TextOverlay(String text, String fontSize, AssetManager assetManager) {
+		this(text, assetManager);
+		this.fontSize = fontSize;
+	}
 
 	public TextOverlay(String text, AssetManager assetManager) {
 		super(assetManager);
@@ -17,7 +23,12 @@ public class TextOverlay extends Overlay {
 
 	@Override
 	protected void doCustomRender(float delta, SpriteBatch spriteBatch) {
-		BitmapFont font = Fonts.getInstance().largeFont();
+		BitmapFont font;
+		if (fontSize.equals("large")) {
+			font = Fonts.getInstance().largeFont();
+		} else {
+			font = Fonts.getInstance().mediumFont();
+		}
 
 		int lineHeight = (int) (Gdx.graphics.getHeight() * 0.1);
 		int y = (int) (Gdx.graphics.getHeight() * 0.4f) + lineHeight * textLines.length;

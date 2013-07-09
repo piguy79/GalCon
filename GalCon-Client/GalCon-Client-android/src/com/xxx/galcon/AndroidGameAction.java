@@ -77,7 +77,7 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType) throws ConnectionException {
+			int height, String gameType) {
 		try {
 			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
 			activity.runOnUiThread(new Runnable() {
@@ -86,7 +86,7 @@ public class AndroidGameAction implements GameAction {
 				}
 			});
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -103,12 +103,11 @@ public class AndroidGameAction implements GameAction {
 				}
 			});
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
-	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle)
-			throws ConnectionException {
+	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		args.put("playerHandle", playerHandle);
