@@ -51,13 +51,14 @@ __Advancement__
 9. Game screen enhancements
  1. New ship selection dialog with slider to select # of ships
  2. Move bar - Show all moves in progress, with touch to highlight move on screen
+ 3. Show users battle results on round end
  2. Asteroid game type
- 3. Black hole game type
-1. Security
-2. Heroku scaling? How many users do we expect to fit on a node.
-3. Graceful error handling
-4. iOS?
-5. Sounds (and music?)
+ 3. Black hole game type 
+10. Security
+11. Heroku scaling? How many users do we expect to fit on a node.
+12. Graceful error handling
+13. iOS?
+14. Sounds (and music?)
 
 Heroku
 ----
@@ -83,3 +84,10 @@ __V0.02__
 * Ranking concept introduced.
 * Notification system.
 * Multiple levels to play.
+* 
+__V0.03__
+* Graphics improved
+* Animation for moves
+* Remove second player advantage
+* Display Moves in progress
+* Allow update/delete of current moves
