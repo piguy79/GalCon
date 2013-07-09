@@ -84,7 +84,8 @@ __V0.02__
 * Ranking concept introduced.
 * Notification system.
 * Multiple levels to play.
-* 
+
+
 __V0.03__
 * Graphics improved
 * Animation for moves
