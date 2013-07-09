@@ -1,17 +1,14 @@
 package com.xxx.galcon.model;
 
-import java.awt.LinearGradientPaint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import aurelienribon.tweenengine.Tween;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Interpolation;
+
 import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.model.base.JsonConstructable;
 import com.xxx.galcon.model.base.JsonConvertible;
 import com.xxx.galcon.model.tween.MoveTween;
@@ -34,12 +31,14 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public float animationx;
 	public float animationy;
 	
+	public boolean selected = false;
 	
 
 	
 	public Move() {
 		super();
 		this.animation =  Tween.to(this, MoveTween.POSITION_XY, 0.4f);
+		
 	}
 
 	public boolean belongsToPlayer(Player player){
@@ -92,6 +91,8 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		return new Vector2(endPosition.x - currentPosition.x, endPosition.y - currentPosition.y).angle();
 		
 	}
+
+
 
 	
 }

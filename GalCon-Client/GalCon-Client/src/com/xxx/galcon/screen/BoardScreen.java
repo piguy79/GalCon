@@ -101,7 +101,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private WorldPlane worldPlane = new WorldPlane();
 
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
-	List<Move> moves = new ArrayList<Move>();
+	List<Move> inProgressMoves = new ArrayList<Move>();
 
 	private AssetManager assetManager;
 	private TweenManager tweenManager;
@@ -361,6 +361,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		gridShader.end();
 	}
+	
 
 	private void renderPlanetNumbers(List<Planet> planets, Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -430,6 +431,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			planetShader.setUniformMatrix("uPMatrix", camera.combined);
 			planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			
 
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
@@ -455,6 +457,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planet.owner.equals(OWNER_NO_ONE)
 				&& !planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
 	}
+	
 
 	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -494,13 +497,16 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			modelViewMatrix.rotate(0, 0, 1, 180 - move.angleOfMovement());
 
-			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
-
-			shipShader.setUniformMatrix("uPMatrix", camera.combined);
-			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 
 			float r = 1.0f, g = 0.0f, b = 0.0f;
+			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
+			
+			shipShader.setUniformMatrix("uPMatrix", camera.combined);
+			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
 			shipShader.setUniformf("uColor", r, g, b, 1.0f);
+			shipShader.setUniformf("uDimmer", gameBoard.hasAsSelectedShip() ? 1.0f : 0.0f);
+			shipShader.setUniformf("uShowThisShip", move.selected ? 1.0f : 0.0f);
+			
 
 			shipModel.render(shipShader);
 		}
@@ -554,13 +560,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet.touched) {
+			clearMoveSelection();
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
 				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.handle)) {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
-					showShipSelectionDialog();
+					showShipSelectionDialog(touchedPlanets);
 				}
 			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
@@ -571,6 +578,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (!planet.touched) {
 			touchedPlanets.remove(planet);
 		}
+	}
+
+	private void clearMoveSelection() {
+		for(Move move : gameBoard.movesInProgress){
+			move.selected = false;
+		}
+		
 	}
 
 	@Override
@@ -588,7 +602,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	}
 
-	private void showShipSelectionDialog(Move moveToEdit) {
+	private void showShipSelectionDialog(Move moveToEdit, List<Planet> touchedPlanets) {
 		int shipsOnPlanet = 0;
 		for (Planet planet : touchedPlanets) {
 			if (planet.isOwnedBy(GameLoop.USER)) {
@@ -607,11 +621,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager);
+				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager, touchedPlanets);
 	}
 
-	private void showShipSelectionDialog() {
-		this.showShipSelectionDialog(null);
+	private void showShipSelectionDialog(List<Planet> touchedPlanets) {
+		this.showShipSelectionDialog(null,touchedPlanets);
 	}
 
 	@Override
@@ -635,6 +649,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderPlanets(gameBoard.planets, camera);
 		renderPlanetNumbers(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
+		
 
 		if (gameBoard.hasWinner()) {
 			displayWinner(gameBoard.endGameInformation);
@@ -688,6 +703,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			}
 		}
 	}
+
+	
 
 	private SpriteBatch textSpriteBatch = new SpriteBatch();
 
@@ -767,7 +784,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (action.equals(Action.DIALOG_OK)) {
 			Move move = moveFactory.createMove(touchedPlanets, shipSelectionDialog.getShipsToSend());
 			if (move != null) {
-				moves.add(move);
+				inProgressMoves.add(move);
 			}
 		} else if (action.equals(Action.DIALOG_UPDATE)) {
 			Move move = shipSelectionDialog.getCurrentMoveToEdit();
@@ -778,7 +795,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			Planet planet = gameBoard.getPlanet(move.fromPlanet);
 			planet.numberOfShips += (priorShipsToMove - move.shipsToMove);
 		} else if (action.equals(Action.DIALOG_DELETE)) {
-			for (ListIterator<Move> iter = moves.listIterator(); iter.hasNext();) {
+			for (ListIterator<Move> iter = inProgressMoves.listIterator(); iter.hasNext();) {
 				Move move = iter.next();
 				if (move.equals(shipSelectionDialog.getCurrentMoveToEdit())) {
 					Planet planet = gameBoard.getPlanet(move.fromPlanet);
@@ -798,7 +815,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void processHudButtonTouch(String action) {
 		if (action.equals(Action.END_TURN)) {
 			overlay = new TextOverlay("Sending ships to their doom", assetManager);
-			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, moves);
+			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves);
 		} else if (action.equals(Action.REFRESH)) {
 			overlay = new TextOverlay("Refreshing...", assetManager);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
@@ -807,11 +824,19 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		} else if (action.startsWith(Action.SHIP_MOVE)) {
 			if (action.contains("-")) {
 				Integer moveHashCode = Integer.valueOf(action.split("-")[1]);
-				for (int i = 0; i < moves.size(); ++i) {
-					Move move = moves.get(i);
+				for (int i = 0; i < inProgressMoves.size(); ++i) {
+					Move move = inProgressMoves.get(i);
 					if (move.hashCode() == moveHashCode) {
-						showShipSelectionDialog(move);
+						showShipSelectionDialog(move, touchedPlanets);
 						break;
+					}
+				}
+				
+				for(Move move : gameBoard.movesInProgress){
+					if(moveHashCode == move.hashCode()){
+						move.selected = true;
+					}else{
+						move.selected = false;
 					}
 				}
 			}
@@ -884,7 +909,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		@Override
 		public void onConnectionResult(GameBoard result) {
 			setGameBoard(result);
-			moves.clear();
+			inProgressMoves.clear();
 			clearTouchedPlanets();
 			overlay = null;
 		}
@@ -901,7 +926,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		@Override
 		public void onConnectionResult(GameBoard result) {
 			setGameBoard(result);
-			moves.clear();
+			inProgressMoves.clear();
 			clearTouchedPlanets();
 			overlay = null;
 		}
@@ -918,13 +943,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		returnCode = null;
 		connectionError = null;
 		roundAnimated = -2;
-		moves.clear();
+		inProgressMoves.clear();
 		clearTouchedPlanets();
 
 		gameBoard = null;
 	}
 
 	public List<Move> getPendingMoves() {
-		return moves;
+		return inProgressMoves;
 	}
 }
