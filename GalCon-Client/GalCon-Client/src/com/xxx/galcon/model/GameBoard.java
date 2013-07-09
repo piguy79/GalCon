@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -111,5 +112,14 @@ public class GameBoard extends JsonConvertible {
 
 	public boolean wasADraw() {
 		return endGameInformation.draw;
+	}
+
+	public boolean hasAsSelectedShip() {
+		for(Move move : movesInProgress){
+			if(move.selected){
+				return true;
+			}
+		}
+		return false;
 	}
 }

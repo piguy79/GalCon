@@ -50,6 +50,6 @@ void main() {
 	if(uPlanetBits[INDEX_PLANET_ABILITY] == 1.0) {
 		pixel += vec4(-0.1, -0.1, 0.6, 0.0);
 	}
-	
+		
 	gl_FragColor = pixel;
 }
