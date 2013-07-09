@@ -33,6 +33,14 @@ __Advancement__
  7. Asteroid belt world - 18-20
  8. Black hole (dynamic speed) world - 20-22
 2. Achievements
+ 1. First Blood - Play your first game
+ 2. Comeback King - Come back from being so far behind in a  game to win it
+ 3. Win x games games (Can be multiple, 5,10,30 etc)
+ 4. Play x games games
+ 5. Speed Demon - Win a game while holding a speed ability
+ 6. Win a game by holding ALL planets
+ 7. Win a game in under x amount of time
+ 8. David vs Goliath - Beat an opponent of a higher rank
 2. Leaderboards
  1. Global ranking formula
  2. Friends rank?
