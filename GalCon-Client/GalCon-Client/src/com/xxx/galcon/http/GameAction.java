@@ -25,8 +25,7 @@ public interface GameAction {
 
 	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
 
-	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
-			throws ConnectionException;
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves);
 
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 

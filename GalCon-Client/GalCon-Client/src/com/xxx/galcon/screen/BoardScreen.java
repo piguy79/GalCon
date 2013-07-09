@@ -916,7 +916,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
 					assetManager));
 		}
 	}
@@ -933,7 +933,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
 					assetManager));
 		}
 	}

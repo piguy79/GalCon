@@ -26,8 +26,10 @@ public class TextOverlay extends Overlay {
 		BitmapFont font;
 		if (fontSize.equals("large")) {
 			font = Fonts.getInstance().largeFont();
-		} else {
+		} else if (fontSize.equals("medium")) {
 			font = Fonts.getInstance().mediumFont();
+		} else {
+			font = Fonts.getInstance().smallFont();
 		}
 
 		int lineHeight = (int) (Gdx.graphics.getHeight() * 0.1);

@@ -56,8 +56,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
-			throws ConnectionException {
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
 		try {
 			JSONObject top = JsonConstructor.performMove(gameId, moves);
 
@@ -67,7 +66,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args,
 					new GameBoard()));
 		} catch (JSONException e) {
-			throw new ConnectionException(e);
+			System.out.println(e);
 		}
 	}
 

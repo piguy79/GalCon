@@ -21,11 +21,7 @@ public class UIConnectionWrapper {
 	}
 
 	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
-		try {
-			gameAction.performMoves(callback, gameId, moves);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+		gameAction.performMoves(callback, gameId, moves);
 	}
 
 	public static void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {

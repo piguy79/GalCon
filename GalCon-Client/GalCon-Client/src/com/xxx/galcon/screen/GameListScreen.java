@@ -273,7 +273,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "small",
+			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
 					assetManager));
 		}
 	}

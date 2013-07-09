@@ -90,8 +90,7 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves)
-			throws ConnectionException {
+	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
 		try {
 			final JSONObject top = JsonConstructor.performMove(gameId, moves);
 			activity.runOnUiThread(new Runnable() {
