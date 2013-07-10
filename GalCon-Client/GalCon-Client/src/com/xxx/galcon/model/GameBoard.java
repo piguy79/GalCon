@@ -114,12 +114,13 @@ public class GameBoard extends JsonConvertible {
 		return endGameInformation.draw;
 	}
 
-	public boolean hasAsSelectedShip() {
+
+	public Move selectedMove() {
 		for(Move move : movesInProgress){
-			if(move.selected){
-				return true;
+			if(move.selected != -1f){
+				return move;
 			}
 		}
-		return false;
+		return null;
 	}
 }

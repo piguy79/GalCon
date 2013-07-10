@@ -9,10 +9,23 @@ public class DismissableOverlay extends Overlay {
 
 	private Overlay delegate;
 	private boolean dismissed = false;
+	private PostDismissAction postDismissAction;
 
 	public DismissableOverlay(AssetManager assetManger, Overlay delegate) {
-		super(assetManger);
+		super(assetManger, delegate.isDisplayOverlayTexture());
 		this.delegate = delegate;
+		postDismissAction = new PostDismissAction() {
+			
+			@Override
+			public void apply() {				
+			}
+		};
+	}
+	
+	public DismissableOverlay(AssetManager assetManger, Overlay delegate, PostDismissAction postDismissAction){
+		super(assetManger, delegate.isDisplayOverlayTexture());
+		this.delegate = delegate;
+		this.postDismissAction = postDismissAction;
 	}
 
 	@Override
@@ -22,9 +35,11 @@ public class DismissableOverlay extends Overlay {
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 		if (ip.didTouch()) {
 			dismissed = true;
+			postDismissAction.apply();
 			ip.consumeTouch();
 		}
 	}
+	
 
 	public boolean isDismissed() {
 		return dismissed;

@@ -58,6 +58,7 @@ import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.PostDismissAction;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
 public class BoardScreen implements ScreenFeedback, ContactListener {
@@ -85,6 +86,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram planetNumberShader;
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
+	private ShaderProgram overlayShader;
 
 	private Texture planetNumbersTexture;
 	private Texture planetTexture;
@@ -101,7 +103,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private WorldPlane worldPlane = new WorldPlane();
 
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
+	List<Planet> moveSelectedPlanets = new ArrayList<Planet>(2);
 	List<Move> inProgressMoves = new ArrayList<Move>();
+	
+	private float[] moveSelectedPlanetsCoords = new float[4];
 
 	private AssetManager assetManager;
 	private TweenManager tweenManager;
@@ -130,6 +135,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				"data/shaders/planet-numbers-fs.glsl");
 		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
+		overlayShader = createShaderUsingFiles("data/shaders/overlay-vs.glsl", "data/shaders/overlay-fs.glsl");
 
 		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
 		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
@@ -279,7 +285,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			return null;
 		}
 
-		if (GameLoop.USER.hasMoved(gameBoard)) {
+		if (GameLoop.USER.hasMoved(gameBoard)) {	
 			return null;
 		}
 
@@ -315,6 +321,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
 					contactBody.createFixture(fixtureDef);
+					
+					
 
 					ip.consumeTouch();
 				}
@@ -501,11 +509,30 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			float r = 1.0f, g = 0.0f, b = 0.0f;
 			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
 			
+			Move selectedMove = gameBoard.selectedMove();
+			
 			shipShader.setUniformMatrix("uPMatrix", camera.combined);
 			shipShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
-			shipShader.setUniformf("uColor", r, g, b, 1.0f);
-			shipShader.setUniformf("uDimmer", gameBoard.hasAsSelectedShip() ? 1.0f : 0.0f);
-			shipShader.setUniformf("uShowThisShip", move.selected ? 1.0f : 0.0f);
+			if(selectedMove != null && selectedMove.hashCode() != move.hashCode()){
+				selectedMove.selected += Gdx.graphics.getDeltaTime();
+				r -= 0.6f * selectedMove.selected;
+				g -= 0.8f *  selectedMove.selected * 0.1f;
+				b -= 0.8f *  selectedMove.selected * 0.1f;
+				shipShader.setUniformf("uColor", r, g, b, 1.0f);
+				shipShader.setUniformf("uTimeSinceShipSelected", selectedMove.selected);
+
+			}else{
+				shipShader.setUniformf("uColor", r, g, b, 1.0f);
+
+			}
+			
+			if(selectedMove != null){
+			}
+			shipShader.setUniformf("uDimmer", gameBoard.selectedMove() != null ? 1.0f : 0.0f);
+			shipShader.setUniformf("uShowThisShip", move.selected != -1f ? 1.0f : 0.0f);
+			
+			
+
 			
 
 			shipModel.render(shipShader);
@@ -560,7 +587,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet.touched) {
-			clearMoveSelection();
 			if (touchedPlanets.size() == 1) {
 				Planet alreadySelectedPlanet = touchedPlanets.get(0);
 				if (!planet.isOwnedBy(GameLoop.USER) && !alreadySelectedPlanet.owner.equals(GameLoop.USER.handle)) {
@@ -580,12 +606,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 	}
 
-	private void clearMoveSelection() {
-		for(Move move : gameBoard.movesInProgress){
-			move.selected = false;
-		}
-		
-	}
 
 	@Override
 	public void endContact(Contact contact) {
@@ -648,7 +668,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		renderGrid(camera);
 		renderPlanets(gameBoard.planets, camera);
 		renderPlanetNumbers(gameBoard.planets, camera);
+		renderOverlay(camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
+		
+		
 		
 
 		if (gameBoard.hasWinner()) {
@@ -666,7 +689,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				if (!prefs.getBoolean(ability + "_SHOWN", false)) {
 					overlay = new DismissableOverlay(assetManager, new TextOverlay(
 							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n"
-									+ PLANET_ABILITIES.get(ability), assetManager));
+									+ PLANET_ABILITIES.get(ability), assetManager, true));
 					prefs.putBoolean(ability + "_SHOWN", true);
 					prefs.flush();
 					break;
@@ -705,6 +728,44 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	
+
+	private void renderOverlay(Camera camera) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+		overlayShader.begin();
+
+		overlayShader.setUniformMatrix("uPMatrix", camera.combined);
+		overlayShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
+		overlayShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
+		overlayShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
+
+		moveSelectedPlanetsCoords[0] = -1;
+		moveSelectedPlanetsCoords[1] = -1;
+		moveSelectedPlanetsCoords[2] = -1;
+		moveSelectedPlanetsCoords[3] = -1;
+
+		int size = moveSelectedPlanets.size();
+		if (size > 0) {
+			Planet planet = moveSelectedPlanets.get(0);
+			moveSelectedPlanetsCoords[0] = planet.position.x;
+			moveSelectedPlanetsCoords[1] = planet.position.y;
+
+			if (size > 1) {
+
+				planet = moveSelectedPlanets.get(1);
+				moveSelectedPlanetsCoords[2] = planet.position.x;
+				moveSelectedPlanetsCoords[3] = planet.position.y;
+			}
+		}
+		overlayShader.setUniform1fv("uSelectedPlanetsCoords", moveSelectedPlanetsCoords, 0, 4);
+		overlayShader.setUniformf("uDimmer", gameBoard.selectedMove() != null ? 1.0f : 0.0f);
+
+		planetModel.render(overlayShader);
+
+		overlayShader.end();
+		
+	}
 
 	private SpriteBatch textSpriteBatch = new SpriteBatch();
 
@@ -814,10 +875,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processHudButtonTouch(String action) {
 		if (action.equals(Action.END_TURN)) {
-			overlay = new TextOverlay("Sending ships to their doom", assetManager);
+			overlay = new TextOverlay("Sending ships to their doom", assetManager, true);
 			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves);
 		} else if (action.equals(Action.REFRESH)) {
-			overlay = new TextOverlay("Refreshing...", assetManager);
+			overlay = new TextOverlay("Refreshing...", assetManager, true);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
 		} else if (action.equals(Action.BACK)) {
 			returnCode = Action.BACK;
@@ -831,21 +892,55 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 						break;
 					}
 				}
-				
+								
 				for(Move move : gameBoard.movesInProgress){
 					if(moveHashCode == move.hashCode()){
-						move.selected = true;
+						move.selected = 0.0f;
+						addPlanetsToMoveSelectedPlanets(move);
 					}else{
-						move.selected = false;
+						move.selected = -1f;
 					}
 				}
 			}
 		}
 	}
 
+	private void addPlanetsToMoveSelectedPlanets(Move move) {
+		moveSelectedPlanets.clear();
+
+		for(Planet planet : gameBoard.planets){
+			if(planet.name.equals(move.fromPlanet) || planet.name.equals(move.toPlanet)){
+				moveSelectedPlanets.add(planet);
+			}
+		}
+		
+		overlay = new DismissableOverlay(assetManager, new TextOverlay("", assetManager, false), new PostDismissAction() {
+			
+			@Override
+			public void apply() {
+				 clearMoveSelectedPlanets();
+			}
+		});
+				
+	}
+	
+	private void clearMoveSelectedPlanets(){
+		moveSelectedPlanets.clear();
+		
+		if(gameBoard == null){
+			return;
+		}
+		
+		for(Move move : gameBoard.movesInProgress){
+			move.selected = -1f;
+		}
+	}
+
 	private void clearTouchedPlanets() {
 		touchedPlanets.clear();
+		
 
+		
 		if (gameBoard == null || gameBoard.planets == null) {
 			return;
 		}

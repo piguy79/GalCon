@@ -9,15 +9,21 @@ public abstract class Overlay {
 
 	private Texture blackBackground;
 	private SpriteBatch spriteBatch;
+	private boolean displayOverlayTexture;
 
-	public Overlay(AssetManager assetManager) {
+	
+	public Overlay(AssetManager assetManager, boolean displayOverlayTexture) {
 		blackBackground = assetManager.get("data/images/transparent_square.png", Texture.class);
 		spriteBatch = new SpriteBatch();
+		this.displayOverlayTexture = displayOverlayTexture;
 	}
 
 	public void render(float delta) {
 		spriteBatch.begin();
-		spriteBatch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		if(displayOverlayTexture){
+			spriteBatch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		}
 
 		doCustomRender(delta, spriteBatch);
 
@@ -25,4 +31,10 @@ public abstract class Overlay {
 	}
 
 	protected abstract void doCustomRender(float delta, SpriteBatch spriteBatch);
+
+	public boolean isDisplayOverlayTexture() {
+		return displayOverlayTexture;
+	}
+	
+	
 }
