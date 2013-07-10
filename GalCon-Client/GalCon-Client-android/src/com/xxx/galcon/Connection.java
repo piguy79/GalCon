@@ -76,7 +76,7 @@ public class Connection {
 
 			JSONObject returnObject = new JSONObject(sb.toString());
 			String errorOccurred = returnObject.optString("error");
-			if (errorOccurred != null) {
+			if (errorOccurred != null && errorOccurred.trim().length() > 0) {
 				converter.errorMessage = errorOccurred;
 			} else {
 				converter.consume(new JSONObject(sb.toString()));
