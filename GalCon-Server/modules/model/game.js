@@ -302,12 +302,14 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 		GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc , function(err, savedGame) {
 			if(err || attemptNumber > 5) {
 				console.log("Error [ " + err + "], attemptNumber + " + attemptNumber + ", saving game: " + game);
+				callback(null);
 			} else if(!savedGame) {
 				exports.performMoves(gameId, moves, playerHandle, attemptNumber++, callback);
-				return;
-			} 
-			
-			callback(savedGame);
+			} else {
+				savedGame.populate('players', function(err, game) {
+					callback(game);
+				});
+			}
 		});
 	})
 }
