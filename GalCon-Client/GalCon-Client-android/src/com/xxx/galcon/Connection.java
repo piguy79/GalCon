@@ -74,7 +74,13 @@ public class Connection {
 			}
 			reader.close();
 
-			converter.consume(new JSONObject(sb.toString()));
+			JSONObject returnObject = new JSONObject(sb.toString());
+			String errorOccurred = returnObject.optString("error");
+			if (errorOccurred != null) {
+				converter.errorMessage = errorOccurred;
+			} else {
+				converter.consume(new JSONObject(sb.toString()));
+			}
 		} catch (Exception e) {
 			Log.wtf(LOG_NAME, "error", e);
 			converter.errorMessage = CONNECTION_ERROR_MESSAGE;

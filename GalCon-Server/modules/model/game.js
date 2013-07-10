@@ -9,6 +9,7 @@ positionAdjuster = require('../movement/PositionAdjuster');
 
 
 var gameSchema = mongoose.Schema({
+	version : "Number",
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
@@ -213,7 +214,7 @@ exports.createGame = function(players, width, height, numberOfPlanets,gameType, 
 exports.findAllGames = function(callback){
 	GameModel.find({}).populate('players').exec(function(err, games){
 		if(err){
-			console.log("Unable to find games");
+			console.log("Unable to find all games:" + err);
 		}else{
 			callback(games);
 		}
@@ -223,7 +224,7 @@ exports.findAllGames = function(callback){
 exports.findById = function(gameId, callback){
 	GameModel.findById(gameId).populate('players').exec(function(err, game){
 		if(err){
-			console.log("Unable to find games");
+			console.log("Unable to find game by id [" + gameId + "] " + err);
 		}else{
 			callback(game);
 		}
@@ -268,7 +269,7 @@ exports.findCollectionOfGames = function(searchIds, callback){
 exports.saveGame = function(game, callback) {
 	game.save(function(err, savedGame) {
 		if (err) {
-			console.log("Something went wrong. " + err);
+			console.log("Error saving game: " + err);
 		} else {
 			callback(savedGame);
 		}
@@ -276,7 +277,7 @@ exports.saveGame = function(game, callback) {
 	});
 }
 
-exports.performMoves = function(gameId, moves, playerHandle, callback) {
+exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, callback) {
 	this.findById(gameId, function(game) {
 		
 		game.addMoves(moves);
@@ -286,19 +287,27 @@ exports.performMoves = function(gameId, moves, playerHandle, callback) {
 			decrementCurrentShipCountOnFromPlanets(game);
 			game.currentRound.playersWhoMoved = [];
 			
-			processMoves(game);			
+			processMoves(game);
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
-
 		} 
 
-		game.save(function(err, savedGame) {
-			if(err){
-				console.log("Error [ " + err + "] saving Game" + game);
+		var existingVersion = game.version;
+		game.version++;
+		
+		// Need to update the entire document.  Remove the _id b/c Mongo won't accept _id as a field to update.
+		var updatedGame = game;
+		delete updatedGame._doc._id
+		GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc , function(err, savedGame) {
+			if(err || attemptNumber > 5) {
+				console.log("Error [ " + err + "], attemptNumber + " attemptNumber + ", saving game: " + game);
+			} else if(!savedGame) {
+				exports.performMoves(gameId, moves, playerHandle, attemptNumber++, callback);
+				return;
+			} 
 			
-			}
-			callback(game);
+			callback(savedGame);
 		});
 	})
 }

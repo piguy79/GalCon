@@ -159,21 +159,27 @@ exports.performMoves = function(req, res) {
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
 
-	gameManager.performMoves(gameId, moves, playerHandle, function(savedGame) {
-		if (savedGame.endGameInformation.winnerHandle) {
-			userManager.findUserByHandle(savedGame.endGameInformation.winnerHandle, function(user) {
-				user.wins++;
-				user.xp += 10;
-				savedGame.endGameInformation.xpAwardToWinner = 10;
-				rankManager.findRankForXp(user.xp, function(rank) {
-					user.rankInfo = rank;
-					user.save(function() {
-						res.json(processGameReturn(savedGame, playerHandle));
-					});
-				});
+	gameManager.performMoves(gameId, moves, playerHandle, 0, function(savedGame) {
+		if(!savedGame) {
+			res.json({
+				error: "Error performing move, could not save game";
 			});
 		} else {
-			res.json(processGameReturn(savedGame, playerHandle));
+			if (savedGame.endGameInformation.winnerHandle) {
+				userManager.findUserByHandle(savedGame.endGameInformation.winnerHandle, function(user) {
+					user.wins++;
+					user.xp += 10;
+					savedGame.endGameInformation.xpAwardToWinner = 10;
+					rankManager.findRankForXp(user.xp, function(rank) {
+						user.rankInfo = rank;
+						user.save(function() {
+							res.json(processGameReturn(savedGame, playerHandle));
+						});
+					});
+				});
+			} else {
+				res.json(processGameReturn(savedGame, playerHandle));
+			}
 		}
 	});
 }
@@ -194,10 +200,8 @@ processGameReturn = function(game, playerWhoCalledTheUrl){
 decrementPlanetShipNumber = function(game, move){
 	for(var i = 0; i < game.planets.length; i++){
 		var planet = game.planets[i];
-		console.log(planet.name  + " : " + move.fromPlanet);
 		if(planet.name == move.fromPlanet){
 			planet.numberOfShips = planet.numberOfShips - move.fleet;
-			console.log("Decresaing for planet " + planet.name);
 		}
 	}
 }

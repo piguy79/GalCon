@@ -6,6 +6,7 @@ var MAX_STARTING_SHIPS = 10;
 
 function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.currentPlanetNum = 0;
+	this.version = 0;
 	this.players = players;
 	this.width = width;
 	this.height = height;
