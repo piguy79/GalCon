@@ -31,7 +31,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public float animationx;
 	public float animationy;
 	
-	public boolean selected = false;
+	public float selected = -1f;
 	
 
 	

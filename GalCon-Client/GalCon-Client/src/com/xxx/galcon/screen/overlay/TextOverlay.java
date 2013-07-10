@@ -16,8 +16,8 @@ public class TextOverlay extends Overlay {
 		this.fontSize = fontSize;
 	}
 
-	public TextOverlay(String text, AssetManager assetManager) {
-		super(assetManager);
+	public TextOverlay(String text, AssetManager assetManager,  boolean displayOverlayTexture) {
+		super(assetManager, displayOverlayTexture);
 		this.textLines = text.split("\n");
 	}
 

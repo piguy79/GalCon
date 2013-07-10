@@ -24,7 +24,7 @@ public class JoinGameListScreen extends GameListScreen {
 
 	@Override
 	protected void refreshScreen() {
-		overlay = new TextOverlay("Refreshing...", assetManager);
+		overlay = new TextOverlay("Refreshing...", assetManager, true);
 		UIConnectionWrapper.findAvailableGames(this, GameLoop.USER.handle);
 	}
 

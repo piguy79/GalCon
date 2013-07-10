@@ -62,7 +62,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	protected void refreshScreen() {
-		overlay = new TextOverlay("Refreshing...", assetManager);
+		overlay = new TextOverlay("Refreshing...", assetManager, true);
 		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
 	}
 
