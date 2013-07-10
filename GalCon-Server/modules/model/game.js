@@ -301,7 +301,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 		delete updatedGame._doc._id
 		GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc , function(err, savedGame) {
 			if(err || attemptNumber > 5) {
-				console.log("Error [ " + err + "], attemptNumber + " attemptNumber + ", saving game: " + game);
+				console.log("Error [ " + err + "], attemptNumber + " + attemptNumber + ", saving game: " + game);
 			} else if(!savedGame) {
 				exports.performMoves(gameId, moves, playerHandle, attemptNumber++, callback);
 				return;
