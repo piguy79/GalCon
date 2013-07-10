@@ -162,7 +162,7 @@ exports.performMoves = function(req, res) {
 	gameManager.performMoves(gameId, moves, playerHandle, 0, function(savedGame) {
 		if(!savedGame) {
 			res.json({
-				error: "Error performing move, could not save game";
+				error: "Could not perform move, please try again"
 			});
 		} else {
 			if (savedGame.endGameInformation.winnerHandle) {
