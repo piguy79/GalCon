@@ -516,20 +516,21 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if(selectedMove != null && selectedMove.hashCode() != move.hashCode()){
 				selectedMove.selected += Gdx.graphics.getDeltaTime();
 				r -= 0.6f * selectedMove.selected;
-				g -= 0.8f *  selectedMove.selected * 0.1f;
-				b -= 0.8f *  selectedMove.selected * 0.1f;
+				g -= 0.8f *  selectedMove.selected;
+				b -= 0.8f *  selectedMove.selected;
+				
+				if(r < 0.5){
+					r = 0.5f;
+					g = 0f;
+					b = 0f;
+				}
 				shipShader.setUniformf("uColor", r, g, b, 1.0f);
-				shipShader.setUniformf("uTimeSinceShipSelected", selectedMove.selected);
-
 			}else{
 				shipShader.setUniformf("uColor", r, g, b, 1.0f);
 
 			}
 			
-			if(selectedMove != null){
-			}
-			shipShader.setUniformf("uDimmer", gameBoard.selectedMove() != null ? 1.0f : 0.0f);
-			shipShader.setUniformf("uShowThisShip", move.selected != -1f ? 1.0f : 0.0f);
+			
 			
 			
 
