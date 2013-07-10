@@ -135,7 +135,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 							ip.consumeTouch();
-							overlay = new TextOverlay("Joining...", assetManager);
+							overlay = new TextOverlay("Joining...", assetManager,true);
 							takeActionOnGameboard(gameBoard, GameLoop.USER.handle);
 						}
 					}

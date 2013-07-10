@@ -12,7 +12,7 @@ public class TextOverlay extends Overlay {
 	private String fontSize = "large";
 
 	public TextOverlay(String text, String fontSize, AssetManager assetManager) {
-		this(text, assetManager);
+		this(text, assetManager, true);
 		this.fontSize = fontSize;
 	}
 
