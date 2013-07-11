@@ -58,14 +58,14 @@ public class InGameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		touchTime = System.currentTimeMillis();
-		lastTouchX = x;
-		lastTouchY = y;
 		return true;
 	}
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
+		touchTime = System.currentTimeMillis();
+		lastTouchX = x;
+		lastTouchY = y;
 		return true;
 	}
 
