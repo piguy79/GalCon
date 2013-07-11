@@ -12,8 +12,8 @@ public class MoveTween implements TweenAccessor<Move> {
     public int getValues(Move target, int tweenType, float[] returnValues) {
         switch (tweenType) {
             case POSITION_XY:
-                returnValues[0] = target.animationx;
-                returnValues[1] = target.animationy;
+                returnValues[0] = target.currentAnimation.x;
+                returnValues[1] = target.currentAnimation.y;
                 return 2;
             default: assert false; return -1;
         }
@@ -23,8 +23,8 @@ public class MoveTween implements TweenAccessor<Move> {
     public void setValues(Move target, int tweenType, float[] newValues) {
         switch (tweenType) {
             case POSITION_XY:
-                target.animationx = newValues[0];
-                target.animationy = newValues[1];
+                target.currentAnimation.x = newValues[0];
+                target.currentAnimation.y = newValues[1];
                 break;
             default: assert false; break;
         }

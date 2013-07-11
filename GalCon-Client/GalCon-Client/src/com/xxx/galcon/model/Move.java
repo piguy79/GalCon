@@ -25,11 +25,12 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public Point startPosition = new Point();
 	public Point endPosition = new Point();
 	public int startingRound;
+	public boolean executed;
 	
 	public Tween animation;
 	
-	public float animationx;
-	public float animationy;
+	public Point currentAnimation = new Point();;
+	
 	
 	public float selected = -1f;
 	
@@ -37,7 +38,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	
 	public Move() {
 		super();
-		this.animation =  Tween.to(this, MoveTween.POSITION_XY, 0.4f);
+		this.animation =  Tween.to(this, MoveTween.POSITION_XY, 0.8f);
 		
 	}
 
@@ -56,6 +57,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("startPosition", startPosition.asJson());
 		jsonObject.put("endPosition", endPosition.asJson());
 		jsonObject.put("currentPosition", currentPosition.asJson());
+		jsonObject.put("executed", "false");
 
 		
 		if(previousPosition != null){
@@ -78,9 +80,10 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		this.startPosition.consume(jsonObject.getJSONObject("startPosition"));
 		this.endPosition.consume(jsonObject.getJSONObject("endPosition"));
 		startingRound = jsonObject.getInt("startingRound");
+		this.executed = jsonObject.getBoolean("executed");
 		
-		animationx = previousPosition.x;
-		animationy = previousPosition.y;
+		currentAnimation = previousPosition;
+		
 		
 		animation.target(currentPosition.x, currentPosition.y);
 		
@@ -88,7 +91,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	
 	
 	public float angleOfMovement(){
-		return new Vector2(endPosition.x - currentPosition.x, endPosition.y - currentPosition.y).angle();
+		return new Vector2(endPosition.x - currentAnimation.x, endPosition.y - currentAnimation.y).angle();
 		
 	}
 

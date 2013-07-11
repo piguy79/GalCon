@@ -49,6 +49,7 @@ var gameSchema = mongoose.Schema({
 			fleet : "Number",
 			duration : "Number",
 			startingRound : "Number",
+			executed : "Boolean",
 			previousPosition : {
 				x : "Number",
 				y : "Number"
@@ -284,6 +285,8 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 		game.currentRound.playersWhoMoved.push(playerHandle);
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
+		
+		    removeMovesWhichHaveBeenExecuted(game);
 			decrementCurrentShipCountOnFromPlanets(game);
 			game.currentRound.playersWhoMoved = [];
 			
@@ -312,6 +315,16 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 			}
 		});
 	})
+}
+
+var removeMovesWhichHaveBeenExecuted = function(game){
+	var i = game.moves.length;
+	while (i--) {
+		var move = game.moves[i];
+		if (move.executed) {
+			game.moves.splice(i, 1)
+		}
+	}
 }
 
 var decrementCurrentShipCountOnFromPlanets = function(game){

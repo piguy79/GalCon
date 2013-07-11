@@ -50,14 +50,17 @@ public class ShipMoveHudButton extends HudButton {
 	public void render(SpriteBatch spriteBatch) {
 		if (isPending) {
 			spriteBatch.setColor(Color.ORANGE);
+		}else if(move.executed){
+			spriteBatch.setColor(Color.BLUE);
 		}
 		super.render(spriteBatch);
 		spriteBatch.setColor(Color.WHITE);
 
 		if (isEnabled()) {
 			BitmapFont font = Fonts.getInstance().largeFont();
-			if (!isPending) {
+			if (!isPending && !move.executed) {
 				font.setColor(Color.RED);
+			
 			}
 			font.draw(spriteBatch, "" + move.shipsToMove, x + 5, y + height - 10);
 
