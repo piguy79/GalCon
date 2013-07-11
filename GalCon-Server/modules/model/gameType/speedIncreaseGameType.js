@@ -32,7 +32,7 @@ exports.applyMovesToGame = function(game){
 		move.duration = move.duration - speedIncrease;
 		if (move.duration <= 0) {
 			game.applyMoveToPlanets(game, move);
-			game.moves.splice(i, 1)
+			move.executed = true;
 		}
 	}
 

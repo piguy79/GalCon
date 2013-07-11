@@ -39,7 +39,7 @@ exports.applyMovesToGame = function(game){
 		move.duration--;
 		if (move.duration <= 0) {
 			game.applyMoveToPlanets(game, move);
-			game.moves.splice(i, 1)
+			move.executed = true;
 		}
 	}
 

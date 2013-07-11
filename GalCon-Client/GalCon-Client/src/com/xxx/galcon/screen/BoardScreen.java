@@ -46,6 +46,7 @@ import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
@@ -491,13 +492,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				move.animation.start(tweenManager);
 			}
 
-			float xToDraw = move.animationx, yToDraw = move.animationy;
+			float xToDraw = move.currentAnimation.x, yToDraw = move.currentAnimation.y;
 
 			if (roundAnimated == gameBoard.roundInformation.currentRound) {
 				xToDraw = move.currentPosition.x;
 				yToDraw = move.currentPosition.y;
+				if(move.executed){
+					continue;
+				}
 			} else if (move.animation.isFinished()) {
 				roundAnimated = gameBoard.roundInformation.currentRound;
+				
 			}
 
 			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw
@@ -507,7 +512,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 
 			float r = 1.0f, g = 0.0f, b = 0.0f;
-			modelViewMatrix.scale(tileWidthInWorld / 8.0f, tileHeightInWorld / 8.0f, 1.0f);
+			float scalingFactor = 8.0f;
+			if(move.executed){
+				float distance = distanceToPlanet(move, gameBoard.planets);
+				
+				scalingFactor = scalingFactor / distance;
+			}
+			modelViewMatrix.scale(tileWidthInWorld / scalingFactor, tileHeightInWorld / scalingFactor, 1.0f);
 			
 			Move selectedMove = gameBoard.selectedMove();
 			
@@ -529,12 +540,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				shipShader.setUniformf("uColor", r, g, b, 1.0f);
 
 			}
-			
-			
-			
-			
-
-			
 
 			shipModel.render(shipShader);
 		}
@@ -542,6 +547,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		shipShader.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	private float distanceToPlanet(Move move, List<Planet> planets) {
+		for(Planet planet : planets){
+			if(planet.name.equals(move.toPlanet)){
+				return GalConMath.distance(move.currentAnimation.x, move.currentAnimation.y, planet.position.x, planet.position.y);
+			}
+		}
+		return 0;
 	}
 
 	private void addPhysicsToPlanet(Planet planet) {
