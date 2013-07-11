@@ -3,6 +3,7 @@ gameTypeAssembler = require('./model/gameType/gameTypeAssembler');
 
 var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
+var HOME_RADIUS_RATIO = .38;
 
 function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 	this.currentPlanetNum = 0;
@@ -37,8 +38,8 @@ GameBuilder.prototype.createBoard = function(callback) {
 	this.createHomePlanets();
 	
 	var boardSize = this.width * this.height;
-	var regenAroundHomePlanet = Math.floor(boardSize *.3); 
-	var shipsAroundHomePlanet = Math.floor(boardSize / 3);
+	var regenAroundHomePlanet = Math.floor(boardSize * .22); 
+	var shipsAroundHomePlanet = Math.floor(boardSize * .25);
 	this.createPlanetsAroundHomePlanet(this.planets[0], regenAroundHomePlanet, shipsAroundHomePlanet);
 	this.createPlanetsAroundHomePlanet(this.planets[1], regenAroundHomePlanet, shipsAroundHomePlanet, this.planets[0]);
 	
@@ -49,7 +50,7 @@ GameBuilder.prototype.createBoard = function(callback) {
 }
 
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
-	var tooCloseToHomeRadius = Math.floor(this.width / 2);
+	var tooCloseToHomeRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
 	
 	var extraPlanets = [];
 	while(this.planets.length < this.numberOfPlanets) {
@@ -85,21 +86,28 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 
 GameBuilder.prototype.createHomePlanets = function() {
 	var homePlanets = [];
-	var minDistanceBetweenPlanets = Math.floor(this.width / 2) + 1;
+	var minDistanceBetweenPlanets = Math.ceil(this.width * HOME_RADIUS_RATIO) + 1;
 
 	var x = Math.floor(Math.random() * this.width);
 	var y = Math.floor(Math.random() * this.height);
+	
+	x = this.removeFromEdge(x, this.width-1);
+	y = this.removeFromEdge(y, this.height-1);
+	
 	homePlanets.push(this.createHomePlanet(x, y));
 
 	while (homePlanets.length != 2) {
 		var x = Math.floor((Math.random() * this.width));
 		var y = Math.floor((Math.random() * this.height));
+		
+		x = this.removeFromEdge(x, this.width-1);
+		y = this.removeFromEdge(y, this.height-1);
 
 		var xDist = x - homePlanets[0].position.x;
 		var yDist = y - homePlanets[0].position.y;
 
 		var distance = Math.sqrt(xDist * xDist + yDist * yDist);
-		if (distance < minDistanceBetweenPlanets) {
+		if (distance <= minDistanceBetweenPlanets) {
 			continue;
 		}
 
@@ -110,8 +118,18 @@ GameBuilder.prototype.createHomePlanets = function() {
 	this.planets.push(homePlanets[1]);
 }
 
+GameBuilder.prototype.removeFromEdge = function(value, max) {
+	if(value == 0) {
+		value = 1;
+	} else if(value == max) {
+		value--;
+	}
+	
+	return value;
+}
+
 GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRegenAroundPlanet, shipsAroundPlanet, otherHomePlanet) {
-	var acceptableRadius = Math.floor(this.width / 2);
+	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
 	
 	var existingRegenAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "shipRegenRate");
 	totalRegenAroundPlanet -= existingRegenAroundPlanet;
