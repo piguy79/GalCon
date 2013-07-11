@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.model.Move;
@@ -56,9 +57,15 @@ public class ShipMoveHudButton extends HudButton {
 		if (isEnabled()) {
 			BitmapFont font = Fonts.getInstance().largeFont();
 			if (!isPending) {
-				font.setColor(Color.BLACK);
+				font.setColor(Color.RED);
 			}
-			font.draw(spriteBatch, "" + move.shipsToMove, x + 3, y + height - 10);
+			font.draw(spriteBatch, "" + move.shipsToMove, x + 5, y + height - 10);
+
+			String duration = "" + (int) Math.ceil(move.duration);
+			font.setColor(Color.BLACK);
+			
+			TextBounds bounds = font.getBounds(duration);
+			font.draw(spriteBatch, duration, x + width - 5 - bounds.width, y + 20);
 			font.setColor(Color.WHITE);
 		}
 	}

@@ -1,5 +1,8 @@
 package com.xxx.galcon.screen.hud;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -39,6 +42,8 @@ public class BoardScreenHud extends Hud {
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
+	private boolean redrawMoves = false;
+
 	public void associateCurrentRoundInformation(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
 		this.moveToButtonMap.clear();
@@ -49,12 +54,12 @@ public class BoardScreenHud extends Hud {
 				iter.remove();
 			}
 		}
+
+		redrawMoves = true;
 	}
 
 	@Override
 	public void render(float delta) {
-		
-
 		getSpriteBatch().begin();
 
 		getSpriteBatch().draw(bottomBar, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO);
@@ -69,16 +74,22 @@ public class BoardScreenHud extends Hud {
 
 		getSpriteBatch().end();
 
-		getSpriteBatch().begin();
-		addMoveButtons(boardScreen.getPendingMoves(), true);
-		addMoveButtons(gameBoard.movesInProgress, false);
-		getSpriteBatch().end();
+		if (redrawMoves) {
+			getSpriteBatch().begin();
+			addMoveButtons(boardScreen.getPendingMoves(), true);
+			addMoveButtons(gameBoard.movesInProgress, false);
+			getSpriteBatch().end();
+			redrawMoves = false;
+		}
 
 		super.render(delta);
 	}
 
 	private void addMoveButtons(List<Move> moves, boolean isPending) {
 		int size = moves.size();
+
+		Collections.sort(moves, moveComparator);
+
 		for (int i = 0; i < size; ++i) {
 			Move move = moves.get(i);
 			if (!move.playerHandle.equals(GameLoop.USER.handle)) {
@@ -93,5 +104,24 @@ public class BoardScreenHud extends Hud {
 			}
 		}
 	}
+
+	private Comparator<Move> moveComparator = new Comparator<Move>() {
+		@Override
+		public int compare(Move o1, Move o2) {
+			if (o1.duration < o2.duration) {
+				return -1;
+			}
+
+			if (o1.duration > o2.duration) {
+				return 1;
+			}
+
+			if (o1.shipsToMove > o2.shipsToMove) {
+				return -1;
+			}
+
+			return 1;
+		}
+	};
 
 }
