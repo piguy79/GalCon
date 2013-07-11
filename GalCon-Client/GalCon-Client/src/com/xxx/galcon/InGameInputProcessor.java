@@ -1,5 +1,8 @@
 package com.xxx.galcon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.InputProcessor;
 
 public class InGameInputProcessor implements InputProcessor {
@@ -7,10 +10,21 @@ public class InGameInputProcessor implements InputProcessor {
 	private static final int MAX_TOUCH_PROCESSING_DELAY_IN_MILLISECONDS = 500;
 	private int lastTouchX = -1, lastTouchY = -1;
 	private long touchTime = System.currentTimeMillis();
+	private List<TouchPoint> draggedPoints = new ArrayList<TouchPoint>(50);
 
 	public class TouchPoint {
 		public int x;
 		public int y;
+
+		public TouchPoint() {
+			x = 0;
+			y = 0;
+		}
+
+		public TouchPoint(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
 	}
 
 	private TouchPoint touchPoint = new TouchPoint();
@@ -63,16 +77,28 @@ public class InGameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
-		touchTime = System.currentTimeMillis();
-		lastTouchX = x;
-		lastTouchY = y;
+		if (isDragging()) {
+			draggedPoints.clear();
+		} else {
+			touchTime = System.currentTimeMillis();
+			lastTouchX = x;
+			lastTouchY = y;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
+		draggedPoints.add(new TouchPoint(x, y));
+		return true;
+	}
+
+	public boolean isDragging() {
+		return draggedPoints.size() > 1;
+	}
+
+	public List<TouchPoint> getDragTouchPoints() {
+		return draggedPoints;
 	}
 
 	@Override

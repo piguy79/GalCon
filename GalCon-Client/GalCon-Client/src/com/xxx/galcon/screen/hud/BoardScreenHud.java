@@ -1,6 +1,5 @@
 package com.xxx.galcon.screen.hud;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,6 +11,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.BoardScreen;
@@ -73,6 +74,25 @@ public class BoardScreenHud extends Hud {
 		}
 
 		getSpriteBatch().end();
+
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+
+		if (ip.isDragging()) {
+			List<TouchPoint> dragPoints = ip.getDragTouchPoints();
+
+			int size = dragPoints.size();
+			TouchPoint current = dragPoints.get(size - 1);
+			TouchPoint previous = dragPoints.get(size - 2);
+
+			for (HudButton button : getHudButtons()) {
+				if (!(button instanceof ShipMoveHudButton)) {
+					continue;
+				}
+
+				ShipMoveHudButton moveButton = (ShipMoveHudButton) button;
+				moveButton.offSet(current.x - previous.x);
+			}
+		}
 
 		if (redrawMoves) {
 			getSpriteBatch().begin();

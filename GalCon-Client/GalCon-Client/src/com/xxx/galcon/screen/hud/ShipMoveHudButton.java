@@ -11,7 +11,8 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.Action;
 
 public class ShipMoveHudButton extends HudButton {
-
+	private int maxBarWidthForMoves;
+	private int margin;
 	private Move move;
 	private boolean isPending;
 	private int xPos;
@@ -31,17 +32,17 @@ public class ShipMoveHudButton extends HudButton {
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
 		int bottomHeight = (int) (screenHeight * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
-		int maxMinimizedBarWidth = (int) (screenWidth * 0.75f);
+		maxBarWidthForMoves = (int) (screenWidth * 0.75f);
 		int buttonHeight = (int) (bottomHeight * 0.65f);
 
-		int margin = (int) (screenWidth * 0.015f);
+		margin = (int) (screenWidth * 0.015f);
 
 		this.x = margin + xPos * buttonHeight + xPos * margin;
 		this.y = (int) (bottomHeight * 0.5f - buttonHeight / 2);
 		this.width = buttonHeight;
 		this.height = buttonHeight;
 
-		if (this.x + this.width + margin > maxMinimizedBarWidth) {
+		if (!isButtonInbounds()) {
 			this.setEnabled(false);
 		}
 	}
@@ -63,10 +64,24 @@ public class ShipMoveHudButton extends HudButton {
 
 			String duration = "" + (int) Math.ceil(move.duration);
 			font.setColor(Color.BLACK);
-			
+
 			TextBounds bounds = font.getBounds(duration);
 			font.draw(spriteBatch, duration, x + width - 5 - bounds.width, y + 20);
 			font.setColor(Color.WHITE);
 		}
+	}
+
+	public void offSet(int xDiff) {
+		x = x + xDiff;
+
+		if (isButtonInbounds()) {
+			setEnabled(true);
+		} else {
+			setEnabled(false);
+		}
+	}
+
+	private boolean isButtonInbounds() {
+		return (this.x + this.width + margin) < maxBarWidthForMoves;
 	}
 }
