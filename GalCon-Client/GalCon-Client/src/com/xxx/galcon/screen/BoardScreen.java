@@ -402,6 +402,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
+			planetShader.setUniformf("radius", radius);
 			planetShader.setUniformi("shipCount", planet.numberOfShips);
 			planetModel.render(planetShader);
 		}

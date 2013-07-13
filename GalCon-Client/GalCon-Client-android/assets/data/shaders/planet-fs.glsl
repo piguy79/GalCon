@@ -8,6 +8,7 @@
 
 uniform float uPlanetBits[4];
 uniform int shipCount;
+uniform float radius;
 uniform sampler2D numbersTex;
 uniform sampler2D planetTex;
 uniform sampler2D planetTouchTex;
@@ -52,10 +53,17 @@ void main() {
 		pixel += ADD_ABILITY_COLOR;
 	}
 	
-	// Numbers part //////////////
+	// Number rendering //////////////
+	// make the numbers larger to account for the smaller scale on small planets
+	float modifier = (0.5 - radius) * 1.75;
+	
 	float xDistToCenter = 0.5 - vTexCoords.x;
+	xDistToCenter += xDistToCenter * modifier;
+	
 	float yDistToCenter = vTexCoords.y - 0.5;
-	float halfWidth = 0.1;
+	yDistToCenter -= yDistToCenter * modifier;
+	
+	float halfWidth = 0.1 + 0.12 * modifier;
 	float halfHeight = 0.12;
 	
 	float textAreaHalfWidth = halfWidth;
@@ -81,6 +89,7 @@ void main() {
 		}
 			
 		float xDistToNumberCenter = vTexCoords.x - xNumberCenter;
+		xDistToNumberCenter -= xDistToNumberCenter * modifier;
 		float yDistToNumberCenter = yDistToCenter;
 		xDistToNumberCenter = (xDistToNumberCenter + halfWidth) * (1.0 / (1.0-(halfWidth + halfWidth)));
 		yDistToNumberCenter = (yDistToNumberCenter + halfHeight) * (1.0 / (1.0-(halfHeight + halfHeight)));
@@ -89,6 +98,7 @@ void main() {
 		if(numberToShow == 1) {
 			xMult = 0.36;
 		}
+		xMult -= 0.3 * modifier;
 		numberTexColor = texture2D(numbersTex, 
 									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.4));
 	}
