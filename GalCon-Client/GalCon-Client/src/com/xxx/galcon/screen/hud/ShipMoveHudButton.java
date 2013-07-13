@@ -11,7 +11,6 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.Action;
 
 public class ShipMoveHudButton extends HudButton {
-	private int maxBarWidthForMoves;
 	private int margin;
 	private Move move;
 	private boolean isPending;
@@ -32,7 +31,6 @@ public class ShipMoveHudButton extends HudButton {
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
 		int bottomHeight = (int) (screenHeight * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
-		maxBarWidthForMoves = (int) (screenWidth * 0.75f);
 		int buttonHeight = (int) (bottomHeight * 0.65f);
 
 		margin = (int) (screenWidth * 0.015f);
@@ -69,7 +67,7 @@ public class ShipMoveHudButton extends HudButton {
 			font.setColor(Color.BLACK);
 
 			TextBounds bounds = font.getBounds(duration);
-			font.draw(spriteBatch, duration, x + width - 5 - bounds.width, y + 20);
+			font.draw(spriteBatch, duration, x + width - 5 - bounds.width, y + 5 + bounds.height);
 			font.setColor(Color.WHITE);
 		}
 	}
@@ -85,6 +83,6 @@ public class ShipMoveHudButton extends HudButton {
 	}
 
 	private boolean isButtonInbounds() {
-		return (this.x + this.width + margin) < maxBarWidthForMoves;
+		return (this.x + this.width + margin) < BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES;
 	}
 }

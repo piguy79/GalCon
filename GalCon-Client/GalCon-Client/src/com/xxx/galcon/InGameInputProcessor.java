@@ -3,13 +3,16 @@ package com.xxx.galcon;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class InGameInputProcessor implements InputProcessor {
 
 	private static final int MAX_TOUCH_PROCESSING_DELAY_IN_MILLISECONDS = 500;
+	private static final int MAX_DRAG_DELAY_IN_MILLISECONDS = 200;
 	private int lastTouchX = -1, lastTouchY = -1;
 	private long touchTime = System.currentTimeMillis();
+	private long lastDragTime = System.currentTimeMillis();
 	private List<TouchPoint> draggedPoints = new ArrayList<TouchPoint>(50);
 
 	public class TouchPoint {
@@ -89,12 +92,19 @@ public class InGameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
+		lastDragTime = System.currentTimeMillis();
+		
+		y = Gdx.graphics.getHeight() - y;
 		draggedPoints.add(new TouchPoint(x, y));
+		
 		return true;
 	}
 
 	public boolean isDragging() {
-		return draggedPoints.size() > 1;
+		if (lastDragTime < System.currentTimeMillis() - MAX_DRAG_DELAY_IN_MILLISECONDS) {
+			return false;
+		}
+		return draggedPoints.size() > 6;
 	}
 
 	public List<TouchPoint> getDragTouchPoints() {

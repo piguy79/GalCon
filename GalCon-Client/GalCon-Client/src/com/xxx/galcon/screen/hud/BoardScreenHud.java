@@ -18,6 +18,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.BoardScreen;
 
 public class BoardScreenHud extends Hud {
+	public static int MAX_BAR_WIDTH_FOR_MOVES = 0;
 	public static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
@@ -60,6 +61,13 @@ public class BoardScreenHud extends Hud {
 	}
 
 	@Override
+	public void resize(int width, int height) {
+		MAX_BAR_WIDTH_FOR_MOVES = (int) (width * 0.75f);
+
+		super.resize(width, height);
+	}
+
+	@Override
 	public void render(float delta) {
 		getSpriteBatch().begin();
 
@@ -80,17 +88,22 @@ public class BoardScreenHud extends Hud {
 		if (ip.isDragging()) {
 			List<TouchPoint> dragPoints = ip.getDragTouchPoints();
 
-			int size = dragPoints.size();
-			TouchPoint current = dragPoints.get(size - 1);
-			TouchPoint previous = dragPoints.get(size - 2);
+			TouchPoint dragBegin = dragPoints.get(0);
+			if (dragBegin.x > 0 && dragBegin.x < MAX_BAR_WIDTH_FOR_MOVES) {
+				if (dragBegin.y > 0 && dragBegin.y < Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO) {
+					int size = dragPoints.size();
+					TouchPoint current = dragPoints.get(size - 1);
+					TouchPoint previous = dragPoints.get(size - 2);
 
-			for (HudButton button : getHudButtons()) {
-				if (!(button instanceof ShipMoveHudButton)) {
-					continue;
+					for (HudButton button : getHudButtons()) {
+						if (!(button instanceof ShipMoveHudButton)) {
+							continue;
+						}
+
+						ShipMoveHudButton moveButton = (ShipMoveHudButton) button;
+						moveButton.offSet(current.x - previous.x);
+					}
 				}
-
-				ShipMoveHudButton moveButton = (ShipMoveHudButton) button;
-				moveButton.offSet(current.x - previous.x);
 			}
 		}
 
