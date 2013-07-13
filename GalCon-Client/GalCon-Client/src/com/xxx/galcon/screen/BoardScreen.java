@@ -484,11 +484,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (selectedMove != null && selectedMove.hashCode() != move.hashCode()) {
 				selectedMove.selected += Gdx.graphics.getDeltaTime();
 				r -= 0.6f * selectedMove.selected;
-				g -= 0.8f * selectedMove.selected;
-				b -= 0.8f * selectedMove.selected;
 
-				if (r < 0.5) {
-					r = 0.5f;
+				g -= 0.8f *  selectedMove.selected;
+				b -= 0.8f *  selectedMove.selected;
+				
+				if(r < 0.4){
+					r = 0.4f;
 					g = 0f;
 					b = 0f;
 				}

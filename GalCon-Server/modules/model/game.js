@@ -65,6 +65,12 @@ var gameSchema = mongoose.Schema({
 			endPosition : {
 				x : "Number",
 				y : "Number"
+			},
+			battlestats : {
+				previousShipsOnPlanet : "Number",
+				previousPlanetOwner : "String",
+				defenceStrength : "Number",
+				attackStrength : "Number"
 			}
 		}
 	]
@@ -104,14 +110,23 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game);
 			var attackStrength = calculateAttackStrengthForMove(move, game);
 			var battleResult = defenceStrength - attackStrength;	
+			
+			move.battlestats.previousPlanetOwner = planet.ownerHandle;
+			move.battlestats.newPlanetOwner = "";
 						
 			if(battleResult <= 0){
+				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
 				planet.numberOfShips = Math.abs(battleResult); 
 				planet.conquered = true;
 			}else{
 				planet.numberOfShips = battleResult * (1 / (1 + getDefenceMutlipler(planet, game)));
 			}
+			
+			
+			move.battlestats.previousShipsOnPlanet = planet.numberofShips;
+			move.battlestats.defenceStrength = defenceStrength;
+			move.battlestats.attackStrength = attackStrength;
 		}
 		
 	});
