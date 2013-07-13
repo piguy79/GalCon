@@ -44,6 +44,8 @@ public class ShipMoveHudButton extends HudButton {
 			this.setEnabled(false);
 		}
 	}
+	
+	
 
 	@Override
 	public void render(SpriteBatch spriteBatch) {
