@@ -1,5 +1,8 @@
 package com.xxx.galcon.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,6 +55,61 @@ public class Planet extends JsonConvertible {
 
 	public String getAbilityDescription() {
 		return Constants.PLANET_ABILITIES.get(ability);
+	}
+	
+	public List<Move> associatedTargetMoves(GameBoard gameBoard){
+		List<Move> associatedMoves = new ArrayList<Move>();
+		
+		for(Move move : gameBoard.movesInProgress){
+			if(move.toPlanet.equals(this.name) && move.belongsToPlayer(GameLoop.USER)){
+				associatedMoves.add(move);
+			}
+		}
+		
+		return associatedMoves;
+	}
+	
+	public boolean isBeingAttacked(GameBoard gameBoard){
+		for(Move move : associatedTargetMoves(gameBoard)){
+			if(move.executed && !move.animation.isFinished()){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	public String previousRoundOwner(GameBoard gameBoard) {
+		for(Move move : associatedTargetMoves(gameBoard)){
+			if(move.executed){
+				if(move.battleStats.previousPlanetOwner.equals("")){
+					return Constants.OWNER_NO_ONE;
+				}
+				return move.battleStats.previousPlanetOwner;
+			}
+		}
+		
+		
+		return owner;
+	}
+
+	public int numberOfShipsToDisplay(GameBoard gameBoard) {
+		int lowestFromExecutedMoves = 10000000;
+		boolean executedMovesFound = false;
+		
+		if(this.isBeingAttacked(gameBoard)){
+			for(Move move : associatedTargetMoves(gameBoard)){
+				if(move.executed && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves){
+					executedMovesFound = true;
+					lowestFromExecutedMoves =  move.battleStats.previousShipsOnPlanet;
+				}
+			}
+		}
+		
+		if(executedMovesFound){
+			return lowestFromExecutedMoves;
+		}
+		return numberOfShips;
 	}
 
 }

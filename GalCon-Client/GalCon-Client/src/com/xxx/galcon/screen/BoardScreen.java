@@ -403,7 +403,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
 			planetShader.setUniformf("radius", radius);
-			planetShader.setUniformi("shipCount", planet.numberOfShips);
+			planetShader.setUniformi("shipCount", planet.numberOfShipsToDisplay(gameBoard));
 			planetModel.render(planetShader);
 		}
 		planetShader.end();
@@ -419,11 +419,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void setPlanetBits(Planet planet, float[] planetBits) {
+		
+		String planetOwner = planet.owner;
+		if(planet.isBeingAttacked(gameBoard)){
+			planetOwner = planet.previousRoundOwner(gameBoard);
+		}
+		
 		planetBits[INDEX_PLANET_TOUCHED] = planet.touched ? 1.0f : 0.0f;
 		planetBits[INDEX_PLANET_ABILITY] = planet.hasAbility() ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_USER] = planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planet.owner.equals(OWNER_NO_ONE)
-				&& !planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_USER] = planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planetOwner.equals(OWNER_NO_ONE)
+				&& !planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
 	}
 
 	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
@@ -708,6 +714,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void renderOverlay(Camera camera) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		if(gameBoard.selectedMove() == null){
+			return;
+		}
 
 		overlayShader.begin();
 
