@@ -14,6 +14,7 @@ public class RefreshHudButton extends HudButton {
 	public String getActionOnClick() {
 		return Action.REFRESH;
 	}
+	
 
 	@Override
 	public void updateLocationAndSize(int screenWidth, int screenHeight) {
