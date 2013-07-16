@@ -403,7 +403,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
 			planetShader.setUniformf("radius", radius);
-			planetShader.setUniformi("shipCount", planet.numberOfShipsToDisplay(gameBoard));
+			planetShader.setUniformi("shipCount", planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()));
 			planetModel.render(planetShader);
 		}
 		planetShader.end();
@@ -417,11 +417,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		float regenRatio = planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX;
 		return minRadius + (maxRadius - minRadius) * regenRatio;
 	}
+	
+	private boolean roundHasAlreadyBeenAnimated(){
+		return roundAnimated == gameBoard.roundInformation.currentRound;
+	}
 
 	private void setPlanetBits(Planet planet, float[] planetBits) {
 		
 		String planetOwner = planet.owner;
-		if(planet.isBeingAttacked(gameBoard)){
+		if(!roundHasAlreadyBeenAnimated() && planet.isBeingAttacked(gameBoard)){
 			planetOwner = planet.previousRoundOwner(gameBoard);
 		}
 		
@@ -454,20 +458,19 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			if (!move.animation.isStarted()) {
 				move.animation.start(tweenManager);
+			} else if(move.animation.isFinished()){
+				roundAnimated = gameBoard.roundInformation.currentRound;
 			}
 
 			float xToDraw = move.currentAnimation.x, yToDraw = move.currentAnimation.y;
 
-			if (roundAnimated == gameBoard.roundInformation.currentRound) {
+			if (roundHasAlreadyBeenAnimated()) {
 				xToDraw = move.currentPosition.x;
 				yToDraw = move.currentPosition.y;
 				if (move.executed) {
 					continue;
 				}
-			} else if (move.animation.isFinished()) {
-				roundAnimated = gameBoard.roundInformation.currentRound;
-
-			}
+			} 
 
 			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw
 					- tileHeightInWorld / 2, 0.0f);
@@ -703,12 +706,23 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 				overlay.render(delta);
 			}
 		}
+		
 
 		fpsSpriteBatch.begin();
 		fpsSpriteBatch.setColor(Color.WHITE);
 
 		fpsFont.draw(fpsSpriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), (int) 10, (int) 50);
 		fpsSpriteBatch.end();
+	}
+
+	private boolean allAnimationsComplete() {
+		for(Move move : gameBoard.movesInProgress){
+			if(!move.animation.isFinished()){
+				return false;
+			}
+		}
+		
+		return true;	
 	}
 
 	private void renderOverlay(Camera camera) {

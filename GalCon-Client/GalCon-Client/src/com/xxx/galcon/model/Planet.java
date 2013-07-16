@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -93,7 +94,12 @@ public class Planet extends JsonConvertible {
 		return owner;
 	}
 
-	public int numberOfShipsToDisplay(GameBoard gameBoard) {
+	public int numberOfShipsToDisplay(GameBoard gameBoard, boolean overrideAnimation) {
+
+		if(overrideAnimation){
+			return numberOfShips;
+		}
+		
 		int lowestFromExecutedMoves = 10000000;
 		boolean executedMovesFound = false;
 		
@@ -111,5 +117,6 @@ public class Planet extends JsonConvertible {
 		}
 		return numberOfShips;
 	}
+	
 
 }
