@@ -79,7 +79,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/transparent_square.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet3.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet3-touch.png", Texture.class, param);
-		assetManager.load("data/images/bg1.jpg", Texture.class, param);
+		assetManager.load("data/images/bg1.png", Texture.class, param);
 		assetManager.load("data/images/bg_dark_gray_10x10.png", Texture.class, param);
 		assetManager.load("data/images/slash_line.png", Texture.class, param);
 		assetManager.load("data/images/arrow_solid_line.png", Texture.class, param);

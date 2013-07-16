@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -136,12 +137,14 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		overlayShader = createShaderUsingFiles("data/shaders/overlay-vs.glsl", "data/shaders/overlay-fs.glsl");
 
 		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
+		planetModel.subMeshes[0].mesh.setAutoBind(false);
+
 		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 		planetTexture = assetManager.get("data/images/planets/planet3.png", Texture.class);
 		planetTouchTexture = assetManager.get("data/images/planets/planet3-touch.png", Texture.class);
-		bg1Texture = assetManager.get("data/images/bg1.jpg", Texture.class);
+		bg1Texture = assetManager.get("data/images/bg1.png", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(this, assetManager);
 		playerInfoHud = new HeaderHud(assetManager);
@@ -330,10 +333,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private float[] touchedPlanetsCoords = new float[4];
 
 	private void renderGrid(Camera camera) {
-		bg1Texture.bind(1);
+		bg1Texture.bind(7);
 
 		gridShader.begin();
-		gridShader.setUniformi("bgTex", 1);
+		gridShader.setUniformi("bgTex", 7);
 
 		gridShader.setUniformMatrix("uPMatrix", camera.combined);
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
@@ -360,7 +363,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 		gridShader.setUniform1fv("uTouchPlanetsCoords", touchedPlanetsCoords, 0, 4);
 
-		planetModel.render(planetShader);
+		planetModel.subMeshes[0].mesh.bind(gridShader);
+		planetModel.render(gridShader);
+		planetModel.subMeshes[0].mesh.unbind(gridShader);
 
 		gridShader.end();
 	}
@@ -368,9 +373,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private float[] planetBits = new float[4];
 
 	private void renderPlanets(List<Planet> planets, Camera camera) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
 		planetTexture.bind(1);
 		planetTouchTexture.bind(2);
 		planetNumbersTexture.bind(3);
@@ -381,6 +383,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetShader.setUniformi("numbersTex", 3);
 
 		planetShader.setUniformMatrix("uPMatrix", camera.combined);
+
+		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		mesh.bind(planetShader);
 		int size = planets.size();
 		for (int i = 0; i < size; ++i) {
 			Planet planet = planets.get(i);
@@ -406,11 +411,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			planetShader.setUniformi("shipCount", planet.numberOfShips);
 			planetModel.render(planetShader);
 		}
+		mesh.unbind(planetShader);
 		planetShader.end();
 
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	private float scaleRegenToRadius(Planet planet, float minRadius, float maxRadius) {
@@ -427,9 +431,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
 		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
 
@@ -502,8 +503,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		shipShader.end();
-
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	private float distanceToPlanet(Move move, List<Planet> planets) {
@@ -640,10 +639,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			physicsWorld.destroyBody(contactBody);
 		}
 
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		renderGrid(camera);
 		renderPlanets(gameBoard.planets, camera);
 		renderOverlay(camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		if (gameBoard.hasWinner()) {
 			displayWinner(gameBoard.endGameInformation);
@@ -700,14 +702,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		fpsSpriteBatch.begin();
 		fpsSpriteBatch.setColor(Color.WHITE);
 
-		fpsFont.draw(fpsSpriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), (int) 10, (int) 50);
+		fpsFont.draw(fpsSpriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), (int) 10, (int) 500);
 		fpsSpriteBatch.end();
 	}
 
 	private void renderOverlay(Camera camera) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
 		overlayShader.begin();
 
 		overlayShader.setUniformMatrix("uPMatrix", camera.combined);
@@ -736,10 +735,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		overlayShader.setUniform1fv("uSelectedPlanetsCoords", moveSelectedPlanetsCoords, 0, 4);
 		overlayShader.setUniformf("uDimmer", gameBoard.selectedMove() != null ? 1.0f : 0.0f);
 
+		planetModel.subMeshes[0].mesh.bind(overlayShader);
 		planetModel.render(overlayShader);
+		planetModel.subMeshes[0].mesh.unbind(overlayShader);
 
 		overlayShader.end();
-
 	}
 
 	private SpriteBatch textSpriteBatch = new SpriteBatch();
