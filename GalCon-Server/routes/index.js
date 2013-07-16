@@ -21,6 +21,7 @@ exports.generateGame = function(req, res) {
 				req.body.gameType, function(game) {
 					gameManager.saveGame(game, function() {
 						user.currentGames.push(game.id);
+						user.coins--;
 						user.save(function() {
 							res.json(game);
 						});
@@ -91,7 +92,8 @@ exports.findUserByUserName = function(req, res) {
 				currentGames : [],
 				xp : 0,
 				wins : 0,
-				losses : 0
+				losses : 0,
+				coins : 10
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;

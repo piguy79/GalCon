@@ -17,6 +17,7 @@ public class SetPlayerResultHandler implements UIConnectionResultCallback<Player
 		this.player.currentGames = result.currentGames;
 		this.player.xp = result.xp;
 		this.player.handle = result.handle;
+		this.player.coins = result.coins;
 	}
 
 	@Override

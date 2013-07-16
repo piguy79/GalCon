@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
+	coins : "Number",
 	rankInfo : {
 		level : "Number",
 		startFrom : "Number",
