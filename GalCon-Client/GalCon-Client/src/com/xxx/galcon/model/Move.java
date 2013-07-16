@@ -26,6 +26,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public Point endPosition = new Point();
 	public int startingRound;
 	public boolean executed;
+	public BattleStats battleStats;
 	
 	public Tween animation;
 	
@@ -81,6 +82,10 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		this.endPosition.consume(jsonObject.getJSONObject("endPosition"));
 		startingRound = jsonObject.getInt("startingRound");
 		this.executed = jsonObject.getBoolean("executed");
+		
+		this.battleStats = new BattleStats();
+		
+		battleStats.consume(jsonObject.optJSONObject("battlestats"));
 		
 		currentAnimation = previousPosition;
 		

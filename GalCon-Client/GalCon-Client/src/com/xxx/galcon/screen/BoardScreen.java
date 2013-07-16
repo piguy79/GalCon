@@ -386,7 +386,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			setPlanetBits(planet, planetBits);
 			planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
 			planetShader.setUniformf("radius", radius);
-			planetShader.setUniformi("shipCount", planet.numberOfShips);
+			planetShader.setUniformi("shipCount",
+					planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()));
 			planetModel.render(planetShader);
 		}
 		mesh.unbind(planetShader);
@@ -445,12 +446,22 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		return minRadius + (maxRadius - minRadius) * regenRatio;
 	}
 
+	private boolean roundHasAlreadyBeenAnimated() {
+		return roundAnimated == gameBoard.roundInformation.currentRound;
+	}
+
 	private void setPlanetBits(Planet planet, float[] planetBits) {
+
+		String planetOwner = planet.owner;
+		if (!roundHasAlreadyBeenAnimated() && planet.isBeingAttacked(gameBoard)) {
+			planetOwner = planet.previousRoundOwner(gameBoard);
+		}
+
 		planetBits[INDEX_PLANET_TOUCHED] = planet.touched ? 1.0f : 0.0f;
 		planetBits[INDEX_PLANET_ABILITY] = planet.hasAbility() ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_USER] = planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planet.owner.equals(OWNER_NO_ONE)
-				&& !planet.isOwnedBy(GameLoop.USER) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_USER] = planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planetOwner.equals(OWNER_NO_ONE)
+				&& !planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
 	}
 
 	private void renderShips(List<Planet> planets, List<Move> moves, Camera camera) {
@@ -472,19 +483,18 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			if (!move.animation.isStarted()) {
 				move.animation.start(tweenManager);
+			} else if (move.animation.isFinished()) {
+				roundAnimated = gameBoard.roundInformation.currentRound;
 			}
 
 			float xToDraw = move.currentAnimation.x, yToDraw = move.currentAnimation.y;
 
-			if (roundAnimated == gameBoard.roundInformation.currentRound) {
+			if (roundHasAlreadyBeenAnimated()) {
 				xToDraw = move.currentPosition.x;
 				yToDraw = move.currentPosition.y;
 				if (move.executed) {
 					continue;
 				}
-			} else if (move.animation.isFinished()) {
-				roundAnimated = gameBoard.roundInformation.currentRound;
-
 			}
 
 			modelViewMatrix.trn(tileWidthInWorld * xToDraw + tileWidthInWorld / 2, -tileHeightInWorld * yToDraw
@@ -508,11 +518,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (selectedMove != null && selectedMove.hashCode() != move.hashCode()) {
 				selectedMove.selected += Gdx.graphics.getDeltaTime();
 				r -= 0.6f * selectedMove.selected;
+
 				g -= 0.8f * selectedMove.selected;
 				b -= 0.8f * selectedMove.selected;
 
-				if (r < 0.5) {
-					r = 0.5f;
+				if (r < 0.4) {
+					r = 0.4f;
 					g = 0f;
 					b = 0f;
 				}
