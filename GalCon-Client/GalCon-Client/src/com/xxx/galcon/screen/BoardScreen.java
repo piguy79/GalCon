@@ -88,7 +88,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram planetShader;
 	private ShaderProgram gridShader;
 	private ShaderProgram shipShader;
-	private ShaderProgram overlayShader;
+	private ShaderProgram planetTouchBgShader;
 
 	private Texture planetNumbersTexture;
 	private Texture planetTexture;
@@ -132,9 +132,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.tweenManager = tweenManager;
 
 		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
+		planetTouchBgShader = createShaderUsingFiles("data/shaders/planet-touch-bg-vs.glsl",
+				"data/shaders/planet-touch-bg-fs.glsl");
 		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
-		overlayShader = createShaderUsingFiles("data/shaders/overlay-vs.glsl", "data/shaders/overlay-fs.glsl");
 
 		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
 		planetModel.subMeshes[0].mesh.setAutoBind(false);
@@ -156,7 +157,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Tween.registerAccessor(Move.class, new MoveTween());
 		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
-
 	}
 
 	private StillModel generateStillModelFromObjectFile(String objectFile) {
@@ -316,7 +316,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					contactBody.setUserData(TOUCH_OBJECT);
 
 					CircleShape shape = new CircleShape();
-					shape.setRadius(0.16f);
+					shape.setRadius(0.12f);
 
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
@@ -330,8 +330,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		return contactBody;
 	}
 
-	private float[] touchedPlanetsCoords = new float[4];
-
 	private void renderGrid(Camera camera) {
 		bg1Texture.bind(7);
 
@@ -342,26 +340,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
-
-		touchedPlanetsCoords[0] = -1;
-		touchedPlanetsCoords[1] = -1;
-		touchedPlanetsCoords[2] = -1;
-		touchedPlanetsCoords[3] = -1;
-
-		int size = touchedPlanets.size();
-		if (size > 0) {
-			Planet planet = touchedPlanets.get(0);
-			touchedPlanetsCoords[0] = planet.position.x;
-			touchedPlanetsCoords[1] = planet.position.y;
-
-			if (size > 1) {
-
-				planet = touchedPlanets.get(1);
-				touchedPlanetsCoords[2] = planet.position.x;
-				touchedPlanetsCoords[3] = planet.position.y;
-			}
-		}
-		gridShader.setUniform1fv("uTouchPlanetsCoords", touchedPlanetsCoords, 0, 4);
 
 		planetModel.subMeshes[0].mesh.bind(gridShader);
 		planetModel.render(gridShader);
@@ -415,6 +393,51 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetShader.end();
 
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
+	}
+
+	private void renderPlanetTouchBg(List<Planet> planets, Camera camera) {
+		int size = planets.size();
+		boolean anyPlanetsTouched = false;
+		for (int i = 0; i < size; ++i) {
+			Planet planet = planets.get(i);
+			if (planet.touched) {
+				anyPlanetsTouched = true;
+				break;
+			}
+		}
+
+		if (!anyPlanetsTouched) {
+			return;
+		}
+
+		planetTouchBgShader.begin();
+		planetTouchBgShader.setUniformMatrix("uPMatrix", camera.combined);
+
+		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		mesh.bind(planetTouchBgShader);
+		for (int i = 0; i < size; ++i) {
+			Planet planet = planets.get(i);
+			if (!planet.touched) {
+				continue;
+			}
+
+			modelViewMatrix.idt();
+			modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+					WorldPlane.Z);
+
+			float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+			float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
+			modelViewMatrix.trn(tileWidthInWorld * planet.position.x + tileWidthInWorld / 2, -tileHeightInWorld
+					* planet.position.y - tileHeightInWorld / 2, 0.0f);
+
+			modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS, 1.0f);
+
+			planetTouchBgShader.setUniformf("color", .6f, .6f, .8f, .5f);
+			planetTouchBgShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+			planetModel.render(planetTouchBgShader);
+		}
+		mesh.unbind(planetTouchBgShader);
+		planetTouchBgShader.end();
 	}
 
 	private float scaleRegenToRadius(Planet planet, float minRadius, float maxRadius) {
@@ -642,8 +665,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		renderGrid(camera);
+		renderPlanetTouchBg(gameBoard.planets, camera);
 		renderPlanets(gameBoard.planets, camera);
-		renderOverlay(camera);
+		renderOverlay(gameBoard.planets, camera);
 		renderShips(gameBoard.planets, gameBoard.movesInProgress, camera);
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -706,13 +730,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		fpsSpriteBatch.end();
 	}
 
-	private void renderOverlay(Camera camera) {
-		overlayShader.begin();
-
-		overlayShader.setUniformMatrix("uPMatrix", camera.combined);
-		overlayShader.setUniformMatrix("uMVMatrix", boardPlane.modelViewMatrix);
-		overlayShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
-		overlayShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
+	private void renderOverlay(List<Planet> planets, Camera camera) {
+		if (gameBoard.selectedMove() == null) {
+			return;
+		}
 
 		moveSelectedPlanetsCoords[0] = -1;
 		moveSelectedPlanetsCoords[1] = -1;
@@ -726,20 +747,44 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			moveSelectedPlanetsCoords[1] = planet.position.y;
 
 			if (size > 1) {
-
 				planet = moveSelectedPlanets.get(1);
 				moveSelectedPlanetsCoords[2] = planet.position.x;
 				moveSelectedPlanetsCoords[3] = planet.position.y;
 			}
 		}
-		overlayShader.setUniform1fv("uSelectedPlanetsCoords", moveSelectedPlanetsCoords, 0, 4);
-		overlayShader.setUniformf("uDimmer", gameBoard.selectedMove() != null ? 1.0f : 0.0f);
 
-		planetModel.subMeshes[0].mesh.bind(overlayShader);
-		planetModel.render(overlayShader);
-		planetModel.subMeshes[0].mesh.unbind(overlayShader);
+		float tileWidthInWorld = boardPlane.widthInWorld / gameBoard.widthInTiles;
+		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
 
-		overlayShader.end();
+		planetTouchBgShader.begin();
+		planetTouchBgShader.setUniformMatrix("uPMatrix", camera.combined);
+		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		mesh.bind(planetTouchBgShader);
+		for (int i = 0; i < gameBoard.widthInTiles; ++i) {
+			for (int j = 0; j < gameBoard.heightInTiles; ++j) {
+				if (i == moveSelectedPlanetsCoords[0] && j == moveSelectedPlanetsCoords[1]) {
+					continue;
+				}
+				if (i == moveSelectedPlanetsCoords[2] && j == moveSelectedPlanetsCoords[3]) {
+					continue;
+				}
+
+				modelViewMatrix.idt();
+				modelViewMatrix.trn(-boardPlane.widthInWorld / 2, (boardPlane.heightInWorld / 2) + boardPlane.yShift,
+						WorldPlane.Z);
+				modelViewMatrix.trn(tileWidthInWorld * i + tileWidthInWorld / 2, -tileHeightInWorld * j
+						- tileHeightInWorld / 2, 0.0f);
+				modelViewMatrix.scale(tileWidthInWorld / TILE_SIZE_IN_UNITS, tileHeightInWorld / TILE_SIZE_IN_UNITS,
+						1.0f);
+
+				planetTouchBgShader.setUniformf("color", 0.1f, 0.1f, 0.1f, 0.7f);
+				planetTouchBgShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
+				planetModel.render(planetTouchBgShader);
+			}
+		}
+
+		mesh.unbind(planetTouchBgShader);
+		planetTouchBgShader.end();
 	}
 
 	private SpriteBatch textSpriteBatch = new SpriteBatch();
