@@ -108,7 +108,10 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 gameSchema.methods.applyMoveToPlanets = function(game, move){
 	this.planets.forEach(function(planet){
 		if(isADefensiveMoveToThisPlanet(planet, move)){
+			move.battlestats.previousPlanetOwner = planet.ownerHandle;
+			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
+			
 		} else if (isSamePlanet(planet, move.toPlanet)){		
 			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game);
 			var attackStrength = calculateAttackStrengthForMove(move, game);
