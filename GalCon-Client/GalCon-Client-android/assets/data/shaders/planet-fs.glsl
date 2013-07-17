@@ -55,7 +55,7 @@ void main() {
 	
 	// Number rendering //////////////
 	// make the numbers larger to account for the smaller scale on small planets
-	float modifier = (0.5 - radius) * 1.75;
+	float modifier = (0.5 - radius) * 1.6;
 	
 	float xDistToCenter = 0.5 - vTexCoords.x;
 	xDistToCenter += xDistToCenter * modifier;
@@ -63,7 +63,7 @@ void main() {
 	float yDistToCenter = vTexCoords.y - 0.5;
 	yDistToCenter -= yDistToCenter * modifier;
 	
-	float halfWidth = 0.1 + 0.12 * modifier;
+	float halfWidth = 0.1 + 0.2 * modifier;
 	float halfHeight = 0.12;
 	
 	float textAreaHalfWidth = halfWidth;
@@ -98,7 +98,7 @@ void main() {
 		if(numberToShow == 1) {
 			xMult = 0.36;
 		}
-		xMult -= 0.3 * modifier;
+		xMult -= 0.55 * modifier;
 		numberTexColor = texture2D(numbersTex, 
 									vec2(numberOffset(numberToShow) + xDistToNumberCenter * xMult, yDistToNumberCenter * 0.4));
 	}
