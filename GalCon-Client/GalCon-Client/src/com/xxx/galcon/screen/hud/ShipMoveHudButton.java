@@ -11,7 +11,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.Action;
 
 public class ShipMoveHudButton extends HudButton {
-	private int margin;
+	private int buttonMargin;
 	private Move move;
 	private boolean isPending;
 	private int xPos;
@@ -33,9 +33,9 @@ public class ShipMoveHudButton extends HudButton {
 		int bottomHeight = (int) (screenHeight * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
 		int buttonHeight = (int) (bottomHeight * 0.65f);
 
-		margin = (int) (screenWidth * 0.015f);
+		buttonMargin = (int) (screenWidth * 0.015f);
 
-		this.x = margin + xPos * buttonHeight + xPos * margin;
+		this.x = BoardScreenHud.START_X_BAR_FOR_MOVES + xPos * buttonHeight + xPos * buttonMargin;
 		this.y = (int) (bottomHeight * 0.5f - buttonHeight / 2);
 		this.width = buttonHeight;
 		this.height = buttonHeight;
@@ -44,8 +44,6 @@ public class ShipMoveHudButton extends HudButton {
 			this.setEnabled(false);
 		}
 	}
-	
-	
 
 	@Override
 	public void render(SpriteBatch spriteBatch) {
@@ -85,6 +83,9 @@ public class ShipMoveHudButton extends HudButton {
 	}
 
 	private boolean isButtonInbounds() {
-		return (this.x + this.width + margin) < BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES;
+		boolean rightBounds = (this.x + this.width + buttonMargin) < BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES;
+		boolean leftBounds = this.x >= BoardScreenHud.START_X_BAR_FOR_MOVES;
+
+		return rightBounds && leftBounds;
 	}
 }

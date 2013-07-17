@@ -86,6 +86,9 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/bottom_bar.png", Texture.class, param);
 		assetManager.load("data/images/bottom_bar_expand_button.png", Texture.class, param);
 		assetManager.load("data/images/bottom_bar_ship_button.png", Texture.class, param);
+		assetManager.load("data/images/arrow_right_small_black.png", Texture.class, param);
+		assetManager.load("data/images/arrow_left_small_black.png", Texture.class, param);
+		
 		assetManager.finishLoading();
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
