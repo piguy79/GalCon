@@ -19,14 +19,22 @@ import com.xxx.galcon.screen.BoardScreen;
 
 public class BoardScreenHud extends Hud {
 	public static int MAX_BAR_WIDTH_FOR_MOVES = 0;
+	public static int START_X_BAR_FOR_MOVES = 0;
 	public static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
 	private HudButton endTurnButton;
 	private Texture bottomBar;
-	private Texture bottomBarExpandButton;
+	private Texture arrowLeftSmallBlack;
+	private Texture arrowRightSmallBlack;
 	private BoardScreen boardScreen;
 	private AssetManager assetManager;
+	private int leftArrowButtonX;
+	private int leftArrowButtonY;
+	private int rightArrowButtonX;
+	private int rightArrowButtonY;
+	private int arrowButtonWidth;
+	private int arrowButtonHeight;
 	private Map<Move, ShipMoveHudButton> moveToButtonMap = new HashMap<Move, ShipMoveHudButton>();
 
 	public BoardScreenHud(BoardScreen boardScreen, AssetManager assetManager) {
@@ -37,14 +45,15 @@ public class BoardScreenHud extends Hud {
 		endTurnButton = new EndTurnHudButton(assetManager);
 
 		bottomBar = assetManager.get("data/images/bottom_bar.png", Texture.class);
-		bottomBarExpandButton = assetManager.get("data/images/bottom_bar_expand_button.png", Texture.class);
+		arrowLeftSmallBlack = assetManager.get("data/images/arrow_left_small_black.png", Texture.class);
+		arrowRightSmallBlack = assetManager.get("data/images/arrow_right_small_black.png", Texture.class);
 
 		addHudButton(endTurnButton);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	private boolean redrawMoves = false;
+	private boolean updateMoveButtons = false;
 
 	public void associateCurrentRoundInformation(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
@@ -57,12 +66,23 @@ public class BoardScreenHud extends Hud {
 			}
 		}
 
-		redrawMoves = true;
+		updateMoveButtons = true;
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		MAX_BAR_WIDTH_FOR_MOVES = (int) (width * 0.75f);
+		START_X_BAR_FOR_MOVES = (int) (width * 0.045f);
+
+		int bottomHeight = (int) (height * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
+
+		arrowButtonHeight = (int) (bottomHeight * 0.2f);
+		arrowButtonWidth = (int) (width * .02);
+
+		leftArrowButtonX = (int) (width * 0.005);
+		leftArrowButtonY = (int) (bottomHeight * 0.5f - arrowButtonHeight * 0.5f);
+		rightArrowButtonX = MAX_BAR_WIDTH_FOR_MOVES - arrowButtonWidth;
+		rightArrowButtonY = leftArrowButtonY;
 
 		super.resize(width, height);
 	}
@@ -72,6 +92,9 @@ public class BoardScreenHud extends Hud {
 		getSpriteBatch().begin();
 
 		getSpriteBatch().draw(bottomBar, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO);
+		addLeftRightArrows();
+
+		getSpriteBatch().end();
 
 		if (gameBoard.wasADraw() || gameBoard.hasWinner()) {
 			endTurnButton.setEnabled(false);
@@ -80,8 +103,6 @@ public class BoardScreenHud extends Hud {
 		} else {
 			endTurnButton.setEnabled(true);
 		}
-
-		getSpriteBatch().end();
 
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 
@@ -95,27 +116,75 @@ public class BoardScreenHud extends Hud {
 					TouchPoint current = dragPoints.get(size - 1);
 					TouchPoint previous = dragPoints.get(size - 2);
 
+					int offset = current.x - previous.x;
+
+					ShipMoveHudButton firstButton = null;
+					ShipMoveHudButton lastButton = null;
 					for (HudButton button : getHudButtons()) {
 						if (!(button instanceof ShipMoveHudButton)) {
 							continue;
 						}
 
-						ShipMoveHudButton moveButton = (ShipMoveHudButton) button;
-						moveButton.offSet(current.x - previous.x);
+						if (firstButton == null) {
+							firstButton = (ShipMoveHudButton) button;
+						}
+						lastButton = (ShipMoveHudButton) button;
+					}
+
+					if (offset > 0 && firstButton != null && firstButton.x < START_X_BAR_FOR_MOVES) {
+						applyOffsetToMoveButtons(offset);
+					} else if (offset < 0
+							&& lastButton != null
+							&& lastButton.x + lastButton.getWidth() + lastButton.MARGIN >= BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES) {
+						applyOffsetToMoveButtons(offset);
 					}
 				}
 			}
 		}
 
-		if (redrawMoves) {
-			getSpriteBatch().begin();
+		if (updateMoveButtons) {
 			addMoveButtons(boardScreen.getPendingMoves(), true);
 			addMoveButtons(gameBoard.movesInProgress, false);
-			getSpriteBatch().end();
-			redrawMoves = false;
+			updateMoveButtons = false;
 		}
 
 		super.render(delta);
+	}
+
+	private void applyOffsetToMoveButtons(int offset) {
+		for (HudButton button : getHudButtons()) {
+			if (!(button instanceof ShipMoveHudButton)) {
+				continue;
+			}
+
+			ShipMoveHudButton moveButton = (ShipMoveHudButton) button;
+			moveButton.offSet(offset);
+		}
+	}
+
+	private void addLeftRightArrows() {
+		ShipMoveHudButton firstButton = null;
+		ShipMoveHudButton lastButton = null;
+		for (int i = 0; i < getHudButtons().size(); ++i) {
+			HudButton button = getHudButtons().get(i);
+			if (button instanceof ShipMoveHudButton) {
+				ShipMoveHudButton sButton = (ShipMoveHudButton) button;
+				if (firstButton == null) {
+					firstButton = sButton;
+				}
+				lastButton = sButton;
+			}
+		}
+
+		if (firstButton != null && !firstButton.isEnabled()) {
+			getSpriteBatch().draw(arrowLeftSmallBlack, leftArrowButtonX, leftArrowButtonY, arrowButtonWidth,
+					arrowButtonHeight);
+		}
+
+		if (lastButton != null && !lastButton.isEnabled()) {
+			getSpriteBatch().draw(arrowRightSmallBlack, rightArrowButtonX, rightArrowButtonY, arrowButtonWidth,
+					arrowButtonHeight);
+		}
 	}
 
 	private void addMoveButtons(List<Move> moves, boolean isPending) {
@@ -132,10 +201,10 @@ public class BoardScreenHud extends Hud {
 				ShipMoveHudButton button = new ShipMoveHudButton(move, isPending, moveToButtonMap.size(), assetManager);
 				addHudButton(button);
 				moveToButtonMap.put(move, button);
-
-				resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			}
 		}
+
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	private Comparator<Move> moveComparator = new Comparator<Move>() {

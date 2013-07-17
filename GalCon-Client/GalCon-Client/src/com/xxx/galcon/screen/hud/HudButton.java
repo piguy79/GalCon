@@ -37,7 +37,7 @@ public abstract class HudButton {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -46,5 +46,9 @@ public abstract class HudButton {
 		if (enabled) {
 			spriteBatch.draw(texture, x, y, width, height);
 		}
+	}
+
+	public int getWidth() {
+		return width;
 	}
 }

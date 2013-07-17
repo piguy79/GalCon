@@ -316,7 +316,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					contactBody.setUserData(TOUCH_OBJECT);
 
 					CircleShape shape = new CircleShape();
-					shape.setRadius(0.12f);
+					shape.setRadius(0.07f);
 
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
@@ -737,7 +737,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		fpsSpriteBatch.begin();
 		fpsSpriteBatch.setColor(Color.WHITE);
 
-		fpsFont.draw(fpsSpriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), (int) 10, (int) 500);
+		fpsFont.draw(fpsSpriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), (int) 10, (int) 20);
 		fpsSpriteBatch.end();
 	}
 
