@@ -1,7 +1,11 @@
 package com.xxx.galcon.screen;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -42,7 +46,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	private float percent;
 
 	private Actor loadingBar;
-
+	
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
@@ -188,8 +192,27 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private void createCoinDisplay(int width, int height) {
-		String coinsText = "" + GameLoop.USER.coins;
-		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
+		
+		String coinsText = "";
+		
+		Long timeoutForCoins = 5000L;
+		
+		if(GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L){
+				
+			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis()  - GameLoop.USER.usedCoins;
+				
+			if(timeSinceUsedCoins >= timeoutForCoins){
+				coinsText += "New Coins available!";
+			}else{
+				coinsText += timeoutForCoins - timeSinceUsedCoins;
+			}
+			
+			
+		} else{
+			coinsText += GameLoop.USER.coins;
+		}
+		
+		BitmapFont extraLargeFont = Fonts.getInstance().mediumFont();
 		double percentageOfWidth = width * 0.04;
 		int x = (int)percentageOfWidth;
 		extraLargeFont.draw(spriteBatch, coinsText, x, (int) (height * .97f));
