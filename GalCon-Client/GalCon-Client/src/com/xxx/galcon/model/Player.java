@@ -30,6 +30,7 @@ public class Player extends JsonConvertible{
 	public List<String> currentGames;
 	public Rank rank;
 	public Integer coins;
+	public Long usedCoins;
 	
 	
 	@Override
@@ -38,6 +39,7 @@ public class Player extends JsonConvertible{
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp  = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.getInt("coins");
+		this.usedCoins = jsonObject.optLong("usedCoins");
 		
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();

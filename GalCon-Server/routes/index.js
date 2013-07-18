@@ -22,6 +22,9 @@ exports.generateGame = function(req, res) {
 					gameManager.saveGame(game, function() {
 						user.currentGames.push(game.id);
 						user.coins--;
+						if(user.coins == 0){
+							user.usedCoins = req.body.time;
+						}
 						user.save(function() {
 							res.json(game);
 						});
@@ -81,6 +84,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 	});
 }
 
+
+
 exports.findUserByUserName = function(req, res) {
 	var userName = req.query['userName'];
 	userManager.findUserByName(userName, function(user) {
@@ -93,7 +98,7 @@ exports.findUserByUserName = function(req, res) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 10
+				coins : 1
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;

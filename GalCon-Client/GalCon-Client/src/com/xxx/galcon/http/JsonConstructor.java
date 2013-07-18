@@ -2,6 +2,8 @@ package com.xxx.galcon.http;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +35,7 @@ public class JsonConstructor {
 		top.put("width", width);
 		top.put("height", height);
 		top.put("gameType", gameType);
+		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
 
 		return top;
 	}
