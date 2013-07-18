@@ -67,6 +67,7 @@ __Advancement__
 12. Graceful error handling
 13. iOS?
 14. Sounds (and music?)
+15. Tutorial
 
 Heroku
 ----
