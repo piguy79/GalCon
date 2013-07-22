@@ -1,7 +1,11 @@
 package com.xxx.galcon.screen;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -218,6 +222,7 @@ public class MainMenuScreen implements ScreenFeedback {
 			
 		} else{
 			loadingNewCoins = false;
+
 			coinsText += GameLoop.USER.coins;
 		}
 		

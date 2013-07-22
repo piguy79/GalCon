@@ -8,6 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype.jar"/>
 	<classpathentry kind="lib" path="libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar"/>
-	<classpathentry kind="lib" path="libs/joda-time-2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/joda-time-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
