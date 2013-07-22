@@ -245,6 +245,19 @@ exports.joinGame = function(req, res) {
 	});
 }
 
+exports.addCoins = function(req, res){
+	var playerHandle = req.body.playerHandle;
+	var numCoins = req.body.numCoins;
+	
+	userManager.findUserByHandle(playerHandle, function(user) {
+		user.coins += numCoins;
+		user.usedCoins = 0;
+		user.save(function() {
+			res.json(user);
+		});
+	});
+}
+
 exports.findRankInformation = function(req, res) {
 	var rank = req.query['rank'];
 	rankManager.findRankByName(rank, function(dbRank) {

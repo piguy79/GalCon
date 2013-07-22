@@ -4,6 +4,7 @@ import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
+import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -104,6 +105,25 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
+	
+	@Override
+	public void addCoins(final UIConnectionResultCallback<Player> callback,
+			final String playerHandle,final Long numCoins) {
+		try {
+			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<Player>(callback, ADD_COINS, new Player()).execute(top.toString());
+					NotificationManager mNotificationManager = (NotificationManager) activity
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+		
 	}
 
 	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
@@ -236,4 +256,6 @@ public class AndroidGameAction implements GameAction {
 			}
 		}
 	}
+
+
 }

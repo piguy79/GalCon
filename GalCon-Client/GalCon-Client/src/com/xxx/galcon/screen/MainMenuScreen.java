@@ -1,6 +1,5 @@
 package com.xxx.galcon.screen;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +24,6 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 
@@ -47,6 +45,8 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	private Actor loadingBar;
 	
+	private boolean loadingNewCoins = false;
+		
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
@@ -193,22 +193,31 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	private void createCoinDisplay(int width, int height) {
 		
+
+		
 		String coinsText = "";
 		
-		Long timeoutForCoins = 5000L;
+		Long timeoutForCoins = 60000L * 20L;
 		
 		if(GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L){
 				
 			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis()  - GameLoop.USER.usedCoins;
 				
 			if(timeSinceUsedCoins >= timeoutForCoins){
-				coinsText += "New Coins available!";
+				coinsText += "";
+				if(!loadingNewCoins){
+					loadingNewCoins = true;
+					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 5L);
+				}
 			}else{
-				coinsText += timeoutForCoins - timeSinceUsedCoins;
+				loadingNewCoins = false;
+				DateTime timeToMove = new DateTime(timeoutForCoins - timeSinceUsedCoins);
+				coinsText += timeToMove.getMinuteOfHour() + ":" + timeToMove.getSecondOfMinute();
 			}
 			
 			
 		} else{
+			loadingNewCoins = false;
 			coinsText += GameLoop.USER.coins;
 		}
 		

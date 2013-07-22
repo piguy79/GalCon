@@ -3,6 +3,7 @@
  */
 package com.xxx.galcon.http;
 
+import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -176,5 +177,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 		return null;
+	}
+
+	@Override
+	public void addCoins(UIConnectionResultCallback<Player> callback,
+			String playerHandle, Long numCoins) {
+		try {
+			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS, args,
+					new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
 	}
 }
