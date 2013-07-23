@@ -36,5 +36,7 @@ public interface GameAction {
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
+	
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins);
 
 }

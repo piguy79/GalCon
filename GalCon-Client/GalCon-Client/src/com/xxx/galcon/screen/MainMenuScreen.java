@@ -1,7 +1,14 @@
 package com.xxx.galcon.screen;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -41,7 +48,9 @@ public class MainMenuScreen implements ScreenFeedback {
 	private float percent;
 
 	private Actor loadingBar;
-
+	
+	private boolean loadingNewCoins = false;
+		
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
@@ -186,8 +195,37 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private void createCoinDisplay(int width, int height) {
-		String coinsText = "" + GameLoop.USER.coins;
-		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
+		
+
+		
+		String coinsText = "";
+		
+		Long timeoutForCoins = 60000L * 20L;
+		
+		if(GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L){
+				
+			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis()  - GameLoop.USER.usedCoins;
+				
+			if(timeSinceUsedCoins >= timeoutForCoins){
+				coinsText += "";
+				if(!loadingNewCoins){
+					loadingNewCoins = true;
+					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 5L);
+				}
+			}else{
+				loadingNewCoins = false;
+				DateTime timeToMove = new DateTime(timeoutForCoins - timeSinceUsedCoins);
+				coinsText += timeToMove.getMinuteOfHour() + ":" + timeToMove.getSecondOfMinute();
+			}
+			
+			
+		} else{
+			loadingNewCoins = false;
+
+			coinsText += GameLoop.USER.coins;
+		}
+		
+		BitmapFont extraLargeFont = Fonts.getInstance().mediumFont();
 		double percentageOfWidth = width * 0.04;
 		int x = (int) percentageOfWidth;
 		extraLargeFont.draw(spriteBatch, coinsText, x, (int) (height * .97f));

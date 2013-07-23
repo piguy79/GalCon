@@ -14,6 +14,8 @@ public class UrlConstants {
 	public static final String GENERATE_GAME = "/generateGame";
 
 	public static final String PERFORM_MOVES = "/performMoves";
+	
+	public static final String ADD_COINS = "/addCoins";
 
 	public static final String JOIN_GAME = "/joinGame";
 

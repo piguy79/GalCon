@@ -46,6 +46,7 @@ app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);
 app.post('/performMoves', routes.performMoves);
 app.get('/deleteGame', routes.deleteGame);
 app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle);
+app.post('/addCoins', routes.addCoins);
 app.get('/rank', routes.findRankInformation);
 
 var port = process.env.PORT || 3000;
