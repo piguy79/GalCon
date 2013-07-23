@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.screen.Action;
 
-public class EndTurnHudButton extends HudButton {
+public class EndTurnHudButton extends Button {
 
 	public EndTurnHudButton(AssetManager assetManager) {
 		super(assetManager.get("data/images/end_turn.png", Texture.class));
@@ -16,7 +16,7 @@ public class EndTurnHudButton extends HudButton {
 	}
 
 	@Override
-	public void updateLocationAndSize(int screenWidth, int screenHeight) {
+	public void updateLocationAndSize(int x, int y, int screenWidth, int screenHeight) {
 		int buttonWidth = (int) (screenWidth * BUTTON_SIZE_RATIO);
 
 		int midX = (int) (screenWidth * .9f);

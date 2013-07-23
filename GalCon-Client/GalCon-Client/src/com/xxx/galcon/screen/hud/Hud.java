@@ -12,7 +12,7 @@ import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 public abstract class Hud implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
 	private String returnResult = null;
-	private List<HudButton> hudButtons = new ArrayList<HudButton>();
+	private List<Button> hudButtons = new ArrayList<Button>();
 	private boolean touchEnabled = true;
 
 	public Hud() {
@@ -66,7 +66,7 @@ public abstract class Hud implements ScreenFeedback {
 	@Override
 	public void resize(int width, int height) {
 		for (int i = 0; i < hudButtons.size(); ++i) {
-			hudButtons.get(i).updateLocationAndSize(width, height);
+			hudButtons.get(i).updateLocationAndSize(0, 0, width, height);
 		}
 	}
 
@@ -74,11 +74,11 @@ public abstract class Hud implements ScreenFeedback {
 		return spriteBatch;
 	}
 
-	public void addHudButton(HudButton button) {
+	public void addHudButton(Button button) {
 		hudButtons.add(button);
 	}
 
-	public List<HudButton> getHudButtons() {
+	public List<Button> getHudButtons() {
 		return hudButtons;
 	}
 

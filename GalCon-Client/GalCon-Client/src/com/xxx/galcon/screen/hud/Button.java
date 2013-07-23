@@ -3,7 +3,7 @@ package com.xxx.galcon.screen.hud;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class HudButton {
+public abstract class Button {
 	protected static final float BUTTON_SIZE_RATIO = 0.15f;
 	protected static final int MARGIN = 10;
 	private boolean enabled = true;
@@ -11,12 +11,12 @@ public abstract class HudButton {
 	protected int x, y, width, height;
 	private Texture texture;
 
-	public HudButton(Texture texture) {
+	public Button(Texture texture) {
 		super();
 		this.texture = texture;
 	}
 
-	abstract public void updateLocationAndSize(int screenWidth, int screenHeight);
+	abstract public void updateLocationAndSize(int x, int y, int width, int height);
 
 	abstract public String getActionOnClick();
 

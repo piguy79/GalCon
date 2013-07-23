@@ -10,7 +10,7 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.Action;
 
-public class ShipMoveHudButton extends HudButton {
+public class ShipMoveHudButton extends Button {
 	private int buttonMargin;
 	private Move move;
 	private boolean isPending;
@@ -29,7 +29,7 @@ public class ShipMoveHudButton extends HudButton {
 	}
 
 	@Override
-	public void updateLocationAndSize(int screenWidth, int screenHeight) {
+	public void updateLocationAndSize(int x, int y, int screenWidth, int screenHeight) {
 		int bottomHeight = (int) (screenHeight * BoardScreenHud.BOTTOM_HEIGHT_RATIO);
 		int buttonHeight = (int) (bottomHeight * 0.65f);
 

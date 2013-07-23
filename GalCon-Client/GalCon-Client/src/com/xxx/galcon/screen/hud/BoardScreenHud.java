@@ -23,7 +23,7 @@ public class BoardScreenHud extends Hud {
 	public static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
-	private HudButton endTurnButton;
+	private Button endTurnButton;
 	private Texture bottomBar;
 	private Texture arrowLeftSmallBlack;
 	private Texture arrowRightSmallBlack;
@@ -59,8 +59,8 @@ public class BoardScreenHud extends Hud {
 		this.gameBoard = gameBoard;
 		this.moveToButtonMap.clear();
 
-		for (ListIterator<HudButton> iter = getHudButtons().listIterator(); iter.hasNext();) {
-			HudButton hudButton = iter.next();
+		for (ListIterator<Button> iter = getHudButtons().listIterator(); iter.hasNext();) {
+			Button hudButton = iter.next();
 			if (hudButton instanceof ShipMoveHudButton) {
 				iter.remove();
 			}
@@ -120,7 +120,7 @@ public class BoardScreenHud extends Hud {
 
 					ShipMoveHudButton firstButton = null;
 					ShipMoveHudButton lastButton = null;
-					for (HudButton button : getHudButtons()) {
+					for (Button button : getHudButtons()) {
 						if (!(button instanceof ShipMoveHudButton)) {
 							continue;
 						}
@@ -152,7 +152,7 @@ public class BoardScreenHud extends Hud {
 	}
 
 	private void applyOffsetToMoveButtons(int offset) {
-		for (HudButton button : getHudButtons()) {
+		for (Button button : getHudButtons()) {
 			if (!(button instanceof ShipMoveHudButton)) {
 				continue;
 			}
@@ -166,7 +166,7 @@ public class BoardScreenHud extends Hud {
 		ShipMoveHudButton firstButton = null;
 		ShipMoveHudButton lastButton = null;
 		for (int i = 0; i < getHudButtons().size(); ++i) {
-			HudButton button = getHudButtons().get(i);
+			Button button = getHudButtons().get(i);
 			if (button instanceof ShipMoveHudButton) {
 				ShipMoveHudButton sButton = (ShipMoveHudButton) button;
 				if (firstButton == null) {

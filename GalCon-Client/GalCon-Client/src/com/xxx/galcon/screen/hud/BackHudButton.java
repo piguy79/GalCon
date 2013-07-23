@@ -5,7 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.xxx.galcon.screen.Action;
 
-public class BackHudButton extends HudButton {
+public class BackHudButton extends Button {
 
 	public BackHudButton(AssetManager assetManager) {
 		super(assetManager.get("data/images/back.png", Texture.class));
@@ -17,7 +17,7 @@ public class BackHudButton extends HudButton {
 	}
 
 	@Override
-	public void updateLocationAndSize(int screenWidth, int screenHeight) {
+	public void updateLocationAndSize(int x, int y, int screenWidth, int screenHeight) {
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 		this.x = 10;
 		this.y = screenHeight - buttonHeight - 5;
