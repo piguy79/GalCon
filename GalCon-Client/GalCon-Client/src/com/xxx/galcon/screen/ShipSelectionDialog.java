@@ -89,7 +89,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 			@Override
 			public void updateLocationAndSize(int x, int y, int width, int height) {
 				int buttonSize = (int) (width * 0.15f);
-				int margin = (int) (width * 0.02f);
+				int margin = 0;
 
 				this.x = x + width - margin - buttonSize;
 				this.y = y + margin;
@@ -107,7 +107,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 			@Override
 			public void updateLocationAndSize(int x, int y, int width, int height) {
 				int buttonSize = (int) (width * 0.15f);
-				int margin = (int) (width * 0.02f);
+				int margin = 0;
 
 				this.x = x + margin;
 				this.y = y + margin;
@@ -122,21 +122,22 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		});
 
 		shipDragButton = new DragButton(shipTex) {
+
 			@Override
 			public void updateLocationAndSize(int x, int y, int width, int height) {
 				int buttonSize = (int) (width * 0.1f);
-				int margin = (int) (width * 0.02f);
 
-				this.x = (int) (x + ((float) shipsToSend / (float) max) * width);
-				this.y = y + height - buttonSize - margin - margin;
+				int dragWidth = maxX - minX;
+				this.x = (int) (minX + ((float) shipsToSend / (float) max) * dragWidth);
+				this.y = y + height - buttonSize - (int) (height * 0.30f);
 				this.height = buttonSize;
 				this.width = buttonSize;
 			}
 
 			@Override
 			public void updateDragBounds(int x, int y, int width, int height) {
-				this.minX = x + (int) (width * 0.02f);
-				this.maxX = x + width - 2 * (int) (width * 0.05f);
+				this.minX = x + (int) (width * 0.05f);
+				this.maxX = x + width - 2 * (int) (width * 0.08f);
 			}
 
 			@Override
@@ -193,10 +194,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 				Button button = buttons.get(i);
 
 				if (!buttonsUpdated) {
-					button.updateLocationAndSize(x, y, width, height);
 					if (button instanceof DragButton) {
 						((DragButton) button).updateDragBounds(x, y, width, height);
 					}
+					button.updateLocationAndSize(x, y, width, height);
 				}
 
 				button.render(spriteBatch);
@@ -212,9 +213,9 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 		BitmapFont font = Fonts.getInstance().largeFont();
 		font.setColor(Color.BLACK);
-		font.draw(spriteBatch, "" + (max - shipsToSend), x + width * .4f, y + height * .2f);
-		font.draw(spriteBatch, ">>", x + width * .5f, y + height * .2f);
-		font.draw(spriteBatch, "" + shipsToSend, x + width * .6f, y + height * .2f);
+		font.draw(spriteBatch, "" + (max - shipsToSend), x + width * .38f, y + height * .84f);
+		font.draw(spriteBatch, ">>", x + width * .48f, y + height * .84f);
+		font.draw(spriteBatch, "" + shipsToSend, x + width * .58f, y + height * .84f);
 		font.setColor(Color.WHITE);
 
 		spriteBatch.end();
