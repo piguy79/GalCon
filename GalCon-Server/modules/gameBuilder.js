@@ -135,21 +135,33 @@ GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRege
 	totalRegenAroundPlanet -= existingRegenAroundPlanet;
 	
 	var newPlanets = [];
-	while(totalRegenAroundPlanet > 0) {
+	while (totalRegenAroundPlanet > 0) {
 		var newPlanetRegen;
-		if(totalRegenAroundPlanet <= MAX_REGEN) {
+		if (totalRegenAroundPlanet <= MAX_REGEN) {
 			newPlanetRegen = totalRegenAroundPlanet;
 		} else {
 			newPlanetRegen = Math.floor((Math.random() * MAX_REGEN) + 1);
 		}
-		
+
 		var position = this.findNewPositionNearPlanet(planet, acceptableRadius, otherHomePlanet);
-		var newPlanet = this.createPlanet(position.x, position.y);
-		newPlanet.shipRegenRate = newPlanetRegen;
-		newPlanets.push(newPlanet);
-		this.planets.push(newPlanet);
-		
-		totalRegenAroundPlanet -= newPlanetRegen;
+		if (position === undefined) {
+			// All positions are occupied.  Increment the count on existing planets instead
+			for (i in newPlanets) {
+				if (totalRegenAroundPlanet > 0) {
+					var oldRegen = newPlanets[i].shipRegenRate;
+					var newRegen = Math.min(MAX_REGEN, oldRegen + 1);
+					newPlanets[i].shipRegenRate = newRegen;
+					totalRegenAroundPlanet--;
+				}
+			}
+		} else {
+			var newPlanet = this.createPlanet(position.x, position.y);
+			newPlanet.shipRegenRate = newPlanetRegen;
+			newPlanets.push(newPlanet);
+			this.planets.push(newPlanet);
+
+			totalRegenAroundPlanet -= newPlanetRegen;
+		}
 	}
 	
 	var existingShipsAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "numberOfShips");
@@ -170,7 +182,8 @@ GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRege
 GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNearPlanet) {
 	var position;
 	
-	while(position === undefined) {
+	var i = 0;
+	while(position === undefined && i < 100) {
 		var testPosition = this.createRandomPosition();
 		var dist = this.distanceBetweenPositions(planet.position, testPosition);
 		if(dist > 0 && dist <= radius) {
@@ -192,6 +205,7 @@ GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNe
 				position = testPosition;
 			}
 		}
+		++i;
 	}
 	
 	return position;
