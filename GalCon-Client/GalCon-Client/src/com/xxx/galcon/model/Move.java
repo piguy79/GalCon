@@ -1,11 +1,9 @@
 package com.xxx.galcon.model;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import aurelienribon.tweenengine.Tween;
-
 
 import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.GameLoop;
@@ -14,7 +12,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
 import com.xxx.galcon.model.tween.MoveTween;
 
 public class Move extends JsonConvertible implements JsonConstructable {
-	
+
 	public String fromPlanet;
 	public String toPlanet;
 	public int shipsToMove = 0;
@@ -27,23 +25,20 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public int startingRound;
 	public boolean executed;
 	public BattleStats battleStats;
-	
-	public Tween animation;
-	
-	public Point currentAnimation = new Point();;
-	
-	
-	public float selected = -1f;
-	
 
-	
+	public Tween animation;
+
+	public Point currentAnimation = new Point();;
+
+	public float selected = -1f;
+
 	public Move() {
 		super();
-		this.animation =  Tween.to(this, MoveTween.POSITION_XY, 0.8f);
-		
+		this.animation = Tween.to(this, MoveTween.POSITION_XY, 0.8f);
+
 	}
 
-	public boolean belongsToPlayer(Player player){
+	public boolean belongsToPlayer(Player player) {
 		return this.playerHandle.equals(player.handle);
 	}
 
@@ -60,12 +55,11 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("currentPosition", currentPosition.asJson());
 		jsonObject.put("executed", "false");
 
-		
-		if(previousPosition != null){
+		if (previousPosition != null) {
 			jsonObject.put("previousPosition", previousPosition.asJson());
 
 		}
-		
+
 		return jsonObject;
 	}
 
@@ -82,25 +76,20 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		this.endPosition.consume(jsonObject.getJSONObject("endPosition"));
 		startingRound = jsonObject.getInt("startingRound");
 		this.executed = jsonObject.getBoolean("executed");
-		
+
 		this.battleStats = new BattleStats();
-		
+
 		battleStats.consume(jsonObject.optJSONObject("battlestats"));
-		
+
 		currentAnimation = previousPosition;
-		
-		
+
 		animation.target(currentPosition.x, currentPosition.y);
-		
+
 	}
-	
-	
-	public float angleOfMovement(){
+
+	public float angleOfMovement() {
 		return new Vector2(endPosition.x - currentAnimation.x, endPosition.y - currentAnimation.y).angle();
-		
+
 	}
 
-
-
-	
 }

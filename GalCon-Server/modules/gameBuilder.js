@@ -38,8 +38,8 @@ GameBuilder.prototype.createBoard = function(callback) {
 	this.createHomePlanets();
 	
 	var boardSize = this.width * this.height;
-	var regenAroundHomePlanet = Math.floor(boardSize * .22); 
-	var shipsAroundHomePlanet = Math.floor(boardSize * .25);
+	var regenAroundHomePlanet = Math.floor(boardSize * .21); 
+	var shipsAroundHomePlanet = Math.floor(boardSize * .23);
 	this.createPlanetsAroundHomePlanet(this.planets[0], regenAroundHomePlanet, shipsAroundHomePlanet);
 	this.createPlanetsAroundHomePlanet(this.planets[1], regenAroundHomePlanet, shipsAroundHomePlanet, this.planets[0]);
 	
@@ -86,13 +86,19 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 
 GameBuilder.prototype.createHomePlanets = function() {
 	var homePlanets = [];
-	var minDistanceBetweenPlanets = Math.ceil(this.width * HOME_RADIUS_RATIO) + 1;
-
-	var x = Math.floor(Math.random() * this.width);
-	var y = Math.floor(Math.random() * this.height);
+	var minDistanceBetweenPlanets = ((this.width - 2) * HOME_RADIUS_RATIO) + 1;
 	
-	x = this.removeFromEdge(x, this.width-1);
-	y = this.removeFromEdge(y, this.height-1);
+	var xMidPoint = (this.width - 1) / 2.0;
+	var yMidPoint = (this.height - 1) / 2.0;
+	var x = xMidPoint;
+	var y = yMidPoint;
+	while(x == xMidPoint && y == yMidPoint) {
+		x = Math.floor(Math.random() * this.width);
+		y = Math.floor(Math.random() * this.height);
+		
+		x = this.removeFromEdge(x, this.width-1);
+		y = this.removeFromEdge(y, this.height-1);
+	}
 	
 	homePlanets.push(this.createHomePlanet(x, y));
 

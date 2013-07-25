@@ -647,6 +647,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
 				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, tweenManager);
+		shipSelectionDialog.show();
 	}
 
 	private void showShipSelectionDialog(List<Planet> touchedPlanets) {

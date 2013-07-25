@@ -1,9 +1,15 @@
 package com.xxx.galcon.screen;
 
+import static aurelienribon.tweenengine.TweenCallback.COMPLETE;
+import static aurelienribon.tweenengine.TweenCallback.END;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -28,6 +34,11 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private static final String CANCEL = "cancel";
 	private static final String DRAG = "drag";
 
+	private static final String TWEEN_ID_SHOW = "show";
+	private static final String TWEEN_ID_BUTTON_SHOW = "button show";
+	private static final String TWEEN_ID_HIDE = "hide";
+	private static final String TWEEN_ID_BUTTON_HIDE = "button hide";
+
 	private List<Button> buttons = new ArrayList<Button>();
 	private DragButton shipDragButton;
 
@@ -45,11 +56,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private String returnResult;
 	private String pendingReturnResult;
 
-	private Tween showAnimation;
-	private Tween hideAnimation;
-	private Tween showAlphaAnimation;
-	private Tween hideAlphaAnimation;
 	private TweenManager tweenManager;
+	private boolean isBaseDialogReady = false;
+	private boolean isReady = false;
+	private boolean isShownAndClosed = false;
 
 	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
 			int max, TweenManager tweenManager) {
@@ -65,18 +75,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		super(x, y, width, height, false);
 		this.tweenManager = tweenManager;
 
-		int targetwidth = Gdx.graphics.getWidth();
-		int targetheight = Gdx.graphics.getHeight();
-		int xMargin = (int) (targetwidth * .1f);
-
 		Tween.registerAccessor(Color.class, new ColorTween());
-
-		this.showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
-				.target(xMargin, (int) (targetheight * .6f)).ease(TweenEquations.easeOutQuad);
-		this.hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
-				.target(targetwidth * -1, (int) (targetheight * .6f)).ease(TweenEquations.easeInQuad);
-		this.showAlphaAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f).target(1.0f, 1.0f, 1.0f, 1.0f);
-		this.hideAlphaAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f).target(1.0f, 1.0f, 1.0f, 0.0f);
 
 		spriteBatch = new SpriteBatch();
 
@@ -151,7 +150,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	}
 
 	public boolean isReady() {
-		return this.showAnimation.isFinished() && !this.hideAnimation.isStarted();
+		return isReady;
 	}
 
 	public float getX() {
@@ -178,17 +177,9 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 		spriteBatch.begin();
 
-		if (!showAnimation.isStarted()) {
-			showAnimation.start(tweenManager);
-		}
-
 		spriteBatch.draw(dialogTextureBg, x, y, width, height);
 
-		if (showAnimation.isFinished()) {
-			if (!showAlphaAnimation.isStarted()) {
-				showAlphaAnimation.start(tweenManager);
-			}
-
+		if (isBaseDialogReady) {
 			spriteBatch.setColor(alphaAnimColor);
 			for (int i = 0; i < buttons.size(); ++i) {
 				Button button = buttons.get(i);
@@ -225,7 +216,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		returnResult = null;
 
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch() && showAnimation.isFinished()) {
+		if (ip.didTouch() && isReady) {
 			TouchPoint touchPoint = ip.getTouch();
 			int x = touchPoint.x;
 			int y = Gdx.graphics.getHeight() - touchPoint.y;
@@ -236,22 +227,16 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 					ip.consumeTouch();
 					if (button.getActionOnClick().equals(OK)) {
 						pendingReturnResult = Action.DIALOG_OK;
-						hideAlphaAnimation.start(tweenManager);
+						hide();
 					} else if (button.getActionOnClick().equals(CANCEL)) {
 						pendingReturnResult = Action.DIALOG_CANCEL;
-						hideAlphaAnimation.start(tweenManager);
+						hide();
 					}
 				}
 			}
 		}
 
-		if (pendingReturnResult != null && hideAlphaAnimation.isFinished()) {
-			if (!hideAnimation.isStarted()) {
-				hideAnimation.start(tweenManager);
-			}
-		}
-
-		if (pendingReturnResult != null && hideAnimation.isFinished()) {
+		if (pendingReturnResult != null && isShownAndClosed) {
 			returnResult = pendingReturnResult;
 		}
 	}
@@ -264,14 +249,36 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		int targetwidth = Gdx.graphics.getWidth();
+		int targetheight = Gdx.graphics.getHeight();
+		int xMargin = (int) (targetwidth * .1f);
 
+		ShowDialogCallback cb = new ShowDialogCallback();
+
+		Tween showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
+				.target(xMargin, (int) (targetheight * .6f)).ease(TweenEquations.easeOutQuad)
+				.setUserData(TWEEN_ID_SHOW).setCallback(cb).setCallbackTriggers(END);
+		Tween showButtonAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f)
+				.target(1.0f, 1.0f, 1.0f, 1.0f).setUserData(TWEEN_ID_BUTTON_SHOW).setCallback(cb)
+				.setCallbackTriggers(END);
+
+		Timeline.createSequence().push(showAnimation).push(showButtonAnimation).start(tweenManager);
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
+		int targetwidth = Gdx.graphics.getWidth();
+		int targetheight = Gdx.graphics.getHeight();
 
+		Tween hideAlphaAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f).target(1.0f, 1.0f, 1.0f, 0.0f)
+				.setUserData(TWEEN_ID_BUTTON_HIDE);
+
+		Tween hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
+				.target(targetwidth * -1, (int) (targetheight * .6f)).ease(TweenEquations.easeInQuad)
+				.setUserData(TWEEN_ID_HIDE);
+
+		Timeline.createSequence().push(hideAlphaAnimation).push(hideAnimation).setCallback(new HideDialogCallback())
+				.setCallbackTriggers(COMPLETE).start(tweenManager);
 	}
 
 	@Override
@@ -288,9 +295,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	@Override
 	public void dispose() {
-		if (!hideAnimation.isStarted()) {
-			hideAnimation.start(tweenManager);
-		}
+		hide();
 	}
 
 	@Override
@@ -320,5 +325,39 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	public Move getCurrentMoveToEdit() {
 		return currentMoveToEdit;
+	}
+
+	private class ShowDialogCallback implements TweenCallback {
+
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+			case END:
+				if (source.getUserData().equals(TWEEN_ID_SHOW)) {
+					isBaseDialogReady = true;
+				} else if (source.getUserData().equals(TWEEN_ID_BUTTON_SHOW)) {
+					isReady = true;
+				}
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
+
+	private class HideDialogCallback implements TweenCallback {
+
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+			case COMPLETE:
+				isShownAndClosed = true;
+				break;
+			default:
+				break;
+			}
+
+		}
 	}
 }
