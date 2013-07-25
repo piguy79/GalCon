@@ -469,6 +469,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
 
 		shipShader.begin();
+		
+		if(gameBoard.selectedMove() != null){
+			moves.add(gameBoard.selectedMove());
+		}
 
 		for (int i = 0; i < moves.size(); i++) {
 			Move move = moves.get(i);
@@ -537,6 +541,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		shipShader.end();
+		
+		if(gameBoard.selectedMove() != null){
+			moves.remove(moves.size()-1);
+		}
 	}
 
 	private float distanceToPlanet(Move move, List<Planet> planets) {
