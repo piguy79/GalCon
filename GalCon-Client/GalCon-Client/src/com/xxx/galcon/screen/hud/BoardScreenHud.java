@@ -107,16 +107,10 @@ public class BoardScreenHud extends Hud {
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 
 		if (ip.isDragging()) {
-			List<TouchPoint> dragPoints = ip.getDragTouchPoints();
-
-			TouchPoint dragBegin = dragPoints.get(0);
+			TouchPoint dragBegin = ip.getDragBeginPoint();
 			if (dragBegin.x > 0 && dragBegin.x < MAX_BAR_WIDTH_FOR_MOVES) {
 				if (dragBegin.y > 0 && dragBegin.y < Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO) {
-					int size = dragPoints.size();
-					TouchPoint current = dragPoints.get(size - 1);
-					TouchPoint previous = dragPoints.get(size - 2);
-
-					int offset = current.x - previous.x;
+					int offset = ip.getDragXDiff(true);
 
 					ShipMoveHudButton firstButton = null;
 					ShipMoveHudButton lastButton = null;

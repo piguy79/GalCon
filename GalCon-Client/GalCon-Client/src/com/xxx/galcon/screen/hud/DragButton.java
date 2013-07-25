@@ -35,19 +35,14 @@ public abstract class DragButton extends Button {
 	private void drag() {
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 		if (ip.isDragging()) {
-			List<TouchPoint> dragPoints = ip.getDragTouchPoints();
 			if (!dragInProgress) {
-				TouchPoint dragBegin = dragPoints.get(0);
+				TouchPoint dragBegin = ip.getDragBeginPoint();
 
 				if (isTouched(dragBegin.x, dragBegin.y)) {
 					dragInProgress = true;
 				}
 			} else {
-				int size = dragPoints.size();
-				TouchPoint current = dragPoints.get(size - 1);
-				TouchPoint previous = dragPoints.get(size - 2);
-
-				int offset = current.x - previous.x;
+				int offset = ip.getDragXDiff(true);
 				this.setX(x + offset);
 			}
 		} else {

@@ -1,8 +1,5 @@
 package com.xxx.galcon;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
@@ -11,7 +8,11 @@ public class InGameInputProcessor implements InputProcessor {
 	private static final int MAX_TOUCH_PROCESSING_DELAY_IN_MILLISECONDS = 500;
 	private int lastTouchX = -1, lastTouchY = -1;
 	private long touchTime = System.currentTimeMillis();
-	private List<TouchPoint> draggedPoints = new ArrayList<TouchPoint>(50);
+
+	private boolean dragDetected = false;
+	private TouchPoint dragBeginPoint = null;
+	private TouchPoint dragDiffBeginPoint = null;
+	private TouchPoint dragDiffEndPoint = null;
 
 	public class TouchPoint {
 		public int x;
@@ -83,24 +84,61 @@ public class InGameInputProcessor implements InputProcessor {
 			lastTouchX = x;
 			lastTouchY = y;
 		}
-		draggedPoints.clear();
+		dragBeginPoint = null;
+		dragDiffEndPoint = null;
+		dragDiffBeginPoint = null;
+		dragDetected = false;
 		return true;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		y = Gdx.graphics.getHeight() - y;
-		draggedPoints.add(new TouchPoint(x, y));
+
+		TouchPoint tp = new TouchPoint(x, y);
+		if (dragBeginPoint == null) {
+			dragBeginPoint = tp;
+		}
+
+		if (dragDiffBeginPoint == null) {
+			dragDiffBeginPoint = tp;
+		}
+
+		dragDiffEndPoint = tp;
 
 		return true;
 	}
 
 	public boolean isDragging() {
-		return draggedPoints.size() > 8;
+		if (dragDetected) {
+			return true;
+		}
+		if (dragBeginPoint == null || dragDiffEndPoint == null) {
+			return false;
+		}
+		if (Math.abs(dragDiffEndPoint.x - dragBeginPoint.x) > (float) Gdx.graphics.getWidth() * .01f) {
+			dragDetected = true;
+		}
+
+		return dragDetected;
 	}
 
-	public List<TouchPoint> getDragTouchPoints() {
-		return draggedPoints;
+	public TouchPoint getDragBeginPoint() {
+		return dragBeginPoint;
+	}
+
+	public int getDragXDiff(boolean consumeDiff) {
+		if (dragDiffEndPoint == null || dragDiffBeginPoint == null) {
+			return 0;
+		}
+		int xDiff = dragDiffEndPoint.x - dragDiffBeginPoint.x;
+
+		if (consumeDiff) {
+			dragDiffBeginPoint = dragDiffEndPoint;
+			dragDiffEndPoint = null;
+		}
+
+		return xDiff;
 	}
 
 	@Override
