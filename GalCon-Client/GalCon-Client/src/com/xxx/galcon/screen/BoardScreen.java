@@ -316,7 +316,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					contactBody.setUserData(TOUCH_OBJECT);
 
 					CircleShape shape = new CircleShape();
-					shape.setRadius(0.07f);
+					shape.setRadius(0.05f);
 
 					FixtureDef fixtureDef = new FixtureDef();
 					fixtureDef.shape = shape;
@@ -469,8 +469,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		float tileHeightInWorld = boardPlane.heightInWorld / gameBoard.heightInTiles;
 
 		shipShader.begin();
-		
-		if(gameBoard.selectedMove() != null){
+
+		if (gameBoard.selectedMove() != null) {
 			moves.add(gameBoard.selectedMove());
 		}
 
@@ -541,9 +541,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		shipShader.end();
-		
-		if(gameBoard.selectedMove() != null){
-			moves.remove(moves.size()-1);
+
+		if (gameBoard.selectedMove() != null) {
+			moves.remove(moves.size() - 1);
 		}
 	}
 
@@ -566,7 +566,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		characterBody.setUserData(planet);
 
 		CircleShape shape = new CircleShape();
-		shape.setRadius((float) 0.45f * (planet.shipRegenRate / Constants.SHIP_REGEN_RATE_MAX));
+		// shape.setRadius((float) 0.45f * (planet.shipRegenRate /
+		// Constants.SHIP_REGEN_RATE_MAX));
+		shape.setRadius(0.4f);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
