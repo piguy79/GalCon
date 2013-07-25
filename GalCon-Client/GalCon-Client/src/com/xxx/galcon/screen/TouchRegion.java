@@ -1,10 +1,10 @@
 package com.xxx.galcon.screen;
 
 public class TouchRegion {
-	protected float x, y, width, height;
+	protected int x, y, width, height;
 	private boolean font;
 
-	public TouchRegion(float x, float y, float width, float height, boolean font) {
+	public TouchRegion(int x, int y, int width, int height, boolean font) {
 		super();
 		this.x = x;
 		this.y = y;

@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Game;
@@ -74,7 +75,6 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/back.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
 		assetManager.load("data/images/refresh.png", Texture.class, param);
-		assetManager.load("data/images/ship_selection_dialog.png", Texture.class, param);
 		assetManager.load("data/fonts/planet_numbers.png", Texture.class, param);
 		assetManager.load("data/images/transparent_square.png", Texture.class, param);
 		assetManager.load("data/images/planets/planet3.png", Texture.class, param);
@@ -88,8 +88,14 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/bottom_bar_ship_button.png", Texture.class, param);
 		assetManager.load("data/images/arrow_right_small_black.png", Texture.class, param);
 		assetManager.load("data/images/arrow_left_small_black.png", Texture.class, param);
+		assetManager.load("data/images/ok_button.png", Texture.class, param);
+		assetManager.load("data/images/cancel_button.png", Texture.class, param);
+		assetManager.load("data/images/ship_selection_dialog_bg.png", Texture.class, param);
+		assetManager.load("data/images/ship.png", Texture.class, param);
 		
 		assetManager.finishLoading();
+		
+		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);

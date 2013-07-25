@@ -20,8 +20,8 @@ public class HeaderHud extends Hud {
 	public static final float HEADER_HEIGHT_RATIO = 0.1f;
 
 	private GameBoard gameBoard;
-	private HudButton backButton;
-	private HudButton refreshButton;
+	private Button backButton;
+	private Button refreshButton;
 	private Texture darkGrayBg10x10;
 	private Texture slashLine;
 	private Texture arrowSolidLine;

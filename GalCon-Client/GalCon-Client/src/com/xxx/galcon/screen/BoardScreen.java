@@ -650,11 +650,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int xMargin = (int) (width * .15f);
+		int xMargin = (int) (width * .1f);
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .8f), assetManager, shipsOnPlanet, tweenManager, touchedPlanets);
+				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, tweenManager);
 	}
 
 	private void showShipSelectionDialog(List<Planet> touchedPlanets) {
@@ -862,20 +862,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (shipSelectionDialog != null) {
 			shipSelectionDialog.render(delta);
 
-			if (!shipSelectionDialog.hideAnimation.isStarted() && touchedPlanets.size() == 1) {
-				shipSelectionDialog.showAnimation.kill();
-				TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
-				shipSelectionDialog.hideAnimation.start();
+			if (shipSelectionDialog.isReady() && touchedPlanets.size() == 1) {
+				shipSelectionDialog.dispose();
 			}
 
 			String action = (String) shipSelectionDialog.getRenderResult();
 			if (action != null) {
 				processShipSelectionTouch(action);
-			}
-
-			if (shipSelectionDialog.hideAnimation.isFinished()) {
-				shipSelectionDialog.dispose();
-				shipSelectionDialog = null;
 			}
 		}
 	}
@@ -906,10 +899,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		clearTouchedPlanets();
-		TweenManager.setAutoStart(shipSelectionDialog.hideAnimation, true);
-		shipSelectionDialog.hideAnimation.start(tweenManager);
 
 		boardScreenHud.associateCurrentRoundInformation(gameBoard);
+		shipSelectionDialog.dispose();
+		shipSelectionDialog = null;
 	}
 
 	private void processHudButtonTouch(String action) {

@@ -23,7 +23,7 @@ public class BoardScreenHud extends Hud {
 	public static final float BOTTOM_HEIGHT_RATIO = 0.13f;
 	private GameBoard gameBoard;
 
-	private HudButton endTurnButton;
+	private Button endTurnButton;
 	private Texture bottomBar;
 	private Texture arrowLeftSmallBlack;
 	private Texture arrowRightSmallBlack;
@@ -59,8 +59,8 @@ public class BoardScreenHud extends Hud {
 		this.gameBoard = gameBoard;
 		this.moveToButtonMap.clear();
 
-		for (ListIterator<HudButton> iter = getHudButtons().listIterator(); iter.hasNext();) {
-			HudButton hudButton = iter.next();
+		for (ListIterator<Button> iter = getHudButtons().listIterator(); iter.hasNext();) {
+			Button hudButton = iter.next();
 			if (hudButton instanceof ShipMoveHudButton) {
 				iter.remove();
 			}
@@ -107,20 +107,14 @@ public class BoardScreenHud extends Hud {
 		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 
 		if (ip.isDragging()) {
-			List<TouchPoint> dragPoints = ip.getDragTouchPoints();
-
-			TouchPoint dragBegin = dragPoints.get(0);
+			TouchPoint dragBegin = ip.getDragBeginPoint();
 			if (dragBegin.x > 0 && dragBegin.x < MAX_BAR_WIDTH_FOR_MOVES) {
 				if (dragBegin.y > 0 && dragBegin.y < Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO) {
-					int size = dragPoints.size();
-					TouchPoint current = dragPoints.get(size - 1);
-					TouchPoint previous = dragPoints.get(size - 2);
-
-					int offset = current.x - previous.x;
+					int offset = ip.getDragXDiff(true);
 
 					ShipMoveHudButton firstButton = null;
 					ShipMoveHudButton lastButton = null;
-					for (HudButton button : getHudButtons()) {
+					for (Button button : getHudButtons()) {
 						if (!(button instanceof ShipMoveHudButton)) {
 							continue;
 						}
@@ -152,7 +146,7 @@ public class BoardScreenHud extends Hud {
 	}
 
 	private void applyOffsetToMoveButtons(int offset) {
-		for (HudButton button : getHudButtons()) {
+		for (Button button : getHudButtons()) {
 			if (!(button instanceof ShipMoveHudButton)) {
 				continue;
 			}
@@ -166,7 +160,7 @@ public class BoardScreenHud extends Hud {
 		ShipMoveHudButton firstButton = null;
 		ShipMoveHudButton lastButton = null;
 		for (int i = 0; i < getHudButtons().size(); ++i) {
-			HudButton button = getHudButtons().get(i);
+			Button button = getHudButtons().get(i);
 			if (button instanceof ShipMoveHudButton) {
 				ShipMoveHudButton sButton = (ShipMoveHudButton) button;
 				if (firstButton == null) {

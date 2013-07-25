@@ -103,7 +103,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		font.draw(spriteBatch, text, x, y);
 
 		if (isTouchable && touchRegions.size() != 3) {
-			touchRegions.put(text, new TouchRegion(x, y, fontBounds.width, fontBounds.height, true));
+			touchRegions.put(text, new TouchRegion(x, y, (int) fontBounds.width, (int) fontBounds.height, true));
 		}
 	}
 
@@ -131,7 +131,6 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
-		
 
 		String galcon = "GalCon";
 		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
@@ -140,9 +139,9 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		BitmapFont smallFont = Fonts.getInstance().smallFont();
 		if (hasUserInformation()) {
-			
+
 			createCoinDisplay(width, height);
-			
+
 			BitmapFont mediumFont = Fonts.getInstance().mediumFont();
 			mediumFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 			smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
@@ -228,7 +227,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		
 		BitmapFont extraLargeFont = Fonts.getInstance().mediumFont();
 		double percentageOfWidth = width * 0.04;
-		int x = (int)percentageOfWidth;
+		int x = (int) percentageOfWidth;
 		extraLargeFont.draw(spriteBatch, coinsText, x, (int) (height * .97f));
 	}
 
