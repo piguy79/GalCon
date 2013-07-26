@@ -8,14 +8,14 @@ import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Rank extends JsonConvertible {
 	
-	public int level;
+	public Long level;
 	public int startFrom;
 	public int endAt;
 	
 	
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
-		this.level = Integer.parseInt(jsonObject.getString(Constants.LEVEL));
+		this.level =jsonObject.getLong(Constants.LEVEL);
 		this.startFrom  = Integer.parseInt(jsonObject.getString(Constants.START_FROM));
 		this.endAt  = Integer.parseInt(jsonObject.getString(Constants.END_AT));
 		

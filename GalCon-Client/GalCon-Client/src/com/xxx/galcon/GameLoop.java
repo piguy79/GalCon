@@ -126,7 +126,7 @@ public class GameLoop extends Game {
 				int height = (int) Math.ceil(width * 1.33f);
 				int gameTypeToUse = (int) (Math.random() * Constants.gameTypes.size());
 				gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, width, height,
-						Constants.gameTypes.get(gameTypeToUse));
+						Constants.gameTypes.get(gameTypeToUse), 1L, USER.rank.level);
 				return boardScreen;
 			} else if (nextScreen.equals(Constants.JOIN)) {
 				joinGameScreen.resetState();

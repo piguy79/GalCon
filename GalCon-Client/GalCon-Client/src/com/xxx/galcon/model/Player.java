@@ -43,9 +43,7 @@ public class Player extends JsonConvertible{
 		
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();
-		this.rank.level = rankInfo.getInt(Constants.LEVEL);
-		this.rank.startFrom = rankInfo.getInt(Constants.START_FROM);
-		this.rank.endAt = rankInfo.getInt(Constants.END_AT);
+		rank.consume(rankInfo);
 		
 		this.currentGames = new ArrayList<String>();
 		

@@ -16,9 +16,18 @@ exports.generateGame = function(req, res) {
 
 	userManager.findUserByHandle(playerHandle, function(user) {
 		var numPlanets = Math.floor((req.body.width * req.body.height) * .28);
+		var createdTime = req.body.time;
+		var map = req.body.map;
 		numPlanets = Math.max(12, numPlanets);
-		gameManager.createGame([ user ], req.body.width, req.body.height, numPlanets,
-				req.body.gameType, function(game) {
+		gameManager.createGame({
+					players : [ user ],
+					width :  req.body.width,
+					height :  req.body.height,
+					numberOfPlanets :  numPlanets,
+					createdTime : createdTime,
+					rankOfInitialPlayer : user.rankInfo.level,
+					map : map,
+					gameType : req.body.gameType}, function(game) {
 					gameManager.saveGame(game, function() {
 						user.currentGames.push(game.id);
 						user.coins--;

@@ -5,13 +5,16 @@ var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
 var HOME_RADIUS_RATIO = .38;
 
-function GameBuilder(players, width, height, numberOfPlanets, gameType) {
+function GameBuilder(gameAttributes) {
 	this.currentPlanetNum = 0;
 	this.version = 0;
-	this.players = players;
-	this.width = width;
-	this.height = height;
-	this.createdDate = new Date();
+	this.players = gameAttributes.players;
+	this.width = gameAttributes.width;
+	this.height = gameAttributes.height;
+	this.createdDate = new Date(gameAttributes.createdTime);
+	this.createdTime = gameAttributes.createdTime;
+	this.rankOfInitialPlayer = gameAttributes.rankOfInitialPlayer;
+	this.map = gameAttributes.map;
 	this.currentRound = {
 		roundNumber : 0,
 		playersWhoMoved : []
@@ -23,12 +26,12 @@ function GameBuilder(players, width, height, numberOfPlanets, gameType) {
 		xpAwardToWinner : 0
 	}
 	this.ability = "";
-	this.numberOfPlanets = numberOfPlanets;
-	this.gameType = gameType;
+	this.numberOfPlanets = gameAttributes.numberOfPlanets;
+	this.gameType = gameAttributes.gameType;
 	this.planets = [];
 	
-	if(gameTypeAssembler.gameTypes[gameType].constructGameBoard){
-			gameTypeAssembler.gameTypes[gameType].constructGameBoard(this,players, width, height, numberOfPlanets);
+	if(gameTypeAssembler.gameTypes[gameAttributes.gameType].constructGameBoard){
+			gameTypeAssembler.gameTypes[gameAttributes.gameType].constructGameBoard(this,gameAttributes.players, gameAttributes.width, gameAttributes.height, gameAttributes.numberOfPlanets);
 	}
 }
 GameBuilder.prototype.constructor = GameBuilder;
