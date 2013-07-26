@@ -304,7 +304,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					shipSelectionDialog = null;
 				}
 			} else {
-				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, touchPoint.y);
+				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
+						- touchPoint.y);
 				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
 				if (boardXY != null) {
