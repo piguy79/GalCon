@@ -431,3 +431,24 @@ exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
 
 }
 
+
+exports.findGameForMapInTimeLimit = function(mapToFind, time,  callback){
+	GameModel.find({ $and [{map : mapToFind}, {createdTime { $gt : time}}]}).populate('players').exec(function(err, games){
+		if(err){
+			next();		
+		}else{
+			callback(games);
+		}
+	});
+}
+
+exports.findGameAtAMap = function(mapToFind, callback){
+	GameModel.find({map : mapToFind}).populate('players').exec(function(err, games){
+		if(err){
+			next();		
+		}else{
+			callback(games);
+		}
+	});
+}
+
