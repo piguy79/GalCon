@@ -21,6 +21,9 @@ var gameSchema = mongoose.Schema({
 		draw : "Boolean"
 	},
 	createdDate : "Date",
+	createdTime : "Number",
+	map : "Number",
+	rankOfInitialPlayer : "Number",
 	gameType : "String",
 	currentRound : {
 		roundNumber : "Number",
@@ -228,8 +231,8 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 
 var GameModel = db.model('Game', gameSchema);
 
-exports.createGame = function(players, width, height, numberOfPlanets,gameType, callback){
-	var game = gamebuilder.createGameBuilder(players, width, height, numberOfPlanets, gameType);
+exports.createGame = function(gameAttributes, callback){
+	var game = gamebuilder.createGameBuilder(gameAttributes);
 	game.createBoard(function(createdGame){
 		var constructedGame = new GameModel(createdGame);
 		constructedGame.populate('players', function(err, game) {

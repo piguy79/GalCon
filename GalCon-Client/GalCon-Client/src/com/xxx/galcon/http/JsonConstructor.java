@@ -27,7 +27,7 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject generateGame(String playerHandle, int width, int height, String gameType)
+	public static JSONObject generateGame(String playerHandle, int width, int height, String gameType, Long map, Long rankOfInitialPlayer)
 			throws JSONException {
 		JSONObject top = new JSONObject();
 
@@ -35,6 +35,8 @@ public class JsonConstructor {
 		top.put("width", width);
 		top.put("height", height);
 		top.put("gameType", gameType);
+		top.put("map", map);
+		top.put("rankOfInitialPlayer", rankOfInitialPlayer);
 		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
 
 		return top;

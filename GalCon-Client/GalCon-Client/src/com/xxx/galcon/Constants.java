@@ -53,7 +53,9 @@ public class Constants {
 	public static final String ABILITY_REGEN_BLOCK = "REGEN_BLOCK";
 	public static final String XP_AWARD_TO_WINNER ="xpAwardToWinner";
 	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
-
+	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
+	public static final String MAP = "map";
+	public static final String CREATED_TIME = "createdTime";
 	
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {

@@ -78,9 +78,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType) {
+			int height, String gameType, Long map, Long rankOfInitialPlayer) {
 		try {
-			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
+			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map, rankOfInitialPlayer);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());

@@ -87,9 +87,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType) {
+			int height, String gameType, Long map, Long rankOfInitialPlayer) {
 		try {
-			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType);
+			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,rankOfInitialPlayer);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

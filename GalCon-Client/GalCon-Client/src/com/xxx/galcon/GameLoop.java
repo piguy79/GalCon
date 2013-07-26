@@ -118,6 +118,7 @@ public class GameLoop extends Game {
 	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
 		if (currentScreen instanceof MainMenuScreen) {
 			String nextScreen = (String) result;
+
 			if (nextScreen.equals(Constants.PLAY)) {
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
@@ -130,7 +131,7 @@ public class GameLoop extends Game {
 				// gameAction.generateGame(new
 				// SetGameBoardResultHandler(boardScreen), USER.handle, width,
 				// height,
-				// Constants.gameTypes.get(gameTypeToUse));
+				// Constants.gameTypes.get(gameTypeToUse), 1L, USER.rank.level);
 				// return boardScreen;
 			} else if (nextScreen.equals(Constants.CURRENT)) {
 				currentGameScreen.resetState();
