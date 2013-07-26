@@ -4,16 +4,12 @@ var gameBuilder = require('../modules/gameBuilder'),
 	rankManager = require('../modules/model/rank'),
 	mapManager = require('../modules/model/map');
 
-/*
- * GET home page.
- */
 exports.index = function(req, res) {
 	res.render('index.html')
 };
 
 
 
-// Find all games currently available in the system.
 exports.findAllGames = function(req, res) {
 	gameManager.findAllGames(function(games) {
 		var returnObj = {};
@@ -22,7 +18,6 @@ exports.findAllGames = function(req, res) {
 	});
 }
 
-// Find a specific game by its object id
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
@@ -207,7 +202,6 @@ exports.deleteGame = function(req, res) {
 	});
 };
 
-// Join a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
@@ -257,63 +251,126 @@ exports.matchPlayerToGame = function(req, res){
 	var time = req.body.time - 300000;
 	var playerHandle = req.body.playerHandle;
 	
-	gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
-		if(games.length > 0){
-			joinAGame(games[0]._id, playerHandle, time, res);
-		}else{
-			gameManager.findGameAtAMap(mapToFind,playerHandle, function(games){
-				if(games.length > 0){
-					joinAGame(games[0]._id, playerHandle, time, res);
-				}else{
-					generateGame(playerHandle, req.body.time, mapToFind, res);
-				}
-			});
-		}
-	});
-}
-
-var joinAGame = function(gameId, playerHandle, time,  res){
-	userManager.findUserByHandle(playerHandle, function(user) {
-		gameManager.addUser(gameId, user, function(game) {
-			gameManager.findById(gameId, function(returnGame) {
-				user.currentGames.push(gameId);
-				user.coins--;
-				if(user.coins == 0){
-					user.usedCoins = time;
-				}
-				user.save(function() {
-					res.json(returnGame);
+	userManager.findUserByHandle(playerHandle, function(user){
+		gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
+			if(games.length > 0){
+				joinAGame(games, playerHandle, time, function(game){
+							if(game === null){
+								generateGame(user, req.body.time, mapToFind, res);
+							}else{
+								res.json(game);
+							}
+						});
+			}else{
+				gameManager.findGameAtAMap(mapToFind,playerHandle, function(games){
+					if(games.length > 0){
+						joinAGame(games, user, time, function(game){
+							if(game === null){
+								generateGame(playerHandle, req.body.time, mapToFind, res);
+							}else{
+								res.json(game);
+							}
+						});
+					}else{
+						generateGame(playerHandle, req.body.time, mapToFind, res);
+					}
 				});
-			});
+			}
 		});
 	});
 }
 
-var generateGame = function(playerHandle, time, map, res) {
+var joinAGame = function(games, user, time, callback){
 
-	userManager.findUserByHandle(playerHandle, function(user) {
-		var numPlanets = Math.floor((10 * 8) * .28);
-		numPlanets = Math.max(12, numPlanets);
-		gameManager.createGame({
-					players : [ user ],
-					width :  10,
-					height :  8,
-					numberOfPlanets :  numPlanets,
-					createdTime : time,
-					rankOfInitialPlayer : user.rankInfo.level,
-					map : map,
-					gameType : "speedIncrease"}, function(game) {
-					gameManager.saveGame(game, function() {
-						user.currentGames.push(game.id);
+	console.log(user.rankInfo.level);
+	var relativeRanks = [];
+	for(var i =0; i < games.length; i++){
+		var game = games[i];
+		game.relativeRank = relativeRank(game, user.rankInfo.level);
+		relativeRanks.push(game);	
+	}
+		
+	addGameFromSegment(relativeRanks.sort(function(a,b) {return a.relativeRank - b.relativeRank}), 0, user, time, callback);
+	
+}
+
+var relativeRank = function(game, level){
+	return Math.abs(level - game.rankOfInitialPlayer);
+}
+
+var addGameFromSegment = function(games, index, user, time, callback){
+
+		if(index > games.lengh){
+			callback(null);
+		}
+	
+		var gameId = games[index]._id;
+		
+		gameManager.addUser(gameId, user, function(game) {
+			if(game !== null){
+				gameManager.findById(gameId, function(returnGame) {
+					userManager.findUserByHandle(user.handle, function(user){
+						user.currentGames.push(gameId);
 						user.coins--;
 						if(user.coins == 0){
 							user.usedCoins = time;
 						}
 						user.save(function() {
-							res.json(game);
+							foundGame = returnGame;
+ 							callback(returnGame);	
 						});
-
 					});
 				});
+			}else{
+				addGameFromSegment(games, index++, user, time, callback);
+			}	
+		});		
+}
+
+
+var generateGame = function(playerHandle, time, mapToFind, res) {
+
+	userManager.findUserByHandle(playerHandle, function(user) {
+	
+		mapManager.findMapByKey(mapToFind, function(map){
+			if(!map){
+				res.json({
+					error : "No Map Matching the key " + mapToFind
+				});
+			}else{
+				var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
+				var heightToUse = Math.ceil(widthToUse * 1.33);
+				
+				var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
+				numPlanets = Math.max(12, numPlanets);
+				
+				var gameAttributes = {
+								players : [ user ],
+								width :  widthToUse,
+								height :  heightToUse,
+								numberOfPlanets :  numPlanets,
+								createdTime : time,
+								rankOfInitialPlayer : user.rankInfo.level,
+								map : map.key,
+								gameType : map.gameType
+							};
+				
+				gameManager.createGame(gameAttributes, function(game) {
+							gameManager.saveGame(game, function() {
+								user.currentGames.push(game.id);
+								user.coins--;
+								if(user.coins == 0){
+									user.usedCoins = time;
+								}
+								user.save(function() {
+									res.json(game);
+								});
+		
+							});
+				});
+			
+			}
+		});
+		
 	});
 }

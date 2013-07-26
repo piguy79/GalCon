@@ -20,10 +20,6 @@ var mapSchema = mongoose.Schema({
 		max : "Number",
 		min : "Number"
 	},
-	height : {
-		max : "Number",
-		min : "Number"
-	},
 	gameType : "String"
 });
 
@@ -48,6 +44,18 @@ exports.findAllMaps = function(callback) {
 			callback();
 		} else {
 			callback(maps);
+		}
+	});
+};
+
+
+exports.findMapByKey = function(mapKey, callback){
+	MapModel.findOne({key : mapKey}).exec(function(err, map){
+		if(err){
+			console.log("Unable to find a map with the key: " + mapKey);
+			callback();
+		} else{
+			callback(map);
 		}
 	});
 };

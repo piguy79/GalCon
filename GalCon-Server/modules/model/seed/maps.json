@@ -6,13 +6,10 @@
 					"title" : "The Beginning",
 					"description" : "Tis a small world",
 					"width" : {
-						"min" : 6,
-						"max" : 8
+						"min" : 5,
+						"max" : 6
 					},
-					"height" : {
-						"min" : 8,
-						"max" : 10
-					}
+					"gameType" : "standardGame"
 				}
 				
 			]

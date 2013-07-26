@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,7 +40,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	private Image loadingFrame;
 	private Image loadingBarHidden;
 	private Image loadingBg;
-
+	
 	private float startX, endX;
 	private float percent;
 
@@ -52,6 +53,7 @@ public class MainMenuScreen implements ScreenFeedback {
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
 		this.gameLoop = gameLoop;
 		this.gameAction = gameAction;
+
 	}
 
 	private void addElementsToStage() {
@@ -108,6 +110,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
+		
+		
 
 		Integer touchX = null;
 		Integer touchY = null;
@@ -126,6 +130,7 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
+		
 
 		String galcon = "GalCon";
 		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
