@@ -432,23 +432,33 @@ exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
 }
 
 
-exports.findGameForMapInTimeLimit = function(mapToFind, time,  callback){
-	GameModel.find({ $and [{map : mapToFind}, {createdTime { $gt : time}}]}).populate('players').exec(function(err, games){
+exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle,  callback){
+	GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec(function(err, games){
 		if(err){
 			next();		
 		}else{
-			callback(games);
+			filterOutPlayer(games, playerHandle, callback);
 		}
 	});
 }
 
-exports.findGameAtAMap = function(mapToFind, callback){
-	GameModel.find({map : mapToFind}).populate('players').exec(function(err, games){
+exports.findGameAtAMap = function(mapToFind, playerHandle, callback){
+	GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').exec(function(err, games){
 		if(err){
 			next();		
 		}else{
-			callback(games);
+			filterOutPlayer(games, playerHandle, callback);
 		}
 	});
+}
+
+var filterOutPlayer = function(games, playerHandle, callback){
+	var filteredGames = [];
+	games.forEach(function(game) {
+		if(game.players[0].handle != playerHandle) {
+			filteredGames.push(game);
+		}
+	});
+	callback(filteredGames);
 }
 
