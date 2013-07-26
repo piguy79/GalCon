@@ -4,7 +4,15 @@
 					"key" : 1,
 					"availableFromLevel" : 1,
 					"title" : "The Beginning",
-					"description" : "Tis a small world"
+					"description" : "Tis a small world",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"height" : {
+						"min" : 8,
+						"max" : 10
+					}
 				}
 				
 			]
