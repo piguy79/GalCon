@@ -4,16 +4,12 @@ var gameBuilder = require('../modules/gameBuilder'),
 	rankManager = require('../modules/model/rank'),
 	mapManager = require('../modules/model/map');
 
-/*
- * GET home page.
- */
 exports.index = function(req, res) {
 	res.render('index.html')
 };
 
 
 
-// Find all games currently available in the system.
 exports.findAllGames = function(req, res) {
 	gameManager.findAllGames(function(games) {
 		var returnObj = {};
@@ -22,7 +18,6 @@ exports.findAllGames = function(req, res) {
 	});
 }
 
-// Find a specific game by its object id
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
@@ -207,7 +202,6 @@ exports.deleteGame = function(req, res) {
 	});
 };
 
-// Join a game will use the game ID to add a player to a game.
 exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
@@ -294,7 +288,8 @@ var generateGame = function(playerHandle, time, map, res) {
 	userManager.findUserByHandle(playerHandle, function(user) {
 		var numPlanets = Math.floor((10 * 8) * .28);
 		numPlanets = Math.max(12, numPlanets);
-		gameManager.createGame({
+		
+		var gameAttributes = {
 					players : [ user ],
 					width :  10,
 					height :  8,
@@ -302,7 +297,9 @@ var generateGame = function(playerHandle, time, map, res) {
 					createdTime : time,
 					rankOfInitialPlayer : user.rankInfo.level,
 					map : map,
-					gameType : "speedIncrease"}, function(game) {
+					gameType : "speedIncrease"};
+		
+		gameManager.createGame(gameAttributes, function(game) {
 					gameManager.saveGame(game, function() {
 						user.currentGames.push(game.id);
 						user.coins--;
