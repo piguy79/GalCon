@@ -51,12 +51,15 @@ public class Constants {
 	public static final String ABILITY_ATTACK_INCREASE = "ATTACK_INC";
 	public static final String ABILITY_DEFENCE_INCREASE = "DEF_INC";
 	public static final String ABILITY_REGEN_BLOCK = "REGEN_BLOCK";
-	public static final String XP_AWARD_TO_WINNER ="xpAwardToWinner";
+	public static final String XP_AWARD_TO_WINNER = "xpAwardToWinner";
 	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
 	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
 	public static final String MAP = "map";
 	public static final String CREATED_TIME = "createdTime";
-	
+	public static final String KEY = "key";
+	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
+	public static final String TITLE = "title";
+	public static final String DESCRIPTION = "description";
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{
@@ -66,8 +69,8 @@ public class Constants {
 			put(ABILITY_REGEN_BLOCK, "The ability to block opponents Regen");
 		}
 	};
-	
-	public static final List<String> gameTypes = new ArrayList<String>(){
+
+	public static final List<String> gameTypes = new ArrayList<String>() {
 		{
 			add("attackIncrease");
 			add("defenceIncrease");

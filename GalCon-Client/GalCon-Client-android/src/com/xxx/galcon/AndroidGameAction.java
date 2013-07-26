@@ -5,6 +5,7 @@ import static com.xxx.galcon.Config.PORT;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
+import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -36,9 +37,11 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.http.UrlConstants;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -65,6 +68,16 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
+	@Override
+	public void findAllMaps(final UIConnectionResultCallback<Maps> callback) {
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Maps>(new HashMap<String, String>(), callback, FIND_ALL_MAPS, new Maps())
+						.execute("");
+			}
+		});
+	}
+
 	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
@@ -80,7 +93,8 @@ public class AndroidGameAction implements GameAction {
 	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
 			int height, String gameType, Long map, Long rankOfInitialPlayer) {
 		try {
-			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map, rankOfInitialPlayer);
+			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,
+					rankOfInitialPlayer);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
@@ -106,10 +120,10 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
-	
+
 	@Override
-	public void addCoins(final UIConnectionResultCallback<Player> callback,
-			final String playerHandle,final Long numCoins) {
+	public void addCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle,
+			final Long numCoins) {
 		try {
 			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 			activity.runOnUiThread(new Runnable() {
@@ -123,7 +137,7 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-		
+
 	}
 
 	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
@@ -256,6 +270,5 @@ public class AndroidGameAction implements GameAction {
 			}
 		}
 	}
-
 
 }

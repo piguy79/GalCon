@@ -32,4 +32,15 @@ MapModel.remove(function(err, doc) {
 	}
 });
 
+exports.findAllMaps = function(callback) {
+	MapModel.find({}).exec(function(err, maps) {
+		if (err) {
+			console.log("Unable to find all maps:" + err);
+			callback();
+		} else {
+			callback(maps);
+		}
+	});
+};
+
 exports.MapModel = MapModel;

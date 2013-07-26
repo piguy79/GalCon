@@ -39,7 +39,6 @@ public class GameLoop extends Game {
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
 		tweenManager = new TweenManager();
-
 	}
 
 	@Override

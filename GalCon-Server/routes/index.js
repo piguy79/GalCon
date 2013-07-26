@@ -277,3 +277,11 @@ exports.findRankInformation = function(req, res) {
 		res.json(dbRank);
 	});
 }
+
+exports.findAllMaps = function(req, res) {
+	mapManager.findAllMaps(function(maps) {
+		var returnObj = {};
+		returnObj.items = maps;
+		res.json(returnObj);
+	});
+}

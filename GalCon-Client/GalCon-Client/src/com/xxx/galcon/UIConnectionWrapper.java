@@ -3,10 +3,11 @@ package com.xxx.galcon;
 import java.util.List;
 
 import com.xxx.galcon.http.ConnectionException;
-import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 
 public class UIConnectionWrapper {
@@ -22,6 +23,10 @@ public class UIConnectionWrapper {
 
 	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
 		gameAction.performMoves(callback, gameId, moves);
+	}
+
+	public static void findAllMaps(UIConnectionResultCallback<Maps> callback) {
+		gameAction.findAllMaps(callback);
 	}
 
 	public static void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {

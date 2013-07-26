@@ -5,6 +5,7 @@ import java.util.List;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 
@@ -20,6 +21,8 @@ public interface GameAction {
 			int height, String gameType, Long map, Long rankOfInitialPlayer);
 
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
+	
+	public void findAllMaps(UIConnectionResultCallback<Maps> callback);
 
 	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
 

@@ -4,6 +4,7 @@
 package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
+import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -30,6 +31,7 @@ import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -54,6 +56,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, args,
 				new AvailableGames()));
+	}
+
+	@Override
+	public void findAllMaps(UIConnectionResultCallback<Maps> callback) {
+		Map<String, String> args = new HashMap<String, String>();
+		callback.onConnectionResult((Maps) callURL(new GetClientRequest(), FIND_ALL_MAPS, args, new Maps()));
 	}
 
 	@Override
@@ -89,7 +97,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
 			int height, String gameType, Long map, Long rankOfInitialPlayer) {
 		try {
-			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,rankOfInitialPlayer);
+			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,
+					rankOfInitialPlayer);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -180,19 +189,17 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback,
-			String playerHandle, Long numCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins) {
 		try {
 			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS, args,
-					new Player()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS, args, new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 }
