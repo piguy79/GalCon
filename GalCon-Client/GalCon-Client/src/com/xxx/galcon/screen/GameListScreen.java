@@ -82,7 +82,6 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			int x = touchPoint.x / 2;
 			int y = touchPoint.y / 2;
 
-			y = (int) height - y;
 			touchX = x;
 			touchY = y;
 		}
@@ -135,7 +134,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 							ip.consumeTouch();
-							overlay = new TextOverlay("Joining...", assetManager,true);
+							overlay = new TextOverlay("Joining...", assetManager, true);
 							takeActionOnGameboard(gameBoard, GameLoop.USER.handle);
 						}
 					}

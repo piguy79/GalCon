@@ -59,7 +59,7 @@ public class InGameInputProcessor implements InputProcessor {
 
 	public TouchPoint getTouch() {
 		touchPoint.x = lastTouchX;
-		touchPoint.y = lastTouchY;
+		touchPoint.y = Gdx.graphics.getHeight() - lastTouchY;
 
 		return touchPoint;
 	}

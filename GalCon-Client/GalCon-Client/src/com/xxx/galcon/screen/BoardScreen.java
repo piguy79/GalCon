@@ -295,7 +295,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			TouchPoint touchPoint = ip.getTouch();
 			if (shipSelectionDialog != null) {
 				int x = touchPoint.x;
-				int y = Gdx.graphics.getHeight() - touchPoint.y;
+				int y = touchPoint.y;
 				if (shipSelectionDialog.contains(x, y)) {
 					return null;
 				} else {
@@ -669,6 +669,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	@Override
 	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		if (gameBoard == null) {

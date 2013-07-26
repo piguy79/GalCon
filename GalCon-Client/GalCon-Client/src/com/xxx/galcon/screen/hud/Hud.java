@@ -52,7 +52,7 @@ public abstract class Hud implements ScreenFeedback {
 		if (ip.didTouch()) {
 			TouchPoint touchPoint = ip.getTouch();
 			int x = touchPoint.x;
-			int y = Gdx.graphics.getHeight() - touchPoint.y;
+			int y = touchPoint.y;
 
 			for (int i = 0; i < hudButtons.size(); ++i) {
 				if (hudButtons.get(i).isTouched(x, y)) {

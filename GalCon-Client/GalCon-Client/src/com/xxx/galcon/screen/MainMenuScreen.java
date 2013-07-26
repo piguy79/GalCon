@@ -6,7 +6,6 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -118,7 +117,6 @@ public class MainMenuScreen implements ScreenFeedback {
 			int x = touchPoint.x / 2;
 			int y = touchPoint.y / 2;
 
-			y = (int) height - y;
 			touchX = x;
 			touchY = y;
 			ip.consumeTouch();

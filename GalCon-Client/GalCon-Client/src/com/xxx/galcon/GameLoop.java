@@ -70,8 +70,9 @@ public class GameLoop extends Game {
 		param.minFilter = TextureFilter.Linear;
 		param.magFilter = TextureFilter.Linear;
 
-		assetManager.load("data/images/arrow_left.png", Texture.class, param);
 		assetManager.load("data/images/back.png", Texture.class, param);
+		assetManager.load("data/images/rect_button_blank.png", Texture.class, param);
+		assetManager.load("data/images/forward.png", Texture.class, param);
 		assetManager.load("data/images/end_turn.png", Texture.class, param);
 		assetManager.load("data/images/refresh.png", Texture.class, param);
 		assetManager.load("data/fonts/planet_numbers.png", Texture.class, param);
@@ -91,6 +92,8 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/cancel_button.png", Texture.class, param);
 		assetManager.load("data/images/ship_selection_dialog_bg.png", Texture.class, param);
 		assetManager.load("data/images/ship.png", Texture.class, param);
+		assetManager.load("data/images/level_selection_card.png", Texture.class, param);
+		assetManager.load("data/images/levels/1.png", Texture.class, param);
 
 		assetManager.finishLoading();
 
@@ -120,10 +123,8 @@ public class GameLoop extends Game {
 			String nextScreen = (String) result;
 
 			if (nextScreen.equals(Constants.PLAY)) {
-				boardScreen.resetState();
-				boardScreen.previousScreen = mainMenuScreen;
-				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
-				return boardScreen;
+				levelSelectionScreen.resetState();
+				return levelSelectionScreen;
 			} else if (nextScreen.equals(Constants.CURRENT)) {
 				currentGameScreen.resetState();
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
@@ -149,6 +150,22 @@ public class GameLoop extends Game {
 				((BoardScreen) currentScreen).previousScreen.resetState();
 
 				return ((BoardScreen) currentScreen).previousScreen;
+			}
+		} else if (currentScreen instanceof LevelSelectionScreen) {
+			String action = (String) result;
+			if (action.equals(Action.BACK)) {
+				mainMenuScreen.resetState();
+				return mainMenuScreen;
+			} else if (action.equals(Action.PLAY)) {
+				boardScreen.resetState();
+				boardScreen.previousScreen = mainMenuScreen;
+				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
+				return boardScreen;
+			} else if (action.equals(Action.PLAY_WITH_FRIENDS)) {
+				boardScreen.resetState();
+				boardScreen.previousScreen = mainMenuScreen;
+				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
+				return boardScreen;
 			}
 		}
 

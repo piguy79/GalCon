@@ -219,7 +219,6 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		if (ip.didTouch() && isReady) {
 			TouchPoint touchPoint = ip.getTouch();
 			int x = touchPoint.x;
-			int y = Gdx.graphics.getHeight() - touchPoint.y;
 
 			for (int i = 0; i < buttons.size(); ++i) {
 				Button button = buttons.get(i);
