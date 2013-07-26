@@ -6,6 +6,10 @@ import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
+/**
+ * @deprecated need to remove.  not needed with player matching.
+ */
+@Deprecated
 public class JoinGameListScreen extends GameListScreen {
 
 	public JoinGameListScreen(AssetManager assetManager) {

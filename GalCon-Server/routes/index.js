@@ -1,4 +1,8 @@
-var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank');
+var gameBuilder = require('../modules/gameBuilder'), 
+	gameManager = require('../modules/model/game'), 
+	userManager = require('../modules/model/user'), 
+	rankManager = require('../modules/model/rank'),
+	mapManager = require('../modules/model/map');
 
 /*
  * GET home page.

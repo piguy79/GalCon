@@ -17,9 +17,8 @@ import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
-import com.xxx.galcon.screen.JoinGameListScreen;
+import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
-import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -27,7 +26,7 @@ public class GameLoop extends Game {
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
 	private GameListScreen currentGameScreen;
-	private GameListScreen joinGameScreen;
+	private LevelSelectionScreen levelSelectionScreen;
 
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
@@ -92,15 +91,15 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/cancel_button.png", Texture.class, param);
 		assetManager.load("data/images/ship_selection_dialog_bg.png", Texture.class, param);
 		assetManager.load("data/images/ship.png", Texture.class, param);
-		
+
 		assetManager.finishLoading();
-		
+
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
 		mainMenuScreen = new MainMenuScreen(this, gameAction);
 		currentGameScreen = new CurrentGameScreen(assetManager);
-		joinGameScreen = new JoinGameListScreen(assetManager);
+		levelSelectionScreen = new LevelSelectionScreen(assetManager);
 		setScreen(mainMenuScreen);
 	}
 
@@ -119,18 +118,20 @@ public class GameLoop extends Game {
 	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
 		if (currentScreen instanceof MainMenuScreen) {
 			String nextScreen = (String) result;
-			if (nextScreen.equals(Constants.CREATE)) {
-				boardScreen.resetState();
-				boardScreen.previousScreen = mainMenuScreen;
-				int width = 5 + (int) (Math.random() * 4.0f);
-				int height = (int) Math.ceil(width * 1.33f);
-				int gameTypeToUse = (int) (Math.random() * Constants.gameTypes.size());
-				gameAction.generateGame(new SetGameBoardResultHandler(boardScreen), USER.handle, width, height,
-						Constants.gameTypes.get(gameTypeToUse));
-				return boardScreen;
-			} else if (nextScreen.equals(Constants.JOIN)) {
-				joinGameScreen.resetState();
-				return joinGameScreen;
+			if (nextScreen.equals(Constants.PLAY)) {
+				levelSelectionScreen.resetState();
+				return levelSelectionScreen;
+				// boardScreen.resetState();
+				// boardScreen.previousScreen = mainMenuScreen;
+				// int width = 5 + (int) (Math.random() * 4.0f);
+				// int height = (int) Math.ceil(width * 1.33f);
+				// int gameTypeToUse = (int) (Math.random() *
+				// Constants.gameTypes.size());
+				// gameAction.generateGame(new
+				// SetGameBoardResultHandler(boardScreen), USER.handle, width,
+				// height,
+				// Constants.gameTypes.get(gameTypeToUse));
+				// return boardScreen;
 			} else if (nextScreen.equals(Constants.CURRENT)) {
 				currentGameScreen.resetState();
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);

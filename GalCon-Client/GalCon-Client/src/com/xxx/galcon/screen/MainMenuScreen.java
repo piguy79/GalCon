@@ -1,11 +1,7 @@
 package com.xxx.galcon.screen;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -48,9 +44,9 @@ public class MainMenuScreen implements ScreenFeedback {
 	private float percent;
 
 	private Actor loadingBar;
-	
+
 	private boolean loadingNewCoins = false;
-		
+
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
 	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
@@ -87,9 +83,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
-		addText(Constants.JOIN, (int) (height * .4f), true, width, height);
-		addText(Constants.CREATE, (int) (height * .31f), true, width, height);
-		addText(Constants.CURRENT, (int) (height * .22f), true, width, height);
+		addText(Constants.PLAY, (int) (height * .36f), true, width, height);
+		addText(Constants.CURRENT, (int) (height * .24f), true, width, height);
 	}
 
 	private String currentUserText() {
@@ -195,36 +190,33 @@ public class MainMenuScreen implements ScreenFeedback {
 	}
 
 	private void createCoinDisplay(int width, int height) {
-		
 
-		
 		String coinsText = "";
-		
+
 		Long timeoutForCoins = 60000L * 20L;
-		
-		if(GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L){
-				
-			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis()  - GameLoop.USER.usedCoins;
-				
-			if(timeSinceUsedCoins >= timeoutForCoins){
+
+		if (GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L) {
+
+			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis() - GameLoop.USER.usedCoins;
+
+			if (timeSinceUsedCoins >= timeoutForCoins) {
 				coinsText += "";
-				if(!loadingNewCoins){
+				if (!loadingNewCoins) {
 					loadingNewCoins = true;
 					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 5L);
 				}
-			}else{
+			} else {
 				loadingNewCoins = false;
 				DateTime timeToMove = new DateTime(timeoutForCoins - timeSinceUsedCoins);
 				coinsText += timeToMove.getMinuteOfHour() + ":" + timeToMove.getSecondOfMinute();
 			}
-			
-			
-		} else{
+
+		} else {
 			loadingNewCoins = false;
 
 			coinsText += GameLoop.USER.coins;
 		}
-		
+
 		BitmapFont extraLargeFont = Fonts.getInstance().mediumFont();
 		double percentageOfWidth = width * 0.04;
 		int x = (int) percentageOfWidth;
