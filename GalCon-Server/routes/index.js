@@ -283,34 +283,49 @@ var joinAGame = function(gameId, playerHandle, time,  res){
 	});
 }
 
-var generateGame = function(playerHandle, time, map, res) {
+var generateGame = function(playerHandle, time, mapToFind, res) {
 
 	userManager.findUserByHandle(playerHandle, function(user) {
-		var numPlanets = Math.floor((10 * 8) * .28);
-		numPlanets = Math.max(12, numPlanets);
-		
-		var gameAttributes = {
-					players : [ user ],
-					width :  10,
-					height :  8,
-					numberOfPlanets :  numPlanets,
-					createdTime : time,
-					rankOfInitialPlayer : user.rankInfo.level,
-					map : map,
-					gameType : "speedIncrease"};
-		
-		gameManager.createGame(gameAttributes, function(game) {
-					gameManager.saveGame(game, function() {
-						user.currentGames.push(game.id);
-						user.coins--;
-						if(user.coins == 0){
-							user.usedCoins = time;
-						}
-						user.save(function() {
-							res.json(game);
-						});
-
-					});
+	
+		mapManager.findMapByKey(mapToFind, function(map){
+			if(!map){
+				res.json({
+					error : "No Map Matching the key " + mapToFind
 				});
+			}else{
+				var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
+				var heightToUse = Math.floor(Math.random() * (map.height.max - map.height.min + 1)) + map.height.min;
+				
+				var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
+				numPlanets = Math.max(12, numPlanets);
+				
+				var gameAttributes = {
+								players : [ user ],
+								width :  widthToUse,
+								height :  heightToUse,
+								numberOfPlanets :  numPlanets,
+								createdTime : time,
+								rankOfInitialPlayer : user.rankInfo.level,
+								map : map.key,
+								gameType : map.gameType
+							};
+				
+				gameManager.createGame(gameAttributes, function(game) {
+							gameManager.saveGame(game, function() {
+								user.currentGames.push(game.id);
+								user.coins--;
+								if(user.coins == 0){
+									user.usedCoins = time;
+								}
+								user.save(function() {
+									res.json(game);
+								});
+		
+							});
+				});
+			
+			}
+		});
+		
 	});
 }
