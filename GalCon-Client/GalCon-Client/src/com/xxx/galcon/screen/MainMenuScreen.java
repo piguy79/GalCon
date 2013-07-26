@@ -6,6 +6,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -85,6 +86,7 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		addText(Constants.PLAY, (int) (height * .36f), true, width, height);
 		addText(Constants.CURRENT, (int) (height * .24f), true, width, height);
+
 	}
 
 	private String currentUserText() {

@@ -15,7 +15,16 @@ var mapSchema = mongoose.Schema({
 	key : "Number",
 	availableFromLevel : "Number",
 	title : "String",
-	description : "String"
+	description : "String",
+	width : {
+		max : "Number",
+		min : "Number"
+	},
+	height : {
+		max : "Number",
+		min : "Number"
+	},
+	gameType : "String"
 });
 
 mapSchema.set('toObject', { getters: true });

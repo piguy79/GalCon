@@ -431,3 +431,34 @@ exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
 
 }
 
+
+exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle,  callback){
+	GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec(function(err, games){
+		if(err){
+			next();		
+		}else{
+			filterOutPlayer(games, playerHandle, callback);
+		}
+	});
+}
+
+exports.findGameAtAMap = function(mapToFind, playerHandle, callback){
+	GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').exec(function(err, games){
+		if(err){
+			next();		
+		}else{
+			filterOutPlayer(games, playerHandle, callback);
+		}
+	});
+}
+
+var filterOutPlayer = function(games, playerHandle, callback){
+	var filteredGames = [];
+	games.forEach(function(game) {
+		if(game.players[0].handle != playerHandle) {
+			filteredGames.push(game);
+		}
+	});
+	callback(filteredGames);
+}
+

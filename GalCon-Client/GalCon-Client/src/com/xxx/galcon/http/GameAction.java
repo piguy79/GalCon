@@ -17,8 +17,8 @@ import com.xxx.galcon.model.Player;
  */
 public interface GameAction {
 
-	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType, Long map, Long rankOfInitialPlayer);
+	
+	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, Long mapToFind);
 
 	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 	

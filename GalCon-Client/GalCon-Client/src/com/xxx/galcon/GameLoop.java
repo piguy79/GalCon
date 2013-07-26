@@ -19,6 +19,7 @@ import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
+import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -119,19 +120,10 @@ public class GameLoop extends Game {
 			String nextScreen = (String) result;
 
 			if (nextScreen.equals(Constants.PLAY)) {
-				levelSelectionScreen.resetState();
-				return levelSelectionScreen;
-				// boardScreen.resetState();
-				// boardScreen.previousScreen = mainMenuScreen;
-				// int width = 5 + (int) (Math.random() * 4.0f);
-				// int height = (int) Math.ceil(width * 1.33f);
-				// int gameTypeToUse = (int) (Math.random() *
-				// Constants.gameTypes.size());
-				// gameAction.generateGame(new
-				// SetGameBoardResultHandler(boardScreen), USER.handle, width,
-				// height,
-				// Constants.gameTypes.get(gameTypeToUse), 1L, USER.rank.level);
-				// return boardScreen;
+				boardScreen.resetState();
+				boardScreen.previousScreen = mainMenuScreen;
+				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
+				return boardScreen;
 			} else if (nextScreen.equals(Constants.CURRENT)) {
 				currentGameScreen.resetState();
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);

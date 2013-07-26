@@ -11,8 +11,8 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
-import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
+import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
@@ -37,7 +37,6 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.http.UrlConstants;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
@@ -90,19 +89,23 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void generateGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType, Long map, Long rankOfInitialPlayer) {
+	@Override
+	public void matchPlayerToGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle,
+			Long mapToFind) {
 		try {
-			final JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,
-					rankOfInitialPlayer);
+
+			final JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind);
+
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback, GENERATE_GAME, new GameBoard()).execute(top.toString());
+					new PostJsonRequestTask<GameBoard>(callback, MATCH_PLAYER_TO_GAME, new GameBoard()).execute(top
+							.toString());
 				}
 			});
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+
 	}
 
 	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {

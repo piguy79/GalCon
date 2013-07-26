@@ -32,6 +32,8 @@ public class UrlConstants {
 	public static final String REQUEST_HANDLE_FOR_USER_NAME = "/requestHandleForUserName";
 	
 	public static final String FIND_RANK_INFORMATION = "/rank";
+	
+	public static final String MATCH_PLAYER_TO_GAME = "/matchPlayertoGame";
 
 
 }

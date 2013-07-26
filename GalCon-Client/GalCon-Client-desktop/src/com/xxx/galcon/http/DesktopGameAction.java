@@ -5,13 +5,13 @@ package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
-import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
-import static com.xxx.galcon.http.UrlConstants.GENERATE_GAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
+import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
@@ -94,16 +94,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 	}
 
-	public void generateGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, int width,
-			int height, String gameType, Long map, Long rankOfInitialPlayer) {
+	@Override
+	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, Long mapToFind) {
 		try {
-			JSONObject top = JsonConstructor.generateGame(playerHandle, width, height, gameType, map,
-					rankOfInitialPlayer);
+			JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), GENERATE_GAME, args,
+			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
 					new GameBoard()));
 		} catch (JSONException e) {
 			System.out.println(e);
@@ -202,4 +201,5 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
+
 }
