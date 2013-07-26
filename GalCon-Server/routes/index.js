@@ -254,7 +254,7 @@ exports.matchPlayerToGame = function(req, res){
 	userManager.findUserByHandle(playerHandle, function(user){
 		gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
 			if(games.length > 0){
-				joinAGame(games, playerHandle, time, function(game){
+				joinAGame(games, user, time, function(game){
 							if(game === null){
 								generateGame(user, req.body.time, mapToFind, res);
 							}else{
