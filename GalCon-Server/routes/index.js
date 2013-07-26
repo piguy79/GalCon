@@ -282,18 +282,20 @@ exports.matchPlayerToGame = function(req, res){
 
 var joinAGame = function(games, user, time, callback){
 
+	console.log(user.rankInfo.level);
+	var relativeRanks = [];
+	for(var i =0; i < games.length; i++){
+		var game = games[i];
+		game.relativeRank = relativeRank(game, user.rankInfo.level);
+		relativeRanks.push(game);	
+	}
+		
+	addGameFromSegment(relativeRanks.sort(function(a,b) {return a.relativeRank - b.relativeRank}), 0, user, time, callback);
 	
-	var segments = {};
-	
-	segments["eq"] = addSegment(games, function(level){ return level == user.rankInfo.level});
-	segments["lt"] = addSegment(games, function(level){ return level < user.rankInfo.level});
-	segments["gt"] = addSegment(games, function(level){ return level > user.rankInfo.level});
-	
-	segments.eq.concat(segments.lt, segments.gt);
-	
-	
-	addGameFromSegment(segments.eq, 0, user, time, callback);
-	
+}
+
+var relativeRank = function(game, level){
+	return Math.abs(level - game.rankOfInitialPlayer);
 }
 
 var addGameFromSegment = function(games, index, user, time, callback){
@@ -325,19 +327,6 @@ var addGameFromSegment = function(games, index, user, time, callback){
 		});		
 }
 
-var addSegment = function(games, comparator){
-	var toAdd = [];
-	
-	for(var i = 0; i < games.length; i++){
-		var game = games[i];
-		if(comparator(game.rankOfInitialPlayer)){
-			toAdd.push(game);
-		}
-	}
-	
-	return toAdd;
-
-}
 
 var generateGame = function(playerHandle, time, mapToFind, res) {
 
