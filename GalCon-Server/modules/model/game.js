@@ -393,25 +393,34 @@ var processMoves = function(game) {
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
 exports.addUser = function(gameId, player, callback){
-	this.findById(gameId, function(game){
-		game.players.push(player);
-		
-		for(var i in game.planets) {
-			var planet = game.planets[i];
-			if(!planet.ownerHandle && planet.isHome == "Y") {
-				planet.ownerHandle = player.handle;
-				break;
+
+	GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}, function(err, game){
+		if(err){
+			callback(null);
+		}else {			
+			if(!game){
+				callback(null);
+			}else{
+				for(var i in game.planets) {
+					var planet = game.planets[i];
+					if(!planet.ownerHandle && planet.isHome == "Y") {
+						planet.ownerHandle = player.handle;
+						break;
+					}
+				}
+				
+				game.save(function(err, savedGame){
+					if(err){
+						console.log("Error [ " + err + "] saving Game" + game);
+					
+					}
+					callback(savedGame);
+				});
 			}
 		}
-		
-		game.save(function(err, savedGame){
-			if(err){
-				console.log("Error [ " + err + "] saving Game" + game);
-			
-			}
-			callback(savedGame);
-		});
 	});
+
+	
 }
 
 

@@ -253,11 +253,24 @@ exports.matchPlayerToGame = function(req, res){
 	
 	gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
 		if(games.length > 0){
-			joinAGame(games[0]._id, playerHandle, time, res);
+			joinAGame(games, playerHandle, time, function(game){
+						if(game === null){
+							generateGame(playerHandle, req.body.time, mapToFind, res);
+						}else{
+							res.json(game);
+						}
+					});
 		}else{
 			gameManager.findGameAtAMap(mapToFind,playerHandle, function(games){
 				if(games.length > 0){
-					joinAGame(games[0]._id, playerHandle, time, res);
+					joinAGame(games, playerHandle, time, function(game){
+					console.log("Game to join is " + game);
+						if(game === null){
+							generateGame(playerHandle, req.body.time, mapToFind, res);
+						}else{
+							res.json(game);
+						}
+					});
 				}else{
 					generateGame(playerHandle, req.body.time, mapToFind, res);
 				}
@@ -266,21 +279,40 @@ exports.matchPlayerToGame = function(req, res){
 	});
 }
 
-var joinAGame = function(gameId, playerHandle, time,  res){
-	userManager.findUserByHandle(playerHandle, function(user) {
-		gameManager.addUser(gameId, user, function(game) {
-			gameManager.findById(gameId, function(returnGame) {
-				user.currentGames.push(gameId);
-				user.coins--;
-				if(user.coins == 0){
-					user.usedCoins = time;
-				}
-				user.save(function() {
-					res.json(returnGame);
-				});
+var joinAGame = function(games, playerHandle, time, callback){
+
+	var foundGame;
+
+	for(var i = 0; i < games.length; i++){
+	
+		if(foundGame){
+			break;
+		}
+	
+		var gameId = games[i]._id;
+		
+		userManager.findUserByHandle(playerHandle, function(user) {
+			gameManager.addUser(gameId, user, function(game) {
+				if(game !== null){
+					gameManager.findById(gameId, function(returnGame) {
+						user.currentGames.push(gameId);
+						user.coins--;
+						if(user.coins == 0){
+							user.usedCoins = time;
+						}
+						user.save(function() {
+							foundGame = returnGame;
+							callback(foundGame);
+							
+						});
+					});
+				}	
 			});
 		});
-	});
+		
+	}
+
+	
 }
 
 var generateGame = function(playerHandle, time, mapToFind, res) {
@@ -294,7 +326,7 @@ var generateGame = function(playerHandle, time, mapToFind, res) {
 				});
 			}else{
 				var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
-				var heightToUse = Math.floor(Math.random() * (map.height.max - map.height.min + 1)) + map.height.min;
+				var heightToUse = Math.ceil(widthToUse * 1.33);
 				
 				var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
 				numPlanets = Math.max(12, numPlanets);
