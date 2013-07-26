@@ -452,7 +452,7 @@ exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle,  cal
 }
 
 exports.findGameAtAMap = function(mapToFind, playerHandle, callback){
-	GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').exec(function(err, games){
+	GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec(function(err, games){
 		if(err){
 			next();		
 		}else{

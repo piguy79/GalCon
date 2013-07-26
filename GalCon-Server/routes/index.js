@@ -251,50 +251,63 @@ exports.matchPlayerToGame = function(req, res){
 	var time = req.body.time - 300000;
 	var playerHandle = req.body.playerHandle;
 	
-	gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
-		if(games.length > 0){
-			joinAGame(games, playerHandle, time, function(game){
-						if(game === null){
-							generateGame(playerHandle, req.body.time, mapToFind, res);
-						}else{
-							res.json(game);
-						}
-					});
-		}else{
-			gameManager.findGameAtAMap(mapToFind,playerHandle, function(games){
-				if(games.length > 0){
-					joinAGame(games, playerHandle, time, function(game){
-					console.log("Game to join is " + game);
-						if(game === null){
-							generateGame(playerHandle, req.body.time, mapToFind, res);
-						}else{
-							res.json(game);
-						}
-					});
-				}else{
-					generateGame(playerHandle, req.body.time, mapToFind, res);
-				}
-			});
-		}
+	userManager.findUserByHandle(playerHandle, function(user){
+		gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle,  function(games){
+			if(games.length > 0){
+				joinAGame(games, playerHandle, time, function(game){
+							if(game === null){
+								generateGame(user, req.body.time, mapToFind, res);
+							}else{
+								res.json(game);
+							}
+						});
+			}else{
+				gameManager.findGameAtAMap(mapToFind,playerHandle, function(games){
+					if(games.length > 0){
+						joinAGame(games, user, time, function(game){
+							if(game === null){
+								generateGame(playerHandle, req.body.time, mapToFind, res);
+							}else{
+								res.json(game);
+							}
+						});
+					}else{
+						generateGame(playerHandle, req.body.time, mapToFind, res);
+					}
+				});
+			}
+		});
 	});
 }
 
-var joinAGame = function(games, playerHandle, time, callback){
+var joinAGame = function(games, user, time, callback){
 
-	var foundGame;
-
-	for(var i = 0; i < games.length; i++){
 	
-		if(foundGame){
-			break;
+	var segments = {};
+	
+	segments["eq"] = addSegment(games, function(level){ return level == user.rankInfo.level});
+	segments["lt"] = addSegment(games, function(level){ return level < user.rankInfo.level});
+	segments["gt"] = addSegment(games, function(level){ return level > user.rankInfo.level});
+	
+	segments.eq.concat(segments.lt, segments.gt);
+	
+	
+	addGameFromSegment(segments.eq, 0, user, time, callback);
+	
+}
+
+var addGameFromSegment = function(games, index, user, time, callback){
+
+		if(index > games.lengh){
+			callback(null);
 		}
 	
-		var gameId = games[i]._id;
+		var gameId = games[index]._id;
 		
-		userManager.findUserByHandle(playerHandle, function(user) {
-			gameManager.addUser(gameId, user, function(game) {
-				if(game !== null){
-					gameManager.findById(gameId, function(returnGame) {
+		gameManager.addUser(gameId, user, function(game) {
+			if(game !== null){
+				gameManager.findById(gameId, function(returnGame) {
+					userManager.findUserByHandle(user.handle, function(user){
 						user.currentGames.push(gameId);
 						user.coins--;
 						if(user.coins == 0){
@@ -302,17 +315,28 @@ var joinAGame = function(games, playerHandle, time, callback){
 						}
 						user.save(function() {
 							foundGame = returnGame;
-							callback(foundGame);
-							
+ 							callback(returnGame);	
 						});
 					});
-				}	
-			});
-		});
-		
-	}
+				});
+			}else{
+				addGameFromSegment(games, index++, user, time, callback);
+			}	
+		});		
+}
 
+var addSegment = function(games, comparator){
+	var toAdd = [];
 	
+	for(var i = 0; i < games.length; i++){
+		var game = games[i];
+		if(comparator(game.rankOfInitialPlayer)){
+			toAdd.push(game);
+		}
+	}
+	
+	return toAdd;
+
 }
 
 var generateGame = function(playerHandle, time, mapToFind, res) {
