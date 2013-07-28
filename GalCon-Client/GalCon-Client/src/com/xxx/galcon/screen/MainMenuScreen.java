@@ -85,8 +85,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
-		addText(Constants.PLAY, (int) (height * .36f), true, width, height);
-		addText(Constants.CURRENT, (int) (height * .24f), true, width, height);
+		addText(Constants.New, (int) (height * .36f), true, width, height);
+		addText(Constants.CONTINUE, (int) (height * .24f), true, width, height);
 
 	}
 

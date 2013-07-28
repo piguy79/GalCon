@@ -122,10 +122,10 @@ public class GameLoop extends Game {
 		if (currentScreen instanceof MainMenuScreen) {
 			String nextScreen = (String) result;
 
-			if (nextScreen.equals(Constants.PLAY)) {
+			if (nextScreen.equals(Constants.New)) {
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
-			} else if (nextScreen.equals(Constants.CURRENT)) {
+			} else if (nextScreen.equals(Constants.CONTINUE)) {
 				currentGameScreen.resetState();
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 				return currentGameScreen;

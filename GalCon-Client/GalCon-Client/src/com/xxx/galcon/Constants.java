@@ -37,8 +37,8 @@ public class Constants {
 	public static final String LOSER_HANDLES = "loserHandles";
 	public static final String HEIGHT = "height";
 	public static final String JOIN = "Join";
-	public static final String CURRENT = "Current";
-	public static final String PLAY = "Play";
+	public static final String CONTINUE = "Continue";
+	public static final String New = "New";
 	public static final String RANK = "rank";
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
