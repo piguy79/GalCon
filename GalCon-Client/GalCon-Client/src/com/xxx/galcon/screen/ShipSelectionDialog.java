@@ -127,7 +127,12 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 				int buttonSize = (int) (width * 0.1f);
 
 				int dragWidth = maxX - minX;
-				this.x = (int) (minX + ((float) shipsToSend / (float) max) * dragWidth);
+
+				float ratio = 0.0f;
+				if (max != 0) {
+					ratio = ((float) shipsToSend / (float) max);
+				}
+				this.x = (int) (minX + ratio * dragWidth);
 				this.y = y + height - buttonSize - (int) (height * 0.30f);
 				this.height = buttonSize;
 				this.width = buttonSize;
