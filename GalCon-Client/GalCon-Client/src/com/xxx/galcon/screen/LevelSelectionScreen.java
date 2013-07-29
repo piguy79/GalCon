@@ -228,6 +228,10 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 				}
 			}
 		}
+
+		if (((InGameInputProcessor) Gdx.input.getInputProcessor()).isBackKeyPressed()) {
+			returnValue = Action.BACK;
+		}
 	}
 
 	@Override

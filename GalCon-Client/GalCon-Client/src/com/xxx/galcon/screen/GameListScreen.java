@@ -168,6 +168,10 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 				returnValue = result;
 			}
 		}
+
+		if (((InGameInputProcessor) Gdx.input.getInputProcessor()).isBackKeyPressed()) {
+			returnValue = Action.BACK;
+		}
 	}
 
 	private String createLabelTextForAGame(GameBoard gameBoard) {

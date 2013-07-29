@@ -738,6 +738,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
+		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if (ip.isBackKeyPressed()) {
+			returnCode = Action.BACK;
+			ip.consumeKey();
+		}
 
 		if (overlay != null) {
 			if (overlay instanceof DismissableOverlay && ((DismissableOverlay) overlay).isDismissed()) {

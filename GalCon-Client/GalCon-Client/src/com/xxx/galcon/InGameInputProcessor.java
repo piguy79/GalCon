@@ -1,6 +1,7 @@
 package com.xxx.galcon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class InGameInputProcessor implements InputProcessor {
@@ -8,6 +9,9 @@ public class InGameInputProcessor implements InputProcessor {
 	private static final int MAX_TOUCH_PROCESSING_DELAY_IN_MILLISECONDS = 500;
 	private int lastTouchX = -1, lastTouchY = -1;
 	private long touchTime = System.currentTimeMillis();
+
+	private int lastKeyCode = -1;
+	private long lastKeyCodeTime = System.currentTimeMillis();
 
 	private boolean dragDetected = false;
 	private TouchPoint dragBeginPoint = null;
@@ -33,8 +37,19 @@ public class InGameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		lastKeyCodeTime = System.currentTimeMillis();
+		lastKeyCode = keycode;
+
 		return false;
+	}
+
+	public boolean isBackKeyPressed() {
+		return lastKeyCode == Keys.BACK
+				&& lastKeyCodeTime > System.currentTimeMillis() - MAX_TOUCH_PROCESSING_DELAY_IN_MILLISECONDS;
+	}
+
+	public void consumeKey() {
+		lastKeyCode = -1;
 	}
 
 	@Override
