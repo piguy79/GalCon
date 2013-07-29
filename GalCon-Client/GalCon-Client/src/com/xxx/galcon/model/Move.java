@@ -34,7 +34,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 
 	public Move() {
 		super();
-		this.animation = Tween.to(this, MoveTween.POSITION_XY, 0.8f);
+		this.animation = Tween.to(this, MoveTween.POSITION_XY, 1.2f);
 
 	}
 
