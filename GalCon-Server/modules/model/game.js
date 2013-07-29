@@ -130,12 +130,13 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 				move.battlestats.previousPlanetOwner = planet.ownerHandle == null ? "" : planet.ownerHandle;
 				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
-				planet.numberOfShips = Math.abs(battleResult); 
+				var attackMultipler = getAttackMultipler(move, game);
+				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultipler); 
 				planet.conquered = true;
 			}else{
 				var defenceMultiplier = getDefenceMutlipler(planet, game);
 				move.battlestats.defenceMultiplier = defenceMultiplier;
-				planet.numberOfShips = battleResult * (1 / (1 + defenceMultiplier));
+				planet.numberOfShips = reverseEffectOfMultiplier(battleResult, defenceMultiplier);
 			}
 			
 			
@@ -144,6 +145,10 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 		}
 		
 	});
+}
+
+var reverseEffectOfMultiplier = function(battleResult, multiplierValue){
+	return battleResult * (1 / (1 + multiplierValue));
 }
 
 gameSchema.methods.allPlayersHaveTakenAMove = function(){
