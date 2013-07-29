@@ -10,8 +10,29 @@
 						"max" : 6
 					},
 					"gameType" : "standardGame"
+				},
+				{
+					"key" : 2,
+					"availableFromLevel" : 2,
+					"title" : "Moving on",
+					"description" : "Some breathing room",
+					"width" : {
+						"min" : 7,
+						"max" : 8
+					},
+					"gameType" : "standardGame"
+				},
+				{
+					"key" : 3,
+					"availableFromLevel" : 3,
+					"title" : "Resources",
+					"description" : "Abilities abound",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"gameType" : "attackIncrease"
 				}
-				
 			]
 	
 }
