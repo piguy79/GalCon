@@ -9,7 +9,7 @@ public abstract class Button {
 	private boolean enabled = true;
 
 	protected int x, y, width, height;
-	private Texture texture;
+	protected Texture texture;
 
 	public Button(Texture texture) {
 		super();

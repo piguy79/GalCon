@@ -96,6 +96,8 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/ship.png", Texture.class, param);
 		assetManager.load("data/images/level_selection_card.png", Texture.class, param);
 		assetManager.load("data/images/levels/1.png", Texture.class, param);
+		assetManager.load("data/images/levels/2.png", Texture.class, param);
+		assetManager.load("data/images/levels/3.png", Texture.class, param);
 
 		assetManager.finishLoading();
 
