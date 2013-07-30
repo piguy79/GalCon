@@ -39,10 +39,13 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	private String loadingMessage = "Loading...";
 
+	private Texture levelSelectBg;
+	private Texture levelSelectBgBottom;
 	private Texture levelSelectionCard;
 	private Texture back;
 	private Texture forward;
-	private Texture rectButtonBlank;
+	private Texture regularPlay;
+	private Texture socialPlay;
 
 	private List<Button> buttons = new ArrayList<Button>();
 
@@ -54,22 +57,27 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		this.assetManager = assetManager;
 		this.spriteBatch = new SpriteBatch();
 
-		this.levelSelectionCard = assetManager.get("data/images/level_selection_card.png", Texture.class);
+		this.levelSelectBg = assetManager.get("data/images/level_select_bg.png", Texture.class);
+		this.levelSelectBgBottom = assetManager.get("data/images/level_select_bg_bottom.png", Texture.class);
+		this.levelSelectionCard = assetManager.get("data/images/level_card_black.png", Texture.class);
 		this.forward = assetManager.get("data/images/arrow_right_small_black.png", Texture.class);
 		this.back = assetManager.get("data/images/arrow_left_small_black.png", Texture.class);
-		this.rectButtonBlank = assetManager.get("data/images/rect_button_blank.png", Texture.class);
+		this.regularPlay = assetManager.get("data/images/reg_play.png", Texture.class);
+		this.socialPlay = assetManager.get("data/images/social_play.png", Texture.class);
 
 		levelSelectionHud = new LevelSelectionHud(assetManager);
 
-		buttons.add(new Button(rectButtonBlank) {
+		buttons.add(new Button(regularPlay) {
 			@Override
 			public void updateLocationAndSize(int x, int y, int width, int height) {
-				int buttonWidth = (int) (width * 0.3f);
-				int buttonHeight = (int) (height * 0.08f);
-				int margin = (int) (width * 0.12f);
+				int buttonWidth = (int) (height * 0.15f);
+				int buttonHeight = (int) (height * 0.15f);
+				int margin = (int) (width * 0.1f);
+				int ymargin = (int)(height * 0.02f);
+
 
 				this.x = x + margin;
-				this.y = y + margin;
+				this.y = y + ymargin;
 				this.height = buttonHeight;
 				this.width = buttonWidth;
 			}
@@ -82,27 +90,19 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			@Override
 			public void render(SpriteBatch spriteBatch) {
 				super.render(spriteBatch);
-
-				BitmapFont font = Fonts.getInstance().smallFont();
-				font.setColor(Color.BLACK);
-				String text = "Play";
-				TextBounds bounds = font.getBounds(text);
-				float halfFontWidth = bounds.width / 2;
-				float halfFontHeight = bounds.height / 2;
-				font.draw(spriteBatch, text, x + width / 2 - halfFontWidth, y + height / 2 + halfFontHeight);
-				font.setColor(Color.WHITE);
 			}
 		});
 
-		buttons.add(new Button(rectButtonBlank) {
+		buttons.add(new Button(socialPlay) {
 			@Override
 			public void updateLocationAndSize(int x, int y, int width, int height) {
-				int buttonWidth = (int) (width * 0.3f);
-				int buttonHeight = (int) (height * 0.08f);
-				int margin = (int) (width * 0.12f);
+				int buttonWidth = (int) (height * 0.15f);
+				int buttonHeight = (int) (height * 0.15f);
+				int xmargin = (int) (width * 0.1f);
+				int ymargin = (int)(height * 0.02f);
 
-				this.x = x + width - margin - buttonWidth;
-				this.y = y + margin;
+				this.x = x + width - xmargin - buttonWidth;
+				this.y = y + ymargin;
 				this.height = buttonHeight;
 				this.width = buttonWidth;
 			}
@@ -116,14 +116,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			public void render(SpriteBatch spriteBatch) {
 				super.render(spriteBatch);
 
-				BitmapFont font = Fonts.getInstance().smallFont();
-				font.setColor(Color.BLACK);
-				String text = "Play with friends";
-				TextBounds bounds = font.getBounds(text);
-				float halfFontWidth = bounds.width / 2;
-				float halfFontHeight = bounds.height / 2;
-				font.draw(spriteBatch, text, x + width / 2 - halfFontWidth, y + height / 2 + halfFontHeight);
-				font.setColor(Color.WHITE);
 			}
 		});
 	}
@@ -132,7 +124,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(148.0f / 255.0f, 228.0f / 255.0f, 148.0f / 255.0f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		float width = Gdx.graphics.getWidth() / 2;
@@ -157,35 +148,42 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			float halfFontWidth = font.getBounds(loadingMessage).width / 2;
 			font.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
 		} else {
-			largeFont.setColor(Color.BLACK);
+			
+			spriteBatch.draw(levelSelectBg, 0, 0, width,
+					height);
+			
+			spriteBatch.draw(levelSelectBgBottom, 0, 0, width,
+					(int)height * 0.18f);
+			
+			largeFont.setColor(Color.WHITE);
 			String text = "Choose Your Galaxy";
 			float halfFontWidth = largeFont.getBounds(text).width / 2;
-			largeFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .88f);
+			largeFont.draw(spriteBatch, text, (width / 2 - halfFontWidth) + (halfFontWidth * 0.2f), height * .97f);
 			largeFont.setColor(Color.WHITE);
 
-			int cardHeight = (int) (height * .7f);
-			int cardWidth = (int) (width * .8f);
-			spriteBatch.draw(levelSelectionCard, width / 2 - cardWidth / 2, height / 2 - cardHeight / 2, cardWidth,
+			int cardHeight = (int) (height * .6f);
+			int cardWidth = (int) (width * .7f);
+			spriteBatch.draw(levelSelectionCard, width / 2 - cardWidth / 2, height * .28f, cardWidth,
 					cardHeight);
 
 			Map map = allMaps.get(selectedMap);
 
 			text = map.title;
-			mediumFont.setColor(Color.BLACK);
+			mediumFont.setColor(Color.WHITE);
 			halfFontWidth = mediumFont.getBounds(text).width / 2;
-			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .73f);
+			mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .83f);
 			mediumFont.setColor(Color.WHITE);
 
 			text = map.description;
-			smallFont.setColor(Color.BLACK);
+			smallFont.setColor(Color.WHITE);
 			halfFontWidth = smallFont.getBounds(text).width / 2;
-			smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .3f);
+			smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .38f);
 			smallFont.setColor(Color.WHITE);
 
 			Texture mapTex = mapTextures.get(map.key);
 			int mapHeight = (int) (height * .35f);
-			int mapWidth = (int) (width * .5f);
-			spriteBatch.draw(mapTex, width / 2 - mapWidth / 2, height / 2 - mapHeight / 2, mapWidth, mapHeight);
+			int mapWidth = (int) (width * .7f);
+			spriteBatch.draw(mapTex, width / 2 - mapWidth / 2, height * .4f, mapWidth, mapHeight);
 
 			int arrowWidth = (int) (width * .05f);
 			int arrowHeight = (int) (arrowWidth * 1.5f);

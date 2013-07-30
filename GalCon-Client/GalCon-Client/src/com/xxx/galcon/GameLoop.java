@@ -96,7 +96,12 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/ship.png", Texture.class, param);
 		assetManager.load("data/images/level_selection_card.png", Texture.class, param);
 		assetManager.load("data/images/levels/1.png", Texture.class, param);
-
+		assetManager.load("data/images/social_play.png", Texture.class, param);
+		assetManager.load("data/images/reg_play.png", Texture.class, param);
+		assetManager.load("data/images/level_select_bg.png", Texture.class, param);
+		assetManager.load("data/images/level_select_bg_bottom.png", Texture.class, param);
+		assetManager.load("data/images/level_card_black.png", Texture.class, param);
+		
 		assetManager.finishLoading();
 
 		Tween.setCombinedAttributesLimit(4);
