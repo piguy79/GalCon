@@ -15,7 +15,7 @@
    id="svg4035"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="New document 3">
+   sodipodi:docname="level_selection_screen.svg">
   <defs
      id="defs4037">
     <filter
@@ -38,7 +38,7 @@
      inkscape:cx="493.91468"
      inkscape:cy="526.18109"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer17"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
@@ -60,9 +60,10 @@
   <g
      inkscape:label="Background"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     style="display:none">
     <rect
-       style="fill:#5ae435;fill-opacity:0.56862748;fill-rule:nonzero;stroke:none"
+       style="fill:#92e494;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="rect4043"
        width="742.2912"
        height="1052.3622"
@@ -82,7 +83,10 @@
        width="524.83881"
        id="rect4558"
        style="fill:#000000;fill-opacity:0.56862745;fill-rule:nonzero;stroke:none;filter:url(#filter4596)"
-       transform="matrix(1.0349442,0,0,1.3034166,-13.224242,-59.252359)" />
+       transform="matrix(1.0349442,0,0,1.3034166,-13.224242,-59.252359)"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/level_selection_card.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
     <rect
        style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.2517488;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect4556"
@@ -90,7 +94,10 @@
        height="690.80438"
        x="114.09539"
        y="171.81424"
-       ry="57.850613" />
+       ry="57.850613"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/level_selection_card.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -106,30 +113,30 @@
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="182.0025"
-       y="244.19078"
+       x="853.15186"
+       y="238.82158"
        id="text4608"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4610"
-         x="182.0025"
-         y="244.19078">In  the beginning...</tspan></text>
+         x="853.15186"
+         y="238.82158">In  the beginning...</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:45.72035217px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="230.67555"
-       y="652.22363"
+       x="945.64038"
+       y="655.7467"
        id="text4612"
        sodipodi:linespacing="125%"
        transform="scale(0.87488391,1.1430088)"><tspan
          sodipodi:role="line"
-         x="230.67555"
-         y="652.22363"
+         x="945.64038"
+         y="655.7467"
          style="font-size:28px"
          id="tspan4618">Tis a small world,  tis a small </tspan><tspan
          sodipodi:role="line"
-         x="230.67555"
-         y="687.22363"
+         x="945.64038"
+         y="690.7467"
          style="font-size:28px"
          id="tspan4624">world,  tis a small world</tspan></text>
   </g>
@@ -138,7 +145,7 @@
      id="layer17"
      inkscape:label="Buttons">
     <image
-       y="902.0321"
+       y="928.0321"
        x="48.83012"
        id="image4671"
        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGUAAABmCAYAAADS6F9hAAAABHNCSVQICAgIfAhkiAAAEmxJREFU
@@ -320,7 +327,18 @@ gg==
 "
        id="image4674"
        x="-698.83032"
-       y="907.40131"
+       y="927.40131"
        transform="scale(-1,1)" />
+    <rect
+       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#ffff80;stroke-width:1.671;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect5052"
+       width="244.29837"
+       height="84.564819"
+       x="197.3179"
+       y="928.87073"
+       ry="27.517124"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/rect_button_blank.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
   </g>
 </svg>

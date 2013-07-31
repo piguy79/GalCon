@@ -329,15 +329,11 @@
        r="102.288" />
     <filter
        inkscape:collect="always"
-       id="filter4001"
-       x="-0.051737495"
-       width="1.103475"
-       y="-0.14505619"
-       height="1.2901124">
+       id="filter4021">
       <feGaussianBlur
          inkscape:collect="always"
-         stdDeviation="13.444709"
-         id="feGaussianBlur4003" />
+         stdDeviation="9.2499394"
+         id="feGaussianBlur4023" />
     </filter>
   </defs>
   <sodipodi:namedview
@@ -347,11 +343,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.86620581"
-     inkscape:cx="311.44679"
-     inkscape:cy="756.2009"
+     inkscape:zoom="0.6125"
+     inkscape:cx="360"
+     inkscape:cy="640"
      inkscape:document-units="px"
-     inkscape:current-layer="layer10"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
@@ -399,7 +395,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Header_Lines"
-     style="display:none">
+     style="display:inline">
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -425,7 +421,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Background"
-     style="display:none">
+     style="display:inline">
     <rect
        style="fill:#000000;fill-opacity:1;stroke:none"
        id="rect8717"
@@ -482,15 +478,15 @@
      style="display:inline">
     <path
        sodipodi:type="arc"
-       style="fill:#ffcc00;fill-opacity:1;stroke:#ffff80;stroke-width:2.17524695;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#ffcc00;fill-opacity:1;stroke:#ffff80;stroke-width:2.17488421;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path8297"
        sodipodi:cx="70"
        sodipodi:cy="60"
        sodipodi:rx="70"
        sodipodi:ry="60"
        d="M 140,60 A 70,60 0 1 1 0,60 70,60 0 1 1 140,60 z"
-       transform="matrix(0.70811608,0,0,0.83363543,8,10)"
-       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/back.png"
+       transform="matrix(-0.70811608,0,0,0.83363543,107.13625,10)"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_right.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
     <rect
@@ -498,36 +494,43 @@
        id="rect8318"
        width="80"
        height="20"
-       x="20"
+       x="-95.136253"
        y="50"
        ry="10"
-       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_solid_line.png"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_right.png"
        inkscape:export-xdpi="123.81687"
-       inkscape:export-ydpi="123.81687" />
+       inkscape:export-ydpi="123.81687"
+       transform="scale(-1,1)" />
     <rect
        ry="10"
-       y="56.497421"
-       x="-14.143594"
+       y="-1.0707047"
+       x="-113.85452"
        height="20"
        width="48"
        id="rect8320"
        style="fill:#ff7f2a;fill-opacity:1;stroke:#ffff80;stroke-width:1.54919338;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       transform="matrix(0.8660254,-0.5,0.5,0.8660254,0,0)" />
+       transform="matrix(-0.8660254,-0.5,-0.5,0.8660254,0,0)"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_right.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
     <rect
-       transform="matrix(0.8660254,0.5,-0.5,0.8660254,0,0)"
+       transform="matrix(-0.8660254,0.5,0.5,0.8660254,0,0)"
        style="fill:#ff7f2a;fill-opacity:1;stroke:#ffff80;stroke-width:1.54919338;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect8322"
        width="48"
        height="20"
-       x="45.516659"
-       y="26.837162"
-       ry="10" />
+       x="-54.19426"
+       y="84.405289"
+       ry="10"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_right.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer9"
      inkscape:label="GameBoard"
-     style="display:none">
+     style="display:inline">
     <image
        style="display:inline"
        y="140"
@@ -996,22 +999,22 @@
        height="222.44691"
        width="623.67346"
        id="rect3999"
-       style="fill:#141414;fill-opacity:0.56078434;fill-rule:nonzero;stroke:none;display:inline;filter:url(#filter4001)"
-       transform="matrix(1.0268398,0,0,1.0643643,-13.876086,-311.31533)" />
+       style="fill:#141414;fill-opacity:0.56078413;fill-rule:nonzero;stroke:none;display:inline;filter:url(#filter4021)"
+       transform="matrix(1.0268398,0,0,0.95841951,-13.876086,-261.32954)" />
     <rect
-       style="fill:#c8c8c8;fill-opacity:0.5411765;fill-rule:nonzero;stroke:none;display:inline"
+       style="fill:#dcdcdc;fill-opacity:0.56862745;fill-rule:nonzero;stroke:none;display:inline"
        id="rect3887"
        width="623.67346"
-       height="222.44691"
+       height="190.12204"
        x="40"
-       y="257.14493"
-       ry="33.357258"
+       y="255.14493"
+       ry="28.509947"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
     <path
-       style="display:inline;fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 74.571429,349.55102 563.265301,1.63265 0,0 0,0"
+       style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       d="m 74.571429,331.55102 563.265301,1.63265 0,0 0,0"
        id="path3889"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
@@ -1019,15 +1022,15 @@
        inkscape:export-ydpi="123.81687" />
     <path
        style="fill:none;stroke:#000000;stroke-width:4.64353418;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
-       d="m 355.15446,329.41915 0,39.62776 0,0"
+       d="m 355.15446,311.41915 0,39.62776 0,0"
        id="path3891"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
     <path
-       style="display:inline;fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 500,340 0,20 0,0"
+       style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       d="m 500,322 0,20 0,0"
        id="path3893"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
@@ -1036,14 +1039,14 @@
     <path
        inkscape:connector-curvature="0"
        id="path3895"
-       d="m 500,340 0,20 0,0"
-       style="display:inline;fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 500,322 0,20 0,0"
+       style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
     <path
-       style="display:inline;fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 202,340 0,20 0,0"
+       style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       d="m 202,322 0,20 0,0"
        id="path3897"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship_selection_dialog_bg.png"
@@ -1063,7 +1066,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer14"
-     inkscape:label="CancelButton">
+     inkscape:label="CancelButton"
+     style="display:inline">
     <path
        sodipodi:type="arc"
        style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1104,7 +1108,7 @@
     </g>
     <g
        id="g3975"
-       transform="matrix(0.57073895,0,0,0.51712719,287.63373,433.69666)">
+       transform="matrix(0.57073895,0,0,0.51712719,-482.39112,238.59291)">
       <path
          sodipodi:type="arc"
          style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1113,7 +1117,7 @@
          sodipodi:cy="290"
          sodipodi:rx="70"
          sodipodi:ry="70"
-         d="m 1040,290 c 0,38.65993 -31.3401,70 -70,70 -38.65993,0 -70,-31.34007 -70,-70 0,-38.65993 31.34007,-70 70,-70 38.6599,0 70,31.34007 70,70 z"
+         d="m 1040,290 a 70,70 0 1 1 -140,0 70,70 0 1 1 140,0 z"
          transform="matrix(1.2857143,0,0,1.2857143,-287.14286,-2.8571429)" />
       <g
          id="g3979"
@@ -1142,15 +1146,13 @@
   <g
      inkscape:groupmode="layer"
      id="layer15"
-     inkscape:label="OKButton">
+     inkscape:label="OKButton"
+     style="display:inline">
     <g
-       id="g3969"
-       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ok_button.png"
-       inkscape:export-xdpi="123.81687"
-       inkscape:export-ydpi="123.81687">
+       id="g4029">
       <path
          sodipodi:type="arc"
-         style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.99966664;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          id="path3960"
          sodipodi:cx="970"
          sodipodi:cy="290"
@@ -1183,10 +1185,10 @@
     </g>
     <g
        id="g3985"
-       transform="matrix(0.55284439,0,0,0.52606482,161.33493,-46.47579)">
+       transform="matrix(0.55284439,0,0,0.52606482,-43.004499,187.8796)">
       <path
          transform="matrix(1.2857143,0,0,1.2857143,-11.224493,80.408163)"
-         d="m 1040,290 c 0,38.65993 -31.3401,70 -70,70 -38.65993,0 -70,-31.34007 -70,-70 0,-38.65993 31.34007,-70 70,-70 38.6599,0 70,31.34007 70,70 z"
+         d="m 1040,290 a 70,70 0 1 1 -140,0 70,70 0 1 1 140,0 z"
          sodipodi:ry="70"
          sodipodi:rx="70"
          sodipodi:cy="290"
