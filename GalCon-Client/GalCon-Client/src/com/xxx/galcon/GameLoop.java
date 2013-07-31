@@ -103,6 +103,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/level_select_bg.png", Texture.class, param);
 		assetManager.load("data/images/level_select_bg_bottom.png", Texture.class, param);
 		assetManager.load("data/images/level_card_black.png", Texture.class, param);
+		assetManager.load("data/images/level_select_card_shadow.png", Texture.class, param);
 		
 		assetManager.finishLoading();
 

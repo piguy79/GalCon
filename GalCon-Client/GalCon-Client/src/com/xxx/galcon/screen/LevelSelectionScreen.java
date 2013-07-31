@@ -48,6 +48,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private Texture regularPlay;
 	private Texture socialPlay;
 	private Texture backTexture;
+	private Texture levelSelectCardShadow;
 
 	private Object returnValue;
 
@@ -71,6 +72,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		this.regularPlay = assetManager.get("data/images/reg_play.png", Texture.class);
 		this.socialPlay = assetManager.get("data/images/social_play.png", Texture.class);
 		this.backTexture = assetManager.get("data/images/back.png", Texture.class);
+		this.levelSelectCardShadow = assetManager.get("data/images/level_select_card_shadow.png", Texture.class);
 
 		skin = new Skin();
 		skin.add("default", new LabelStyle(Fonts.getInstance().largeFont(), Color.RED));
@@ -151,7 +153,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		int tableHeight = (int) (height * .7f);
 
 		cardTable.setX(0);
-		cardTable.setY(height / 2 - tableHeight / 2);
+		cardTable.setY(height * .5f - tableHeight * .42f);
 		cardTable.setWidth(width);
 		cardTable.setHeight(tableHeight);
 
@@ -219,10 +221,14 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		Table table = new Table();
 		ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
+		scrollPane.setFadeScrollBars(false);
 
 		cardTable.add(scrollPane);
 
-		table.pad(10).defaults().expandX().space(30).width(Gdx.graphics.getWidth() * .7f)
+		float cardWidth = Gdx.graphics.getWidth() * .7f;
+		float padSide = (Gdx.graphics.getWidth() - cardWidth) * 0.5f;
+
+		table.pad(10).padLeft(padSide).padRight(padSide).defaults().expandX().space(30).width(cardWidth)
 				.height(Gdx.graphics.getHeight() * .6f);
 
 		for (int i = 0; i < allMaps.size(); ++i) {
@@ -236,6 +242,19 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 					int x = (int) getX();
 					int y = (int) getY();
+
+					if (this.isVisible()) {
+						batch.setColor(Color.YELLOW);
+						batch.draw(levelSelectCardShadow, x, y, width, height);
+						batch.setColor(Color.WHITE);
+					}
+
+					int xOffset = (int) (width * 0.1f);
+					int yOffset = (int) (height * 0.1f);
+					x += xOffset;
+					y += yOffset;
+					width -= xOffset;
+					height -= yOffset;
 
 					BitmapFont mediumFont = Fonts.getInstance().mediumFont();
 					BitmapFont largeFont = Fonts.getInstance().largeFont();
