@@ -111,13 +111,15 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 gameSchema.methods.applyMoveToPlanets = function(game, move){
 	this.planets.forEach(function(planet){
 	
-		move.battlestats.previousPlanetOwner = planet.ownerHandle;
+		
 	
 		if(isADefensiveMoveToThisPlanet(planet, move)){	
+			move.battlestats.previousPlanetOwner = planet.ownerHandle;
 			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 			
-		} else if (isSamePlanet(planet, move.toPlanet)){		
+		} else if (isSamePlanet(planet, move.toPlanet)){
+			move.battlestats.previousPlanetOwner = planet.ownerHandle;		
 			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game);
 			var attackStrength = calculateAttackStrengthForMove(move, game);
 			var battleResult = defenceStrength - attackStrength;	
@@ -128,7 +130,6 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 						
 			if(battleResult <= 0){
 				move.battlestats.conquer = true;
-				move.battlestats.previousPlanetOwner = planet.ownerHandle == null ? "" : planet.ownerHandle;
 				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
 				var attackMultipler = getAttackMultipler(move, game);

@@ -282,7 +282,6 @@ exports.matchPlayerToGame = function(req, res){
 
 var joinAGame = function(games, user, time, callback){
 
-	console.log(user.rankInfo.level);
 	var relativeRanks = [];
 	for(var i =0; i < games.length; i++){
 		var game = games[i];
