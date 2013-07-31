@@ -122,7 +122,6 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 			var attackStrength = calculateAttackStrengthForMove(move, game);
 			var battleResult = defenceStrength - attackStrength;	
 			
-			move.battlestats.previousPlanetOwner = "";
 			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
 			move.battlestats.newPlanetOwner = "";
 			move.battlestats.conquer = false;
