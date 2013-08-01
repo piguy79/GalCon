@@ -83,7 +83,7 @@ public class Planet extends JsonConvertible {
 	public String previousRoundOwner(GameBoard gameBoard) {
 		for(Move move : associatedTargetMoves(gameBoard)){
 			if(move.executed){
-				if(move.battleStats.previousPlanetOwner.equals("")){
+				if(move.battleStats.previousPlanetOwner == null || move.battleStats.previousPlanetOwner.equals("")){
 					return Constants.OWNER_NO_ONE;
 				}
 				return move.battleStats.previousPlanetOwner;
