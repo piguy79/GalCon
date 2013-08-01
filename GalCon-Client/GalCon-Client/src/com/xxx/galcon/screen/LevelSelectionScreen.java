@@ -222,6 +222,9 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			}
 		});
 
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -258,10 +261,8 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 				}
 
 				BitmapFont font = Fonts.getInstance().largeFont();
-				font.setColor(Color.WHITE);
 				float halfFontWidth = font.getBounds(text).width / 2;
 				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .92f);
-				font.setColor(Color.WHITE);
 			};
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
@@ -270,9 +271,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		loadingTextActor.remove();
 		stage.addActor(cardTable);
-
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
 
 		Actor bottomBar = new Actor() {
 			@Override
@@ -326,6 +324,9 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			}
 		});
 		stage.addActor(friendsPlayButton);
+		
+		backButton.remove();
+		stage.addActor(backButton);
 	}
 
 	@Override
@@ -388,5 +389,4 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth, mapHeight);
 		}
 	}
-
 }
