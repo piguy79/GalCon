@@ -63,7 +63,7 @@ public class GameLoop extends Game {
 		gl = Gdx.graphics.getGL20();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		gl.glEnable(GL20.GL_DEPTH_BUFFER_BIT);
-		
+
 		Gdx.input.setCatchBackKey(true);
 
 		Gdx.input.setInputProcessor(inputProcessor);
@@ -104,7 +104,7 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/level_select_bg_bottom.png", Texture.class, param);
 		assetManager.load("data/images/level_card_black.png", Texture.class, param);
 		assetManager.load("data/images/level_select_card_shadow.png", Texture.class, param);
-		
+
 		assetManager.finishLoading();
 
 		Tween.setCombinedAttributesLimit(4);
@@ -166,15 +166,19 @@ public class GameLoop extends Game {
 			if (action.equals(Action.BACK)) {
 				mainMenuScreen.resetState();
 				return mainMenuScreen;
-			} else if (action.equals(Action.PLAY)) {
+			} else if (action.startsWith(Action.PLAY)) {
+				String level = action.split(":")[1];
 				boardScreen.resetState();
 				boardScreen.previousScreen = mainMenuScreen;
-				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
+				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
+						Long.valueOf(level));
 				return boardScreen;
-			} else if (action.equals(Action.PLAY_WITH_FRIENDS)) {
+			} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
+				String level = action.split(":")[1];
 				boardScreen.resetState();
 				boardScreen.previousScreen = mainMenuScreen;
-				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle, 1L);
+				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
+						Long.valueOf(level));
 				return boardScreen;
 			}
 		}

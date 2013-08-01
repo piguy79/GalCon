@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -35,6 +36,7 @@ import com.xxx.galcon.screen.hud.HeaderHud;
 public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultCallback<Maps> {
 
 	private List<Map> allMaps;
+	private int selectedMapKey = 0;
 
 	private AssetManager assetManager;
 
@@ -218,8 +220,8 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			}
 		});
 
-		Table table = new Table();
-		ScrollPane scrollPane = new ScrollPane(table);
+		final Table table = new Table();
+		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
 		scrollPane.setFadeScrollBars(false);
 
@@ -233,50 +235,36 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		for (int i = 0; i < allMaps.size(); ++i) {
 			final Map map = allMaps.get(i);
-			final Texture mapTex = assetManager.get("data/images/levels/" + map.key + ".png", Texture.class);
-			table.add(new Actor() {
-				@Override
-				public void draw(SpriteBatch batch, float parentAlpha) {
-					int height = (int) getHeight();
-					int width = (int) getWidth();
-
-					int x = (int) getX();
-					int y = (int) getY();
-
-					if (this.isVisible()) {
-						batch.setColor(Color.YELLOW);
-						batch.draw(levelSelectCardShadow, x, y, width, height);
-						batch.setColor(Color.WHITE);
-					}
-
-					int xOffset = (int) (width * 0.1f);
-					int yOffset = (int) (height * 0.1f);
-					x += xOffset;
-					y += yOffset;
-					width -= xOffset;
-					height -= yOffset;
-
-					BitmapFont mediumFont = Fonts.getInstance().mediumFont();
-					BitmapFont largeFont = Fonts.getInstance().largeFont();
-					batch.draw(levelSelectionCard, x, y, width, height);
-
-					String text = map.title;
-					largeFont.setColor(Color.WHITE);
-					float halfFontWidth = largeFont.getBounds(text).width / 2;
-					largeFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .85f);
-
-					text = map.description;
-					mediumFont.setColor(Color.WHITE);
-					halfFontWidth = mediumFont.getBounds(text).width / 2;
-					mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
-
-					int mapHeight = (int) (getHeight() * .55f);
-					int mapWidth = (int) (getWidth() * .9f);
-					batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth,
-							mapHeight);
-				}
-			}).expandX().fillX();
+			table.add(new CardActor(map, assetManager)).expandX().fillX();
 		}
+
+		Actor choiceActor = new Actor() {
+			public void draw(SpriteBatch batch, float parentAlpha) {
+				String text = "";
+				float scrollX = scrollPane.getScrollX();
+				for (int i = 0; i < table.getCells().size(); ++i) {
+					Cell<CardActor> cell = table.getCells().get(i);
+					float adjustX = cell.getWidgetX() - scrollX;
+
+					float rightXBound = Math.min(getWidth(), adjustX + cell.getWidgetWidth());
+					float leftXBound = Math.max(0, adjustX);
+
+					if (rightXBound - leftXBound > getWidth() * .45f) {
+						text = cell.getWidget().getMapTitle();
+						selectedMapKey = cell.getWidget().getMapKey();
+					}
+				}
+
+				BitmapFont font = Fonts.getInstance().largeFont();
+				font.setColor(Color.WHITE);
+				float halfFontWidth = font.getBounds(text).width / 2;
+				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .92f);
+				font.setColor(Color.WHITE);
+			};
+		};
+		choiceActor.setWidth(Gdx.graphics.getWidth());
+		choiceActor.setHeight(Gdx.graphics.getHeight());
+		stage.addActor(choiceActor);
 
 		loadingTextActor.remove();
 		stage.addActor(cardTable);
@@ -314,7 +302,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Action.PLAY;
+				returnValue = Action.PLAY + ":" + selectedMapKey;
 			}
 		});
 		stage.addActor(randomPlayButton);
@@ -332,7 +320,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Action.PLAY_WITH_FRIENDS;
+				returnValue = Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey;
 			}
 		});
 		stage.addActor(friendsPlayButton);
@@ -342,6 +330,61 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	public void onConnectionError(String msg) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private class CardActor extends Actor {
+
+		private Map map;
+		private Texture mapTex;
+
+		public CardActor(Map map, AssetManager assetManager) {
+			this.map = map;
+			this.mapTex = assetManager.get("data/images/levels/" + map.key + ".png", Texture.class);
+		}
+
+		public String getMapTitle() {
+			return map.title;
+		}
+
+		public int getMapKey() {
+			return map.key;
+		}
+
+		@Override
+		public void draw(SpriteBatch batch, float parentAlpha) {
+			int height = (int) getHeight();
+			int width = (int) getWidth();
+
+			int x = (int) getX();
+			int y = (int) getY();
+
+			batch.draw(levelSelectCardShadow, x, y, width, height);
+
+			int xOffset = (int) (width * 0.1f);
+			int yOffset = (int) (height * 0.1f);
+			x += xOffset;
+			y += yOffset;
+			width -= xOffset;
+			height -= yOffset;
+
+			BitmapFont mediumFont = Fonts.getInstance().mediumFont();
+			BitmapFont largeFont = Fonts.getInstance().largeFont();
+			batch.draw(levelSelectionCard, x, y, width, height);
+
+			String text = map.title;
+			largeFont.setColor(Color.WHITE);
+			float halfFontWidth = largeFont.getBounds(text).width / 2;
+			largeFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .85f);
+
+			text = map.description;
+			mediumFont.setColor(Color.WHITE);
+			halfFontWidth = mediumFont.getBounds(text).width / 2;
+			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
+
+			int mapHeight = (int) (getHeight() * .55f);
+			int mapWidth = (int) (getWidth() * .9f);
+			batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth, mapHeight);
+		}
 	}
 
 }
