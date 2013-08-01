@@ -1,0 +1,12 @@
+{
+	"config" : [	
+				{
+					"version" : 1,
+					"attackModifier" : 25,
+					"defenseModifier" : 25,
+					"speedModifier" : 50,
+					"blockModifier" : 20
+				}
+			]
+	
+}
