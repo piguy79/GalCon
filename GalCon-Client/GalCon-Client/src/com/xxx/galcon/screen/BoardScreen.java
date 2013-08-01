@@ -93,7 +93,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private Texture planetNumbersTexture;
 	private Texture planetTexture;
 	private Texture planetTouchTexture;
-	private Texture bg1Texture;
+	private Texture bgTexture;
 
 	private StillModel planetModel;
 	private StillModel shipModel;
@@ -145,7 +145,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 		planetTexture = assetManager.get("data/images/planets/planet3.png", Texture.class);
 		planetTouchTexture = assetManager.get("data/images/planets/planet3-touch.png", Texture.class);
-		bg1Texture = assetManager.get("data/images/bg1.png", Texture.class);
 
 		boardScreenHud = new BoardScreenHud(this, assetManager);
 		playerInfoHud = new HeaderHud(assetManager);
@@ -246,6 +245,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
+		bgTexture = assetManager.get("data/images/levels/" + gameBoard.map + ".png", Texture.class);
 		processGameBoard();
 		associateHudInformation();
 	}
@@ -332,7 +332,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void renderGrid(Camera camera) {
-		bg1Texture.bind(7);
+		bgTexture.bind(7);
 
 		gridShader.begin();
 		gridShader.setUniformi("bgTex", 7);

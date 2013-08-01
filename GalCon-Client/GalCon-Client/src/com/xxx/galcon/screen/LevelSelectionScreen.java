@@ -131,6 +131,8 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 				font.draw(batch, loadingMessage, getWidth() / 2 - halfFontWidth, getHeight() * .4f);
 			}
 		};
+		loadingTextActor.setWidth(Gdx.graphics.getWidth());
+		loadingTextActor.setHeight(Gdx.graphics.getHeight());
 		stage.addActor(loadingTextActor);
 	}
 
