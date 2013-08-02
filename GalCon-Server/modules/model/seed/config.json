@@ -2,12 +2,19 @@
 	"config" : [	
 				{
 					"version" : 1,
+<<<<<<< HEAD
 					"values" : [ 
 						{ "key": "attackModifier", "value" : "25" },
 						{ "key": "defenseModifier", "value" : "25" },
 						{ "key": "speedModifier", "value" : "50" },
 						{ "key": "blockModifier", "value" : "20" }
 					]
+=======
+					"attackModifier" : 25,
+					"defenseModifier" : 25,
+					"speedModifier" : 50,
+					"blockModifier" : 20
+>>>>>>> cc250fc... Seed basic config structure and initial values
 				}
 			]
 	
