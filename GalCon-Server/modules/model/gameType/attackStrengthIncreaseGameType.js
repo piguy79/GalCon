@@ -10,7 +10,7 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	
 }
 
-exports.findCorrectFleetToAttackEnemyPlanet = function(planets, player, currentFleet){
+exports.findCorrectFleetToAttackEnemyPlanet = function(planets, player){
 
 	var attackMultiplier = 0;
 

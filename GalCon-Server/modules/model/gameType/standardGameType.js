@@ -31,14 +31,14 @@ exports.processRoundInformation = function(game) {
     game.updateRegenRates();
 }
 
-exports.applyMovesToGame = function(game){
+exports.applyMovesToGame = function(game, multiplierMap){
 
 	var i = game.moves.length;
 	while (i--) {
 		var move = game.moves[i];
 		move.duration--;
 		if (move.duration <= 0) {
-			game.applyMoveToPlanets(game, move);
+			game.applyMoveToPlanets(game, move, multiplierMap);
 			move.executed = true;
 		}
 	}

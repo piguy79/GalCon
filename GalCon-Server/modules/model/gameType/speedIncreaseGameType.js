@@ -23,7 +23,7 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,SPEED_ABILITY);
 }
 
-exports.applyMovesToGame = function(game){
+exports.applyMovesToGame = function(game,multiplierMap){
 
 	var i = game.moves.length;
 	while (i--) {
@@ -31,7 +31,7 @@ exports.applyMovesToGame = function(game){
 		var speedIncrease = speedIncreasePlanetsHeldByPlayer(move.playerHandle, game.planets);
 		move.duration = move.duration - speedIncrease;
 		if (move.duration <= 0) {
-			game.applyMoveToPlanets(game, move);
+			game.applyMoveToPlanets(game, move, multiplierMap);
 			move.executed = true;
 		}
 	}
