@@ -9,7 +9,7 @@
 						"min" : 5,
 						"max" : 6
 					},
-					"gameType" : "standardGame"
+					"gameType" : ["standardGame"]
 				},
 				{
 					"key" : 2,
@@ -20,7 +20,7 @@
 						"min" : 7,
 						"max" : 8
 					},
-					"gameType" : "standardGame"
+					"gameType" : ["standardGame"]
 				},
 				{
 					"key" : 3,
@@ -31,7 +31,7 @@
 						"min" : 6,
 						"max" : 8
 					},
-					"gameType" : "attackIncrease"
+					"gameType" : ["attackIncrease", "defenceIncrease", "regenBlock"]
 				}
 			]
 	

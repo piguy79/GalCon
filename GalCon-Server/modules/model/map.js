@@ -20,7 +20,7 @@ var mapSchema = mongoose.Schema({
 		max : "Number",
 		min : "Number"
 	},
-	gameType : "String"
+	gameType : ["String"]
 });
 
 mapSchema.set('toObject', { getters: true });

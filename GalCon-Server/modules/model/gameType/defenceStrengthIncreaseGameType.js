@@ -29,7 +29,7 @@ var hasTheDefenceAbility = function(planet){
 	return planet.ability && planet.ability == DEF_INC_ABIBILITY;
 }
 
-var hasTheSameOwner = function(player, planet){
+var hasTheSameOwner = function(planet, player){
 	return player == planet.ownerHandle;
 }
 

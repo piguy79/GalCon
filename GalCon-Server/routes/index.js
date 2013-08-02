@@ -344,6 +344,8 @@ var generateGame = function(playerHandle, time, mapToFind, res) {
 				var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
 				numPlanets = Math.max(12, numPlanets);
 				
+				var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
+				
 				var gameAttributes = {
 								players : [ user ],
 								width :  widthToUse,
@@ -352,7 +354,7 @@ var generateGame = function(playerHandle, time, mapToFind, res) {
 								createdTime : time,
 								rankOfInitialPlayer : user.rankInfo.level,
 								map : map.key,
-								gameType : map.gameType
+								gameType : map.gameType[gameTypeIndex]
 							};
 				
 				gameManager.createGame(gameAttributes, function(game) {
