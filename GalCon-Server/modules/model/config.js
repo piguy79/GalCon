@@ -13,17 +13,10 @@ var populateDefaultConfig = function(){
 
 var configSchema = mongoose.Schema({
 	version : "Number",
-<<<<<<< HEAD
 	values : [ {
 		key : "String",
 		value : "String"
 	}]
-=======
-	attackModifier : "Number",
-	defenseModifier : "Number",
-	speedModifier : "Number",
-	blockModifier : "Number"
->>>>>>> cc250fc... Seed basic config structure and initial values
 });
 
 configSchema.set('toObject', { getters: true });
