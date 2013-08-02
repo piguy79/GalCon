@@ -10,13 +10,13 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	
 }
 
-exports.findCorrectDefenseForAPlanet = function(planets, attackedPlanet){
+exports.findCorrectDefenseForAPlanet = function(planets, player){
 
 	var defMultiplier = 0;
 
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if(hasTheDefenceAbility(planet) && hasTheSameOwnerAsTheAttackedPlanet(planet, attackedPlanet)){
+		if(hasTheDefenceAbility(planet) && hasTheSameOwner(planet, player)){
 			defMultiplier = defMultiplier + DEF_BOOST;
 		}
 	}
@@ -29,8 +29,8 @@ var hasTheDefenceAbility = function(planet){
 	return planet.ability && planet.ability == DEF_INC_ABIBILITY;
 }
 
-var hasTheSameOwnerAsTheAttackedPlanet = function(planet, attackedPlanet){
-	return planet.ownerHandle && planet.ownerHandle == attackedPlanet.ownerHandle;
+var hasTheSameOwner = function(player, planet){
+	return player == planet.ownerHandle;
 }
 
 

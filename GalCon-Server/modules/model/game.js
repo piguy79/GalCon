@@ -108,20 +108,29 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 }
 
 
-gameSchema.methods.applyMoveToPlanets = function(game, move){
+gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	this.planets.forEach(function(planet){
-	
-		
-	
 		if(isADefensiveMoveToThisPlanet(planet, move)){	
 			move.battlestats.previousPlanetOwner = planet.ownerHandle;
 			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 			
 		} else if (isSamePlanet(planet, move.toPlanet)){
+		
+			var defenceMultiplier = 0;
+			var attackMultiplier = 0;
+			
+			if(multiplierMap[planet.ownerHandle]){
+				defenceMultiplier = multiplierMap[planet.ownerHandle].defenceMultiplier;
+			}
+			
+			if(multiplierMap[move.playerHandle]){
+				attackMultiplier = multiplierMap[move.playerHandle].attackMultiplier;
+			}
+		
 			move.battlestats.previousPlanetOwner = planet.ownerHandle;		
-			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game);
-			var attackStrength = calculateAttackStrengthForMove(move, game);
+			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game,defenceMultiplier);
+			var attackStrength = calculateAttackStrengthForMove(move, game, attackMultiplier);
 			var battleResult = defenceStrength - attackStrength;	
 			
 			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
@@ -132,13 +141,11 @@ gameSchema.methods.applyMoveToPlanets = function(game, move){
 				move.battlestats.conquer = true;
 				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
-				var attackMultipler = getAttackMultipler(move, game);
-				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultipler); 
+				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
 			}else{
-				var defenceMultiplier = getDefenceMutlipler(planet, game);
 				move.battlestats.defenceMultiplier = defenceMultiplier;
-				planet.numberOfShips = reverseEffectOfMultiplier(battleResult, defenceMultiplier);
+				planet.numberOfShips = reverseEffectOfMultiplier(battleResult,defenceMultiplier);
 			}
 			
 			
@@ -157,32 +164,32 @@ gameSchema.methods.allPlayersHaveTakenAMove = function(){
 	return this.currentRound.playersWhoMoved.length == this.players.length;
 }
 
-var getDefenceMutlipler = function(planet, game){
+var getDefenceMutlipler = function(player, game){
 	var enhancedDefence = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
-		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.planets, planet);	
+		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.planets, player);	
 	}
 	
 	return enhancedDefence;
 }
 
-var getAttackMultipler = function(move, game){
+var getAttackMultipler = function(player, game){
 	var enhancedAttackFleet = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, move.playerHandle, move.fleet);	
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, player);	
 	}
 	
 	return enhancedAttackFleet;
 }
 
-var calculateAttackStrengthForMove = function(move, game){
-	return move.fleet + (move.fleet * getAttackMultipler(move, game));
+var calculateAttackStrengthForMove = function(move, game, attackMultiplier){
+	return move.fleet + (move.fleet * attackMultiplier);
 }
 
-var calculateDefenceStrengthForPlanet = function(planet, game){
-	return planet.numberOfShips + (planet.numberOfShips * getDefenceMutlipler(planet, game));
+var calculateDefenceStrengthForPlanet = function(planet, game, defenceMultiplier){
+	return planet.numberOfShips + (planet.numberOfShips * defenceMultiplier);
 }
 
 
@@ -326,7 +333,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 			decrementCurrentShipCountOnFromPlanets(game);
 			game.currentRound.playersWhoMoved = [];
 			
-			processMoves(game);
+			processMoves(playerHandle, game);
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
@@ -389,9 +396,38 @@ var findFromPlanet = function(planets, fromPlanetName){
 	return "No Planet Found";
 }
 
-var processMoves = function(game) {
+var opponent = function(player, game){
+	for(var i = 0;i < game.players.length; i++){
+		if(game.players[i].handle != player){
+			return game.players[i].handle;
+		}
+	}
+	
+	return "";
+}
 
-	gameTypeAssembler.gameTypes[game.gameType].processMoves(game);
+var processMoves = function(player, game) {
+
+	var multiplierMap = {
+	};
+	var currentOpponent = opponent(player, game);
+	
+	multiplierMap[''] = {
+			attackMultiplier : 0,
+			defenceMultiplier : 0
+		};
+	
+	multiplierMap[player] = {
+			attackMultiplier : getAttackMultipler(player, game),
+			defenceMultiplier : getDefenceMutlipler(player,game)
+		};
+	
+	multiplierMap[currentOpponent] = {
+			attackMultiplier : getAttackMultipler(currentOpponent, game),
+			defenceMultiplier : getDefenceMutlipler(currentOpponent,game)
+		};
+
+	gameTypeAssembler.gameTypes[game.gameType].processMoves(game, multiplierMap);
 	
 	positionAdjuster.adjustMovePositions(game);
 }
