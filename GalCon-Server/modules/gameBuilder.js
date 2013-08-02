@@ -37,7 +37,7 @@ function GameBuilder(gameAttributes) {
 GameBuilder.prototype.constructor = GameBuilder;
 GameBuilder.prototype.players = [];
 
-GameBuilder.prototype.createBoard = function(callback) {
+GameBuilder.prototype.createBoard = function() {
 	this.createHomePlanets();
 	
 	var boardSize = this.width * this.height;
@@ -49,7 +49,6 @@ GameBuilder.prototype.createBoard = function(callback) {
 	this.createRemainingPlanets([this.planets[0], this.planets[1]]);
 
 	assignHomePlanets(this);
-	callback(this);
 }
 
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {

@@ -24,6 +24,7 @@ public class GameBoard extends JsonConvertible {
 	public RoundInformation roundInformation = new RoundInformation();
 	public EndGameInformation endGameInformation = new EndGameInformation();
 	public List<Move> movesInProgress = new ArrayList<Move>();
+	public GameConfig gameConfig = new GameConfig();
 
 	public GameBoard() {
 
@@ -70,6 +71,8 @@ public class GameBoard extends JsonConvertible {
 				movesInProgress.add(move);
 			}
 		}
+
+		gameConfig.consume(jsonObject.optJSONObject("config"));
 	}
 
 	public List<Player> allPlayersExcept(String playerHandleToExclude) {
@@ -118,10 +121,9 @@ public class GameBoard extends JsonConvertible {
 		return endGameInformation.draw;
 	}
 
-
 	public Move selectedMove() {
-		for(Move move : movesInProgress){
-			if(move.selected != -1f){
+		for (Move move : movesInProgress) {
+			if (move.selected != -1f) {
 				return move;
 			}
 		}

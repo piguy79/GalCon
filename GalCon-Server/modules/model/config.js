@@ -33,12 +33,12 @@ ConfigModel.remove(function(err, doc) {
 });
 
 exports.findLatestConfig = function(callback) {
-	ConfigModel.findOne({version : {$max : version}}).exec(function(err, config) {
+	ConfigModel.find().sort({version: -1 }).limit(1).exec(function(err, config) {
 		if (err) {
 			console.log("Unable to find latest config:" + err);
 			callback();
 		} else {
-			callback(config);
+			callback(config[0]);
 		}
 	});
 };

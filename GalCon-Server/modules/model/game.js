@@ -4,6 +4,7 @@ var mongoose = require('./mongooseConnection').mongoose
 gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
+configManager = require('./config'),
 positionAdjuster = require('../movement/PositionAdjuster');
 
 
@@ -13,6 +14,13 @@ var gameSchema = mongoose.Schema({
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
+	config : {
+		version : "Number",
+		values : [ {
+			key : "String",
+			value : "String"
+		}]
+	},
 	endGameInformation : {
 		winnerHandle : "String",
 		xpAwardToWinner : "Number",
@@ -245,25 +253,28 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 
 var GameModel = db.model('Game', gameSchema);
 
-exports.createGame = function(gameAttributes, callback){
+exports.createGame = function(gameAttributes, callback) {
 	var game = gamebuilder.createGameBuilder(gameAttributes);
-	game.createBoard(function(createdGame){
-		var constructedGame = new GameModel(createdGame);
-		constructedGame.populate('players', function(err, game) {
-			callback(game);
+	game.createBoard();
+
+	configManager.findLatestConfig(function(config) {
+		var constructedGame = new GameModel(game);
+		constructedGame.config = config;
+		constructedGame.populate('players', function(err, gameWithPlayers) {
+			callback(gameWithPlayers);
 		});
 	});
 };
 
-exports.findAllGames = function(callback){
-	GameModel.find({}).populate('players').exec(function(err, games){
-		if(err){
+exports.findAllGames = function(callback) {
+	GameModel.find({}).populate('players').exec(function(err, games) {
+		if (err) {
 			console.log("Unable to find all games:" + err);
-		}else{
+		} else {
 			callback(games);
 		}
 	});
-};
+}
 
 exports.findById = function(gameId, callback){
 	GameModel.findById(gameId).populate('players').exec(function(err, game){
