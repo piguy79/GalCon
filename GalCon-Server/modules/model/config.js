@@ -13,10 +13,10 @@ var populateDefaultConfig = function(){
 
 var configSchema = mongoose.Schema({
 	version : "Number",
-	attackModifier : "Number",
-	defenseModifier : "Number",
-	speedModifier : "Number",
-	blockModifier : "Number"
+	values : [ {
+		key : "String",
+		value : "String"
+	}]
 });
 
 configSchema.set('toObject', { getters: true });

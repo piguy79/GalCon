@@ -2,10 +2,12 @@
 	"config" : [	
 				{
 					"version" : 1,
-					"attackModifier" : 25,
-					"defenseModifier" : 25,
-					"speedModifier" : 50,
-					"blockModifier" : 20
+					"values" : [ 
+						{ "key": "attackModifier", "value" : "25" },
+						{ "key": "defenseModifier", "value" : "25" },
+						{ "key": "speedModifier", "value" : "50" },
+						{ "key": "blockModifier", "value" : "20" }
+					]
 				}
 			]
 	
