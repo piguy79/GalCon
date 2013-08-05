@@ -101,3 +101,15 @@ __V0.03__
 * Remove second player advantage
 * Display Moves in progress
 * Allow update/delete of current moves
+
+__V0.04__
+* Simultaneous moves in a round
+* Animation for attacks
+* Drag for move buttons
+* Select a move to show from and to planet
+* New slider based move dialog
+* Level select screen
+* Matching system for new games
+* Performance improvments for rendering
+* Introduction of scene 2D for menu systems
+* Now working out attack/defence multipliers before applying moves
