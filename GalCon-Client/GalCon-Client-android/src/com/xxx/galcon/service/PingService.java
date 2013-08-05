@@ -37,7 +37,7 @@ public class PingService extends Service {
 	public static final int NOTIFICATION_ID = 29484;
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
-	private static final int SLEEP_TIME = 120 * 1000;
+	private static final int SLEEP_TIME = 3 * 60 * 1000;
 	private static final int LONG_SLEEP_TIME = 60 * 60 * 1000;
 	private static final String DELETE_KEY = "DELETE";
 

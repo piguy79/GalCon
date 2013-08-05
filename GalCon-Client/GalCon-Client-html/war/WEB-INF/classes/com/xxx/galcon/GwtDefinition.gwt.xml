@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<module>
-    <entry-point class="com.xxx.galcon.client.GwtLauncher"/>
-    <set-configuration-property name="gdx.assetpath" value="../GalCon-Client-android/assets"/>
-    <inherits name="GameLoop"/>
-    <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt"/>
-</module>
