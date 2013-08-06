@@ -1,8 +1,8 @@
 package com.xxx.galcon.model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,14 +18,14 @@ public class GameConfig extends JsonConvertible {
 			return;
 		}
 
-		JSONArray values = jsonObject.optJSONArray("values");
+		JSONObject values = jsonObject.optJSONObject("values");
 		if (values == null) {
 			return;
 		}
 
-		for (int i = 0; i < values.length(); ++i) {
-			JSONObject configValue = values.getJSONObject(i);
-			config.put(configValue.getString("key"), configValue.getString("value"));
+		for (Iterator iter = values.keys(); iter.hasNext();) {
+			String key = (String) iter.next();
+			config.put(key, values.getString(key));
 		}
 	}
 }

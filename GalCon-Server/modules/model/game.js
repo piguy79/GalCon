@@ -7,8 +7,6 @@ rank = require('./rank'),
 configManager = require('./config'),
 positionAdjuster = require('../movement/PositionAdjuster');
 
-
-
 var gameSchema = mongoose.Schema({
 	version : "Number",
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
@@ -16,10 +14,7 @@ var gameSchema = mongoose.Schema({
 	height: "Number",
 	config : {
 		version : "Number",
-		values : [ {
-			key : "String",
-			value : "String"
-		}]
+		values : {}
 	},
 	endGameInformation : {
 		winnerHandle : "String",
@@ -176,7 +171,7 @@ var getDefenceMutlipler = function(player, game){
 	var enhancedDefence = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
-		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.planets, player);	
+		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player);	
 	}
 	
 	return enhancedDefence;
@@ -186,7 +181,7 @@ var getAttackMultipler = function(player, game){
 	var enhancedAttackFleet = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.planets, player);	
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);	
 	}
 	
 	return enhancedAttackFleet;
@@ -257,7 +252,7 @@ exports.createGame = function(gameAttributes, callback) {
 	var game = gamebuilder.createGameBuilder(gameAttributes);
 	game.createBoard();
 
-	configManager.findLatestConfig(function(config) {
+	configManager.findLatestConfig("map", function(config) {
 		var constructedGame = new GameModel(game);
 		constructedGame.config = config;
 		constructedGame.populate('players', function(err, gameWithPlayers) {

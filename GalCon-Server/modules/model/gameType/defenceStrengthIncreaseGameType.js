@@ -1,6 +1,5 @@
 var abilityBasedGameType = require('./abilityBasedGameType');
 
-var DEF_BOOST = 0.5;
 var DEF_INC_ABIBILITY = 'DEF_INC';
 
 
@@ -10,18 +9,18 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	
 }
 
-exports.findCorrectDefenseForAPlanet = function(planets, player){
+exports.findCorrectDefenseForAPlanet = function(config, planets, player){
 
-	var defMultiplier = 0;
-
+	var defMultiplier = 0.0;
+	
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
 		if(hasTheDefenceAbility(planet) && hasTheSameOwner(planet, player)){
-			defMultiplier = defMultiplier + DEF_BOOST;
+			defMultiplier = defMultiplier + parseFloat(config.values['defenseModifier']);
 		}
 	}
 	
-	return defMultiplier;
+	return defMultiplier / 100.0;
 	
 }
 

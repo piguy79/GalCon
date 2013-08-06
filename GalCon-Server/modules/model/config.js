@@ -13,14 +13,12 @@ var populateDefaultConfig = function(){
 
 var configSchema = mongoose.Schema({
 	version : "Number",
-	values : [ {
-		key : "String",
-		value : "String"
-	}]
+	type : "String",
+	values : {}
 });
 
 configSchema.set('toObject', { getters: true });
-configSchema.index({version : 1});
+configSchema.index({version : -1, type : 1});
 
 var ConfigModel = db.model('Config', configSchema);
 
@@ -32,25 +30,13 @@ ConfigModel.remove(function(err, doc) {
 	}
 });
 
-exports.findLatestConfig = function(callback) {
-	ConfigModel.find().sort({version: -1 }).limit(1).exec(function(err, config) {
+exports.findLatestConfig = function(configType, callback) {
+	ConfigModel.find({type : configType}).sort({version: -1 }).limit(1).exec(function(err, config) {
 		if (err) {
 			console.log("Unable to find latest config:" + err);
 			callback();
 		} else {
 			callback(config[0]);
-		}
-	});
-};
-
-
-exports.findConfigByVersion = function(configVersion, callback){
-	ConfigModel.findOne({version : configVersion}).exec(function(err, config){
-		if(err){
-			console.log("Unable to find config with the key: " + configVersion);
-			callback();
-		} else{
-			callback(config);
 		}
 	});
 };
