@@ -7,6 +7,7 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.crashlytics.android.Crashlytics;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
@@ -17,6 +18,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Crashlytics.start(this);
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
 

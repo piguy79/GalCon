@@ -36,6 +36,11 @@
             </intent-filter>
         </activity>
         <service android:name=".service.PingService" android:exported="false"></service>
+
+
+    
+
+    <meta-data android:name="com.crashlytics.ApiKey" android:value="16b0d935ae5ad2229665b4beef8cc396294f878d"/>
     </application>
 
 </manifest>
