@@ -214,7 +214,7 @@ gameSchema.methods.updateRegenRates = function(){
 				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
 				
 				if(blockRegen){
-					regenBy =  planet.shipRegenRate * 0.5;
+					regenBy =  planet.shipRegenRate - (planet.shipRegenRate * currentGame.config.values['blockAbility']);
 				}
 			}
 			

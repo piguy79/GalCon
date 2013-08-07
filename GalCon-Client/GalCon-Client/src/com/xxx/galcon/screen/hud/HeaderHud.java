@@ -119,7 +119,7 @@ public class HeaderHud extends Hud {
 
 	private boolean isUnspecifiedPlayersTurn(Player player) {
 		if (player == null) {
-			if ( !GameLoop.USER.hasMoved(gameBoard)) {
+			if (!GameLoop.USER.hasMoved(gameBoard)) {
 				return true;
 			}
 		}
@@ -127,7 +127,6 @@ public class HeaderHud extends Hud {
 		return false;
 	}
 
-	
 	private String getPlayerInfoText(Player player) {
 		if (player == null) {
 			return "Waiting for opponent";
@@ -140,17 +139,31 @@ public class HeaderHud extends Hud {
 		return sb.toString();
 	}
 
+	private Map<String, Integer> bonuses = new HashMap<String, Integer>();
+
 	private String abilitiesToString(List<String> planetAbilities) {
 		if (planetAbilities.isEmpty()) {
 			return "";
 		}
+		bonuses.clear();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < planetAbilities.size(); ++i) {
-			String abbrev = ABILITY_TO_ABBREVIATION.get(planetAbilities.get(i));
+			String ability = planetAbilities.get(i);
+			String abbrev = ABILITY_TO_ABBREVIATION.get(ability);
 			if (abbrev == null) {
 				throw new IllegalArgumentException("PlayerInfoHud does not understand: " + planetAbilities.get(i));
 			}
-			sb.append("+").append(abbrev).append(" ");
+			Integer configBonus = Integer.valueOf(gameBoard.gameConfig.getValue(ability));
+			Integer bonus = 0;
+			if (bonuses.containsKey(abbrev)) {
+				bonus = bonuses.get(abbrev);
+			}
+			bonus += configBonus;
+			bonuses.put(abbrev, bonus);
+		}
+
+		for (Map.Entry<String, Integer> values : bonuses.entrySet()) {
+			sb.append("+").append(values.getValue()).append("%").append(values.getKey()).append(" ");
 		}
 
 		return sb.toString();

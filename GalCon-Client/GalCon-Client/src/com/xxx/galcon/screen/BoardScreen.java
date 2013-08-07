@@ -706,10 +706,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			for (int i = 0; i < ownedPlanetAbilities.size(); ++i) {
 				String ability = ownedPlanetAbilities.get(i);
 
+				String bonus = gameBoard.gameConfig.getValue(ability) + "%";
+
 				Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 				if (!prefs.getBoolean(ability + "_SHOWN", false)) {
 					overlay = new DismissableOverlay(assetManager, new TextOverlay(
-							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n"
+							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n" + bonus + " "
 									+ PLANET_ABILITIES.get(ability), assetManager, true));
 					prefs.putBoolean(ability + "_SHOWN", true);
 					prefs.flush();

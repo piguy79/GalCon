@@ -1,6 +1,6 @@
 var abilityBasedGameType = require('./abilityBasedGameType');
 
-var REGEN_BLOCK_ABILITY = 'REGEN_BLOCK';
+var REGEN_BLOCK_ABILITY = 'blockModifier';
 
 
 exports.addPlanetAbilities = function(planetsFarFromHomes){

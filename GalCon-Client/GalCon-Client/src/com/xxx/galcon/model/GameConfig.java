@@ -28,4 +28,8 @@ public class GameConfig extends JsonConvertible {
 			config.put(key, values.getString(key));
 		}
 	}
+
+	public String getValue(String key) {
+		return config.get(key);
+	}
 }

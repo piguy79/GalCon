@@ -1,11 +1,11 @@
 var abilityBasedGameType = require('./abilityBasedGameType');
 
-var ATTACK_INC_ABIBILITY = 'ATTACK_INC';
+var ATTACK_INC_ABILITY = 'attackModifier';
 
 
 exports.addPlanetAbilities = function(planetsFarFromHomes){
 
-	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,ATTACK_INC_ABIBILITY);
+	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,ATTACK_INC_ABILITY);
 	
 }
 
@@ -15,8 +15,8 @@ exports.findCorrectFleetToAttackEnemyPlanet = function(config, planets, player){
 
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if((planet.ability && planet.ability == ATTACK_INC_ABIBILITY) && planet.ownerHandle == player){
-			attackMultiplier = attackMultiplier + parseFloat(config.values['attackModifier']);
+		if((planet.ability && planet.ability == ATTACK_INC_ABILITY) && planet.ownerHandle == player){
+			attackMultiplier = attackMultiplier + parseFloat(config.values[ATTACK_INC_ABILITY]);
 		}
 	}
 	

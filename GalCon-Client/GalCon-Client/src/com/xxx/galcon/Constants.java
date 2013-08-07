@@ -47,10 +47,10 @@ public class Constants {
 	public static final String END_AT = "endAt";
 	public static final String RANK_INFO = "rankInfo";
 	public static final String WINNER_HANDLE = "winnerHandle";
-	public static final String ABILITY_SPEED = "SPEED";
-	public static final String ABILITY_ATTACK_INCREASE = "ATTACK_INC";
-	public static final String ABILITY_DEFENCE_INCREASE = "DEF_INC";
-	public static final String ABILITY_REGEN_BLOCK = "REGEN_BLOCK";
+	public static final String ABILITY_SPEED = "speedModifier";
+	public static final String ABILITY_ATTACK_INCREASE = "attackModifier";
+	public static final String ABILITY_DEFENCE_INCREASE = "defenseModifier";
+	public static final String ABILITY_REGEN_BLOCK = "blockModifier";
 	public static final String XP_AWARD_TO_WINNER = "xpAwardToWinner";
 	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
 	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
@@ -63,10 +63,10 @@ public class Constants {
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{
-			put(ABILITY_SPEED, "Increased ship movement speed");
-			put(ABILITY_DEFENCE_INCREASE, "Increased planet defence");
-			put(ABILITY_ATTACK_INCREASE, "Increased attack power");
-			put(ABILITY_REGEN_BLOCK, "The ability to block opponents Regen");
+			put(ABILITY_SPEED, "ship movement speed");
+			put(ABILITY_DEFENCE_INCREASE, "planet defence");
+			put(ABILITY_ATTACK_INCREASE, "attack power");
+			put(ABILITY_REGEN_BLOCK, "block opponents regen");
 		}
 	};
 
