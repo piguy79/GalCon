@@ -188,9 +188,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -200,6 +200,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			System.out.println(e);
 		}
 
+	}
+
+	@Override
+	public void showAd() {
+		// Do nothing right now
 	}
 
 }

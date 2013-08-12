@@ -25,6 +25,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 
@@ -198,27 +199,24 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		String coinsText = "";
 
-		Long timeoutForCoins = 60000L * 20L;
+		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
-		if (GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L) {
-
-			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis() - GameLoop.USER.usedCoins;
-
-			if (timeSinceUsedCoins >= timeoutForCoins) {
-				coinsText += "";
-				if (!loadingNewCoins) {
-					loadingNewCoins = true;
-					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 5L);
-				}
-			} else {
-				loadingNewCoins = false;
-				DateTime timeToMove = new DateTime(timeoutForCoins - timeSinceUsedCoins);
-				coinsText += timeToMove.getMinuteOfHour() + ":" + timeToMove.getSecondOfMinute();
-			}
-
-		} else {
+		if (timeRemaining !=  null) {
 			loadingNewCoins = false;
-
+			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
+		
+		}else if(timeRemaining == null && GameLoop.USER.coins == 0){
+			if (!loadingNewCoins) {
+				loadingNewCoins = true;
+				try{
+					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
+	.usedCoins);
+				}catch(ConnectionException e){
+					
+				}
+			}
+		} else{
+			loadingNewCoins = false;
 			coinsText += GameLoop.USER.coins;
 		}
 

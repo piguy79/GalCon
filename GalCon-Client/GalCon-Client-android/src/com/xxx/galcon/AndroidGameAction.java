@@ -30,9 +30,12 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
+import com.google.ads.AdRequest;
+import com.google.ads.InterstitialAd;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
@@ -126,9 +129,9 @@ public class AndroidGameAction implements GameAction {
 
 	@Override
 	public void addCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle,
-			final Long numCoins) {
+			final Long numCoins, final Long usedCoins) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS, new Player()).execute(top.toString());
@@ -272,6 +275,17 @@ public class AndroidGameAction implements GameAction {
 				});
 			}
 		}
+	}
+
+	@Override
+	public void showAd() {
+		activity.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				((MainActivity) activity).displayAd();
+			}
+		});
 	}
 
 }

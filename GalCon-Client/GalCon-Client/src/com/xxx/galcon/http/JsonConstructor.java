@@ -47,11 +47,12 @@ public class JsonConstructor {
 		return top;
 	}
 	
-	public static JSONObject addCoins(String playerHandle, Long numCoins) throws JSONException{
+	public static JSONObject addCoins(String playerHandle, Long numCoins, Long usedCoins) throws JSONException{
 		JSONObject top = new JSONObject();
 		
 		top.put("playerHandle", playerHandle);
 		top.put("numCoins", numCoins);
+		top.put("usedCoins", usedCoins);
 		
 		return top;
 		

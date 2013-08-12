@@ -19,6 +19,7 @@ import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
+import com.xxx.galcon.screen.NoMoreCoinsDialog;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
@@ -39,6 +40,7 @@ public class GameLoop extends Game {
 		this.gameAction = gameAction;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
+		ExternalActionWrapper.setGameAction(gameAction);
 		tweenManager = new TweenManager();
 	}
 
@@ -104,6 +106,14 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/level_select_bg_bottom.png", Texture.class, param);
 		assetManager.load("data/images/level_card_black.png", Texture.class, param);
 		assetManager.load("data/images/level_select_card_shadow.png", Texture.class, param);
+		assetManager.load("data/images/green_button.png", Texture.class, param);
+		assetManager.load("data/images/coins_bg.png", Texture.class, param);
+		assetManager.load("data/images/black_grey_button.png", Texture.class, param);
+		assetManager.load("data/images/planets/dead_planet.png", Texture.class, param);
+		assetManager.load("data/images/planets/sun.png", Texture.class, param);
+
+
+
 
 		assetManager.finishLoading();
 
@@ -133,6 +143,9 @@ public class GameLoop extends Game {
 			String nextScreen = (String) result;
 
 			if (nextScreen.equals(Constants.New)) {
+				if(USER.coins == 0){
+					return new NoMoreCoinsDialog(assetManager);
+				}
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
 			} else if (nextScreen.equals(Constants.CONTINUE)) {
@@ -181,10 +194,18 @@ public class GameLoop extends Game {
 						Long.valueOf(level));
 				return boardScreen;
 			}
+		} else if (currentScreen instanceof NoMoreCoinsDialog){
+			String action = (String) result;
+			if(action.endsWith(Action.DIALOG_CANCEL)){
+				mainMenuScreen.resetState();
+				return mainMenuScreen;
+			}
 		}
 
 		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
 	}
+	
+
 
 	@Override
 	public void resize(int width, int height) {

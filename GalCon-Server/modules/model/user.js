@@ -62,4 +62,24 @@ exports.findUserByHandle = function(handle, callback){
 	});
 }
 
+exports.addCoins = function(coinsToAdd, handle, usedCoins, callback){
+	UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}}, function(err, user){
+		if(err){
+			callback({error : "Stale record"});
+		}
+		
+		callback(user);
+	});
+}
+
+exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeToAdd, callback){
+	UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {usedCoins : timeToAdd}},function(err, game){
+		if(err){
+			callback({error : "Unable to add time used count"});
+		}
+		
+		callback(user);
+	});
+}
+
 exports.UserModel = UserModel;

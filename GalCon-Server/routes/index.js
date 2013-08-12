@@ -73,7 +73,7 @@ exports.findUserByUserName = function(req, res) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 1
+				coins : 0
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;
@@ -222,6 +222,7 @@ exports.joinGame = function(req, res) {
 exports.addCoins = function(req, res){
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
+	var usedCoins = req.body.usedCoins;
 	
 	userManager.findUserByHandle(playerHandle, function(user) {
 		user.coins += numCoins;
