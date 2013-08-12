@@ -13,7 +13,14 @@ import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
-	
+
+	protected GameHelper mHelper;
+
+	public MainActivity() {
+		super();
+		mHelper = new GameHelper(this);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,4 +50,13 @@ public class MainActivity extends AndroidApplication {
 	protected void onResume() {
 		super.onResume();
 	}
+
+	protected void beginUserInitiatedSignIn() {
+		mHelper.beginUserInitiatedSignIn();
+	}
+
+	protected void signOut() {
+		mHelper.signOut();
+	}
+
 }
