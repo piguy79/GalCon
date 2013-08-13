@@ -73,7 +73,8 @@ exports.findUserByUserName = function(req, res) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 0
+				coins : 0,
+				usedCoins : -1
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;
@@ -223,15 +224,26 @@ exports.addCoins = function(req, res){
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
+		
+	userManager.addCoins(numCoins, playerHandle, usedCoins, function(user){
+		res.json(user);
+	});
 	
-	userManager.findUserByHandle(playerHandle, function(user) {
-		user.coins += numCoins;
-		user.usedCoins = 0;
-		user.save(function() {
+}
+
+exports.reduceTimeUntilNextGame = function(req, res){
+	var handle = req.body.playerHandle;
+	var usedCoins = req.body.usedCoins;
+	console.log("Calling reduce Time because of ad");
+	
+	configManager.findLatestConfig("payment", function(config){
+		userManager.reduceTimeForWatchingAd(handle, usedCoins, config.values['timeReduction'], function(user){
+			console.log("Returning user");
 			res.json(user);
 		});
 	});
 }
+
 
 exports.findRankInformation = function(req, res) {
 	var rank = req.query['rank'];

@@ -67,7 +67,7 @@ public class Player extends JsonConvertible{
 		
 		Long timeoutForCoins = 60000L * 20L;
 
-		if (usedCoins != null && usedCoins != 0L) {
+		if (usedCoins != null && usedCoins != -1L) {
 
 			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
 

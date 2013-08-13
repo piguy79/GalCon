@@ -9,6 +9,13 @@
 						  "speedModifier": "50",
 						  "blockModifier": "20" }
 					
+				},
+				{
+					"vaersion" : 1,
+					"type" : "payment",
+					"values" : {	 
+									"timeReduction" : "10"
+								}
 				}
 			]
 	

@@ -57,4 +57,13 @@ public class JsonConstructor {
 		return top;
 		
 	}
+
+	public static JSONObject reduceCall(String playerHandle, Long usedCoins) throws JSONException {
+		JSONObject top = new JSONObject();
+		
+		top.put("playerHandle", playerHandle);
+		top.put("usedCoins", usedCoins);
+		
+		return top;
+	}
 }

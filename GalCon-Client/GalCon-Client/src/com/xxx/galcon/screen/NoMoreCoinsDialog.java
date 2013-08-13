@@ -137,6 +137,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				ExternalActionWrapper.showAd();
+				UIConnectionWrapper.reduceTimeUntilCoins(callback, GameLoop.USER.handle, GameLoop.USER.usedCoins);
 			}
 		});
 		
@@ -250,10 +251,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		timeRemaining.setText(findTimeRemaining());
 		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
-		//Table.drawDebug(stage);
-		
-		
+		stage.draw();		
 	}
 
 	public void dispose() {
