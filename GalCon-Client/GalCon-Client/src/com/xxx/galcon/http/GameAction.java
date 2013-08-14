@@ -42,7 +42,7 @@ public interface GameAction {
 	
 	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) throws ConnectionException;
 	
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long usedCoins ) throws ConnectionException;
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long timeRemaining, Long usedCoins ) throws ConnectionException;
 	
 	public void showAd();
 

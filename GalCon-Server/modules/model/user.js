@@ -65,19 +65,20 @@ exports.findUserByHandle = function(handle, callback){
 exports.addCoins = function(coinsToAdd, handle, usedCoins, callback){
 	UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1}}, function(err, user){
 		if(err){
-			callback({error : "Stale record"});
+			callback({error : "Unable to update coins: " + err});
 		}
 		callback(user);
 	});
 }
 
-exports.reduceTimeForWatchingAd = function(handle, usedCoins, reduceBy, callback){
-	var timeToReduce = reduceBy * 60 * 1000;
-	var reducedTime = usedCoins - timeToReduce;
+exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy, callback){
+	var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
+	if(reducedTime < 0){
+		reducedTime = -1;
+	}
 	UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}]}, {$set : {usedCoins : reducedTime}},function(err, user){
 		if(err){
-			console.log("ERROR: " + err);
-			callback({error : "Unable to add time used count"});
+			callback({error : "Unable to add time used count: " + err});
 		}else {
 			callback(user);
 		}

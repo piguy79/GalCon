@@ -11,10 +11,10 @@
 					
 				},
 				{
-					"vaersion" : 1,
+					"version" : 1,
 					"type" : "payment",
 					"values" : {	 
-									"timeReduction" : "10"
+									"timeReduction" : "0.5"
 								}
 				}
 			]

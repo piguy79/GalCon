@@ -63,13 +63,21 @@ public class Player extends JsonConvertible{
 		return gameBoard.roundInformation.players.contains(handle);
 	}
 	
+	public Long timeSinceCoinsHaveBeenUsed(){
+		return  new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
+	}
+	
+	public Long timeRemainingForNewcoins(){
+		return (60000L * 20L) - timeSinceCoinsHaveBeenUsed();
+	}
+	
 	public DateTime timeRemainingUntilCoinsAvailable(){
 		
 		Long timeoutForCoins = 60000L * 20L;
 
 		if (usedCoins != null && usedCoins != -1L) {
 
-			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
+			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
 
 			if (timeSinceUsedCoins < timeoutForCoins) {
 				return new DateTime(timeoutForCoins - timeSinceUsedCoins);

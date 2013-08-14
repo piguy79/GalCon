@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,7 +23,6 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 
@@ -47,7 +44,6 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	private Actor loadingBar;
 
-	private boolean loadingNewCoins = false;
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
@@ -202,21 +198,9 @@ public class MainMenuScreen implements ScreenFeedback {
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
 		if (timeRemaining !=  null) {
-			loadingNewCoins = false;
 			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
 		
-		}else if(timeRemaining == null && GameLoop.USER.coins == 0){
-			if (!loadingNewCoins) {
-				loadingNewCoins = true;
-				try{
-					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
-	.usedCoins);
-				}catch(ConnectionException e){
-					
-				}
-			}
 		} else{
-			loadingNewCoins = false;
 			coinsText += GameLoop.USER.coins;
 		}
 

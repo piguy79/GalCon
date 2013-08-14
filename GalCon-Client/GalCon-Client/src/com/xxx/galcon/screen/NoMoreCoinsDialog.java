@@ -137,7 +137,9 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				ExternalActionWrapper.showAd();
-				UIConnectionWrapper.reduceTimeUntilCoins(callback, GameLoop.USER.handle, GameLoop.USER.usedCoins);
+				if(null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1){
+					UIConnectionWrapper.reduceTimeUntilCoins(callback, GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+				}
 			}
 		});
 		
@@ -204,14 +206,15 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private void setupLayoutDefaultPosition(final float width,
 			final float height, TextureRegionDrawable bgTexture) {
 		layout = new Table(skin);
-		layout.setWidth(width * 0.9f);
-		layout.setHeight(height * 0.95f);
+		float padding = width * 0.1f;
+		layout.setWidth(width - padding);
+		layout.setHeight(height - padding);
 		layout.setBackground(bgTexture);
-		layout.setPosition((0 - width * 0.9f), 0f);
+		layout.setPosition(-width, 0f);
 		
 		
 		move = new MoveToAction();
-		move.setPosition(width * 0.04f, height * 0.03f);
+		move.setPosition(padding/2, padding/2);
 		move.setDuration(0.3f);
 		
 		layout.addAction(move);
@@ -237,7 +240,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 		
 		if(timeRemaining == null){
-			return GameLoop.USER.coins + " Coins available!";
+			return GameLoop.USER.coins + " Coin(s) available!";
 		}
 		return Constants.timeRemainingFormat.format(timeRemaining.toDate());
 	}

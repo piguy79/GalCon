@@ -234,11 +234,12 @@ exports.addCoins = function(req, res){
 exports.reduceTimeUntilNextGame = function(req, res){
 	var handle = req.body.playerHandle;
 	var usedCoins = req.body.usedCoins;
-	console.log("Calling reduce Time because of ad");
+	var timeRemaining = req.body.timeRemaining;
+	
+	console.log("Tiem remaining : " + timeRemaining);
 	
 	configManager.findLatestConfig("payment", function(config){
-		userManager.reduceTimeForWatchingAd(handle, usedCoins, config.values['timeReduction'], function(user){
-			console.log("Returning user");
+		userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction'], function(user){
 			res.json(user);
 		});
 	});

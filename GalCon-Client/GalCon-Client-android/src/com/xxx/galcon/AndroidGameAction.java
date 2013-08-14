@@ -150,10 +150,10 @@ public class AndroidGameAction implements GameAction {
 	
 	@Override
 	public void reduceTimeUntilNextGame(final
-			UIConnectionResultCallback<Player> callback, final String playerHandle,
+			UIConnectionResultCallback<Player> callback, final String playerHandle, Long timeRemaining,
 			Long usedCoins) {
 		try {
-			final JSONObject top = JsonConstructor.reduceCall(playerHandle, usedCoins);
+			final JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining,usedCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, new Player()).execute(top.toString());

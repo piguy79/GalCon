@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import org.joda.time.DateTime;
+
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -10,7 +12,12 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.xxx.galcon.Fonts;
+import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
@@ -35,6 +42,8 @@ public class GameLoop extends Game {
 	public TweenManager tweenManager;
 
 	private GameAction gameAction;
+	
+	private boolean loadingNewCoins = false;
 
 	public GameLoop(Player player, GameAction gameAction) {
 		this.gameAction = gameAction;
@@ -129,6 +138,7 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
+		checkCoindStats();
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
 		ScreenFeedback screen = getScreen();
@@ -203,6 +213,27 @@ public class GameLoop extends Game {
 		}
 
 		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
+	}
+	
+	private void checkCoindStats() {
+		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
+
+		if (timeRemaining !=  null) {
+			loadingNewCoins = false;
+		
+		}else if(timeRemaining == null && GameLoop.USER.coins == 0){
+			if (!loadingNewCoins) {
+				loadingNewCoins = true;
+				try{
+					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
+	.usedCoins);
+				}catch(ConnectionException e){
+					
+				}
+			}
+		} else{
+			loadingNewCoins = false;
+		}
 	}
 	
 
