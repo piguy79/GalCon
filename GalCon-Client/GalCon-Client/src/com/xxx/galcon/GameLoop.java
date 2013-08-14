@@ -216,24 +216,29 @@ public class GameLoop extends Game {
 	}
 	
 	private void checkCoindStats() {
-		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-		if (timeRemaining !=  null) {
-			loadingNewCoins = false;
 		
-		}else if(timeRemaining == null && GameLoop.USER.coins == 0){
-			if (!loadingNewCoins) {
-				loadingNewCoins = true;
-				try{
-					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
-	.usedCoins);
-				}catch(ConnectionException e){
-					
+		if(GameLoop.USER != null && GameLoop.USER.coins != null){
+			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
+
+			if (timeRemaining !=  null) {
+				loadingNewCoins = false;
+			
+			}else if(timeRemaining == null && GameLoop.USER.coins == 0){
+				if (!loadingNewCoins) {
+					loadingNewCoins = true;
+					try{
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
+		.usedCoins);
+					}catch(ConnectionException e){
+						
+					}
 				}
+			} else{
+				loadingNewCoins = false;
 			}
-		} else{
-			loadingNewCoins = false;
+			
 		}
+		
 	}
 	
 
