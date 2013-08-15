@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,8 @@ public class Constants {
 	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
+	
+	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss"); 
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{

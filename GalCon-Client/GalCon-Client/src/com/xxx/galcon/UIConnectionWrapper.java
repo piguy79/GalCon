@@ -9,6 +9,7 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Player;
 
 public class UIConnectionWrapper {
 	private static GameAction gameAction;
@@ -53,5 +54,21 @@ public class UIConnectionWrapper {
 	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		gameAction.joinGame(callback, id, playerHandle);
 
+	}
+	
+	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins){
+		try{
+			gameAction.addCoins(callback, playerHandle, numCoins, usedCoins);
+		}catch (ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
+	}
+	
+	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,Long timeRemaining, Long usedCoins){
+		try{
+			gameAction.reduceTimeUntilNextGame(callback, playerHandle,timeRemaining ,usedCoins);
+		}catch(ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
 	}
 }

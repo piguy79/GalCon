@@ -13,6 +13,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
 import java.io.IOException;
@@ -188,9 +189,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -200,6 +201,28 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			System.out.println(e);
 		}
 
+	}
+
+	@Override
+	public void showAd() {
+		// Do nothing right now
+	}
+
+	@Override
+	public void reduceTimeUntilNextGame(
+			UIConnectionResultCallback<Player> callback, String playerHandle, Long timeRemaining,
+			Long usedCoins) throws ConnectionException {
+		try {
+			JSONObject top = JsonConstructor.reduceCall(playerHandle,timeRemaining, usedCoins);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), REDUCE_TIME, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
 	}
 
 }

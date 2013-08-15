@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -59,7 +58,6 @@ public class MainMenuScreen implements ScreenFeedback {
 	private Texture googlePlusTex;
 	private Skin skin;
 
-	private boolean loadingNewCoins = false;
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
@@ -227,27 +225,12 @@ public class MainMenuScreen implements ScreenFeedback {
 
 		String coinsText = "";
 
-		Long timeoutForCoins = 60000L * 20L;
+		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
-		if (GameLoop.USER.usedCoins != null && GameLoop.USER.usedCoins != 0L) {
-
-			Long timeSinceUsedCoins = new DateTime(DateTimeZone.UTC).getMillis() - GameLoop.USER.usedCoins;
-
-			if (timeSinceUsedCoins >= timeoutForCoins) {
-				coinsText += "";
-				if (!loadingNewCoins) {
-					loadingNewCoins = true;
-					gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 5L);
-				}
-			} else {
-				loadingNewCoins = false;
-				DateTime timeToMove = new DateTime(timeoutForCoins - timeSinceUsedCoins);
-				coinsText += timeToMove.getMinuteOfHour() + ":" + timeToMove.getSecondOfMinute();
-			}
-
-		} else {
-			loadingNewCoins = false;
-
+		if (timeRemaining !=  null) {
+			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
+		
+		} else{
 			coinsText += GameLoop.USER.coins;
 		}
 

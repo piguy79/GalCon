@@ -6,12 +6,15 @@ package com.xxx.galcon.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -58,6 +61,30 @@ public class Player extends JsonConvertible{
 
 	public boolean hasMoved(GameBoard gameBoard) {
 		return gameBoard.roundInformation.players.contains(handle);
+	}
+	
+	public Long timeSinceCoinsHaveBeenUsed(){
+		return  new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
+	}
+	
+	public Long timeRemainingForNewcoins(){
+		return (60000L * 20L) - timeSinceCoinsHaveBeenUsed();
+	}
+	
+	public DateTime timeRemainingUntilCoinsAvailable(){
+		
+		Long timeoutForCoins = 60000L * 20L;
+
+		if (usedCoins != null && usedCoins != -1L) {
+
+			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
+
+			if (timeSinceUsedCoins < timeoutForCoins) {
+				return new DateTime(timeoutForCoins - timeSinceUsedCoins);
+			}
+		} 
+		
+		return null;
 	}
 	
 	

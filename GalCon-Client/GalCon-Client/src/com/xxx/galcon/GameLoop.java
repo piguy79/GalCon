@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import org.joda.time.DateTime;
+
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -10,9 +12,10 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
-import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
@@ -20,7 +23,10 @@ import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
+import com.xxx.galcon.screen.NoMoreCoinsDialog;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
+//github.com/piguy79/GalCon.git
+import com.xxx.galcon.model.GameBoard;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -36,12 +42,16 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
+	
+	private boolean loadingNewCoins = false;
+
 
 	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
+		ExternalActionWrapper.setGameAction(gameAction);
 		tweenManager = new TweenManager();
 	}
 
@@ -108,6 +118,11 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/level_card_black.png", Texture.class, param);
 		assetManager.load("data/images/level_select_card_shadow.png", Texture.class, param);
 		assetManager.load("data/images/Google+_chiclet_Red.jpg", Texture.class, param);
+		assetManager.load("data/images/green_button.png", Texture.class, param);
+		assetManager.load("data/images/coins_bg.png", Texture.class, param);
+		assetManager.load("data/images/black_grey_button.png", Texture.class, param);
+		assetManager.load("data/images/planets/dead_planet.png", Texture.class, param);
+		assetManager.load("data/images/planets/sun.png", Texture.class, param);
 
 		assetManager.finishLoading();
 
@@ -123,6 +138,7 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
+		checkCoindStats();
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
 		ScreenFeedback screen = getScreen();
@@ -137,6 +153,9 @@ public class GameLoop extends Game {
 			String nextScreen = (String) result;
 
 			if (nextScreen.equals(Constants.New)) {
+				if(USER.coins == 0){
+					return new NoMoreCoinsDialog(assetManager);
+				}
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
 			} else if (nextScreen.equals(Constants.CONTINUE)) {
@@ -185,10 +204,44 @@ public class GameLoop extends Game {
 						Long.valueOf(level));
 				return boardScreen;
 			}
+		} else if (currentScreen instanceof NoMoreCoinsDialog){
+			String action = (String) result;
+			if(action.endsWith(Action.DIALOG_CANCEL)){
+				mainMenuScreen.resetState();
+				return mainMenuScreen;
+			}
 		}
 
 		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
 	}
+	
+	private void checkCoindStats() {
+		
+		if(GameLoop.USER != null && GameLoop.USER.coins != null){
+			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
+
+			if (timeRemaining !=  null) {
+				loadingNewCoins = false;
+			
+			}else if(timeRemaining == null && GameLoop.USER.coins == 0){
+				if (!loadingNewCoins) {
+					loadingNewCoins = true;
+					try{
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
+		.usedCoins);
+					}catch(ConnectionException e){
+						
+					}
+				}
+			} else{
+				loadingNewCoins = false;
+			}
+			
+		}
+		
+	}
+	
+
 
 	@Override
 	public void resize(int width, int height) {

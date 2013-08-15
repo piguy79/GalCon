@@ -3,11 +3,17 @@ package com.xxx.galcon;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdRequest.ErrorCode;
+import com.google.ads.InterstitialAd;
 import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.plus.PlusClient;
@@ -16,7 +22,7 @@ import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
-public class MainActivity extends AndroidApplication implements GameHelper.GameHelperListener {
+public class MainActivity extends AndroidApplication implements GameHelper.GameHelperListener, AdListener {
 	public static final String LOG_NAME = "GalCon";
 
 	public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
@@ -31,6 +37,9 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	// stores any additional scopes.
 	private String[] mAdditionalScopes;
+
+	private InterstitialAd interstitial;
+	private static final String INTERSTITIAL_UNIT_ID = "ca-app-pub-7836100895640182/2621809877";
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
@@ -50,6 +59,9 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 			mHelper.enableDebugLog(mDebugLog, mDebugTag);
 		}
 		mHelper.setup(this, mRequestedClients, mAdditionalScopes);
+
+		interstitial = new InterstitialAd(this, INTERSTITIAL_UNIT_ID);
+		interstitial.setAdListener(this);
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
@@ -188,6 +200,40 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 	@Override
 	public void onSignInSucceeded() {
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public void onDismissScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onLeaveApplication(Ad arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPresentScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onReceiveAd(Ad ad) {
+		Log.d("OK", "Received ad");
+		if (ad == interstitial) {
+			interstitial.show();
+		}
+	}
+
+	public void displayAd() {
+		interstitial.loadAd(new AdRequest());
 	}
 }

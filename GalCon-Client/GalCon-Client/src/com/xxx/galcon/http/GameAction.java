@@ -40,6 +40,10 @@ public interface GameAction {
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 	
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins);
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) throws ConnectionException;
+	
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long timeRemaining, Long usedCoins ) throws ConnectionException;
+	
+	public void showAd();
 
 }
