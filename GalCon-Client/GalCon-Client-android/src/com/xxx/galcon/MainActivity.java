@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import java.util.HashSet;
+
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -88,6 +90,7 @@ public class MainActivity extends AndroidApplication implements AdListener {
 	}
 	
 	public void displayAd(){
+		AdRequest request = new AdRequest();
 		interstitial.loadAd(new AdRequest());
 	}
 }
