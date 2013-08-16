@@ -6,17 +6,26 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
@@ -25,6 +34,7 @@ import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
+import com.xxx.galcon.http.SocialAction;
 
 public class MainMenuScreen implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
@@ -32,45 +42,67 @@ public class MainMenuScreen implements ScreenFeedback {
 	private final Matrix4 transformMatrix = new Matrix4();
 	private String returnValue;
 	private GameAction gameAction;
+	private SocialAction socialAction;
 	private Stage stage;
 	private GameLoop gameLoop;
 
 	private Image loadingFrame;
 	private Image loadingBarHidden;
 	private Image loadingBg;
-	
+
 	private float startX, endX;
 	private float percent;
 
 	private Actor loadingBar;
+	private ImageButton googlePlus;
+	private Texture googlePlusTex;
+	private Skin skin;
 
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
-	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction) {
+	public MainMenuScreen(GameLoop gameLoop, GameAction gameAction, SocialAction socialAction) {
 		this.gameLoop = gameLoop;
 		this.gameAction = gameAction;
-
+		this.socialAction = socialAction;
 	}
 
 	private void addElementsToStage() {
-
 		stage = new Stage();
 		gameLoop.assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		gameLoop.assetManager.finishLoading();
 
 		TextureAtlas atlas = gameLoop.assetManager.get("data/images/loading.pack", TextureAtlas.class);
+		googlePlusTex = gameLoop.assetManager.get("data/images/Google+_chiclet_Red.jpg", Texture.class);
 
 		loadingFrame = new Image(atlas.findRegion("loading-frame"));
 		loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
 		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
 		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
+		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(googlePlusTex));
+		skin = new Skin();
+		skin.add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+
+		googlePlus = new ImageButton(skin, "googlePlusButton");
+		googlePlus.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				socialAction.googlePlusSignIn();
+			}
+		});
 		stage.addActor(loadingBar);
 		stage.addActor(loadingBg);
 		stage.addActor(loadingBarHidden);
 		stage.addActor(loadingFrame);
 
+		stage.addActor(googlePlus);
 	}
 
 	@Override
@@ -107,12 +139,11 @@ public class MainMenuScreen implements ScreenFeedback {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
-		
-		
 
 		Integer touchX = null;
 		Integer touchY = null;
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		InputMultiplexer plex = (InputMultiplexer) Gdx.input.getInputProcessor();
+		InGameInputProcessor ip = (InGameInputProcessor) plex.getProcessors().get(1);
 		if (ip.didTouch()) {
 			TouchPoint touchPoint = ip.getTouch();
 			int x = touchPoint.x / 2;
@@ -127,7 +158,6 @@ public class MainMenuScreen implements ScreenFeedback {
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
-		
 
 		String galcon = "GalCon";
 		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
@@ -216,9 +246,13 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-
 		touchRegions.clear();
 		updateRankProgressBar(width, height);
+
+		googlePlus.setX(5);
+		googlePlus.setY(5);
+		googlePlus.setWidth(width * .15f);
+		googlePlus.setHeight(width * .15f);
 	}
 
 	private void updateRankProgressBar(int width, int height) {
@@ -253,10 +287,18 @@ public class MainMenuScreen implements ScreenFeedback {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		addElementsToStage();
 		spriteBatch = new SpriteBatch();
+
+		InputMultiplexer plex = new InputMultiplexer();
+		plex.addProcessor(stage);
+		plex.addProcessor(Gdx.input.getInputProcessor());
+
+		Gdx.input.setInputProcessor(plex);
 	}
 
 	@Override
 	public void hide() {
+		InputMultiplexer plex = (InputMultiplexer) Gdx.input.getInputProcessor();
+		Gdx.input.setInputProcessor(plex.getProcessors().get(1));
 	}
 
 	@Override

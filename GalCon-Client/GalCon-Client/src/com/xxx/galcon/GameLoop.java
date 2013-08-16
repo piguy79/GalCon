@@ -12,13 +12,10 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.xxx.galcon.Fonts;
-import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
-import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
@@ -28,6 +25,8 @@ import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
 import com.xxx.galcon.screen.NoMoreCoinsDialog;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
+//github.com/piguy79/GalCon.git
+import com.xxx.galcon.model.GameBoard;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -42,11 +41,14 @@ public class GameLoop extends Game {
 	public TweenManager tweenManager;
 
 	private GameAction gameAction;
+	private SocialAction socialAction;
 	
 	private boolean loadingNewCoins = false;
 
-	public GameLoop(Player player, GameAction gameAction) {
+
+	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
+		this.socialAction = socialAction;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setGameAction(gameAction);
@@ -115,21 +117,19 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/level_select_bg_bottom.png", Texture.class, param);
 		assetManager.load("data/images/level_card_black.png", Texture.class, param);
 		assetManager.load("data/images/level_select_card_shadow.png", Texture.class, param);
+		assetManager.load("data/images/Google+_chiclet_Red.jpg", Texture.class, param);
 		assetManager.load("data/images/green_button.png", Texture.class, param);
 		assetManager.load("data/images/coins_bg.png", Texture.class, param);
 		assetManager.load("data/images/black_grey_button.png", Texture.class, param);
 		assetManager.load("data/images/planets/dead_planet.png", Texture.class, param);
 		assetManager.load("data/images/planets/sun.png", Texture.class, param);
 
-
-
-
 		assetManager.finishLoading();
 
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
-		mainMenuScreen = new MainMenuScreen(this, gameAction);
+		mainMenuScreen = new MainMenuScreen(this, gameAction, socialAction);
 		currentGameScreen = new CurrentGameScreen(assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(assetManager);
 		setScreen(mainMenuScreen);

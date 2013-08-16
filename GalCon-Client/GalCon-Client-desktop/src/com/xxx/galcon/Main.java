@@ -3,6 +3,7 @@ package com.xxx.galcon;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.xxx.galcon.http.DesktopGameAction;
+import com.xxx.galcon.http.DesktopSocialAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.HandleResponse;
@@ -17,6 +18,7 @@ public class Main {
 		cfg.height = 800;
 
 		DesktopGameAction gameAction = new DesktopGameAction("localhost", 3000);
+		DesktopSocialAction socialAction = new DesktopSocialAction();
 
 		final Player player = new Player();
 		int rand = (int) (Math.random() * 10000);
@@ -40,6 +42,6 @@ public class Main {
 			}
 		}, player.name, "Handle" + rand);
 
-		new LwjglApplication(new GameLoop(player, gameAction), cfg);
+		new LwjglApplication(new GameLoop(player, gameAction, socialAction), cfg);
 	}
 }
