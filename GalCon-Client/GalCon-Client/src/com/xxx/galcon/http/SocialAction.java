@@ -9,4 +9,6 @@ public interface SocialAction {
 
 	public boolean isLoggedInToGooglePlus();
 
+	public void showLeaderboards();
+
 }

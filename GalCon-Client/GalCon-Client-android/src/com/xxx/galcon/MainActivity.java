@@ -33,6 +33,8 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	protected GameHelper mHelper;
 
+	final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
+
 	// Requested clients. By default, that's just the games client.
 	protected int mRequestedClients = CLIENT_GAMES;
 
@@ -99,6 +101,10 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 	protected void signOut() {
 		mHelper.signOut();
 		signInListener.onSignOut();
+	}
+
+	public void showLeaderboards() {
+		startActivityForResult(getGamesClient().getAllLeaderboardsIntent(), RC_UNUSED);
 	}
 
 	/**

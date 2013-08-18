@@ -120,8 +120,12 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		int width = Gdx.graphics.getWidth() / 2;
 		int height = Gdx.graphics.getHeight() / 2;
 
-		addText(Constants.New, (int) (height * .36f), true, width, height);
-		addText(Constants.CONTINUE, (int) (height * .24f), true, width, height);
+		addText(Constants.New, (int) (height * .44f), true, width, height);
+		addText(Constants.CONTINUE, (int) (height * .34f), true, width, height);
+
+		if (socialAction.isLoggedInToGooglePlus()) {
+			addText(Constants.LEADERBOARDS, (int) (height * .24f), true, width, height);
+		}
 	}
 
 	private String currentUserText() {
@@ -211,7 +215,13 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 				for (Map.Entry<String, TouchRegion> touchRegionEntry : touchRegions.entrySet()) {
 					TouchRegion touchRegion = touchRegionEntry.getValue();
 					if (touchRegion.contains(touchX, touchY)) {
-						returnValue = touchRegionEntry.getKey();
+						String key = touchRegionEntry.getKey();
+
+						if (key.equals(Constants.LEADERBOARDS)) {
+							socialAction.showLeaderboards();
+						} else {
+							returnValue = key;
+						}
 					}
 				}
 			}

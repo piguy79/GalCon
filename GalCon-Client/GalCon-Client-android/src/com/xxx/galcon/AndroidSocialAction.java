@@ -43,4 +43,14 @@ public class AndroidSocialAction implements SocialAction {
 			}
 		});
 	}
+	
+	@Override
+	public void showLeaderboards() {
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activity.showLeaderboards();
+			}
+		});
+	}
 }
