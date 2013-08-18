@@ -12,18 +12,14 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
@@ -45,11 +41,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private Texture levelSelectBgBottom;
 	private Texture levelSelectionCard;
 
-	private Texture back;
-	private Texture forward;
-	private Texture regularPlay;
-	private Texture socialPlay;
-	private Texture backTexture;
 	private Texture levelSelectCardShadow;
 
 	private Object returnValue;
@@ -63,33 +54,15 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	private InputProcessor oldInputProcessor;
 
-	public LevelSelectionScreen(AssetManager assetManager) {
+	public LevelSelectionScreen(Skin skin, AssetManager assetManager) {
 		this.assetManager = assetManager;
+		this.skin = skin;
 
 		this.levelSelectionCard = assetManager.get("data/images/level_selection_card.png", Texture.class);
 		this.levelSelectBgBottom = assetManager.get("data/images/level_select_bg_bottom.png", Texture.class);
 		this.levelSelectionCard = assetManager.get("data/images/level_card_black.png", Texture.class);
-		this.forward = assetManager.get("data/images/arrow_right_small_black.png", Texture.class);
-		this.back = assetManager.get("data/images/arrow_left_small_black.png", Texture.class);
-		this.regularPlay = assetManager.get("data/images/reg_play.png", Texture.class);
-		this.socialPlay = assetManager.get("data/images/social_play.png", Texture.class);
-		this.backTexture = assetManager.get("data/images/back.png", Texture.class);
+
 		this.levelSelectCardShadow = assetManager.get("data/images/level_select_card_shadow.png", Texture.class);
-
-		skin = new Skin();
-		skin.add("default", new LabelStyle(Fonts.getInstance().largeFont(), Color.RED));
-
-		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(regularPlay));
-		skin.add("regularPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(socialPlay));
-		skin.add("socialPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
-		skin.add("backButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
 		stage = new Stage();
 		cardTable = new Table();
@@ -224,7 +197,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		
+
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -324,7 +297,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			}
 		});
 		stage.addActor(friendsPlayButton);
-		
+
 		backButton.remove();
 		stage.addActor(backButton);
 	}

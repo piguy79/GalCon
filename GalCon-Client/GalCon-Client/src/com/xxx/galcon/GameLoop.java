@@ -16,6 +16,8 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
+//github.com/piguy79/GalCon.git
+import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
@@ -25,8 +27,6 @@ import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.MainMenuScreen;
 import com.xxx.galcon.screen.NoMoreCoinsDialog;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
-//github.com/piguy79/GalCon.git
-import com.xxx.galcon.model.GameBoard;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -38,13 +38,13 @@ public class GameLoop extends Game {
 
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
+	public UISkin skin = new UISkin();
 	public TweenManager tweenManager;
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
-	
-	private boolean loadingNewCoins = false;
 
+	private boolean loadingNewCoins = false;
 
 	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
@@ -126,12 +126,14 @@ public class GameLoop extends Game {
 
 		assetManager.finishLoading();
 
+		skin.initialize(assetManager);
+
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
-		mainMenuScreen = new MainMenuScreen(this, gameAction, socialAction);
+		mainMenuScreen = new MainMenuScreen(this, skin, gameAction, socialAction);
 		currentGameScreen = new CurrentGameScreen(assetManager);
-		levelSelectionScreen = new LevelSelectionScreen(assetManager);
+		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		setScreen(mainMenuScreen);
 	}
 
@@ -153,7 +155,7 @@ public class GameLoop extends Game {
 			String nextScreen = (String) result;
 
 			if (nextScreen.equals(Constants.New)) {
-				if(USER.coins == 0){
+				if (USER.coins == 0) {
 					return new NoMoreCoinsDialog(assetManager);
 				}
 				levelSelectionScreen.resetState();
@@ -204,9 +206,9 @@ public class GameLoop extends Game {
 						Long.valueOf(level));
 				return boardScreen;
 			}
-		} else if (currentScreen instanceof NoMoreCoinsDialog){
+		} else if (currentScreen instanceof NoMoreCoinsDialog) {
 			String action = (String) result;
-			if(action.endsWith(Action.DIALOG_CANCEL)){
+			if (action.endsWith(Action.DIALOG_CANCEL)) {
 				mainMenuScreen.resetState();
 				return mainMenuScreen;
 			}
@@ -214,34 +216,32 @@ public class GameLoop extends Game {
 
 		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
 	}
-	
+
 	private void checkCoindStats() {
-		
-		if(GameLoop.USER != null && GameLoop.USER.coins != null){
+
+		if (GameLoop.USER != null && GameLoop.USER.coins != null) {
 			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
-			if (timeRemaining !=  null) {
+			if (timeRemaining != null) {
 				loadingNewCoins = false;
-			
-			}else if(timeRemaining == null && GameLoop.USER.coins == 0){
+
+			} else if (timeRemaining == null && GameLoop.USER.coins == 0) {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
-					try{
-						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L, GameLoop.USER
-		.usedCoins);
-					}catch(ConnectionException e){
-						
+					try {
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L,
+								GameLoop.USER.usedCoins);
+					} catch (ConnectionException e) {
+
 					}
 				}
-			} else{
+			} else {
 				loadingNewCoins = false;
 			}
-			
-		}
-		
-	}
-	
 
+		}
+
+	}
 
 	@Override
 	public void resize(int width, int height) {

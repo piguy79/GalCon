@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SocialAction;
 
 public class AndroidSocialAction implements SocialAction {
@@ -15,6 +16,30 @@ public class AndroidSocialAction implements SocialAction {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				activity.beginUserInitiatedSignIn();
+			}
+		});
+	}
+	
+	@Override
+	public void googlePlusSignOut() {
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				activity.signOut();
+			}
+		});
+	}
+
+	@Override
+	public boolean isLoggedInToGooglePlus() {
+		return activity.isSignedIn();
+	}
+
+	@Override
+	public void registerGooglePlusSignInListener(final GooglePlusSignInListener signInListener) {
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activity.registerGooglePlusSignInListener(signInListener);
 			}
 		});
 	}
