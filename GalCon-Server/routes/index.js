@@ -3,7 +3,8 @@ var gameBuilder = require('../modules/gameBuilder'),
 	userManager = require('../modules/model/user'), 
 	rankManager = require('../modules/model/rank'),
 	mapManager = require('../modules/model/map'),
-	configManager = require('../modules/model/config');
+	configManager = require('../modules/model/config'),
+	leaderboardManager = require('../modules/model/leaderboard');
 
 exports.index = function(req, res) {
 	res.render('index.html')

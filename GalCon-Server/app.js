@@ -8,16 +8,16 @@ if(process.env.NODETIME_ACCOUNT_KEY) {
 
 var express = require('express')
   , routes = require('./routes')
-  , ejs = require('ejs');
+  , http = require('http');
 
-var app = module.exports = express.createServer();
+var app = module.exports = express();
+var server = http.createServer(app);
 
 // Configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.use(express.bodyParser());
   app.set("view options", {layout: false});
-  app.register('html', ejs);
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -34,7 +34,7 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
-app.post('/generateGame', routes.generateGame);
+//app.post('/generateGame', routes.generateGame);
 app.post('/matchPlayerToGame', routes.matchPlayerToGame);
 app.get('/findAllGames', routes.findAllGames);
 app.get('/findAllMaps', routes.findAllMaps);
@@ -54,6 +54,6 @@ app.get('/rank', routes.findRankInformation);
 
 var port = process.env.PORT || 3000;
 
-app.listen(port, function(){
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+server.listen(port, function(){
+  console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
 });
