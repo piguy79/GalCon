@@ -8,7 +8,8 @@ if(process.env.NODETIME_ACCOUNT_KEY) {
 
 var express = require('express')
   , routes = require('./routes')
-  , http = require('http');
+  , http = require('http')
+  , ejs = require('ejs');
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -18,6 +19,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.use(express.bodyParser());
   app.set("view options", {layout: false});
+  app.engine('html', ejs.__express);
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
