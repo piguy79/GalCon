@@ -19,7 +19,7 @@ public class AndroidSocialAction implements SocialAction {
 			}
 		});
 	}
-	
+
 	@Override
 	public void googlePlusSignOut() {
 		activity.runOnUiThread(new Runnable() {
@@ -43,7 +43,7 @@ public class AndroidSocialAction implements SocialAction {
 			}
 		});
 	}
-	
+
 	@Override
 	public void showLeaderboards() {
 		activity.runOnUiThread(new Runnable() {
