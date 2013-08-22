@@ -1,6 +1,39 @@
 var leaderboard = require('../../modules/model/leaderboard'), Step = require('step');
 
-describe("Leaderboard tests", function() {
+describe("Leaderboard Tests - Find Score for Single User", function() {
+	var boardId1 = "TEST_BOARD1";
+	var playerHandle1 = "TEST_HANDLE1";
+
+	beforeEach(function(done) {
+		leaderboard.LeaderboardModel.remove().where("playerHandle").in([playerHandle1]).exec(function(err) {
+			done();
+		});
+	});
+	
+	it("No row should exist for user", function(done) {
+		Step(function retrieveScore() {
+			leaderboard.findScore(boardId1, playerHandle1, this);
+		}, function validateScore(err, leaderboardRow) {
+			expect(err).toBe(null);
+			expect(leaderboardRow).toBeUndefined();
+			done();
+		});
+	});
+	
+	it("Find existing row for user", function(done) {
+		Step(function addRow() {
+			var board = new leaderboard.LeaderboardModel({"boardId" : boardId1, "playerHandle" : playerHandle1, "score" : 5});
+			board.save(this);
+		}, function retrieveScore(err) {
+			leaderboard.findScore(boardId1, playerHandle1, this);
+		}, function validateScore(leaderboardRow) {
+			expect(leaderboardRow.score).toBe(5);
+			done();
+		});
+	});
+});
+
+describe("Leaderboard Tests - Update Score", function() {
 	var boardId1 = "TEST_BOARD1";
 	var boardId2 = "TEST_BOARD2";
 	var playerHandle1 = "TEST_HANDLE1";
