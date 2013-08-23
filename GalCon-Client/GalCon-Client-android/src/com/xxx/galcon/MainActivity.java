@@ -20,6 +20,7 @@ import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.plus.PlusClient;
 import com.google.example.games.basegameutils.GameHelper;
+import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
@@ -34,6 +35,8 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	protected GameHelper mHelper;
 
+	final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
+
 	// Requested clients. By default, that's just the games client.
 	protected int mRequestedClients = CLIENT_GAMES;
 
@@ -45,6 +48,8 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
+
+	private GooglePlusSignInListener signInListener;
 
 	public MainActivity() {
 		super();
@@ -97,6 +102,11 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	protected void signOut() {
 		mHelper.signOut();
+		signInListener.onSignOut();
+	}
+
+	public void showLeaderboards() {
+		startActivityForResult(getGamesClient().getAllLeaderboardsIntent(), RC_UNUSED);
 	}
 
 	/**
@@ -149,7 +159,7 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 		return mHelper.getPlusClient();
 	}
 
-	protected boolean isSignedIn() {
+	protected synchronized boolean isSignedIn() {
 		return mHelper.isSignedIn();
 	}
 
@@ -195,13 +205,16 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	@Override
 	public void onSignInFailed() {
-		// TODO Auto-generated method stub
-
+		if (signInListener != null) {
+			signInListener.onSignInFailed();
+		}
 	}
 
 	@Override
 	public void onSignInSucceeded() {
-		// TODO Auto-generated method stub
+		if (signInListener != null) {
+			signInListener.onSignInSucceeded();
+		}
 	}
 
 	@Override
@@ -238,5 +251,9 @@ public class MainActivity extends AndroidApplication implements GameHelper.GameH
 
 	public void displayAd() {
 		interstitial.loadAd(new AdRequest());
+	}
+
+	public void registerGooglePlusSignInListener(GooglePlusSignInListener signInListener) {
+		this.signInListener = signInListener;
 	}
 }

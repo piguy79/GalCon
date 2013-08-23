@@ -39,6 +39,7 @@ public class Constants {
 	public static final String HEIGHT = "height";
 	public static final String JOIN = "Join";
 	public static final String CONTINUE = "Continue";
+	public static final String LEADERBOARDS = "Leaderboards";
 	public static final String New = "New";
 	public static final String RANK = "rank";
 	public static final String LEVEL = "level";
@@ -61,8 +62,8 @@ public class Constants {
 	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
-	
-	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss"); 
+
+	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{
