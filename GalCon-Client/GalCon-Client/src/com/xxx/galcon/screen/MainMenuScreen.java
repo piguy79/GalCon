@@ -16,27 +16,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.GameAction;
-import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
 
-public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener {
+public class MainMenuScreen implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -54,9 +48,6 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	private float percent;
 
 	private Actor loadingBar;
-	private ImageButton googlePlus;
-	private Label googlePlusText;
-	private Table googlePlusTable;
 	private Label signInLabel;
 
 	private Skin skin;
@@ -68,8 +59,6 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		this.skin = skin;
-
-		socialAction.registerGooglePlusSignInListener(this);
 	}
 
 	private void addElementsToStage() {
@@ -84,31 +73,10 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
 		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
-		googlePlus = new ImageButton(skin, "googlePlusButton");
-		googlePlus.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if (socialAction.isLoggedInToGooglePlus()) {
-					socialAction.googlePlusSignOut();
-				} else {
-					socialAction.googlePlusSignIn();
-				}
-			}
-		});
-
-		googlePlusTable = new Table(skin);
-
 		stage.addActor(loadingBar);
 		stage.addActor(loadingBg);
 		stage.addActor(loadingBarHidden);
 		stage.addActor(loadingFrame);
-
-		stage.addActor(googlePlusTable);
 	}
 
 	@Override
@@ -123,9 +91,7 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		addText(Constants.New, (int) (height * .44f), true, width, height);
 		addText(Constants.CONTINUE, (int) (height * .34f), true, width, height);
 
-		if (socialAction.isLoggedInToGooglePlus()) {
-			addText(Constants.LEADERBOARDS, (int) (height * .24f), true, width, height);
-		}
+		addText(Constants.LEADERBOARDS, (int) (height * .24f), true, width, height);
 	}
 
 	private String currentUserText() {
@@ -263,26 +229,6 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	public void resize(int width, int height) {
 		touchRegions.clear();
 		updateRankProgressBar(width, height);
-
-		float tableHeight = height * 0.15f;
-		googlePlusTable.clear();
-		googlePlusTable.setX(0);
-		googlePlusTable.setY(0);
-		googlePlusTable.setWidth(width);
-		googlePlusTable.setHeight(tableHeight);
-
-		googlePlusTable.pad(5, 5, 5, 5);
-		googlePlusTable.add(googlePlus).width(tableHeight - 10).height(tableHeight - 10);
-		signInLabel = new Label("default", skin);
-
-		String text = Strings.G_PLUS_SIGNED_OUT;
-		if (socialAction.isLoggedInToGooglePlus()) {
-			text = Strings.G_PLUS_SIGNED_IN;
-		}
-		signInLabel.setText(text);
-		googlePlusTable.add(signInLabel).left().expandX().expandY().padLeft(width * 0.02f);
-
-		googlePlusTable.layout();
 	}
 
 	private void updateRankProgressBar(int width, int height) {
@@ -350,35 +296,5 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	@Override
 	public Object getRenderResult() {
 		return returnValue;
-	}
-
-	@Override
-	public void onSignInFailed() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
-	}
-
-	@Override
-	public void onSignInSucceeded() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_IN);
-			}
-		});
-	}
-
-	@Override
-	public void onSignOut() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
 	}
 }
