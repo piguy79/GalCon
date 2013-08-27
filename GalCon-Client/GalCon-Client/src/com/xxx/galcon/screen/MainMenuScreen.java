@@ -26,13 +26,11 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.GameAction;
-import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
 
-public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener {
+public class MainMenuScreen implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -61,8 +59,6 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		this.skin = skin;
-
-		socialAction.registerGooglePlusSignInListener(this);
 	}
 
 	private void addElementsToStage() {
@@ -300,35 +296,5 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	@Override
 	public Object getRenderResult() {
 		return returnValue;
-	}
-
-	@Override
-	public void onSignInFailed() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
-	}
-
-	@Override
-	public void onSignInSucceeded() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_IN);
-			}
-		});
-	}
-
-	@Override
-	public void onSignOut() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
 	}
 }
