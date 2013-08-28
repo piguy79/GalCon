@@ -19,6 +19,7 @@ var gameSchema = mongoose.Schema({
 	endGameInformation : {
 		winnerHandle : "String",
 		xpAwardToWinner : "Number",
+		leaderboardScoreAmount : "Number",
 		winningDate : "Date",
 		loserHandles : [String],
 		draw : "Boolean"
@@ -87,6 +88,7 @@ var gameSchema = mongoose.Schema({
 });
 
 gameSchema.set('toObject', { getters: true });
+gameSchema.index({"players" : 1});
 
 var hasSameOwner = function(planet, move){
 	return planet.ownerHandle == move.playerHandle;
