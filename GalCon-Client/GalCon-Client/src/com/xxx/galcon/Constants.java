@@ -62,6 +62,11 @@ public class Constants {
 	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
+	public static final String VERSION = "version";
+	public static final String TYPE = "type";
+	public static final String VALUES = "values";
+
+
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

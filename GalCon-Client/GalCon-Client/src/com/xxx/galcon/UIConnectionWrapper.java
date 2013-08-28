@@ -6,6 +6,7 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
@@ -70,5 +71,9 @@ public class UIConnectionWrapper {
 		}catch(ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}
+	}
+	
+	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type){
+		gameAction.findConfigByType(callback, type);
 	}
 }

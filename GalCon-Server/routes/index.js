@@ -236,14 +236,21 @@ exports.reduceTimeUntilNextGame = function(req, res){
 	var handle = req.body.playerHandle;
 	var usedCoins = req.body.usedCoins;
 	var timeRemaining = req.body.timeRemaining;
-	
-	console.log("Tiem remaining : " + timeRemaining);
-	
+		
 	configManager.findLatestConfig("payment", function(config){
 		userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction'], function(user){
 			res.json(user);
 		});
 	});
+}
+
+exports.findConfigByType = function(req, res){
+	var type = req.query['type'];
+	
+	configManager.findLatestConfig(type, function(config){
+		res.json(config);
+	});
+
 }
 
 

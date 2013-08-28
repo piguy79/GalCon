@@ -6,6 +6,7 @@ package com.xxx.galcon.http;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
@@ -30,6 +31,7 @@ import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;
@@ -150,6 +152,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("userName", player);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args, new Player()));
 	}
+	
+	@Override
+	public void findConfigByType(
+			final UIConnectionResultCallback<Configuration> callback,final String type) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("type", type);
+		callback.onConnectionResult((Configuration) callURL(new GetClientRequest(), FIND_CONFIG_BY_TYPE, args, new Configuration()));
+		
+	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
 			JsonConvertible converter) {
@@ -224,5 +235,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 		
 	}
+
+
 
 }

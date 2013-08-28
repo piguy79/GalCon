@@ -16,6 +16,8 @@ import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
+import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
+
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -42,6 +44,7 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;
@@ -213,6 +216,19 @@ public class AndroidGameAction implements GameAction {
 			}
 		});
 	}
+	
+	@Override
+	public void findConfigByType(
+			final UIConnectionResultCallback<Configuration> callback, final String type) {
+		
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("type", type);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Configuration>(args, callback, FIND_CONFIG_BY_TYPE, new Configuration()).execute("");
+			}
+		});
+	}
 
 	public void requestHandleForUserName(final UIConnectionResultCallback<HandleResponse> callback, String userName,
 			String handle) {
@@ -310,6 +326,8 @@ public class AndroidGameAction implements GameAction {
 			}
 		});
 	}
+
+	
 
 	
 

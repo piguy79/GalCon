@@ -17,7 +17,9 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.InterstitialAd;
 import com.xxx.galcon.http.GooglePlusSignInListener;
+import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
@@ -55,8 +57,11 @@ public class MainActivity extends AndroidApplication implements AdListener {
 		player.name = UserInfo.getUser(getBaseContext());
 
 		gameAction.findUserInformation(new SetOrPromptResultHandler(this, gameAction, player), player.name);
+		
+		Configuration config = new Configuration();
+		gameAction.findConfigByType(new SetConfigurationResultHandler(config), "app");
 
-		initialize(new GameLoop(player, gameAction, socialGameAction), cfg);
+		initialize(new GameLoop(player, gameAction, socialGameAction, config), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 

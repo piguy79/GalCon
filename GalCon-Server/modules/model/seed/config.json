@@ -16,6 +16,13 @@
 					"values" : {	 
 									"timeReduction" : "0.5"
 								}
+				},
+				{
+					"version" : 1,
+					"type" : "app",
+					"values" : {
+						"timeLapseForNewCoins" : "1200000"
+					}
 				}
 			]
 	

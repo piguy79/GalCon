@@ -16,6 +16,7 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.model.Configuration;
 //github.com/piguy79/GalCon.git
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
@@ -30,6 +31,8 @@ import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
 	public static Player USER;
+	public static Configuration CONFIG;
+
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -43,12 +46,14 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
+	
 
 	private boolean loadingNewCoins = false;
 
-	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction) {
+	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction, Configuration config) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
+		GameLoop.CONFIG = config;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setGameAction(gameAction);

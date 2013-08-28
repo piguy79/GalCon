@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.xxx.galcon.ConfigConstants;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.SetPlayerResultHandler;
@@ -68,19 +69,21 @@ public class Player extends JsonConvertible{
 	}
 	
 	public Long timeRemainingForNewcoins(){
-		return (60000L * 20L) - timeSinceCoinsHaveBeenUsed();
+		return timeLapse() - timeSinceCoinsHaveBeenUsed();
+	}
+	
+	public Long timeLapse(){
+		return Long.parseLong(GameLoop.CONFIG.getConfigValue(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
 	}
 	
 	public DateTime timeRemainingUntilCoinsAvailable(){
 		
-		Long timeoutForCoins = 60000L * 20L;
-
 		if (usedCoins != null && usedCoins != -1L) {
 
 			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
 
-			if (timeSinceUsedCoins < timeoutForCoins) {
-				return new DateTime(timeoutForCoins - timeSinceUsedCoins);
+			if (timeSinceUsedCoins < timeLapse()) {
+				return new DateTime(timeLapse() - timeSinceUsedCoins);
 			}
 		} 
 		

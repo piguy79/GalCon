@@ -3,6 +3,7 @@ package com.xxx.galcon.http;
 import java.util.List;
 
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;
@@ -33,6 +34,8 @@ public interface GameAction {
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player);
+	
+	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 
 	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
 			String handle);
