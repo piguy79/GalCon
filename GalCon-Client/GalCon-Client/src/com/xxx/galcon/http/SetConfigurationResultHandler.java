@@ -1,6 +1,6 @@
 package com.xxx.galcon.http;
 
-import com.xxx.galcon.model.Configuration;
+import com.xxx.galcon.config.Configuration;
 
 public class SetConfigurationResultHandler implements UIConnectionResultCallback<Configuration> {
 	

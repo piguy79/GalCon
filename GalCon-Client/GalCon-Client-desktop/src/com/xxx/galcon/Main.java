@@ -2,12 +2,12 @@ package com.xxx.galcon;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.DesktopGameAction;
 import com.xxx.galcon.http.DesktopSocialAction;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Player;
 

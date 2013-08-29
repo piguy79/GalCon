@@ -16,10 +16,10 @@ import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.InterstitialAd;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
-import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 

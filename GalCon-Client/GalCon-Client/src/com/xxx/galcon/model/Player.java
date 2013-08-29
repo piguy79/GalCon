@@ -12,16 +12,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.xxx.galcon.ConfigConstants;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.config.ConfigConstants;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
  * Class representing a Player.
- * 
- * 
  * 
  * @author conormullen
  *
@@ -73,7 +72,7 @@ public class Player extends JsonConvertible{
 	}
 	
 	public Long timeLapse(){
-		return Long.parseLong(GameLoop.CONFIG.getConfigValue(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
+		return Long.parseLong(ConfigResolver.getByConfigKey(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
 	}
 	
 	public DateTime timeRemainingUntilCoinsAvailable(){

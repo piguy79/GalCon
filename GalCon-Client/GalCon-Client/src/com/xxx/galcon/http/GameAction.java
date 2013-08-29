@@ -2,8 +2,8 @@ package com.xxx.galcon.http;
 
 import java.util.List;
 
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.model.AvailableGames;
-import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;

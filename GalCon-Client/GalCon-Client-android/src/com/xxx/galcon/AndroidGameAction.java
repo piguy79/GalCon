@@ -18,7 +18,6 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -39,12 +38,12 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.google.ads.AdRequest;
 import com.google.ads.InterstitialAd;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
-import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;

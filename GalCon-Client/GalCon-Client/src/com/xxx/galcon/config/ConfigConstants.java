@@ -1,4 +1,4 @@
-package com.xxx.galcon;
+package com.xxx.galcon.config;
 
 public class ConfigConstants {
 

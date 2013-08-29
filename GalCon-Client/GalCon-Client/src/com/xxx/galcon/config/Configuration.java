@@ -1,4 +1,4 @@
-package com.xxx.galcon.model;
+package com.xxx.galcon.config;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ public class Configuration extends JsonConvertible {
 		return conf;
 	}
 	
-	public String getConfigValue(String configKey){
+	protected String getConfigValue(String configKey){
 		return this.configValues.get(configKey);
 	}
 

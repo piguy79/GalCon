@@ -12,11 +12,11 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
-import com.xxx.galcon.model.Configuration;
 //github.com/piguy79/GalCon.git
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;

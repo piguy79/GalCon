@@ -108,7 +108,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		stage = new Stage();
 		setupLayoutDefaultPosition(width, height, bgTexture);
 				
-		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");	
+		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");
 		final UIConnectionResultCallback<Player> callback = this;
 		
 		Label coinsLabel = new Label("2 Coins:", skin);

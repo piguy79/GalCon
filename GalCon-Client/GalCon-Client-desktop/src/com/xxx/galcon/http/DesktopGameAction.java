@@ -27,11 +27,11 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
-import com.xxx.galcon.model.Configuration;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;
