@@ -31,6 +31,7 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Player;
 
@@ -62,6 +63,8 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private MoveToAction move;
 	private TextureRegionDrawable textureRegionDrawable;
 	private Stack stack;
+	
+	private boolean animated;
 
 
 	public NoMoreCoinsDialog(AssetManager assetManager) {
@@ -136,9 +139,11 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				
 				ExternalActionWrapper.showAd();
-				if(null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1){
-					UIConnectionWrapper.reduceTimeUntilCoins(callback, GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+				if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
+					GameLoop.USER.watchedAd = true;
+					UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
 				}
 			}
 		});
@@ -253,8 +258,22 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		timeRemaining.setText(findTimeRemaining());
+		handleWatchAd();
+		if(GameLoop.USER.coins > 0 && !animated){
+			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
+			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
+			animated = true;
+		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();		
+	}
+
+	private void handleWatchAd() {
+		if(GameLoop.USER.watchedAd){
+			watchAd.setDisabled(true);
+		}else{
+			watchAd.setDisabled(false);
+		}
 	}
 
 	public void dispose() {
@@ -294,10 +313,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	@Override
 	public void onConnectionResult(Player result) {
 		GameLoop.USER = result;
-		if(result.coins > 0){
-			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
-			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
-		}
+		
 	}
 
 	@Override

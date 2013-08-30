@@ -34,6 +34,7 @@ public class Player extends JsonConvertible{
 	public Rank rank;
 	public Integer coins;
 	public Long usedCoins;
+	public boolean watchedAd;
 	
 	
 	@Override
@@ -41,8 +42,9 @@ public class Player extends JsonConvertible{
 		this.name = jsonObject.getString(Constants.NAME);
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp  = jsonObject.getInt(Constants.XP);
-		this.coins = jsonObject.getInt("coins");
-		this.usedCoins = jsonObject.optLong("usedCoins");
+		this.coins = jsonObject.getInt(Constants.COINS);
+		this.usedCoins = jsonObject.optLong(Constants.USED_COINS);
+		this.watchedAd = jsonObject.getBoolean(Constants.WATCHED_AD);
 		
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();

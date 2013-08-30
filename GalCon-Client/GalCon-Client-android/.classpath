@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/joda-time-2.2.jar"/>
 	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/tapjoyconnectlibrary.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

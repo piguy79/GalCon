@@ -12,6 +12,7 @@ var userSchema = mongoose.Schema({
 	currentGames : ["String"],
 	coins : "Number",
 	usedCoins : "Number",
+	watchedAd : "Boolean",
 	rankInfo : {
 		level : "Number",
 		startFrom : "Number",
@@ -63,7 +64,7 @@ exports.findUserByHandle = function(handle, callback){
 }
 
 exports.addCoins = function(coinsToAdd, handle, usedCoins, callback){
-	UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1}}, function(err, user){
+	UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1, watchedAds : false}}, function(err, user){
 		if(err){
 			callback({error : "Unable to update coins: " + err});
 		}
@@ -76,7 +77,7 @@ exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, red
 	if(reducedTime < 0){
 		reducedTime = -1;
 	}
-	UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}]}, {$set : {usedCoins : reducedTime}},function(err, user){
+	UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}},function(err, user){
 		if(err){
 			callback({error : "Unable to add time used count: " + err});
 		}else {

@@ -75,7 +75,8 @@ exports.findUserByUserName = function(req, res) {
 				wins : 0,
 				losses : 0,
 				coins : 0,
-				usedCoins : -1
+				usedCoins : -1,
+				watchedAd : false
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;
