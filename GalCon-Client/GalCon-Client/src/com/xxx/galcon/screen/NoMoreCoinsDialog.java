@@ -141,22 +141,22 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				
-				ExternalActionWrapper.showAd(new AdColonyVideoListener() {
-					
-					@Override
-					public void onAdColonyVideoStarted() {						
-					}
-					
-					@Override
-					public void onAdColonyVideoFinished() {
-						if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
-							GameLoop.USER.watchedAd = true;
-							UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+				if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
+					ExternalActionWrapper.showAd(new AdColonyVideoListener() {
+						
+						@Override
+						public void onAdColonyVideoStarted() {						
 						}
 						
-					}
-				});
-				
+						@Override
+						public void onAdColonyVideoFinished() {
+								GameLoop.USER.watchedAd = true;
+								UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+							
+							
+						}
+					});
+				}				
 			}
 		});
 		
