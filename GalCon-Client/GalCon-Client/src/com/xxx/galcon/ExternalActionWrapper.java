@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.http.GameAction;
 
 public class ExternalActionWrapper {
@@ -14,8 +15,8 @@ public class ExternalActionWrapper {
 		ExternalActionWrapper.gameAction = gameAction;
 	}
 	
-	public static void showAd(){
-		gameAction.showAd();
+	public static void showAd(AdColonyVideoListener listner){
+		gameAction.showAd(listner);
 	}
 
 }

@@ -38,6 +38,7 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.google.ads.AdRequest;
 import com.google.ads.InterstitialAd;
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
@@ -316,12 +317,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void showAd() {
+	public void showAd(final AdColonyVideoListener listener) {
 		activity.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				((MainActivity) activity).displayAd();
+				((MainActivity) activity).displayAd(listener);
 			}
 		});
 	}

@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
@@ -140,13 +141,26 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				
-				ExternalActionWrapper.showAd();
-				if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
-					GameLoop.USER.watchedAd = true;
-					UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
-				}
+				ExternalActionWrapper.showAd(new AdColonyVideoListener() {
+					
+					@Override
+					public void onAdColonyVideoStarted() {						
+					}
+					
+					@Override
+					public void onAdColonyVideoFinished() {
+						if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
+							GameLoop.USER.watchedAd = true;
+							UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+						}
+						
+					}
+				});
+				
 			}
 		});
+		
+		
 		
 		
 		

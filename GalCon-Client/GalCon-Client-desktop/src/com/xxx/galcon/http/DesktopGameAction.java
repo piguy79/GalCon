@@ -27,6 +27,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
@@ -215,7 +216,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void showAd() {
+	public void showAd(AdColonyVideoListener listener) {
 		// Do nothing right now
 	}
 

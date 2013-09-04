@@ -2,6 +2,7 @@ package com.xxx.galcon.http;
 
 import java.util.List;
 
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
@@ -47,6 +48,6 @@ public interface GameAction {
 	
 	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long timeRemaining, Long usedCoins ) throws ConnectionException;
 	
-	public void showAd();
+	public void showAd(AdColonyVideoListener listner);
 
 }
