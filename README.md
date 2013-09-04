@@ -13,6 +13,7 @@ __Multiplayer__
 __Advancement__
 * Should be a well thought-out advancement strategy.
 * Every victory earns you XP.  You get more XP from beating higher ranked opponents.
+* Capturing unique planets in a game earns you xp.
 * Get enough XP to unlock a new level, which adds a new technique/element to the game.
 * When you play against another player, the game will be played at the min level of all players.
 * Players can pay to unlock levels if they choose.  Maybe don't allow people to buy into the upper-most levels?
@@ -32,7 +33,7 @@ __Advancement__
  6. Block regen ability planet - 16-18
  7. Asteroid belt world - 18-20
  8. Black hole (dynamic speed) world - 20-22
-2. Achievements
+2. Achievements (Possibly 1.1)
  1. First Blood - Play your first game
  2. Comeback King - Come back from being so far behind in a  game to win it
  3. Win x games games (Can be multiple, 5,10,30 etc)
@@ -44,12 +45,13 @@ __Advancement__
 2. Leaderboards
  1. Global ranking formula
  2. Friends rank?
+ 3. Social Leaderboard
 3. Coins for playing
  1. XX of free coins for every day you login
  2. Special coin planets appear in 2% of games?
  3. Random daily/hourly specials on coin purchases?
 4. In-app payment system for coins and ad-removal
-5. Display ads
+5. Display ads to remove time spent on countdown to new coins
 6. Social - Invite through:
  1. Facebook
  2. Google+
@@ -68,6 +70,7 @@ __Advancement__
 13. iOS?
 14. Sounds (and music?)
 15. Tutorial
+16. Application configuration
 
 Heroku
 ----
