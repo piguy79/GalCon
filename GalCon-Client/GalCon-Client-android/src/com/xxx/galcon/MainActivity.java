@@ -1,6 +1,5 @@
 package com.xxx.galcon;
 
-
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -32,15 +31,14 @@ import com.xxx.galcon.service.PingService;
 public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
 
-
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
-	
-	final static String APP_ID  = "appae5819628c4f43b5b7f9f9";
+
+	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
-	
+
 	private AndroidGameAction gameAction;
-	
+
 	IabHelper mHelper;
 
 	public MainActivity() {
@@ -51,10 +49,10 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Crashlytics.start(this);
-		
-	    setupAdColony();
-	    setupInAppBilling();
+		// Crashlytics.start(this);
+
+		setupAdColony();
+		setupInAppBilling();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
@@ -68,7 +66,7 @@ public class MainActivity extends AndroidApplication {
 		player.name = UserInfo.getUser(getBaseContext());
 
 		gameAction.findUserInformation(new SetOrPromptResultHandler(this, gameAction, player), player.name);
-		
+
 		Configuration config = new Configuration();
 		gameAction.findConfigByType(new SetConfigurationResultHandler(config), "app");
 
@@ -81,49 +79,50 @@ public class MainActivity extends AndroidApplication {
 	}
 
 	private void setupInAppBilling() {
-		String base64EncodedPublicKey = "";
-		
-		// Create the helper, passing it our context and the public key to verify signatures with
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-        
-        // enable debug logging (for a production application, you should set this to false).
-        mHelper.enableDebugLogging(true);
-        
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
+		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
 
-                if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
-                    complain("Problem setting up in-app billing: " + result);
-                    return;
-                }
-            }
-        });
-		
+		// Create the helper, passing it our context and the public key to
+		// verify signatures with
+		mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+		// enable debug logging (for a production application, you should set
+		// this to false).
+		mHelper.enableDebugLogging(true);
+
+		mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+			public void onIabSetupFinished(IabResult result) {
+
+				if (!result.isSuccess()) {
+					// Oh noes, there was a problem.
+					complain("Problem setting up in-app billing: " + result);
+					return;
+				}
+			}
+		});
+
 	}
 
 	private void setupAdColony() {
-		AdColony.configure( this, "version:1.0,store:google", APP_ID, ZONE_ID );
-	    
-	    if ( !AdColony.isTablet() )
-	    {
-	      setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
-	    }
-	}
-	
-	void complain(String message) {
-        alert("Error: " + message);
-    }
+		AdColony.configure(this, "version:1.0,store:google", APP_ID, ZONE_ID);
 
-    void alert(String message) {
-        AlertDialog.Builder bld = new AlertDialog.Builder(this);
-        bld.setMessage(message);
-        bld.setNeutralButton("OK", null);
-        bld.create().show();
-    }
-	
+		if (!AdColony.isTablet()) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+	}
+
+	void complain(String message) {
+		alert("Error: " + message);
+	}
+
+	void alert(String message) {
+		AlertDialog.Builder bld = new AlertDialog.Builder(this);
+		bld.setMessage(message);
+		bld.setNeutralButton("OK", null);
+		bld.create().show();
+	}
+
 	@Override
-	protected void onPause(){
+	protected void onPause() {
 		super.onPause();
 		AdColony.pause();
 	}
@@ -131,27 +130,25 @@ public class MainActivity extends AndroidApplication {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		AdColony.resume( this );
+		AdColony.resume(this);
 	}
-
 
 	public void displayAd(AdColonyVideoListener adListener) {
 		AdColonyVideoAd ad = new AdColonyVideoAd();
-        ad.show(adListener);
+		ad.show(adListener);
 	}
-	
-	public void purchaseCoins(int numCoins){
+
+	public void purchaseCoins(int numCoins) {
 	}
-	
-	public void loadInventory(StoreResultCallback<Inventory> callback){
+
+	public void loadInventory(StoreResultCallback<Inventory> callback) {
 		final Inventory stock = new Inventory();
-		stock.inventory = new ArrayList<InventoryItem>(){
+		stock.inventory = new ArrayList<InventoryItem>() {
 			{
 				add(new InventoryItem("123", 0.99, "2 Coins", 2));
 			}
 		};
 		callback.onResult(stock);
 	}
-	
-	
+
 }
