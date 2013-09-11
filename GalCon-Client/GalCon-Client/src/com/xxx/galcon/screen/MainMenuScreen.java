@@ -140,8 +140,18 @@ public class MainMenuScreen implements ScreenFeedback {
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .9f));
 
 		BitmapFont smallFont = Fonts.getInstance().smallFont();
-		if (hasUserInformation()) {
-
+		if (!hasUserInformation()) {
+			String loadingUserInfo = "Loading User Information...";
+			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
+			smallFont.draw(spriteBatch, loadingUserInfo, x, (int) (height * .6f));
+			
+		} else if (!hasAppConfigInformation()){
+			String loadingUserInfo = "Loading Configuration Data...";
+			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
+			smallFont.draw(spriteBatch, loadingUserInfo, x, (int) (height * .6f));
+		} else {
+			
+			
 			createCoinDisplay(width, height);
 
 			BitmapFont mediumFont = Fonts.getInstance().mediumFont();
@@ -193,10 +203,6 @@ public class MainMenuScreen implements ScreenFeedback {
 			}
 
 			updateFont();
-		} else {
-			String loadingUserInfo = "Loading User Information...";
-			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
-			smallFont.draw(spriteBatch, loadingUserInfo, x, (int) (height * .6f));
 		}
 
 		spriteBatch.end();
@@ -223,6 +229,10 @@ public class MainMenuScreen implements ScreenFeedback {
 
 	private boolean hasUserInformation() {
 		return GameLoop.USER.handle != null;
+	}
+	
+	private boolean hasAppConfigInformation() {
+		return GameLoop.CONFIG.configValues != null;
 	}
 
 	@Override

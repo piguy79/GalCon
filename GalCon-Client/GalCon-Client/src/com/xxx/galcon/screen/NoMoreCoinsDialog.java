@@ -1,6 +1,8 @@
 package com.xxx.galcon.screen;
 
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,17 +29,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.inappbilling.util.StoreResultCallback;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Inventory;
+import com.xxx.galcon.screen.widget.PaymentButton;
 
 
-public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCallback<Player> {
+public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCallback<Player>, StoreResultCallback<Inventory> {
 
 	private Stage stage;
 	private Table layout;
@@ -49,7 +59,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private TextButtonStyle greenButtonStyle;
 	private TextButtonStyle blackGreyButtonStyle;
 	
-	private TextButton moreCoins;
 	private TextButton watchAd;
 	private TextButton timeRemaining;
 	
@@ -62,7 +71,9 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private MoveToAction move;
 	private TextureRegionDrawable textureRegionDrawable;
 	private Stack stack;
-
+	
+	private boolean animated;
+	
 
 	public NoMoreCoinsDialog(AssetManager assetManager) {
 		super();
@@ -78,7 +89,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		greenButtonStyle.font.setColor(Color.GRAY);	
 		skin.add("greenButton", greenButtonStyle);
 
-		
 		
 		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(blackGreyButton));
 		blackGreyButtonStyle = new TextButtonStyle(textureRegionDrawable, textureRegionDrawable,
@@ -102,31 +112,29 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		
 		
 		TextureRegionDrawable bgTexture = new TextureRegionDrawable(new TextureRegion(bg));
-
-
-		
 		stage = new Stage();
 		setupLayoutDefaultPosition(width, height, bgTexture);
 				
-		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");	
-		final UIConnectionResultCallback<Player> callback = this;
+		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");
 		
-		Label coinsLabel = new Label("2 Coins:", skin);
-		moreCoins = new TextButton("0.99", skin, "greenButton");
-		moreCoins.addListener(new InputListener(){
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, 2L, GameLoop.USER.usedCoins);
-			}
-		});
-
+		setupWatchAdButton();
+		createPlanetView();
+		ExternalActionWrapper.loadStoreInventory(this);
+		createCancelButton(width, height);
 		
-		Label adLabel = new Label("1/2 Time:", skin);
+	}
+
+	private void createPlanetView() {
+		deadPlanetButton = new ImageButton(skin, "deadPlanet");	
+		sunButton = new ImageButton(skin, "sun");
+		sunButton.addAction(Actions.alpha(0f));
+		
+		stack = new Stack();
+		stack.add(sunButton);
+		stack.add(deadPlanetButton);
+	}
+
+	private void setupWatchAdButton() {
 		watchAd = new TextButton("Watch Ad", skin, "greenButton");	
 		watchAd.addListener(new InputListener(){
 			@Override
@@ -136,27 +144,23 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				ExternalActionWrapper.showAd();
-				if(null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1){
-					UIConnectionWrapper.reduceTimeUntilCoins(callback, GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
-				}
+				
+				if((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd){
+					ExternalActionWrapper.showAd(new AdColonyVideoListener() {
+						
+						@Override
+						public void onAdColonyVideoStarted() {						
+						}
+						
+						@Override
+						public void onAdColonyVideoFinished() {
+								GameLoop.USER.watchedAd = true;
+								UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle,GameLoop.USER.timeRemainingForNewcoins(), GameLoop.USER.usedCoins);
+						}
+					});
+				}				
 			}
 		});
-		
-		
-		
-		deadPlanetButton = new ImageButton(skin, "deadPlanet");	
-		sunButton = new ImageButton(skin, "sun");
-		sunButton.addAction(Actions.alpha(0f));
-		
-		stack = new Stack();
-		stack.add(sunButton);
-		stack.add(deadPlanetButton);
-		
-		
-		createLayout(height, coinsLabel, adLabel);
-		createCancelButton(width, height);
-		
 	}
 
 	private void createCancelButton(final float width, final float height) {
@@ -206,9 +210,9 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private void setupLayoutDefaultPosition(final float width,
 			final float height, TextureRegionDrawable bgTexture) {
 		layout = new Table(skin);
-		float padding = width * 0.1f;
-		layout.setWidth(width - padding);
-		layout.setHeight(height - padding);
+		float padding = 0;
+		layout.setWidth(width);
+		layout.setHeight(height);
 		layout.setBackground(bgTexture);
 		layout.setPosition(-width, 0f);
 		
@@ -218,22 +222,37 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		move.setDuration(0.3f);
 		
 		layout.addAction(move);
+		
 	}
 
-	private void createLayout(final float height, Label coinsLabel,
-			Label adLabel) {
-		layout.add(new Label("No More Coins", skin)).expandX().colspan(2).padBottom(height * 0.05f);
+	private void createLayout(Inventory stock) {
+		final float height = Gdx.graphics.getHeight();
+		layout.add(new Label("More Coins", skin)).expandX().colspan(2).padBottom(height * 0.05f);
 		layout.row();
 		layout.add(stack).colspan(2);
 		layout.row();
-		layout.add(timeRemaining).expandX().colspan(2).padBottom(height * 0.1f);
+		layout.add(timeRemaining).expandX().colspan(2).padBottom(height * 0.05f);
 		layout.row();
-		layout.add(coinsLabel).padLeft(20f).padBottom(10f);
-		layout.add(moreCoins).expandX().padBottom(10f);
-		layout.row();
-		layout.add(adLabel).padLeft(20f).padBottom(10f);
-		layout.add(watchAd).expandX().padBottom(10f);
+		layout.add(createInAppBillingButtons(layout, stock.inventory)).expandX();
 		stage.addActor(layout);
+	}
+
+	private Actor createInAppBillingButtons(Table layout2, List<InventoryItem> inventory) {
+		Table scrollTable = new Table();
+		
+		for(InventoryItem item : inventory){
+			TextButton button = new PaymentButton(item, skin, "greenButton", this);
+			scrollTable.add(button).expandX().padBottom(10f);
+			scrollTable.row();
+		}
+		
+		scrollTable.add(watchAd).expandX().padBottom(10f);
+		
+		final ScrollPane scrollPane = new ScrollPane(scrollTable);
+		scrollPane.setScrollingDisabled(true, false);
+		
+		return scrollPane;
+		
 	}
 
 	private String findTimeRemaining() {
@@ -253,8 +272,18 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		timeRemaining.setText(findTimeRemaining());
+		handleWatchAd();
+		if(GameLoop.USER.coins > 0 && !animated){
+			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
+			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
+			animated = true;
+		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();		
+	}
+
+	private void handleWatchAd() {
+		watchAd.setDisabled(GameLoop.USER.watchedAd);
 	}
 
 	public void dispose() {
@@ -289,20 +318,22 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	@Override
 	public void resetState() {
 		returnValue = null;		
+		ExternalActionWrapper.loadStoreInventory(this);
 	}
 
 	@Override
 	public void onConnectionResult(Player result) {
 		GameLoop.USER = result;
-		if(result.coins > 0){
-			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
-			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
-		}
 	}
 
 	@Override
 	public void onConnectionError(String msg) {
 		
+	}
+
+	@Override
+	public void onResult(Inventory result) {
+		createLayout(result);	
 	}
 
 

@@ -19,6 +19,7 @@ public class SetPlayerResultHandler implements UIConnectionResultCallback<Player
 		this.player.handle = result.handle;
 		this.player.coins = result.coins;
 		this.player.usedCoins = result.usedCoins;
+		this.player.watchedAd = result.watchedAd;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.xxx.galcon;
 
 import java.util.List;
 
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -56,7 +57,7 @@ public class UIConnectionWrapper {
 
 	}
 	
-	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins){
+	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins){
 		try{
 			gameAction.addCoins(callback, playerHandle, numCoins, usedCoins);
 		}catch (ConnectionException e){
@@ -70,5 +71,9 @@ public class UIConnectionWrapper {
 		}catch(ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}
+	}
+	
+	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type){
+		gameAction.findConfigByType(callback, type);
 	}
 }

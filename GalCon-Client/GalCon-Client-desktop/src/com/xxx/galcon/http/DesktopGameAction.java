@@ -6,6 +6,7 @@ package com.xxx.galcon.http;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
@@ -19,6 +20,7 @@ import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +28,20 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
+import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -44,6 +51,17 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * 
  */
 public class DesktopGameAction extends BaseDesktopGameAction implements GameAction {
+	
+	public List<InventoryItem> inventory = new ArrayList<InventoryItem>(){
+		{
+			add(new InventoryItem("123", 0.99, "2 coins", 2));
+			add(new InventoryItem("234", 1.99, "5 Coins", 5));
+			add(new InventoryItem("234", 3.99, "10 Coins", 10));
+			add(new InventoryItem("234", 5.00, "20 Coins", 20));
+			add(new InventoryItem("234", 8.00, "50 Coins", 50));
+			add(new InventoryItem("234", 15.00, "100 Coins", 100));
+		}
+	};
 
 	public DesktopGameAction(String host, int port) {
 		super(host, port);
@@ -150,6 +168,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("userName", player);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args, new Player()));
 	}
+	
+	@Override
+	public void findConfigByType(
+			final UIConnectionResultCallback<Configuration> callback,final String type) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("type", type);
+		callback.onConnectionResult((Configuration) callURL(new GetClientRequest(), FIND_CONFIG_BY_TYPE, args, new Configuration()));
+		
+	}
+	
+	@Override
+	public void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+		Inventory stock = new Inventory();
+		stock.inventory = inventory;
+		callback.onResult(stock);
+	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
 			JsonConvertible converter) {
@@ -189,7 +223,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) {
 		try {
 			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
 
@@ -204,8 +238,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void showAd() {
-		// Do nothing right now
+	public void showAd(AdColonyVideoListener listener) {
+		// Do nothing right now.
+	}
+	
+	@Override
+	public void purchaseCoins(int numCoins){
+		// Do nothing for now.
 	}
 
 	@Override
@@ -224,5 +263,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 		
 	}
+
+	
+
+
 
 }

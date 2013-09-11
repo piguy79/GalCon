@@ -75,7 +75,8 @@ exports.findUserByUserName = function(req, res) {
 				wins : 0,
 				losses : 0,
 				coins : 0,
-				usedCoins : -1
+				usedCoins : -1,
+				watchedAd : false
 			});
 			rankManager.findRankByName("1", function(dbRank) {
 				user.rankInfo = dbRank;
@@ -236,14 +237,21 @@ exports.reduceTimeUntilNextGame = function(req, res){
 	var handle = req.body.playerHandle;
 	var usedCoins = req.body.usedCoins;
 	var timeRemaining = req.body.timeRemaining;
-	
-	console.log("Tiem remaining : " + timeRemaining);
-	
+		
 	configManager.findLatestConfig("payment", function(config){
 		userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction'], function(user){
 			res.json(user);
 		});
 	});
+}
+
+exports.findConfigByType = function(req, res){
+	var type = req.query['type'];
+	
+	configManager.findLatestConfig(type, function(config){
+		res.json(config);
+	});
+
 }
 
 

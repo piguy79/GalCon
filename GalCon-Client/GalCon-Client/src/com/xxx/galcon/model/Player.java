@@ -14,13 +14,13 @@ import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.config.ConfigConstants;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
  * Class representing a Player.
- * 
- * 
  * 
  * @author conormullen
  *
@@ -34,6 +34,7 @@ public class Player extends JsonConvertible{
 	public Rank rank;
 	public Integer coins;
 	public Long usedCoins;
+	public boolean watchedAd;
 	
 	
 	@Override
@@ -41,8 +42,9 @@ public class Player extends JsonConvertible{
 		this.name = jsonObject.getString(Constants.NAME);
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp  = jsonObject.getInt(Constants.XP);
-		this.coins = jsonObject.getInt("coins");
-		this.usedCoins = jsonObject.optLong("usedCoins");
+		this.coins = jsonObject.getInt(Constants.COINS);
+		this.usedCoins = jsonObject.optLong(Constants.USED_COINS);
+		this.watchedAd = jsonObject.getBoolean(Constants.WATCHED_AD);
 		
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();
@@ -68,19 +70,21 @@ public class Player extends JsonConvertible{
 	}
 	
 	public Long timeRemainingForNewcoins(){
-		return (60000L * 20L) - timeSinceCoinsHaveBeenUsed();
+		return timeLapse() - timeSinceCoinsHaveBeenUsed();
+	}
+	
+	public Long timeLapse(){
+		return Long.parseLong(ConfigResolver.getByConfigKey(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
 	}
 	
 	public DateTime timeRemainingUntilCoinsAvailable(){
 		
-		Long timeoutForCoins = 60000L * 20L;
-
 		if (usedCoins != null && usedCoins != -1L) {
 
 			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
 
-			if (timeSinceUsedCoins < timeoutForCoins) {
-				return new DateTime(timeoutForCoins - timeSinceUsedCoins);
+			if (timeSinceUsedCoins < timeLapse()) {
+				return new DateTime(timeLapse() - timeSinceUsedCoins);
 			}
 		} 
 		

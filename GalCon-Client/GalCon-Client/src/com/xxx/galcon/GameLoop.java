@@ -12,6 +12,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
@@ -30,6 +31,8 @@ import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
 public class GameLoop extends Game {
 	public static Player USER;
+	public static Configuration CONFIG;
+
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -43,12 +46,14 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
+	
 
 	private boolean loadingNewCoins = false;
 
-	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction) {
+	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction, Configuration config) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
+		GameLoop.CONFIG = config;
 		GameLoop.USER = player;
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setGameAction(gameAction);
@@ -229,7 +234,7 @@ public class GameLoop extends Game {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
 					try {
-						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L,
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1,
 								GameLoop.USER.usedCoins);
 					} catch (ConnectionException e) {
 

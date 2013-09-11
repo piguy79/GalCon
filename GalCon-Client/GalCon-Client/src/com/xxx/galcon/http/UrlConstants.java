@@ -31,6 +31,9 @@ public class UrlConstants {
 
 	public static final String FIND_USER_BY_USER_NAME = "/findUserByUserName";
 	
+	public static final String FIND_CONFIG_BY_TYPE = "/config";
+
+	
 	public static final String REQUEST_HANDLE_FOR_USER_NAME = "/requestHandleForUserName";
 	
 	public static final String FIND_RANK_INFORMATION = "/rank";

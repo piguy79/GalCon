@@ -36,7 +36,6 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
-//app.post('/generateGame', routes.generateGame);
 app.post('/matchPlayerToGame', routes.matchPlayerToGame);
 app.get('/findAllGames', routes.findAllGames);
 app.get('/findAllMaps', routes.findAllMaps);
@@ -53,6 +52,7 @@ app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle
 app.post('/addCoins', routes.addCoins);
 app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
+app.get('/config', routes.findConfigByType);
 
 var port = process.env.PORT || 3000;
 
