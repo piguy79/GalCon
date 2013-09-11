@@ -20,6 +20,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +45,15 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.base.JsonConvertible;
 import com.xxx.galcon.service.PingService;
 
@@ -133,7 +137,7 @@ public class AndroidGameAction implements GameAction {
 
 	@Override
 	public void addCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle,
-			final Long numCoins, final Long usedCoins) {
+			final int numCoins, final Long usedCoins) {
 		try {
 			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
 			activity.runOnUiThread(new Runnable() {
@@ -327,7 +331,29 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	
+	@Override
+	public void purchaseCoins(final int numCoins){
+		activity.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					((MainActivity) activity).purchaseCoins(numCoins);;
+				}
+			});
+	}
+
+	@Override
+	public void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+		activity.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				((MainActivity)activity).loadInventory(callback);
+				
+			}
+		});
+		
+	}
 
 	
 

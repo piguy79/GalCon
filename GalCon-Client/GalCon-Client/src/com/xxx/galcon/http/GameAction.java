@@ -4,12 +4,14 @@ import java.util.List;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
+import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.Inventory;
 
 /**
  * This class defines a set of methods used to interact with the server side
@@ -44,10 +46,14 @@ public interface GameAction {
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
 			throws ConnectionException;
 	
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins) throws ConnectionException;
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) throws ConnectionException;
 	
 	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long timeRemaining, Long usedCoins ) throws ConnectionException;
 	
 	public void showAd(AdColonyVideoListener listner);
+	
+	public void purchaseCoins(int numCoins);
+
+	public void loadStoreInventory(StoreResultCallback<Inventory> callback);
 
 }

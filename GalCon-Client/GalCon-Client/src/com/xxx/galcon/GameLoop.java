@@ -234,7 +234,7 @@ public class GameLoop extends Game {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
 					try {
-						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1L,
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1,
 								GameLoop.USER.usedCoins);
 					} catch (ConnectionException e) {
 

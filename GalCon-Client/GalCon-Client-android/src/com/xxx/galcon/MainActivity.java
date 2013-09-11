@@ -1,10 +1,14 @@
 package com.xxx.galcon;
 
 
+import java.util.ArrayList;
+
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -13,10 +17,15 @@ import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
-
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.inappbilling.util.IabHelper;
+import com.xxx.galcon.inappbilling.util.IabResult;
+import com.xxx.galcon.inappbilling.util.Purchase;
+import com.xxx.galcon.inappbilling.util.StoreResultCallback;
+import com.xxx.galcon.model.Inventory;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
@@ -31,6 +40,8 @@ public class MainActivity extends AndroidApplication {
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
 	
 	private AndroidGameAction gameAction;
+	
+	IabHelper mHelper;
 
 	public MainActivity() {
 		super();
@@ -40,9 +51,10 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Crashlytics.start(this);
+		//Crashlytics.start(this);
 		
 	    setupAdColony();
+	    setupInAppBilling();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
@@ -68,6 +80,28 @@ public class MainActivity extends AndroidApplication {
 		startService(intent);
 	}
 
+	private void setupInAppBilling() {
+		String base64EncodedPublicKey = "";
+		
+		// Create the helper, passing it our context and the public key to verify signatures with
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+        
+        // enable debug logging (for a production application, you should set this to false).
+        mHelper.enableDebugLogging(true);
+        
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    complain("Problem setting up in-app billing: " + result);
+                    return;
+                }
+            }
+        });
+		
+	}
+
 	private void setupAdColony() {
 		AdColony.configure( this, "version:1.0,store:google", APP_ID, ZONE_ID );
 	    
@@ -76,6 +110,17 @@ public class MainActivity extends AndroidApplication {
 	      setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
 	    }
 	}
+	
+	void complain(String message) {
+        alert("Error: " + message);
+    }
+
+    void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(this);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        bld.create().show();
+    }
 	
 	@Override
 	protected void onPause(){
@@ -94,6 +139,19 @@ public class MainActivity extends AndroidApplication {
 		AdColonyVideoAd ad = new AdColonyVideoAd();
         ad.show(adListener);
 	}
-
+	
+	public void purchaseCoins(int numCoins){
+	}
+	
+	public void loadInventory(StoreResultCallback<Inventory> callback){
+		final Inventory stock = new Inventory();
+		stock.inventory = new ArrayList<InventoryItem>(){
+			{
+				add(new InventoryItem("123", 0.99, "2 Coins", 2));
+			}
+		};
+		callback.onResult(stock);
+	}
+	
 	
 }

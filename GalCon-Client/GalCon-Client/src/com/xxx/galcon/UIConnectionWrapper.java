@@ -57,7 +57,7 @@ public class UIConnectionWrapper {
 
 	}
 	
-	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, Long numCoins, Long usedCoins){
+	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins){
 		try{
 			gameAction.addCoins(callback, playerHandle, numCoins, usedCoins);
 		}catch (ConnectionException e){
