@@ -88,7 +88,8 @@ var gameSchema = mongoose.Schema({
 });
 
 gameSchema.set('toObject', { getters: true });
-gameSchema.index({"players" : 1});
+gameSchema.index({'players' : 1});
+gameSchema.index({'endGameInformation.winnerHandle': 1});
 
 var hasSameOwner = function(planet, move){
 	return planet.ownerHandle == move.playerHandle;
@@ -243,10 +244,6 @@ gameSchema.methods.addMoves = function(moves){
 gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
-
-
-
-
 
 var GameModel = db.model('Game', gameSchema);
 
@@ -522,3 +519,4 @@ var filterOutPlayer = function(games, playerHandle, callback){
 	callback(filteredGames);
 }
 
+exports.GameModel = GameModel;

@@ -16,5 +16,6 @@
     , "needle" : "0.5.9"
     , "step" : "0.0.5"
     , "nodetime" : "0.8.13"
+    , "underscore" : "1.5.2"
   }
 }

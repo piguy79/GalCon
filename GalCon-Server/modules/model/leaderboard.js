@@ -1,4 +1,7 @@
-var mongoose = require('./mongooseConnection').mongoose, db = require('./mongooseConnection').db, ObjectId = require('mongoose').Types.ObjectId;
+var mongoose = require('./mongooseConnection').mongoose, 
+	db = require('./mongooseConnection').db, 
+	game = require('./game.js'),
+	_ = require('underscore');
 
 var leaderboardSchema = mongoose.Schema({
 	boardId : "String",
@@ -19,61 +22,94 @@ leaderboardSchema.index({
 	unique : true
 });
 
+var VICTORY_LEVEL_DIFF_MODIFIER = 0.5;
+var VICTORY_POINTS = 10;
+
 var LeaderboardModel = db.model('Leaderboard', leaderboardSchema);
 
-exports.findScore = function(boardId, playerHandle, callback) {
-	LeaderboardModel.findOne({
+exports.findScore = function(boardId, playerHandle) {
+	return LeaderboardModel.findOne({
 		'boardId' : boardId,
 		'playerHandle' : playerHandle
-	}, function(err, leaderboardRow) {
-		if (err) {
-			console.log("Error finding leaderboard: " + boardId + " for handle: " + playerHandle + ". Error: " + err);
-			callback(null);
-		} else {
-			callback(leaderboardRow);
-		}
-	});
+	}).exec();
 }
 
-exports.updateScore = function(boardId, playerHandle, incrementScoreByAmount, callback) {
-	exports.findScore(boardId, playerHandle, function(leaderboardRow) {
-		if (!leaderboardRow) {
-			var newRow = new LeaderboardModel({
-				'boardId' : boardId,
-				'playerHandle' : playerHandle,
-				'score' : 0
-			});
-			newRow.save(function(err, leaderboardRow) {
-				performUpdateScore(boardId, playerHandle, incrementScoreByAmount, 1, callback);
-			});
-		} else {
-			performUpdateScore(boardId, playerHandle, incrementScoreByAmount, 1, callback);
-		}
-	});
-}
-
-var performUpdateScore = function(boardId, playerHandle, incrementScoreByAmount, attemptNumber, callback) {
-	exports.findScore(boardId, playerHandle, function(leaderboardRow) {
-		var oldScore = leaderboardRow.score;
-		var newScore = oldScore + incrementScoreByAmount;
-
-		LeaderboardModel.findOneAndUpdate({
-			_id : leaderboardRow._id,
-			score : oldScore
-		}, {
+exports.updateScore = function(boardId, playerHandle, newScore) {
+	return LeaderboardModel.findOneAndUpdate({
+		'boardId' : boardId,
+		'playerHandle' : playerHandle
+	}, {
+		$set : {
 			'score' : newScore
-		}, function(err, updatedLeaderboardRow) {
-			if (err || attemptNumber > 5) {
-				console.log("Error [ " + err + "], attemptNumber + " + attemptNumber + ", updating leaderboard: "
-						+ updatedLeaderboardRow);
-				callback(null);
-			} else if (!updatedLeaderboardRow) {
-				performUpdateScore(boardId, playerHandle, incrementScoreByAmount, attemptNumber++, callback);
-			} else {
-				callback(updatedLeaderboardRow);
-			}
+		}
+	}, {
+		'upsert' : true
+	}).exec();
+}
+
+/**
+ * Updates the overall and map leaderboards for each player list in 'players'.
+ * Returns a promise but with no results.
+ */
+exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
+	var promise = new mongoose.Promise();
+	promise.complete();
+
+	var lastPromise = promise;
+	players.forEach(function(player) {
+		lastPromise = lastPromise.then(function() {
+			var scorePromise = exports.findScore(mapKey, player.handle);
+			scorePromise.complete();
+
+			var lastScorePromise = scorePromise.then(function(leaderboardRow) {
+				return game.GameModel.find({
+					'endGameInformation.winnerHandle' : player.handle
+				}).exec();
+			}).then(function(scoresForGamesWon) {
+				var scores = _.map(scoresForGamesWon, function(score) {return score.endGameInformation ? score.endGameInformation.leaderboardScoreAmount : 0});
+				var currentScore = _.reduce(scores, function(memo, num) { return memo + num}, 0);
+
+				currentScore += gameResultPoints(handleOfPlayerWhoWon, player, players);
+				currentScore += userRecordBonusPoints(player, currentScore);
+				
+				return exports.updateScore(mapKey, player.handle, currentScore);
+			}).then(null, function(err) {
+				throw new Error(err);
+			});
+
+			return lastScorePromise;
 		});
 	});
+
+	return lastPromise;
+}
+
+/**
+ * Give the game winner a set number of points, plus a bonus for playing a higher level opponent.  Give the game loser 0 points for the game.
+ */
+var gameResultPoints = function(handleOfPlayerWhoWon, player, players) {
+	if(handleOfPlayerWhoWon != player.handle) {
+		return 0;
+	}
+	
+	var levelDiff = 0;
+	players.forEach(function(p) {
+		if(p.handle != player.handle) {
+			levelDiff += p.rankInfo.level - player.rankInfo.level;
+		}
+	});
+	
+	return Math.floor(VICTORY_POINTS + Math.max(0, levelDiff * VICTORY_LEVEL_DIFF_MODIFIER));
+}
+
+/**
+ * Give the user a bonus based on their win percentage.  A perfect win percentage will double their score.
+ */
+var userRecordBonusPoints = function(player, currentScore) {
+	if(player.wins + player.losses == 0) {
+		return 0;
+	}
+	return Math.floor(currentScore * (player.wins / (player.wins + player.losses)));
 }
 
 exports.LeaderboardModel = LeaderboardModel;
