@@ -13,15 +13,15 @@ var server = http.createServer(app);
 
 // Configuration
 app.configure(function() {
+	app.set('views', __dirname + '/views');
+	app.use(express.bodyParser());
 	app.use(function(req, res, next) {
 		console.log("%s %s %s", req.connection.remoteAddress, req.method, req.url);
 		if(req.method == "POST" && req.body) {
-			console.log(req.body);
+			console.log("%s %s", req.connection.remoteAddress, req.body);
 		}
 		next();
 	});
-	app.set('views', __dirname + '/views');
-	app.use(express.bodyParser());
 	app.set("view options", {
 		layout : false
 	});
