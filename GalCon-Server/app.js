@@ -1,37 +1,46 @@
-if(process.env.NODETIME_ACCOUNT_KEY) {
-  require('nodetime').profile({
-    accountKey: process.env.NODETIME_ACCOUNT_KEY,
-    appName: 'Galcon Server',
-    debug : true
-  });
+if (process.env.NODETIME_ACCOUNT_KEY) {
+	require('nodetime').profile({
+		accountKey : process.env.NODETIME_ACCOUNT_KEY,
+		appName : 'Galcon Server',
+		debug : true
+	});
 }
 
-var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , ejs = require('ejs');
+var express = require('express'), routes = require('./routes'), http = require('http'), ejs = require('ejs');
 
 var app = module.exports = express();
 var server = http.createServer(app);
 
 // Configuration
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.use(express.bodyParser());
-  app.set("view options", {layout: false});
-  app.engine('html', ejs.__express);
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-  app.use('/public/img', express.static(__dirname + '/public/img'));
+app.configure(function() {
+	app.use(function(req, res, next) {
+		console.log("%s %s %s", req.connection.remoteAddress, req.method, req.url);
+		if(req.method == "POST" && req.body) {
+			console.log(req.body);
+		}
+		next();
+	});
+	app.set('views', __dirname + '/views');
+	app.use(express.bodyParser());
+	app.set("view options", {
+		layout : false
+	});
+	app.engine('html', ejs.__express);
+	app.use(express.methodOverride());
+	app.use(app.router);
+	app.use(express.static(__dirname + '/public'));
+	app.use('/public/img', express.static(__dirname + '/public/img'));
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+app.configure('development', function() {
+	app.use(express.errorHandler({
+		dumpExceptions : true,
+		showStack : true
+	}));
 });
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
+app.configure('production', function() {
+	app.use(express.errorHandler());
 });
 
 // Routes
@@ -54,8 +63,9 @@ app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);
 
+
 var port = process.env.PORT || 3000;
 
-server.listen(port, function(){
-  console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
+server.listen(port, function() {
+	console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
 });
