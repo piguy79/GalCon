@@ -18,7 +18,7 @@ app.configure(function() {
 	app.use(function(req, res, next) {
 		console.log("%s %s %s", req.connection.remoteAddress, req.method, req.url);
 		if(req.method == "POST" && req.body) {
-			console.log("%s %s", req.connection.remoteAddress, req.body);
+			console.log("%s %s", req.connection.remoteAddress, JSON.stringify(req.body));
 		}
 		next();
 	});

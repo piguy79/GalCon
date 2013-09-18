@@ -53,14 +53,8 @@ exports.findUserByName = function(userName, callback){
 	});
 }
 
-exports.findUserByHandle = function(handle, callback){
-	UserModel.findOne({handle : handle}).exec(function(err, user){
-		if(err) {
-			callback();
-		} else {
-			callback(user);
-		}
-	});
+exports.findUserByHandle = function(handle){
+	return UserModel.findOne({"handle" : handle}).exec();
 }
 
 exports.addCoins = function(coinsToAdd, handle, usedCoins, callback){
