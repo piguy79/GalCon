@@ -126,13 +126,12 @@ describe("Leaderboard Tests - Find Score for Single User:", function() {
 	it("No row should exist for user", function(done) {
 		var promise = leaderboard.findScore(boardId1, playerHandle1);
 		promise.then(function (leaderboardRow) {
-			expect(leaderboardRow).toBeUndefined();
+			expect(leaderboardRow).toBe(null);
 			done();
 		}).then(null, function(err) {
 			expect(err).toBe(null);
 			done();
 		});
-		promise.complete();
 	});
 	
 	it("Find existing row for user", function(done) {
