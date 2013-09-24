@@ -8,6 +8,7 @@ import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
@@ -52,7 +53,7 @@ public interface GameAction {
 	
 	public void showAd(AdColonyVideoListener listner);
 	
-	public void purchaseCoins(int numCoins);
+	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback);
 
 	public void loadStoreInventory(Inventory inventory, StoreResultCallback<Inventory> callback);
 	

@@ -347,12 +347,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void purchaseCoins(final int numCoins){
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback){
 		activity.runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-					((MainActivity) activity).purchaseCoins(numCoins);;
+					((MainActivity) activity).purchaseCoins(inventoryItem, callback);
 				}
 			});
 	}

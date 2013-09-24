@@ -5,6 +5,8 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
+import com.xxx.galcon.model.InventoryItem;
+import com.xxx.galcon.model.Player;
 
 public class ExternalActionWrapper {
 	
@@ -22,8 +24,21 @@ public class ExternalActionWrapper {
 		gameAction.showAd(listner);
 	}
 	
-	public static void purchaseCoins(int numCoins){
-		gameAction.purchaseCoins(numCoins);
+	public static void purchaseCoins(InventoryItem inventoryItem){
+		gameAction.purchaseCoins(inventoryItem, new UIConnectionResultCallback<Player>() {
+
+			@Override
+			public void onConnectionResult(Player result) {
+				GameLoop.USER.usedCoins = result.usedCoins;
+				GameLoop.USER.coins = result.coins;
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	public static void loadStoreInventory(final StoreResultCallback<Inventory> callback) {

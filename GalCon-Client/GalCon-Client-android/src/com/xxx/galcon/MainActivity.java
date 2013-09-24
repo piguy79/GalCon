@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,7 +22,9 @@ import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.IabHelper;
+import com.xxx.galcon.inappbilling.util.IabHelper.OnIabPurchaseFinishedListener;
 import com.xxx.galcon.inappbilling.util.IabHelper.QueryInventoryFinishedListener;
 import com.xxx.galcon.inappbilling.util.IabResult;
 import com.xxx.galcon.inappbilling.util.Purchase;
@@ -140,9 +143,22 @@ public class MainActivity extends AndroidApplication {
 	public void displayAd(AdColonyVideoListener adListener) {
 		AdColonyVideoAd ad = new AdColonyVideoAd();
 		ad.show(adListener);
-	}
+	}      
 
-	public void purchaseCoins(int numCoins) {
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1, new OnIabPurchaseFinishedListener() {
+			
+			@Override
+			public void onIabPurchaseFinished(IabResult result, Purchase info) {
+
+				if(result.isSuccess()){
+					UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins);
+				}else{
+					complain("Unable to purchase item from Play Store. Please try again.");
+				}
+				
+			}
+		});
 	}
 
 	

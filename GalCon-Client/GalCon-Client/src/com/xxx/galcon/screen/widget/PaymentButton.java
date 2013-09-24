@@ -27,8 +27,8 @@ public class PaymentButton extends TextButton {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				ExternalActionWrapper.purchaseCoins(2);
-				UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventory.numCoins, GameLoop.USER.usedCoins);
+				ExternalActionWrapper.purchaseCoins(inventory);
+				//UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventory.numCoins, GameLoop.USER.usedCoins);
 			}
 		});
 	}
