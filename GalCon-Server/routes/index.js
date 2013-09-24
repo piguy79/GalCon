@@ -1,4 +1,4 @@
-var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank'), mapManager = require('../modules/model/map'), configManager = require('../modules/model/config'), leaderboardManager = require('../modules/model/leaderboard');
+var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank'), mapManager = require('../modules/model/map'), configManager = require('../modules/model/config'), leaderboardManager = require('../modules/model/leaderboard'), inventoryManager = require('../modules/model/inventory');
 
 exports.index = function(req, res) {
 	res.render('index.html')
@@ -410,3 +410,11 @@ var generateGame = function(playerHandle, time, mapToFind, res) {
 		console.log(err);
 	});
 }
+
+
+exports.findAllInventory = function(req, res){
+	var p = inventoryManager.InventoryModel.find().exec();
+	p.then(function(inventory){
+		res.json({items : inventory});
+	}).then(null, logErrorAndSetResponse(req, res));
+};

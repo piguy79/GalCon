@@ -17,6 +17,7 @@ import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
+import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -222,6 +223,19 @@ public class AndroidGameAction implements GameAction {
 	}
 	
 	@Override
+	public void loadAvailableInventory(
+			final UIConnectionResultCallback<Inventory> callback) {
+		final Map<String, String> args = new HashMap<String, String>();
+		
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, new Inventory()).execute("");
+			}
+		});
+		
+	}
+	
+	@Override
 	public void findConfigByType(
 			final UIConnectionResultCallback<Configuration> callback, final String type) {
 		
@@ -275,6 +289,7 @@ public class AndroidGameAction implements GameAction {
 			return Connection.establishGetConnection(Config.getValue(HOST), Config.getValue(PORT), path, args);
 		}
 	}
+
 
 	private abstract class JsonRequestTask<T extends JsonConvertible> extends AsyncTask<String, Void, JsonConvertible> {
 
@@ -343,18 +358,15 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		activity.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				((MainActivity)activity).loadInventory(callback);
-				
+				((MainActivity)activity).loadInventory(inventory, callback);
 			}
 		});
 		
 	}
-
-	
 
 }

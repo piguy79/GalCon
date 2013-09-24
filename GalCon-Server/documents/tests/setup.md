@@ -8,7 +8,7 @@ Setup
 
 Install jasmine-node as a global module using:
 
-`node install -g jasmine-node`
+`npm install -g jasmine-node`
 
 
 Running

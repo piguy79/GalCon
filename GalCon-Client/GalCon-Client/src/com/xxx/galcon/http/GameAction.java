@@ -54,6 +54,8 @@ public interface GameAction {
 	
 	public void purchaseCoins(int numCoins);
 
-	public void loadStoreInventory(StoreResultCallback<Inventory> callback);
+	public void loadStoreInventory(Inventory inventory, StoreResultCallback<Inventory> callback);
+	
+	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
 }

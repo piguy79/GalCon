@@ -2,6 +2,7 @@ package com.xxx.galcon;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
 
@@ -25,9 +26,21 @@ public class ExternalActionWrapper {
 		gameAction.purchaseCoins(numCoins);
 	}
 
-	public static void loadStoreInventory(StoreResultCallback<Inventory> callback) {
-		gameAction.loadStoreInventory(callback);
-		
+	public static void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+		gameAction.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
+			
+			@Override
+			public void onConnectionResult(Inventory result) {
+				gameAction.loadStoreInventory(result, callback);
+				
+			}
+			
+			@Override
+			public void onConnectionError(String msg) {
+				// Do something useful.
+				
+			}
+		});		
 	}
 
 }

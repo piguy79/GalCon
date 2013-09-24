@@ -62,6 +62,7 @@ app.post('/addCoins', routes.addCoins);
 app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);
+app.get('/inventory', routes.findAllInventory);
 
 
 var port = process.env.PORT || 3000;
