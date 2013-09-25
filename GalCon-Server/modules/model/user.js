@@ -57,27 +57,16 @@ exports.findUserByHandle = function(handle){
 	return UserModel.findOne({"handle" : handle}).exec();
 }
 
-exports.addCoins = function(coinsToAdd, handle, usedCoins, callback){
-	UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1, watchedAds : false}}, function(err, user){
-		if(err){
-			callback({error : "Unable to update coins: " + err});
-		}
-		callback(user);
-	});
+exports.addCoins = function(coinsToAdd, handle, usedCoins){
+	return UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1, watchedAd : false}}).exec();
 }
 
-exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy, callback){
+exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){
 	var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
 	if(reducedTime < 0){
 		reducedTime = -1;
 	}
-	UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}},function(err, user){
-		if(err){
-			callback({error : "Unable to add time used count: " + err});
-		}else {
-			callback(user);
-		}
-	});
+	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
 }
 
 exports.UserModel = UserModel;

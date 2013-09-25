@@ -241,7 +241,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 	
 	@Override
-	public void purchaseCoins(int numCoins){
+	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback){
 		// Do nothing for now.
 	}
 
