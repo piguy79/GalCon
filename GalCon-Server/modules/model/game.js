@@ -103,12 +103,10 @@ var moveHasMoreOrTheSameShipsThenPlanet = function(fleet, planet){
 	return fleet >= planet.numberOfShips;
 }
 
-
-
 var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 	for(var i = 0; i < players.length; i++){
 		if(players[i].handle == playerHandleToFindIndexOf){
-			return i
+			return i;
 		}		
 	}
 }
@@ -198,8 +196,6 @@ var calculateDefenceStrengthForPlanet = function(planet, game, defenceMultiplier
 	return planet.numberOfShips + (planet.numberOfShips * defenceMultiplier);
 }
 
-
-
 var isADefensiveMoveToThisPlanet = function(planet, move){
 	return hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet);
 }
@@ -247,88 +243,76 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 
 var GameModel = db.model('Game', gameSchema);
 
-exports.createGame = function(gameAttributes, callback) {
+exports.createGame = function(gameAttributes) {
 	var game = gamebuilder.createGameBuilder(gameAttributes);
 	game.createBoard();
 
-	configManager.findLatestConfig("map", function(config) {
+	var p = configManager.findLatestConfig("map");
+	return p.then(function(config) {
 		var constructedGame = new GameModel(game);
 		constructedGame.config = config;
+		
+		var innerp = new mongoose.Promise();
 		constructedGame.populate('players', function(err, gameWithPlayers) {
-			callback(gameWithPlayers);
+			if(err) { innerp.reject(err); }
+			else { innerp.complete(gameWithPlayers); }
 		});
+		return innerp;
 	});
 };
 
-exports.findAllGames = function(callback) {
-	GameModel.find({}).populate('players').exec(function(err, games) {
-		if (err) {
-			console.log("Unable to find all games:" + err);
-		} else {
-			callback(games);
-		}
-	});
+exports.findAllGames = function() {
+	return GameModel.find({}).populate('players').exec();
 }
 
-exports.findById = function(gameId, callback){
-	GameModel.findById(gameId).populate('players').exec(function(err, game){
-		if(err){
-			console.log("Unable to find game by id [" + gameId + "] " + err);
-		}else{
-			callback(game);
-		}
-	});
+exports.findById = function(gameId){
+	return GameModel.findById(gameId).populate('players').exec();
 };
 
-exports.deleteGame = function(gameId, callback){
+exports.deleteGame = function(gameId){
 	GameModel.findById(gameId).remove();
-	callback();
 };
 
 
-exports.findAvailableGames = function(player, callback) {
-	GameModel.find().where('players').size(1).populate('players').exec(
-			function(err, games) {
-				if (err) {
-					console.log(err);
-					next();
-				} else {
-					var filteredGames = [];
-					games.forEach(function(game) {
-						if(game.players[0].handle != player) {
-							filteredGames.push(game);
-						}
-					});
-					callback(filteredGames);
-				}
-			});
-};
-
-exports.findCollectionOfGames = function(searchIds, callback){
-	GameModel.find({_id : {$in : searchIds}}).populate('players').exec(function(err, games){
-		if(err){
-			next();		
-		}else{
-			callback(games);
-		}
+exports.findAvailableGames = function(player) {
+	var p = GameModel.find().where('players').size(1).populate('players').exec();
+	return p.then(function(games) {
+		var filteredGames = [];
+		games.forEach(function(game) {
+			if(game.players[0].handle != player) {
+				filteredGames.push(game);
+			}
+		});
+		
+		return filteredGames;	
 	});
+};
+
+exports.findCollectionOfGames = function(searchIds){
+	return GameModel.find({_id : {$in : searchIds}}).populate('players').exec();
 }
 
-
-exports.saveGame = function(game, callback) {
+exports.saveGame = function(game) {
+	var p = new mongoose.Promise();
 	game.save(function(err, savedGame) {
 		if (err) {
-			console.log("Error saving game: " + err);
+			p.reject(err);
 		} else {
-			callback(savedGame);
+			p.complete(savedGame);
 		}
-
 	});
+	return p;
 }
 
-exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, callback) {
-	this.findById(gameId, function(game) {
-		
+exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
+	if(attemptNumber > 5) {
+		var p = new mongoose.Promise();
+		p.reject("Too many attempts to perform move");
+		return p;
+	}
+	
+	var p = findById(gameId);
+	p.then(function(game) {
 		game.addMoves(moves);
 		game.currentRound.playersWhoMoved.push(playerHandle);
 			
@@ -350,15 +334,13 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, call
 		// Need to update the entire document.  Remove the _id b/c Mongo won't accept _id as a field to update.
 		var updatedGame = game;
 		delete updatedGame._doc._id
-		GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc , function(err, savedGame) {
-			if(err || attemptNumber > 5) {
-				console.log("Error [ " + err + "], attemptNumber + " + attemptNumber + ", saving game: " + game);
-				callback(null);
-			} else if(!savedGame) {
-				exports.performMoves(gameId, moves, playerHandle, attemptNumber++, callback);
+		var updatePromise = GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc).exec();
+		return updatePromise.then(function(savedGame) {
+			if(!savedGame) {
+				return exports.performMoves(gameId, moves, playerHandle, attemptNumber + 1);
 			} else {
 				savedGame.populate('players', function(err, game) {
-					callback(game);
+					return game;
 				});
 			}
 		});
@@ -440,83 +422,59 @@ var processMoves = function(player, game) {
 
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
-exports.addUser = function(gameId, player, callback){
-
-	GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}, function(err, game){
-		if(err){
-			callback(null);
-		}else {			
-			if(!game){
-				callback(null);
-			}else{
-				for(var i in game.planets) {
-					var planet = game.planets[i];
-					if(!planet.ownerHandle && planet.isHome == "Y") {
-						planet.ownerHandle = player.handle;
-						break;
-					}
+exports.addUser = function(gameId, player){
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}).exec();
+	return p.then(function(game) {
+		if(!game) {
+			return null;
+		} else {
+			for(var i in game.planets) {
+				var planet = game.planets[i];
+				if(!planet.ownerHandle && planet.isHome == "Y") {
+					planet.ownerHandle = player.handle;
+					break;
 				}
-				
-				game.save(function(err, savedGame){
-					if(err){
-						console.log("Error [ " + err + "] saving Game" + game);
-					
-					}
-					callback(savedGame);
-				});
 			}
+		
+			return exports.saveGame(game);
 		}
 	});
-
-	
 }
 
-
-exports.addPlanetsToGame = function(gameId,planetsToAdd, callback){
-	this.findById(gameId, function(game){
+exports.addPlanetsToGame = function(gameId,planetsToAdd){
+	var p = this.findById(gameId);
+	return p.then(function(game) {
 		planetsToAdd.forEach(function(planet){
 			game.planets.push(planet);
 		});
-		game.save(function(err, savedGame){
-			if(err){
-				console.log("Error [ " + err + "] saving Game" + game);
-			
-			}
-			callback(savedGame);
-		});
-	});
-
-}
-
-
-exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle,  callback){
-	GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec(function(err, games){
-		if(err){
-			next();		
-		}else{
-			filterOutPlayer(games, playerHandle, callback);
-		}
+		
+		return exports.saveGame(game);
 	});
 }
 
-exports.findGameAtAMap = function(mapToFind, playerHandle, callback){
-	GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec(function(err, games){
-		if(err){
-			next();		
-		}else{
-			filterOutPlayer(games, playerHandle, callback);
-		}
+exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
+	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec();
+	return p.then(function(games) {
+		return filterOutPlayer(games, playerHandle);
 	});
 }
 
-var filterOutPlayer = function(games, playerHandle, callback){
+exports.findGameAtAMap = function(mapToFind, playerHandle){
+	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
+	return p.then(function(games) {
+		return filterOutPlayer(games, playerHandle);
+	});
+}
+
+var filterOutPlayer = function(games, playerHandle){
 	var filteredGames = [];
 	games.forEach(function(game) {
 		if(game.players[0].handle != playerHandle) {
 			filteredGames.push(game);
 		}
 	});
-	callback(filteredGames);
+	
+	return filteredGames;
 }
 
 exports.GameModel = GameModel;

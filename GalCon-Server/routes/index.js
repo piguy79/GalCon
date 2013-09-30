@@ -15,9 +15,11 @@ exports.findAllGames = function(req, res) {
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
-	gameManager.findById(searchId, function(game) {
+	
+	var p = gameManager.findById(searchId);
+	p.then(function(game) {
 		res.json(processGameReturn(game, playerHandle));
-	});
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findAvailableGames = function(req, res) {
@@ -110,7 +112,6 @@ exports.requestHandleForUserName = function(req, res) {
 				});
 			}
 		}).then(null, logErrorAndSetResponse(req, res));
-		p.complete();
 	}
 }
 
@@ -154,7 +155,6 @@ exports.performMoves = function(req, res) {
 						});
 					});
 				});
-				p.complete();
 			} else {
 				res.json(processGameReturn(savedGame, playerHandle));
 			}
@@ -214,7 +214,6 @@ exports.joinGame = function(req, res) {
 			});
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
-	p.complete();
 }
 
 exports.addCoins = function(req, res) {
@@ -298,7 +297,6 @@ exports.matchPlayerToGame = function(req, res) {
 			}
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
-	p.complete();
 }
 
 var logErrorAndSetResponse = function(req, res) {
@@ -352,7 +350,6 @@ var addGameFromSegment = function(games, index, user, time, callback) {
 						callback(returnGame);
 					});
 				}).then(null, console.log);
-				p.complete();
 			});
 		} else {
 			addGameFromSegment(games, index++, user, time, callback);

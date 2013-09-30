@@ -30,14 +30,13 @@ ConfigModel.remove(function(err, doc) {
 	}
 });
 
-exports.findLatestConfig = function(configType, callback) {
-	ConfigModel.find({type : configType}).sort({version: -1 }).limit(1).exec(function(err, config) {
-		if (err) {
-			console.log("Unable to find latest config:" + err);
-			callback();
-		} else {
-			callback(config[0]);
+exports.findLatestConfig = function(configType) {
+	var p = ConfigModel.find({type : configType}).sort({version: -1}).limit(1).exec();
+	return p.then(function(configs) {
+		if(!configs) {
+			return null;
 		}
+		return configs[0];
 	});
 };
 
