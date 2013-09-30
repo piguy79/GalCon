@@ -25,10 +25,4 @@ public class DesktopSocialAction implements SocialAction {
 
 	}
 
-	@Override
-	public void showLeaderboards() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

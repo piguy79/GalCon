@@ -15,7 +15,7 @@ public class AndroidSocialAction implements SocialAction {
 	public void googlePlusSignIn() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-//				activity.beginUserInitiatedSignIn();
+				activity.beginUserInitiatedSignIn();
 			}
 		});
 	}
@@ -24,15 +24,14 @@ public class AndroidSocialAction implements SocialAction {
 	public void googlePlusSignOut() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-//				activity.signOut();
+				activity.signOut();
 			}
 		});
 	}
 
 	@Override
 	public boolean isLoggedInToGooglePlus() {
-//		return activity.isSignedIn();
-		return false;
+		return activity.isSignedIn();
 	}
 
 	@Override
@@ -40,17 +39,7 @@ public class AndroidSocialAction implements SocialAction {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-//				activity.registerGooglePlusSignInListener(signInListener);
-			}
-		});
-	}
-
-	@Override
-	public void showLeaderboards() {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-//				activity.showLeaderboards();
+				activity.registerGooglePlusSignInListener(signInListener);
 			}
 		});
 	}

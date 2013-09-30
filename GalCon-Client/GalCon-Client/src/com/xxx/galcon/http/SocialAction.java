@@ -8,6 +8,4 @@ public interface SocialAction {
 	public void googlePlusSignOut();
 
 	public boolean isLoggedInToGooglePlus();
-
-	public void showLeaderboards();
 }

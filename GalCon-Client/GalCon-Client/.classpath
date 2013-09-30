@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar" sourcepath="libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/joda-time-2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/AdColony.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
