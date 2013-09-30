@@ -43,7 +43,9 @@ public class MainActivity extends AndroidApplication {
 
 	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
-
+	final static String APPLICATION_CONFIG = "app";
+	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
+	
 	private AndroidGameAction gameAction;
 
 	IabHelper mHelper;
@@ -75,7 +77,7 @@ public class MainActivity extends AndroidApplication {
 		gameAction.findUserInformation(new SetOrPromptResultHandler(this, gameAction, player), player.name);
 
 		Configuration config = new Configuration();
-		gameAction.findConfigByType(new SetConfigurationResultHandler(config), "app");
+		gameAction.findConfigByType(new SetConfigurationResultHandler(config), APPLICATION_CONFIG);
 
 		initialize(new GameLoop(player, gameAction, socialGameAction, config), cfg);
 
@@ -86,7 +88,7 @@ public class MainActivity extends AndroidApplication {
 	}
 
 	private void setupInAppBilling() {
-		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
+		String base64EncodedPublicKey = ENCODED_APPLICATION_ID;
 
 		// Create the helper, passing it our context and the public key to
 		// verify signatures with
@@ -100,7 +102,6 @@ public class MainActivity extends AndroidApplication {
 			public void onIabSetupFinished(IabResult result) {
 
 				if (!result.isSuccess()) {
-					// Oh noes, there was a problem.
 					complain("Problem setting up in-app billing: " + result);
 					return;
 				}
@@ -183,15 +184,10 @@ public class MainActivity extends AndroidApplication {
 				
 				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 				
-				for(Entry<String, SkuDetails> entry : inv.mSkuMap.entrySet()){
-					InventoryItem item = new InventoryItem(entry.getValue().getSku(), entry.getValue().getPrice(), entry.getValue().getTitle(), 0);
-					for(InventoryItem fromServer : inventory.inventory){
-						if(fromServer.sku.equals(item.sku)){
-							item.numCoins = fromServer.numCoins;
-							mappedInventoryItems.add(item);
-							break;
-						}
-					}
+				for(InventoryItem item : inventory.inventory){
+					SkuDetails detail = inv.getSkuDetails(item.sku);
+					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail.getTitle(), item.numCoins);
+					mappedInventoryItems.add(combinedItem);
 				}
 				
 				Inventory inventory = new Inventory();

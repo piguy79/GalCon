@@ -12,6 +12,7 @@ describe("Testing interactions with the user model", function(){
 			wins : 10,
 			losses : 6,
 			currentGames : ["12345"],
+			consumedOrders : [],
 			coins : 0,
 			usedCoins : 14567,
 			watchedAd : true,
@@ -30,6 +31,7 @@ describe("Testing interactions with the user model", function(){
 			wins : 10,
 			losses : 6,
 			currentGames : ["12345"],
+			consumedOrders : ["1234"],
 			coins : 0,
 			usedCoins : 1000,
 			watchedAd : false,
@@ -65,6 +67,25 @@ describe("Testing interactions with the user model", function(){
 		p.complete();
 	});
 	
+	it("Add coins to a test user using an order ID", function(done){
+		var p = new mongoose.Promise();
+		p.then(function(){
+			return user.addCoinForAnOrder(4, 'test', 14567, "123");
+		}).then(function(person){
+			expect(person.coins).toBe(4);
+			expect(person.usedCoins).toBe(-1);
+			expect(person.watchedAd).toBe(false);
+			expect(person.consumedOrders.length).toBe(1);
+			expect(_.filter(person.consumedOrders, function(order){return order === "123"}).length).toBe(1);
+			done();
+		}).then(null, function(err){
+			console.log(err);
+			done();
+		});
+		
+		p.complete();
+	});
+	
 	it("Add coins with an invalid usedCoins count.", function(done){
 		var p = new mongoose.Promise();
 		p.then(function(){
@@ -77,6 +98,18 @@ describe("Testing interactions with the user model", function(){
 			done();
 		});
 		p.complete();
+	});
+	
+	
+	it("Trying to update with an order which has already been processed", function(done){
+		var p = user.addCoinForAnOrder(1, 'testWatchedAd', 8767, '1234');
+		p.then(function(updatedUser){
+			expect(updatedUser).toBe(null);
+			done();
+		}).then(null, function(err){
+			console.log(err);
+			done();
+		});
 	});
 	
 	it("Time should be reduced for watching an AD", function(done){

@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
+	consumedOrders : ["String"],
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
@@ -58,7 +59,60 @@ exports.findUserByHandle = function(handle){
 }
 
 exports.addCoins = function(coinsToAdd, handle, usedCoins){
-	return UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1, watchedAd : false}}).exec();
+	return UserModel.findOneAndUpdate({ 
+										$and : [
+										        {
+										        	handle : handle
+										        },
+	                                            {
+										        	usedCoins : usedCoins
+										        }
+										       ]
+										},
+										{
+											$inc : 
+													{
+														coins : coinsToAdd
+													}, 
+	                                          $set : 
+	                                          		{
+	                                        	  		usedCoins : -1,
+	                                        	  		watchedAd : false
+	                                        	  	}
+										}).exec();
+}
+
+exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, orderId){
+	return UserModel.findOneAndUpdate(
+										{ 
+											$and : 
+													[
+													 	{
+													 		handle : handle
+													 	}, 
+													 	{
+													 		usedCoins : usedCoins
+													 	}
+													 ], 
+													 consumedOrders : 
+													 					{
+														 					$nin : [orderId]
+													 					}
+										}, 
+										{
+											$inc : 
+													{
+														coins : coinsToAdd
+													}, 
+											$set : 
+													{
+														usedCoins : -1,
+														watchedAd : false
+													}, 
+											$push : {
+														consumedOrders : orderId
+													}
+										}).exec();
 }
 
 exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){

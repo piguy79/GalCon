@@ -4,6 +4,7 @@
 package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
+import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
@@ -234,6 +235,23 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
+	
+	@Override
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
+			String playerHandle, int numCoins, Long usedCoins, String orderId)
+			throws ConnectionException {
+		try {
+			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, orderId);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS_FOR_AN_ORDER, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
 
 	@Override
 	public void showAd(AdColonyVideoListener listener) {
@@ -261,6 +279,5 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 		
 	}
-
 
 }
