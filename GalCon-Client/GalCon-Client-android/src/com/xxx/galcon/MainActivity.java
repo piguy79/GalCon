@@ -312,6 +312,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		
 	}
 	
+	protected void beginUserInitiatedSignIn() {
+        plusHelper.beginUserInitiatedSignIn();
+	}
+
+	protected void signOut() {
+	        plusHelper.signOut();
+	        signInListener.onSignOut();
+	}
+	
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
 		
