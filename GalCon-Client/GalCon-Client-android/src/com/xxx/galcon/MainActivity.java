@@ -46,16 +46,17 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
+	
+	final static String APPLICATION_CONFIG = "app";
+	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
+	
 
 	protected GameHelper plusHelper;
 	protected final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
 	protected int mRequestedClients = GameHelper.CLIENT_PLUS;
 	private String[] mAdditionalScopes;
 	private GooglePlusSignInListener signInListener;
-	
-	final static String APPLICATION_CONFIG = "app";
-	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
-	
+
 	private AndroidGameAction gameAction;
 
 	IabHelper mHelper;
@@ -321,18 +322,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 		return purchaseOrders;
 	}
-	
-
-
-	protected void beginUserInitiatedSignIn() {
-		plusHelper.beginUserInitiatedSignIn();
-	}
-
-	protected void signOut() {
-		plusHelper.signOut();
-		signInListener.onSignOut();
-	}
-	
+		
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -350,6 +340,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		if (!mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 			plusHelper.onActivityResult(request, response, data);
+
         }
 		
 	}
@@ -427,6 +418,5 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void registerGooglePlusSignInListener(GooglePlusSignInListener signInListener) {
 		this.signInListener = signInListener;
 	}
-
 
 }
