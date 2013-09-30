@@ -1,0 +1,12 @@
+{
+	"inventory" : [
+		{
+			"sku" : "coin_bundle_1",
+			"associatedCoins" : 3
+		},
+		{
+			"sku" : "coin_bundle_2",
+			"associatedCoins" : 5
+		}
+	]	
+}

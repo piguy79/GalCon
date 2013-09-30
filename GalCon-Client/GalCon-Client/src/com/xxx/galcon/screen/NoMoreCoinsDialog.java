@@ -120,7 +120,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		setupWatchAdButton();
 		createPlanetView();
 		ExternalActionWrapper.loadStoreInventory(this);
-		createCancelButton(width, height);
+
 		
 	}
 
@@ -227,6 +227,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 
 	private void createLayout(Inventory stock) {
 		final float height = Gdx.graphics.getHeight();
+		final float width = Gdx.graphics.getWidth();
 		layout.add(new Label("More Coins", skin)).expandX().colspan(2).padBottom(height * 0.05f);
 		layout.row();
 		layout.add(stack).colspan(2);
@@ -235,6 +236,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		layout.row();
 		layout.add(createInAppBillingButtons(layout, stock.inventory)).expandX();
 		stage.addActor(layout);
+		createCancelButton(width, height);
 	}
 
 	private Actor createInAppBillingButtons(Table layout2, List<InventoryItem> inventory) {
@@ -334,6 +336,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	@Override
 	public void onResult(Inventory result) {
 		createLayout(result);	
+		
 	}
 
 

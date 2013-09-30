@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="300"
+   height="240"
+   id="svg5469"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="New document 29">
+  <defs
+     id="defs5471">
+    <filter
+       id="filter5487"
+       inkscape:label="Cracked glass"
+       inkscape:menu="Textures"
+       inkscape:menu-tooltip="Under a cracked glass"
+       color-interpolation-filters="sRGB">
+      <feTurbulence
+         id="feTurbulence5489"
+         baseFrequency="0.1"
+         seed="50"
+         numOctaves="5"
+         result="result1"
+         type="fractalNoise" />
+      <feGaussianBlur
+         id="feGaussianBlur5491"
+         stdDeviation="4"
+         result="result7" />
+      <feDisplacementMap
+         id="feDisplacementMap5493"
+         in2="result7"
+         result="result5"
+         in="SourceGraphic"
+         scale="20"
+         xChannelSelector="G" />
+      <feComposite
+         id="feComposite5495"
+         in2="result1"
+         result="result2"
+         operator="in"
+         in="result5" />
+      <feGaussianBlur
+         id="feGaussianBlur5497"
+         stdDeviation="1"
+         result="result6" />
+      <feSpecularLighting
+         id="feSpecularLighting5499"
+         surfaceScale="-3"
+         result="result4"
+         specularConstant="3.5"
+         specularExponent="35"
+         in="result6">
+        <feDistantLight
+           id="feDistantLight5501"
+           elevation="45"
+           azimuth="225" />
+      </feSpecularLighting>
+      <feComposite
+         id="feComposite5503"
+         in2="result2"
+         k1="1.7"
+         k3="0.7"
+         in="result4"
+         operator="arithmetic"
+         result="result91" />
+      <feBlend
+         id="feBlend5505"
+         in2="result91"
+         result="fbSourceGraphic"
+         mode="multiply" />
+      <feComposite
+         id="feComposite5507"
+         in2="fbSourceGraphic"
+         in="fbSourceGraphic"
+         result="result2"
+         operator="arithmetic" />
+      <feComposite
+         id="feComposite5509"
+         in2="fbSourceGraphic"
+         in="result2"
+         result="result4"
+         operator="arithmetic"
+         k2="2"
+         k3="2" />
+      <feBlend
+         id="feBlend5511"
+         in2="result4"
+         mode="screen"
+         in="result4" />
+    </filter>
+    <filter
+       id="filter5517"
+       inkscape:label="Ripple"
+       inkscape:menu="Distort"
+       inkscape:menu-tooltip="Horizontal rippling of edges"
+       color-interpolation-filters="sRGB">
+      <feTurbulence
+         id="feTurbulence5519"
+         numOctaves="1"
+         baseFrequency="0.002 0.107" />
+      <feColorMatrix
+         id="feColorMatrix5521"
+         values="2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0.5"
+         result="result91" />
+      <feDisplacementMap
+         id="feDisplacementMap5523"
+         in2="result91"
+         yChannelSelector="A"
+         xChannelSelector="R"
+         scale="14.3"
+         in="SourceGraphic" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.575"
+     inkscape:cx="150"
+     inkscape:cy="120"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1211"
+     inkscape:window-height="698"
+     inkscape:window-x="25"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5474">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-812.36218)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff0000;fill-opacity:1;stroke:none"
+       id="path5513"
+       sodipodi:cx="-36.507938"
+       sodipodi:cy="101.90476"
+       sodipodi:rx="60.634922"
+       sodipodi:ry="60.634922"
+       d="m 24.126984,101.90476 a 60.634922,60.634922 0 1 1 -121.269844,0 60.634922,60.634922 0 1 1 121.269844,0 z"
+       transform="matrix(1.2565445,0,0,1.2565445,-49.364244,757.9651)"
+       inkscape:export-filename="/Users/conormullen/dev/git/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/planets/dead_planet.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#333333;fill-opacity:1;stroke:none;filter:url(#filter5487)"
+       id="path5477"
+       sodipodi:cx="123.49207"
+       sodipodi:cy="125.39683"
+       sodipodi:rx="86.666664"
+       sodipodi:ry="86.666664"
+       d="m 210.15874,125.39683 a 86.666664,86.666664 0 1 1 -173.333331,0 86.666664,86.666664 0 1 1 173.333331,0 z"
+       transform="translate(-212.06349,763.47329)"
+       inkscape:export-filename="/Users/conormullen/dev/git/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/planets/dead_planet.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ffff00;fill-opacity:1;stroke:none;filter:url(#filter5517)"
+       id="path5515"
+       sodipodi:cx="152.06349"
+       sodipodi:cy="127.93651"
+       sodipodi:rx="93.650795"
+       sodipodi:ry="93.650795"
+       d="m 245.71429,127.93651 a 93.650795,93.650795 0 1 1 -187.301593,0 93.650795,93.650795 0 1 1 187.301593,0 z"
+       transform="translate(0,812.36218)"
+       inkscape:export-filename="/Users/conormullen/dev/git/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/planets/sun.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

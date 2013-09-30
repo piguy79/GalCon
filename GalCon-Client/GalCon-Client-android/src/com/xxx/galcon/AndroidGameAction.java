@@ -7,6 +7,7 @@ import static com.xxx.galcon.MainActivity.LOG_NAME;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -46,6 +47,7 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Inventory;
+import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
@@ -217,6 +219,19 @@ public class AndroidGameAction implements GameAction {
 	}
 	
 	@Override
+	public void loadAvailableInventory(
+			final UIConnectionResultCallback<Inventory> callback) {
+		final Map<String, String> args = new HashMap<String, String>();
+		
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, new Inventory()).execute("");
+			}
+		});
+		
+	}
+	
+	@Override
 	public void findConfigByType(
 			final UIConnectionResultCallback<Configuration> callback, final String type) {
 		
@@ -270,6 +285,7 @@ public class AndroidGameAction implements GameAction {
 			return Connection.establishGetConnection(Config.getValue(HOST), Config.getValue(PORT), path, args);
 		}
 	}
+
 
 	private abstract class JsonRequestTask<T extends JsonConvertible> extends AsyncTask<String, Void, JsonConvertible> {
 
@@ -327,29 +343,26 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void purchaseCoins(final int numCoins){
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback){
 		activity.runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-					((MainActivity) activity).purchaseCoins(numCoins);;
+					((MainActivity) activity).purchaseCoins(inventoryItem, callback);
 				}
 			});
 	}
 
 	@Override
-	public void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		activity.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				((MainActivity)activity).loadInventory(callback);
-				
+				((MainActivity)activity).loadInventory(inventory, callback);
 			}
 		});
 		
 	}
-
-	
 
 }

@@ -1,6 +1,8 @@
 package com.xxx.galcon;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -23,8 +25,13 @@ import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.IabHelper;
+import com.xxx.galcon.inappbilling.util.IabHelper.OnIabPurchaseFinishedListener;
+import com.xxx.galcon.inappbilling.util.IabHelper.QueryInventoryFinishedListener;
 import com.xxx.galcon.inappbilling.util.IabResult;
+import com.xxx.galcon.inappbilling.util.Purchase;
+import com.xxx.galcon.inappbilling.util.SkuDetails;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
@@ -151,19 +158,63 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void displayAd(AdColonyVideoListener adListener) {
 		AdColonyVideoAd ad = new AdColonyVideoAd();
 		ad.show(adListener);
-	}
+	}      
 
-	public void purchaseCoins(int numCoins) {
-	}
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1, new OnIabPurchaseFinishedListener() {
+			
+			@Override
+			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
-	public void loadInventory(StoreResultCallback<Inventory> callback) {
-		final Inventory stock = new Inventory();
-		stock.inventory = new ArrayList<InventoryItem>() {
-			{
-				add(new InventoryItem("123", 0.99, "2 Coins", 2));
+				if(result.isSuccess()){
+					UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins);
+				}else{
+					complain("Unable to purchase item from Play Store. Please try again.");
+				}
+				
 			}
-		};
-		callback.onResult(stock);
+		});
+	}
+
+	
+	public void loadInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback){
+		
+		List<String> skuDetail = new ArrayList<String>();
+		
+		for(InventoryItem item : inventory.inventory){
+			skuDetail.add(item.sku);
+		}
+		
+		mHelper.queryInventoryAsync(true, skuDetail, new QueryInventoryFinishedListener() {
+			
+			@Override
+			public void onQueryInventoryFinished(IabResult result,
+					com.xxx.galcon.inappbilling.util.Inventory inv) {
+				
+				if(result.isFailure()){
+					complain("Unable to load inventory from Play Store.");
+					return;
+				}
+				
+				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
+				
+				for(Entry<String, SkuDetails> entry : inv.mSkuMap.entrySet()){
+					InventoryItem item = new InventoryItem(entry.getValue().getSku(), entry.getValue().getPrice(), entry.getValue().getTitle(), 0);
+					for(InventoryItem fromServer : inventory.inventory){
+						if(fromServer.sku.equals(item.sku)){
+							item.numCoins = fromServer.numCoins;
+							mappedInventoryItems.add(item);
+							break;
+						}
+					}
+				}
+				
+				Inventory inventory = new Inventory();
+				inventory.inventory = mappedInventoryItems;
+				callback.onResult(inventory);
+				
+			}
+		});
 	}
 
 	protected void beginUserInitiatedSignIn() {

@@ -6,6 +6,7 @@ package com.xxx.galcon.http;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
+import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
@@ -52,16 +53,6 @@ import com.xxx.galcon.model.base.JsonConvertible;
  */
 public class DesktopGameAction extends BaseDesktopGameAction implements GameAction {
 	
-	public List<InventoryItem> inventory = new ArrayList<InventoryItem>(){
-		{
-			add(new InventoryItem("123", 0.99, "2 coins", 2));
-			add(new InventoryItem("234", 1.99, "5 Coins", 5));
-			add(new InventoryItem("234", 3.99, "10 Coins", 10));
-			add(new InventoryItem("234", 5.00, "20 Coins", 20));
-			add(new InventoryItem("234", 8.00, "50 Coins", 50));
-			add(new InventoryItem("234", 15.00, "100 Coins", 100));
-		}
-	};
 
 	public DesktopGameAction(String host, int port) {
 		super(host, port);
@@ -179,9 +170,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 	
 	@Override
-	public void loadStoreInventory(final StoreResultCallback<Inventory> callback) {
+	public void loadAvailableInventory(
+			final UIConnectionResultCallback<Inventory> callback) {
+		Map<String, String> args = new HashMap<String, String>();
+		callback.onConnectionResult((Inventory) callURL(new GetClientRequest(), FIND_AVAILABLE_INVENTORY, args, new Inventory()));
+	}
+	
+	@Override
+	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		Inventory stock = new Inventory();
-		stock.inventory = inventory;
+		stock.inventory = inventory.inventory;
 		callback.onResult(stock);
 	}
 
@@ -243,7 +241,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 	
 	@Override
-	public void purchaseCoins(int numCoins){
+	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback){
 		// Do nothing for now.
 	}
 
@@ -263,9 +261,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 		
 	}
-
-	
-
 
 
 }

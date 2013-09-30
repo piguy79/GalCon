@@ -31,6 +31,8 @@ public class UrlConstants {
 
 	public static final String FIND_USER_BY_USER_NAME = "/findUserByUserName";
 	
+	public static final String FIND_AVAILABLE_INVENTORY = "/inventory";
+	
 	public static final String FIND_CONFIG_BY_TYPE = "/config";
 
 	

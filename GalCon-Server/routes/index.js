@@ -1,4 +1,4 @@
-var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank'), mapManager = require('../modules/model/map'), configManager = require('../modules/model/config'), leaderboardManager = require('../modules/model/leaderboard');
+var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank'), mapManager = require('../modules/model/map'), configManager = require('../modules/model/config'), leaderboardManager = require('../modules/model/leaderboard'), inventoryManager = require('../modules/model/inventory'), _ = require('underscore');
 
 exports.index = function(req, res) {
 	res.render('index.html')
@@ -221,10 +221,17 @@ exports.addCoins = function(req, res) {
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
 
-	userManager.addCoins(numCoins, playerHandle, usedCoins, function(user) {
-		res.json(user);
-	});
-
+	var p = userManager.addCoins(numCoins, playerHandle, usedCoins);
+	p.then(function(user){
+		if(user === null){
+			console.log("reject");
+			p.reject("Unable to Add Coins for user.");
+		}else{
+			console.log("return");
+			res.json(user);
+		}
+	}).then(null, logErrorAndSetResponse(req, res));
+	
 }
 
 exports.reduceTimeUntilNextGame = function(req, res) {
@@ -233,10 +240,17 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 	var timeRemaining = req.body.timeRemaining;
 
 	configManager.findLatestConfig("payment", function(config) {
-		userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction'], function(
-				user) {
-			res.json(user);
-		});
+
+		var p = userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
+		p.then(function(updatedUser){
+			if(null === updatedUser){
+				p.reject("Unable to reduce time for Ad");
+			}else{
+				res.json(updatedUser);
+			}
+			
+		}).then(null, logErrorAndSetResponse(req, res));
+		
 	});
 }
 
@@ -309,13 +323,10 @@ var logErrorAndSetResponse = function(req, res) {
 }
 
 var joinAGame = function(games, user, time, callback) {
-
-	var relativeRanks = [];
-	for ( var i = 0; i < games.length; i++) {
-		var game = games[i];
-		game.relativeRank = relativeRank(game, user.rankInfo.level);
-		relativeRanks.push(game);
-	}
+	
+	var relativeRanks = _.map(games, function(game){
+		return relativeRank(game, user.rankInfo.level);
+	});
 
 	addGameFromSegment(relativeRanks.sort(function(a, b) {
 		return a.relativeRank - b.relativeRank
@@ -407,3 +418,11 @@ var generateGame = function(playerHandle, time, mapToFind, res) {
 		console.log(err);
 	});
 }
+
+
+exports.findAllInventory = function(req, res){
+	var p = inventoryManager.InventoryModel.find().exec();
+	p.then(function(inventory){
+		res.json({items : inventory});
+	}).then(null, logErrorAndSetResponse(req, res));
+};
