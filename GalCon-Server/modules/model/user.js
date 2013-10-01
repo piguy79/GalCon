@@ -10,7 +10,17 @@ var userSchema = mongoose.Schema({
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
-	consumedOrders : ["String"],
+	consumedOrders : [
+	                  	{
+	                  		orderId : "String",
+	                        packageName : "String",
+	                        productId : "String",
+	                        purchaseTime : "String",
+	                        purchaseState : "String",
+	                        developerPayload : "String",
+	                        token : "String"
+	                  	}
+	                  ],
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
@@ -82,7 +92,7 @@ exports.addCoins = function(coinsToAdd, handle, usedCoins){
 										}).exec();
 }
 
-exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, orderId){
+exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, order){
 	return UserModel.findOneAndUpdate(
 										{ 
 											$and : 
@@ -96,7 +106,7 @@ exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, orderId){
 													 ], 
 													 consumedOrders : 
 													 					{
-														 					$nin : [orderId]
+														 					$nin : [order]
 													 					}
 										}, 
 										{
@@ -110,7 +120,7 @@ exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, orderId){
 														watchedAd : false
 													}, 
 											$push : {
-														consumedOrders : orderId
+														consumedOrders : order
 													}
 										}).exec();
 }

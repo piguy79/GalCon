@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -32,6 +35,7 @@ import com.xxx.galcon.inappbilling.util.SkuDetails;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
@@ -147,13 +151,13 @@ public class MainActivity extends AndroidApplication {
 	}      
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1, new OnIabPurchaseFinishedListener() {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new OnIabPurchaseFinishedListener() {
 			
 			@Override
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
 				if(result.isSuccess()){
-					UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins);
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, info.getOriginalJson());
 				}else{
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}
@@ -196,6 +200,32 @@ public class MainActivity extends AndroidApplication {
 				
 			}
 		});
+	}
+	
+	public void consumeOrders(List<Order> consumedOrders){
+		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
+		
+		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
+			
+			@Override
+			public void onConsumeMultiFinished(List<Purchase> purchases,
+					List<IabResult> results) {
+				
+				complain("Purchase complete!");
+				
+			}
+		});
+		
+	}
+
+	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
+		
+		List<Purchase> purchaseOrders = new ArrayList<Purchase>();
+		for(Order order  : consumedOrders){
+			Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order, "");
+			purchaseOrders.add(purchase);
+		}
+		return purchaseOrders;
 	}
 
 }

@@ -58,16 +58,15 @@ public class JsonConstructor {
 		
 	}
 	
-	public static JSONObject addCoinsForAnOrder(String playerHandle, int numCoins, Long usedCoins, String orderId) throws JSONException{
+	public static JSONObject addCoinsForAnOrder(String playerHandle, int numCoins, Long usedCoins, String order) throws JSONException{
 		JSONObject top = new JSONObject();
 		
 		top.put("playerHandle", playerHandle);
 		top.put("numCoins", numCoins);
 		top.put("usedCoins", usedCoins);
-		top.put("orderId", orderId);
+		top.put("order", order);
 		
 		return top;
-		
 	}
 
 	public static JSONObject reduceCall(String playerHandle, Long timeRemaining, Long usedCoins) throws JSONException {

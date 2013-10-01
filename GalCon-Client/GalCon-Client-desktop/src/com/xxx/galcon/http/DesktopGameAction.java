@@ -42,6 +42,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -238,10 +239,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	
 	@Override
 	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, String orderId)
+			String playerHandle, int numCoins, Long usedCoins, String order)
 			throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, orderId);
+			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -277,6 +278,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
+		
+	}
+
+	@Override
+	public void consumeOrders(List<Order> orders) {
+		// TODO Auto-generated method stub
 		
 	}
 

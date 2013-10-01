@@ -31,6 +31,8 @@ public class ExternalActionWrapper {
 			public void onConnectionResult(Player result) {
 				GameLoop.USER.usedCoins = result.usedCoins;
 				GameLoop.USER.coins = result.coins;
+				GameLoop.USER.consumedOrders = result.consumedOrders;
+				gameAction.consumeOrders(result.consumedOrders);
 			}
 
 			@Override

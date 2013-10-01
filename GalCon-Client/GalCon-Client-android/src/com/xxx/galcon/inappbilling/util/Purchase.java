@@ -18,6 +18,8 @@ package com.xxx.galcon.inappbilling.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.xxx.galcon.model.Order;
+
 /**
  * Represents an in-app billing purchase.
  */
@@ -46,6 +48,19 @@ public class Purchase {
         mToken = o.optString("token", o.optString("purchaseToken"));
         mSignature = signature;
     }
+    
+    public Purchase(String itemType, Order order, String signature){
+    	this.mItemType = itemType;
+    	this.mOrderId = order.orderId;
+    	this.mPackageName = order.packageName;
+    	this.mSku = order.productId;
+    	this.mPurchaseTime = Long.parseLong(order.purchaseTime);
+    	this.mPurchaseState = Integer.parseInt(order.purchaseState);
+    	this.mDeveloperPayload = order.developerPayload;
+    	this.mToken = order.token;
+    	this.mSignature = signature;
+    }
+    
 
     public String getItemType() { return mItemType; }
     public String getOrderId() { return mOrderId; }

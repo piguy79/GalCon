@@ -228,7 +228,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
-	var orderId = req.body.orderId;
+	var order = req.body.order;
 	
 	var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, orderId);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));

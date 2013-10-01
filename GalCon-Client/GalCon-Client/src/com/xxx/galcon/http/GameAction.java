@@ -11,6 +11,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Inventory;
 
@@ -49,7 +50,7 @@ public interface GameAction {
 	
 	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) throws ConnectionException;
 	
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, String orderId) throws ConnectionException;
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, String order) throws ConnectionException;
 
 	
 	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback,String playerHandle, Long timeRemaining, Long usedCoins ) throws ConnectionException;
@@ -61,5 +62,7 @@ public interface GameAction {
 	public void loadStoreInventory(Inventory inventory, StoreResultCallback<Inventory> callback);
 	
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
+	
+	public void consumeOrders(List<Order> orders);
 
 }

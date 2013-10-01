@@ -65,6 +65,14 @@ public class UIConnectionWrapper {
 		}
 	}
 	
+	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, String orderJson){
+		try{
+			gameAction.addCoinsForAnOrder(callback, playerHandle, numCoins, usedCoins, orderJson);
+		}catch (ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
+	}
+	
 	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,Long timeRemaining, Long usedCoins){
 		try{
 			gameAction.reduceTimeUntilNextGame(callback, playerHandle,timeRemaining ,usedCoins);

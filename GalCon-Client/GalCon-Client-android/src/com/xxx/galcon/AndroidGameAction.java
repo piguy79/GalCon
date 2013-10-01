@@ -54,6 +54,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -158,10 +159,10 @@ public class AndroidGameAction implements GameAction {
 	
 	@Override
 	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, String orderId)
+			String playerHandle, int numCoins, Long usedCoins, String order)
 			throws ConnectionException {
 		try {
-			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, orderId);
+			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top.toString());
@@ -385,6 +386,18 @@ public class AndroidGameAction implements GameAction {
 			@Override
 			public void run() {
 				((MainActivity)activity).loadInventory(inventory, callback);
+			}
+		});
+		
+	}
+
+	@Override
+	public void consumeOrders(final List<Order> orders) {
+		activity.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				((MainActivity)activity).consumeOrders(orders);
 			}
 		});
 		
