@@ -92,7 +92,7 @@ exports.addCoins = function(coinsToAdd, handle, usedCoins){
 										}).exec();
 }
 
-exports.addCoinForAnOrder = function(coinsToAdd, handle, usedCoins, order){
+exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
 	return UserModel.findOneAndUpdate(
 										{ 
 											$and : 

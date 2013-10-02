@@ -89,7 +89,7 @@ describe("Testing interactions with the user model", function(){
 			};
 		var p = new mongoose.Promise();
 		p.then(function(){
-			return user.addCoinForAnOrder(4, 'test', 14567, testOrder);
+			return user.addCoinsForAnOrder(4, 'test', 14567, testOrder);
 		}).then(function(person){
 			expect(person.coins).toBe(4);
 			expect(person.usedCoins).toBe(-1);
@@ -130,7 +130,7 @@ describe("Testing interactions with the user model", function(){
 			    developerPayload : "",
 			    token : "TOK"
 			};
-		var p = user.addCoinForAnOrder(1, 'testWatchedAd', 8767, testOrder);
+		var p = user.addCoinsForAnOrder(1, 'testWatchedAd', 8767, testOrder);
 		p.then(function(updatedUser){
 			expect(updatedUser).toBe(null);
 			done();
