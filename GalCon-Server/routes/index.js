@@ -230,7 +230,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var usedCoins = req.body.usedCoins;
 	var order = req.body.order;
 	
-	var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, orderId);
+	var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, order);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	
 }
