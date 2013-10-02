@@ -65,7 +65,7 @@ public class MainActivity extends AndroidApplication {
 		// Crashlytics.start(this);
 
 		setupAdColony();
-		setupInAppBilling();
+		
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
@@ -115,10 +115,8 @@ public class MainActivity extends AndroidApplication {
 			public void onQueryInventoryFinished(IabResult result,
 					com.xxx.galcon.inappbilling.util.Inventory inv) {
 				
-				if(result.isSuccess()){
-					
-					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, inv.getPurchase("android.test.purchased").getOriginalJson());
-
+				if(result.isSuccess()){					
+					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, new Order(inv.getPurchase("android.test.purchased").getOriginalJson()));
 				}
 				
 			}
@@ -126,7 +124,7 @@ public class MainActivity extends AndroidApplication {
 		
 	}
 
-	private void setupInAppBilling() {
+	public void setupInAppBilling() {
 		String base64EncodedPublicKey = ENCODED_APPLICATION_ID;
 
 		// Create the helper, passing it our context and the public key to
@@ -194,7 +192,7 @@ public class MainActivity extends AndroidApplication {
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
 				if(result.isSuccess()){
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, info.getOriginalJson());
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, new Order(info.getOriginalJson()));
 				}else{
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}

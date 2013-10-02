@@ -130,9 +130,9 @@ describe("Testing interactions with the user model", function(){
 			    developerPayload : "",
 			    token : "TOK"
 			};
-		var p = user.addCoinsForAnOrder(1, 'testWatchedAd', 8767, testOrder);
+		var p = user.addCoinsForAnOrder(1, 'testWatchedAd', 1000, testOrder);
 		p.then(function(updatedUser){
-			expect(updatedUser).toBe(null);
+			expect(updatedUser.consumedOrders.length).toBe(1);
 			done();
 		}).then(null, function(err){
 			console.log(err);

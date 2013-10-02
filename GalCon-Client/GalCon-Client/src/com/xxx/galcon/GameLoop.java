@@ -49,6 +49,7 @@ public class GameLoop extends Game {
 	
 
 	private boolean loadingNewCoins = false;
+	private boolean inAppBillingSetup = false;
 
 	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction, Configuration config) {
 		this.gameAction = gameAction;
@@ -146,6 +147,7 @@ public class GameLoop extends Game {
 	public void render() {
 		super.render();
 		checkCoindStats();
+		setupInAppBilling();
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
 		ScreenFeedback screen = getScreen();
@@ -246,6 +248,13 @@ public class GameLoop extends Game {
 
 		}
 
+	}
+	
+	private void setupInAppBilling(){
+		if(GameLoop.USER != null && GameLoop.USER.handle != null && !inAppBillingSetup){
+			gameAction.consumeExistingOrders();
+			inAppBillingSetup = true;
+		}
 	}
 
 	@Override

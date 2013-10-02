@@ -239,7 +239,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	
 	@Override
 	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, String order)
+			String playerHandle, int numCoins, Long usedCoins, Order order)
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
@@ -283,6 +283,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public void consumeOrders(List<Order> orders) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void consumeExistingOrders() {
 		// TODO Auto-generated method stub
 		
 	}

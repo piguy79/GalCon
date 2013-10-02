@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 
 public class JsonConstructor {
 
@@ -58,13 +59,13 @@ public class JsonConstructor {
 		
 	}
 	
-	public static JSONObject addCoinsForAnOrder(String playerHandle, int numCoins, Long usedCoins, String order) throws JSONException{
+	public static JSONObject addCoinsForAnOrder(String playerHandle, int numCoins, Long usedCoins, Order order) throws JSONException{
 		JSONObject top = new JSONObject();
 		
 		top.put("playerHandle", playerHandle);
 		top.put("numCoins", numCoins);
 		top.put("usedCoins", usedCoins);
-		top.put("order", order);
+		top.put("order", order.asJson());
 		
 		return top;
 	}

@@ -159,7 +159,7 @@ public class AndroidGameAction implements GameAction {
 	
 	@Override
 	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, String order)
+			String playerHandle, int numCoins, Long usedCoins, Order order)
 			throws ConnectionException {
 		try {
 			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
@@ -398,6 +398,18 @@ public class AndroidGameAction implements GameAction {
 			@Override
 			public void run() {
 				((MainActivity)activity).consumeOrders(orders);
+			}
+		});
+		
+	}
+
+	@Override
+	public void consumeExistingOrders() {
+		activity.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				((MainActivity)activity).setupInAppBilling();
 			}
 		});
 		

@@ -104,9 +104,9 @@ exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
 													 		usedCoins : usedCoins
 													 	}
 													 ], 
-													 consumedOrders : 
+													 'consumedOrders.orderId' : 
 													 					{
-														 					$nin : [order]
+														 					$nin : [order.orderId]
 													 					}
 										}, 
 										{

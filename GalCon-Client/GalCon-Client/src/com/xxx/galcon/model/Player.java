@@ -64,7 +64,7 @@ public class Player extends JsonConvertible{
 		for(int i = 0 ; i < consumedOrders.length(); i++){
 			JSONObject orderObject = consumedOrders.getJSONObject(i);
 			Order order = new Order();
-			order.consume(orderObject);
+			order.consume(orderObject); 
 			this.consumedOrders.add(order);
 		}
 		
