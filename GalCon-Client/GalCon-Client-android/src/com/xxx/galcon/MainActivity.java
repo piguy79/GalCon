@@ -90,6 +90,41 @@ public class MainActivity extends AndroidApplication {
 		Intent intent = new Intent(this, PingService.class);
 		startService(intent);
 	}
+	
+	private UIConnectionResultCallback<Player> playerCallback = new UIConnectionResultCallback<Player>() {
+
+		@Override
+		public void onConnectionResult(Player result) {
+			GameLoop.USER.coins = result.coins;
+			consumeOrders(result.consumedOrders);
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+
+	private void consumeAnyPurchasedOrders() {
+		List<String> skus = new ArrayList<String>();
+		skus.add("android.test.purchased");
+		mHelper.queryInventoryAsync(true,skus,  new QueryInventoryFinishedListener() {
+			
+			@Override
+			public void onQueryInventoryFinished(IabResult result,
+					com.xxx.galcon.inappbilling.util.Inventory inv) {
+				
+				if(result.isSuccess()){
+					
+					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, inv.getPurchase("android.test.purchased").getOriginalJson());
+
+				}
+				
+			}
+		});
+		
+	}
 
 	private void setupInAppBilling() {
 		String base64EncodedPublicKey = ENCODED_APPLICATION_ID;
@@ -108,6 +143,8 @@ public class MainActivity extends AndroidApplication {
 				if (!result.isSuccess()) {
 					complain("Problem setting up in-app billing: " + result);
 					return;
+				}else{
+					consumeAnyPurchasedOrders();
 				}
 			}
 		});
