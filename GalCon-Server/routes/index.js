@@ -257,7 +257,7 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 	configManager.findLatestConfig("payment", function(config) {
 
 		var p = userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
-		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 
 	});
 }

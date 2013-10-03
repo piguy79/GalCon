@@ -115,7 +115,7 @@ public class MainActivity extends AndroidApplication {
 			public void onQueryInventoryFinished(IabResult result,
 					com.xxx.galcon.inappbilling.util.Inventory inv) {
 				
-				if(result.isSuccess()){					
+				if(result.isSuccess() && inv.hasPurchase("android.test.purchased")){					
 					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, new Order(inv.getPurchase("android.test.purchased").getOriginalJson()));
 				}
 				
