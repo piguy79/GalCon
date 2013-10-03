@@ -1,8 +1,7 @@
-var leaderboard = require('../../modules/model/leaderboard'), 
-Step = require('step'), 
-mongoose = require('mongoose'), 
-game = require('../../modules/model/game'), 
-user = require('../../modules/model/user');
+var leaderboard = require('../../modules/model/leaderboard'),  
+	mongoose = require('mongoose'), 
+	game = require('../../modules/model/game'), 
+	user = require('../../modules/model/user');
 
 describe("Leaderboard Tests - Calculate and save:", function() {
 	var mapKey1 = "-100";
