@@ -52,8 +52,10 @@ describe("Testing interactions with the user model", function(){
 			}
 	};
 	
+	var testUsers = [testUser, testUserWhoHasNotWatchedanAd];
+	
 	beforeEach(function(done){
-		var p = user.UserModel.withPromise(user.UserModel.create, [testUser, testUserWhoHasNotWatchedanAd]);
+		var p = user.UserModel.withPromise(user.UserModel.create, testUsers);
 		p.then(function(){
 			done();
 		});
@@ -170,7 +172,7 @@ describe("Testing interactions with the user model", function(){
 	});
 	
 	afterEach(function(done){
-		user.UserModel.remove().where('handle').in(['test', 'testWatchedAd']).exec(function(){
+		user.UserModel.remove().where('handle').in(_.pluck(testUsers, 'handle')).exec(function(){
 			done();
 		});
 	});
