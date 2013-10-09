@@ -96,7 +96,9 @@ public class MainActivity extends AndroidApplication {
 		@Override
 		public void onConnectionResult(Player result) {
 			GameLoop.USER.coins = result.coins;
-			consumeOrders(result.consumedOrders);
+			GameLoop.USER.usedCoins = result.usedCoins;
+			GameLoop.USER.watchedAd = result.watchedAd;
+			gameAction.consumeOrders(result.consumedOrders);
 		}
 
 		@Override
@@ -246,11 +248,38 @@ public class MainActivity extends AndroidApplication {
 			public void onConsumeMultiFinished(List<Purchase> purchases,
 					List<IabResult> results) {
 				
+				gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
+
+					@Override
+					public void onConnectionResult(Player result) {
+						System.out.println("Success");
+						
+					}
+
+					@Override
+					public void onConnectionError(String msg) {
+						// TODO Auto-generated method stub
+						
+					}
+				}, GameLoop.USER.handle, convertPurchasesToOrders(purchases));
+				
 				complain("Purchase complete!");
 				
 			}
+
+			
 		});
 		
+	}
+	
+	private List<Order> convertPurchasesToOrders(
+			List<Purchase> purchases) {
+		List<Order> orders = new ArrayList<Order>();
+		for(Purchase purchase : purchases){
+			Order order = new Order(purchase.getOriginalJson());
+			orders.add(order);
+		}
+		return orders;
 	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {

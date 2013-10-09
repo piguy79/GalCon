@@ -21,6 +21,8 @@ public class UrlConstants {
 	
 	public static final String ADD_COINS_FOR_AN_ORDER = "/addCoinsForAnOrder";
 	
+	public static final String DELETE_CONSUMED_ORDERS = "/deleteConsumedOrders";
+	
 	public static final String REDUCE_TIME = "/reduceTimeUntilNextGame";
 
 	public static final String JOIN_GAME = "/joinGame";

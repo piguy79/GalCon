@@ -19,6 +19,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
+import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -166,6 +167,27 @@ public class AndroidGameAction implements GameAction {
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top.toString());
+					NotificationManager mNotificationManager = (NotificationManager) activity
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+		
+	}
+	
+	
+	@Override
+	public void deleteConsumedOrders(
+			final UIConnectionResultCallback<Player> callback, String playerHandle,
+			List<Order> orders) {
+		try {
+			final JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle,orders);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, new Player()).execute(top.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -414,6 +436,8 @@ public class AndroidGameAction implements GameAction {
 		});
 		
 	}
+
+
 
 	
 

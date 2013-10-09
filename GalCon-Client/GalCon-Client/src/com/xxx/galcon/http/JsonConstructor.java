@@ -69,6 +69,19 @@ public class JsonConstructor {
 		
 		return top;
 	}
+	
+	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders) throws JSONException{
+		JSONObject top = new JSONObject();
+		
+		top.put("playerHandle", playerHandle);
+		JSONArray jsonOrders = new JSONArray();
+		for(Order order : orders){
+			jsonOrders.put(order.asJson());
+		}
+		top.put("orders", jsonOrders);
+		
+		return top;
+	}
 
 	public static JSONObject reduceCall(String playerHandle, Long timeRemaining, Long usedCoins) throws JSONException {
 		JSONObject top = new JSONObject();

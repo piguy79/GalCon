@@ -60,6 +60,7 @@ app.get('/deleteGame', routes.deleteGame);
 app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle);
 app.post('/addCoins', routes.addCoins);
 app.post('/addCoinsForAnOrder', routes.addCoinsForAnOrder);
+app.post('/deleteConsumedOrders', routes.deleteConsumedOrders);
 app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);

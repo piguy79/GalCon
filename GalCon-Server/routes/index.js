@@ -434,3 +434,11 @@ exports.findAllInventory = function(req, res){
 		res.json({items : inventory});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
+
+exports.deleteConsumedOrders = function(req, res){
+	var playerHandle = req.body.playerHandle;
+	var orders = req.body.orders;
+	
+	var p  = userManager.deleteConsumedOrder(playerHandle, orders.slice(0,1));
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+}

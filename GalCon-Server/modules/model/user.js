@@ -125,6 +125,11 @@ exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
 										}).exec();
 }
 
+exports.deleteConsumedOrder = function(handle, order){
+	return UserModel.findOneAndUpdate({handle : handle}, {$pull : {consumedOrders : {'orderId' : order.orderId}}}).exec();
+	
+}
+
 exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){
 	var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
 	if(reducedTime < 0){

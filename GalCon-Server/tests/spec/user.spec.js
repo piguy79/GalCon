@@ -52,6 +52,18 @@ describe("Testing interactions with the user model", function(){
 			}
 	};
 	
+	var testOrder = {
+			orderId : "1345",
+		    packageName : "package",
+		    productId : "4",
+		    purchaseTime : "12543",
+		    purchaseState : "DONE",
+		    developerPayload : "",
+		    token : "TOK"
+		};
+	
+	
+	
 	var testUsers = [testUser, testUserWhoHasNotWatchedanAd];
 	
 	beforeEach(function(done){
@@ -80,15 +92,6 @@ describe("Testing interactions with the user model", function(){
 	});
 	
 	it("Add coins to a test user using an order object", function(done){
-		var testOrder = {
-				orderId : "1345",
-			    packageName : "package",
-			    productId : "4",
-			    purchaseTime : "12543",
-			    purchaseState : "DONE",
-			    developerPayload : "",
-			    token : "TOK"
-			};
 		var p = new mongoose.Promise();
 		p.then(function(){
 			return user.addCoinsForAnOrder(4, 'test', 14567, testOrder);
@@ -123,18 +126,10 @@ describe("Testing interactions with the user model", function(){
 	
 	
 	it("Trying to update with an order which has already been processed", function(done){
-		var testOrder = {
-				orderId : "1345",
-			    packageName : "package",
-			    productId : "4",
-			    purchaseTime : "12543",
-			    purchaseState : "DONE",
-			    developerPayload : "",
-			    token : "TOK"
-			};
+
 		var p = user.addCoinsForAnOrder(1, 'testWatchedAd', 1000, testOrder);
 		p.then(function(updatedUser){
-			expect(updatedUser.consumedOrders.length).toBe(1);
+			expect(updatedUser).toBe(null);
 			done();
 		}).then(null, function(err){
 			console.log(err);
@@ -163,6 +158,23 @@ describe("Testing interactions with the user model", function(){
 			return user.reduceTimeForWatchingAd('testWatchedAd', 999, 100, 0.5);
 		}).then(function(updatedUser){
 			expect(updatedUser).toBe(null);
+			done();
+		}).then(null, function(err){
+			console.log(err);
+			done();
+		});
+		p.complete();
+	});
+	
+	it("Should delete consumed orders from a user", function(done){
+
+		var p = new mongoose.Promise();
+		p.then(function(){
+			return user.deleteConsumedOrder('testWatchedAd', testOrder);
+		}).then(function(){
+			return user.findUserByHandle('testWatchedAd');
+		}).then(function(returnedUser){
+			expect(returnedUser.consumedOrders.length).toBe(0);
 			done();
 		}).then(null, function(err){
 			console.log(err);
