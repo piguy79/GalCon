@@ -35,6 +35,16 @@ public class Order extends JsonConvertible implements JsonConstructable{
 	        
 	}
 	
+	public Order(String orderId, String packageName, String productId, String purchaseTime, String purchaseState, String developerPayload, String token){
+		this.orderId = orderId;
+		this.packageName = packageName;
+		this.productId = productId;
+		this.purchaseTime = purchaseTime;
+		this.purchaseState = purchaseState;
+		this.developerPayload = developerPayload;
+		this.token = token;
+	}
+	
 	
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {

@@ -276,7 +276,7 @@ public class MainActivity extends AndroidApplication {
 			List<Purchase> purchases) {
 		List<Order> orders = new ArrayList<Order>();
 		for(Purchase purchase : purchases){
-			Order order = new Order(purchase.getOriginalJson());
+			Order order = new Order(purchase.getOrderId(), purchase.getPackageName(), purchase.getSku(), purchase.getPurchaseTime() + "", purchase.getPurchaseState() + "", purchase.getDeveloperPayload(), purchase.getToken());
 			orders.add(order);
 		}
 		return orders;

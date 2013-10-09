@@ -439,6 +439,6 @@ exports.deleteConsumedOrders = function(req, res){
 	var playerHandle = req.body.playerHandle;
 	var orders = req.body.orders;
 	
-	var p  = userManager.deleteConsumedOrder(playerHandle, orders.slice(0,1));
+	var p  = userManager.deleteConsumedOrder(playerHandle, orders[0]);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 }
