@@ -72,9 +72,10 @@ describe("Testing interactions with the user model", function(){
 			done();
 		});
 		p.complete();
+		
 	});
 	
-	it("Add coins to a test user", function(done){
+	it("Add coins to a test user.", function(done){
 		var p = new mongoose.Promise();
 		p.then(function(){
 			return user.addCoins(4, 'test', 14567);
