@@ -200,7 +200,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}      
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new OnIabPurchaseFinishedListener() {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
 			
 			@Override
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
@@ -251,7 +251,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		});
 	}
 	
-	public void consumeOrders(List<Order> consumedOrders){
+	public void consumeOrders(final List<Order> consumedOrders){
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 		
 		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
@@ -273,9 +273,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						// TODO Auto-generated method stub
 						
 					}
-				}, GameLoop.USER.handle, convertPurchasesToOrders(purchases));
-				
-				complain("Purchase complete!");
+				}, GameLoop.USER.handle, consumedOrders);
 				
 			}
 
@@ -284,15 +282,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		
 	}
 	
-	private List<Order> convertPurchasesToOrders(
-			List<Purchase> purchases) {
-		List<Order> orders = new ArrayList<Order>();
-		for(Purchase purchase : purchases){
-			Order order = new Order(purchase.getOrderId(), purchase.getPackageName(), purchase.getSku(), purchase.getPurchaseTime() + "", purchase.getPurchaseState() + "", purchase.getDeveloperPayload(), purchase.getToken());
-			orders.add(order);
-		}
-		return orders;
-	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
 		
@@ -303,6 +292,20 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 		return purchaseOrders;
 	}
+	
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        
+    }
 
 	protected void beginUserInitiatedSignIn() {
 		plusHelper.beginUserInitiatedSignIn();
