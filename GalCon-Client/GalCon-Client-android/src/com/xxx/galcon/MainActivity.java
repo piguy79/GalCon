@@ -121,20 +121,49 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	};
 
 	private void consumeAnyPurchasedOrders() {
-		List<String> skus = new ArrayList<String>();
-		skus.add("android.test.purchased");
-		mHelper.queryInventoryAsync(true,skus,  new QueryInventoryFinishedListener() {
-			
+		
+		UIConnectionWrapper.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
+
 			@Override
-			public void onQueryInventoryFinished(IabResult result,
-					com.xxx.galcon.inappbilling.util.Inventory inv) {
-				
-				if(result.isSuccess() && inv.hasPurchase("android.test.purchased")){					
-					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, new Order(inv.getPurchase("android.test.purchased").getOriginalJson()));
-				}
+			public void onConnectionResult(Inventory result) {
+				loadInventory(result, new StoreResultCallback<Inventory>() {
+
+					@Override
+					public void onResult(final Inventory inventory) {
+						
+						mHelper.queryInventoryAsync(true,inventory.skus(),  new QueryInventoryFinishedListener() {
+							
+							@Override
+							public void onQueryInventoryFinished(IabResult result,
+									com.xxx.galcon.inappbilling.util.Inventory inv) {
+								
+								List<Order> orders = new ArrayList<Order>();
+								for(InventoryItem item : inventory.inventory){
+									if(inv.hasPurchase(item.sku)){
+										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson()));
+									}
+								}
+								
+								if(result.isSuccess() && inv.hasPurchase("android.test.purchased")){					
+									UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, orders);
+								}
+								
+							}
+						});
+						
+					}
+				});
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				complain("Unable to load inventory from server.");
 				
 			}
 		});
+		List<String> skus = new ArrayList<String>();
+		skus.add("android.test.purchased");
+		
 		
 	}
 
@@ -206,7 +235,9 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
 				if(result.isSuccess()){
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, new Order(info.getOriginalJson()));
+					List<Order> orders = new ArrayList<Order>();
+					orders.add(new Order(info.getOriginalJson()));
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, orders);
 				}else{
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}

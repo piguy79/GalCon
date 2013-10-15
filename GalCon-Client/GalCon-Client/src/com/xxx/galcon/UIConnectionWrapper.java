@@ -8,6 +8,7 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
@@ -66,9 +67,9 @@ public class UIConnectionWrapper {
 		}
 	}
 	
-	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, Order order){
+	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, List<Order> orders){
 		try{
-			gameAction.addCoinsForAnOrder(callback, playerHandle, numCoins, usedCoins, order);
+			gameAction.addCoinsForAnOrder(callback, playerHandle, numCoins, usedCoins, orders);
 		}catch (ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}
@@ -84,5 +85,9 @@ public class UIConnectionWrapper {
 	
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type){
 		gameAction.findConfigByType(callback, type);
+	}
+	
+	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback){
+		gameAction.loadAvailableInventory(callback);
 	}
 }

@@ -50,7 +50,7 @@ public interface GameAction {
 	
 	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) throws ConnectionException;
 	
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, Order order) throws ConnectionException;
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, List<Order> orders) throws ConnectionException;
 
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders);
 	
