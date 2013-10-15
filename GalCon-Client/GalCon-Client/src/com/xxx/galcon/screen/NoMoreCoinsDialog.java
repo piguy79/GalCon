@@ -36,6 +36,7 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
