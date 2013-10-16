@@ -407,6 +407,7 @@ var generateGamePromise = function(user, time, mapToFind) {
 			return gameManager.saveGame(game);
 		}).then(function(game) {
 			decrementCoins(user, game.id, time);
+
 			
 			var p = withPromise(user.save, user);
 			return p.then(function() {
