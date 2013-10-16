@@ -10,6 +10,7 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 
 public class UIConnectionWrapper {
@@ -60,6 +61,14 @@ public class UIConnectionWrapper {
 	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins){
 		try{
 			gameAction.addCoins(callback, playerHandle, numCoins, usedCoins);
+		}catch (ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
+	}
+	
+	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, Order order){
+		try{
+			gameAction.addCoinsForAnOrder(callback, playerHandle, numCoins, usedCoins, order);
 		}catch (ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}

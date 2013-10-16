@@ -35,6 +35,7 @@ public class Player extends JsonConvertible{
 	public Integer coins;
 	public Long usedCoins;
 	public boolean watchedAd;
+	public List<Order> consumedOrders;
 	
 	
 	@Override
@@ -56,6 +57,15 @@ public class Player extends JsonConvertible{
 		for (int i = 0; i < currentGamesJson.length(); i++) {
 			String game = currentGamesJson.getString(i);
 			this.currentGames.add(game);
+		}
+		
+		this.consumedOrders = new ArrayList<Order>();
+		JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
+		for(int i = 0 ; i < consumedOrders.length(); i++){
+			JSONObject orderObject = consumedOrders.getJSONObject(i);
+			Order order = new Order();
+			order.consume(orderObject); 
+			this.consumedOrders.add(order);
 		}
 		
 	}

@@ -10,6 +10,17 @@ var userSchema = mongoose.Schema({
 	wins : "Number",
 	losses : "Number",
 	currentGames : ["String"],
+	consumedOrders : [
+	                  	{
+	                  		orderId : "String",
+	                        packageName : "String",
+	                        productId : "String",
+	                        purchaseTime : "String",
+	                        purchaseState : "String",
+	                        developerPayload : "String",
+	                        token : "String"
+	                  	}
+	                  ],
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
@@ -58,7 +69,65 @@ exports.findUserByHandle = function(handle){
 }
 
 exports.addCoins = function(coinsToAdd, handle, usedCoins){
-	return UserModel.findOneAndUpdate({ $and : [{handle : handle}, {usedCoins : usedCoins}]}, {$inc : {coins : coinsToAdd}, $set : {usedCoins : -1, watchedAd : false}}).exec();
+	return UserModel.findOneAndUpdate({ 
+										$and : [
+										        {
+										        	handle : handle
+										        },
+	                                            {
+										        	usedCoins : usedCoins
+										        }
+										       ]
+										},
+										{
+											$inc : 
+													{
+														coins : coinsToAdd
+													}, 
+	                                          $set : 
+	                                          		{
+	                                        	  		usedCoins : -1,
+	                                        	  		watchedAd : false
+	                                        	  	}
+										}).exec();
+}
+
+exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
+	return UserModel.findOneAndUpdate(
+										{ 
+											$and : 
+													[
+													 	{
+													 		handle : handle
+													 	}, 
+													 	{
+													 		usedCoins : usedCoins
+													 	}
+													 ], 
+													 'consumedOrders.orderId' : 
+													 					{
+														 					$nin : [order.orderId]
+													 					}
+										}, 
+										{
+											$inc : 
+													{
+														coins : coinsToAdd
+													}, 
+											$set : 
+													{
+														usedCoins : -1,
+														watchedAd : false
+													}, 
+											$push : {
+														consumedOrders : order
+													}
+										}).exec();
+}
+
+exports.deleteConsumedOrder = function(handle, order){
+	return UserModel.findOneAndUpdate({handle : handle}, {$pull : {consumedOrders : {'orderId' : order.orderId}}}).exec();
+	
 }
 
 exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){

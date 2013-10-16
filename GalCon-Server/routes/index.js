@@ -229,19 +229,35 @@ exports.addCoins = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
+	
+	var p  = userManager.addCoins(numCoins, playerHandle, usedCoins);
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));	
+}
 
-	var p = userManager.addCoins(numCoins, playerHandle, usedCoins);
-	p.then(function(user){
-		if(user === null){
-			console.log("reject");
-			p.reject("Unable to Add Coins for user.");
-		}else{
-			console.log("return");
-			res.json(user);
-		}
-	}).then(null, logErrorAndSetResponse(req, res));
+exports.addCoinsForAnOrder = function(req, res) {
+	var playerHandle = req.body.playerHandle;
+	var numCoins = req.body.numCoins;
+	var usedCoins = req.body.usedCoins;
+	var order = req.body.order;
+	
+	var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, order);
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	
 }
+
+var handleUserUpdate = function(req, res, handle){
+	return function(user){
+		if(user === null){
+			var findUserPromise = userManager.findUserByHandle(handle);
+			findUserPromise.then(function(found){
+				res.json(found);
+			}, logErrorAndSetResponse(req, res));
+		}else{
+			res.json(user);
+		}
+	}
+}
+
 
 exports.reduceTimeUntilNextGame = function(req, res) {
 	var handle = req.body.playerHandle;
@@ -251,15 +267,8 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 	configManager.findLatestConfig("payment", function(config) {
 
 		var p = userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
-		p.then(function(updatedUser){
-			if(null === updatedUser){
-				p.reject("Unable to reduce time for Ad");
-			}else{
-				res.json(updatedUser);
-			}
-			
-		}).then(null, logErrorAndSetResponse(req, res));
-		
+		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
+
 	});
 }
 
@@ -437,3 +446,11 @@ exports.findAllInventory = function(req, res){
 		res.json({items : inventory});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
+
+exports.deleteConsumedOrders = function(req, res){
+	var playerHandle = req.body.playerHandle;
+	var orders = req.body.orders;
+	
+	var p  = userManager.deleteConsumedOrder(playerHandle, orders[0]);
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+}

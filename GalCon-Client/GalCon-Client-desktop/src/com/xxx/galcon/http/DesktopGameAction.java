@@ -4,6 +4,8 @@
 package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
+import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
+import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
@@ -41,6 +43,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -234,6 +237,39 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
+	
+	@Override
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
+			String playerHandle, int numCoins, Long usedCoins, Order order)
+			throws ConnectionException {
+		try {
+			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS_FOR_AN_ORDER, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
+	
+	@Override
+	public void deleteConsumedOrders(
+			UIConnectionResultCallback<Player> callback, String playerHandle,
+			List<Order> orders) {
+		try {
+			JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), DELETE_CONSUMED_ORDERS, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+	}
 
 	@Override
 	public void showAd(AdColonyVideoListener listener) {
@@ -262,5 +298,18 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		
 	}
 
+	@Override
+	public void consumeOrders(List<Order> orders) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void consumeExistingOrders() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }
