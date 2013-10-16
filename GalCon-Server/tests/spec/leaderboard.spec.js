@@ -24,7 +24,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 	averagePlayer2.wins = 10;
 	averagePlayer2.losses = 5;
 	
-	beforeEach(function(done) {
+	afterEach(function(done) {
 		leaderboard.LeaderboardModel.remove().where("playerHandle").in([newPlayer.handle, averagePlayer1.handle, averagePlayer2.handle]).exec(function(err) {
 			game.GameModel.remove({"map": mapKey1}).exec(function(err) {
 				done();

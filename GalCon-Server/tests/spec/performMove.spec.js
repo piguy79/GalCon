@@ -4,7 +4,7 @@ apiRunner = require('../fixtures/apiRunner'),
 elementBuilder = require('../fixtures/elementbuilder'),
 elementMatcher = require('../fixtures/elementMatcher');
 
-describe("Testing ship movement", function(){
+describe("Perform Move", function(){
 
 	var game;
 	var defaultHomePlanet;
