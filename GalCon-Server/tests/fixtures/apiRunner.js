@@ -1,4 +1,4 @@
-var needle = require("needle")
+var needle = require("needle"), mongoose = require('mongoose');
 
 var localhost = "http://localhost:3000";
 
@@ -20,16 +20,22 @@ exports.findGame = function(gameId, callback) {
 	});
 }
 
-exports.generateGame = function(player, callback) {
+exports.matchPlayerToGame = function(playerHandle, mapKey) {
+	var p = new mongoose.Promise();
 	var postData = {
-		width : 8,
-		height : 15,
-		player : player
-	}
+		mapToFind : mapKey,
+		playerHandle : playerHandle,
+		time: new Date().getTime()
+	};
 
-	needle.post(localhost + "/generateGame", postData, function(err, response, body) {
-		callback(body);
+	needle.post(localhost + "/matchPlayerToGame", postData, function(err, response, body) {
+		if(err) {
+			p.reject(err);
+		} else {
+			p.complete(body);
+		}
 	});
+	return p;
 };
 
 exports.deleteGame = function(gameId, callback) {

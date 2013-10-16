@@ -13,7 +13,7 @@
      , "ejs" : "0.8.4"
     , "jade": ">= 0.0.1"
     , "mongoose" : "3.6.17"
-    , "needle" : "0.5.9"
+    , "needle" : "0.6.0"
     , "step" : "0.0.5"
     , "nodetime" : "0.8.13"
     , "underscore" : "1.5.2"

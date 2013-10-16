@@ -49,15 +49,8 @@ exports.findAllMaps = function(callback) {
 };
 
 
-exports.findMapByKey = function(mapKey, callback){
-	MapModel.findOne({key : mapKey}).exec(function(err, map){
-		if(err){
-			console.log("Unable to find a map with the key: " + mapKey);
-			callback();
-		} else{
-			callback(map);
-		}
-	});
+exports.findMapByKey = function(mapKey){
+	return MapModel.findOne({key : mapKey}).exec();
 };
 
 exports.MapModel = MapModel;

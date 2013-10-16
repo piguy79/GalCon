@@ -311,7 +311,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 		return p;
 	}
 	
-	var p = findById(gameId);
+	var p = exports.findById(gameId);
 	p.then(function(game) {
 		game.addMoves(moves);
 		game.currentRound.playersWhoMoved.push(playerHandle);

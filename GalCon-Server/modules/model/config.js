@@ -38,6 +38,8 @@ exports.findLatestConfig = function(configType) {
 		}
 		return configs[0];
 	});
+	
+	return p;
 };
 
 exports.ConfigModel = ConfigModel;

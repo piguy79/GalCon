@@ -1,4 +1,13 @@
-var gameBuilder = require('../modules/gameBuilder'), gameManager = require('../modules/model/game'), userManager = require('../modules/model/user'), rankManager = require('../modules/model/rank'), mapManager = require('../modules/model/map'), configManager = require('../modules/model/config'), leaderboardManager = require('../modules/model/leaderboard'), inventoryManager = require('../modules/model/inventory'), _ = require('underscore');
+var mongoose = require('../modules/model/mongooseConnection').mongoose,
+	gameBuilder = require('../modules/gameBuilder'), 
+	gameManager = require('../modules/model/game'), 
+	userManager = require('../modules/model/user'), 
+	rankManager = require('../modules/model/rank'), 
+	mapManager = require('../modules/model/map'), 
+	configManager = require('../modules/model/config'), 
+	leaderboardManager = require('../modules/model/leaderboard'), 
+	inventoryManager = require('../modules/model/inventory'), 
+	_ = require('underscore');
 
 exports.index = function(req, res) {
 	res.render('index.html')
@@ -257,10 +266,10 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 exports.findConfigByType = function(req, res) {
 	var type = req.query['type'];
 
-	configManager.findLatestConfig(type, function(config) {
+	var p = configManager.findLatestConfig(type);
+	p.then(function(config) {
 		res.json(config);
-	});
-
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findRankInformation = function(req, res) {
@@ -280,143 +289,145 @@ exports.findAllMaps = function(req, res) {
 
 exports.matchPlayerToGame = function(req, res) {
 	var mapToFind = req.body.mapToFind;
-	var time = req.body.time - 300000;
 	var playerHandle = req.body.playerHandle;
+	var time = req.body.time;
 
 	var p = userManager.findUserByHandle(playerHandle);
 	p.then(function(user) {
-		gameManager.findGameForMapInTimeLimit(mapToFind, time, playerHandle, function(games) {
-			if (games.length > 0) {
-				joinAGame(games, user, time, function(game) {
-					if (game === null) {
-						generateGame(playerHandle, req.body.time, mapToFind, res);
-					} else {
-						res.json(game);
-					}
-				});
-			} else {
-				gameManager.findGameAtAMap(mapToFind, playerHandle, function(games) {
-					if (games.length > 0) {
-						joinAGame(games, user, time, function(game) {
-							if (game === null) {
-								generateGame(playerHandle, req.body.time, mapToFind, res);
-							} else {
-								res.json(game);
-							}
-						});
-					} else {
-						generateGame(playerHandle, req.body.time, mapToFind, res);
-					}
-				});
+		return findOrCreateGamePromise(user, time, mapToFind);
+	}).then(function(game) { res.json(game); }, logErrorAndSetResponse(req, res));
+}
+
+var findOrCreateGamePromise = function(user, time, mapToFind) {
+	var p = gameManager.findGameForMapInTimeLimit(mapToFind, time - 300000, user.handle);
+	return p.then(function(games) {
+		var joinP = joinGamePromise(games, user, time);
+		return joinP.then(function(game) {
+			if(game) {
+				return game;
 			}
+			var gameP = gameManager.findGameAtAMap(mapToFind, user.handle);
+			return gameP.then(function(games) {
+				var innerJoinP = joinGamePromise(games, user, time);
+				return innerJoinP.then(function(game) {
+					if(game) {
+						return game;
+					} 
+					return generateGamePromise(user, time, mapToFind);
+				});
+			});
 		});
-	}).then(null, logErrorAndSetResponse(req, res));
+	});
+}
+
+var joinGamePromise = function(games, user, time) {
+	if(games.length < 1) {
+		var p = new mongoose.Promise();
+		p.complete(null);
+		return p;
+	}
+	
+	var joinP = attemptToJoinGamePromise(games, user, time);	
+	return joinP.then(function(game) {
+		return game;
+	});
 }
 
 var logErrorAndSetResponse = function(req, res) {
 	return function(err) {
-		console.log("Error on join game request [" + req + "]: " + err);
+		console.log(req.connection.remoteAddress + " " + err.stack);
 		res.json({
 			"error" : err
 		});
 	}
 }
 
-var joinAGame = function(games, user, time, callback) {
-	
-	var relativeRanks = _.map(games, function(game){
-		return relativeRank(game, user.rankInfo.level);
+var attemptToJoinGamePromise = function(games, user, time) {
+	var gamesByRelativeRank = _.sortBy(games, function(game) {
+		return Math.abs(user.rankInfo.level - game.rankOfInitialPlayer);
 	});
 
-	addGameFromSegment(relativeRanks.sort(function(a, b) {
-		return a.relativeRank - b.relativeRank
-	}), 0, user, time, callback);
-
+	return addGameFromSegmentPromise(gamesByRelativeRank, 0, user, time);
 }
 
-var relativeRank = function(game, level) {
-	return Math.abs(level - game.rankOfInitialPlayer);
-}
-
-var addGameFromSegment = function(games, index, user, time, callback) {
-
-	if (index > games.lengh) {
-		callback(null);
+var addGameFromSegmentPromise = function(games, index, user, time) {
+	if (index >= games.lengh) {
+		return null;
 	}
 
 	var gameId = games[index]._id;
 
-	gameManager.addUser(gameId, user, function(game) {
+	return gameManager.addUser(gameId, user).then(function(game) {
 		if (game !== null) {
-			gameManager.findById(gameId, function(returnGame) {
-				var p = userManager.findUserByHandle(user.handle);
-				p.then(function(user) {
-					user.currentGames.push(gameId);
-					user.coins--;
-					if (user.coins == 0) {
-						user.usedCoins = time;
-					}
-					user.save(function() {
-						foundGame = returnGame;
-						callback(returnGame);
-					});
-				}).then(null, console.log);
+			return gameManager.findById(gameId).then(function(returnGame) {
+				decrementCoins(user, gameId);
+				var p = withPromise(user.save, user);
+				return p.then(function() {
+					return returnGame;
+				});
 			});
 		} else {
-			addGameFromSegment(games, index++, user, time, callback);
+			return addGameFromSegmentPromise(games, index + 1, user, time);
 		}
 	});
 }
 
-var generateGame = function(playerHandle, time, mapToFind, res) {
+var decrementCoins = function(user, gameId) {
+	user.currentGames.push(gameId);
+	user.coins--;
+	if (user.coins == 0) {
+		user.usedCoins = time;
+	}
+}
 
-	var p = userManager.findUserByHandle(playerHandle);
-	p.then(function(user) {
-		mapManager.findMapByKey(mapToFind, function(map) {
-			if (!map) {
-				res.json({
-					error : "No Map Matching the key " + mapToFind
-				});
-			} else {
-				var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
-				var heightToUse = Math.ceil(widthToUse * 1.33);
+var generateGamePromise = function(user, time, mapToFind) {
+	var p = mapManager.findMapByKey(mapToFind);
+	return p.then(function(map) {
+		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
+		var heightToUse = Math.ceil(widthToUse * 1.33);
 
-				var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
-				numPlanets = Math.max(12, numPlanets);
+		var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
+		numPlanets = Math.max(12, numPlanets);
 
-				var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
+		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
 
-				var gameAttributes = {
-					players : [ user ],
-					width : widthToUse,
-					height : heightToUse,
-					numberOfPlanets : numPlanets,
-					createdTime : time,
-					rankOfInitialPlayer : user.rankInfo.level,
-					map : map.key,
-					gameType : map.gameType[gameTypeIndex]
-				};
+		var gameAttributes = {
+			players : [ user ],
+			width : widthToUse,
+			height : heightToUse,
+			numberOfPlanets : numPlanets,
+			createdTime : time,
+			rankOfInitialPlayer : user.rankInfo.level,
+			map : map.key,
+			gameType : map.gameType[gameTypeIndex]
+		};
 
-				gameManager.createGame(gameAttributes, function(game) {
-					gameManager.saveGame(game, function() {
-						user.currentGames.push(game.id);
-						user.coins--;
-						if (user.coins == 0) {
-							user.usedCoins = time;
-						}
-						user.save(function() {
-							res.json(game);
-						});
-
-					});
-				});
-
-			}
+		return gameManager.createGame(gameAttributes).then(function(game) {
+			return gameManager.saveGame(game);
+		}).then(function(game) {
+			decrementCoins(user, game.id);
+			
+			var p = withPromise(user.save, user);
+			return p.then(function() {
+				return game;
+			});
 		});
-
-	}).then(null, function(err) {
-		console.log(err);
 	});
+}
+
+var withPromise = function(func, obj) {
+	var p = new mongoose.Promise();
+	p.complete();
+	var array = Array.prototype.slice.call(arguments, 1);
+	array.push(function(err, result) {
+		if(err) {
+			p.reject(err);
+		} else {
+			p.complete(result);
+		}
+	});
+	func.apply(obj, array);
+	return p;
 }
 
 
