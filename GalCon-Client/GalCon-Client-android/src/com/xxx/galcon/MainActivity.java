@@ -126,7 +126,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 			@Override
 			public void onConnectionResult(Inventory result) {
-				loadInventory(result, new StoreResultCallback<Inventory>() {
+				gameAction.loadStoreInventory(result, new StoreResultCallback<Inventory>() {
 
 					@Override
 					public void onResult(final Inventory inventory) {
@@ -144,9 +144,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 									}
 								}
 								
-								if(result.isSuccess() && inv.hasPurchase("android.test.purchased")){					
-									UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, orders);
-								}
+								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, orders);
 								
 							}
 						});
