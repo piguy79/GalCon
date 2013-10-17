@@ -349,7 +349,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		if (!mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 			plusHelper.onActivityResult(request, response, data);
-
         }
 		
 	}
