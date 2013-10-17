@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.InventoryItem;
+import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 
 public class PaymentButton extends TextButton {
@@ -28,7 +30,6 @@ public class PaymentButton extends TextButton {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				ExternalActionWrapper.purchaseCoins(inventory);
-				//UIConnectionWrapper.addCoins(callback, GameLoop.USER.handle, inventory.numCoins, GameLoop.USER.usedCoins);
 			}
 		});
 	}

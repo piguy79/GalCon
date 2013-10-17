@@ -121,20 +121,47 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	};
 
 	private void consumeAnyPurchasedOrders() {
-		List<String> skus = new ArrayList<String>();
-		skus.add("android.test.purchased");
-		mHelper.queryInventoryAsync(true,skus,  new QueryInventoryFinishedListener() {
-			
+		
+		UIConnectionWrapper.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
+
 			@Override
-			public void onQueryInventoryFinished(IabResult result,
-					com.xxx.galcon.inappbilling.util.Inventory inv) {
-				
-				if(result.isSuccess() && inv.hasPurchase("android.test.purchased")){					
-					UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, new Order(inv.getPurchase("android.test.purchased").getOriginalJson()));
-				}
+			public void onConnectionResult(Inventory result) {
+				gameAction.loadStoreInventory(result, new StoreResultCallback<Inventory>() {
+
+					@Override
+					public void onResult(final Inventory inventory) {
+						
+						mHelper.queryInventoryAsync(true,inventory.skus(),  new QueryInventoryFinishedListener() {
+							
+							@Override
+							public void onQueryInventoryFinished(IabResult result,
+									com.xxx.galcon.inappbilling.util.Inventory inv) {
+								
+								List<Order> orders = new ArrayList<Order>();
+								for(InventoryItem item : inventory.inventory){
+									if(inv.hasPurchase(item.sku)){
+										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson()));
+									}
+								}
+								
+								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, orders);
+								
+							}
+						});
+						
+					}
+				});
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				complain("Unable to load inventory from server.");
 				
 			}
 		});
+		List<String> skus = new ArrayList<String>();
+		skus.add("android.test.purchased");
+		
 		
 	}
 
@@ -200,13 +227,15 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}      
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new OnIabPurchaseFinishedListener() {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
 			
 			@Override
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
 				if(result.isSuccess()){
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, new Order(info.getOriginalJson()));
+					List<Order> orders = new ArrayList<Order>();
+					orders.add(new Order(info.getOriginalJson()));
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, orders);
 				}else{
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}
@@ -251,7 +280,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		});
 	}
 	
-	public void consumeOrders(List<Order> consumedOrders){
+	public void consumeOrders(final List<Order> consumedOrders){
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 		
 		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
@@ -273,9 +302,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						// TODO Auto-generated method stub
 						
 					}
-				}, GameLoop.USER.handle, convertPurchasesToOrders(purchases));
-				
-				complain("Purchase complete!");
+				}, GameLoop.USER.handle, consumedOrders);
 				
 			}
 
@@ -284,15 +311,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		
 	}
 	
-	private List<Order> convertPurchasesToOrders(
-			List<Purchase> purchases) {
-		List<Order> orders = new ArrayList<Order>();
-		for(Purchase purchase : purchases){
-			Order order = new Order(purchase.getOrderId(), purchase.getPackageName(), purchase.getSku(), purchase.getPurchaseTime() + "", purchase.getPurchaseState() + "", purchase.getDeveloperPayload(), purchase.getToken());
-			orders.add(order);
-		}
-		return orders;
-	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
 		
@@ -303,6 +321,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		}
 		return purchaseOrders;
 	}
+	
+
 
 	protected void beginUserInitiatedSignIn() {
 		plusHelper.beginUserInitiatedSignIn();
@@ -327,8 +347,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
-		super.onActivityResult(request, response, data);
-		plusHelper.onActivityResult(request, response, data);
+		if (!mHelper.handleActivityResult(request, response, data)) {
+			super.onActivityResult(request, response, data);
+			plusHelper.onActivityResult(request, response, data);
+        }
+		
 	}
 
 	protected GamesClient getGamesClient() {

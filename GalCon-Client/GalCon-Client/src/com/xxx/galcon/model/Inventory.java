@@ -25,5 +25,14 @@ public class Inventory extends JsonConvertible {
 			inventory.add(item);
 		}
 	}
+	
+	public List<String> skus(){
+		List<String> skus = new ArrayList<String>();
+		for(InventoryItem item : inventory){
+			skus.add(item.sku);
+		}
+		
+		return skus;
+	}
 
 }

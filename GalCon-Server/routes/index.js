@@ -223,10 +223,17 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
-	var order = req.body.order;
+	var orders = req.body.orders;
 	
-	var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, order);
-	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	if(orders && orders.length > 0){
+		var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, orders[0]);
+		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	}else{
+		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		userReturnInfo(null);
+	}
+	
+	
 	
 }
 
@@ -436,6 +443,13 @@ exports.deleteConsumedOrders = function(req, res){
 	var playerHandle = req.body.playerHandle;
 	var orders = req.body.orders;
 	
-	var p  = userManager.deleteConsumedOrder(playerHandle, orders[0]);
-	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	if(orders && orders.length > 0){
+		var p  = userManager.deleteConsumedOrder(playerHandle, orders[0]);
+		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	}else{
+		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		userReturnInfo(null);
+	}
+	
+	
 }

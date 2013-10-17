@@ -156,10 +156,10 @@ public class AndroidGameAction implements GameAction {
 	
 	@Override
 	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, Order order)
+			String playerHandle, int numCoins, Long usedCoins, List<Order> orders)
 			throws ConnectionException {
 		try {
-			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, order);
+			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top.toString());
