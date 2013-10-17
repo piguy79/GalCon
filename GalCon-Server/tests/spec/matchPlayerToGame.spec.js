@@ -3,69 +3,22 @@ var needle = require("needle"),
 	gameManager = require('../../modules/model/game'),
 	userManager = require('../../modules/model/user'),
 	mapManager = require('../../modules/model/map'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	elementBuilder = require('../fixtures/elementBuilder');
 
 describe("Player Matching", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1_NAME = "TEST_PLAYER_1@gmail.xxx";
-	var PLAYER_1 = {
-		name: PLAYER_1_NAME,
-		handle: PLAYER_1_HANDLE,
-		rankInfo: {
-			level : 1,
-			startFrom : 0,
-			endAt : 50
-		},
-		xp : 0,
-		wins : 0,
-		losses : 0,
-		coins : 0,
-		usedCoins : -1,
-		watchedAd : false
-	};
+	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, PLAYER_1_NAME, 1);
 	
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
 	var PLAYER_2_NAME = "TEST_PLAYER_2@gmail.xxx";
-	var PLAYER_2 = {
-		name: PLAYER_2_NAME,
-		handle: PLAYER_2_HANDLE,
-		rankInfo: {
-			level : 5,
-			startFrom : 0,
-			endAt : 50
-		},
-		xp : 0,
-		wins : 0,
-		losses : 0,
-		coins : 0,
-		usedCoins : -1,
-		watchedAd : false
-	};
+	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, PLAYER_2_NAME, 5);
 	
 	var MAP_KEY_1 = -100;
 	var MAP_KEY_2 = -200;
-	var MAP_1 = {
-		"key" : MAP_KEY_1,
-		"availableFromLevel" : 1,
-		"title" : "TEST_MAP1",
-		"description" : "Test map 1",
-		"width" : {
-			"min" : 5,
-			"max" : 6
-		},
-		"gameType" : ["standardGame"]
-	};
-	var MAP_2 = {
-			"key" : MAP_KEY_2,
-			"availableFromLevel" : 1,
-			"title" : "TEST_MAP2",
-			"description" : "Test map 2",
-			"width" : {
-				"min" : 5,
-				"max" : 6
-			},
-			"gameType" : ["standardGame"]
-		};
+	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
+	var MAP_2 = elementBuilder.createMap(MAP_KEY_2, 5, 6);
 	
 	beforeEach(function(done) {
 		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {

@@ -5,15 +5,21 @@ var needle = require("needle"),
 	elementMatcher = require('../fixtures/elementMatcher');
 
 describe("Perform Move", function() {
+	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
+	var PLAYER_1_NAME = "TEST_PLAYER_1@gmail.xxx";
+	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, PLAYER_1_NAME, 1);
+	
+	var MAP_KEY_1 = -100;
+	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
+
 	var game;
 	var defaultHomePlanet;
-
 	var defaultPlanetsForTest = [ elementBuilder.createPlanetForTest("fromPlanet", "moveTest", 3, 30, { x : 3, y : 4}), 
 	                              elementBuilder.createPlanetForTest("toPlanet", "", 3, 20, { x : 3, y : 5}) ];
 
 	beforeEach(function(done) {
-		apiRunner.generateGame("moveTest", function(generatedGame) {
-			game = generatedGame;
+		var p = apiRunner.matchPlayerToGame();
+		p.then(function(game) {
 			game.planets.forEach(function(planet) {
 				if (planet.owner == "moveTest") {
 					defaultHomePlanet = planet;
