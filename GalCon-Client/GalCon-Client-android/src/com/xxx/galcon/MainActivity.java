@@ -322,19 +322,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		return purchaseOrders;
 	}
 	
-	
-	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // Pass on the activity result to the helper for handling
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            // not handled, so handle it ourselves (here's where you'd
-            // perform any handling of activity results not related to in-app
-            // billing...
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-        
-    }
 
 	protected void beginUserInitiatedSignIn() {
 		plusHelper.beginUserInitiatedSignIn();
@@ -359,8 +347,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
-		super.onActivityResult(request, response, data);
-		plusHelper.onActivityResult(request, response, data);
+		if (!mHelper.handleActivityResult(request, response, data)) {
+			super.onActivityResult(request, response, data);
+			plusHelper.onActivityResult(request, response, data);
+        }
+		
 	}
 
 	protected GamesClient getGamesClient() {
