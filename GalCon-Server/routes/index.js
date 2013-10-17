@@ -193,21 +193,6 @@ decrementPlanetShipNumber = function(game, move) {
 	}
 }
 
-exports.addPlanetsToGame = function(req, res) {
-	var gameId = req.body.id;
-	var planetsToAdd = req.body.planets;
-	gameManager.addPlanetsToGame(gameId, planetsToAdd, function(updatedGame) {
-		res.json(updatedGame);
-	});
-};
-
-exports.deleteGame = function(req, res) {
-	var gameId = req.query['id'];
-	gameManager.deleteGame(gameId, function() {
-		res.send("Game: " + gameId + " has been Deleted");
-	});
-};
-
 exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];

@@ -1,5 +1,5 @@
-exports.createPlanetForTest = function(name, owner, shipRegenRate, numberOfShips, position){
-	return  {
+exports.createPlanetForTest = function(name, owner, shipRegenRate, numberOfShips, position) {
+	return {
 		name : name,
 		owner : owner,
 		shipRegenRate : shipRegenRate,
@@ -7,8 +7,8 @@ exports.createPlanetForTest = function(name, owner, shipRegenRate, numberOfShips
 		position : position
 	};
 }
-	
-exports.createMoveForTest = function(player, fromPlanet, toPlanet, fleet, duration){
+
+exports.createMoveForTest = function(player, fromPlanet, toPlanet, fleet, duration) {
 	return {
 		player : player,
 		fromPlanet : fromPlanet,

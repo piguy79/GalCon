@@ -269,11 +269,6 @@ exports.findById = function(gameId){
 	return GameModel.findById(gameId).populate('players').exec();
 };
 
-exports.deleteGame = function(gameId){
-	GameModel.findById(gameId).remove();
-};
-
-
 exports.findAvailableGames = function(player) {
 	var p = GameModel.find().where('players').size(1).populate('players').exec();
 	return p.then(function(games) {
@@ -438,17 +433,6 @@ exports.addUser = function(gameId, player){
 		
 			return exports.saveGame(game);
 		}
-	});
-}
-
-exports.addPlanetsToGame = function(gameId,planetsToAdd){
-	var p = this.findById(gameId);
-	return p.then(function(game) {
-		planetsToAdd.forEach(function(planet){
-			game.planets.push(planet);
-		});
-		
-		return exports.saveGame(game);
 	});
 }
 

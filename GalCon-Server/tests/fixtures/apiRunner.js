@@ -2,6 +2,35 @@ var needle = require("needle"), mongoose = require('mongoose');
 
 var localhost = "http://localhost:3000";
 
+var needleWithPromise = function(func, url, postBody) {
+	var p = new mongoose.Promise();
+
+	var args = [ localhost + url ];
+	if (postBody) args.push(postBody);
+	args.push(function(err, res, body) {
+		if (err) p.reject(err);
+		else p.complete(body);
+	});
+
+	func.apply(needle, args);
+
+	return p;
+}
+
+exports.findGame = function(gameId) {
+	return needleWithPromise(needle.get, "/findGameById?id=" + gameId);
+}
+
+exports.matchPlayerToGame = function(playerHandle, mapKey) {
+	var postData = {
+		mapToFind : mapKey,
+		playerHandle : playerHandle,
+		time : new Date().getTime()
+	};
+
+	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
+};
+
 exports.performMove = function(gameId, moves, player, callBack) {
 	var postData = {
 		moves : moves,
@@ -9,66 +38,17 @@ exports.performMove = function(gameId, moves, player, callBack) {
 		player : player
 	}
 
-	needle.post(localhost + "/performMoves", postData, function(err, response, body) {
-		callBack();
-	});
-}
-
-exports.findGame = function(gameId, callback) {
-	needle.get(localhost + "/findGameById?id=" + gameId, function(err, response, body) {
-		callback(body);
-	});
-}
-
-exports.matchPlayerToGame = function(playerHandle, mapKey) {
-	var p = new mongoose.Promise();
-	var postData = {
-		mapToFind : mapKey,
-		playerHandle : playerHandle,
-		time: new Date().getTime()
-	};
-
-	needle.post(localhost + "/matchPlayerToGame", postData, function(err, response, body) {
-		if(err) {
-			p.reject(err);
-		} else {
-			p.complete(body);
-		}
-	});
-	return p;
-};
-
-exports.deleteGame = function(gameId, callback) {
-	needle.get(localhost + "/deleteGame?id=" + gameId, function(err, response, body) {
-		callback(body);
-	});
-}
-
-exports.addPlanets = function(gameId, planetsForTest, callback) {
-	var postData = {
-		id : gameId,
-		planets : planetsForTest
-	};
-
-	needle.post(localhost + "/addPlanetsToGame", postData, function(err, response, body) {
-		callback();
-	});
+	return needleWithPromise(needle.post, "/performMoves", postData);
 }
 
 exports.joinGame = function(gameId, playerToJoin, callback) {
-	needle.get(localhost + "/joinGame?id=" + gameId + "&player=" + playerToJoin, function(err, response, body) {
-		callback();
-	});
+	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&player=" + playerToJoin);
 }
 
 exports.findCurrentGamesByUserName = function(userName, callback) {
-	needle.get(localhost + "/findActiveGamesForUser?userName=" + userName, function(err, response, body) {
-		callback(body);
-	});
+	return needleWithPromise(needle.get, "/findActiveGamesForUser?userName=" + userName);
 }
 
 exports.findAvailableGamesForUser = function(player, callback) {
-	needle.get(localhost + "/findAvailableGames?player=" + player, function(err, response, body) {
-		callback(body.items);
-	});
+	return needleWithPromise(needle.get, "/findAvailableGames?player=" + player);
 }
