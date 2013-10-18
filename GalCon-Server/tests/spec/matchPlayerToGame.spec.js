@@ -8,12 +8,10 @@ var needle = require("needle"),
 
 describe("Player Matching", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
-	var PLAYER_1_NAME = "TEST_PLAYER_1@gmail.xxx";
-	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, PLAYER_1_NAME, 1);
+	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
 	
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
-	var PLAYER_2_NAME = "TEST_PLAYER_2@gmail.xxx";
-	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, PLAYER_2_NAME, 5);
+	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 5);
 	
 	var MAP_KEY_1 = -100;
 	var MAP_KEY_2 = -200;

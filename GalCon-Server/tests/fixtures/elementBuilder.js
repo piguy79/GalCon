@@ -18,9 +18,9 @@ exports.createMove = function(player, fromPlanet, toPlanet, fleet, duration) {
 	};
 }
 
-exports.createUser = function(playerHandle, playerName, level) {
+exports.createUser = function(playerHandle, level) {
 	return {
-		name: playerName,
+		name: playerHandle + "@gmail.com",
 		handle: playerHandle,
 		rankInfo: {
 			level : level,
