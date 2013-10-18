@@ -362,7 +362,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 		if (game !== null) {
 			return gameManager.findById(gameId).then(function(returnGame) {
 				decrementCoins(user, gameId, time);
-				var p = withPromise(user.save, user);
+				var p = user.withPromise(user.save);
 				return p.then(function() {
 					return returnGame;
 				});
@@ -409,29 +409,13 @@ var generateGamePromise = function(user, time, mapToFind) {
 			decrementCoins(user, game.id, time);
 
 			
-			var p = withPromise(user.save, user);
+			var p = user.withPromise(user.save);
 			return p.then(function() {
 				return game;
 			});
 		});
 	});
 }
-
-var withPromise = function(func, obj) {
-	var p = new mongoose.Promise();
-	p.complete();
-	var array = Array.prototype.slice.call(arguments, 1);
-	array.push(function(err, result) {
-		if(err) {
-			p.reject(err);
-		} else {
-			p.complete(result);
-		}
-	});
-	func.apply(obj, array);
-	return p;
-}
-
 
 exports.findAllInventory = function(req, res){
 	var p = inventoryManager.InventoryModel.find().exec();
