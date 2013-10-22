@@ -233,16 +233,15 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var usedCoins = req.body.usedCoins;
 	var orders = req.body.orders;
 	
-	if(orders && orders.length > 0){
-		var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, orders[0]);
-		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	if(orders){
+		var testOrder = _.extend({}, orders[0])
+		
+		var p  = userManager.addCoinsForAnOrder(handle, numCoins, testOrder);
+		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
 		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
 		userReturnInfo(null);
 	}
-	
-	
-	
 }
 
 var handleUserUpdate = function(req, res, handle){
