@@ -225,10 +225,9 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var orders = req.body.orders;
 	
 	if(orders){
-		console.log(orders[0]);
-		console.log(typeof orders[0])
+		var testOrder = _.extend({}, orders[0])
 		
-		var p  = userManager.addCoinsForAnOrder(handle, numCoins, orders[0]);
+		var p  = userManager.addCoinsForAnOrder(handle, numCoins, testOrder);
 		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
 		var userReturnInfo = handleUserUpdate(req, res, handle);
