@@ -7,7 +7,9 @@ var mongoose = require('../../modules/model/mongooseConnection').mongoose,
 	mapManager = require('../../modules/model/map'),
 	_ = require('underscore');
 
-describe("Perform Move", function() {
+jasmine.getEnv().defaultTimeoutInterval = 30000;
+
+describe("Perform Move -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
 	
@@ -71,32 +73,21 @@ describe("Perform Move", function() {
 	var createMovesWithValidationSteps = function(moves, planets) {
 		var currentGameId;
 		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
-		p.then(function(game) {
-			currentGameId = game.id;
-			return gameManager.GameModel.findOne({id: game.id}).exec();
+		
+		return p.then(function(game) {
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({id: game.id}, {$set: {planets: planets}}).exec();
 		}).then(function(game) {
-			game.planets = [];
-			
-			planets.forEach(function(planet){
-				game.planets.push(planet);
-			});
-			
-			return game.withPromise(game.save);
-		}).then(function() {
 			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
 		}).then(function() {
-			console.log(2);
 			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
 		}).then(function() {
-			console.log(3);
 			return apiRunner.performMove(currentGameId, [], PLAYER_2_HANDLE);
 		}).then(function() {
 			return apiRunner.findGame(currentGameId, this);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		});
-		
-		return p;
 	}
 
 	var notOneOfTheFollowingPlanets = function(planet, planetsToNotCheck) {

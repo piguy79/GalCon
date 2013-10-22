@@ -287,18 +287,6 @@ exports.findCollectionOfGames = function(searchIds){
 	return GameModel.find({_id : {$in : searchIds}}).populate('players').exec();
 }
 
-exports.saveGame = function(game) {
-	var p = new mongoose.Promise();
-	game.save(function(err, savedGame) {
-		if (err) {
-			p.reject(err);
-		} else {
-			p.complete(savedGame);
-		}
-	});
-	return p;
-}
-
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 	if(attemptNumber > 5) {
 		var p = new mongoose.Promise();
@@ -307,7 +295,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 	}
 	
 	var p = exports.findById(gameId);
-	p.then(function(game) {
+	return p.then(function(game) {
 		game.addMoves(moves);
 		game.currentRound.playersWhoMoved.push(playerHandle);
 			
@@ -431,7 +419,7 @@ exports.addUser = function(gameId, player){
 				}
 			}
 		
-			return exports.saveGame(game);
+			return game.withPromise(game.save);
 		}
 	});
 }

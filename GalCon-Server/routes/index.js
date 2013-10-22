@@ -145,34 +145,34 @@ exports.performMoves = function(req, res) {
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
 
-	gameManager.performMoves(gameId, moves, playerHandle, 0, function(savedGame) {
-		if (!savedGame) {
+	var p = gameManager.performMoves(gameId, moves, playerHandle, 0);
+	p.then(function(game) {
+		if (!game) {
 			res.json({
 				error : "Could not perform move, please try again"
 			});
 		} else {
-			if (savedGame.endGameInformation.winnerHandle) {
-				var p = userManager.findUserByHandle(savedGame.endGameInformation.winnerHandle);
+			if (game.endGameInformation.winnerHandle) {
+				var p = userManager.findUserByHandle(game.endGameInformation.winnerHandle);
 				p.then(function(user) {
 					user.wins++;
 					user.xp += 10;
-					savedGame.endGameInformation.xpAwardToWinner = 10;
+					game.endGameInformation.xpAwardToWinner = 10;
 					rankManager.findRankForXp(user.xp, function(rank) {
 						user.rankInfo = rank;
 						user.save(function() {
-							res.json(processGameReturn(savedGame, playerHandle));
+							res.json(processGameReturn(game, playerHandle));
 						});
 					});
 				});
 			} else {
-				res.json(processGameReturn(savedGame, playerHandle));
+				res.json(processGameReturn(game, playerHandle));
 			}
 		}
-	});
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
-
 	for ( var i = 0; i < game.moves.length; i++) {
 		var move = game.moves[i];
 
@@ -197,16 +197,24 @@ exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
 
+	var user;
+	var game;
 	var p = userManager.findUserByHandle(playerHandle);
-	p.then(function(user) {
-		gameManager.addUser(gameId, user, function(game) {
-			gameManager.findById(gameId, function(returnGame) {
-				user.currentGames.push(gameId);
-				user.save(function() {
-					res.json(returnGame);
-				});
-			});
-		});
+	p.then(function(foundUser) {
+		user = foundUser;
+		return gameManager.addUser(gameId, user);
+	}).then(function(savedGame) {
+		if(savedGame == null) {
+			console.log("Could not join game. Perhaps someone already joined?");
+			res.json({
+				"error" : "Could not join game"
+			})
+		}
+		game = savedGame;
+		user.currentGames.push(gameId);
+		return user.withPromise(user.save);
+	}).then(function() {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -404,10 +412,9 @@ var generateGamePromise = function(user, time, mapToFind) {
 		};
 
 		return gameManager.createGame(gameAttributes).then(function(game) {
-			return gameManager.saveGame(game);
+			return game.withPromise(game.save);
 		}).then(function(game) {
 			decrementCoins(user, game.id, time);
-
 			
 			var p = user.withPromise(user.save);
 			return p.then(function() {
@@ -435,6 +442,4 @@ exports.deleteConsumedOrders = function(req, res){
 		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
 		userReturnInfo(null);
 	}
-	
-	
 }
