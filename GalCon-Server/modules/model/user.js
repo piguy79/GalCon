@@ -92,19 +92,12 @@ exports.addCoins = function(coinsToAdd, handle, usedCoins){
 										}).exec();
 }
 
-exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
+exports.addCoinsForAnOrder = function(handle, numCoins, order){
 	return UserModel.findOneAndUpdate(
 										{ 
-											$and : 
-													[
-													 	{
-													 		handle : handle
-													 	}, 
-													 	{
-													 		usedCoins : usedCoins
-													 	}
-													 ], 
-													 'consumedOrders.orderId' : 
+											handle : handle
+											, 
+												'consumedOrders.orderId' : 
 													 					{
 														 					$nin : [order.orderId]
 													 					}
@@ -112,7 +105,7 @@ exports.addCoinsForAnOrder = function(coinsToAdd, handle, usedCoins, order){
 										{
 											$inc : 
 													{
-														coins : coinsToAdd
+														coins : numCoins
 													}, 
 											$set : 
 													{

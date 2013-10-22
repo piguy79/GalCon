@@ -1,11 +1,12 @@
 var user = require('../../modules/model/user'), 
 mongoose = require('mongoose'),
-_ = require('underscore');
+_ = require('underscore'),
+apiRunner = require('../fixtures/apiRunner');
 
 describe("Testing interactions with the user model", function(){
 	
 	var testUser = {
-			Purchaname : "testing",
+			name : "testing",
 			handle : "test",
 			createdDate : Date.now(),
 			xp : 4,
@@ -71,8 +72,6 @@ describe("Testing interactions with the user model", function(){
 		p.then(function(){
 			done();
 		});
-		p.complete();
-		
 	});
 	
 	it("Add coins to a test user", function(done){
@@ -95,7 +94,7 @@ describe("Testing interactions with the user model", function(){
 	it("Add coins to a test user using an order object", function(done){
 		var p = new mongoose.Promise();
 		p.then(function(){
-			return user.addCoinsForAnOrder(4, 'test', 14567, testOrder);
+			return user.addCoinsForAnOrder('test', 4,  testOrder);
 		}).then(function(person){
 			expect(person.coins).toBe(4);
 			expect(person.usedCoins).toBe(-1);
@@ -128,7 +127,7 @@ describe("Testing interactions with the user model", function(){
 	
 	it("Trying to update with an order which has already been processed", function(done){
 
-		var p = user.addCoinsForAnOrder(1, 'testWatchedAd', 1000, testOrder);
+		var p = user.addCoinsForAnOrder('testWatchedAd', 1, testOrder);
 		p.then(function(updatedUser){
 			expect(updatedUser).toBe(null);
 			done();
@@ -181,6 +180,24 @@ describe("Testing interactions with the user model", function(){
 			console.log(err);
 			done();
 		});
+		p.complete();
+	});
+	
+	
+	it("Should add coins for multiple orders", function(done){
+		var p = new mongoose.Promise();
+		p.then(function(){
+			return apiRunner.addCoinsForAnOrder('test', 2, testOrder);
+		}).then(function(user){
+			console.log(user);
+			expect(user.consumedOrders.length).toBe(1);
+			done();
+		}, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+		
 		p.complete();
 	});
 	

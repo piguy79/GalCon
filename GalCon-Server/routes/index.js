@@ -220,26 +220,26 @@ exports.addCoins = function(req, res) {
 }
 
 exports.addCoinsForAnOrder = function(req, res) {
-	var playerHandle = req.body.playerHandle;
+	var handle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
-	var usedCoins = req.body.usedCoins;
 	var orders = req.body.orders;
 	
-	if(orders && orders.length > 0){
-		var p  = userManager.addCoinsForAnOrder(numCoins, playerHandle, usedCoins, orders[0]);
-		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	if(orders){
+		console.log(orders[0]);
+		console.log(typeof orders[0])
+		
+		var p  = userManager.addCoinsForAnOrder(handle, numCoins, orders[0]);
+		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
-		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		var userReturnInfo = handleUserUpdate(req, res, handle);
 		userReturnInfo(null);
 	}
-	
-	
-	
 }
 
 var handleUserUpdate = function(req, res, handle){
 	return function(user){
 		if(user === null){
+			console.log("Unable to update user");
 			var findUserPromise = userManager.findUserByHandle(handle);
 			findUserPromise.then(function(found){
 				res.json(found);

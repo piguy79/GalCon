@@ -52,3 +52,13 @@ exports.findCurrentGamesByUserName = function(userName, callback) {
 exports.findAvailableGamesForUser = function(player, callback) {
 	return needleWithPromise(needle.get, "/findAvailableGames?player=" + player);
 }
+
+exports.addCoinsForAnOrder = function(playerHandle, numCoins, orders){
+	var postData = {
+			playerHandle : playerHandle,
+			numCoins : numCoins,
+			orders : orders
+	};
+	
+	return needleWithPromise(needle.post, '/addCoinsForAnOrder', postData);
+}
