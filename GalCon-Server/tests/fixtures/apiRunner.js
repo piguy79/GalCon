@@ -31,24 +31,24 @@ exports.matchPlayerToGame = function(playerHandle, mapKey) {
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
 };
 
-exports.performMove = function(gameId, moves, player, callBack) {
+exports.performMove = function(gameId, moves, playerHandle) {
 	var postData = {
 		moves : moves,
 		id : gameId,
-		player : player
+		playerHandle : playerHandle
 	}
 
 	return needleWithPromise(needle.post, "/performMoves", postData);
 }
 
-exports.joinGame = function(gameId, playerToJoin, callback) {
-	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&player=" + playerToJoin);
+exports.joinGame = function(gameId, playerToJoin) {
+	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&playerHandle=" + playerToJoin);
 }
 
-exports.findCurrentGamesByUserName = function(userName, callback) {
+exports.findCurrentGamesByUserName = function(userName) {
 	return needleWithPromise(needle.get, "/findActiveGamesForUser?userName=" + userName);
 }
 
-exports.findAvailableGamesForUser = function(player, callback) {
-	return needleWithPromise(needle.get, "/findAvailableGames?player=" + player);
+exports.findAvailableGames = function(playerHandle) {
+	return needleWithPromise(needle.get, "/findAvailableGames?playerHandle=" + playerHandle);
 }

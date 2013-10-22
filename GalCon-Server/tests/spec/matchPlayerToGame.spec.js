@@ -1,5 +1,4 @@
-var needle = require("needle"),
-	apiRunner = require('../fixtures/apiRunner'),
+var apiRunner = require('../fixtures/apiRunner'),
 	gameManager = require('../../modules/model/game'),
 	userManager = require('../../modules/model/user'),
 	mapManager = require('../../modules/model/map'),
