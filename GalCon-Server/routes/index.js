@@ -228,14 +228,14 @@ exports.addCoins = function(req, res) {
 }
 
 exports.addCoinsForAnOrder = function(req, res) {
-	var handle = req.body.playerHandle;
+	var playerHandle = req.body.playerHandle;
 	var orders = req.body.orders;
 	
 	if(orders && orders.length > 0){
-		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
-		lastPromise.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
+		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, playerHandle);
+		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	}else{
-		var userReturnInfo = handleUserUpdate(req, res, handle);
+		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
 		userReturnInfo(null);
 	}
 }
