@@ -24,24 +24,16 @@ __Advancement__
 
 1. XP/rank system
  1. Dynamic XP based upon opponent rank
+ 2. Gain XP per victory and per planet taken
 2. Levels system and selection with UI on game creation - Different galaxies are opened for each group of ranks that you reach
  1. Small world - 1-5
  2. Large world - 5-10
- 3. Speed ability planet - 10-12
- 4. Defense ability planet - 12-14
- 5. Attack ability planet - 14-16
- 6. Block regen ability planet - 16-18
- 7. Asteroid belt world - 18-20
- 8. Black hole (dynamic speed) world - 20-22
-2. Achievements (Possibly 1.1)
- 1. First Blood - Play your first game
- 2. Comeback King - Come back from being so far behind in a  game to win it
- 3. Win x games games (Can be multiple, 5,10,30 etc)
- 4. Play x games games
- 5. Speed Demon - Win a game while holding a speed ability
- 6. Win a game by holding ALL planets
- 7. Win a game in under x amount of time
- 8. David vs Goliath - Beat an opponent of a higher rank
+ 3. Speed ability planet - 10-15
+ 4. Defense ability planet - 16-20
+ 5. Attack ability planet - 21-25
+ 6. Block regen ability planet - 26-30
+ 7. Multiple home worlds - 31-35
+ 8. Hold or harvest - 36-40
 2. Leaderboards
  1. Global ranking formula
  2. Friends rank?
@@ -62,15 +54,29 @@ __Advancement__
  1. New ship selection dialog with slider to select # of ships
  2. Move bar - Show all moves in progress, with touch to highlight move on screen
  3. Show users battle results on round end
- 2. Asteroid game type
- 3. Black hole game type 
 10. Security
 11. Heroku scaling? How many users do we expect to fit on a node.
 12. Graceful error handling
 13. iOS?
-14. Sounds (and music?)
 15. Tutorial
 16. Application configuration
+
+1.1 - Targeted Features
+----
+1. Additional level types
+ 1. Asteroid belt world
+ 1. Black hole (dynamic speed) world
+1. Achievements
+ 1. First Blood - Play your first game
+ 2. Comeback King - Come back from being so far behind in a  game to win it
+ 3. Win x games games (Can be multiple, 5,10,30 etc)
+ 4. Play x games games
+ 5. Speed Demon - Win a game while holding a speed ability
+ 6. Win a game by holding ALL planets
+ 7. Win a game in under x amount of time
+ 8. David vs Goliath - Beat an opponent of a higher rank
+1. Sounds (and music?)
+
 
 Heroku
 ----
