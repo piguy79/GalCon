@@ -228,7 +228,7 @@ exports.addCoins = function(req, res) {
 }
 
 exports.addCoinsForAnOrder = function(req, res) {
-	var playerHandle = req.body.playerHandle;
+	var handle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
 	var usedCoins = req.body.usedCoins;
 	var orders = req.body.orders;
