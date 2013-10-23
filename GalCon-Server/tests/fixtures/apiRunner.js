@@ -53,12 +53,20 @@ exports.findAvailableGames = function(playerHandle) {
 	return needleWithPromise(needle.get, "/findAvailableGames?playerHandle=" + playerHandle);
 }
 
-exports.addCoinsForAnOrder = function(playerHandle, numCoins, orders){
+exports.addCoinsForAnOrder = function(playerHandle, orders){
 	var postData = {
 			playerHandle : playerHandle,
-			numCoins : numCoins,
 			orders : orders
 	};
 	
 	return needleWithPromise(needle.post, '/addCoinsForAnOrder', postData);
+}
+
+exports.deleteConsumedOrders = function(playerHandle, orders){
+	var postData = {
+			playerHandle : playerHandle,
+			orders : orders
+	};
+	
+	return needleWithPromise(needle.post, '/deleteConsumedOrders', postData);
 }

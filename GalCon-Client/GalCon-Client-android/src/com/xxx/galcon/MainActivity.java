@@ -141,11 +141,11 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 								List<Order> orders = new ArrayList<Order>();
 								for(InventoryItem item : inventory.inventory){
 									if(inv.hasPurchase(item.sku)){
-										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson()));
+										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson(), item.numCoins));
 									}
 								}
 								
-								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, 1, GameLoop.USER.usedCoins, orders);
+								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, orders);
 								
 							}
 						});
@@ -235,8 +235,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 				if(result.isSuccess()){
 					List<Order> orders = new ArrayList<Order>();
-					orders.add(new Order(info.getOriginalJson()));
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, inventoryItem.numCoins, GameLoop.USER.usedCoins, orders);
+					orders.add(new Order(info.getOriginalJson(), inventoryItem.numCoins));
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle,  orders);
 				}else{
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}

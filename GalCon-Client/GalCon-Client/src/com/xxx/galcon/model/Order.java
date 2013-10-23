@@ -15,10 +15,11 @@ public class Order extends JsonConvertible implements JsonConstructable{
 	public String purchaseState;
 	public String developerPayload;
 	public String token;
+	public int associatedCoins;
 	
 	public Order(){}
 	
-	public Order(String jsonPurchaseInfo){
+	public Order(String jsonPurchaseInfo, int associatedCoins){
 	        JSONObject o;
 			try {
 				o = new JSONObject(jsonPurchaseInfo);
@@ -29,13 +30,14 @@ public class Order extends JsonConvertible implements JsonConstructable{
 		        purchaseState = o.optString("purchaseState");
 		        developerPayload = o.optString("developerPayload");
 		        token = o.optString("token", o.optString("purchaseToken"));
+		        this.associatedCoins = associatedCoins;
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 	        
 	}
 	
-	public Order(String orderId, String packageName, String productId, String purchaseTime, String purchaseState, String developerPayload, String token){
+	public Order(String orderId, String packageName, String productId, String purchaseTime, String purchaseState, String developerPayload, String token, int associatedCoins){
 		this.orderId = orderId;
 		this.packageName = packageName;
 		this.productId = productId;
@@ -43,6 +45,7 @@ public class Order extends JsonConvertible implements JsonConstructable{
 		this.purchaseState = purchaseState;
 		this.developerPayload = developerPayload;
 		this.token = token;
+		this.associatedCoins = associatedCoins;
 	}
 	
 	
@@ -54,6 +57,7 @@ public class Order extends JsonConvertible implements JsonConstructable{
 		this.purchaseState = jsonObject.getString("purchaseState");
 		this.developerPayload = jsonObject.getString("developerPayload");
 		this.token = jsonObject.getString("token");
+		this.associatedCoins = jsonObject.getInt("associatedCoins");
 		
 	}
 
@@ -66,6 +70,7 @@ public class Order extends JsonConvertible implements JsonConstructable{
 		jsonObject.put("purchaseState", purchaseState);
 		jsonObject.put("developerPayload", developerPayload);
 		jsonObject.put("token", token);
+		jsonObject.put("associatedCoins", associatedCoins);
 		
 		return jsonObject;
 	}

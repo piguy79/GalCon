@@ -229,13 +229,11 @@ exports.addCoins = function(req, res) {
 
 exports.addCoinsForAnOrder = function(req, res) {
 	var handle = req.body.playerHandle;
-	var numCoins = req.body.numCoins;
-	var usedCoins = req.body.usedCoins;
 	var orders = req.body.orders;
 	
 	if(orders && orders.length > 0){
 		
-		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle, numCoins);
+		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
 		lastPromise.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
 		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
@@ -261,7 +259,6 @@ var performFunctionToOrders = function(func, objects){
 	promise.complete();
 	var lastPromise = promise;
 	var mainArgs = arguments;
-	
 	
 	objects.forEach(function(object){
 		lastPromise = lastPromise.then(function(){
