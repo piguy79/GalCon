@@ -185,11 +185,32 @@ describe("Testing interactions with the user model", function(){
 	
 	
 	it("Should add coins for multiple orders", function(done){
-		var p = new mongoose.Promise();
-		p.then(function(){
-			return apiRunner.addCoinsForAnOrder('test', 2, testOrder);
-		}).then(function(user){
-			console.log(user);
+		
+		var secondOrder = {
+				orderId : "4532",
+			    packageName : "package",
+			    productId : "4",
+			    purchaseTime : "12543",
+			    purchaseState : "DONE",
+			    developerPayload : "",
+			    token : "TOK"
+			};
+		
+		var p = apiRunner.addCoinsForAnOrder('test', 2, [testOrder, secondOrder]);
+		p.then(function(user){
+			expect(user.consumedOrders.length).toBe(2);
+			done();
+		}, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+	});
+	
+	it("Should not duplicate an order", function(done){
+		
+		var p = apiRunner.addCoinsForAnOrder('testWatchedAd', 2, [testOrder]);
+		p.then(function(user){
 			expect(user.consumedOrders.length).toBe(1);
 			done();
 		}, function(err){
@@ -197,8 +218,29 @@ describe("Testing interactions with the user model", function(){
 			console.log(err);
 			done();
 		});
+	});
+	
+	it("Should add any new orders which do not currently exist.", function(done){
+	
+		var secondOrder = {
+			orderId : "4532",
+		    packageName : "package",
+		    productId : "4",
+		    purchaseTime : "12543",
+		    purchaseState : "DONE",
+		    developerPayload : "",
+		    token : "TOK"
+		};
 		
-		p.complete();
+		var p = apiRunner.addCoinsForAnOrder('testWatchedAd', 2, [testOrder, secondOrder]);
+		p.then(function(user){
+			expect(user.consumedOrders.length).toBe(2);
+			done();
+		}, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
 	});
 	
 	afterEach(function(done){
