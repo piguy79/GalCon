@@ -232,11 +232,10 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var orders = req.body.orders;
 	
 	if(orders && orders.length > 0){
-		
 		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
 		lastPromise.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
-		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		var userReturnInfo = handleUserUpdate(req, res, handle);
 		userReturnInfo(null);
 	}
 }
