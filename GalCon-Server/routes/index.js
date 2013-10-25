@@ -152,24 +152,49 @@ exports.performMoves = function(req, res) {
 				error : "Could not perform move, please try again"
 			});
 		} else {
-			if (game.endGameInformation.winnerHandle) {
-				var p = userManager.findUserByHandle(game.endGameInformation.winnerHandle);
-				p.then(function(user) {
-					user.wins++;
-					user.xp += 10;
-					game.endGameInformation.xpAwardToWinner = 10;
-					rankManager.findRankForXp(user.xp, function(rank) {
-						user.rankInfo = rank;
-						user.save(function() {
-							res.json(processGameReturn(game, playerHandle));
-						});
-					});
-				});
-			} else {
-				res.json(processGameReturn(game, playerHandle));
-			}
+			var p = new mongoose.Promise();
+			p.complete();
+			
+			return p.then(function() {
+				if (game.endGameInformation.winnerHandle) {
+					return updateWinnersAndLosers(game);
+				}
+				return game;
+			}).then(function(gameToReturn) {
+				res.json(processGameReturn(gameToReturn, playerHandle));
+			});
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var updateWinnersAndLosers = function(game) {
+	var winner;
+	
+	var p = new mongoose.Promise();
+	p.complete();
+	
+	game.players.forEach(function(player) {
+		p = p.then(function() {
+			if(player.handle === game.endGameInformation.winnerHandle) {
+				winner = player;
+				player.wins += 1;
+				player.xp += 10;
+				game.endGameInformation.xpAwardToWinner = 10;
+			} else {
+				player.losses += 1;
+			}
+			return player.withPromise(player.save);
+		});
+	});
+	
+	return p.then(function() {
+		return rankManager.findRankForXp(winner.xp);
+	}).then(function(rank) {
+		winner.rankInfo = rank;
+		winner.withPromise(winner.save);
+	}).then(function() {
+		return game;
+	});
 }
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {

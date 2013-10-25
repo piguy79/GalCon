@@ -114,21 +114,19 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 
 gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	this.planets.forEach(function(planet){
-		if(isADefensiveMoveToThisPlanet(planet, move)){	
+		if(isADefensiveMoveToThisPlanet(planet, move)) {	
 			move.battlestats.previousPlanetOwner = planet.ownerHandle;
 			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
-			
-		} else if (isSamePlanet(planet, move.toPlanet)){
-		
+		} else if (isSamePlanet(planet, move.toPlanet)) {
 			var defenceMultiplier = 0;
 			var attackMultiplier = 0;
 			
-			if(multiplierMap[planet.ownerHandle]){
+			if (multiplierMap[planet.ownerHandle]) {
 				defenceMultiplier = multiplierMap[planet.ownerHandle].defenceMultiplier;
 			}
 			
-			if(multiplierMap[move.playerHandle]){
+			if (multiplierMap[move.playerHandle]) {
 				attackMultiplier = multiplierMap[move.playerHandle].attackMultiplier;
 			}
 		
@@ -141,17 +139,16 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 			move.battlestats.newPlanetOwner = "";
 			move.battlestats.conquer = false;
 						
-			if(battleResult <= 0){
+			if(battleResult <= 0) {
 				move.battlestats.conquer = true;
 				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
 				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
-			}else{
+			} else {
 				move.battlestats.defenceMultiplier = defenceMultiplier;
 				planet.numberOfShips = reverseEffectOfMultiplier(battleResult,defenceMultiplier);
 			}
-			
 			
 			move.battlestats.defenceStrength = defenceStrength;
 			move.battlestats.attackStrength = attackStrength;
@@ -322,9 +319,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 			if(!savedGame) {
 				return exports.performMoves(gameId, moves, playerHandle, attemptNumber + 1);
 			} else {
-				savedGame.populate('players', function(err, game) {
-					return game;
-				});
+				return savedGame.withPromise(savedGame.populate, 'players');
 			}
 		});
 	})
@@ -377,9 +372,7 @@ var opponent = function(player, game){
 }
 
 var processMoves = function(player, game) {
-
-	var multiplierMap = {
-	};
+	var multiplierMap = {};
 	var currentOpponent = opponent(player, game);
 	
 	multiplierMap[''] = {

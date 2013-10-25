@@ -1,16 +1,16 @@
 exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position) {
 	return {
 		name : name,
-		owner : owner,
+		ownerHandle : owner,
 		shipRegenRate : shipRegenRate,
 		numberOfShips : numberOfShips,
 		position : position
 	};
 }
 
-exports.createMove = function(player, fromPlanet, toPlanet, fleet, duration) {
+exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duration) {
 	return {
-		player : player,
+		playerHandle : playerHandle,
 		fromPlanet : fromPlanet,
 		toPlanet : toPlanet,
 		fleet : fleet,

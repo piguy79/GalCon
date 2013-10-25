@@ -32,7 +32,6 @@ exports.processRoundInformation = function(game) {
 }
 
 exports.applyMovesToGame = function(game, multiplierMap){
-
 	var i = game.moves.length;
 	while (i--) {
 		var move = game.moves[i];
@@ -43,5 +42,4 @@ exports.applyMovesToGame = function(game, multiplierMap){
 			move.executed = true;
 		}
 	}
-
 }

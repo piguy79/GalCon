@@ -58,15 +58,14 @@ exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
 	var lastPromise = promise;
 	players.forEach(function(player) {
 		lastPromise = lastPromise.then(function() {
-			var scorePromise = exports.findScore(mapKey, player.handle);
-			scorePromise.complete();
+			var lastScorePromise = exports.findScore(mapKey, player.handle);
 
-			var lastScorePromise = scorePromise.then(function(leaderboardRow) {
+			return lastScorePromise.then(function(leaderboardRow) {
 				return game.GameModel.find({
 					'endGameInformation.winnerHandle' : player.handle
 				}).exec();
-			}).then(function(scoresForGamesWon) {
-				var scores = _.map(scoresForGamesWon, function(score) {return score.endGameInformation ? score.endGameInformation.leaderboardScoreAmount : 0});
+			}).then(function(gamesWonByUser) {
+				var scores = _.map(gamesWonByUser, function(game) {return game.endGameInformation ? game.endGameInformation.leaderboardScoreAmount : 0});
 				var currentScore = _.reduce(scores, function(memo, num) { return memo + num}, 0);
 
 				currentScore += gameResultPoints(handleOfPlayerWhoWon, player, players);
@@ -76,8 +75,6 @@ exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
 			}).then(null, function(err) {
 				throw new Error(err);
 			});
-
-			return lastScorePromise;
 		});
 	});
 
