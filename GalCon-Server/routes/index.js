@@ -33,7 +33,8 @@ exports.findGameById = function(req, res) {
 
 exports.findAvailableGames = function(req, res) {
 	var playerHandle = req.query['playerHandle'];
-	gameManager.findAvailableGames(playerHandle, function(games) {
+	var p = gameManager.findAvailableGames(playerHandle);
+	p.then(function(games) {
 		var returnObj = {};
 		returnObj.items = games;
 		res.json(returnObj);

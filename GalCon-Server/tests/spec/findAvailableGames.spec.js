@@ -1,63 +1,90 @@
-var needle = require("needle"),
-Step = require('step'),
-apiRunner = require('../fixtures/apiRunner'),
-elementBuilder = require('../fixtures/elementbuilder'),
-elementMatcher = require('../fixtures/elementMatcher');
+var needle = require("needle"), 
+	apiRunner = require('../fixtures/apiRunner'), 
+	elementBuilder = require('../fixtures/elementbuilder'), 
+	elementMatcher = require('../fixtures/elementMatcher'),
+	gameManager = require('../../modules/model/game'),
+	userManager = require('../../modules/model/user'),
+	mapManager = require('../../modules/model/map'),
+	mongoose = require('mongoose');
 
-describe("Testing available Game Method", function(){
-
-	var firstUserGame;
-	var secondUserGame;
-	var firstUser = "user1";
-	var secondUser = "user2";
+describe("Find available games -", function() {
+	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
+	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
 	
-	beforeEach(function(done){
-		apiRunner.generateGame(firstUser, function(generatedGame){
-			firstUserGame = generatedGame;	
-			apiRunner.generateGame(secondUser, function(generatedGame){
-				secondUserGame = generatedGame;
-			
-				done();
+	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
+	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 5);
+	
+	var PLAYER_3_HANDLE = "TEST_PLAYER_3";
+	
+	var MAP_KEY_1 = -100;
+	var MAP_KEY_2 = -200;
+	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
+	var MAP_2 = elementBuilder.createMap(MAP_KEY_2, 5, 6);
+
+	beforeEach(function(done) {
+		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
+			if(err) { console.log(err); }
+			(new userManager.UserModel(PLAYER_2)).save(function(err, user) {
+				if(err) { console.log(err); }
+				(new mapManager.MapModel(MAP_1)).save(function(err, map) {
+					if(err) { console.log(err); }
+					(new mapManager.MapModel(MAP_2)).save(function(err, map) {
+						if(err) { console.log(err); }
+						done();
+					});
+				});
 			});
 		});
+	});
+	
+	afterEach(function(done) {
+		gameManager.GameModel.remove().where("map").in([MAP_KEY_1, MAP_KEY_2]).exec(function(err) {
+			if(err) { console.log(err); }
+			mapManager.MapModel.remove().where("key").in([MAP_KEY_1, MAP_KEY_2]).exec(function(err) {
+				if(err) { console.log(err); }
+				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+					if(err) { console.log(err); }
+					done();
+				});
+			});
+		});
+	});
+
+	it("Should not see games you created", function(done) {
+		var p = new mongoose.Promise();
+		p.complete();
 		
-	});	
-	
-	
-	it("Should not be able to see a game you have already joined.", function(done){
-	
-		apiRunner.findAvailableGamesForUser(secondUser,function(availableGames){
+		p.then(function() {
+			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
+		}).then(function() {
+			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_2);
+		}).then(function() {
+			return apiRunner.findAvailableGames(PLAYER_1_HANDLE);
+		}).then(function(games) {
+			var availableGames = games.items;
 			expect(availableGames.length).toBe(1);
 			expect(availableGames[0].players.length).toBe(1);
-			expect(availableGames[0].players[0]).toBe(firstUser);
-			done();
-		});
-
-	});
-	
-	it("After Joining a game I should not see that game when asking for available", function(done){
-		Step(
-			function joinFirstGameAsSecondUser(){
-				apiRunner.joinGame(firstUserGame._id,secondUser, this);
-			}, function findAvailableGamesForSecondUser(joinedGame){
-				apiRunner.findAvailableGamesForUser(secondUser,this);
-			}, function validateGameFound(gamesFound){
-				expect(gamesFound.length).toBe(0);
-				done();
-			}
-		);
-	
-	
-	});
-	
-	
-	afterEach(function(done){
-		apiRunner.deleteGame(firstUserGame._id, function(){
-			apiRunner.deleteGame(secondUserGame._id, function(){
-				done();
-			});
-		});
+			expect(availableGames[0].players[0].handle).toBe(PLAYER_2_HANDLE);
+		}).then(null, function(err) {
+			expect(err.toString()).toBe(null);
+		}).then(done);
 	});
 
-
+	it("Should not see a game that already has two players", function(done) {
+		var p = new mongoose.Promise();
+		p.complete();
+		
+		p.then(function() {
+			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
+		}).then(function() {
+			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1);
+		}).then(function() {
+			return apiRunner.findAvailableGames(PLAYER_3_HANDLE);
+		}).then(function(games) {
+			var availableGames = games.items;
+			expect(availableGames.length).toBe(0);
+		}).then(null, function(err) {
+			expect(err.toString()).toBe(null);
+		}).then(done);
+	});
 });
