@@ -67,9 +67,9 @@ public class UIConnectionWrapper {
 		}
 	}
 	
-	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins, List<Order> orders){
+	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders){
 		try{
-			gameAction.addCoinsForAnOrder(callback, playerHandle, numCoins, usedCoins, orders);
+			gameAction.addCoinsForAnOrder(callback, playerHandle, orders);
 		}catch (ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}

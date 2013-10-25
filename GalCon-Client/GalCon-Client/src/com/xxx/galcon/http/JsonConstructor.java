@@ -59,12 +59,10 @@ public class JsonConstructor {
 		
 	}
 	
-	public static JSONObject addCoinsForAnOrder(String playerHandle, int numCoins, Long usedCoins, List<Order> orders) throws JSONException{
+	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException{
 		JSONObject top = new JSONObject();
 		
 		top.put("playerHandle", playerHandle);
-		top.put("numCoins", numCoins);
-		top.put("usedCoins", usedCoins);
 		JSONArray jsonOrders = createOrdersJson(orders);
 		top.put("orders", jsonOrders);
 		

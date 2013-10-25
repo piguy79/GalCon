@@ -18,7 +18,8 @@ var userSchema = mongoose.Schema({
 	                        purchaseTime : "String",
 	                        purchaseState : "String",
 	                        developerPayload : "String",
-	                        token : "String"
+	                        token : "String",
+	                        associatedCoins : "Number"
 	                  	}
 	                  ],
 	coins : "Number",
@@ -92,7 +93,7 @@ exports.addCoins = function(coinsToAdd, handle, usedCoins){
 										}).exec();
 }
 
-exports.addCoinsForAnOrder = function(handle, numCoins, order){
+exports.addCoinsForAnOrder = function(handle, order){
 	return UserModel.findOneAndUpdate(
 										{ 
 											handle : handle
@@ -105,7 +106,7 @@ exports.addCoinsForAnOrder = function(handle, numCoins, order){
 										{
 											$inc : 
 													{
-														coins : numCoins
+														coins : order.associatedCoins
 													}, 
 											$set : 
 													{

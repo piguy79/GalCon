@@ -240,10 +240,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	
 	@Override
 	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
-			String playerHandle, int numCoins, Long usedCoins, List<Order> orders)
+			String playerHandle, List<Order> orders)
 			throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, numCoins, usedCoins, orders);
+			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

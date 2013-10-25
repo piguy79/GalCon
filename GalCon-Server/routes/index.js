@@ -254,19 +254,45 @@ exports.addCoins = function(req, res) {
 
 exports.addCoinsForAnOrder = function(req, res) {
 	var playerHandle = req.body.playerHandle;
-	var numCoins = req.body.numCoins;
-	var usedCoins = req.body.usedCoins;
 	var orders = req.body.orders;
 	
-	if(orders){
-		var testOrder = _.extend({}, orders[0])
-		
-		var p  = userManager.addCoinsForAnOrder(handle, numCoins, testOrder);
-		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
+	if(orders && orders.length > 0){
+		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, playerHandle);
+		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	}else{
 		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
 		userReturnInfo(null);
 	}
+}
+
+exports.deleteConsumedOrders = function(req, res){
+	var playerHandle = req.body.playerHandle;
+	var orders = req.body.orders;
+	
+	if(orders){
+		var lastPromise = performFunctionToOrders(userManager.deleteConsumedOrder, orders, playerHandle);
+		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	}else{
+		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		userReturnInfo(null);
+	}
+}
+
+var performFunctionToOrders = function(func, objects){
+	var promise = new mongoose.Promise();
+	promise.complete();
+	var lastPromise = promise;
+	var mainArgs = arguments;
+	
+	objects.forEach(function(object){
+		lastPromise = lastPromise.then(function(){
+			var args = Array.prototype.slice.call(mainArgs, 2);
+			args.push(_.extend({},object));
+			return func.apply(this, args);
+		});
+	});
+	
+	return lastPromise
 }
 
 var handleUserUpdate = function(req, res, handle){
@@ -455,15 +481,3 @@ exports.findAllInventory = function(req, res){
 	}).then(null, logErrorAndSetResponse(req, res));
 };
 
-exports.deleteConsumedOrders = function(req, res){
-	var playerHandle = req.body.playerHandle;
-	var orders = req.body.orders;
-	
-	if(orders && orders.length > 0){
-		var p  = userManager.deleteConsumedOrder(playerHandle, orders[0]);
-		p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
-	}else{
-		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
-		userReturnInfo(null);
-	}
-}
