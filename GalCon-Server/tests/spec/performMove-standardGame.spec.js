@@ -79,10 +79,14 @@ describe("Perform Move - Standard -", function() {
 			return gameManager.GameModel.findOneAndUpdate({id: game.id}, {$set: {planets: planets}}).exec();
 		}).then(function(game) {
 			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
-		}).then(function() {
+		}).then(function(game) {
+			expect(game.currentRound.roundNumber).toBe(0);
 			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
 		}).then(function() {
 			return apiRunner.performMove(currentGameId, [], PLAYER_2_HANDLE);
+		}).then(function(game) {
+			expect(game.currentRound.roundNumber).toBe(1);
+			return game;
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		});
@@ -97,7 +101,7 @@ describe("Perform Move - Standard -", function() {
 		return true;
 	}
 
-	it("Planet should be owned by user after move", function(done) {
+	it("Planet should be owned by user after move, with no regen occuring on takeover", function(done) {
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 30, 1) ];
 
 		var p = createMovesWithValidationSteps(moves, PLANETS);
@@ -110,12 +114,23 @@ describe("Perform Move - Standard -", function() {
 					expect(planet).not.toBeOwnedBy(PLAYER_1_HANDLE);
 				}
 			});
+			
+			expect(game.moves.length).toBe(1);
+			
+			var move = game.moves[0];
+			expect(move.executed).toBe(true);
+			expect(move.battlestats.conquer).toBe(true);
+			expect(move.battlestats.attackStrength).toBe(30);
+			expect(move.battlestats.defenceStrength).toBe(20);
+			expect(move.battlestats.newPlanetOwner).toBe(PLAYER_1_HANDLE);
+			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
+			expect(move.battlestats.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
 	});
 
-	it("Planet should not be owned by user after move as not sending enough fleet", function(done) {
+	it("Planet should remain unowned after attack by smaller fleet", function(done) {
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 19, 1) ];
 
 		var p = createMovesWithValidationSteps(moves, PLANETS);
@@ -129,86 +144,70 @@ describe("Perform Move - Standard -", function() {
 					expect(planet).toHaveShipNumber(14);
 				}
 			});
+			
+			expect(game.moves.length).toBe(1);
+			
+			var move = game.moves[0];
+			expect(move.executed).toBe(true);
+			expect(move.battlestats.conquer).toBe(false);
+			expect(move.battlestats.attackStrength).toBe(19);
+			expect(move.battlestats.defenceStrength).toBe(20);
+			expect(move.battlestats.newPlanetOwner).toBe('');
+			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
+			expect(move.battlestats.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
 	});
-//
-//	it("Planet should survive an attack from a smaller fleet", function(done) {
-//		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1) ];
-//
-//		createMovesWithValidationSteps(game, moves, defaultPlanetsForTest, function(dbGame) {
-//			dbGame.planets.forEach(function(planet) {
-//				if (planet.name == UNOWNED_PLANET_1) {
-//					expect(planet).toBeOwnedBy("");
-//					expect(planet).toHaveShipNumber(17);
-//				}
-//			});
-//			done();
-//		});
-//	});
-//
-//	it("Move should be deleted after it is processed.", function(done) {
-//		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1);
-//		var moves = [ testMove ];
-//
-//		createMovesWithValidationSteps(GAME, moves, defaultPlanetsForTest, function(dbGame) {
-//			expect(dbGame.moves).not.toContainMove(testMove);
-//			done();
-//		});
-//	});
-//
-//	it("Should process the fleet vs numberOfShips logic before adding the regen", function(done) {
-//		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 24, 1);
-//		var moves = [ testMove ];
-//
-//		createMovesWithValidationSteps(game, moves, defaultPlanetsForTest, function(dbGame) {
-//			dbGame.planets.forEach(function(planet) {
-//				if (planet.name == UNOWNED_PLANET_1) {
-//					expect(planet).toBeOwnedBy(PLAYER_1_HANDLE);
-//					expect(planet).toHaveShipNumber(7);
-//				}
-//			});
-//			expect(dbGame.moves).not.toContainMove(testMove);
-//			done();
-//		});
-//	});
-//
-//	it("Should be able to send more ships to a friendly planet (owned by the same user)", function(done) {
-//
-//		var planetsForTest = [ elementBuilder.createPlanetForTest(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 10, {
-//			x : 3,
-//			y : 4
-//		}), elementBuilder.createPlanetForTest(UNOWNED_PLANET_1, PLAYER_1_HANDLE, 0, 20, {
-//			x : 3,
-//			y : 5
-//		}) ];
-//
-//		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 5, 1);
-//		var moves = [ testMove ];
-//
-//		createMovesWithValidationSteps(game, moves, planetsForTest, function(dbGame) {
-//			dbGame.planets.forEach(function(planet) {
-//				if (planet.name == UNOWNED_PLANET_1) {
-//					expect(planet).toBeOwnedBy(PLAYER_1_HANDLE);
-//					expect(planet).toHaveShipNumber(25);
-//				} else if (notOneOfTheFollowingPlanets(planet, [ UNOWNED_PLANET_1, PLAYER_1_HOME_PLANET, defaultHomePlanet.name ])) {
-//					expect(planet).not.toBeOwnedBy(PLAYER_1_HANDLE);
-//				}
-//			});
-//			expect(dbGame.moves).not.toContainMove(testMove);
-//			done();
-//		});
-//	});
-//
-//	it("Round Number should be updated after perform move is called.", function(done) {
-//		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1);
-//		var moves = [ testMove ];
-//
-//		createMovesWithValidationSteps(game, moves, defaultPlanetsForTest, function(dbGame) {
-//			expect(dbGame.currentRound.roundNumber).toBe(1);
-//			expect(dbGame.currentRound.player).toBe(PLAYER_1_HANDLE);
-//			done();
-//		});
-//	});
+
+	it("Move should be deleted after next round", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS);
+		p.then(function(game) {
+			return apiRunner.performMove(game._id, [], PLAYER_2_HANDLE);
+		}).then(function(game) {
+			return apiRunner.performMove(game._id, [], PLAYER_1_HANDLE);
+		}).then(function(game) {
+			expect(game.moves.length).toBe(0);
+		}).then(null, function(err) {
+			expect(err.toString()).toBe(null);
+		}).then(done);
+	});
+
+	it("Should be able to send ship reinforcements to a planet owned by the same user", function(done) {
+		var ownedPlanet = "OWNED_PLANET";
+		var planetsForTest = [ elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 10, {
+			x : 3,
+			y : 4
+		}), elementBuilder.createPlanet(ownedPlanet, PLAYER_1_HANDLE, 5, 20, {
+			x : 3,
+			y : 5
+		}) ];
+
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, ownedPlanet, 5, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, planetsForTest);
+		p.then(function(game) {
+			game.planets.forEach(function(planet) {
+				if (planet.name == ownedPlanet) {
+					expect(planet).toBeOwnedBy(PLAYER_1_HANDLE);
+					expect(planet).toHaveShipNumber(30);
+				} else if (notOneOfTheFollowingPlanets(planet, [ ownedPlanet, PLAYER_1_HOME_PLANET ])) {
+					expect(planet).not.toBeOwnedBy(PLAYER_1_HANDLE);
+				}
+			});
+			
+			expect(game.moves.length).toBe(1);
+			
+			var move = game.moves[0];
+			expect(move.executed).toBe(true);
+			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
+			expect(move.battlestats.previousPlanetOwner).toBe(PLAYER_1_HANDLE);
+		}).then(null, function(err) {
+			expect(err.toString()).toBe(null);
+		}).then(done);
+	});
 });
