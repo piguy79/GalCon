@@ -213,8 +213,6 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-
-		
 	}
 
 	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {

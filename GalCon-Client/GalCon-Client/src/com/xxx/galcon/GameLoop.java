@@ -38,6 +38,7 @@ public class GameLoop extends Game {
 	private MainMenuScreen mainMenuScreen;
 	private GameListScreen currentGameScreen;
 	private LevelSelectionScreen levelSelectionScreen;
+	private NoMoreCoinsDialog noMoreCoinsScreen;
 
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
@@ -140,6 +141,7 @@ public class GameLoop extends Game {
 		mainMenuScreen = new MainMenuScreen(this, skin, gameAction, socialAction);
 		currentGameScreen = new CurrentGameScreen(assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
+		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
 		setScreen(mainMenuScreen);
 	}
 
@@ -163,7 +165,8 @@ public class GameLoop extends Game {
 
 			if (nextScreen.equals(Constants.New)) {
 				if (USER.coins == 0) {
-					return new NoMoreCoinsDialog(assetManager);
+					noMoreCoinsScreen.resetState();
+					return noMoreCoinsScreen;
 				}
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
