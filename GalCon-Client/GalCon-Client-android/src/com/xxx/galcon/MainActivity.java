@@ -293,9 +293,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
 
 					@Override
-					public void onConnectionResult(Player result) {
-						System.out.println("Success");
-						
+					public void onConnectionResult(Player result) {						
 					}
 
 					@Override

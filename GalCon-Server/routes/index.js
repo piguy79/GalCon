@@ -317,13 +317,12 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 	var handle = req.body.playerHandle;
 	var usedCoins = req.body.usedCoins;
 	var timeRemaining = req.body.timeRemaining;
+	
+	var p = configManager.findLatestConfig('payment');
+	p.then(function(config){
+		return userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
+	}).then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 
-	configManager.findLatestConfig("payment", function(config) {
-
-		var p = userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
-		p.then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
-
-	});
 }
 
 exports.findConfigByType = function(req, res) {

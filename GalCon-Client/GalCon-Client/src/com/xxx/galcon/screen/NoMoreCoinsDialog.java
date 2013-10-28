@@ -36,7 +36,6 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
@@ -54,7 +53,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private Texture rectangleGreen;
 	private Texture bg;
 	private Texture blackGreyButton;
-	private Texture cancelButtonTexture;
 	private Texture deadPlanet;
 	private Texture sunTexture;
 	private TextButtonStyle greenButtonStyle;
@@ -63,7 +61,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private TextButton watchAd;
 	private TextButton timeRemaining;
 	
-	private ImageButton cancelButton;
+	private ImageButton backButton;
 	private ImageButton deadPlanetButton;
 	private ImageButton sunButton;
 	
@@ -71,14 +69,16 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private InputProcessor oldInputProcessor;
 	private MoveToAction move;
 	private TextureRegionDrawable textureRegionDrawable;
+	private TextureRegionDrawable bgTexture;
 	private Stack stack;
 	
 	private boolean animated;
+	private boolean loadInventory = false;
 	
 
-	public NoMoreCoinsDialog(AssetManager assetManager) {
+	public NoMoreCoinsDialog(Skin skin, AssetManager assetManager) {
 		super();
-		final float width = Gdx.graphics.getWidth(), height = Gdx.graphics.getHeight();
+		this.skin = skin;
 		
 		loadAssetsFromManager(assetManager);	
 		createSkinWithDefaultStyle();
@@ -98,10 +98,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		blackGreyButtonStyle.font.setColor(Color.GRAY);
 		skin.add("blackGreyButton", blackGreyButtonStyle);
 		
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(cancelButtonTexture));
-		skin.add("cancelButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
 		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(deadPlanet));
 		skin.add("deadPlanet", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
@@ -111,17 +107,14 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 		
 		
-		
-		TextureRegionDrawable bgTexture = new TextureRegionDrawable(new TextureRegion(bg));
 		stage = new Stage();
-		setupLayoutDefaultPosition(width, height, bgTexture);
+		
+		bgTexture = new TextureRegionDrawable(new TextureRegion(bg));
 				
 		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");
 		
 		setupWatchAdButton();
 		createPlanetView();
-		ExternalActionWrapper.loadStoreInventory(this);
-
 		
 	}
 
@@ -164,18 +157,18 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		});
 	}
 
-	private void createCancelButton(final float width, final float height) {
-		cancelButton = new ImageButton(skin, "cancelButton");
-		cancelButton.setWidth(width * 0.18f);
-		cancelButton.setHeight(width * 0.18f);
-		cancelButton.setPosition(-(width * 0.78f), height * 0.87f);
+	private void createBackButton(final float width, final float height) {
+		backButton = new ImageButton(skin, "backButton");
+		backButton.setWidth(width * 0.18f);
+		backButton.setHeight(width * 0.18f);
+		backButton.setPosition(-(width * 0.01f), height * 0.89f);
 		
 		move = new MoveToAction();
-		move.setPosition(width * 0.78f, height * 0.87f);
+		move.setPosition(width * 0.01f, height * 0.89f);
 		move.setDuration(0.3f);
 		
-		cancelButton.addAction(move);
-		cancelButton.addListener(new InputListener(){
+		backButton.addAction(move);
+		backButton.addListener(new InputListener(){
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				return true;
@@ -191,11 +184,10 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 				})));
 			}
 		});
-		stage.addActor(cancelButton);
+		stage.addActor(backButton);
 	}
 
 	private void createSkinWithDefaultStyle() {
-		skin = new Skin();
 		skin.add("default", new LabelStyle(Fonts.getInstance().largeFont(), Color.GRAY));
 	}
 
@@ -203,13 +195,13 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		rectangleGreen = assetManager.get("data/images/green_button.png", Texture.class);
 		blackGreyButton = assetManager.get("data/images/black_grey_button.png", Texture.class);
 		bg = assetManager.get("data/images/coins_bg.png", Texture.class);
-		cancelButtonTexture = assetManager.get("data/images/cancel_button.png", Texture.class);
 		deadPlanet = assetManager.get("data/images/planets/dead_planet.png", Texture.class);
 		sunTexture = assetManager.get("data/images/planets/sun.png", Texture.class);
 	}
 
 	private void setupLayoutDefaultPosition(final float width,
 			final float height, TextureRegionDrawable bgTexture) {
+		
 		layout = new Table(skin);
 		float padding = 0;
 		layout.setWidth(width);
@@ -229,6 +221,11 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private void createLayout(Inventory stock) {
 		final float height = Gdx.graphics.getHeight();
 		final float width = Gdx.graphics.getWidth();
+		
+		
+		setupLayoutDefaultPosition(width, height, bgTexture);
+
+		
 		layout.add(new Label("More Coins", skin)).expandX().colspan(2).padBottom(height * 0.05f);
 		layout.row();
 		layout.add(stack).colspan(2);
@@ -237,7 +234,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		layout.row();
 		layout.add(createInAppBillingButtons(layout, stock.inventory)).expandX();
 		stage.addActor(layout);
-		createCancelButton(width, height);
+		createBackButton(width, height);
 	}
 
 	private Actor createInAppBillingButtons(Table layout2, List<InventoryItem> inventory) {
@@ -245,6 +242,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		
 		for(InventoryItem item : inventory){
 			TextButton button = new PaymentButton(item, skin, "greenButton", this);
+			button.setWidth(Gdx.graphics.getWidth() * 0.8f);
 			scrollTable.add(button).expandX().padBottom(10f);
 			scrollTable.row();
 		}
@@ -268,21 +266,26 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	}
 
 	public void resize(int width, int height) {
-		stage.setViewport(width, height, true);
+			stage.setViewport(width, height, true);
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		timeRemaining.setText(findTimeRemaining());
+		if(!loadInventory){
+			loadInventory = true;
+			ExternalActionWrapper.loadStoreInventory(this);
+		}
 		handleWatchAd();
 		if(GameLoop.USER.coins > 0 && !animated){
 			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
 			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
 			animated = true;
 		}
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();		
+		
+		stage.act(delta);
+		stage.draw();	
 	}
 
 	private void handleWatchAd() {
@@ -320,8 +323,10 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 
 	@Override
 	public void resetState() {
-		returnValue = null;		
-		ExternalActionWrapper.loadStoreInventory(this);
+		returnValue = null;
+		loadInventory = false;
+		animated = false;
+		stage = new Stage();
 	}
 
 	@Override
@@ -337,7 +342,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	@Override
 	public void onResult(Inventory result) {
 		createLayout(result);	
-		
 	}
 
 
