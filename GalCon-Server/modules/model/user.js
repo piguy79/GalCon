@@ -48,21 +48,8 @@ userSchema.methods.createOrAdd = function(gameId, callback){
 
 var UserModel = db.model('User', userSchema);
 
-
-exports.saveUser = function(user, callback){
-	user.save(function(err, savedUser){
-		callback(savedUser);
-	});
-}
-
-exports.findUserByName = function(userName, callback){
-	UserModel.findOne({name : userName}).exec(function(err, user){
-		if(err){
-			console.log("Unable to find User information");
-		}else{
-			callback(user);
-		}
-	});
+exports.findUserByName = function(userName) {
+	return UserModel.findOne({name : userName}).exec();
 }
 
 exports.findUserByHandle = function(handle){

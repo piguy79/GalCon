@@ -65,9 +65,11 @@ exports.findGamesWithPendingMove = function(req, res) {
 
 exports.findUserByUserName = function(req, res) {
 	var userName = req.query['userName'];
-	userManager.findUserByName(userName, function(user) {
+	
+	var p = userManager.findUserByName(userName);
+	p.then(function(user) {
 		if (user) {
-			res.json(user);
+			return user;
 		} else {
 			user = new userManager.UserModel({
 				name : userName,
@@ -79,14 +81,15 @@ exports.findUserByUserName = function(req, res) {
 				usedCoins : -1,
 				watchedAd : false
 			});
-			rankManager.findRankByName("1", function(dbRank) {
-				user.rankInfo = dbRank;
-				user.save(function() {
-					res.json(user);
-				});
+			var innerp = rankManager.findRankByName("1");
+			return innerp.then(function(rank) {
+				user.rankInfo = rank;
+				return user.withPromise(user.save);
 			});
 		}
-	});
+	}).then(function(user) {
+		res.json(user);
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.requestHandleForUserName = function(req, res) {
@@ -111,14 +114,15 @@ exports.requestHandleForUserName = function(req, res) {
 					reason : "Username already chosen by another player"
 				});
 			} else {
-				userManager.findUserByName(userName, function(user) {
+				var innerp = userManager.findUserByName(userName);
+				innerp.then(function(user) {
 					user.handle = handle;
-					user.save(function() {
-						res.json({
-							created : true,
-							player : user
-						})
-					});
+					return user.withPromise(user.save);
+				}).then(function(user) {
+					res.json({
+						created : true,
+						player : user
+					})
 				});
 			}
 		}).then(null, logErrorAndSetResponse(req, res));
