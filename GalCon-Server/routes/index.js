@@ -129,15 +129,14 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 	var playerHandle = req.query['playerHandle'];
 	var p = userManager.findUserByHandle(playerHandle);
 	p.then(function(user) {
-		if (!user) {
-			res.json({});
-		} else {
-			gameManager.findCollectionOfGames(user.currentGames, function(games) {
-				var returnObj = {};
-				returnObj.items = games;
-				res.json(returnObj);
-			});
+		if(!user) {
+			throw new Error("Could not find user object for handle: " + playerHandle);
 		}
+		return gameManager.findCollectionOfGames(user.currentGames);
+	}).then(function(games) {
+		var returnObj = {};
+		returnObj.items = games;
+		res.json(returnObj);
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
