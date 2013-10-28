@@ -325,6 +325,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	public void resetState() {
 		returnValue = null;
 		loadInventory = false;
+		animated = false;
 		stage = new Stage();
 	}
 
