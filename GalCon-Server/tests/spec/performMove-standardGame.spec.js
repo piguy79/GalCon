@@ -7,8 +7,6 @@ var mongoose = require('../../modules/model/mongooseConnection').mongoose,
 	mapManager = require('../../modules/model/map'),
 	_ = require('underscore');
 
-jasmine.getEnv().defaultTimeoutInterval = 30000;
-
 describe("Perform Move - Standard -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
@@ -76,7 +74,7 @@ describe("Perform Move - Standard -", function() {
 		
 		return p.then(function(game) {
 			currentGameId = game._id;
-			return gameManager.GameModel.findOneAndUpdate({id: game.id}, {$set: {planets: planets}}).exec();
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game) {
 			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
 		}).then(function(game) {

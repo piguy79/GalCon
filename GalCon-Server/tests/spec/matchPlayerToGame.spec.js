@@ -105,8 +105,8 @@ describe("Player Matching", function() {
 		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
 		}).then(function(game) {
-			return gameManager.GameModel.findOneAndUpdate({id: game.id}, {rankOfIntialPlayer: 15}).exec();
-		}).then(function() {
+			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfIntialPlayer: 15}).exec();
+		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1);
 		}).then(function(game) {
 			expect(game.map).toEqual(MAP_KEY_1);
@@ -124,7 +124,7 @@ describe("Player Matching", function() {
 		p.then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
 		}).then(function(game) {
-			return gameManager.GameModel.findOneAndUpdate({id: game.id}, {rankOfInitialPlayer: 15, createdTime: 100}).exec();
+			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfInitialPlayer: 15, createdTime: 100}).exec();
 		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
 		}).then(function() {
