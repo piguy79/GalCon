@@ -1,6 +1,8 @@
 package com.xxx.galcon.screen;
 
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -19,13 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -53,8 +52,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private Texture rectangleGreen;
 	private Texture bg;
 	private Texture blackGreyButton;
-	private Texture deadPlanet;
-	private Texture sunTexture;
 	private TextButtonStyle greenButtonStyle;
 	private TextButtonStyle blackGreyButtonStyle;
 	
@@ -62,17 +59,13 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private TextButton timeRemaining;
 	
 	private ImageButton backButton;
-	private ImageButton deadPlanetButton;
-	private ImageButton sunButton;
 	
 	private Object returnValue;
 	private InputProcessor oldInputProcessor;
 	private MoveToAction move;
 	private TextureRegionDrawable textureRegionDrawable;
 	private TextureRegionDrawable bgTexture;
-	private Stack stack;
 	
-	private boolean animated;
 	private boolean loadInventory = false;
 	
 
@@ -98,15 +91,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		blackGreyButtonStyle.font.setColor(Color.GRAY);
 		skin.add("blackGreyButton", blackGreyButtonStyle);
 		
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(deadPlanet));
-		skin.add("deadPlanet", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(sunTexture));
-		skin.add("sun", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
-		
 		stage = new Stage();
 		
 		bgTexture = new TextureRegionDrawable(new TextureRegion(bg));
@@ -114,18 +98,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		timeRemaining = new TextButton(findTimeRemaining(), skin, "blackGreyButton");
 		
 		setupWatchAdButton();
-		createPlanetView();
 		
-	}
-
-	private void createPlanetView() {
-		deadPlanetButton = new ImageButton(skin, "deadPlanet");	
-		sunButton = new ImageButton(skin, "sun");
-		sunButton.addAction(Actions.alpha(0f));
-		
-		stack = new Stack();
-		stack.add(sunButton);
-		stack.add(deadPlanetButton);
 	}
 
 	private void setupWatchAdButton() {
@@ -194,9 +167,7 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private void loadAssetsFromManager(AssetManager assetManager) {
 		rectangleGreen = assetManager.get("data/images/green_button.png", Texture.class);
 		blackGreyButton = assetManager.get("data/images/black_grey_button.png", Texture.class);
-		bg = assetManager.get("data/images/coins_bg.png", Texture.class);
-		deadPlanet = assetManager.get("data/images/planets/dead_planet.png", Texture.class);
-		sunTexture = assetManager.get("data/images/planets/sun.png", Texture.class);
+		bg = assetManager.get("data/images/level_select_bg.png", Texture.class);
 	}
 
 	private void setupLayoutDefaultPosition(final float width,
@@ -225,11 +196,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		
 		setupLayoutDefaultPosition(width, height, bgTexture);
 
-		
-		layout.add(new Label("More Coins", skin)).expandX().colspan(2).padBottom(height * 0.05f);
-		layout.row();
-		layout.add(stack).colspan(2);
-		layout.row();
 		layout.add(timeRemaining).expandX().colspan(2).padBottom(height * 0.05f);
 		layout.row();
 		layout.add(createInAppBillingButtons(layout, stock.inventory)).expandX();
@@ -240,6 +206,22 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private Actor createInAppBillingButtons(Table layout2, List<InventoryItem> inventory) {
 		Table scrollTable = new Table();
 		
+		scrollTable.add(watchAd).expandX().fill().padBottom(10f);
+		scrollTable.row();
+		
+		Collections.sort(inventory, new Comparator<InventoryItem>() {
+
+			@Override
+			public int compare(InventoryItem o1, InventoryItem o2) {
+				if(o1.numCoins < o2.numCoins){
+					return -1;
+				}else if(o1.numCoins > o2.numCoins){
+					return 1;
+				}
+				return 0;
+			}
+		});
+		
 		for(InventoryItem item : inventory){
 			TextButton button = new PaymentButton(item, skin, "greenButton", this);
 			button.setWidth(Gdx.graphics.getWidth() * 0.8f);
@@ -247,7 +229,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			scrollTable.row();
 		}
 		
-		scrollTable.add(watchAd).expandX().padBottom(10f);
 		
 		final ScrollPane scrollPane = new ScrollPane(scrollTable);
 		scrollPane.setScrollingDisabled(true, false);
@@ -278,11 +259,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 			ExternalActionWrapper.loadStoreInventory(this);
 		}
 		handleWatchAd();
-		if(GameLoop.USER.coins > 0 && !animated){
-			deadPlanetButton.addAction(Actions.fadeOut(0.750f));
-			sunButton.addAction(Actions.sequence(Actions.fadeIn(0.750f), Actions.delay(1.5f)));
-			animated = true;
-		}
 		
 		stage.act(delta);
 		stage.draw();	
@@ -325,7 +301,6 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	public void resetState() {
 		returnValue = null;
 		loadInventory = false;
-		animated = false;
 		stage = new Stage();
 	}
 

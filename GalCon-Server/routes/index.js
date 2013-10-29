@@ -273,7 +273,7 @@ exports.deleteConsumedOrders = function(req, res){
 	var playerHandle = req.body.playerHandle;
 	var orders = req.body.orders;
 	
-	if(orders){
+	if(orders && orders.length >0){
 		var lastPromise = performFunctionToOrders(userManager.deleteConsumedOrder, orders, playerHandle);
 		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	}else{

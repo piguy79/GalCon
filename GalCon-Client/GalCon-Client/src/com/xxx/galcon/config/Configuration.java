@@ -15,6 +15,7 @@ public class Configuration extends JsonConvertible {
 	public Long version;
 	public String type;
 	public Map<String, String> configValues;
+	// TODO ADD a defaults map for when no config values exist on load
 	
 	
 	@Override

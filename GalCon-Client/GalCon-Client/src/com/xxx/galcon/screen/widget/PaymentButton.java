@@ -36,7 +36,7 @@ public class PaymentButton extends TextButton {
 
 
 	private static String createTextFromInventory(InventoryItem inventory2) {
-		return inventory2.price + "  " + inventory2.numCoins + " Coins";
+		return inventory2.price + "  " + inventory2.numCoins + " Coin[s]";
 	}
 
 	
