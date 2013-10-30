@@ -240,7 +240,7 @@ exports.joinGame = function(req, res) {
 			})
 		}
 		game = savedGame;
-		user.currentGames.push(gameId);
+		user.currentGames.push(game);
 		return user.withPromise(user.save);
 	}).then(function() {
 		res.json(game);
@@ -422,6 +422,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	return gameManager.addUser(gameId, user).then(function(game) {
 		if (game !== null) {
 			return gameManager.findById(gameId).then(function(returnGame) {
+				user.currentGames.push(game);
 				decrementCoins(user, gameId, time);
 				var p = user.withPromise(user.save);
 				return p.then(function() {
@@ -435,7 +436,6 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 var decrementCoins = function(user, gameId, time) {
-	user.currentGames.push(gameId);
 	user.coins--;
 	if (user.coins == 0) {
 		user.usedCoins = time;
@@ -467,6 +467,7 @@ var generateGamePromise = function(user, time, mapToFind) {
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
 		}).then(function(game) {
+			user.currentGames.push(game);
 			decrementCoins(user, game.id, time);
 			
 			var p = user.withPromise(user.save);

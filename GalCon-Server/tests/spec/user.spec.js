@@ -12,7 +12,7 @@ describe("Testing interactions with the user model", function(){
 			xp : 4,
 			wins : 10,
 			losses : 6,
-			currentGames : ["12345"],
+			currentGames : [],
 			consumedOrders : [],
 			coins : 0,
 			usedCoins : 14567,
@@ -31,7 +31,7 @@ describe("Testing interactions with the user model", function(){
 			xp : 4,
 			wins : 10,
 			losses : 6,
-			currentGames : ["12345"],
+			currentGames : [],
 			consumedOrders : [
 								{
 									orderId : "1345",

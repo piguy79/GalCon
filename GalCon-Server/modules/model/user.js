@@ -9,7 +9,7 @@ var userSchema = mongoose.Schema({
 	xp : "Number",
 	wins : "Number",
 	losses : "Number",
-	currentGames : ["String"],
+	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
 	consumedOrders : [
 	                  	{
 	                  		orderId : "String",
@@ -54,6 +54,10 @@ exports.findUserByName = function(userName) {
 
 exports.findUserByHandle = function(handle){
 	return UserModel.findOne({"handle" : handle}).exec();
+}
+
+exports.findUserWithGames = function(handle){
+	return UserModel.findOne({"handle" : handle}).populate('currentGames').exec();
 }
 
 exports.addCoins = function(coinsToAdd, handle, usedCoins){
