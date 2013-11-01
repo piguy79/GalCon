@@ -137,9 +137,9 @@ public class AndroidGameAction implements GameAction {
 
 	@Override
 	public void addCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle,
-			final int numCoins, final Long usedCoins) {
+			final int numCoins) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
+			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS, new Player()).execute(top.toString());

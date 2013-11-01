@@ -213,7 +213,7 @@ var updateUserTime = function(user, time, gameId){
 		
 		var gamesStillInProgress = _.filter(foundUser.currentGames, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
 		
-		if(gamesStillInProgress.length === 0){
+		if(foundUser.coins <= 0 && gamesStillInProgress.length === 0){
 			user.usedCoins = time;
 		}
 		
@@ -274,9 +274,8 @@ exports.joinGame = function(req, res) {
 exports.addCoins = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
-	var usedCoins = req.body.usedCoins;
 	
-	var p  = userManager.addCoins(numCoins, playerHandle, usedCoins);
+	var p  = userManager.addCoins(numCoins, playerHandle);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));	
 }
 

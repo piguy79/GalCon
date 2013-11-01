@@ -206,8 +206,11 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	private Actor createInAppBillingButtons(Table layout2, List<InventoryItem> inventory) {
 		Table scrollTable = new Table();
 		
-		scrollTable.add(watchAd).expandX().fill().padBottom(10f);
-		scrollTable.row();
+		if(GameLoop.USER.usedCoins != -1L){
+			scrollTable.add(watchAd).expandX().fill().padBottom(10f);
+			scrollTable.row();
+		}
+		
 		
 		Collections.sort(inventory, new Comparator<InventoryItem>() {
 
@@ -223,10 +226,12 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 		});
 		
 		for(InventoryItem item : inventory){
-			TextButton button = new PaymentButton(item, skin, "greenButton", this);
-			button.setWidth(Gdx.graphics.getWidth() * 0.8f);
-			scrollTable.add(button).expandX().padBottom(10f);
-			scrollTable.row();
+			if(item.isAvailable()){
+				TextButton button = new PaymentButton(item, skin, "greenButton", this);
+				button.setWidth(Gdx.graphics.getWidth() * 0.8f);
+				scrollTable.add(button).expandX().padBottom(10f);
+				scrollTable.row();
+			}
 		}
 		
 		

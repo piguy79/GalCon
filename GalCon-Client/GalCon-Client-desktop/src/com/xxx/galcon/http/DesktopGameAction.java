@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
@@ -183,7 +184,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		Inventory stock = new Inventory();
 		stock.inventory = inventory.inventory;
+		
+		InventoryItem inventoryItem =  new InventoryItem("coin_bundle_1", "$1.99", "coin_bundle_1", 2);
+		stock.inventory.add(inventoryItem);
+		
+		inventoryItem =  new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
+		stock.inventory.add(inventoryItem);
+		
 		callback.onResult(stock);
+	}
+
+	private InventoryItem createDummyInventoryItem( ) {
+		InventoryItem inventoryItem = new InventoryItem();
+		inventoryItem.name = "coin_bundle_1";
+		inventoryItem.sku = "coin_bundle_1";
+		inventoryItem.price = "$1.99";
+		return inventoryItem;
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
@@ -224,9 +240,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
+			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -278,7 +294,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	
 	@Override
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback){
-		// Do nothing for now.
+		addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins);
 	}
 
 	@Override

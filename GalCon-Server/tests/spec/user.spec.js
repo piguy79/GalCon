@@ -111,19 +111,6 @@ describe("Testing interactions with the user model", function(){
 		p.complete();
 	});
 	
-	it("Add coins with an invalid usedCoins count.", function(done){
-		var p = new mongoose.Promise();
-		p.then(function(){
-			return user.addCoins(4, 'test', 8767);
-		}).then(function(person){
-			expect(person).toBe(null);
-			done();
-		}).then(null, function(err){
-			console.log(err);
-			done();
-		});
-		p.complete();
-	});
 	
 	
 	it("Trying to update with an order which has already been processed", function(done){

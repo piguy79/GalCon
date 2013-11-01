@@ -60,16 +60,9 @@ exports.findUserWithGames = function(handle){
 	return UserModel.findOne({"handle" : handle}).populate('currentGames').exec();
 }
 
-exports.addCoins = function(coinsToAdd, handle, usedCoins){
+exports.addCoins = function(coinsToAdd, handle){
 	return UserModel.findOneAndUpdate({ 
-										$and : [
-										        {
-										        	handle : handle
-										        },
-	                                            {
-										        	usedCoins : usedCoins
-										        }
-										       ]
+										handle : handle
 										},
 										{
 											$inc : 

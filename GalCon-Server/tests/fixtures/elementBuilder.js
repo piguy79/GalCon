@@ -33,7 +33,7 @@ exports.createUser = function(playerHandle, level, config) {
 		xp : config.xp || 0,
 		wins : config.wins || 0,
 		losses : config.losses || 0,
-		coins : config.coins || 0,
+		coins : config.coins || 1,
 		usedCoins : config.usedCoins || -1,
 		watchedAd : config.watchedAd || false
 	};
