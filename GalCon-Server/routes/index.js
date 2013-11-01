@@ -148,6 +148,7 @@ exports.performMoves = function(req, res) {
 	var gameId = req.body.id;
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
+	var time = req.body.time;
 
 	var p = gameManager.performMoves(gameId, moves, playerHandle, 0);
 	p.then(function(game) {
@@ -161,7 +162,7 @@ exports.performMoves = function(req, res) {
 			
 			return p.then(function() {
 				if (game.endGameInformation.winnerHandle) {
-					return updateWinnersAndLosers(game);
+					return updateWinnersAndLosers(game, time);
 				}
 				return game;
 			}).then(function(gameToReturn) {
@@ -171,7 +172,7 @@ exports.performMoves = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var updateWinnersAndLosers = function(game) {
+var updateWinnersAndLosers = function(game, time) {
 	var winner;
 	
 	var p = new mongoose.Promise();
@@ -187,7 +188,11 @@ var updateWinnersAndLosers = function(game) {
 			} else {
 				player.losses += 1;
 			}
-			return player.withPromise(player.save);
+			var coinPromise = updateUserTime(player, time, game._id);
+			return coinPromise.then(function(user){
+				player.usedCoins = user.usedCoins;
+				return player.withPromise(player.save);
+			});
 		});
 	});
 	
@@ -200,6 +205,25 @@ var updateWinnersAndLosers = function(game) {
 		return game;
 	});
 }
+
+var updateUserTime = function(user, time, gameId){
+	var p = new mongoose.Promise();
+	var userPromise = userManager.findUserWithGames(user.handle);
+	userPromise.then(function(foundUser){
+		
+		var gamesStillInProgress = _.filter(foundUser.currentGames, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
+		
+		if(gamesStillInProgress.length === 0){
+			user.usedCoins = time;
+		}
+		
+		p.complete(user);
+	});
+	
+	
+	return p;
+}
+
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for ( var i = 0; i < game.moves.length; i++) {
@@ -436,10 +460,6 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 var decrementCoins = function(user, gameId, time) {
-	user.coins--;
-	if (user.coins == 0) {
-		user.usedCoins = time;
-	}
 }
 
 var generateGamePromise = function(user, time, mapToFind) {
@@ -484,4 +504,13 @@ exports.findAllInventory = function(req, res){
 		res.json({items : inventory});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
+
+exports.updateUserCoinsInformation = function(req, res) {
+	var playerHandle = req.body.playerHandle;
+	var time = req.body.time;
+	
+	var p = userManager.updateUsedCoins(playerHandle, time);
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	
+}
 

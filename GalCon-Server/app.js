@@ -56,6 +56,7 @@ app.post('/requestHandleForUserName', routes.requestHandleForUserName);
 app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);
 app.post('/performMoves', routes.performMoves);
 app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle);
+app.post('/updateUserCoinsInformation', routes.updateUserCoinsInformation);
 app.post('/addCoins', routes.addCoins);
 app.post('/addCoinsForAnOrder', routes.addCoinsForAnOrder);
 app.post('/deleteConsumedOrders', routes.deleteConsumedOrders);

@@ -31,11 +31,12 @@ exports.matchPlayerToGame = function(playerHandle, mapKey) {
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
 };
 
-exports.performMove = function(gameId, moves, playerHandle) {
+exports.performMove = function(gameId, moves, playerHandle, time) {
 	var postData = {
 		moves : moves,
 		id : gameId,
-		playerHandle : playerHandle
+		playerHandle : playerHandle,
+		time : time || 1000
 	}
 
 	return needleWithPromise(needle.post, "/performMoves", postData);
@@ -69,4 +70,12 @@ exports.deleteConsumedOrders = function(playerHandle, orders){
 	};
 	
 	return needleWithPromise(needle.post, '/deleteConsumedOrders', postData);
+}
+
+exports.updateUserCoinsInformation = function(playerHandle, time){
+	var postData = {
+		playerHandle : playerHandle,
+		time : time
+	};
+	return needleWithPromise(needle.post, '/updateUserCoinsInformation', postData);
 }

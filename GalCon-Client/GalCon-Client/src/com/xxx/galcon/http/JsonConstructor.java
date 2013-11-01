@@ -24,6 +24,7 @@ public class JsonConstructor {
 			jsonMoves.put(move.asJson());
 		}
 		top.put("moves", jsonMoves);
+		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
 
 		return top;
 	}

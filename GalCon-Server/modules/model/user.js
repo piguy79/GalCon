@@ -123,4 +123,8 @@ exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, red
 	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
 }
 
+exports.updateUsedCoins = function(handle, usedCoins){
+	return UserModel.findOneAndUpdate({handle : handle}, {$set : {usedCoins : usedCoins}}).exec();
+}
+
 exports.UserModel = UserModel;

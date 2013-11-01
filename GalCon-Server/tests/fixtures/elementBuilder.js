@@ -18,7 +18,10 @@ exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duratio
 	};
 }
 
-exports.createUser = function(playerHandle, level) {
+exports.createUser = function(playerHandle, level, config) {
+	if(!config){
+		config = {};
+	}
 	return {
 		name: playerHandle + "@gmail.com",
 		handle: playerHandle,
@@ -27,12 +30,12 @@ exports.createUser = function(playerHandle, level) {
 			startFrom : 0,
 			endAt : 50
 		},
-		xp : 0,
-		wins : 0,
-		losses : 0,
-		coins : 0,
-		usedCoins : -1,
-		watchedAd : false
+		xp : config.xp || 0,
+		wins : config.wins || 0,
+		losses : config.losses || 0,
+		coins : config.coins || 0,
+		usedCoins : config.usedCoins || -1,
+		watchedAd : config.watchedAd || false
 	};
 }
 
