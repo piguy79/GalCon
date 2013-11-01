@@ -77,7 +77,7 @@ exports.findUserByUserName = function(req, res) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 0,
+				coins : 1,
 				usedCoins : -1,
 				watchedAd : false
 			});
@@ -447,7 +447,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 		if (game !== null) {
 			return gameManager.findById(gameId).then(function(returnGame) {
 				user.currentGames.push(game);
-				decrementCoins(user, gameId, time);
+				user.coins--;
 				var p = user.withPromise(user.save);
 				return p.then(function() {
 					return returnGame;
@@ -459,8 +459,6 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	});
 }
 
-var decrementCoins = function(user, gameId, time) {
-}
 
 var generateGamePromise = function(user, time, mapToFind) {
 	var p = mapManager.findMapByKey(mapToFind);
@@ -488,7 +486,7 @@ var generateGamePromise = function(user, time, mapToFind) {
 			return game.withPromise(game.save);
 		}).then(function(game) {
 			user.currentGames.push(game);
-			decrementCoins(user, game.id, time);
+			user.coins--;
 			
 			var p = user.withPromise(user.save);
 			return p.then(function() {

@@ -235,7 +235,7 @@ public class GameLoop extends Game {
 			if (timeRemaining != null) {
 				loadingNewCoins = false;
 
-			} else if (timeRemaining == null && GameLoop.USER.coins == 0) {
+			} else if (timeRemaining == null && GameLoop.USER.coins == 0 && GameLoop.USER.usedCoins != -1) {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
 					try {
