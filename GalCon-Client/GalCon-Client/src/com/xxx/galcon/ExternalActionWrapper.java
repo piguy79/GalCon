@@ -62,7 +62,8 @@ public class ExternalActionWrapper {
 	}
 	
 	public static void recoverUsedCoinsCount(){
-		if(GameLoop.USER != null && GameLoop.USER.usedCoins == -1L){
+
+		if(GameLoop.USER != null && GameLoop.USER.hasCoinInformation() && GameLoop.USER.usedCoins == -1L){
 			UIConnectionWrapper.recoverUsedCoinsCount(new UIConnectionResultCallback<Player>() {
 				
 				@Override
