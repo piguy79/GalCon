@@ -59,6 +59,15 @@ public class JsonConstructor {
 		
 	}
 	
+	public static JSONObject userWithTime(String playerHandle) throws JSONException{
+		JSONObject top = new JSONObject();
+		
+		top.put("playerHandle", playerHandle);
+		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
+		
+		return top;
+	}
+	
 	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException{
 		JSONObject top = new JSONObject();
 		

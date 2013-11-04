@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
@@ -216,8 +217,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
+		ExternalActionWrapper.recoverUsedCoinsCount();
 	}
 
 	@Override

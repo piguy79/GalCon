@@ -67,5 +67,7 @@ public interface GameAction {
 	public void consumeOrders(List<Order> orders);
 
 	public void consumeExistingOrders();
+	
+	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String playerHandle)throws ConnectionException;
 
 }

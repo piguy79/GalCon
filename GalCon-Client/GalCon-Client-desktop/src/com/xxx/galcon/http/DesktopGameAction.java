@@ -17,6 +17,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
@@ -323,6 +324,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void consumeExistingOrders() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recoverUsedCoinCount(
+			UIConnectionResultCallback<Player> callback, String playerHandle) {
+		try {
+			JSONObject top = JsonConstructor.userWithTime(playerHandle);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
 		
 	}
 

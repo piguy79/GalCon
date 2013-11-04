@@ -90,4 +90,12 @@ public class UIConnectionWrapper {
 	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback){
 		gameAction.loadAvailableInventory(callback);
 	}
+	
+	public static void recoverUsedCoinsCount(UIConnectionResultCallback<Player> callback, String playerHandle){
+		try{
+			gameAction.recoverUsedCoinCount(callback, playerHandle);
+		} catch(ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package com.xxx.galcon;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.StoreResultCallback;
@@ -59,5 +60,23 @@ public class ExternalActionWrapper {
 			}
 		});		
 	}
+	
+	public static void recoverUsedCoinsCount(){
+		if(GameLoop.USER != null && GameLoop.USER.usedCoins == -1L){
+			UIConnectionWrapper.recoverUsedCoinsCount(new UIConnectionResultCallback<Player>() {
+				
+				@Override
+				public void onConnectionResult(Player result) {
+					GameLoop.USER.usedCoins = result.usedCoins;
+					
+				}
+				
+				@Override
+				public void onConnectionError(String msg) {
+					System.out.println("Unable to recover usedCoins count. " + msg);
+					
+				}
+			}, GameLoop.USER.handle);
+		}	}
 
 }

@@ -25,16 +25,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.Strings;
+import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.Player;
 
 public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener {
 	private SpriteBatch spriteBatch;
@@ -328,6 +333,8 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		InputMultiplexer plex = new InputMultiplexer();
 		plex.addProcessor(stage);
 		plex.addProcessor(Gdx.input.getInputProcessor());
+		
+		ExternalActionWrapper.recoverUsedCoinsCount();
 
 		Gdx.input.setInputProcessor(plex);
 	}

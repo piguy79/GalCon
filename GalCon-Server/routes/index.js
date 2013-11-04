@@ -220,8 +220,25 @@ var updateUserTime = function(user, time, gameId){
 		p.complete(user);
 	});
 	
-	
 	return p;
+}
+
+exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res){
+	var handle = req.body.playerHandle;
+	var time = req.body.time;
+	
+	var userPromise = userManager.findUserWithGames(handle);
+	userPromise.then(function(user){
+		var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
+		
+		if(user.usedCoins === -1 && gamesStillInProgress === 0){
+			user.usedCoins = time;
+		}
+		
+		return user.withPromise(user.save);
+	}).then(function(user){
+		res.json(user);
+	}, logErrorAndSetResponse(req, res));
 }
 
 
