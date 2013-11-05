@@ -48,7 +48,6 @@ exports.findGamesWithPendingMove = function(req, res) {
 			res.json({});
 		} else {
 			gameManager.findCollectionOfGames(user.currentGames, function(games) {
-				var returnObj = {};
 				var len = games.length;
 				while (len--) {
 					if (games[len].currentRound.playersWhoMoved.indexOf(user.handle) >= 0
@@ -56,8 +55,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 						games.splice(len, 1);
 					}
 				}
-				returnObj.items = games;
-				res.json(returnObj);
+				var minifiedGames = minfiyGameResponse(games);
+				res.json({items : minifiedGames});
 			});
 		}
 	});
@@ -138,10 +137,24 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 		}
 		return gameManager.findCollectionOfGames(user.currentGames);
 	}).then(function(games) {
-		var returnObj = {};
-		returnObj.items = games;
-		res.json(returnObj);
+		
+		var minifiedGames = minfiyGameResponse(games);
+		res.json({items : minifiedGames});
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var minfiyGameResponse = function(games){
+	return _.map(games, function(game){
+		var iHaveAMove = _.filter(game.currentRound.playerWhoMoved, function(player) { return player === playerHandle}).length === 0;	
+		return {
+			id : game._id,
+			players : _.pluck(game.players, 'handle'),
+			createdDate : game.createdDate,
+			moveAvailable : iHaveAMove,
+			winner : game.endGameInformation.winnerHandle,
+			winningDate : game.endGameInformation.winningDate
+		};
+	});
 }
 
 exports.performMoves = function(req, res) {
@@ -527,4 +540,5 @@ exports.updateUserCoinsInformation = function(req, res) {
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
 	
 }
+	
 

@@ -67,6 +67,7 @@ app.get('/config', routes.findConfigByType);
 app.get('/inventory', routes.findAllInventory);
 
 
+
 var port = process.env.PORT || 3000;
 
 server.listen(port, function() {

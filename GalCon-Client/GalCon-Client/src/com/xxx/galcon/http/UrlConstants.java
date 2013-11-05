@@ -47,6 +47,8 @@ public class UrlConstants {
 	public static final String MATCH_PLAYER_TO_GAME = "/matchPlayertoGame";
 	
 	public static final String RECOVER_USED_COINS_COUNT = "/updateUsedCoinsRecover";
+	
+	public static final String GAMES_FOR_A_USER = "/gamesForAUser";
 
 
 }
