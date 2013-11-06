@@ -55,7 +55,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 						games.splice(len, 1);
 					}
 				}
-				var minifiedGames = minfiyGameResponse(games);
+				var minifiedGames = minfiyGameResponse(games, user.handle);
 				res.json({items : minifiedGames});
 			});
 		}
@@ -138,14 +138,14 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 		return gameManager.findCollectionOfGames(user.currentGames);
 	}).then(function(games) {
 		
-		var minifiedGames = minfiyGameResponse(games);
+		var minifiedGames = minfiyGameResponse(games, playerHandle);
 		res.json({items : minifiedGames});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var minfiyGameResponse = function(games){
+var minfiyGameResponse = function(games, playerHandle){
 	return _.map(games, function(game){
-		var iHaveAMove = _.filter(game.currentRound.playerWhoMoved, function(player) { return player === playerHandle}).length === 0;	
+		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === playerHandle}).length === 0;	
 		return {
 			id : game._id,
 			players : _.pluck(game.players, 'handle'),
