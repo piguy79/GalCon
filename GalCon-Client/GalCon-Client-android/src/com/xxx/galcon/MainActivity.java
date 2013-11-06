@@ -237,8 +237,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 					List<Order> orders = new ArrayList<Order>();
 					orders.add(new Order(info.getOriginalJson(), inventoryItem.numCoins));
 					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle,  orders);
-				}else{
-					complain("Unable to purchase item from Play Store. Please try again.");
 				}
 				
 			}
