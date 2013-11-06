@@ -244,7 +244,7 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res){
 	userPromise.then(function(user){
 		var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
 		
-		if(user.usedCoins === -1 && gamesStillInProgress === 0){
+		if(user.usedCoins === -1 && gamesStillInProgress.length === 0 && user.currentGames.length > 0){
 			user.usedCoins = time;
 		}
 		
