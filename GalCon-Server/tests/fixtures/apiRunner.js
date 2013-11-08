@@ -31,12 +31,13 @@ exports.matchPlayerToGame = function(playerHandle, mapKey) {
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
 };
 
-exports.performMove = function(gameId, moves, playerHandle, time) {
+exports.performMove = function(gameId, moves, playerHandle, time, harvest) {
 	var postData = {
 		moves : moves,
 		id : gameId,
 		playerHandle : playerHandle,
-		time : time || 1000
+		time : time || 1000,
+		harvest : harvest || []
 	}
 
 	return needleWithPromise(needle.post, "/performMoves", postData);

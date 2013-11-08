@@ -5,7 +5,8 @@ gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
 configManager = require('./config'),
-positionAdjuster = require('../movement/PositionAdjuster');
+positionAdjuster = require('../movement/PositionAdjuster'),
+_ = require('underscore');
 
 
 var gameSchema = mongoose.Schema({
@@ -46,7 +47,11 @@ var gameSchema = mongoose.Schema({
 			},
 			shipRegenRate : "Number",
 			numberOfShips : "Number",
-			ability : "String"
+			ability : "String",
+			harvest : {
+				status : "Boolean",
+				startingRound : "Number"
+			}
 		}
 	],
 	moves : [
@@ -235,6 +240,17 @@ gameSchema.methods.addMoves = function(moves){
 	}
 }
 
+gameSchema.methods.addHarvest = function(harvest){
+	var game = this;
+	if(harvest){
+		_.each(harvest, function(item){
+			var planet = _.find(game.planets, function(planet){return planet.name === item.planet});
+			planet.harvest.status = true;
+			planet.harvest.startingRound = game.currentRound.roundNumber;
+		});
+	}
+}
+
 gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
@@ -285,7 +301,7 @@ exports.findCollectionOfGames = function(searchIds){
 	return GameModel.find({_id : {$in : searchIds}}, '_id players endGameInformation createdDate currentRound').populate('players').exec();
 }
 
-exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
+exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
 	if(attemptNumber > 5) {
 		var p = new mongoose.Promise();
 		p.reject("Too many attempts to perform move");
@@ -295,6 +311,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 	var p = exports.findById(gameId);
 	return p.then(function(game) {
 		game.addMoves(moves);
+		game.addHarvest(harvest);
 		game.currentRound.playersWhoMoved.push(playerHandle);
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {

@@ -5,7 +5,8 @@ var needle = require("needle"),
 	gameManager = require('../../modules/model/game'),
 	userManager = require('../../modules/model/user'),
 	mapManager = require('../../modules/model/map'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	gameRunner = require('../fixtures/gameRunner');
 
 describe("Update Used Coins to track countdown to coin refresh -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
@@ -45,61 +46,29 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		});
 	});
 	
-	var createGameForPlayers = function(player1, player2, map){
-		var p = new mongoose.Promise();  		
-		var runnerPromise = apiRunner.matchPlayerToGame(player1, map);
-		runnerPromise.then(function(game){
-			return apiRunner.matchPlayerToGame(player2, map);
-		}).then(function(game){
-			p.complete(game);
-		}, function(err){
-			p.reject(err);
-		});
-		return p;
-	}
-	
-	var performTurn = function(currentGameId, player1, player2){
-		var p = new mongoose.Promise();
-		var movePromise = apiRunner.performMove(currentGameId, player1.moves, player1.handle, player1.time);
-		movePromise.then(function(game){
-			return apiRunner.performMove(currentGameId, player2.moves, player2.handle, player2.time); 
-		}).then(function(game){
-			p.complete(game);
-		}, function(err){
-			p.reject(err);
-		});
-		
-		
-		
-		return p;
-	}
-	
-	var handleTestError = function(func){
-		return function(err){
-			console.log(err);
-			expect(true).toBe(false);
-			func.apply(this);
-		}
-	}
 
 	it("Should update usedCoins to time once the game is over.", function(done) {
 		var currentGameId;
 		var timeOfMove = 34728;
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, HOME_PLANET_2, 30, 1) ];
 		
-		var p =  createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
 		}).then(function(game){
 			expect(game.endGameInformation.winnerHandle).toBe(PLAYER_1_HANDLE);
 			return userManager.findUserByHandle(PLAYER_1_HANDLE);
 		}).then(function(user){
 			expect(user.usedCoins).toBe(timeOfMove);
 			done();
-		}, handleTestError(done));
+		}, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
 	});
 	
 	it("Should only update usedCoins when the users last game has been completed.", function(done){
@@ -109,23 +78,23 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		var winningMoves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, HOME_PLANET_2, 30, 1) ];
 
 		
-		var p = createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
 		p.then(function(game){
 			gameId1 = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": gameId1}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+			return gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
 		}).then(function(game){
 			gameId2 = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": gameId2}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return performTurn(gameId1, {moves : winningMoves, handle : PLAYER_1_HANDLE, time : timeOfMove1},{moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove1});
+			return gameRunner.performTurn(gameId1, {moves : winningMoves, handle : PLAYER_1_HANDLE, time : timeOfMove1},{moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove1});
 		}).then(function(game){
 			return userManager.findUserByHandle(PLAYER_1_HANDLE);
 		}).then(function(user){
 			expect(user.usedCoins).toBe(-1);
 		}).then(function(){
-			return performTurn(gameId2, {moves : winningMoves, handle : PLAYER_1_HANDLE, time : timeOfMove2},{moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove2});
+			return gameRunner.performTurn(gameId2, {moves : winningMoves, handle : PLAYER_1_HANDLE, time : timeOfMove2},{moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove2});
 		}).then(function(){
 			return userManager.findUserByHandle(PLAYER_1_HANDLE);
 		}).then(function(user){

@@ -162,8 +162,9 @@ exports.performMoves = function(req, res) {
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
 	var time = req.body.time;
+	var harvest = req.body.harvest;
 
-	var p = gameManager.performMoves(gameId, moves, playerHandle, 0);
+	var p = gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
 	p.then(function(game) {
 		if (!game) {
 			res.json({

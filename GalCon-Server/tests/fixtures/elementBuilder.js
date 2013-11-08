@@ -1,10 +1,11 @@
-exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position) {
+exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position, ability) {
 	return {
 		name : name,
 		ownerHandle : owner,
 		shipRegenRate : shipRegenRate,
 		numberOfShips : numberOfShips,
-		position : position
+		position : position,
+		ability : ability || ''
 	};
 }
 
