@@ -190,9 +190,7 @@ var getDefenceMutlipler = function(player, game){
 		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player);	
 	}
 	
-	console.log("enhancedDefence " + enhancedDefence);
 	enhancedDefence +=  abilityBasedGameType.harvestEnhancement(player, game);
-	console.log("AFTER enhancedDefence " + enhancedDefence);
 	
 	return enhancedDefence;
 }
