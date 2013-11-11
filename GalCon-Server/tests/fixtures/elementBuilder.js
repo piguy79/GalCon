@@ -5,7 +5,8 @@ exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, posit
 		shipRegenRate : shipRegenRate,
 		numberOfShips : numberOfShips,
 		position : position,
-		ability : ability || ''
+		ability : ability || '',
+		status : 'ALIVE'
 	};
 }
 
@@ -40,7 +41,7 @@ exports.createUser = function(playerHandle, level, config) {
 	};
 }
 
-exports.createMap = function(key, widthMin, widthMax) {
+exports.createMap = function(key, widthMin, widthMax, gameType) {
 	return {
 		"key" : key,
 		"availableFromLevel" : 1,
@@ -50,6 +51,6 @@ exports.createMap = function(key, widthMin, widthMax) {
 			"min" : widthMin,
 			"max" : widthMax
 		},
-		"gameType" : ["standardGame"]
+		"gameType" : gameType || ["standardGame"]
 	};
 }

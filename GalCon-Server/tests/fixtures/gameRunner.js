@@ -24,8 +24,20 @@ exports.performTurn = function(currentGameId, player1, player2){
 	}, function(err){
 		p.reject(err);
 	});
-	
-	
-	
 	return p;
+}
+
+exports.performTurns = function(turnCount, currentGameId, player1, player2){
+	var promise = new mongoose.Promise();
+	promise.complete();
+	var lastPromise = promise;
+	
+	for(var i = 0; i < turnCount; i++){
+		lastPromise = lastPromise.then(function(){
+			return exports.performTurn(currentGameId, player1, player2);
+		});
+	}
+	
+	return lastPromise;
+	
 }
