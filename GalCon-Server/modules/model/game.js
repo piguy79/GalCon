@@ -154,7 +154,7 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 				planet.ownerHandle = move.playerHandle;
 				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
-				checkHarvestStatus(planet,game.currentRound.roundNumber);
+				checkHarvestStatus(planet,game.currentRound.roundNumber, parseFloat(game.config.values["harvestSavior"]));
 			} else {
 				move.battlestats.defenceMultiplier = defenceMultiplier;
 				planet.numberOfShips = reverseEffectOfMultiplier(battleResult,defenceMultiplier);
@@ -167,10 +167,13 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	});
 }
 
-var checkHarvestStatus = function(planet, roundNumber){
+var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 	if(planet.harvest && planet.harvest.status === "ACTIVE"){
 		planet.harvest.status = "INACTIVE";
 		planet.harvest.saveRound = roundNumber;
+		planet.numberOfShips += saviorBonus;
+	}else if(planet.harvest && planet.harvest.status === "INACTIVE"){
+		planet.harvest = null;
 	}
 }
 
@@ -184,13 +187,11 @@ gameSchema.methods.allPlayersHaveTakenAMove = function(){
 
 var getDefenceMutlipler = function(player, game){
 	var enhancedDefence = 0;
-	
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
 		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player);	
+		enhancedDefence +=  abilityBasedGameType.harvestEnhancement(player, game);
 	}
-	
-	enhancedDefence +=  abilityBasedGameType.harvestEnhancement(player, game);
 	
 	return enhancedDefence;
 }
@@ -199,10 +200,9 @@ var getAttackMultipler = function(player, game){
 	var enhancedAttackFleet = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);	
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);
+		enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
 	}
-	
-	enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
 	
 	return enhancedAttackFleet;
 }

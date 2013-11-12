@@ -9,7 +9,8 @@
 						  "speedModifier": "0.5",
 						  "blockModifier": "0.2" ,
 						  "harvestEnhancement" : "0.25",
-						  "harvestRounds" : "6"}
+						  "harvestRounds" : "6",
+						  "harvestSavior" : "5"}
 					
 				},
 				{
