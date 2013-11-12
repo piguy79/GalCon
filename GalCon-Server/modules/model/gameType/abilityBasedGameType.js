@@ -33,7 +33,7 @@ exports.harvestEnhancement = function(player, game){
 	var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.ownerHandle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
 	
 	if(harvestCapablePlanets.length > 0){
-		harvestEnhance = parseFloat(game.config.values['harvestEnhancement'])
+		harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;
 	}
 	
 	return harvestEnhance;	

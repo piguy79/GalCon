@@ -270,6 +270,38 @@ describe("Harvest an ability planet -", function() {
 		});
 	});
 	
+	it("Should boost my ability by a percentage for each harvest planet I hold.", function(done){
+		var currentGameId;
+		var timeOfMove = 271625;
+		var ABILITY_PLANET_2 = "ABILITY_PLANET_2"
+		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
+	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 10, { x : 3, y : 5}),
+	                    elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "attackModifier"),
+	                    elementBuilder.createPlanet(ABILITY_PLANET_2, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "attackModifier")];
+		
+		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 8, 1) ];
+		
+		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		p.then(function(game){
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
+		}).then(function(game){
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}, {planet : ABILITY_PLANET_2}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+		}).then(function(game){
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+		}).then(function(game){
+			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
+			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
+			// This will be 16 as I hold 2 attack planets which will give a 50% increase, plus 50% for harvesting both planets.
+			expect(game.moves[0].battlestats.attackStrength).toBe(16);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+	});
+	
 	
 	
 	

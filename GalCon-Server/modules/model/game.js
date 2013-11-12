@@ -201,7 +201,11 @@ var getAttackMultipler = function(player, game){
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
 		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);
+		console.log("BEFORE: " + enhancedAttackFleet);
+
 		enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
+		console.log("AFTER: " + enhancedAttackFleet);
+
 	}
 	
 	return enhancedAttackFleet;
@@ -264,8 +268,7 @@ gameSchema.methods.addHarvest = function(harvest){
 	if(harvest){
 		_.each(harvest, function(item){
 			var planet = _.find(game.planets, function(planet){return planet.name === item.planet});
-			planet.harvest.status = "ACTIVE";
-			planet.harvest.startingRound = game.currentRound.roundNumber;
+			planet.harvest = {status : "ACTIVE", startingRound : game.currentRound.roundNumber};
 		});
 	}
 }
@@ -370,7 +373,7 @@ var planetShouldBeDestroyed = function(game, planet){
 
 var destroyAbilityPlanets = function(game){
 	_.each(game.planets, function(planet){
-		if(planet.ability && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
+		if(planet.harvest && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
 			planet.shipRegenRate = 0;
 			planet.status = "DEAD";
 		}
