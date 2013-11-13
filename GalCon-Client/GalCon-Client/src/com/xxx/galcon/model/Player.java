@@ -69,6 +69,10 @@ public class Player extends JsonConvertible{
 		}
 		
 	}
+	
+	public boolean hasCoinInformation(){
+		return usedCoins != null && coins != null;
+	}
 
 
 	public boolean hasMoved(GameBoard gameBoard) {

@@ -197,12 +197,11 @@ public class GameLoop extends Game {
 
 			if (timeRemaining != null) {
 				loadingNewCoins = false;
-			} else if (timeRemaining == null && GameLoop.USER.coins == 0) {
+			} else if (timeRemaining == null && GameLoop.USER.coins == 0 && GameLoop.USER.usedCoins != -1) {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
 					try {
-						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 1,
-								GameLoop.USER.usedCoins);
+						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 3);
 					} catch (ConnectionException e) {
 
 					}

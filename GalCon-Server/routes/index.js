@@ -48,7 +48,6 @@ exports.findGamesWithPendingMove = function(req, res) {
 			res.json({});
 		} else {
 			gameManager.findCollectionOfGames(user.currentGames, function(games) {
-				var returnObj = {};
 				var len = games.length;
 				while (len--) {
 					if (games[len].currentRound.playersWhoMoved.indexOf(user.handle) >= 0
@@ -56,8 +55,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 						games.splice(len, 1);
 					}
 				}
-				returnObj.items = games;
-				res.json(returnObj);
+				var minifiedGames = minfiyGameResponse(games, user.handle);
+				res.json({items : minifiedGames});
 			});
 		}
 	});
@@ -77,7 +76,7 @@ exports.findUserByUserName = function(req, res) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 0,
+				coins : 1,
 				usedCoins : -1,
 				watchedAd : false
 			});
@@ -138,18 +137,34 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 		}
 		return gameManager.findCollectionOfGames(user.currentGames);
 	}).then(function(games) {
-		var returnObj = {};
-		returnObj.items = games;
-		res.json(returnObj);
+		
+		var minifiedGames = minfiyGameResponse(games, playerHandle);
+		res.json({items : minifiedGames});
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var minfiyGameResponse = function(games, playerHandle){
+	return _.map(games, function(game){
+		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === playerHandle}).length === 0;	
+		return {
+			id : game._id,
+			players : _.pluck(game.players, 'handle'),
+			createdDate : game.createdDate,
+			moveAvailable : iHaveAMove,
+			winner : game.endGameInformation.winnerHandle,
+			winningDate : game.endGameInformation.winningDate
+		};
+	});
 }
 
 exports.performMoves = function(req, res) {
 	var gameId = req.body.id;
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
+	var time = req.body.time;
+	var harvest = req.body.harvest;
 
-	var p = gameManager.performMoves(gameId, moves, playerHandle, 0);
+	var p = gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
 	p.then(function(game) {
 		if (!game) {
 			res.json({
@@ -161,7 +176,7 @@ exports.performMoves = function(req, res) {
 			
 			return p.then(function() {
 				if (game.endGameInformation.winnerHandle) {
-					return updateWinnersAndLosers(game);
+					return updateWinnersAndLosers(game, time);
 				}
 				return game;
 			}).then(function(gameToReturn) {
@@ -171,7 +186,7 @@ exports.performMoves = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var updateWinnersAndLosers = function(game) {
+var updateWinnersAndLosers = function(game, time) {
 	var winner;
 	
 	var p = new mongoose.Promise();
@@ -187,7 +202,11 @@ var updateWinnersAndLosers = function(game) {
 			} else {
 				player.losses += 1;
 			}
-			return player.withPromise(player.save);
+			var coinPromise = updateUserTime(player, time, game._id);
+			return coinPromise.then(function(user){
+				player.usedCoins = user.usedCoins;
+				return player.withPromise(player.save);
+			});
 		});
 	});
 	
@@ -200,6 +219,42 @@ var updateWinnersAndLosers = function(game) {
 		return game;
 	});
 }
+
+var updateUserTime = function(user, time, gameId){
+	var p = new mongoose.Promise();
+	var userPromise = userManager.findUserWithGames(user.handle);
+	userPromise.then(function(foundUser){
+		
+		var gamesStillInProgress = _.filter(foundUser.currentGames, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
+		
+		if(foundUser.coins <= 0 && gamesStillInProgress.length === 0){
+			user.usedCoins = time;
+		}
+		
+		p.complete(user);
+	});
+	
+	return p;
+}
+
+exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res){
+	var handle = req.body.playerHandle;
+	var time = req.body.time;
+	
+	var userPromise = userManager.findUserWithGames(handle);
+	userPromise.then(function(user){
+		var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
+		
+		if(user.usedCoins === -1 && gamesStillInProgress.length === 0 && user.currentGames.length > 0){
+			user.usedCoins = time;
+		}
+		
+		return user.withPromise(user.save);
+	}).then(function(user){
+		res.json(user);
+	}, logErrorAndSetResponse(req, res));
+}
+
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for ( var i = 0; i < game.moves.length; i++) {
@@ -240,7 +295,7 @@ exports.joinGame = function(req, res) {
 			})
 		}
 		game = savedGame;
-		user.currentGames.push(gameId);
+		user.currentGames.push(game);
 		return user.withPromise(user.save);
 	}).then(function() {
 		res.json(game);
@@ -250,9 +305,8 @@ exports.joinGame = function(req, res) {
 exports.addCoins = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var numCoins = req.body.numCoins;
-	var usedCoins = req.body.usedCoins;
 	
-	var p  = userManager.addCoins(numCoins, playerHandle, usedCoins);
+	var p  = userManager.addCoins(numCoins, playerHandle);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));	
 }
 
@@ -422,7 +476,8 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	return gameManager.addUser(gameId, user).then(function(game) {
 		if (game !== null) {
 			return gameManager.findById(gameId).then(function(returnGame) {
-				decrementCoins(user, gameId, time);
+				user.currentGames.push(game);
+				user.coins--;
 				var p = user.withPromise(user.save);
 				return p.then(function() {
 					return returnGame;
@@ -434,13 +489,6 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	});
 }
 
-var decrementCoins = function(user, gameId, time) {
-	user.currentGames.push(gameId);
-	user.coins--;
-	if (user.coins == 0) {
-		user.usedCoins = time;
-	}
-}
 
 var generateGamePromise = function(user, time, mapToFind) {
 	var p = mapManager.findMapByKey(mapToFind);
@@ -467,7 +515,8 @@ var generateGamePromise = function(user, time, mapToFind) {
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
 		}).then(function(game) {
-			decrementCoins(user, game.id, time);
+			user.currentGames.push(game);
+			user.coins--;
 			
 			var p = user.withPromise(user.save);
 			return p.then(function() {
@@ -483,4 +532,14 @@ exports.findAllInventory = function(req, res){
 		res.json({items : inventory});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
+
+exports.updateUserCoinsInformation = function(req, res) {
+	var playerHandle = req.body.playerHandle;
+	var time = req.body.time;
+	
+	var p = userManager.updateUsedCoins(playerHandle, time);
+	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+	
+}
+	
 

@@ -59,9 +59,9 @@ public class UIConnectionWrapper {
 
 	}
 	
-	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins){
+	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins){
 		try{
-			gameAction.addCoins(callback, playerHandle, numCoins, usedCoins);
+			gameAction.addCoins(callback, playerHandle, numCoins);
 		}catch (ConnectionException e){
 			callback.onConnectionError(e.getMessage());
 		}
@@ -89,5 +89,13 @@ public class UIConnectionWrapper {
 	
 	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback){
 		gameAction.loadAvailableInventory(callback);
+	}
+	
+	public static void recoverUsedCoinsCount(UIConnectionResultCallback<Player> callback, String playerHandle){
+		try{
+			gameAction.recoverUsedCoinCount(callback, playerHandle);
+		} catch(ConnectionException e){
+			callback.onConnectionError(e.getMessage());
+		}
 	}
 }

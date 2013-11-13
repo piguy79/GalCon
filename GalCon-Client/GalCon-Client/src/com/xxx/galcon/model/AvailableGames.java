@@ -11,7 +11,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class AvailableGames extends JsonConvertible {
-	List<GameBoard> allGames = new ArrayList<GameBoard>();
+	List<MinifiedGame> allGames = new ArrayList<MinifiedGame>();
 
 	@Override
 	public void consume(JSONObject jsonObject) throws JSONException {
@@ -21,7 +21,7 @@ public class AvailableGames extends JsonConvertible {
 			List<JSONException> exceptions = new ArrayList<JSONException>();
 			for (int i = 0; i < games.length(); ++i) {
 				try {
-					GameBoard gameBoard = new GameBoard();
+					MinifiedGame gameBoard = new MinifiedGame();
 					gameBoard.consume(games.getJSONObject(i));
 					allGames.add(gameBoard);
 				} catch (JSONException e) {
@@ -35,7 +35,7 @@ public class AvailableGames extends JsonConvertible {
 		}
 	}
 
-	public List<GameBoard> getAllGames() {
+	public List<MinifiedGame> getAllGames() {
 		return allGames;
 	}
 }

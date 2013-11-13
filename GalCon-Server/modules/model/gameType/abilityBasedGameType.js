@@ -27,4 +27,16 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilityToAdd){
 	}	
 }
 
+exports.harvestEnhancement = function(player, game){
+	
+	var harvestEnhance = 0;	
+	var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.ownerHandle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
+	
+	if(harvestCapablePlanets.length > 0){
+		harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;
+	}
+	
+	return harvestEnhance;	
+}
+
 

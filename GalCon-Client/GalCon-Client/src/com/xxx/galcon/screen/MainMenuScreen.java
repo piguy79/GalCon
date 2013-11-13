@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
@@ -283,6 +284,8 @@ public class MainMenuScreen implements ScreenFeedback {
 		InputMultiplexer plex = new InputMultiplexer();
 		plex.addProcessor(stage);
 		plex.addProcessor(Gdx.input.getInputProcessor());
+
+		ExternalActionWrapper.recoverUsedCoinsCount();
 
 		Gdx.input.setInputProcessor(plex);
 	}

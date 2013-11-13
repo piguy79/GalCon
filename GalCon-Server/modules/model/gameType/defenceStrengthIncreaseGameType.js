@@ -9,8 +9,7 @@ exports.addPlanetAbilities = function(planetsFarFromHomes){
 	
 }
 
-exports.findCorrectDefenseForAPlanet = function(config, planets, player){
-
+exports.findCorrectDefenseForAPlanet = function(config, planets, player){	
 	var defMultiplier = 0.0;
 	
 	for(var  i = 0; i < planets.length; i++){
@@ -25,11 +24,11 @@ exports.findCorrectDefenseForAPlanet = function(config, planets, player){
 }
 
 var hasTheDefenceAbility = function(planet){
-	return planet.ability && planet.ability == DEF_INC_ABILITY;
+	return planet.ability && planet.ability === DEF_INC_ABILITY;
 }
 
 var hasTheSameOwner = function(planet, player){
-	return player == planet.ownerHandle;
+	return player === planet.ownerHandle;
 }
 
 

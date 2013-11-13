@@ -1,10 +1,12 @@
-exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position) {
+exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position, ability) {
 	return {
 		name : name,
 		ownerHandle : owner,
 		shipRegenRate : shipRegenRate,
 		numberOfShips : numberOfShips,
-		position : position
+		position : position,
+		ability : ability || '',
+		status : 'ALIVE'
 	};
 }
 
@@ -18,7 +20,10 @@ exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duratio
 	};
 }
 
-exports.createUser = function(playerHandle, level) {
+exports.createUser = function(playerHandle, level, config) {
+	if(!config){
+		config = {};
+	}
 	return {
 		name: playerHandle + "@gmail.com",
 		handle: playerHandle,
@@ -27,16 +32,16 @@ exports.createUser = function(playerHandle, level) {
 			startFrom : 0,
 			endAt : 50
 		},
-		xp : 0,
-		wins : 0,
-		losses : 0,
-		coins : 0,
-		usedCoins : -1,
-		watchedAd : false
+		xp : config.xp || 0,
+		wins : config.wins || 0,
+		losses : config.losses || 0,
+		coins : config.coins || 1,
+		usedCoins : config.usedCoins || -1,
+		watchedAd : config.watchedAd || false
 	};
 }
 
-exports.createMap = function(key, widthMin, widthMax) {
+exports.createMap = function(key, widthMin, widthMax, gameType) {
 	return {
 		"key" : key,
 		"availableFromLevel" : 1,
@@ -46,6 +51,6 @@ exports.createMap = function(key, widthMin, widthMax) {
 			"min" : widthMin,
 			"max" : widthMax
 		},
-		"gameType" : ["standardGame"]
+		"gameType" : gameType || ["standardGame"]
 	};
 }

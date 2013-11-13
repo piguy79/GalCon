@@ -9,7 +9,7 @@ var userSchema = mongoose.Schema({
 	xp : "Number",
 	wins : "Number",
 	losses : "Number",
-	currentGames : ["String"],
+	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
 	consumedOrders : [
 	                  	{
 	                  		orderId : "String",
@@ -56,16 +56,13 @@ exports.findUserByHandle = function(handle){
 	return UserModel.findOne({"handle" : handle}).exec();
 }
 
-exports.addCoins = function(coinsToAdd, handle, usedCoins){
+exports.findUserWithGames = function(handle){
+	return UserModel.findOne({"handle" : handle}).populate('currentGames').exec();
+}
+
+exports.addCoins = function(coinsToAdd, handle){
 	return UserModel.findOneAndUpdate({ 
-										$and : [
-										        {
-										        	handle : handle
-										        },
-	                                            {
-										        	usedCoins : usedCoins
-										        }
-										       ]
+										handle : handle
 										},
 										{
 											$inc : 
@@ -117,6 +114,10 @@ exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, red
 		reducedTime = -1;
 	}
 	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
+}
+
+exports.updateUsedCoins = function(handle, usedCoins){
+	return UserModel.findOneAndUpdate({handle : handle}, {$set : {usedCoins : usedCoins}}).exec();
 }
 
 exports.UserModel = UserModel;

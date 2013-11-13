@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
@@ -27,7 +28,7 @@ import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
-import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.screen.hud.GameListHud;
 import com.xxx.galcon.screen.hud.Hud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -109,12 +110,12 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			float halfFontWidth = font.getBounds(loadingMessage).width / 2;
 			font.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
 		} else {
-			List<GameBoard> games = new ArrayList<GameBoard>(allGames.getAllGames());
-			for (ListIterator<GameBoard> iter = games.listIterator(); iter.hasNext();) {
-				GameBoard board = iter.next();
+			List<MinifiedGame> games = new ArrayList<MinifiedGame>(allGames.getAllGames());
+			for (ListIterator<MinifiedGame> iter = games.listIterator(); iter.hasNext();) {
+				MinifiedGame board = iter.next();
 				if (board.hasWinner()) {
 					if (!showGamesThatHaveBeenWon()
-							|| board.endGameInformation.winningDate.before(new Date(System.currentTimeMillis() - 1000
+							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000
 									* 60 * 60 * 24))) {
 						iter.remove();
 					}
@@ -127,11 +128,11 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 				mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 			} else {
 				float textY = 0.87f;
-				for (GameBoard gameBoard : games) {
+				for (MinifiedGame gameBoard : games) {
 					String text = createLabelTextForAGame(gameBoard);
 					float halfFontWidth = smallFont.getBounds(text).width / 2;
 
-					if (!GameLoop.USER.hasMoved(gameBoard) && !gameBoard.hasWinner()) {
+					if (gameBoard.moveAvailable && !gameBoard.hasWinner()) {
 						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 					}
 					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
@@ -179,19 +180,19 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		}
 	}
 
-	private String createLabelTextForAGame(GameBoard gameBoard) {
+	private String createLabelTextForAGame(MinifiedGame gameBoard) {
 		DateFormat format = new SimpleDateFormat("MM/dd HH:mm");
 		String labelForGame = format.format(gameBoard.createdDate);
 
 		if (gameBoard.hasWinner()) {
 			String winningText = "You Lost";
-			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)) {
+			if (gameBoard.winner.equals(GameLoop.USER.handle)) {
 				winningText = "You Won!!";
 			}
 			return labelForGame + " " + winningText;
 		} else {
 
-			List<Player> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.handle);
+			List<String> otherPlayers = gameBoard.allPlayersExcept(GameLoop.USER.handle);
 			if (otherPlayers.size() == 0) {
 				return labelForGame + " waiting for opponent";
 			}
@@ -200,16 +201,17 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		}
 	}
 
-	private String playerInfoText(List<Player> otherPlayers) {
+	private String playerInfoText(List<String> otherPlayers) {
 
 		String playerDescription = "";
-		for (Player player : otherPlayers) {
-			playerDescription = playerDescription + " [" + player.handle + " (Lvl " + player.rank.level + ") ]";
+		for (String player : otherPlayers) {
+			//playerDescription = playerDescription + " [" + player + " (Lvl " + player.rank.level + ") ]";
+			playerDescription = playerDescription + " [" + player + "]";
 		}
 		return playerDescription;
 	}
 
-	public void takeActionOnGameboard(GameBoard toTakeActionOn, String playerHandle) {
+	public void takeActionOnGameboard(MinifiedGame toTakeActionOn, String playerHandle) {
 		UIConnectionWrapper.findGameById(new SelectGameResultHander(), toTakeActionOn.id, GameLoop.USER.handle);
 	}
 
@@ -221,8 +223,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
+		ExternalActionWrapper.recoverUsedCoinsCount();
 	}
 
 	@Override

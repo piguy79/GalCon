@@ -6,8 +6,11 @@
 					"values" : 
 						{ "attackModifier": "25",
 						  "defenseModifier": "25",
-						  "speedModifier": "50",
-						  "blockModifier": "20" }
+						  "speedModifier": "0.5",
+						  "blockModifier": "0.2" ,
+						  "harvestEnhancement" : "0.25",
+						  "harvestRounds" : "6",
+						  "harvestSavior" : "5"}
 					
 				},
 				{

@@ -24,6 +24,7 @@ public class JsonConstructor {
 			jsonMoves.put(move.asJson());
 		}
 		top.put("moves", jsonMoves);
+		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
 
 		return top;
 	}
@@ -48,15 +49,23 @@ public class JsonConstructor {
 		return top;
 	}
 	
-	public static JSONObject addCoins(String playerHandle, int numCoins, Long usedCoins) throws JSONException{
+	public static JSONObject addCoins(String playerHandle, int numCoins) throws JSONException{
 		JSONObject top = new JSONObject();
 		
 		top.put("playerHandle", playerHandle);
 		top.put("numCoins", numCoins);
-		top.put("usedCoins", usedCoins);
 		
 		return top;
 		
+	}
+	
+	public static JSONObject userWithTime(String playerHandle) throws JSONException{
+		JSONObject top = new JSONObject();
+		
+		top.put("playerHandle", playerHandle);
+		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
+		
+		return top;
 	}
 	
 	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException{

@@ -28,6 +28,11 @@ public class InventoryItem extends JsonConvertible {
 		this.sku = jsonObject.getString("sku");
 		this.numCoins = jsonObject.getInt("associatedCoins");
 	}
+
+	public boolean isAvailable() {
+		
+		return sku != null && price != null && name != null;
+	}
 	
 
 }

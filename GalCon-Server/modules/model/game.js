@@ -5,7 +5,10 @@ gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
 configManager = require('./config'),
-positionAdjuster = require('../movement/PositionAdjuster');
+positionAdjuster = require('../movement/PositionAdjuster'),
+_ = require('underscore'),
+abilityBasedGameType = require('./gameType/abilityBasedGameType');
+
 
 var gameSchema = mongoose.Schema({
 	version : "Number",
@@ -45,7 +48,13 @@ var gameSchema = mongoose.Schema({
 			},
 			shipRegenRate : "Number",
 			numberOfShips : "Number",
-			ability : "String"
+			ability : "String",
+			harvest : {
+				status : "String",
+				startingRound : "Number",
+				saveRound : "Number"
+			},
+			status : "String"
 		}
 	],
 	moves : [
@@ -145,6 +154,7 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 				planet.ownerHandle = move.playerHandle;
 				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
+				checkHarvestStatus(planet,game.currentRound.roundNumber, parseFloat(game.config.values["harvestSavior"]));
 			} else {
 				move.battlestats.defenceMultiplier = defenceMultiplier;
 				planet.numberOfShips = reverseEffectOfMultiplier(battleResult,defenceMultiplier);
@@ -155,6 +165,16 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 		}
 		
 	});
+}
+
+var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
+	if(planet.harvest && planet.harvest.status === "ACTIVE"){
+		planet.harvest.status = "INACTIVE";
+		planet.harvest.saveRound = roundNumber;
+		planet.numberOfShips += saviorBonus;
+	}else if(planet.harvest && planet.harvest.status === "INACTIVE"){
+		planet.harvest = null;
+	}
 }
 
 var reverseEffectOfMultiplier = function(battleResult, multiplierValue){
@@ -170,6 +190,7 @@ var getDefenceMutlipler = function(player, game){
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
 		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player);	
+		enhancedDefence +=  abilityBasedGameType.harvestEnhancement(player, game);
 	}
 	
 	return enhancedDefence;
@@ -179,11 +200,18 @@ var getAttackMultipler = function(player, game){
 	var enhancedAttackFleet = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);	
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);
+		console.log("BEFORE: " + enhancedAttackFleet);
+
+		enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
+		console.log("AFTER: " + enhancedAttackFleet);
+
 	}
 	
 	return enhancedAttackFleet;
 }
+
+
 
 var calculateAttackStrengthForMove = function(move, game, attackMultiplier){
 	return move.fleet + (move.fleet * attackMultiplier);
@@ -202,7 +230,7 @@ gameSchema.methods.updateRegenRates = function(){
 
 	var currentGame = this;
 	this.planets.forEach(function(planet){
-		if(planet.ownerHandle && !planet.conquered) {
+		if(planet.ownerHandle && !planet.conquered && planet.status === 'ALIVE') {
 		
 			var regenBy = planet.shipRegenRate;
 		
@@ -210,7 +238,8 @@ gameSchema.methods.updateRegenRates = function(){
 				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
 				
 				if(blockRegen){
-					regenBy =  planet.shipRegenRate - (planet.shipRegenRate * currentGame.config.values['blockAbility']);
+					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.ownerHandle), this);
+					regenBy =  planet.shipRegenRate - (planet.shipRegenRate * blockModifier);
 				}
 			}
 			
@@ -230,6 +259,16 @@ gameSchema.methods.addMoves = function(moves){
 		moves.forEach(function(move){
 			move.startingRound = game.currentRound.roundNumber;
 			game.moves.push(move);
+		});
+	}
+}
+
+gameSchema.methods.addHarvest = function(harvest){
+	var game = this;
+	if(harvest){
+		_.each(harvest, function(item){
+			var planet = _.find(game.planets, function(planet){return planet.name === item.planet});
+			planet.harvest = {status : "ACTIVE", startingRound : game.currentRound.roundNumber};
 		});
 	}
 }
@@ -281,10 +320,10 @@ exports.findAvailableGames = function(player) {
 };
 
 exports.findCollectionOfGames = function(searchIds){
-	return GameModel.find({_id : {$in : searchIds}}).populate('players').exec();
+	return GameModel.find({_id : {$in : searchIds}}, '_id players endGameInformation createdDate currentRound').populate('players').exec();
 }
 
-exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
+exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
 	if(attemptNumber > 5) {
 		var p = new mongoose.Promise();
 		p.reject("Too many attempts to perform move");
@@ -294,12 +333,14 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 	var p = exports.findById(gameId);
 	return p.then(function(game) {
 		game.addMoves(moves);
+		game.addHarvest(harvest);
 		game.currentRound.playersWhoMoved.push(playerHandle);
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
 		
 		    removeMovesWhichHaveBeenExecuted(game);
 			decrementCurrentShipCountOnFromPlanets(game);
+			destroyAbilityPlanets(game);
 			game.currentRound.playersWhoMoved = [];
 			
 			processMoves(playerHandle, game);
@@ -322,6 +363,20 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber) {
 				return savedGame.withPromise(savedGame.populate, 'players');
 			}
 		});
+	})
+}
+
+var planetShouldBeDestroyed = function(game, planet){
+	var roundsPassedWithHarvest = game.currentRound.roundNumber - planet.harvest.startingRound;
+	return roundsPassedWithHarvest >= game.config.values['harvestRounds'];
+}
+
+var destroyAbilityPlanets = function(game){
+	_.each(game.planets, function(planet){
+		if(planet.harvest && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
+			planet.shipRegenRate = 0;
+			planet.status = "DEAD";
+		}
 	})
 }
 

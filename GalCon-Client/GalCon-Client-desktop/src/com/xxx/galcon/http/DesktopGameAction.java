@@ -17,6 +17,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
+import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
 
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
@@ -183,7 +185,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		Inventory stock = new Inventory();
 		stock.inventory = inventory.inventory;
+		
+		InventoryItem inventoryItem =  new InventoryItem("coin_bundle_1", "$1.99", "coin_bundle_1", 2);
+		stock.inventory.add(inventoryItem);
+		
+		inventoryItem =  new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
+		stock.inventory.add(inventoryItem);
+		
 		callback.onResult(stock);
+	}
+
+	private InventoryItem createDummyInventoryItem( ) {
+		InventoryItem inventoryItem = new InventoryItem();
+		inventoryItem.name = "coin_bundle_1";
+		inventoryItem.sku = "coin_bundle_1";
+		inventoryItem.price = "$1.99";
+		return inventoryItem;
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
@@ -224,9 +241,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins, Long usedCoins) {
+	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins, usedCoins);
+			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -278,7 +295,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	
 	@Override
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback){
-		// Do nothing for now.
+		addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins);
 	}
 
 	@Override
@@ -307,6 +324,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void consumeExistingOrders() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recoverUsedCoinCount(
+			UIConnectionResultCallback<Player> callback, String playerHandle) {
+		try {
+			JSONObject top = JsonConstructor.userWithTime(playerHandle);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args, new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
 		
 	}
 

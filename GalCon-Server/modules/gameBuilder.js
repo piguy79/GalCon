@@ -261,6 +261,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	planet.shipRegenRate = 0;
 	planet.numberOfShips = 0;
 	planet.ability = "";
+	planet.status = "ALIVE";
 
 	return planet;
 }

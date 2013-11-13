@@ -56,6 +56,8 @@ app.post('/requestHandleForUserName', routes.requestHandleForUserName);
 app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);
 app.post('/performMoves', routes.performMoves);
 app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle);
+app.post('/updateUserCoinsInformation', routes.updateUserCoinsInformation);
+app.post('/updateUsedCoinsRecover',routes.adjustUsedCoinsIfAllUserGamesAreComplete);
 app.post('/addCoins', routes.addCoins);
 app.post('/addCoinsForAnOrder', routes.addCoinsForAnOrder);
 app.post('/deleteConsumedOrders', routes.deleteConsumedOrders);
@@ -63,6 +65,7 @@ app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);
 app.get('/inventory', routes.findAllInventory);
+
 
 
 var port = process.env.PORT || 3000;
