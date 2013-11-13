@@ -60,6 +60,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.tween.MoveTween;
+import com.xxx.galcon.model.tween.PlanetInformationTween;
 import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
@@ -120,6 +121,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private BoardScreenHud boardScreenHud;
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
+	private PlanetInformationDialog planetInformationDialog;
 	private Overlay overlay;
 
 	public ScreenFeedback previousScreen;
@@ -165,6 +167,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		Tween.registerAccessor(Move.class, new MoveTween());
 		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
+		Tween.registerAccessor(PlanetInformationDialog.class, new PlanetInformationTween());
 	}
 
 	private Model generateModelFromObjectFile(String objectFile) {
@@ -604,7 +607,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet != null) {
-			planet.touched = !planet.touched;
+			planet.touched = true;
+			//planet.touched = !planet.touched;
 		}
 
 		if (planet.touched) {
@@ -614,7 +618,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
-					showShipSelectionDialog(touchedPlanets);
+					if(planet.name.equals(alreadySelectedPlanet.name)){
+						showPlanetInformationDialog(planet);
+					}else{
+						showShipSelectionDialog(touchedPlanets);
+					}
 				}
 			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
@@ -640,6 +648,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 
+	}
+	
+	private void showPlanetInformationDialog(Planet planet){
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		int xMargin = (int) (width * .1f);
+		int dialogWidth = width - 2 * xMargin;
+		
+		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * .6f),
+				dialogWidth, (int) (dialogWidth * .38f), planet, assetManager, tweenManager);
+		planetInformationDialog.show();
 	}
 
 	private void showShipSelectionDialog(Move moveToEdit, List<Planet> touchedPlanets) {
@@ -886,6 +905,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (action != null) {
 				processShipSelectionTouch(action);
 			}
+		}else if(planetInformationDialog != null){
+			planetInformationDialog.render(delta);
+			
+			String action = (String) planetInformationDialog.getRenderResult();
 		}
 	}
 
