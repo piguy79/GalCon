@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -14,6 +16,9 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appstate.AppStateClient;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.plus.PlusClient;
 import com.jirbo.adcolony.AdColony;
@@ -21,12 +26,11 @@ import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.GameHelper.GameHelperListener;
 import com.xxx.galcon.config.Configuration;
-import com.xxx.galcon.http.GooglePlusSignInListener;
+import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.IabHelper;
-import com.xxx.galcon.inappbilling.util.IabHelper.OnIabPurchaseFinishedListener;
 import com.xxx.galcon.inappbilling.util.IabHelper.QueryInventoryFinishedListener;
 import com.xxx.galcon.inappbilling.util.IabResult;
 import com.xxx.galcon.inappbilling.util.Purchase;
@@ -46,16 +50,16 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
-	
+
 	final static String APPLICATION_CONFIG = "app";
 	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
-	
 
 	protected GameHelper plusHelper;
 	protected final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
 	protected int mRequestedClients = GameHelper.CLIENT_PLUS;
 	private String[] mAdditionalScopes;
-	private GooglePlusSignInListener signInListener;
+	private AuthenticationListener signInListener;
+	private String serverAuthScope = "audience:server:client_id:1066768766862-h9rj77gvp9la86lqfhfp9g16dd9eh50r.apps.googleusercontent.com";
 
 	private AndroidGameAction gameAction;
 
@@ -70,7 +74,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Crashlytics.start(this);
+		Crashlytics.start(this);
 
 		if (mDebugLog) {
 			plusHelper.enableDebugLog(mDebugLog, mDebugTag);
@@ -78,7 +82,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		plusHelper.setup(this, mRequestedClients, mAdditionalScopes);
 
 		setupAdColony();
-		
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
@@ -103,7 +106,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		Intent intent = new Intent(this, PingService.class);
 		startService(intent);
 	}
-	
+
 	private UIConnectionResultCallback<Player> playerCallback = new UIConnectionResultCallback<Player>() {
 
 		@Override
@@ -117,12 +120,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		@Override
 		public void onConnectionError(String msg) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
 
 	private void consumeAnyPurchasedOrders() {
-		
+
 		UIConnectionWrapper.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
 
 			@Override
@@ -131,25 +134,25 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 					@Override
 					public void onResult(final Inventory inventory) {
-						
-						mHelper.queryInventoryAsync(true,inventory.skus(),  new QueryInventoryFinishedListener() {
-							
+
+						mHelper.queryInventoryAsync(true, inventory.skus(), new QueryInventoryFinishedListener() {
+
 							@Override
 							public void onQueryInventoryFinished(IabResult result,
 									com.xxx.galcon.inappbilling.util.Inventory inv) {
-								
+
 								List<Order> orders = new ArrayList<Order>();
-								for(InventoryItem item : inventory.inventory){
-									if(inv.hasPurchase(item.sku)){
+								for (InventoryItem item : inventory.inventory) {
+									if (inv.hasPurchase(item.sku)) {
 										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson(), item.numCoins));
 									}
 								}
-								
+
 								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, orders);
-								
+
 							}
 						});
-						
+
 					}
 				});
 			}
@@ -157,13 +160,12 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 			@Override
 			public void onConnectionError(String msg) {
 				complain("Unable to load inventory from server.");
-				
+
 			}
 		});
 		List<String> skus = new ArrayList<String>();
 		skus.add("android.test.purchased");
-		
-		
+
 	}
 
 	public void setupInAppBilling() {
@@ -183,7 +185,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				if (!result.isSuccess()) {
 					complain("Problem setting up in-app billing: " + result);
 					return;
-				}else{
+				} else {
 					consumeAnyPurchasedOrders();
 				}
 			}
@@ -225,114 +227,104 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void displayAd(AdColonyVideoListener adListener) {
 		AdColonyVideoAd ad = new AdColonyVideoAd();
 		ad.show(adListener);
-	}      
+	}
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
 		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
-			
+
 			@Override
 			public void onIabPurchaseFinished(IabResult result, Purchase info) {
 
-				if(result.isSuccess()){
+				if (result.isSuccess()) {
 					List<Order> orders = new ArrayList<Order>();
 					orders.add(new Order(info.getOriginalJson(), inventoryItem.numCoins));
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle,  orders);
-				}else{
+					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, orders);
+				} else {
 					complain("Unable to purchase item from Play Store. Please try again.");
 				}
-				
+
 			}
 		});
 	}
 
-	
-	public void loadInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback){
-		
+	public void loadInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
+
 		List<String> skuDetail = new ArrayList<String>();
-		
-		for(InventoryItem item : inventory.inventory){
+
+		for (InventoryItem item : inventory.inventory) {
 			skuDetail.add(item.sku);
 		}
-		
+
 		mHelper.queryInventoryAsync(true, skuDetail, new QueryInventoryFinishedListener() {
-			
+
 			@Override
-			public void onQueryInventoryFinished(IabResult result,
-					com.xxx.galcon.inappbilling.util.Inventory inv) {
-				
-				if(result.isFailure()){
+			public void onQueryInventoryFinished(IabResult result, com.xxx.galcon.inappbilling.util.Inventory inv) {
+
+				if (result.isFailure()) {
 					complain("Unable to load inventory from Play Store.");
 					return;
 				}
-				
+
 				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
-				
-				for(InventoryItem item : inventory.inventory){
+
+				for (InventoryItem item : inventory.inventory) {
 					SkuDetails detail = inv.getSkuDetails(item.sku);
-					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail.getTitle(), item.numCoins);
+					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
+							.getTitle(), item.numCoins);
 					mappedInventoryItems.add(combinedItem);
 				}
-				
+
 				Inventory inventory = new Inventory();
 				inventory.inventory = mappedInventoryItems;
 				callback.onResult(inventory);
-				
+
 			}
 		});
 	}
-	
-	public void consumeOrders(final List<Order> consumedOrders){
-		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
-		
-		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
-			
-			@Override
-			public void onConsumeMultiFinished(List<Purchase> purchases,
-					List<IabResult> results) {
-				
-				gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
 
+	public void consumeOrders(final List<Order> consumedOrders) {
+		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
+
+		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
+			@Override
+			public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
+				gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
 					@Override
-					public void onConnectionResult(Player result) {						
+					public void onConnectionResult(Player result) {
 					}
 
 					@Override
 					public void onConnectionError(String msg) {
 						// TODO Auto-generated method stub
-						
 					}
 				}, GameLoop.USER.handle, consumedOrders);
-				
 			}
-
-			
 		});
-		
 	}
-	
+
 	protected void beginUserInitiatedSignIn() {
-        plusHelper.beginUserInitiatedSignIn();
+		plusHelper.beginUserInitiatedSignIn();
 	}
 
 	protected void signOut() {
-	        plusHelper.signOut();
-	        signInListener.onSignOut();
+		plusHelper.signOut();
+		signInListener.onSignOut();
 	}
-	
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
-		
+
 		List<Purchase> purchaseOrders = new ArrayList<Purchase>();
-		for(Order order  : consumedOrders){
+		for (Order order : consumedOrders) {
 			Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order, "");
 			purchaseOrders.add(purchase);
 		}
 		return purchaseOrders;
 	}
-		
+
 	@Override
 	protected void onStart() {
 		super.onStart();
+		plusHelper.mAutoSignIn = false;
 		plusHelper.onStart(this);
 	}
 
@@ -347,8 +339,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		if (!mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 			plusHelper.onActivityResult(request, response, data);
-        }
-		
+		}
 	}
 
 	protected GamesClient getGamesClient() {
@@ -416,13 +407,41 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 	@Override
 	public void onSignInSucceeded() {
-		if (signInListener != null) {
-			signInListener.onSignInSucceeded();
-		}
+		String user = UserInfo.getUser(this);
+		new RetrieveTokenTask().execute(user);
 	}
-	
-	public void registerGooglePlusSignInListener(GooglePlusSignInListener signInListener) {
+
+	public void registerGooglePlusSignInListener(AuthenticationListener signInListener) {
 		this.signInListener = signInListener;
 	}
 
+	private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			String token = "";
+			try {
+				token = GoogleAuthUtil.getToken(MainActivity.this, params[0], serverAuthScope);
+			} catch (UserRecoverableAuthException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (GoogleAuthException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return token;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			gameAction.setToken(result);
+			if (signInListener != null) {
+				signInListener.onSignInSucceeded(result);
+			}
+		}
+	}
 }

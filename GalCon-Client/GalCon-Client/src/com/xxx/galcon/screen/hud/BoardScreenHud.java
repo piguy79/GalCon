@@ -9,7 +9,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
@@ -24,11 +25,11 @@ public class BoardScreenHud extends Hud {
 	private GameBoard gameBoard;
 
 	private Button endTurnButton;
-	private Texture bottomBar;
-	private Texture arrowLeftSmallBlack;
-	private Texture arrowRightSmallBlack;
+	private AtlasRegion bottomBar;
+	private AtlasRegion arrowLeftSmallBlack;
+	private AtlasRegion arrowRightSmallBlack;
 	private BoardScreen boardScreen;
-	private AssetManager assetManager;
+	private TextureAtlas gameBoardAtlas;
 	private int leftArrowButtonX;
 	private int leftArrowButtonY;
 	private int rightArrowButtonX;
@@ -36,21 +37,26 @@ public class BoardScreenHud extends Hud {
 	private int arrowButtonWidth;
 	private int arrowButtonHeight;
 	private Map<Move, ShipMoveHudButton> moveToButtonMap = new HashMap<Move, ShipMoveHudButton>();
+	private AssetManager assetManager;
 
 	public BoardScreenHud(BoardScreen boardScreen, AssetManager assetManager) {
 		super();
-		this.assetManager = assetManager;
 		this.boardScreen = boardScreen;
 
-		endTurnButton = new EndTurnHudButton(assetManager);
+		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
-		bottomBar = assetManager.get("data/images/bottom_bar.png", Texture.class);
-		arrowLeftSmallBlack = assetManager.get("data/images/arrow_left_small_black.png", Texture.class);
-		arrowRightSmallBlack = assetManager.get("data/images/arrow_right_small_black.png", Texture.class);
+		endTurnButton = new EndTurnHudButton(menusAtlas);
+
+		bottomBar = gameBoardAtlas.findRegion("bottom_bar");
+		arrowLeftSmallBlack = menusAtlas.findRegion("arrow_left_small_black");
+		arrowRightSmallBlack = menusAtlas.findRegion("arrow_right_small_black");
 
 		addHudButton(endTurnButton);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		this.assetManager = assetManager;
 	}
 
 	private boolean updateMoveButtons = false;
@@ -192,7 +198,8 @@ public class BoardScreenHud extends Hud {
 				continue;
 			}
 			if (!moveToButtonMap.containsKey(move)) {
-				ShipMoveHudButton button = new ShipMoveHudButton(move, isPending, moveToButtonMap.size(), assetManager);
+				ShipMoveHudButton button = new ShipMoveHudButton(assetManager, move, isPending, moveToButtonMap.size(),
+						gameBoardAtlas);
 				addHudButton(button);
 				moveToButtonMap.put(move, button);
 			}

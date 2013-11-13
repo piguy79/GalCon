@@ -1,7 +1,7 @@
 package com.xxx.galcon.screen.hud;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public abstract class Button {
 	protected static final float BUTTON_SIZE_RATIO = 0.15f;
@@ -9,11 +9,11 @@ public abstract class Button {
 	private boolean enabled = true;
 
 	protected int x, y, width, height;
-	protected Texture texture;
+	protected AtlasRegion region;
 
-	public Button(Texture texture) {
+	public Button(AtlasRegion region) {
 		super();
-		this.texture = texture;
+		this.region = region;
 	}
 
 	abstract public void updateLocationAndSize(int x, int y, int width, int height);
@@ -44,7 +44,7 @@ public abstract class Button {
 
 	public void render(SpriteBatch spriteBatch) {
 		if (enabled) {
-			spriteBatch.draw(texture, x, y, width, height);
+			spriteBatch.draw(region, x, y, width, height);
 		}
 	}
 

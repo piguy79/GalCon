@@ -1,45 +1,41 @@
 package com.xxx.galcon;
 
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Fonts {
 
-	private static Fonts instance = new Fonts();
+	private static Fonts instance = null;
 
 	private BitmapFont smallFont;
 	private BitmapFont mediumFont;
 	private BitmapFont largeFont;
 
 	private Fonts() {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/crackdr2.ttf"));
-
 		float width = Gdx.graphics.getWidth();
 		float scaleFactor = width / 720.0f;
 
-		smallFont = generator.generateFont((int) (12.0f * scaleFactor));
-		mediumFont = generator.generateFont((int) (22.0f * scaleFactor));
-		largeFont = generator.generateFont((int) (28.0f * scaleFactor));
+		smallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
+		smallFont.getRegion().getTexture().setFilter(Linear, Linear);
+		smallFont.setScale(0.6f * scaleFactor);
 
-		generator.dispose();
+		mediumFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
+		mediumFont.getRegion().getTexture().setFilter(Linear, Linear);
+		mediumFont.setScale(1.2f * scaleFactor);
+
+		largeFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
+		largeFont.getRegion().getTexture().setFilter(Linear, Linear);
+		largeFont.setScale(3.0f * scaleFactor);
 	}
 
-	public static Fonts getInstance() {
+	public static Fonts getInstance(AssetManager assetManager) {
 		if (instance == null) {
 			instance = new Fonts();
 		}
 		return instance;
-	}
-
-	public static void dispose() {
-		if (instance != null) {
-			instance.smallFont.dispose();
-			instance.largeFont.dispose();
-			instance.mediumFont.dispose();
-		}
-
-		instance = null;
 	}
 
 	public BitmapFont smallFont() {

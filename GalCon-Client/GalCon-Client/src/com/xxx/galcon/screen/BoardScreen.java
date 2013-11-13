@@ -4,6 +4,7 @@ import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.Constants.OWNER_NO_ONE;
 import static com.xxx.galcon.Constants.PLANET_ABILITIES;
+import static com.xxx.galcon.Util.createShader;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,8 +26,10 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -40,6 +43,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
@@ -91,12 +95,13 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private ShaderProgram planetTouchBgShader;
 
 	private Texture planetNumbersTexture;
-	private Texture planetTexture;
-	private Texture planetTouchTexture;
-	private Texture bgTexture;
+	private AtlasRegion planetTexture;
+	private AtlasRegion planetTouchTexture;
+	private AtlasRegion bgTexture;
 
-	private StillModel planetModel;
-	private StillModel shipModel;
+	private Model planetModel;
+	private Model shipModel;
+
 	private Matrix4 modelViewMatrix = new Matrix4();
 	private final Matrix4 fontViewMatrix = new Matrix4();
 
@@ -109,6 +114,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private float[] moveSelectedPlanetsCoords = new float[4];
 
+	private TextureAtlas menusAtlas;
 	private AssetManager assetManager;
 	private TweenManager tweenManager;
 	private BoardScreenHud boardScreenHud;
@@ -131,20 +137,23 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.assetManager = assetManager;
 		this.tweenManager = tweenManager;
 
-		planetShader = createShaderUsingFiles("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
-		planetTouchBgShader = createShaderUsingFiles("data/shaders/planet-touch-bg-vs.glsl",
+		planetShader = createShader("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
+		planetTouchBgShader = createShader("data/shaders/planet-touch-bg-vs.glsl",
 				"data/shaders/planet-touch-bg-fs.glsl");
-		gridShader = createShaderUsingFiles("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
-		shipShader = createShaderUsingFiles("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
+		shipShader = createShader("data/shaders/ship-vs.glsl", "data/shaders/ship-fs.glsl");
+		gridShader = createShader("data/shaders/grid-vs.glsl", "data/shaders/grid-fs.glsl");
 
-		planetModel = generateStillModelFromObjectFile("data/models/planet.obj");
-		planetModel.subMeshes[0].mesh.setAutoBind(false);
+		planetModel = generateModelFromObjectFile("data/models/planet.obj");
+		planetModel.meshes.get(0).setAutoBind(false);
 
-		shipModel = generateStillModelFromObjectFile("data/models/ship.obj");
+		shipModel = generateModelFromObjectFile("data/models/ship.obj");
 
 		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
-		planetTexture = assetManager.get("data/images/planets/planet3.png", Texture.class);
-		planetTouchTexture = assetManager.get("data/images/planets/planet3-touch.png", Texture.class);
+
+		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		TextureAtlas planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
+		planetTexture = planetAtlas.findRegion("planet3");
+		planetTouchTexture = planetAtlas.findRegion("planet3-touch");
 
 		boardScreenHud = new BoardScreenHud(this, assetManager);
 		playerInfoHud = new HeaderHud(assetManager);
@@ -158,18 +167,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
 	}
 
-	private StillModel generateStillModelFromObjectFile(String objectFile) {
+	private Model generateModelFromObjectFile(String objectFile) {
 		ObjLoader loader = new ObjLoader();
 		return loader.loadObj(Gdx.files.internal(objectFile));
-	}
-
-	private ShaderProgram createShaderUsingFiles(String vertexShader, String fragmentShader) {
-		ShaderProgram shader = new ShaderProgram(Gdx.files.internal(vertexShader), Gdx.files.internal(fragmentShader));
-		if (!shader.isCompiled() && !shader.getLog().isEmpty()) {
-			throw new IllegalStateException("Shader compilation fail: " + shader.getLog());
-		}
-
-		return shader;
 	}
 
 	/*
@@ -245,7 +245,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		this.gameBoard = gameBoard;
-		bgTexture = assetManager.get("data/images/levels/" + gameBoard.map + ".png", Texture.class);
+		TextureAtlas atlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
+		bgTexture = atlas.findRegion("" + gameBoard.map);
 		processGameBoard();
 		associateHudInformation();
 	}
@@ -259,9 +260,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void clearPhysicsWorld() {
 		bodyClearList.clear();
-		Iterator<Body> bodyIter = physicsWorld.getBodies();
-		while (bodyIter.hasNext()) {
-			Body body = bodyIter.next();
+		Array<Body> array = new Array<Body>();
+		physicsWorld.getBodies(array);
+
+		Iterator<Body> iter = array.iterator();
+		while (iter.hasNext()) {
+			Body body = iter.next();
 			bodyClearList.add(body);
 		}
 
@@ -332,7 +336,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	}
 
 	private void renderGrid(Camera camera) {
-		bgTexture.bind(7);
+		bgTexture.getTexture().bind(7);
 
 		gridShader.begin();
 		gridShader.setUniformi("bgTex", 7);
@@ -342,9 +346,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		gridShader.setUniformf("uTilesWide", gameBoard.widthInTiles);
 		gridShader.setUniformf("uTilesTall", gameBoard.heightInTiles);
 
-		planetModel.subMeshes[0].mesh.bind(gridShader);
-		planetModel.render(gridShader);
-		planetModel.subMeshes[0].mesh.unbind(gridShader);
+		planetModel.meshes.get(0).bind(gridShader);
+		planetModel.meshes.get(0).render(gridShader, GL20.GL_TRIANGLES);
+		planetModel.meshes.get(0).bind(gridShader);
 
 		gridShader.end();
 	}
@@ -352,8 +356,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private float[] planetBits = new float[4];
 
 	private void renderPlanets(List<Planet> planets, Camera camera) {
-		planetTexture.bind(1);
-		planetTouchTexture.bind(2);
+		planetTexture.getTexture().bind(1);
+		planetTouchTexture.getTexture().bind(2);
 		planetNumbersTexture.bind(3);
 
 		planetShader.begin();
@@ -363,7 +367,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		planetShader.setUniformMatrix("uPMatrix", camera.combined);
 
-		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		Mesh mesh = planetModel.meshes.get(0);
 		mesh.bind(planetShader);
 		int size = planets.size();
 		for (int i = 0; i < size; ++i) {
@@ -389,7 +393,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			planetShader.setUniformf("radius", radius);
 			planetShader.setUniformi("shipCount",
 					planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()));
-			planetModel.render(planetShader);
+			planetModel.meshes.get(0).render(planetShader, GL20.GL_TRIANGLES);
 		}
 		mesh.unbind(planetShader);
 		planetShader.end();
@@ -415,7 +419,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		planetTouchBgShader.begin();
 		planetTouchBgShader.setUniformMatrix("uPMatrix", camera.combined);
 
-		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		Mesh mesh = planetModel.meshes.get(0);
 		mesh.bind(planetTouchBgShader);
 		for (int i = 0; i < size; ++i) {
 			Planet planet = planets.get(i);
@@ -436,7 +440,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			planetTouchBgShader.setUniformf("color", .6f, .6f, .8f, .5f);
 			planetTouchBgShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
-			planetModel.render(planetTouchBgShader);
+			planetModel.meshes.get(0).render(planetTouchBgShader, GL20.GL_TRIANGLES);
 		}
 		mesh.unbind(planetTouchBgShader);
 		planetTouchBgShader.end();
@@ -538,7 +542,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 			}
 
-			shipModel.render(shipShader);
+			shipModel.meshes.get(0).render(shipShader, GL20.GL_TRIANGLES);
 		}
 
 		shipShader.end();
@@ -710,9 +714,9 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 				Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 				if (!prefs.getBoolean(ability + "_SHOWN", false)) {
-					overlay = new DismissableOverlay(assetManager, new TextOverlay(
+					overlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 							"Congrats!\n \nWhile you hold this planet,\nyou will gain the following:\n" + bonus + " "
-									+ PLANET_ABILITIES.get(ability), assetManager, true));
+									+ PLANET_ABILITIES.get(ability), menusAtlas, true, assetManager));
 					prefs.putBoolean(ability + "_SHOWN", true);
 					prefs.flush();
 					break;
@@ -789,7 +793,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		planetTouchBgShader.begin();
 		planetTouchBgShader.setUniformMatrix("uPMatrix", camera.combined);
-		Mesh mesh = planetModel.getSubMeshes()[0].getMesh();
+		Mesh mesh = planetModel.meshes.get(0);
 		mesh.bind(planetTouchBgShader);
 		for (int i = 0; i < gameBoard.widthInTiles; ++i) {
 			for (int j = 0; j < gameBoard.heightInTiles; ++j) {
@@ -810,7 +814,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 				planetTouchBgShader.setUniformf("color", 0.1f, 0.1f, 0.1f, 0.7f);
 				planetTouchBgShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
-				planetModel.render(planetTouchBgShader);
+				planetModel.meshes.get(0).render(planetTouchBgShader, GL20.GL_TRIANGLES);
 			}
 		}
 
@@ -829,7 +833,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		textSpriteBatch.setProjectionMatrix(fontViewMatrix);
 
 		String text = connectionError != null ? connectionError : "Loading...";
-		BitmapFont font = Fonts.getInstance().mediumFont();
+		BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .4f);
 		textSpriteBatch.end();
@@ -845,7 +849,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		String text = "Draw Game";
 
-		BitmapFont font = Fonts.getInstance().mediumFont();
+		BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		textSpriteBatch.end();
@@ -864,7 +868,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			text = "Victory! Gained " + endGameInfo.xpAwardToWinner + "xp";
 		}
 
-		BitmapFont font = Fonts.getInstance().mediumFont();
+		BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 		float halfFontWidth = font.getBounds(text).width / 2;
 		font.draw(textSpriteBatch, text, width / 2 - halfFontWidth, height * .25f);
 		textSpriteBatch.end();
@@ -919,10 +923,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private void processHudButtonTouch(String action) {
 		if (action.equals(Action.END_TURN)) {
-			overlay = new TextOverlay("Sending ships to their doom", assetManager, true);
+			overlay = new TextOverlay("Sending ships to their doom", menusAtlas, true, assetManager);
 			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves);
 		} else if (action.equals(Action.REFRESH)) {
-			overlay = new TextOverlay("Refreshing...", assetManager, true);
+			overlay = new TextOverlay("Refreshing...", menusAtlas, true, assetManager);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
 		} else if (action.equals(Action.BACK)) {
 			returnCode = Action.BACK;
@@ -958,7 +962,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			}
 		}
 
-		overlay = new DismissableOverlay(assetManager, new TextOverlay("", assetManager, false),
+		overlay = new DismissableOverlay(menusAtlas, new TextOverlay("", menusAtlas, false, assetManager),
 				new PostDismissAction() {
 
 					@Override
@@ -1054,8 +1058,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
-					assetManager));
+			overlay = new DismissableOverlay(menusAtlas, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
+					menusAtlas, assetManager));
 		}
 	}
 
@@ -1071,8 +1075,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
-					assetManager));
+			overlay = new DismissableOverlay(menusAtlas, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
+					menusAtlas, assetManager));
 		}
 	}
 

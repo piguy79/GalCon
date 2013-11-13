@@ -1,11 +1,11 @@
 package com.xxx.galcon.http;
 
 public interface SocialAction {
-	public void registerGooglePlusSignInListener(GooglePlusSignInListener signInListener);
+	public void registerSignInListener(AuthenticationListener signInListener);
 
-	public void googlePlusSignIn();
+	public void signIn(String authProvider);
 
-	public void googlePlusSignOut();
+	public void signOut();
 
 	public boolean isLoggedInToGooglePlus();
 }

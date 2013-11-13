@@ -1,0 +1,60 @@
+
+social.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Google+_chiclet_Red
+  rotate: false
+  xy: 2, 2
+  size: 192, 188
+  orig: 192, 188
+  offset: 0, 0
+  index: -1
+common_signin_btn_icon_focus_dark
+  rotate: false
+  xy: 196, 118
+  size: 72, 72
+  split: 9, 60, 9, 60
+  pad: 12, 12, 12, 12
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+google_plus_focus
+  rotate: false
+  xy: 196, 118
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+common_signin_btn_icon_normal_dark
+  rotate: false
+  xy: 196, 44
+  size: 72, 72
+  split: 9, 60, 9, 60
+  pad: 12, 12, 12, 12
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+common_signin_btn_icon_pressed_dark
+  rotate: false
+  xy: 270, 118
+  size: 72, 72
+  split: 9, 60, 9, 60
+  pad: 12, 12, 12, 12
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+google_plus_normal
+  rotate: false
+  xy: 270, 44
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+google_plus_pressed
+  rotate: false
+  xy: 344, 118
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1

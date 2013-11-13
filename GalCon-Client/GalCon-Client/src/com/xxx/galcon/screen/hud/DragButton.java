@@ -1,8 +1,8 @@
 package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 
@@ -10,8 +10,8 @@ public abstract class DragButton extends Button {
 	protected int minX;
 	protected int maxX;
 
-	public DragButton(Texture texture) {
-		super(texture);
+	public DragButton(AtlasRegion region) {
+		super(region);
 	}
 
 	abstract public void updateDragBounds(int x, int y, int width, int height);

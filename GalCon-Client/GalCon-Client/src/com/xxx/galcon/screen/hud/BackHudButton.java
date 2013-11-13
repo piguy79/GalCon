@@ -1,14 +1,13 @@
 package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.screen.Action;
 
 public class BackHudButton extends Button {
 
-	public BackHudButton(AssetManager assetManager) {
-		super(assetManager.get("data/images/back.png", Texture.class));
+	public BackHudButton(TextureAtlas atlas) {
+		super(atlas.findRegion("back"));
 	}
 
 	@Override

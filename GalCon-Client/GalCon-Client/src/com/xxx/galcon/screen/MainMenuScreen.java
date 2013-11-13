@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Util.createShader;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,44 +9,38 @@ import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
-import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.GameAction;
-import com.xxx.galcon.http.GooglePlusSignInListener;
 import com.xxx.galcon.http.SetPlayerResultHandler;
-import com.xxx.galcon.http.SocialAction;
 
-public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener {
+public class MainMenuScreen implements ScreenFeedback {
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
 	private String returnValue;
 	private GameAction gameAction;
-	private SocialAction socialAction;
 	private Stage stage;
-	private GameLoop gameLoop;
+
+	private ShaderProgram fontShader;
 
 	private Image loadingFrame;
 	private Image loadingBarHidden;
@@ -55,60 +51,37 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 
 	private Actor loadingBar;
 
-	private ImageButton googlePlus;
-	private Table googlePlusTable;
-	private Label signInLabel;
+	private AssetManager assetManager;
 
 	private Skin skin;
 
 	Map<String, TouchRegion> touchRegions = new HashMap<String, TouchRegion>();
 
-	public MainMenuScreen(GameLoop gameLoop, Skin skin, GameAction gameAction, SocialAction socialAction) {
-		this.gameLoop = gameLoop;
+	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
 		this.gameAction = gameAction;
-		this.socialAction = socialAction;
 		this.skin = skin;
 
-		socialAction.registerGooglePlusSignInListener(this);
+		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+
+		this.assetManager = assetManager;
 	}
 
 	private void addElementsToStage() {
 		stage = new Stage();
-		gameLoop.assetManager.load("data/images/loading.pack", TextureAtlas.class);
-		gameLoop.assetManager.finishLoading();
+		assetManager.load("data/images/loading.pack", TextureAtlas.class);
+		assetManager.finishLoading();
 
-		TextureAtlas atlas = gameLoop.assetManager.get("data/images/loading.pack", TextureAtlas.class);
+		TextureAtlas atlas = assetManager.get("data/images/loading.pack", TextureAtlas.class);
 
 		loadingFrame = new Image(atlas.findRegion("loading-frame"));
 		loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
 		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
 		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
-		googlePlus = new ImageButton(skin, "googlePlusButton");
-		googlePlus.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if (socialAction.isLoggedInToGooglePlus()) {
-					socialAction.googlePlusSignOut();
-				} else {
-					socialAction.googlePlusSignIn();
-				}
-			}
-		});
-
-		googlePlusTable = new Table(skin);
-
 		stage.addActor(loadingBar);
 		stage.addActor(loadingBg);
 		stage.addActor(loadingBarHidden);
 		stage.addActor(loadingFrame);
-
-		stage.addActor(googlePlusTable);
 	}
 
 	@Override
@@ -117,8 +90,8 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	}
 
 	private void updateFont() {
-		int width = Gdx.graphics.getWidth() / 2;
-		int height = Gdx.graphics.getHeight() / 2;
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
 
 		addText(Constants.New, (int) (height * .44f), true, width, height);
 		addText(Constants.CONTINUE, (int) (height * .34f), true, width, height);
@@ -131,10 +104,12 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	}
 
 	private void addText(String text, int y, boolean isTouchable, int screenWidth, int screenHeight) {
-		BitmapFont font = Fonts.getInstance().largeFont();
+		BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 		TextBounds fontBounds = font.getBounds(text);
 		int x = screenWidth / 2 - (int) fontBounds.width / 2;
+		spriteBatch.setShader(fontShader);
 		font.draw(spriteBatch, text, x, y);
+		spriteBatch.setShader(null);
 
 		if (isTouchable && touchRegions.size() != 3) {
 			touchRegions.put(text, new TouchRegion(x, y, (int) fontBounds.width, (int) fontBounds.height, true));
@@ -144,8 +119,8 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		int width = Gdx.graphics.getWidth() / 2;
-		int height = Gdx.graphics.getHeight() / 2;
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
 
 		Integer touchX = null;
 		Integer touchY = null;
@@ -153,8 +128,8 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		InGameInputProcessor ip = (InGameInputProcessor) plex.getProcessors().get(1);
 		if (ip.didTouch()) {
 			TouchPoint touchPoint = ip.getTouch();
-			int x = touchPoint.x / 2;
-			int y = touchPoint.y / 2;
+			int x = touchPoint.x;
+			int y = touchPoint.y;
 
 			touchX = x;
 			touchY = y;
@@ -167,11 +142,11 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 		spriteBatch.begin();
 
 		String galcon = "GalCon";
-		BitmapFont extraLargeFont = Fonts.getInstance().largeFont();
+		BitmapFont extraLargeFont = Fonts.getInstance(assetManager).largeFont();
 		int x = width / 2 - (int) extraLargeFont.getBounds(galcon).width / 2;
 		extraLargeFont.draw(spriteBatch, galcon, x, (int) (height * .9f));
 
-		BitmapFont smallFont = Fonts.getInstance().smallFont();
+		BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
 		if (!hasUserInformation()) {
 			String loadingUserInfo = "Loading User Information...";
 			x = width / 2 - (int) smallFont.getBounds(loadingUserInfo).width / 2;
@@ -185,7 +160,7 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 
 			createCoinDisplay(width, height);
 
-			BitmapFont mediumFont = Fonts.getInstance().mediumFont();
+			BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
 			mediumFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 			smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
 			x = width / 2 - (int) mediumFont.getBounds(currentUserText()).width / 2;
@@ -252,7 +227,7 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 			coinsText += GameLoop.USER.coins;
 		}
 
-		BitmapFont extraLargeFont = Fonts.getInstance().mediumFont();
+		BitmapFont extraLargeFont = Fonts.getInstance(assetManager).mediumFont();
 		double percentageOfWidth = width * 0.04;
 		int x = (int) percentageOfWidth;
 		extraLargeFont.draw(spriteBatch, coinsText, x, (int) (height * .97f));
@@ -270,26 +245,6 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	public void resize(int width, int height) {
 		touchRegions.clear();
 		updateRankProgressBar(width, height);
-
-		float tableHeight = height * 0.15f;
-		googlePlusTable.clear();
-		googlePlusTable.setX(0);
-		googlePlusTable.setY(0);
-		googlePlusTable.setWidth(width);
-		googlePlusTable.setHeight(tableHeight);
-
-		googlePlusTable.pad(5, 5, 5, 5);
-		googlePlusTable.add(googlePlus).width(tableHeight - 10).height(tableHeight - 10);
-		signInLabel = new Label("default", skin);
-
-		String text = Strings.G_PLUS_SIGNED_OUT;
-		if (socialAction.isLoggedInToGooglePlus()) {
-			text = Strings.G_PLUS_SIGNED_IN;
-		}
-		signInLabel.setText(text);
-		googlePlusTable.add(signInLabel).left().expandX().expandY().padLeft(width * 0.02f);
-
-		googlePlusTable.layout();
 	}
 
 	private void updateRankProgressBar(int width, int height) {
@@ -357,35 +312,5 @@ public class MainMenuScreen implements ScreenFeedback, GooglePlusSignInListener 
 	@Override
 	public Object getRenderResult() {
 		return returnValue;
-	}
-
-	@Override
-	public void onSignInFailed() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
-	}
-
-	@Override
-	public void onSignInSucceeded() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_IN);
-			}
-		});
-	}
-
-	@Override
-	public void onSignOut() {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				signInLabel.setText(Strings.G_PLUS_SIGNED_OUT);
-			}
-		});
 	}
 }

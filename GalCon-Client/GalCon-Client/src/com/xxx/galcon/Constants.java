@@ -7,6 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 public class Constants {
+	public static final String APP_TITLE = "GalCon";
+
+	public static class UI {
+		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
+		public static final String DEFAULT_FONT = "defaultFont";
+		public static final String LARGE_FONT = "largeFont";
+		public static final String WAIT_BUTTON = "waitButton";
+		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
+	}
+
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect. Please try again.";
 	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
@@ -68,7 +78,8 @@ public class Constants {
 	public static final String WATCHED_AD = "watchedAd";
 	public static final String COINS = "coins";
 	public static final String USED_COINS = "usedCoins";
-
+	public static final String SOCIAL_AUTH_PROVIDER = "socialAuthProvider";
+	public static final String SOCIAL_AUTH_PROVIDER_GOOGLE = "google";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

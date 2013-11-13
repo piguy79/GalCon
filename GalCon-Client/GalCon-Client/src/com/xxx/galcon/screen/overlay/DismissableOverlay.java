@@ -1,8 +1,8 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.InGameInputProcessor;
 
 public class DismissableOverlay extends Overlay {
@@ -11,19 +11,19 @@ public class DismissableOverlay extends Overlay {
 	private boolean dismissed = false;
 	private PostDismissAction postDismissAction;
 
-	public DismissableOverlay(AssetManager assetManger, Overlay delegate) {
-		super(assetManger, delegate.isDisplayOverlayTexture());
+	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate) {
+		super(menusAtlas, delegate.isDisplayOverlayTexture());
 		this.delegate = delegate;
 		postDismissAction = new PostDismissAction() {
-			
+
 			@Override
-			public void apply() {				
+			public void apply() {
 			}
 		};
 	}
-	
-	public DismissableOverlay(AssetManager assetManger, Overlay delegate, PostDismissAction postDismissAction){
-		super(assetManger, delegate.isDisplayOverlayTexture());
+
+	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, PostDismissAction postDismissAction) {
+		super(menusAtlas, delegate.isDisplayOverlayTexture());
 		this.delegate = delegate;
 		this.postDismissAction = postDismissAction;
 	}
@@ -39,7 +39,6 @@ public class DismissableOverlay extends Overlay {
 			ip.consumeTouch();
 		}
 	}
-	
 
 	public boolean isDismissed() {
 		return dismissed;

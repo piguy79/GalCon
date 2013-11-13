@@ -1,0 +1,36 @@
+
+levels.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+2
+  rotate: false
+  xy: 2, 2
+  size: 640, 640
+  orig: 640, 640
+  offset: 0, 0
+  index: -1
+
+levels2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 2, 2
+  size: 720, 567
+  orig: 720, 567
+  offset: 0, 0
+  index: -1
+
+levels3.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+3
+  rotate: false
+  xy: 2, 2
+  size: 640, 512
+  orig: 640, 512
+  offset: 0, 0
+  index: -1

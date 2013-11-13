@@ -1,13 +1,12 @@
 package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.screen.Action;
 
 public class RefreshHudButton extends Button {
-	public RefreshHudButton(AssetManager assetManager) {
-		super(assetManager.get("data/images/refresh.png", Texture.class));
+	public RefreshHudButton(TextureAtlas atlas) {
+		super(atlas.findRegion("refresh"));
 	}
 
 	@Override

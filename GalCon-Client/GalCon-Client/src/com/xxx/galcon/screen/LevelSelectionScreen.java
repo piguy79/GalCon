@@ -9,9 +9,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.tablelayout.Cell;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -38,10 +41,9 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	private String loadingMessage = "Loading...";
 
-	private Texture levelSelectBgBottom;
-	private Texture levelSelectionCard;
-
-	private Texture levelSelectCardShadow;
+	private AtlasRegion levelSelectBgBottom;
+	private AtlasRegion levelSelectionCard;
+	private AtlasRegion levelSelectCardShadow;
 
 	private Object returnValue;
 
@@ -54,15 +56,19 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	private InputProcessor oldInputProcessor;
 
+	private TextureAtlas levelSelectionAtlas;
+	private TextureAtlas levelsAtlas;
+
 	public LevelSelectionScreen(Skin skin, AssetManager assetManager) {
 		this.assetManager = assetManager;
 		this.skin = skin;
 
-		this.levelSelectionCard = assetManager.get("data/images/level_selection_card.png", Texture.class);
-		this.levelSelectBgBottom = assetManager.get("data/images/level_select_bg_bottom.png", Texture.class);
-		this.levelSelectionCard = assetManager.get("data/images/level_card_black.png", Texture.class);
+		levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
+		levelsAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
 
-		this.levelSelectCardShadow = assetManager.get("data/images/level_select_card_shadow.png", Texture.class);
+		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
+		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_black");
+		this.levelSelectCardShadow = levelSelectionAtlas.findRegion("level_select_card_shadow");
 
 		stage = new Stage();
 		cardTable = new Table();
@@ -81,7 +87,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		headerTextActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance().largeFont();
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).largeFont();
 				font.setColor(Color.WHITE);
 				String text = "Choose Your Galaxy";
 				float halfFontWidth = font.getBounds(text).width / 2;
@@ -96,9 +102,9 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		loadingTextActor = new Actor() {
 			@Override
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance().mediumFont();
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
 				if (loadingMessage.length() > 15) {
-					font = Fonts.getInstance().smallFont();
+					font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
 				}
 				float halfFontWidth = font.getBounds(loadingMessage).width / 2;
 				font.draw(batch, loadingMessage, getWidth() / 2 - halfFontWidth, getHeight() * .4f);
@@ -111,7 +117,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(48.0f / 255.0f, 150.0f / 255.0f, 200.0f / 255.0f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);
@@ -146,6 +151,9 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	@Override
 	public void show() {
+		Color bg = skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
+		Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
+
 		if (allMaps == null) {
 			UIConnectionWrapper.findAllMaps(this);
 		}
@@ -233,7 +241,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 					}
 				}
 
-				BitmapFont font = Fonts.getInstance().largeFont();
+				BitmapFont font = Fonts.getInstance(assetManager).largeFont();
 				float halfFontWidth = font.getBounds(text).width / 2;
 				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .92f);
 			};
@@ -311,11 +319,11 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private class CardActor extends Actor {
 
 		private Map map;
-		private Texture mapTex;
+		private TextureRegion mapTex;
 
 		public CardActor(Map map, AssetManager assetManager) {
 			this.map = map;
-			this.mapTex = assetManager.get("data/images/levels/" + map.key + ".png", Texture.class);
+			this.mapTex = levelsAtlas.findRegion("" + map.key);
 		}
 
 		public String getMapTitle() {
@@ -343,8 +351,8 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			width -= xOffset;
 			height -= yOffset;
 
-			BitmapFont mediumFont = Fonts.getInstance().mediumFont();
-			BitmapFont largeFont = Fonts.getInstance().largeFont();
+			BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
+			BitmapFont largeFont = Fonts.getInstance(assetManager).largeFont();
 			batch.draw(levelSelectionCard, x, y, width, height);
 
 			String text = map.title;

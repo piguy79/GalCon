@@ -2,41 +2,68 @@ package com.xxx.galcon;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class UISkin extends Skin {
 
 	public void initialize(AssetManager assetManager) {
+
+		TextureAtlas socialAtlas = assetManager.get("data/images/social.atlas", TextureAtlas.class);
+		TextureAtlas levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
+		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+
 		/*
 		 * Labels
 		 */
-		add("default", new LabelStyle(Fonts.getInstance().largeFont(), Color.RED));
+		add("default", new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.RED));
+		add(Constants.UI.LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.WHITE));
+		add(Constants.UI.DEFAULT_FONT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.WHITE));
+
+		/*
+		 * Colors
+		 */
+		add(Constants.UI.DEFAULT_BG_COLOR, new Color(48.0f / 255.0f, 150.0f / 255.0f, 200.0f / 255.0f, 1), Color.class);
+
+		/*
+		 * ImageText Buttons
+		 */
+		{
+			NinePatch up = socialAtlas.createPatch("common_signin_btn_icon_normal_dark");
+			NinePatch down = socialAtlas.createPatch("common_signin_btn_icon_pressed_dark");
+
+			ButtonStyle style = new ButtonStyle(new NinePatchDrawable(up), new NinePatchDrawable(down), null);
+			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON, style);
+		}
 
 		/*
 		 * Image Buttons
 		 */
-		Texture regularPlay = assetManager.get("data/images/reg_play.png", Texture.class);
-		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(regularPlay));
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("wait"));
+			add(Constants.UI.WAIT_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+
+		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(
+				levelSelectionAtlas.findRegion("reg_play"));
 		add("regularPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
-		Texture socialPlay = assetManager.get("data/images/social_play.png", Texture.class);
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(socialPlay));
+		textureRegionDrawable = new TextureRegionDrawable(levelSelectionAtlas.findRegion("social_play"));
 		add("socialPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
-		Texture backTexture = assetManager.get("data/images/back.png", Texture.class);
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
+		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("back"));
 		add("backButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
-		Texture googlePlusTex = assetManager.get("data/images/Google+_chiclet_Red.jpg", Texture.class);
-		textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(googlePlusTex));
+		textureRegionDrawable = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
 		add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 	}

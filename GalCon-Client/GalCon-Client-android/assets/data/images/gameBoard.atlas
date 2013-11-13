@@ -1,0 +1,59 @@
+
+gameBoard.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bottom_bar_expand_button
+  rotate: false
+  xy: 169, 3
+  size: 85, 151
+  orig: 85, 151
+  offset: 0, 0
+  index: -1
+bottom_bar_ship_button
+  rotate: false
+  xy: 2, 2
+  size: 165, 152
+  orig: 165, 152
+  offset: 0, 0
+  index: -1
+ship
+  rotate: false
+  xy: 256, 72
+  size: 89, 82
+  orig: 89, 82
+  offset: 0, 0
+  index: -1
+ship_selection_dialog
+  rotate: false
+  xy: 2, 156
+  size: 621, 491
+  orig: 621, 491
+  offset: 0, 0
+  index: -1
+ship_selection_dialog_bg
+  rotate: false
+  xy: 2, 649
+  size: 944, 352
+  orig: 944, 352
+  offset: 0, 0
+  index: -1
+slash_line
+  rotate: false
+  xy: 625, 465
+  size: 121, 182
+  orig: 121, 182
+  offset: 0, 0
+  index: -1
+
+gameBoard2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bottom_bar
+  rotate: false
+  xy: 2, 2
+  size: 997, 215
+  orig: 997, 215
+  offset: 0, 0
+  index: -1

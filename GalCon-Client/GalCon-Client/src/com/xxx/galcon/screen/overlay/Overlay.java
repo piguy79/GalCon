@@ -1,27 +1,26 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Overlay {
 
-	private Texture blackBackground;
+	private TextureRegion blackBackground;
 	private SpriteBatch spriteBatch;
 	private boolean displayOverlayTexture;
 
-	
-	public Overlay(AssetManager assetManager, boolean displayOverlayTexture) {
-		blackBackground = assetManager.get("data/images/transparent_square.png", Texture.class);
+	public Overlay(TextureAtlas menusAtlas, boolean displayOverlayTexture) {
+		blackBackground = menusAtlas.findRegion("transparent_square");
 		spriteBatch = new SpriteBatch();
 		this.displayOverlayTexture = displayOverlayTexture;
 	}
 
 	public void render(float delta) {
 		spriteBatch.begin();
-		
-		if(displayOverlayTexture){
+
+		if (displayOverlayTexture) {
 			spriteBatch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 
@@ -35,6 +34,5 @@ public abstract class Overlay {
 	public boolean isDisplayOverlayTexture() {
 		return displayOverlayTexture;
 	}
-	
-	
+
 }

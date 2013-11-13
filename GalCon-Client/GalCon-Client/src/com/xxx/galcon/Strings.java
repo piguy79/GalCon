@@ -1,6 +1,6 @@
 package com.xxx.galcon;
 
 public class Strings {
-	public static final String G_PLUS_SIGNED_OUT = "Sign in to\nshare leaderboard\ninformation";
-	public static final String G_PLUS_SIGNED_IN = "You are now\nsharing high scores.\nTouch to sign out";
+	public static final String AUTH_FAIL = "Error signing in. Please try again.";
+	public static final String AUTH_SUCCESS = "Sign in successful";
 }

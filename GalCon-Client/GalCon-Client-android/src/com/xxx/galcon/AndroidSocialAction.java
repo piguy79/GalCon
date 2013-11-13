@@ -1,6 +1,6 @@
 package com.xxx.galcon;
 
-import com.xxx.galcon.http.GooglePlusSignInListener;
+import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.SocialAction;
 
 public class AndroidSocialAction implements SocialAction {
@@ -12,7 +12,7 @@ public class AndroidSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void googlePlusSignIn() {
+	public void signIn(String authProvider) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				activity.beginUserInitiatedSignIn();
@@ -21,7 +21,7 @@ public class AndroidSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void googlePlusSignOut() {
+	public void signOut() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				activity.signOut();
@@ -35,7 +35,7 @@ public class AndroidSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void registerGooglePlusSignInListener(final GooglePlusSignInListener signInListener) {
+	public void registerSignInListener(final AuthenticationListener signInListener) {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

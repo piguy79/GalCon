@@ -3,12 +3,12 @@ package com.xxx.galcon.http;
 public class DesktopSocialAction implements SocialAction {
 
 	@Override
-	public void googlePlusSignIn() {
+	public void signIn(String provider) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void googlePlusSignOut() {
+	public void signOut() {
 		// TODO Auto-generated method stub
 
 	}
@@ -20,7 +20,7 @@ public class DesktopSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void registerGooglePlusSignInListener(GooglePlusSignInListener signInListener) {
+	public void registerSignInListener(AuthenticationListener signInListener) {
 		// TODO Auto-generated method stub
 
 	}

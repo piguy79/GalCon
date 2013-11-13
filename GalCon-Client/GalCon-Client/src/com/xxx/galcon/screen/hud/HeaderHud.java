@@ -7,9 +7,10 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
@@ -22,9 +23,11 @@ public class HeaderHud extends Hud {
 	private GameBoard gameBoard;
 	private Button backButton;
 	private Button refreshButton;
-	private Texture darkGrayBg10x10;
-	private Texture slashLine;
-	private Texture arrowSolidLine;
+	private AtlasRegion darkGrayBg10x10;
+	private AtlasRegion slashLine;
+	private AtlasRegion arrowSolidLine;
+
+	private AssetManager assetManager;
 
 	private final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
 		{
@@ -42,16 +45,21 @@ public class HeaderHud extends Hud {
 	public HeaderHud(AssetManager assetManager) {
 		super();
 
-		backButton = new BackHudButton(assetManager);
-		refreshButton = new RefreshHudButton(assetManager);
+		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
+
+		backButton = new BackHudButton(menusAtlas);
+		refreshButton = new RefreshHudButton(menusAtlas);
 		addHudButton(backButton);
 		addHudButton(refreshButton);
 
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		darkGrayBg10x10 = assetManager.get("data/images/bg_dark_gray_10x10.png", Texture.class);
-		slashLine = assetManager.get("data/images/slash_line.png", Texture.class);
-		arrowSolidLine = assetManager.get("data/images/arrow_solid_line.png", Texture.class);
+		darkGrayBg10x10 = menusAtlas.findRegion("bg_dark_gray_10x10");
+		slashLine = gameBoardAtlas.findRegion("slash_line");
+		arrowSolidLine = menusAtlas.findRegion("arrow_solid_line");
+
+		this.assetManager = assetManager;
 	}
 
 	public void associateCurrentRoundInformation(GameBoard gameBoard) {
@@ -68,7 +76,7 @@ public class HeaderHud extends Hud {
 		spriteBatch.draw(slashLine, Gdx.graphics.getWidth() * .21f, Gdx.graphics.getHeight() - height,
 				Gdx.graphics.getWidth() * .1f, height);
 
-		BitmapFont font = Fonts.getInstance().mediumFont();
+		BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 
 		Player player1 = gameBoard.players.get(0);
 		String info1 = getPlayerInfoText(player1);

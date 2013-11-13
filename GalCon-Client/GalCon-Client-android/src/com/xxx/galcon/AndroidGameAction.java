@@ -61,6 +61,12 @@ public class AndroidGameAction implements GameAction {
 	private ConnectivityManager connectivityManager;
 	private Activity activity;
 
+	private String token = "";
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public AndroidGameAction(Activity activity, ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
 		this.activity = activity;
@@ -153,16 +159,16 @@ public class AndroidGameAction implements GameAction {
 		}
 
 	}
-	
+
 	@Override
-	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback,
-			String playerHandle, List<Order> orders)
-			throws ConnectionException {
+	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback, String playerHandle,
+			List<Order> orders) throws ConnectionException {
 		try {
 			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top
+							.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -171,19 +177,18 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-		
+
 	}
-	
-	
+
 	@Override
-	public void deleteConsumedOrders(
-			final UIConnectionResultCallback<Player> callback, String playerHandle,
+	public void deleteConsumedOrders(final UIConnectionResultCallback<Player> callback, String playerHandle,
 			List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle,orders);
+			final JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, new Player()).execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, new Player()).execute(top
+							.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -192,16 +197,14 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-		
+
 	}
-	
-	
+
 	@Override
-	public void reduceTimeUntilNextGame(final
-			UIConnectionResultCallback<Player> callback, final String playerHandle, Long timeRemaining,
-			Long usedCoins) {
+	public void reduceTimeUntilNextGame(final UIConnectionResultCallback<Player> callback, final String playerHandle,
+			Long timeRemaining, Long usedCoins) {
 		try {
-			final JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining,usedCoins);
+			final JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining, usedCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, new Player()).execute(top.toString());
@@ -259,29 +262,29 @@ public class AndroidGameAction implements GameAction {
 			}
 		});
 	}
-	
+
 	@Override
-	public void loadAvailableInventory(
-			final UIConnectionResultCallback<Inventory> callback) {
+	public void loadAvailableInventory(final UIConnectionResultCallback<Inventory> callback) {
 		final Map<String, String> args = new HashMap<String, String>();
-		
+
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, new Inventory()).execute("");
+				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, new Inventory())
+						.execute("");
 			}
 		});
-		
+
 	}
-	
+
 	@Override
-	public void findConfigByType(
-			final UIConnectionResultCallback<Configuration> callback, final String type) {
-		
+	public void findConfigByType(final UIConnectionResultCallback<Configuration> callback, final String type) {
+
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("type", type);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Configuration>(args, callback, FIND_CONFIG_BY_TYPE, new Configuration()).execute("");
+				new GetJsonRequestTask<Configuration>(args, callback, FIND_CONFIG_BY_TYPE, new Configuration())
+						.execute("");
 			}
 		});
 	}
@@ -327,7 +330,6 @@ public class AndroidGameAction implements GameAction {
 			return Connection.establishGetConnection(Config.getValue(HOST), Config.getValue(PORT), path, args);
 		}
 	}
-
 
 	private abstract class JsonRequestTask<T extends JsonConvertible> extends AsyncTask<String, Void, JsonConvertible> {
 
@@ -376,7 +378,7 @@ public class AndroidGameAction implements GameAction {
 	@Override
 	public void showAd(final AdColonyVideoListener listener) {
 		activity.runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				((MainActivity) activity).displayAd(listener);
@@ -385,54 +387,49 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback){
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
 		activity.runOnUiThread(new Runnable() {
-				
-				@Override
-				public void run() {
-					((MainActivity) activity).purchaseCoins(inventoryItem, callback);
-				}
-			});
+
+			@Override
+			public void run() {
+				((MainActivity) activity).purchaseCoins(inventoryItem, callback);
+			}
+		});
 	}
 
 	@Override
 	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		activity.runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				((MainActivity)activity).loadInventory(inventory, callback);
+				((MainActivity) activity).loadInventory(inventory, callback);
 			}
 		});
-		
+
 	}
 
 	@Override
 	public void consumeOrders(final List<Order> orders) {
 		activity.runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				((MainActivity)activity).consumeOrders(orders);
+				((MainActivity) activity).consumeOrders(orders);
 			}
 		});
-		
+
 	}
 
 	@Override
 	public void consumeExistingOrders() {
 		activity.runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				((MainActivity)activity).setupInAppBilling();
+				((MainActivity) activity).setupInAppBilling();
 			}
 		});
-		
+
 	}
-
-
-
-	
-
 }

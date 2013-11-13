@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
@@ -44,10 +45,14 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	protected Overlay overlay;
 	protected AssetManager assetManager;
 
+	private TextureAtlas menusAtlas;
+
 	public GameListScreen(AssetManager assetManager) {
 		spriteBatch = new SpriteBatch();
 		gameListHud = new GameListHud(assetManager);
 		this.assetManager = assetManager;
+
+		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 
 		resume();
 	}
@@ -62,7 +67,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	protected void refreshScreen() {
-		overlay = new TextOverlay("Refreshing...", assetManager, true);
+		overlay = new TextOverlay("Refreshing...", menusAtlas, true, assetManager);
 		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
 	}
 
@@ -93,8 +98,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		spriteBatch.begin();
 		spriteBatch.enableBlending();
 
-		BitmapFont mediumFont = Fonts.getInstance().mediumFont();
-		BitmapFont smallFont = Fonts.getInstance().smallFont();
+		BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
+		BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
 
 		if (allGames == null) {
 			BitmapFont font = mediumFont;
@@ -134,7 +139,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
 						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
 							ip.consumeTouch();
-							overlay = new TextOverlay("Joining...", assetManager, true);
+							overlay = new TextOverlay("Joining...", menusAtlas, true, assetManager);
 							takeActionOnGameboard(gameBoard, GameLoop.USER.handle);
 						}
 					}
@@ -276,8 +281,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		@Override
 		public void onConnectionError(String msg) {
-			overlay = new DismissableOverlay(assetManager, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
-					assetManager));
+			overlay = new DismissableOverlay(menusAtlas, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
+					menusAtlas, assetManager));
 		}
 	}
 }

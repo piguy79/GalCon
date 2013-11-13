@@ -2,10 +2,10 @@ package com.xxx.galcon.screen.hud;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.Action;
@@ -16,11 +16,14 @@ public class ShipMoveHudButton extends Button {
 	private boolean isPending;
 	private int xPos;
 
-	public ShipMoveHudButton(Move move, boolean isPending, int xPos, AssetManager assetManager) {
-		super(assetManager.get("data/images/bottom_bar_ship_button.png", Texture.class));
+	private AssetManager assetManager;
+
+	public ShipMoveHudButton(AssetManager assetManager, Move move, boolean isPending, int xPos, TextureAtlas atlas) {
+		super(atlas.findRegion("bottom_bar_ship_button"));
 		this.move = move;
 		this.isPending = isPending;
 		this.xPos = xPos;
+		this.assetManager = assetManager;
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class ShipMoveHudButton extends Button {
 		spriteBatch.setColor(Color.WHITE);
 
 		if (isEnabled()) {
-			BitmapFont font = Fonts.getInstance().largeFont();
+			BitmapFont font = Fonts.getInstance(assetManager).largeFont();
 			if (!isPending && !move.executed) {
 				font.setColor(Color.RED);
 

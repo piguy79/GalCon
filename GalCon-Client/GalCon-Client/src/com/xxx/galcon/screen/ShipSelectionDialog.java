@@ -16,9 +16,10 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
@@ -43,10 +44,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private DragButton shipDragButton;
 
 	private SpriteBatch spriteBatch;
-	private Texture dialogTextureBg;
-	private Texture shipTex;
-	private Texture okButtonTex;
-	private Texture cancelButtonTex;
+	private AtlasRegion dialogTextureBg;
+	private AtlasRegion shipTex;
+	private AtlasRegion okButtonTex;
+	private AtlasRegion cancelButtonTex;
 
 	private int shipsToSend = 0;
 	private Move currentMoveToEdit = null;
@@ -60,6 +61,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private boolean isBaseDialogReady = false;
 	private boolean isReady = false;
 	private boolean isShownAndClosed = false;
+
+	private AssetManager assetManager;
 
 	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
 			int max, TweenManager tweenManager) {
@@ -77,12 +80,17 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 		Tween.registerAccessor(Color.class, new ColorTween());
 
+		this.assetManager = assetManager;
+
 		spriteBatch = new SpriteBatch();
 
-		okButtonTex = assetManager.get("data/images/ok_button.png", Texture.class);
-		cancelButtonTex = assetManager.get("data/images/cancel_button.png", Texture.class);
-		dialogTextureBg = assetManager.get("data/images/ship_selection_dialog_bg.png", Texture.class);
-		shipTex = assetManager.get("data/images/ship.png", Texture.class);
+		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
+
+		okButtonTex = menusAtlas.findRegion("ok_button");
+		cancelButtonTex = menusAtlas.findRegion("cancel_button");
+		dialogTextureBg = gameBoardAtlas.findRegion("ship_selection_dialog_bg");
+		shipTex = gameBoardAtlas.findRegion("ship");
 
 		buttons.add(new Button(okButtonTex) {
 			@Override
@@ -207,7 +215,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 			shipsToSend = (int) Math.ceil(ratio * max);
 		}
 
-		BitmapFont font = Fonts.getInstance().largeFont();
+		BitmapFont font = Fonts.getInstance(assetManager).largeFont();
 		font.setColor(Color.BLACK);
 		font.draw(spriteBatch, "" + (max - shipsToSend), x + width * .38f, y + height * .84f);
 		font.draw(spriteBatch, ">>", x + width * .48f, y + height * .84f);
