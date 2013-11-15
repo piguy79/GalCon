@@ -20,6 +20,10 @@ public class Planet extends JsonConvertible {
 	public Point position;
 	public boolean touched = false;
 	public String ability;
+	public Harvest harvest;
+	public String status;
+	
+	public static final String ALIVE = "ALIVE";
 
 	public Planet() {
 
@@ -40,6 +44,11 @@ public class Planet extends JsonConvertible {
 			position.consume(positionJson);
 			this.position = position;
 			this.id = jsonObject.getString(Constants.ID);
+			if(jsonObject.has("harvest")){
+				this.harvest = new Harvest();
+				this.harvest.consume(jsonObject.getJSONObject("harvest"));
+			}
+			this.status = jsonObject.getString("status");
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -116,6 +125,18 @@ public class Planet extends JsonConvertible {
 			return lowestFromExecutedMoves;
 		}
 		return numberOfShips;
+	}
+	
+	public boolean isUnderHarvest(){
+		return harvest != null && harvest.isActive();
+	}
+	
+	public boolean isSavedFromHarvest(){
+		return harvest != null && !harvest.isActive();
+	}
+	
+	public boolean isAlive(){
+		return this.status.equals(ALIVE);
 	}
 	
 

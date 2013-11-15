@@ -48,6 +48,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -56,6 +57,7 @@ import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
@@ -112,6 +114,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	List<Planet> moveSelectedPlanets = new ArrayList<Planet>(2);
 	List<Move> inProgressMoves = new ArrayList<Move>();
+	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
 	private float[] moveSelectedPlanetsCoords = new float[4];
 
@@ -134,10 +137,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private String returnCode = null;
 	private MoveFactory moveFactory;
+	private UISkin skin;
 
-	public BoardScreen(AssetManager assetManager, TweenManager tweenManager) {
+	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
 		this.tweenManager = tweenManager;
+		this.skin = skin;
 
 		planetShader = createShader("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
 		planetTouchBgShader = createShader("data/shaders/planet-touch-bg-vs.glsl",
@@ -310,7 +315,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					shipSelectionDialog.dispose();
 					shipSelectionDialog = null;
 				}
-			} else {
+			} else if(planetInformationDialog != null){
+				if(planetInformationDialog.contains(touchPoint.x, touchPoint.y)){
+					return null;
+				}
+				clearTouchedPlanets();
+				planetInformationDialog.dispose();
+				planetInformationDialog = null;
+			}
+			else {
 				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
 						- touchPoint.y);
 				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
@@ -656,8 +669,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int xMargin = (int) (width * .1f);
 		int dialogWidth = width - 2 * xMargin;
 		
-		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .38f), planet, assetManager, tweenManager);
+		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.9),
+				dialogWidth, (int) (height * .7f), planet,skin, assetManager, tweenManager, camera);
 		planetInformationDialog.show();
 	}
 
@@ -909,7 +922,32 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			planetInformationDialog.render(delta);
 			
 			String action = (String) planetInformationDialog.getRenderResult();
+			
+			if(action != null){
+				processPlanetInformationResult(action);
+			}
 		}
+	}
+	
+	private void processPlanetInformationResult(String action) {
+		Planet planet = planetInformationDialog.getPlanet();
+		
+		if(action.equals(Action.HARVEST)){
+			HarvestMove harvestMove = new HarvestMove(planet.name);
+			inProgressHarvest.add(harvestMove);
+		}else if(action.equals(Action.DIALOG_CANCEL)){
+			Iterator<HarvestMove> iter = inProgressHarvest.iterator();
+			while(iter.hasNext()){
+				if(iter.next().planet.equals(planet.name)){
+					iter.remove();
+				}
+			}
+		}
+		
+		clearTouchedPlanets();
+		planetInformationDialog.dispose();
+		planetInformationDialog = null;
+		
 	}
 
 	private void processShipSelectionTouch(String action) {
@@ -947,7 +985,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void processHudButtonTouch(String action) {
 		if (action.equals(Action.END_TURN)) {
 			overlay = new TextOverlay("Sending ships to their doom", menusAtlas, true, assetManager);
-			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves);
+			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves, inProgressHarvest);
 		} else if (action.equals(Action.REFRESH)) {
 			overlay = new TextOverlay("Refreshing...", menusAtlas, true, assetManager);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);

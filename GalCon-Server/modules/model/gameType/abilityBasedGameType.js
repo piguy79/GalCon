@@ -24,7 +24,9 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilityToAdd){
 				break;
 			}
 		}
-	}	
+	}
+	
+	
 }
 
 exports.harvestEnhancement = function(player, game){

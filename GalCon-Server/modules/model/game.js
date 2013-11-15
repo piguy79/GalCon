@@ -238,7 +238,7 @@ gameSchema.methods.updateRegenRates = function(){
 				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
 				
 				if(blockRegen){
-					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.ownerHandle), this);
+					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.ownerHandle), currentGame);
 					regenBy =  planet.shipRegenRate - (planet.shipRegenRate * blockModifier);
 				}
 			}

@@ -8,6 +8,7 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
@@ -25,8 +26,8 @@ public class UIConnectionWrapper {
 		UIConnectionWrapper.gameAction = gameAction;
 	}
 
-	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
-		gameAction.performMoves(callback, gameId, moves);
+	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves, List<HarvestMove> harvestMoves) {
+		gameAction.performMoves(callback, gameId, moves, harvestMoves);
 	}
 
 	public static void findAllMaps(UIConnectionResultCallback<Maps> callback) {
