@@ -62,8 +62,6 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.tween.MoveTween;
-import com.xxx.galcon.model.tween.PlanetInformationTween;
-import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -171,8 +169,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.moveFactory = new MoveFactory();
 
 		Tween.registerAccessor(Move.class, new MoveTween());
-		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
-		Tween.registerAccessor(PlanetInformationDialog.class, new PlanetInformationTween());
 	}
 
 	private Model generateModelFromObjectFile(String objectFile) {
@@ -241,6 +237,16 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		public static final float Z = -100.0f;
 		public Vector3 topLeft;
 		public Vector3 bottomRight;
+		
+		public float getWorldHeight(Camera camera){
+			resize(camera);
+			return topLeft.y - bottomRight.y;
+		}
+		
+		public float getWorldWidth(Camera camera){
+			resize(camera);
+			return bottomRight.x - topLeft.x;
+		}
 
 		public void resize(Camera camera) {
 			Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, 0, 0);
@@ -302,51 +308,47 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		Body contactBody = null;
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch()) {
-			TouchPoint touchPoint = ip.getTouch();
-			if (shipSelectionDialog != null) {
-				int x = touchPoint.x;
-				int y = touchPoint.y;
-				if (shipSelectionDialog.contains(x, y)) {
-					return null;
-				} else {
-					clearTouchedPlanets();
-					shipSelectionDialog.dispose();
-					shipSelectionDialog = null;
-				}
-			} else if(planetInformationDialog != null){
-				if(planetInformationDialog.contains(touchPoint.x, touchPoint.y)){
-					return null;
-				}
-				clearTouchedPlanets();
-				planetInformationDialog.dispose();
-				planetInformationDialog = null;
-			}
-			else {
-				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
-						- touchPoint.y);
-				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+			if (ip.didTouch()) {
+				TouchPoint touchPoint = ip.getTouch();
+				if (shipSelectionDialog != null) {
+					int x = touchPoint.x;
+					int y = touchPoint.y;
+					if (shipSelectionDialog.contains(x, y)) {
+						return null;
+					} else {
+						clearTouchedPlanets();
+						shipSelectionDialog.dispose();
+						shipSelectionDialog = null;
+					}
+				} 
+				else {
+					Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
+							- touchPoint.y);
+					Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
-				if (boardXY != null) {
-					BodyDef bodyDef = new BodyDef();
-					bodyDef.type = BodyDef.BodyType.DynamicBody;
-					bodyDef.position.set(boardXY);
+					if (boardXY != null) {
+						BodyDef bodyDef = new BodyDef();
+						bodyDef.type = BodyDef.BodyType.DynamicBody;
+						bodyDef.position.set(boardXY);
 
-					contactBody = physicsWorld.createBody(bodyDef);
-					contactBody.setUserData(TOUCH_OBJECT);
+						contactBody = physicsWorld.createBody(bodyDef);
+						contactBody.setUserData(TOUCH_OBJECT);
 
-					CircleShape shape = new CircleShape();
-					shape.setRadius(0.05f);
+						CircleShape shape = new CircleShape();
+						shape.setRadius(0.05f);
 
-					FixtureDef fixtureDef = new FixtureDef();
-					fixtureDef.shape = shape;
-					contactBody.createFixture(fixtureDef);
+						FixtureDef fixtureDef = new FixtureDef();
+						fixtureDef.shape = shape;
+						contactBody.createFixture(fixtureDef);
 
-					ip.consumeTouch();
+						ip.consumeTouch();
+					}
 				}
 			}
 		}
+		
 
 		return contactBody;
 	}
@@ -666,11 +668,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void showPlanetInformationDialog(Planet planet){
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int xMargin = (int) (width * .1f);
+		int xMargin = (int) (width * .05f);
 		int dialogWidth = width - 2 * xMargin;
 		
 		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.9),
-				dialogWidth, (int) (height * .7f), planet,skin, assetManager, tweenManager, camera);
+				dialogWidth, (int) (height * .8f), planet,skin, assetManager, camera, this);
 		planetInformationDialog.show();
 	}
 
@@ -693,7 +695,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, tweenManager);
+				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, skin);
 		shipSelectionDialog.show();
 	}
 
@@ -776,11 +778,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.isBackKeyPressed()) {
-			returnCode = Action.BACK;
-			ip.consumeKey();
+		
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+			if (ip.isBackKeyPressed()) {
+				returnCode = Action.BACK;
+				ip.consumeKey();
+			}
 		}
+		
 
 		if (overlay != null) {
 			if (overlay instanceof DismissableOverlay && ((DismissableOverlay) overlay).isDismissed()) {

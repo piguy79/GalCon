@@ -1,5 +1,7 @@
 package com.xxx.galcon.model;
 
+import static com.xxx.galcon.Constants.OWNER_NO_ONE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +24,16 @@ public class Planet extends JsonConvertible {
 	public String ability;
 	public Harvest harvest;
 	public String status;
+	private float [] planetBits = new float[4];
+
 	
 	public static final String ALIVE = "ALIVE";
+	
+	private static final int INDEX_PLANET_OWNED_BY_USER = 0;
+	private static final int INDEX_PLANET_OWNED_BY_ENEMY = 1;
+	private static final int INDEX_PLANET_TOUCHED = 2;
+	private static final int INDEX_PLANET_ABILITY = 3;
+	
 
 	public Planet() {
 
@@ -137,6 +147,18 @@ public class Planet extends JsonConvertible {
 	
 	public boolean isAlive(){
 		return this.status.equals(ALIVE);
+	}
+	
+	public float[] getPlanetBits() {
+		
+		String planetOwner = owner;
+		planetBits[INDEX_PLANET_TOUCHED] = touched ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_ABILITY] = hasAbility() ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_USER] = planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
+		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planetOwner.equals(OWNER_NO_ONE)
+				&& !planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
+		
+		return planetBits;
 	}
 	
 

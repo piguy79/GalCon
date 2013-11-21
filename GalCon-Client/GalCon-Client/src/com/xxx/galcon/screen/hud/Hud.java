@@ -48,19 +48,22 @@ public abstract class Hud implements ScreenFeedback {
 			return;
 		}
 
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch()) {
-			TouchPoint touchPoint = ip.getTouch();
-			int x = touchPoint.x;
-			int y = touchPoint.y;
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+			if (ip.didTouch()) {
+				TouchPoint touchPoint = ip.getTouch();
+				int x = touchPoint.x;
+				int y = touchPoint.y;
 
-			for (int i = 0; i < hudButtons.size(); ++i) {
-				if (hudButtons.get(i).isTouched(x, y)) {
-					ip.consumeTouch();
-					returnResult = hudButtons.get(i).getActionOnClick();
+				for (int i = 0; i < hudButtons.size(); ++i) {
+					if (hudButtons.get(i).isTouched(x, y)) {
+						ip.consumeTouch();
+						returnResult = hudButtons.get(i).getActionOnClick();
+					}
 				}
 			}
 		}
+		
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Crashlytics.start(this);
+		//Crashlytics.start(this);
 
 		if (mDebugLog) {
 			plusHelper.enableDebugLog(mDebugLog, mDebugTag);

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -18,6 +19,7 @@ public class UISkin extends Skin {
 		TextureAtlas socialAtlas = assetManager.get("data/images/social.atlas", TextureAtlas.class);
 		TextureAtlas levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
 		/*
 		 * Labels
@@ -62,9 +64,18 @@ public class UISkin extends Skin {
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("back"));
 		add("backButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
+		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
+		add("cancelButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
+		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
+		add("okButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
 		textureRegionDrawable = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
 		add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
 	}
 }
