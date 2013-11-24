@@ -9,19 +9,21 @@ var userSchema = mongoose.Schema({
 	xp : "Number",
 	wins : "Number",
 	losses : "Number",
+	sessions : [{
+		sessionId : "String",
+		expireDate : "Date"
+	}],
 	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
-	consumedOrders : [
-	                  	{
-	                  		orderId : "String",
-	                        packageName : "String",
-	                        productId : "String",
-	                        purchaseTime : "String",
-	                        purchaseState : "String",
-	                        developerPayload : "String",
-	                        token : "String",
-	                        associatedCoins : "Number"
-	                  	}
-	                  ],
+	consumedOrders : [{
+		orderId : "String",
+		packageName : "String",
+	    productId : "String",
+	    purchaseTime : "String",
+	    purchaseState : "String",
+	    developerPayload : "String",
+	    token : "String",
+	    associatedCoins : "Number"
+	}],
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
@@ -35,6 +37,7 @@ var userSchema = mongoose.Schema({
 userSchema.set('toObject', { getters: true });
 userSchema.index({name : 1});
 userSchema.index({handle: 1});
+userSchema.index({"sessions.sessionId" : 1});
 
 userSchema.methods.createOrAdd = function(gameId, callback){
 	this.model('User').update({name : this.name}, {$set : {name : this.name}, $pushAll : {currentGames : [gameId]}}, {upsert : true}, function(err){

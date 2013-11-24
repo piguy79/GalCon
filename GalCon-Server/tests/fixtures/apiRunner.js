@@ -80,3 +80,11 @@ exports.updateUserCoinsInformation = function(playerHandle, time){
 	};
 	return needleWithPromise(needle.post, '/updateUserCoinsInformation', postData);
 }
+
+exports.exchangeToken = function(authProvider, token) {
+	var postData = {
+		authProvider : authProvider,
+		token : token
+	};
+	return needleWithPromise(needle.post, '/sessions/exchangeToken', postData);
+}

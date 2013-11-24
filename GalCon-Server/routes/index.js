@@ -7,7 +7,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	configManager = require('../modules/model/config'), 
 	leaderboardManager = require('../modules/model/leaderboard'), 
 	inventoryManager = require('../modules/model/inventory'), 
-	_ = require('underscore');
+	_ = require('underscore'),
+	socialManager = require('../modules/social');
 
 exports.index = function(req, res) {
 	res.render('index.html')
@@ -451,7 +452,11 @@ var joinGamePromise = function(games, user, time) {
 
 var logErrorAndSetResponse = function(req, res) {
 	return function(err) {
-		console.log(req.connection.remoteAddress + " " + err.stack);
+		if(typeof err === "string") {
+			console.log(req.connection.remoteAddress + " " + err);
+		} else {
+			console.log(req.connection.remoteAddress + " " + err.stack);
+		}
 		res.json({
 			"error" : err
 		});
@@ -539,7 +544,14 @@ exports.updateUserCoinsInformation = function(req, res) {
 	
 	var p = userManager.updateUsedCoins(playerHandle, time);
 	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
-	
 }
-	
 
+exports.exchangeToken = function(req, res) {
+	var authProvider = req.body.authProvider;
+	var token = req.body.token;
+
+	var session = socialManager.exchangeToken(authProvider, token);
+	if (session === false) {
+		(logErrorAndSetResponse(req, res))("Invalid request");
+	}
+}

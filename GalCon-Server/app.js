@@ -65,7 +65,7 @@ app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);
 app.get('/inventory', routes.findAllInventory);
-
+app.post('/sessions/exchangeToken', routes.exchangeToken);
 
 
 var port = process.env.PORT || 3000;
