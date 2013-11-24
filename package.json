@@ -13,8 +13,9 @@
      , "ejs" : "0.8.4"
     , "jade": ">= 0.0.1"
     , "mongoose" : "3.6.17"
-    , "needle" : "0.5.9"
-    , "nodetime" : "0.8.13"
+    , "needle" : "0.6.0"
+    , "nodetime" : "0.8.14"
     , "underscore" : "1.5.2"
+    , "googleapis" : "0.4.6"
   }
 }
