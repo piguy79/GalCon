@@ -1,13 +1,10 @@
 package com.xxx.galcon.screen;
 
 import static com.xxx.galcon.Util.createShader;
-import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -19,42 +16,30 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Move;
-import com.xxx.galcon.screen.hud.DragButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
-	private static final String OK = "ok";
-	private static final String CANCEL = "cancel";
-	private static final String DRAG = "drag";
-	
-	private DragButton shipDragButton;
 
-	private SpriteBatch spriteBatch;
+	
+
 	private AtlasRegion dialogTextureBg;
-	private AtlasRegion shipTex;
-	private AtlasRegion okButtonTex;
-	private AtlasRegion cancelButtonTex;
 
 	private int shipsToSend = 0;
 	private Move currentMoveToEdit = null;
 	private int max;
-	private Color alphaAnimColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 
 	private String returnResult;
 	private String pendingReturnResult;
 
-	private TweenManager tweenManager;
-	private boolean isBaseDialogReady = false;
 	private boolean isReady = false;
 	private boolean isShownAndClosed = false;
 	
@@ -97,8 +82,6 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		counter = new ShaderLabel(fontShader, shipsToSend + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		initialCount = new ShaderLabel(fontShader, (max - shipsToSend) + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
 
-
-
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		
@@ -111,11 +94,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		
 		skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
 
-
-		okButtonTex = menusAtlas.findRegion("ok_button");
-		cancelButtonTex = menusAtlas.findRegion("cancel_button");
 		dialogTextureBg = menusAtlas.findRegion("dialog_bg");
-		shipTex = gameBoardAtlas.findRegion("ship");
 		
 		
 
@@ -163,7 +142,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private void addSlider() {
 		slider = new Slider(1, max, 1, false, skin);
 		slider.setWidth(width * 0.8f);
-		slider.setY(y  + (shipSelectionTable.getHeight() * 0.4f));
+		slider.setY(y  + (shipSelectionTable.getHeight() * 0.35f));
 		slider.setX(width * 0.15f);
 		slider.addAction(Actions.sequence(Actions.fadeOut(0.001f),Actions.delay(0.2f), Actions.fadeIn(0.4f)));
 		

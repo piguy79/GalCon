@@ -672,7 +672,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		int dialogWidth = width - 2 * xMargin;
 		
 		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.2f),
-				dialogWidth, (int) (height * .8f), planet,skin, assetManager, camera, this);
+				dialogWidth, (int) (height * .8f), planet,skin, assetManager);
 		planetInformationDialog.show();
 	}
 

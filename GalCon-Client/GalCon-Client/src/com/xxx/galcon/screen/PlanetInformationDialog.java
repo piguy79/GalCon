@@ -10,27 +10,17 @@ import static com.xxx.galcon.Util.createShader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -41,7 +31,6 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Planet;
-import com.xxx.galcon.screen.BoardScreen.WorldPlane;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextButton;
 
@@ -53,13 +42,7 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 	
 	private Planet planet;
 
-	private AtlasRegion dialogTextureBg;
-	private Texture planetNumbersTexture;
-	private AtlasRegion planetTexture;
-	private AtlasRegion planetTouchTexture;
-	
-	private Model planetModel;
-	
+	private AtlasRegion dialogTextureBg;	
 	
 	SpriteBatch spriteBatch;
 	
@@ -79,27 +62,19 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 	private Table planetInfoTable;
 	
 	private ShaderProgram fontShader;
-	private ShaderProgram planetShader;
 	private UISkin skin;
 	
-	private Camera camera;
-	private Matrix4 modelViewMatrix = new Matrix4();
 	private ImageButton cancelButton;
 	private ImageButton harvestButton;
-	
-	
-	private BoardScreen screen;
 	
 	private AssetManager assetManager;
 
 
 	public PlanetInformationDialog(int x, int y, int width, int height,
-			 Planet planet, UISkin skin, AssetManager assetManager, Camera camera, BoardScreen screen) {
+			 Planet planet, UISkin skin, AssetManager assetManager) {
 		super(x, y, width, height, false);
 		this.planet = planet;
 		this.skin = skin;
-		this.camera = camera;
-		this.screen = screen;
 		this.assetManager = assetManager;
 		spriteBatch = new SpriteBatch();
 
@@ -110,24 +85,10 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
 
 		dialogTextureBg = menuAtlas.findRegion("dialog_bg");
-		TextureAtlas planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		planetTexture = planetAtlas.findRegion("planet3");
-		planetTouchTexture = planetAtlas.findRegion("planet3-touch");
-		planetNumbersTexture = assetManager.get("data/fonts/planet_numbers.png", Texture.class);
 		
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-		planetShader = createShader("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
-
-		planetModel = generateModelFromObjectFile("data/models/planet.obj");
-		planetModel.meshes.get(0).setAutoBind(false);
 		
 		createPlanetInfo();
-	}
-
-
-	private Model generateModelFromObjectFile(String objectFile) {
-		ObjLoader loader = new ObjLoader();
-		return loader.loadObj(Gdx.files.internal(objectFile));
 	}
 
 	private void createPlanetInfo() {
