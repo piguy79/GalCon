@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -27,15 +28,22 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.Fonts;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.BoardScreen.WorldPlane;
 import com.xxx.galcon.screen.widget.ShaderLabel;
+import com.xxx.galcon.screen.widget.ShaderTextButton;
 
 /**
  * @author conormullen
@@ -55,13 +63,14 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 	
 	SpriteBatch spriteBatch;
 	
-	private boolean isBaseDialogReady = false;
 	private boolean isReady = false;
 	private boolean isShownAndClosed = false;
 	
 	private InputProcessor oldInputProcessor;
 	
 	TextureAtlas gameBoardAtlas;
+	TextureAtlas menuAtlas;
+	TextureAtlas planetAtlas;
 
 	private String returnResult;
 	private String pendingReturnResult;
@@ -80,6 +89,8 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 	
 	
 	private BoardScreen screen;
+	
+	private AssetManager assetManager;
 
 
 	public PlanetInformationDialog(int x, int y, int width, int height,
@@ -89,12 +100,16 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		this.skin = skin;
 		this.camera = camera;
 		this.screen = screen;
+		this.assetManager = assetManager;
 		spriteBatch = new SpriteBatch();
 
 		stage = new Stage();
 		
 		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		dialogTextureBg = gameBoardAtlas.findRegion("ship_selection_dialog_bg");
+		TextureAtlas menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
+
+		dialogTextureBg = menuAtlas.findRegion("dialog_bg");
 		TextureAtlas planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
 		planetTexture = planetAtlas.findRegion("planet3");
 		planetTouchTexture = planetAtlas.findRegion("planet3-touch");
@@ -117,38 +132,35 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 
 	private void createPlanetInfo() {
 		planetInfoTable = new Table();
-		planetInfoTable.setBackground(new TextureRegionDrawable(dialogTextureBg));
+		Drawable bg = new TextureRegionDrawable(dialogTextureBg);
+		bg.setMinHeight(height * 0.3f);
+		planetInfoTable.setBackground(bg);
 		planetInfoTable.setWidth(width);
 		planetInfoTable.setHeight(height);
 		planetInfoTable.setX(-width);
-		planetInfoTable.setY(height * 0.2f);
-
-		planetInfoTable.add(new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT)).left().padTop(height * 0.2f);
-		planetInfoTable.add(new ShaderLabel(fontShader, " " + planet.shipRegenRate, skin, Constants.UI.DEFAULT_FONT)).left().padTop(height * 0.2f);
+		planetInfoTable.setY(height * 0.4f);
+		
+		addPlanet();
+		planetInfoTable.add(new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK)).right();
+		planetInfoTable.add(new ShaderLabel(fontShader, " " + planet.shipRegenRate, skin, Constants.UI.DEFAULT_FONT_BLACK));
 		planetInfoTable.row();
-		planetInfoTable.add(new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT)).left();
-		planetInfoTable.add(new ShaderLabel(fontShader, "10,000,000", skin, Constants.UI.DEFAULT_FONT)).left();
+		planetInfoTable.add(new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK)).right();
+		planetInfoTable.add(new ShaderLabel(fontShader, "10,000,000", skin, Constants.UI.DEFAULT_FONT_BLACK));
 		if(planet.hasAbility()){
 			planetInfoTable.row();
-			planetInfoTable.add(new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT)).left();
-			planetInfoTable.add(new ShaderLabel(fontShader, planet.ability, skin, Constants.UI.DEFAULT_FONT)).left();
+			planetInfoTable.add(new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT_BLACK)).right();
+			planetInfoTable.add(new ShaderLabel(fontShader, planet.ability, skin, Constants.UI.DEFAULT_FONT_BLACK));
 			if(planet.isUnderHarvest()){
 				planetInfoTable.row();
-				planetInfoTable.add(new ShaderLabel(fontShader, "Rounds left: ", skin, Constants.UI.DEFAULT_FONT));
-				planetInfoTable.add(new ShaderLabel(fontShader, " " +  planet.harvest.startingRound, skin, Constants.UI.DEFAULT_FONT));
+				planetInfoTable.add(new ShaderLabel(fontShader, "Rounds left: ", skin, Constants.UI.DEFAULT_FONT_BLACK));
+				planetInfoTable.add(new ShaderLabel(fontShader, " " +  planet.harvest.startingRound, skin, Constants.UI.DEFAULT_FONT_BLACK));
 			}
 		}
 		MoveToAction action = new MoveToAction();
 		action.setDuration(0.2f);
-		action.setPosition(width * 0.05f, height * 0.2f);
+		action.setPosition(width * 0.02f, height * 0.2f);
 		
-		planetInfoTable.addAction(Actions.sequence(action, Actions.run(new Runnable() {
-			
-			@Override
-			public void run() {
-				isBaseDialogReady = true;
-			}
-		})));
+		planetInfoTable.addAction(action);
 		
 		
 		stage.addActor(planetInfoTable);
@@ -159,13 +171,25 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 	}
 
 	
+	private void addPlanet() {
+		TextureRegionDrawable planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("planet2"));
+		planetTexture.setMinHeight(height * 0.35f);
+		planetTexture.setMinWidth(width * 0.5f);
+		TextButtonStyle style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(assetManager).mediumFont());
+		TextButton planetImage = new ShaderTextButton(fontShader,"" + planet.numberOfShips, style);
+		planetImage.setColor(planet.getColor());
+		planetInfoTable.add(planetImage).colspan(2).expandX().center();
+		planetInfoTable.row();
+	}
+
+
 	private void addHarvestButton() {
 		if(planet.hasAbility() && !planet.isUnderHarvest()){
 			float buttonSize = width * 0.15f;
 			
 			harvestButton = new ImageButton(skin, "okButton");
 			harvestButton.setX(width - buttonSize);
-			harvestButton.setY(height * 0.28f);
+			harvestButton.setY(height * 0.27f);
 			harvestButton.setWidth(width * 0.15f);
 			harvestButton.setHeight(width * 0.15f);
 			harvestButton.setColor(0, 0, 0, 0);
@@ -193,8 +217,8 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		cancelButton = new ImageButton(skin, "cancelButton");
 		cancelButton.setWidth(width * 0.15f);
 		cancelButton.setHeight(width * 0.15f);
-		cancelButton.setY(height * 0.28f);
-		cancelButton.setX(width * 0.08f);
+		cancelButton.setY(height * 0.27f);
+		cancelButton.setX(width * 0.03f);
 		cancelButton.setColor(0,0,0,0);
 		cancelButton.addListener(new InputListener(){
 			@Override
@@ -228,54 +252,7 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		stage.act(delta);
 		stage.draw();
 		
-		if(isBaseDialogReady){
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-			renderPlanet();
-			Gdx.gl.glDisable(GL20.GL_BLEND);
-		}
-	}
 	
-	private void renderPlanet() {
-		planetTexture.getTexture().bind(1);
-		planetTouchTexture.getTexture().bind(2);
-		planetNumbersTexture.bind(3);
-
-		planetShader.begin();
-		planetShader.setUniformi("planetTex", 1);
-		planetShader.setUniformi("planetTouchTex", 2);
-		planetShader.setUniformi("numbersTex", 3);
-
-		planetShader.setUniformMatrix("uPMatrix", camera.combined);
-
-		Mesh mesh = planetModel.meshes.get(0);
-		mesh.bind(planetShader);
-		modelViewMatrix.idt();
-		
-		WorldPlane plane = screen.new WorldPlane();
-		
-				
-		modelViewMatrix.trn(0, 0,
-				-99f);
-		modelViewMatrix.translate(0, plane.getWorldHeight(camera) * 0.2f
-				, 0);
-
-		modelViewMatrix.scale(plane.getWorldWidth(camera) * 0.032f, plane.getWorldHeight(camera) * 0.023f, 1.0f);
-
-		planetShader.setUniformMatrix("uMVMatrix", modelViewMatrix);
-
-		float [] planetBits = planet.getPlanetBits();
-		planetShader.setUniform1fv("uPlanetBits", planetBits, 0, 4);
-		planetShader.setUniformf("radius", plane.getWorldWidth(camera) * 0.2f);
-		planetShader.setUniformi("shipCount",
-				planet.numberOfShips);
-		planetModel.meshes.get(0).render(planetShader, GL20.GL_TRIANGLES);
-		
-		mesh.unbind(planetShader);
-		planetShader.end();
-
-		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-		
 	}
 
 	@Override
@@ -299,12 +276,7 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		MoveToAction moveTo = new MoveToAction();
 		moveTo.setPosition(-width, planetInfoTable.getY());
 		moveTo.setDuration(0.2f);
-		planetInfoTable.addAction(Actions.sequence(Actions.delay(0.2f), Actions.run(new Runnable() {
-			@Override
-			public void run() {
-				isBaseDialogReady = false;
-			}
-		}) ,moveTo, Actions.run(new Runnable() {
+		planetInfoTable.addAction(Actions.sequence(Actions.delay(0.2f),moveTo, Actions.run(new Runnable() {
 			
 			@Override
 			public void run() {

@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
@@ -33,6 +34,12 @@ public class Planet extends JsonConvertible {
 	private static final int INDEX_PLANET_OWNED_BY_ENEMY = 1;
 	private static final int INDEX_PLANET_TOUCHED = 2;
 	private static final int INDEX_PLANET_ABILITY = 3;
+	
+	private static final Color OWNED_BY_ME_COLOR = Color.valueOf("04B404FF");
+	private static final Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("FE2E2EFF");
+	private static final Color ABILITY_PLANET_COLOR = Color.valueOf("2E9AFEFF");
+
+	
 	
 
 	public Planet() {
@@ -159,6 +166,28 @@ public class Planet extends JsonConvertible {
 				&& !planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
 		
 		return planetBits;
+	}
+
+	public Color getColor() {
+		Color color = Color.valueOf("D8D8D8FF");
+		
+		
+		
+		if(isOwnedBy(GameLoop.USER)){
+			color = color.mul(OWNED_BY_ME_COLOR);
+		}else if(!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)){
+			color =   color.mul(OWNED_BY_OPPONENT_COLOR);
+		}else {
+			if(hasAbility()){
+				return ABILITY_PLANET_COLOR;
+			}
+			return color;
+		}
+		
+		if(hasAbility()){
+			color = color.add(new Color(0,0,0.5f, 1));
+		}
+		return color;
 	}
 	
 

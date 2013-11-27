@@ -668,10 +668,10 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void showPlanetInformationDialog(Planet planet){
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int xMargin = (int) (width * .05f);
+		int xMargin = (int) (width * 0.01f);
 		int dialogWidth = width - 2 * xMargin;
 		
-		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.9),
+		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.2f),
 				dialogWidth, (int) (height * .8f), planet,skin, assetManager, camera, this);
 		planetInformationDialog.show();
 	}
@@ -691,11 +691,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int xMargin = (int) (width * .1f);
+		int xMargin = (int) (width * .05f);
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, skin);
+				dialogWidth, (int) (dialogWidth * .3f), assetManager, shipsOnPlanet, skin);
 		shipSelectionDialog.show();
 	}
 

@@ -1,5 +1,6 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Util.createShader;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,12 +21,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.hud.DragButton;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private static final String OK = "ok";
@@ -62,6 +69,10 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	private InputProcessor oldInputProcessor;
 	
 	private Slider slider;
+	ShaderLabel counter;
+	ShaderLabel initialCount;
+	
+	private ShaderProgram fontShader;
 
 	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
 			int max, UISkin skin) {
@@ -69,6 +80,9 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		if (currentMoveToEdit != null) {
 			this.shipsToSend = currentMoveToEdit.shipsToMove;
 			this.currentMoveToEdit = currentMoveToEdit;
+			counter.setText(shipsToSend + "");
+			initialCount.setText("" + (max - shipsToSend));
+			slider.setValue(shipsToSend);
 		}
 	}
 
@@ -78,11 +92,17 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		this.skin = skin;
 		
 		this.stage = new Stage();
+		
+		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+		counter = new ShaderLabel(fontShader, shipsToSend + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
+		initialCount = new ShaderLabel(fontShader, (max - shipsToSend) + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
+
+
 
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		
-		Drawable sliderBg = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship_selection_dialog_bg"));
+		Drawable sliderBg = new TextureRegionDrawable(menusAtlas.findRegion("slider_bg"));
 		Drawable sliderKnob =  new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
 		
 		sliderBg.setMinHeight(height * 0.2f);
@@ -94,7 +114,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 		okButtonTex = menusAtlas.findRegion("ok_button");
 		cancelButtonTex = menusAtlas.findRegion("cancel_button");
-		dialogTextureBg = gameBoardAtlas.findRegion("ship_selection_dialog_bg");
+		dialogTextureBg = menusAtlas.findRegion("dialog_bg");
 		shipTex = gameBoardAtlas.findRegion("ship");
 		
 		
@@ -113,7 +133,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		
 		
 		MoveToAction moveTo = new MoveToAction();
-		moveTo.setPosition(width * 0.09f, shipSelectionTable.getY());
+		moveTo.setPosition(width * 0.05f, shipSelectionTable.getY());
 		moveTo.setDuration(0.2f);
 		shipSelectionTable.addAction(moveTo);
 		
@@ -121,15 +141,41 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		
 		addCancelButton();
 		addOkButton();
-		addSlider();		
+		addSlider();
+		addCounter();
+
+		
+	}
+
+	private void addCounter() {
+		Table countTable = new Table();
+
+		countTable.add(initialCount);
+		countTable.add(new ShaderLabel(fontShader, " >> ", skin, Constants.UI.DEFAULT_FONT_BLACK));
+		countTable.add(counter);
+		
+		countTable.setX(countTable.getX() + (shipSelectionTable.getWidth() * 0.5f));
+		countTable.setY(countTable.getY() + (shipSelectionTable.getHeight() * 0.8f));
+		
+		shipSelectionTable.addActor(countTable);
 	}
 
 	private void addSlider() {
-		slider = new Slider(0, max, 1, false, skin);
-		slider.setWidth(width * 0.75f);
+		slider = new Slider(1, max, 1, false, skin);
+		slider.setWidth(width * 0.8f);
 		slider.setY(y  + (shipSelectionTable.getHeight() * 0.4f));
-		slider.setX(width * 0.2f);
+		slider.setX(width * 0.15f);
 		slider.addAction(Actions.sequence(Actions.fadeOut(0.001f),Actions.delay(0.2f), Actions.fadeIn(0.4f)));
+		
+		slider.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				counter.setText((int)slider.getValue() + "");
+				shipsToSend = (int)slider.getValue();
+				initialCount.setText("" + (max - shipsToSend));
+			}
+		});
 		
 		stage.addActor(slider);
 	}
@@ -138,8 +184,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		cancelButton = new ImageButton(skin, "cancelButton");
 		cancelButton.setWidth(width * 0.15f);
 		cancelButton.setHeight(width * 0.15f);
-		cancelButton.setY(y);
-		cancelButton.setX(width * 0.08f);
+		cancelButton.setY(y - (int)(width * 0.07));
+		cancelButton.setX(width * 0.04f);
 		cancelButton.addListener(new InputListener(){
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -158,11 +204,11 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 	}
 	
 	private void addOkButton() {
-			float buttonSize = width * 0.15f;
+			float buttonSize = width * 0.08f;
 			
 			okButton = new ImageButton(skin, "okButton");
-			okButton.setX(width - (buttonSize * 0.5f));
-			okButton.setY(y);
+			okButton.setX(width - (buttonSize));
+			okButton.setY(y - (int)(width * 0.07));
 			okButton.setWidth(width * 0.15f);
 			okButton.setHeight(width * 0.15f);
 			okButton.setColor(0, 0, 0, 0);
@@ -174,7 +220,7 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 				@Override
 				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-					pendingReturnResult = Action.HARVEST;
+					pendingReturnResult = Action.DIALOG_OK;
 					hide();
 				}
 			});
@@ -194,6 +240,8 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		if (pendingReturnResult != null && isShownAndClosed) {
 			returnResult = pendingReturnResult;
 		}
+		
+		
 		
 		stage.act(delta);
 		stage.draw();

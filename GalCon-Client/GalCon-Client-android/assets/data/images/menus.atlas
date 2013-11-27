@@ -3,114 +3,154 @@ menus.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-arrow_left
-  rotate: false
-  xy: 2, 311
-  size: 600, 568
-  orig: 600, 568
-  offset: 0, 0
-  index: -1
 arrow_left_small_black
   rotate: false
-  xy: 736, 66
+  xy: 948, 966
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 778, 66
+  xy: 948, 908
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_solid_line
   rotate: false
-  xy: 2, 26
+  xy: 779, 27
   size: 113, 30
   orig: 113, 30
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 857, 337
+  xy: 804, 528
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
+bg
+  rotate: false
+  xy: 2, 59
+  size: 800, 609
+  orig: 800, 609
+  offset: 0, 0
+  index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 2, 10
+  xy: 779, 11
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-black_grey_button
+cursor
   rotate: false
-  xy: 255, 2
-  size: 373, 80
-  orig: 373, 80
+  xy: 945, 486
+  size: 15, 182
+  orig: 15, 182
   offset: 0, 0
   index: -1
-cancel_button
+dialog_bg
   rotate: false
-  xy: 604, 226
-  size: 251, 251
-  orig: 251, 251
+  xy: 2, 670
+  size: 944, 352
+  orig: 944, 352
   offset: 0, 0
   index: -1
 end_turn
   rotate: false
-  xy: 857, 195
+  xy: 804, 386
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
 forward
   rotate: false
-  xy: 595, 84
+  xy: 804, 244
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
+refresh
+  rotate: false
+  xy: 804, 114
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+slider_bg
+  rotate: false
+  xy: 2, 2
+  size: 775, 55
+  orig: 775, 55
+  offset: 0, 0
+  index: -1
+transparent_square
+  rotate: false
+  xy: 894, 12
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+
+menus2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arrow_left
+  rotate: false
+  xy: 2, 255
+  size: 600, 568
+  orig: 600, 568
+  offset: 0, 0
+  index: -1
+black_grey_button
+  rotate: false
+  xy: 604, 341
+  size: 373, 80
+  orig: 373, 80
+  offset: 0, 0
+  index: -1
+cancel_button
+  rotate: false
+  xy: 2, 2
+  size: 251, 251
+  orig: 251, 251
+  offset: 0, 0
+  index: -1
 green_button
   rotate: false
-  xy: 255, 88
+  xy: 508, 118
   size: 300, 100
   orig: 300, 100
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 2, 58
+  xy: 255, 2
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 rect_button_blank
   rotate: false
-  xy: 255, 190
+  xy: 604, 220
   size: 338, 119
   orig: 338, 119
   offset: 0, 0
   index: -1
-refresh
+textFieldBg
   rotate: false
-  xy: 838, 65
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-transparent_square
-  rotate: false
-  xy: 736, 124
-  size: 100, 100
-  orig: 100, 100
+  xy: 2, 825
+  size: 848, 155
+  orig: 848, 155
   offset: 0, 0
   index: -1
 wait
   rotate: false
-  xy: 604, 479
+  xy: 604, 423
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
