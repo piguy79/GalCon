@@ -3,16 +3,16 @@ var mongoose = require('./mongooseConnection').mongoose
 ,ObjectId = require('mongoose').Types.ObjectId;
 
 var userSchema = mongoose.Schema({
-	name : "String",
+	email : "String",
 	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
 	wins : "Number",
 	losses : "Number",
-	sessions : [{
-		sessionId : "String",
+	session : {
+		id : "String",
 		expireDate : "Date"
-	}],
+	},
 	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
 	consumedOrders : [{
 		orderId : "String",
@@ -35,24 +35,14 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.set('toObject', { getters: true });
-userSchema.index({name : 1});
+userSchema.index({email : 1});
 userSchema.index({handle: 1});
 userSchema.index({"sessions.sessionId" : 1});
 
-userSchema.methods.createOrAdd = function(gameId, callback){
-	this.model('User').update({name : this.name}, {$set : {name : this.name}, $pushAll : {currentGames : [gameId]}}, {upsert : true}, function(err){
-		if(err){
-			console.log("An Error Occured: " + err);
-		}
-		callback();
-	});
-}
-
-
 var UserModel = db.model('User', userSchema);
 
-exports.findUserByName = function(userName) {
-	return UserModel.findOne({name : userName}).exec();
+exports.findUserByEmail = function(email) {
+	return UserModel.findOne({email : email}).exec();
 }
 
 exports.findUserByHandle = function(handle){

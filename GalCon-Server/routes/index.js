@@ -8,7 +8,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	leaderboardManager = require('../modules/model/leaderboard'), 
 	inventoryManager = require('../modules/model/inventory'), 
 	_ = require('underscore'),
-	socialManager = require('../modules/social');
+	socialManager = require('../modules/social'),
+	validation = require('../modules/validation');
 
 exports.index = function(req, res) {
 	res.render('index.html')
@@ -43,8 +44,8 @@ exports.findAvailableGames = function(req, res) {
 }
 
 exports.findGamesWithPendingMove = function(req, res) {
-	var userName = req.query['userName'];
-	userManager.findUserByName(userName, function(user) {
+	var email = req.query['email'];
+	userManager.findUserByEmail(email, function(user) {
 		if (!user) {
 			res.json({});
 		} else {
@@ -63,16 +64,16 @@ exports.findGamesWithPendingMove = function(req, res) {
 	});
 }
 
-exports.findUserByUserName = function(req, res) {
-	var userName = req.query['userName'];
+exports.findUserByEmail = function(req, res) {
+	var email = req.query['email'];
 	
-	var p = userManager.findUserByName(userName);
+	var p = userManager.findUserByEmail(email);
 	p.then(function(user) {
 		if (user) {
 			return user;
 		} else {
 			user = new userManager.UserModel({
-				name : userName,
+				email : email,
 				currentGames : [],
 				xp : 0,
 				wins : 0,
@@ -92,41 +93,79 @@ exports.findUserByUserName = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-exports.requestHandleForUserName = function(req, res) {
-	var userName = req.body['userName'];
+var getSessionStateForEmail = function(session, email) {
+	var p = userManager.UserModel.findOne({email : email, 'session.id' : session}).exec();
+	return p.then(function(user) {
+		if(user === null) {
+			return "NOT FOUND";
+		} else if(user.session.expireDate.getTime() < Date.now()) {
+			return "EXPIRED SESSION";
+		}
+		
+		return "GOOD";
+	});
+}
+
+exports.requestHandleForEmail = function(req, res) {
+	var session = req.body['session'];
+	var email = req.body['email'];
 	var handle = req.body['handle'];
-
-	var updatedHandle = handle.replace(/^\s+/, '');
-	updatedHandle = updatedHandle.replace(/\s+$/, '');
-	updatedHandle = updatedHandle.replace(/[^a-z0-9_]/i);
-
-	if (handle.length < 3 || handle.length > 16 || updatedHandle !== handle) {
-		res.json({
-			created : false,
-			reason : "Invalid username"
-		});
-	} else {
-		var p = userManager.findUserByHandle(handle);
-		p.then(function(user) {
-			if (user) {
-				res.json({
-					created : false,
-					reason : "Username already chosen by another player"
-				});
-			} else {
-				var innerp = userManager.findUserByName(userName);
-				innerp.then(function(user) {
-					user.handle = handle;
-					return user.withPromise(user.save);
-				}).then(function(user) {
-					res.json({
-						created : true,
-						player : user
-					})
-				});
-			}
-		}).then(null, logErrorAndSetResponse(req, res));
+	
+	if(!validation.isSession(session)) {
+		console.log("Invalid session detected: " + session);
+		res.json({ created : false, reason : "Invalid session" });
+		return;
 	}
+
+	if(!validation.isEmail(email)) {
+		console.log("Invalid email detected: " + email);
+		res.json({ created : false, reason : "Invalid email" });
+		return;
+	}
+	
+	if(!validation.isHandle(handle)) {
+		res.json({ created : false, reason : "Invalid handle" });
+		return;
+	}
+	
+	var p = getSessionStateForEmail(session, email);
+	p.then(function(state) {
+		if(state === "NOT FOUND") {
+			console.log("Invalid session detected for email: " + session + ", " + email);
+			res.json({ created : false, reason : "Invalid session"});
+		} else if(state === "EXPIRED SESSION") {
+			var invalidP = userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
+			return invalidP.then(function() {
+				res.json({ session : "expired" });
+			});
+		} else {
+			var validP = userManager.findUserByHandle(handle);
+			return validP.then(function(user) {
+				if (user) {
+					res.json({
+						created : false,
+						reason : "Username already chosen by another player"
+					});
+				} else {
+					var innerp = userManager.findUserByEmail(email);
+					return innerp.then(function(user) {
+						if(user === null) {
+							console.error("Attempted to create handle for invalid email: " + email);
+							return null;
+						}
+						user.handle = handle;
+						return user.withPromise(user.save);
+					}).then(function(user) {
+						if(user === null) {
+							res.json({ created : false, reason : "Invalid username" });
+						} else {
+							res.json({ created : true, player : user });
+						}
+					});
+				}
+			});
+		}
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findCurrentGamesByPlayerHandle = function(req, res) {
@@ -550,8 +589,8 @@ exports.exchangeToken = function(req, res) {
 	var authProvider = req.body.authProvider;
 	var token = req.body.token;
 
-	var session = socialManager.exchangeToken(authProvider, token);
-	if (session === false) {
-		(logErrorAndSetResponse(req, res))("Invalid request");
-	}
+	var p = socialManager.exchangeToken(authProvider, token);
+	p.then(function(session) {
+		res.json({session : session});
+	}).then(null, logErrorAndSetResponse(req, res));
 }

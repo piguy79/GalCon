@@ -25,12 +25,16 @@ exports.createUser = function(playerHandle, level, config) {
 		config = {};
 	}
 	return {
-		name: playerHandle + "@gmail.com",
+		email: playerHandle + "@gmail.com",
 		handle: playerHandle,
 		rankInfo: {
 			level : level,
 			startFrom : 0,
 			endAt : 50
+		},
+		session :  {
+			id : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
+			expireDate : Date.now() + 4 * 60 * 60 * 1000
 		},
 		xp : config.xp || 0,
 		wins : config.wins || 0,

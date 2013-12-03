@@ -17,5 +17,6 @@
     , "nodetime" : "0.8.14"
     , "underscore" : "1.5.2"
     , "googleapis" : "0.4.6"
+    , "validator" : "2.0.0"
   }
 }

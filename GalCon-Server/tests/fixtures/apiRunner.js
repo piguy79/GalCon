@@ -88,3 +88,12 @@ exports.exchangeToken = function(authProvider, token) {
 	};
 	return needleWithPromise(needle.post, '/sessions/exchangeToken', postData);
 }
+
+exports.requestHandleForEmail = function(session, email, handle) {
+	var postData = {
+		session : session,
+		email : email,
+		handle : handle
+	};
+	return needleWithPromise(needle.post, '/requestHandleForEmail', postData);
+}
