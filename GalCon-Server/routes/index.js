@@ -11,6 +11,12 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	socialManager = require('../modules/social'),
 	validation = require('../modules/validation');
 
+var VALIDATE_MAP = {
+	email : validation.isEmail,
+	session : validation.isSession,
+	handle : validation.isHandle
+};
+
 exports.index = function(req, res) {
 	res.render('index.html')
 };
@@ -64,7 +70,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 	});
 }
 
-exports.findUserByEmail = function(req, res) {
+exports.findOrCreateUserByEmail = function(req, res) {
 	var email = req.query['email'];
 	
 	var p = userManager.findUserByEmail(email);
@@ -93,6 +99,32 @@ exports.findUserByEmail = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
+var validate = function(propMap, res) {
+	for(key in propMap) {
+		if(!VALIDATE_MAP[key].call(this, propMap[key])) {
+			console.log("Invalid " + key + " detected: " + propMap[key]);
+			res.json({ valid : false, reason : "Invalid " + key });
+			return false;
+		}	
+	}
+	
+	return true;
+}
+	
+var validateSession = function(session, email) {
+	var p = getSessionStateForEmail(session, email);
+	return p.then(function(state) {
+		if(state === "NOT FOUND") {
+			throw new ErrorWithResponse("Invalid session detected for email: " + session + ", " + email, { created : false, reason : "Invalid session"});
+		} else if(state === "EXPIRED SESSION") {
+			var invalidP = userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
+			return invalidP.then(function() {
+				throw new ErrorWithResponse("Expired session", { session : "expired" });
+			});
+		}
+	});
+}
+
 var getSessionStateForEmail = function(session, email) {
 	var p = userManager.UserModel.findOne({email : email, 'session.id' : session}).exec();
 	return p.then(function(user) {
@@ -106,65 +138,63 @@ var getSessionStateForEmail = function(session, email) {
 	});
 }
 
+exports.findUserByEmail = function(req, res) {
+	var email = req.query['email'];
+	var session = req.query['session'];
+	
+	if(!validate({email : email, session : session}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, email);
+	p.then(function() {
+		var validP = userManager.findUserByEmail(email);
+		return validP.then(function(user) {
+			if (user) {
+				res.json(user);
+			} else {
+				res.json({});
+			}
+		});
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
 exports.requestHandleForEmail = function(req, res) {
 	var session = req.body['session'];
 	var email = req.body['email'];
 	var handle = req.body['handle'];
 	
-	if(!validation.isSession(session)) {
-		console.log("Invalid session detected: " + session);
-		res.json({ created : false, reason : "Invalid session" });
-		return;
-	}
-
-	if(!validation.isEmail(email)) {
-		console.log("Invalid email detected: " + email);
-		res.json({ created : false, reason : "Invalid email" });
+	if(!validate({email : email, session : session, handle : handle}, res)) {
 		return;
 	}
 	
-	if(!validation.isHandle(handle)) {
-		res.json({ created : false, reason : "Invalid handle" });
-		return;
-	}
-	
-	var p = getSessionStateForEmail(session, email);
-	p.then(function(state) {
-		if(state === "NOT FOUND") {
-			console.log("Invalid session detected for email: " + session + ", " + email);
-			res.json({ created : false, reason : "Invalid session"});
-		} else if(state === "EXPIRED SESSION") {
-			var invalidP = userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
-			return invalidP.then(function() {
-				res.json({ session : "expired" });
-			});
-		} else {
-			var validP = userManager.findUserByHandle(handle);
-			return validP.then(function(user) {
-				if (user) {
-					res.json({
-						created : false,
-						reason : "Username already chosen by another player"
-					});
-				} else {
-					var innerp = userManager.findUserByEmail(email);
-					return innerp.then(function(user) {
-						if(user === null) {
-							console.error("Attempted to create handle for invalid email: " + email);
-							return null;
-						}
-						user.handle = handle;
-						return user.withPromise(user.save);
-					}).then(function(user) {
-						if(user === null) {
-							res.json({ created : false, reason : "Invalid username" });
-						} else {
-							res.json({ created : true, player : user });
-						}
-					});
-				}
-			});
-		}
+	var p = validateSession(session, email);
+	p.then(function() {
+		var validP = userManager.findUserByHandle(handle);
+		return validP.then(function(user) {
+			if (user) {
+				res.json({
+					created : false,
+					reason : "Username already chosen by another player"
+				});
+			} else {
+				var innerp = userManager.findUserByEmail(email);
+				return innerp.then(function(user) {
+					if(user === null) {
+						console.error("Attempted to create handle for invalid email: " + email);
+						return null;
+					}
+					user.handle = handle;
+					return user.withPromise(user.save);
+				}).then(function(user) {
+					if(user === null) {
+						res.json({ created : false, reason : "Invalid username" });
+					} else {
+						res.json({ created : true, player : user });
+					}
+				});
+			}
+		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -489,16 +519,32 @@ var joinGamePromise = function(games, user, time) {
 	});
 }
 
+function ErrorWithResponse(message, responseObj) {
+	this.name = "ErrorWithReponse";
+	this.message = message;
+	this.responseObj = responseObj;
+}
+
+ErrorWithResponse.prototype = new Error();
+ErrorWithResponse.prototype.constructor = ErrorWithResponse;
+
 var logErrorAndSetResponse = function(req, res) {
 	return function(err) {
 		if(typeof err === "string") {
 			console.log(req.connection.remoteAddress + " " + err);
+		} else if(err instanceof ErrorWithResponse) {
+			console.log(req.connection.remoteAddress + " " + err.message);
 		} else {
 			console.log(req.connection.remoteAddress + " " + err.stack);
 		}
-		res.json({
-			"error" : err
-		});
+		
+		if(err instanceof ErrorWithResponse) {
+			res.json(err.responseObj);
+		} else {
+			res.json({
+				"error" : err
+			});
+		}
 	}
 }
 

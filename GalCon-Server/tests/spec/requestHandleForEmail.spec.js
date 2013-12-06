@@ -30,7 +30,7 @@ describe("Request Handle for Email", function() {
 	it("Request handle with bogus session", function(done) {
 		var p = apiRunner.requestHandleForEmail("BAD_SESSION", PLAYER_1.email, "NEW_HANDLE");
 		p.then(function(response) {
-			expect(response.created).toBe(false);
+			expect(response.valid).toBe(false);
 			expect(response.reason).toBe("Invalid session");
 		}).then(done, done);
 	});
@@ -38,7 +38,7 @@ describe("Request Handle for Email", function() {
 	it("Request handle with bad email", function(done) {
 		var p = apiRunner.requestHandleForEmail(PLAYER_1.session.id, "boo@", "NEW_HANDLE");
 		p.then(function(response) {
-			expect(response.created).toBe(false);
+			expect(response.valid).toBe(false);
 			expect(response.reason).toBe("Invalid email");
 		}).then(done, done);
 	});
@@ -72,7 +72,7 @@ describe("Request Handle for Email", function() {
 	it("Request invalid handle", function(done) {
 		var p = apiRunner.requestHandleForEmail(PLAYER_1.session.id, PLAYER_1.email, "BAD*(*(&@#_HANDLE");
 		p.then(function(response) {
-			expect(response.created).toBe(false);
+			expect(response.valid).toBe(false);
 			expect(response.player).toBe(undefined);
 		}).then(done, done);
 	});
