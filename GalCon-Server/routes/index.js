@@ -183,6 +183,8 @@ exports.requestHandleForEmail = function(req, res) {
 					if(user === null) {
 						console.error("Attempted to create handle for invalid email: " + email);
 						return null;
+					} else if(user.handle !== undefined) {
+						res.json({ created : false, reason : "Cannot change handle" });
 					}
 					user.handle = handle;
 					return user.withPromise(user.save);

@@ -68,6 +68,24 @@ exports.exchangeToken = function(authProvider, token) {
 		return gapiP;
 	}).then(function() {
 		return userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
+	}).then(function(user) {
+		if(user === null) {
+			user = new userManager.UserModel({
+				email : email,
+				currentGames : [],
+				xp : 0,
+				wins : 0,
+				losses : 0,
+				coins : 1,
+				usedCoins : -1,
+				watchedAd : false
+			});
+			var innerp = rankManager.findRankByName("1");
+			return innerp.then(function(rank) {
+				user.rankInfo = rank;
+				return user.withPromise(user.save);
+			});
+		}
 	}).then(function() {
 		var sha = crypto.createHash('sha256');
 		sha.update(Math.random().toString() + "randomseedinformation blash4tgjasdffsdfsafwpooiommlejefkwf" + Date.now().toString());

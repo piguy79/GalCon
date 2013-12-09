@@ -93,4 +93,12 @@ describe("Request Handle for Email", function() {
 			expect(response.player).toBe(undefined);
 		}).then(done, done);
 	});
+	
+	it("Request handle when user already has a handle", function(done) {
+		var p = apiRunner.requestHandleForEmail(PLAYER_2.session.id, PLAYER_2.email, "NEW_HANDLE");
+		p.then(function(response) {
+			expect(response.created).toBe(false);
+			expect(response.player).toBe(undefined);
+		}).then(done, done);
+	});
 })
