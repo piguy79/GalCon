@@ -168,14 +168,12 @@ public class Planet extends JsonConvertible {
 	}
 
 	public Color getColor() {
-		Color color = Color.valueOf("D8D8D8FF");
-		
-		
+		Color color = Color.valueOf("424242FF");
 		
 		if(isOwnedBy(GameLoop.USER)){
 			color = color.mul(OWNED_BY_ME_COLOR);
 		}else if(!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)){
-			color =   color.mul(OWNED_BY_OPPONENT_COLOR);
+			color = color.mul(OWNED_BY_OPPONENT_COLOR);
 		}else {
 			if(hasAbility()){
 				return ABILITY_PLANET_COLOR;

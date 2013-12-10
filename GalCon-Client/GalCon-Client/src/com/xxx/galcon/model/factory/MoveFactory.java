@@ -9,7 +9,7 @@ import com.xxx.galcon.model.Planet;
 
 public class MoveFactory {
 
-	public Move createMove(List<Planet> availablePlanets, int fleetToSend) {
+	public static Move createMove(List<Planet> availablePlanets, int fleetToSend) {
 		if (fleetToSend <= 0) {
 			return null;
 		}
@@ -24,7 +24,6 @@ public class MoveFactory {
 				move.previousPosition = planet.position;
 				move.currentPosition = planet.position;
 				move.startPosition = planet.position;
-				planet.numberOfShips -= move.shipsToMove;
 				startX = planet.position.x;
 				startY = planet.position.y;
 			} else {
