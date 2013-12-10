@@ -45,6 +45,7 @@ exports.exchangeToken = function(authProvider, token) {
 		var oAuthClient = new googleapis.OAuth2Client();
 		oAuthClient.credentials = {};
 		oAuthClient.credentials.access_token = token;
+		oAuthClient.client_secret = "AIzaSyDihDl3Zwgt6Ax4wbr6PiIJz7d5iyR-4ZM";
 		client.plus.people
 			.get({userId: "me"})
 			.withAuthClient(oAuthClient)
