@@ -98,6 +98,6 @@ exports.exchangeToken = function(authProvider, token) {
 		};
 		return userManager.UserModel.findOneAndUpdate({email : email}, {$set : {email : email, session : sessionObj}}, {upsert: true}).exec();
 	}).then(function(user) {
-		return user.sessions[0].sessionId;
+		return user.session.id;
 	});
 }
