@@ -98,6 +98,14 @@ public class UISkin extends Skin {
 		add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 		
+		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("end_turn"));
+		add("performMoveButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
+		textureRegionDrawable = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
+		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
 		
 		
 	}

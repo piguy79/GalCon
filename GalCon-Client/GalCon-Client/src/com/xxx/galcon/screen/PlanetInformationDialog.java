@@ -212,8 +212,6 @@ public class PlanetInformationDialog extends TouchRegion implements ScreenFeedba
 		
 		stage.act(delta);
 		stage.draw();
-		
-	
 	}
 
 	@Override
