@@ -48,6 +48,7 @@ import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
@@ -86,9 +87,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
+			List<HarvestMove> harvestMoves) {
 		try {
-			JSONObject top = JsonConstructor.performMove(gameId, moves);
+			JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

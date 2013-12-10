@@ -1,257 +1,233 @@
 package com.xxx.galcon.screen;
 
-import static aurelienribon.tweenengine.TweenCallback.COMPLETE;
-import static aurelienribon.tweenengine.TweenCallback.END;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Timeline;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenEquations;
-import aurelienribon.tweenengine.TweenManager;
+import static com.xxx.galcon.Util.createShader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.xxx.galcon.Fonts;
-import com.xxx.galcon.InGameInputProcessor;
-import com.xxx.galcon.InGameInputProcessor.TouchPoint;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Move;
-import com.xxx.galcon.model.tween.ColorTween;
-import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
-import com.xxx.galcon.screen.hud.Button;
-import com.xxx.galcon.screen.hud.DragButton;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
-	private static final String OK = "ok";
-	private static final String CANCEL = "cancel";
-	private static final String DRAG = "drag";
 
-	private static final String TWEEN_ID_SHOW = "show";
-	private static final String TWEEN_ID_BUTTON_SHOW = "button show";
-	private static final String TWEEN_ID_HIDE = "hide";
-	private static final String TWEEN_ID_BUTTON_HIDE = "button hide";
+	
 
-	private List<Button> buttons = new ArrayList<Button>();
-	private DragButton shipDragButton;
-
-	private SpriteBatch spriteBatch;
 	private AtlasRegion dialogTextureBg;
-	private AtlasRegion shipTex;
-	private AtlasRegion okButtonTex;
-	private AtlasRegion cancelButtonTex;
 
 	private int shipsToSend = 0;
 	private Move currentMoveToEdit = null;
 	private int max;
-	private Color alphaAnimColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 
 	private String returnResult;
 	private String pendingReturnResult;
 
-	private TweenManager tweenManager;
-	private boolean isBaseDialogReady = false;
 	private boolean isReady = false;
 	private boolean isShownAndClosed = false;
-
-	private AssetManager assetManager;
+	
+	private ImageButton cancelButton;
+	private ImageButton okButton;
+	
+	private Stage stage;
+	private Table shipSelectionTable;
+	
+	private UISkin skin;
+	
+	private InputProcessor oldInputProcessor;
+	
+	private Slider slider;
+	ShaderLabel counter;
+	ShaderLabel initialCount;
+	
+	private ShaderProgram fontShader;
 
 	public ShipSelectionDialog(Move currentMoveToEdit, int x, int y, int width, int height, AssetManager assetManager,
-			int max, TweenManager tweenManager) {
-		this(x, y, width, height, assetManager, max, tweenManager);
+			int max, UISkin skin) {
+		this(x, y, width, height, assetManager, max, skin);
 		if (currentMoveToEdit != null) {
 			this.shipsToSend = currentMoveToEdit.shipsToMove;
 			this.currentMoveToEdit = currentMoveToEdit;
+			counter.setText(shipsToSend + "");
+			initialCount.setText("" + (max - shipsToSend));
+			slider.setValue(shipsToSend);
 		}
 	}
 
-	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, final int max,
-			TweenManager tweenManager) {
+	public ShipSelectionDialog(int x, int y, int width, int height, AssetManager assetManager, final int max, UISkin skin) {
 		super(x, y, width, height, false);
-		this.tweenManager = tweenManager;
-
-		Tween.registerAccessor(Color.class, new ColorTween());
-
-		this.assetManager = assetManager;
-
-		spriteBatch = new SpriteBatch();
+		this.max = max;
+		this.skin = skin;
+		
+		this.stage = new Stage();
+		
+		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+		counter = new ShaderLabel(fontShader, shipsToSend + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
+		initialCount = new ShaderLabel(fontShader, (max - shipsToSend) + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
 
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
+		
+		Drawable sliderBg = new TextureRegionDrawable(menusAtlas.findRegion("slider_bg"));
+		Drawable sliderKnob =  new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
+		
+		sliderBg.setMinHeight(height * 0.2f);
+		sliderKnob.setMinHeight(height * 0.3f);
+		sliderKnob.setMinWidth(width * 0.1f);
+		
+		skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
 
-		okButtonTex = menusAtlas.findRegion("ok_button");
-		cancelButtonTex = menusAtlas.findRegion("cancel_button");
-		dialogTextureBg = gameBoardAtlas.findRegion("ship_selection_dialog_bg");
-		shipTex = gameBoardAtlas.findRegion("ship");
+		dialogTextureBg = menusAtlas.findRegion("dialog_bg");
+		
+		
 
-		buttons.add(new Button(okButtonTex) {
-			@Override
-			public void updateLocationAndSize(int x, int y, int width, int height) {
-				int buttonSize = (int) (width * 0.15f);
-				int margin = 0;
-
-				this.x = x + width - margin - buttonSize;
-				this.y = y + margin;
-				this.height = buttonSize;
-				this.width = buttonSize;
-			}
-
-			@Override
-			public String getActionOnClick() {
-				return OK;
-			}
-		});
-
-		buttons.add(new Button(cancelButtonTex) {
-			@Override
-			public void updateLocationAndSize(int x, int y, int width, int height) {
-				int buttonSize = (int) (width * 0.15f);
-				int margin = 0;
-
-				this.x = x + margin;
-				this.y = y + margin;
-				this.height = buttonSize;
-				this.width = buttonSize;
-			}
-
-			@Override
-			public String getActionOnClick() {
-				return CANCEL;
-			}
-		});
-
-		shipDragButton = new DragButton(shipTex) {
-
-			@Override
-			public void updateLocationAndSize(int x, int y, int width, int height) {
-				int buttonSize = (int) (width * 0.1f);
-
-				int dragWidth = maxX - minX;
-
-				float ratio = 0.0f;
-				if (max != 0) {
-					ratio = ((float) shipsToSend / (float) max);
-				}
-				this.x = (int) (minX + ratio * dragWidth);
-				this.y = y + height - buttonSize - (int) (height * 0.30f);
-				this.height = buttonSize;
-				this.width = buttonSize;
-			}
-
-			@Override
-			public void updateDragBounds(int x, int y, int width, int height) {
-				this.minX = x + (int) (width * 0.05f);
-				this.maxX = x + width - 2 * (int) (width * 0.08f);
-			}
-
-			@Override
-			public String getActionOnClick() {
-				return DRAG;
-			}
-		};
-		buttons.add(shipDragButton);
-
-		this.max = max;
+		createLayout();
 	}
+
+	private void createLayout() {
+		shipSelectionTable = new Table();
+		shipSelectionTable.setBackground(new TextureRegionDrawable(dialogTextureBg));
+		shipSelectionTable.setWidth(width);
+		shipSelectionTable.setHeight(height);
+		shipSelectionTable.setX(-width);
+		shipSelectionTable.setY(y);
+		
+		
+		
+		MoveToAction moveTo = new MoveToAction();
+		moveTo.setPosition(width * 0.05f, shipSelectionTable.getY());
+		moveTo.setDuration(0.2f);
+		shipSelectionTable.addAction(moveTo);
+		
+		stage.addActor(shipSelectionTable);
+		
+		addCancelButton();
+		addOkButton();
+		addSlider();
+		addCounter();
+
+		
+	}
+
+	private void addCounter() {
+		Table countTable = new Table();
+
+		countTable.add(initialCount);
+		countTable.add(new ShaderLabel(fontShader, " >> ", skin, Constants.UI.DEFAULT_FONT_BLACK));
+		countTable.add(counter);
+		
+		countTable.setX(countTable.getX() + (shipSelectionTable.getWidth() * 0.5f));
+		countTable.setY(countTable.getY() + (shipSelectionTable.getHeight() * 0.8f));
+		
+		shipSelectionTable.addActor(countTable);
+	}
+
+	private void addSlider() {
+		slider = new Slider(1, max, 1, false, skin);
+		slider.setWidth(width * 0.8f);
+		slider.setY(y  + (shipSelectionTable.getHeight() * 0.35f));
+		slider.setX(width * 0.15f);
+		slider.addAction(Actions.sequence(Actions.fadeOut(0.001f),Actions.delay(0.2f), Actions.fadeIn(0.4f)));
+		
+		slider.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				counter.setText((int)slider.getValue() + "");
+				shipsToSend = (int)slider.getValue();
+				initialCount.setText("" + (max - shipsToSend));
+			}
+		});
+		
+		stage.addActor(slider);
+	}
+	
+	private void addCancelButton() {
+		cancelButton = new ImageButton(skin, "cancelButton");
+		cancelButton.setWidth(width * 0.15f);
+		cancelButton.setHeight(width * 0.15f);
+		cancelButton.setY(y - (int)(width * 0.07));
+		cancelButton.setX(width * 0.04f);
+		cancelButton.addListener(new InputListener(){
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				pendingReturnResult = Action.DIALOG_DELETE;
+				hide();
+			}
+		});
+		cancelButton.addAction(Actions.sequence(Actions.delay(0.2f), Actions.fadeIn(0.4f)));
+		stage.addActor(cancelButton);
+		
+	}
+	
+	private void addOkButton() {
+			float buttonSize = width * 0.08f;
+			
+			okButton = new ImageButton(skin, "okButton");
+			okButton.setX(width - (buttonSize));
+			okButton.setY(y - (int)(width * 0.07));
+			okButton.setWidth(width * 0.15f);
+			okButton.setHeight(width * 0.15f);
+			okButton.setColor(0, 0, 0, 0);
+			okButton.addListener(new InputListener(){
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					return true;
+				}
+
+				@Override
+				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+					pendingReturnResult = Action.DIALOG_OK;
+					hide();
+				}
+			});
+
+			okButton.addAction(Actions.sequence(Actions.delay(0.2f), Actions.fadeIn(0.4f)));
+			stage.addActor(okButton);
+			
+		}
 
 	public boolean isReady() {
 		return isReady;
 	}
 
-	public float getX() {
-		return super.x;
-	}
-
-	public void setX(int x) {
-		super.x = x;
-	}
-
-	public float getY() {
-		return super.y;
-	}
-
-	public void setY(int y) {
-		super.y = y;
-	}
-
-	private boolean buttonsUpdated = false;
 
 	@Override
 	public void render(float delta) {
-		processTouch();
-
-		spriteBatch.begin();
-
-		spriteBatch.draw(dialogTextureBg, x, y, width, height);
-
-		if (isBaseDialogReady) {
-			spriteBatch.setColor(alphaAnimColor);
-			for (int i = 0; i < buttons.size(); ++i) {
-				Button button = buttons.get(i);
-
-				if (!buttonsUpdated) {
-					if (button instanceof DragButton) {
-						((DragButton) button).updateDragBounds(x, y, width, height);
-					}
-					button.updateLocationAndSize(x, y, width, height);
-				}
-
-				button.render(spriteBatch);
-			}
-			buttonsUpdated = true;
-			spriteBatch.setColor(Color.WHITE);
-		}
-
-		if (shipDragButton.isDragging()) {
-			float ratio = shipDragButton.getDragRatio();
-			shipsToSend = (int) Math.ceil(ratio * max);
-		}
-
-		BitmapFont font = Fonts.getInstance(assetManager).largeFont();
-		font.setColor(Color.BLACK);
-		font.draw(spriteBatch, "" + (max - shipsToSend), x + width * .38f, y + height * .84f);
-		font.draw(spriteBatch, ">>", x + width * .48f, y + height * .84f);
-		font.draw(spriteBatch, "" + shipsToSend, x + width * .58f, y + height * .84f);
-		font.setColor(Color.WHITE);
-
-		spriteBatch.end();
-	}
-
-	private void processTouch() {
-		returnResult = null;
-
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch() && isReady) {
-			TouchPoint touchPoint = ip.getTouch();
-			int x = touchPoint.x;
-
-			for (int i = 0; i < buttons.size(); ++i) {
-				Button button = buttons.get(i);
-				if (button.isTouched(x, y)) {
-					ip.consumeTouch();
-					if (button.getActionOnClick().equals(OK)) {
-						pendingReturnResult = Action.DIALOG_OK;
-						hide();
-					} else if (button.getActionOnClick().equals(CANCEL)) {
-						pendingReturnResult = Action.DIALOG_CANCEL;
-						hide();
-					}
-				}
-			}
-		}
-
 		if (pendingReturnResult != null && isShownAndClosed) {
 			returnResult = pendingReturnResult;
 		}
+		
+		
+		
+		stage.act(delta);
+		stage.draw();
+		
 	}
+
+	
 
 	@Override
 	public void resize(int width, int height) {
@@ -261,36 +237,26 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 
 	@Override
 	public void show() {
-		int targetwidth = Gdx.graphics.getWidth();
-		int targetheight = Gdx.graphics.getHeight();
-		int xMargin = (int) (targetwidth * .1f);
-
-		ShowDialogCallback cb = new ShowDialogCallback();
-
-		Tween showAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
-				.target(xMargin, (int) (targetheight * .6f)).ease(TweenEquations.easeOutQuad)
-				.setUserData(TWEEN_ID_SHOW).setCallback(cb).setCallbackTriggers(END);
-		Tween showButtonAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f)
-				.target(1.0f, 1.0f, 1.0f, 1.0f).setUserData(TWEEN_ID_BUTTON_SHOW).setCallback(cb)
-				.setCallbackTriggers(END);
-
-		Timeline.createSequence().push(showAnimation).push(showButtonAnimation).start(tweenManager);
+		oldInputProcessor = Gdx.input.getInputProcessor();
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void hide() {
-		int targetwidth = Gdx.graphics.getWidth();
-		int targetheight = Gdx.graphics.getHeight();
-
-		Tween hideAlphaAnimation = Tween.to(this.alphaAnimColor, ColorTween.ALPHA, 0.2f).target(1.0f, 1.0f, 1.0f, 0.0f)
-				.setUserData(TWEEN_ID_BUTTON_HIDE);
-
-		Tween hideAnimation = Tween.to(this, ShipSelectionDialogTween.POSITION_XY, 0.3f)
-				.target(targetwidth * -1, (int) (targetheight * .6f)).ease(TweenEquations.easeInQuad)
-				.setUserData(TWEEN_ID_HIDE);
-
-		Timeline.createSequence().push(hideAlphaAnimation).push(hideAnimation).setCallback(new HideDialogCallback())
-				.setCallbackTriggers(COMPLETE).start(tweenManager);
+		
+		cancelButton.addAction(Actions.fadeOut(0.2f));
+		okButton.addAction(Actions.fadeOut(0.2f));
+		slider.addAction(Actions.fadeOut(0.2f));
+		MoveToAction moveTo = new MoveToAction();
+		moveTo.setPosition(-width, shipSelectionTable.getY());
+		moveTo.setDuration(0.2f);
+		shipSelectionTable.addAction(Actions.sequence(Actions.delay(0.2f) ,moveTo, Actions.run(new Runnable() {	
+			@Override
+			public void run() {
+				isShownAndClosed = true;
+				Gdx.input.setInputProcessor(oldInputProcessor);
+			}
+		})));
 	}
 
 	@Override
@@ -339,37 +305,5 @@ public class ShipSelectionDialog extends TouchRegion implements ScreenFeedback {
 		return currentMoveToEdit;
 	}
 
-	private class ShowDialogCallback implements TweenCallback {
-
-		@Override
-		public void onEvent(int type, BaseTween<?> source) {
-			switch (type) {
-			case END:
-				if (source.getUserData().equals(TWEEN_ID_SHOW)) {
-					isBaseDialogReady = true;
-				} else if (source.getUserData().equals(TWEEN_ID_BUTTON_SHOW)) {
-					isReady = true;
-				}
-				break;
-			default:
-				break;
-			}
-
-		}
-	}
-
-	private class HideDialogCallback implements TweenCallback {
-
-		@Override
-		public void onEvent(int type, BaseTween<?> source) {
-			switch (type) {
-			case COMPLETE:
-				isShownAndClosed = true;
-				break;
-			default:
-				break;
-			}
-
-		}
-	}
+	
 }

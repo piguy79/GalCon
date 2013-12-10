@@ -58,7 +58,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Crashlytics.start(this);
+		//Crashlytics.start(this);
 
 		setupAdColony();
 

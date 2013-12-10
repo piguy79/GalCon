@@ -54,6 +54,7 @@ import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
@@ -192,9 +193,9 @@ public class AndroidGameAction implements GameAction {
 
 	}
 
-	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves) {
+	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves, List<HarvestMove> harvestMoves) {
 		try {
-			final JSONObject top = JsonConstructor.performMove(gameId, moves);
+			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());

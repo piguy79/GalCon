@@ -48,6 +48,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -56,11 +57,11 @@ import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.math.WorldMath;
 import com.xxx.galcon.model.EndGameInformation;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.tween.MoveTween;
-import com.xxx.galcon.model.tween.ShipSelectionDialogTween;
 import com.xxx.galcon.screen.hud.BoardScreenHud;
 import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
@@ -111,6 +112,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	List<Planet> moveSelectedPlanets = new ArrayList<Planet>(2);
 	List<Move> inProgressMoves = new ArrayList<Move>();
+	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
 	private float[] moveSelectedPlanetsCoords = new float[4];
 
@@ -120,6 +122,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private BoardScreenHud boardScreenHud;
 	private HeaderHud playerInfoHud;
 	private ShipSelectionDialog shipSelectionDialog;
+	private PlanetInformationDialog planetInformationDialog;
 	private Overlay overlay;
 
 	public ScreenFeedback previousScreen;
@@ -132,10 +135,12 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 	private String returnCode = null;
 	private MoveFactory moveFactory;
+	private UISkin skin;
 
-	public BoardScreen(AssetManager assetManager, TweenManager tweenManager) {
+	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
 		this.tweenManager = tweenManager;
+		this.skin = skin;
 
 		planetShader = createShader("data/shaders/planet-vs.glsl", "data/shaders/planet-fs.glsl");
 		planetTouchBgShader = createShader("data/shaders/planet-touch-bg-vs.glsl",
@@ -164,7 +169,6 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		this.moveFactory = new MoveFactory();
 
 		Tween.registerAccessor(Move.class, new MoveTween());
-		Tween.registerAccessor(ShipSelectionDialog.class, new ShipSelectionDialogTween());
 	}
 
 	private Model generateModelFromObjectFile(String objectFile) {
@@ -233,6 +237,16 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		public static final float Z = -100.0f;
 		public Vector3 topLeft;
 		public Vector3 bottomRight;
+		
+		public float getWorldHeight(Camera camera){
+			resize(camera);
+			return topLeft.y - bottomRight.y;
+		}
+		
+		public float getWorldWidth(Camera camera){
+			resize(camera);
+			return bottomRight.x - topLeft.x;
+		}
 
 		public void resize(Camera camera) {
 			Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, 0, 0);
@@ -294,43 +308,47 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		Body contactBody = null;
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch()) {
-			TouchPoint touchPoint = ip.getTouch();
-			if (shipSelectionDialog != null) {
-				int x = touchPoint.x;
-				int y = touchPoint.y;
-				if (shipSelectionDialog.contains(x, y)) {
-					return null;
-				} else {
-					clearTouchedPlanets();
-					shipSelectionDialog.dispose();
-					shipSelectionDialog = null;
-				}
-			} else {
-				Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
-						- touchPoint.y);
-				Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+			if (ip.didTouch()) {
+				TouchPoint touchPoint = ip.getTouch();
+				if (shipSelectionDialog != null) {
+					int x = touchPoint.x;
+					int y = touchPoint.y;
+					if (shipSelectionDialog.contains(x, y)) {
+						return null;
+					} else {
+						clearTouchedPlanets();
+						shipSelectionDialog.dispose();
+						shipSelectionDialog = null;
+					}
+				} 
+				else {
+					Vector2 worldXY = WorldMath.screenXYToWorldXY(camera, touchPoint.x, Gdx.graphics.getHeight()
+							- touchPoint.y);
+					Vector2 boardXY = boardPlane.worldXYToBoardXY(worldXY.x, worldXY.y, gameBoard);
 
-				if (boardXY != null) {
-					BodyDef bodyDef = new BodyDef();
-					bodyDef.type = BodyDef.BodyType.DynamicBody;
-					bodyDef.position.set(boardXY);
+					if (boardXY != null) {
+						BodyDef bodyDef = new BodyDef();
+						bodyDef.type = BodyDef.BodyType.DynamicBody;
+						bodyDef.position.set(boardXY);
 
-					contactBody = physicsWorld.createBody(bodyDef);
-					contactBody.setUserData(TOUCH_OBJECT);
+						contactBody = physicsWorld.createBody(bodyDef);
+						contactBody.setUserData(TOUCH_OBJECT);
 
-					CircleShape shape = new CircleShape();
-					shape.setRadius(0.05f);
+						CircleShape shape = new CircleShape();
+						shape.setRadius(0.05f);
 
-					FixtureDef fixtureDef = new FixtureDef();
-					fixtureDef.shape = shape;
-					contactBody.createFixture(fixtureDef);
+						FixtureDef fixtureDef = new FixtureDef();
+						fixtureDef.shape = shape;
+						contactBody.createFixture(fixtureDef);
 
-					ip.consumeTouch();
+						ip.consumeTouch();
+					}
 				}
 			}
 		}
+		
 
 		return contactBody;
 	}
@@ -604,7 +622,8 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		}
 
 		if (planet != null) {
-			planet.touched = !planet.touched;
+			planet.touched = true;
+			//planet.touched = !planet.touched;
 		}
 
 		if (planet.touched) {
@@ -614,7 +633,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 					planet.touched = false;
 				} else {
 					touchedPlanets.add(planet);
-					showShipSelectionDialog(touchedPlanets);
+					if(planet.name.equals(alreadySelectedPlanet.name)){
+						showPlanetInformationDialog(planet);
+					}else{
+						showShipSelectionDialog(touchedPlanets);
+					}
 				}
 			} else if (touchedPlanets.size() == 2) {
 				planet.touched = false;
@@ -641,6 +664,17 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	public void preSolve(Contact contact, Manifold oldManifold) {
 
 	}
+	
+	private void showPlanetInformationDialog(Planet planet){
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		int xMargin = (int) (width * 0.01f);
+		int dialogWidth = width - 2 * xMargin;
+		
+		planetInformationDialog = new PlanetInformationDialog((int) (width * -1), (int) (height * 0.2f),
+				dialogWidth, (int) (height * .8f), planet,skin, assetManager);
+		planetInformationDialog.show();
+	}
 
 	private void showShipSelectionDialog(Move moveToEdit, List<Planet> touchedPlanets) {
 		int shipsOnPlanet = 0;
@@ -657,11 +691,11 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int xMargin = (int) (width * .1f);
+		int xMargin = (int) (width * .05f);
 		int dialogWidth = width - 2 * xMargin;
 
 		shipSelectionDialog = new ShipSelectionDialog(moveToEdit, (int) (width * -1), (int) (height * .6f),
-				dialogWidth, (int) (dialogWidth * .38f), assetManager, shipsOnPlanet, tweenManager);
+				dialogWidth, (int) (dialogWidth * .3f), assetManager, shipsOnPlanet, skin);
 		shipSelectionDialog.show();
 	}
 
@@ -744,11 +778,15 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 		if (hudResult != null) {
 			processHudButtonTouch(hudResult);
 		}
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.isBackKeyPressed()) {
-			returnCode = Action.BACK;
-			ip.consumeKey();
+		
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+			if (ip.isBackKeyPressed()) {
+				returnCode = Action.BACK;
+				ip.consumeKey();
+			}
 		}
+		
 
 		if (overlay != null) {
 			if (overlay instanceof DismissableOverlay && ((DismissableOverlay) overlay).isDismissed()) {
@@ -886,7 +924,36 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 			if (action != null) {
 				processShipSelectionTouch(action);
 			}
+		}else if(planetInformationDialog != null){
+			planetInformationDialog.render(delta);
+			
+			String action = (String) planetInformationDialog.getRenderResult();
+			
+			if(action != null){
+				processPlanetInformationResult(action);
+			}
 		}
+	}
+	
+	private void processPlanetInformationResult(String action) {
+		Planet planet = planetInformationDialog.getPlanet();
+		
+		if(action.equals(Action.HARVEST)){
+			HarvestMove harvestMove = new HarvestMove(planet.name);
+			inProgressHarvest.add(harvestMove);
+		}else if(action.equals(Action.DIALOG_CANCEL)){
+			Iterator<HarvestMove> iter = inProgressHarvest.iterator();
+			while(iter.hasNext()){
+				if(iter.next().planet.equals(planet.name)){
+					iter.remove();
+				}
+			}
+		}
+		
+		clearTouchedPlanets();
+		planetInformationDialog.dispose();
+		planetInformationDialog = null;
+		
 	}
 
 	private void processShipSelectionTouch(String action) {
@@ -924,7 +991,7 @@ public class BoardScreen implements ScreenFeedback, ContactListener {
 	private void processHudButtonTouch(String action) {
 		if (action.equals(Action.END_TURN)) {
 			overlay = new TextOverlay("Sending ships to their doom", menusAtlas, true, assetManager);
-			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves);
+			UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, inProgressMoves, inProgressHarvest);
 		} else if (action.equals(Action.REFRESH)) {
 			overlay = new TextOverlay("Refreshing...", menusAtlas, true, assetManager);
 			UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);

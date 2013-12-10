@@ -9,6 +9,7 @@ import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
@@ -43,7 +44,8 @@ public interface GameAction {
 
 	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
 
-	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves);
+	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
+			List<HarvestMove> harvestMoves);
 
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 

@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -110,37 +111,40 @@ public class BoardScreenHud extends Hud {
 			endTurnButton.setEnabled(true);
 		}
 
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
+		if(Gdx.input.getInputProcessor() instanceof InGameInputProcessor){
+			InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
 
-		if (ip.isDragging()) {
-			TouchPoint dragBegin = ip.getDragBeginPoint();
-			if (dragBegin.x > 0 && dragBegin.x < MAX_BAR_WIDTH_FOR_MOVES) {
-				if (dragBegin.y > 0 && dragBegin.y < Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO) {
-					int offset = ip.getDragXDiff(true);
+			if (ip.isDragging()) {
+				TouchPoint dragBegin = ip.getDragBeginPoint();
+				if (dragBegin.x > 0 && dragBegin.x < MAX_BAR_WIDTH_FOR_MOVES) {
+					if (dragBegin.y > 0 && dragBegin.y < Gdx.graphics.getHeight() * BOTTOM_HEIGHT_RATIO) {
+						int offset = ip.getDragXDiff(true);
 
-					ShipMoveHudButton firstButton = null;
-					ShipMoveHudButton lastButton = null;
-					for (Button button : getHudButtons()) {
-						if (!(button instanceof ShipMoveHudButton)) {
-							continue;
+						ShipMoveHudButton firstButton = null;
+						ShipMoveHudButton lastButton = null;
+						for (Button button : getHudButtons()) {
+							if (!(button instanceof ShipMoveHudButton)) {
+								continue;
+							}
+
+							if (firstButton == null) {
+								firstButton = (ShipMoveHudButton) button;
+							}
+							lastButton = (ShipMoveHudButton) button;
 						}
 
-						if (firstButton == null) {
-							firstButton = (ShipMoveHudButton) button;
+						if (offset > 0 && firstButton != null && firstButton.x < START_X_BAR_FOR_MOVES) {
+							applyOffsetToMoveButtons(offset);
+						} else if (offset < 0
+								&& lastButton != null
+								&& lastButton.x + lastButton.getWidth() + lastButton.MARGIN >= BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES) {
+							applyOffsetToMoveButtons(offset);
 						}
-						lastButton = (ShipMoveHudButton) button;
-					}
-
-					if (offset > 0 && firstButton != null && firstButton.x < START_X_BAR_FOR_MOVES) {
-						applyOffsetToMoveButtons(offset);
-					} else if (offset < 0
-							&& lastButton != null
-							&& lastButton.x + lastButton.getWidth() + lastButton.MARGIN >= BoardScreenHud.MAX_BAR_WIDTH_FOR_MOVES) {
-						applyOffsetToMoveButtons(offset);
 					}
 				}
 			}
 		}
+		
 
 		if (updateMoveButtons) {
 			addMoveButtons(boardScreen.getPendingMoves(), true);

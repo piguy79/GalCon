@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 
@@ -21,7 +22,8 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject performMove(String gameId, List<Move> moves) throws JSONException {
+	public static JSONObject performMove(String gameId, List<Move> moves, List<HarvestMove> harvestMoves)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 		top.put("playerHandle", GameLoop.USER.handle);
 		top.put("id", gameId);
@@ -31,6 +33,14 @@ public class JsonConstructor {
 			jsonMoves.put(move.asJson());
 		}
 		top.put("moves", jsonMoves);
+
+		if (!harvestMoves.isEmpty()) {
+			JSONArray jsonHarvestMoves = new JSONArray();
+			for (HarvestMove harvestMove : harvestMoves) {
+				jsonHarvestMoves.put(harvestMove.asJson());
+			}
+			top.put("harvest", jsonHarvestMoves);
+		}
 		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
 
 		return top;

@@ -11,4 +11,5 @@ public final class Action {
 	public static final String DIALOG_DELETE = "DIALOG_DELETE";
 	public static final String DIALOG_UPDATE = "DIALOG_UPDATE";
 	public static final String SHIP_MOVE = "SHIP_MOVE";
+	public static final String HARVEST = "HARVEST";
 }
