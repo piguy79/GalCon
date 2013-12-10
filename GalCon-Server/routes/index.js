@@ -70,35 +70,6 @@ exports.findGamesWithPendingMove = function(req, res) {
 	});
 }
 
-exports.findOrCreateUserByEmail = function(req, res) {
-	var email = req.query['email'];
-	
-	var p = userManager.findUserByEmail(email);
-	p.then(function(user) {
-		if (user) {
-			return user;
-		} else {
-			user = new userManager.UserModel({
-				email : email,
-				currentGames : [],
-				xp : 0,
-				wins : 0,
-				losses : 0,
-				coins : 1,
-				usedCoins : -1,
-				watchedAd : false
-			});
-			var innerp = rankManager.findRankByName("1");
-			return innerp.then(function(rank) {
-				user.rankInfo = rank;
-				return user.withPromise(user.save);
-			});
-		}
-	}).then(function(user) {
-		res.json(user);
-	}).then(null, logErrorAndSetResponse(req, res));
-}
-
 var validate = function(propMap, res) {
 	for(key in propMap) {
 		if(!VALIDATE_MAP[key].call(this, propMap[key])) {
@@ -115,7 +86,7 @@ var validateSession = function(session, email) {
 	var p = getSessionStateForEmail(session, email);
 	return p.then(function(state) {
 		if(state === "NOT FOUND") {
-			throw new ErrorWithResponse("Invalid session detected for email: " + session + ", " + email, { created : false, reason : "Invalid session"});
+			throw new ErrorWithResponse("Invalid session detected for email: " + session + ", " + email, { session : "invalid"});
 		} else if(state === "EXPIRED SESSION") {
 			var invalidP = userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
 			return invalidP.then(function() {

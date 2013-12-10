@@ -46,8 +46,7 @@ describe("Request Handle for Email", function() {
 	it("Request handle with session that is not associated with the user", function(done) {
 		var p = apiRunner.requestHandleForEmail("d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c91111", PLAYER_1.email, "NEW_HANDLE");
 		p.then(function(response) {
-			expect(response.created).toBe(false);
-			expect(response.reason).toBe("Invalid session");
+			expect(response.session).toBe("invalid");
 		}).then(done, done);
 	});
 	
@@ -89,8 +88,7 @@ describe("Request Handle for Email", function() {
 	it("Request valid handle with unregistered email", function(done) {
 		var p = apiRunner.requestHandleForEmail(PLAYER_1.session.id, "fakeemail@fake.com", "NEW_HANDLE");
 		p.then(function(response) {
-			expect(response.created).toBe(false);
-			expect(response.player).toBe(undefined);
+			expect(response.session).toBe("invalid");
 		}).then(done, done);
 	});
 	
