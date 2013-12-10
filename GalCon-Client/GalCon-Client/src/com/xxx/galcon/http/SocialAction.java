@@ -5,7 +5,7 @@ public interface SocialAction {
 
 	public void signIn(String authProvider);
 
-	public void signOut();
-
-	public boolean isLoggedInToGooglePlus();
+	public void onActivityResult(int responseCode);
+	
+	public void getToken(AuthenticationListener listener);
 }

@@ -22,13 +22,27 @@ public abstract class JsonConvertible {
 
 	public String errorMessage;
 
+	public boolean sessionExpired = false;
+	public boolean sessionInvalid = false;
+
 	/**
 	 * This method is used to add attributs to a class from a JsonObject.
 	 * 
 	 * @param jsonObject
 	 * @throws JSONException
 	 */
-	abstract public void consume(JSONObject jsonObject) throws JSONException;
+	public void consume(JSONObject jsonObject) throws JSONException {
+		String session = jsonObject.optString("session", "");
+		if (session.equals("expired")) {
+			sessionExpired = true;
+		} else if (session.equals("invalid")) {
+			sessionInvalid = true;
+		} else {
+			doConsume(jsonObject);
+		}
+	}
+
+	abstract protected void doConsume(JSONObject jsonObject) throws JSONException;
 
 	protected Date formatDate(JSONObject jsonObject, String field) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
@@ -43,5 +57,4 @@ public abstract class JsonConvertible {
 		}
 		return null;
 	}
-
 }

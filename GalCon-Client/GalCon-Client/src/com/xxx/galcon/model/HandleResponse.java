@@ -13,8 +13,8 @@ public class HandleResponse extends JsonConvertible {
 	public Player player;
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
-		handleCreated = jsonObject.getBoolean(Constants.CREATED);
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
+		handleCreated = jsonObject.optBoolean(Constants.CREATED, false);
 		reason = jsonObject.optString(Constants.REASON);
 		if (handleCreated) {
 			player = new Player();

@@ -24,7 +24,7 @@ public class InventoryItem extends JsonConvertible {
 	public InventoryItem(){}
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.sku = jsonObject.getString("sku");
 		this.numCoins = jsonObject.getInt("associatedCoins");
 	}

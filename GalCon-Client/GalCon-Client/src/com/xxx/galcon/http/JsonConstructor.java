@@ -14,6 +14,13 @@ import com.xxx.galcon.model.Order;
 
 public class JsonConstructor {
 
+	public static JSONObject exchangeToken(String authProvider, String token) throws JSONException {
+		JSONObject top = new JSONObject();
+		top.put("authProvider", authProvider);
+		top.put("token", token);
+		return top;
+	}
+
 	public static JSONObject performMove(String gameId, List<Move> moves) throws JSONException {
 		JSONObject top = new JSONObject();
 		top.put("playerHandle", GameLoop.USER.handle);
@@ -29,8 +36,7 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind)
-			throws JSONException {
+	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("playerHandle", playerHandle);
@@ -40,58 +46,58 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject requestHandle(String userName, String handle) throws JSONException {
+	public static JSONObject requestHandle(String email, String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("userName", userName);
+		top.put("email", email);
 		top.put("handle", handle);
+		top.put("session", session);
 
 		return top;
 	}
-	
-	public static JSONObject addCoins(String playerHandle, int numCoins) throws JSONException{
+
+	public static JSONObject addCoins(String playerHandle, int numCoins) throws JSONException {
 		JSONObject top = new JSONObject();
-		
+
 		top.put("playerHandle", playerHandle);
 		top.put("numCoins", numCoins);
-		
+
 		return top;
-		
+
 	}
-	
-	public static JSONObject userWithTime(String playerHandle) throws JSONException{
+
+	public static JSONObject userWithTime(String playerHandle) throws JSONException {
 		JSONObject top = new JSONObject();
-		
+
 		top.put("playerHandle", playerHandle);
 		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
-		
-		return top;
-	}
-	
-	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException{
-		JSONObject top = new JSONObject();
-		
-		top.put("playerHandle", playerHandle);
-		JSONArray jsonOrders = createOrdersJson(orders);
-		top.put("orders", jsonOrders);
-		
-		return top;
-	}
-	
-	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders) throws JSONException{
-		JSONObject top = new JSONObject();
-		
-		top.put("playerHandle", playerHandle);
-		JSONArray jsonOrders = createOrdersJson(orders);
-		top.put("orders", jsonOrders);
-		
+
 		return top;
 	}
 
-	private static JSONArray createOrdersJson(List<Order> orders)
-			throws JSONException {
+	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("playerHandle", playerHandle);
+		JSONArray jsonOrders = createOrdersJson(orders);
+		top.put("orders", jsonOrders);
+
+		return top;
+	}
+
+	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("playerHandle", playerHandle);
+		JSONArray jsonOrders = createOrdersJson(orders);
+		top.put("orders", jsonOrders);
+
+		return top;
+	}
+
+	private static JSONArray createOrdersJson(List<Order> orders) throws JSONException {
 		JSONArray jsonOrders = new JSONArray();
-		for(Order order : orders){
+		for (Order order : orders) {
 			jsonOrders.put(order.asJson());
 		}
 		return jsonOrders;
@@ -99,11 +105,11 @@ public class JsonConstructor {
 
 	public static JSONObject reduceCall(String playerHandle, Long timeRemaining, Long usedCoins) throws JSONException {
 		JSONObject top = new JSONObject();
-		
+
 		top.put("playerHandle", playerHandle);
 		top.put("timeRemaining", timeRemaining);
 		top.put("usedCoins", usedCoins);
-		
+
 		return top;
 	}
 }

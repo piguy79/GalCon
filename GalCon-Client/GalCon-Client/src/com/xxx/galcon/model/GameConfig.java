@@ -13,7 +13,7 @@ public class GameConfig extends JsonConvertible {
 	private java.util.Map<String, String> config = new HashMap<String, String>();
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		if (jsonObject == null) {
 			return;
 		}

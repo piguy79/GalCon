@@ -15,7 +15,7 @@ public class Maps extends JsonConvertible {
 	public List<Map> allMaps = new ArrayList<Map>();
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		JSONArray maps = jsonObject.optJSONArray(Constants.ITEMS);
 
 		if (maps != null) {

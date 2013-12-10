@@ -7,7 +7,6 @@ import com.xxx.galcon.model.base.JsonConvertible;
 
 public class BattleStats extends JsonConvertible {
 
-	
 	public int previousShipsOnPlanet;
 	public String previousPlanetOwner;
 	public String newPlanetOwner;
@@ -15,9 +14,10 @@ public class BattleStats extends JsonConvertible {
 	public double attackStrength;
 	public double defenceMultiplier;
 	public boolean conquer;
+
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
-		if(jsonObject != null){
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
+		if (jsonObject != null) {
 			this.previousShipsOnPlanet = jsonObject.optInt("previousShipsOnPlanet");
 			this.previousPlanetOwner = jsonObject.optString("previousPlanetOwner");
 			this.newPlanetOwner = jsonObject.optString("newPlanetOwner");
@@ -26,6 +26,6 @@ public class BattleStats extends JsonConvertible {
 			this.defenceMultiplier = jsonObject.optDouble("defenceMultiplier");
 			this.conquer = jsonObject.optBoolean("conquer");
 		}
-		
+
 	}
 }

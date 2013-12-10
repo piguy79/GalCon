@@ -22,7 +22,7 @@ public class MinifiedGame extends JsonConvertible {
 	
 	
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.id = jsonObject.getString("id");
 		this.createdDate = formatDate(jsonObject, "createdDate");
 		this.players = new ArrayList<String>();

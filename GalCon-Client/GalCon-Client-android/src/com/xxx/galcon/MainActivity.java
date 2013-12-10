@@ -1,6 +1,5 @@
 package com.xxx.galcon;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,25 +7,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.appstate.AppStateClient;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.plus.PlusClient;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
-import com.xxx.galcon.GameHelper.GameHelperListener;
 import com.xxx.galcon.config.Configuration;
-import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -42,8 +32,9 @@ import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
-public class MainActivity extends AndroidApplication implements GameHelperListener {
+public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
+	public static final int SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
@@ -54,20 +45,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	final static String APPLICATION_CONFIG = "app";
 	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
 
-	protected GameHelper plusHelper;
-	protected final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
-	protected int mRequestedClients = GameHelper.CLIENT_PLUS;
-	private String[] mAdditionalScopes;
-	private AuthenticationListener signInListener;
-	private String serverAuthScope = "audience:server:client_id:1066768766862-h9rj77gvp9la86lqfhfp9g16dd9eh50r.apps.googleusercontent.com";
-
 	private AndroidGameAction gameAction;
+	private SocialAction socialAction;
 
-	IabHelper mHelper;
+	private IabHelper mHelper;
 
 	public MainActivity() {
 		super();
-		plusHelper = new GameHelper(this);
 	}
 
 	@Override
@@ -76,11 +60,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 		Crashlytics.start(this);
 
-		if (mDebugLog) {
-			plusHelper.enableDebugLog(mDebugLog, mDebugTag);
-		}
-		plusHelper.setup(this, mRequestedClients, mAdditionalScopes);
-
 		setupAdColony();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
@@ -88,18 +67,13 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
-		gameAction = new AndroidGameAction(this, connectivityManager);
-		SocialAction socialGameAction = new AndroidSocialAction(this);
-
-		Player player = new Player();
-		player.name = UserInfo.getUser(getBaseContext());
-
-		gameAction.findUserInformation(new SetOrPromptResultHandler(this, gameAction, player), player.name);
+		socialAction = new AndroidSocialAction(this);
+		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 
 		Configuration config = new Configuration();
 		gameAction.findConfigByType(new SetConfigurationResultHandler(config), APPLICATION_CONFIG);
 
-		initialize(new GameLoop(player, gameAction, socialGameAction, config), cfg);
+		initialize(new GameLoop(gameAction, socialAction, config), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -125,7 +99,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	};
 
 	private void consumeAnyPurchasedOrders() {
-
 		UIConnectionWrapper.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
 
 			@Override
@@ -152,7 +125,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 
 							}
 						});
-
 					}
 				});
 			}
@@ -300,15 +272,6 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 		});
 	}
 
-	protected void beginUserInitiatedSignIn() {
-		plusHelper.beginUserInitiatedSignIn();
-	}
-
-	protected void signOut() {
-		plusHelper.signOut();
-		signInListener.onSignOut();
-	}
-
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
 
 		List<Purchase> purchaseOrders = new ArrayList<Purchase>();
@@ -322,124 +285,20 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		plusHelper.mAutoSignIn = false;
-		plusHelper.onStart(this);
+
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		plusHelper.onStop();
 	}
 
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
-		if (!mHelper.handleActivityResult(request, response, data)) {
+		if (request == SIGN_IN_ACTIVITY_RESULT_CODE) {
+			socialAction.onActivityResult(response);
+		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
-			plusHelper.onActivityResult(request, response, data);
-		}
-	}
-
-	protected GamesClient getGamesClient() {
-		return plusHelper.getGamesClient();
-	}
-
-	protected AppStateClient getAppStateClient() {
-		return plusHelper.getAppStateClient();
-	}
-
-	protected PlusClient getPlusClient() {
-		return plusHelper.getPlusClient();
-	}
-
-	protected synchronized boolean isSignedIn() {
-		return plusHelper.isSignedIn();
-	}
-
-	protected void showAlert(String title, String message) {
-		plusHelper.showAlert(title, message);
-	}
-
-	protected void showAlert(String message) {
-		plusHelper.showAlert(message);
-	}
-
-	protected void enableDebugLog(boolean enabled, String tag) {
-		mDebugLog = true;
-		mDebugTag = tag;
-		if (plusHelper != null) {
-			plusHelper.enableDebugLog(enabled, tag);
-		}
-	}
-
-	protected String getInvitationId() {
-		return plusHelper.getInvitationId();
-	}
-
-	protected void reconnectClients(int whichClients) {
-		plusHelper.reconnectClients(whichClients);
-	}
-
-	protected String getScopes() {
-		return plusHelper.getScopes();
-	}
-
-	protected String[] getScopesArray() {
-		return plusHelper.getScopesArray();
-	}
-
-	protected boolean hasSignInError() {
-		return plusHelper.hasSignInError();
-	}
-
-	protected GameHelper.SignInFailureReason getSignInError() {
-		return plusHelper.getSignInError();
-	}
-
-	@Override
-	public void onSignInFailed() {
-		if (signInListener != null) {
-			signInListener.onSignInFailed();
-		}
-	}
-
-	@Override
-	public void onSignInSucceeded() {
-		String user = UserInfo.getUser(this);
-		new RetrieveTokenTask().execute(user);
-	}
-
-	public void registerGooglePlusSignInListener(AuthenticationListener signInListener) {
-		this.signInListener = signInListener;
-	}
-
-	private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			String token = "";
-			try {
-				token = GoogleAuthUtil.getToken(MainActivity.this, params[0], serverAuthScope);
-			} catch (UserRecoverableAuthException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (GoogleAuthException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return token;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			gameAction.setToken(result);
-			if (signInListener != null) {
-				signInListener.onSignInSucceeded(result);
-			}
 		}
 	}
 }

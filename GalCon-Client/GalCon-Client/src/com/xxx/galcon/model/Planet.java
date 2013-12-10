@@ -26,7 +26,7 @@ public class Planet extends JsonConvertible {
 	}
 
 	@Override
-	public void consume(JSONObject jsonObject) {
+	protected void doConsume(JSONObject jsonObject) {
 		try {
 			this.name = jsonObject.getString(Constants.NAME);
 			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);

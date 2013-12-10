@@ -14,7 +14,7 @@ public class Map extends JsonConvertible {
 	public String description;
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		key = jsonObject.getInt(Constants.KEY);
 		availableFromLevel = jsonObject.getInt(Constants.AVAILABLE_FROM_LEVEL);
 		title = jsonObject.getString(Constants.TITLE);

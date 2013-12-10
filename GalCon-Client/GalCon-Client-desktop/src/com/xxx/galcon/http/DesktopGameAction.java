@@ -13,18 +13,19 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
-import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_USER_NAME;
+import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
-import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_USER_NAME;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
@@ -42,12 +48,13 @@ import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
+import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.Inventory;
+import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
@@ -57,7 +64,6 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * 
  */
 public class DesktopGameAction extends BaseDesktopGameAction implements GameAction {
-	
 
 	public DesktopGameAction(String host, int port) {
 		super(host, port);
@@ -94,15 +100,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 	}
 
-	public void requestHandleForUserName(UIConnectionResultCallback<HandleResponse> callback, String userName,
-			String handle) {
+	public void requestHandleForEmail(UIConnectionResultCallback<HandleResponse> callback, String email, String handle) {
 		try {
-			JSONObject top = JsonConstructor.requestHandle(userName, handle);
+			JSONObject top = JsonConstructor.requestHandle(email, handle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_USER_NAME,
+			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL,
 					args, new HandleResponse()));
 		} catch (JSONException e) {
 			System.out.println(e);
@@ -159,43 +164,44 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String player) {
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String email) {
 		Map<String, String> args = new HashMap<String, String>();
-		args.put("userName", player);
-		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_USER_NAME, args, new Player()));
+		args.put("email", email);
+		args.put("session", session);
+		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_EMAIL, args, new Player()));
 	}
-	
+
 	@Override
-	public void findConfigByType(
-			final UIConnectionResultCallback<Configuration> callback,final String type) {
+	public void findConfigByType(final UIConnectionResultCallback<Configuration> callback, final String type) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("type", type);
-		callback.onConnectionResult((Configuration) callURL(new GetClientRequest(), FIND_CONFIG_BY_TYPE, args, new Configuration()));
-		
+		callback.onConnectionResult((Configuration) callURL(new GetClientRequest(), FIND_CONFIG_BY_TYPE, args,
+				new Configuration()));
+
 	}
-	
+
 	@Override
-	public void loadAvailableInventory(
-			final UIConnectionResultCallback<Inventory> callback) {
+	public void loadAvailableInventory(final UIConnectionResultCallback<Inventory> callback) {
 		Map<String, String> args = new HashMap<String, String>();
-		callback.onConnectionResult((Inventory) callURL(new GetClientRequest(), FIND_AVAILABLE_INVENTORY, args, new Inventory()));
+		callback.onConnectionResult((Inventory) callURL(new GetClientRequest(), FIND_AVAILABLE_INVENTORY, args,
+				new Inventory()));
 	}
-	
+
 	@Override
 	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
 		Inventory stock = new Inventory();
 		stock.inventory = inventory.inventory;
-		
-		InventoryItem inventoryItem =  new InventoryItem("coin_bundle_1", "$1.99", "coin_bundle_1", 2);
+
+		InventoryItem inventoryItem = new InventoryItem("coin_bundle_1", "$1.99", "coin_bundle_1", 2);
 		stock.inventory.add(inventoryItem);
-		
-		inventoryItem =  new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
+
+		inventoryItem = new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
 		stock.inventory.add(inventoryItem);
-		
+
 		callback.onResult(stock);
 	}
 
-	private InventoryItem createDummyInventoryItem( ) {
+	private InventoryItem createDummyInventoryItem() {
 		InventoryItem inventoryItem = new InventoryItem();
 		inventoryItem.name = "coin_bundle_1";
 		inventoryItem.sku = "coin_bundle_1";
@@ -254,10 +260,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
-	
+
 	@Override
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback,
-			String playerHandle, List<Order> orders)
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders)
 			throws ConnectionException {
 		try {
 			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
@@ -265,16 +270,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS_FOR_AN_ORDER, args, new Player()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS_FOR_AN_ORDER, args,
+					new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
-	
+
 	@Override
-	public void deleteConsumedOrders(
-			UIConnectionResultCallback<Player> callback, String playerHandle,
+	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle,
 			List<Order> orders) {
 		try {
 			JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
@@ -282,7 +287,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), DELETE_CONSUMED_ORDERS, args, new Player()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), DELETE_CONSUMED_ORDERS, args,
+					new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -292,18 +298,17 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void showAd(AdColonyVideoListener listener) {
 		// Do nothing right now.
 	}
-	
+
 	@Override
-	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback){
+	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback) {
 		addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins);
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(
-			UIConnectionResultCallback<Player> callback, String playerHandle, Long timeRemaining,
-			Long usedCoins) throws ConnectionException {
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle,
+			Long timeRemaining, Long usedCoins) throws ConnectionException {
 		try {
-			JSONObject top = JsonConstructor.reduceCall(playerHandle,timeRemaining, usedCoins);
+			JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining, usedCoins);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -312,37 +317,96 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 
 	@Override
 	public void consumeOrders(List<Order> orders) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void consumeExistingOrders() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void recoverUsedCoinCount(
-			UIConnectionResultCallback<Player> callback, String playerHandle) {
+	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
 			JSONObject top = JsonConstructor.userWithTime(playerHandle);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args, new Player()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args,
+					new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
 	}
 
-	
+	private String session;
 
+	@Override
+	public void setSession(String session) {
+		this.session = session;
+	}
+
+	@Override
+	public String getSession() {
+		return session;
+	}
+
+	@Override
+	public void exchangeTokenForSession(UIConnectionResultCallback<Session> callback, String authProvider, String token) {
+		try {
+			Session session = new Session();
+			session.session = "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c00000";
+			session.errorMessage = "";
+
+			setSession(session.session);
+
+			/*
+			 * Instead of trying to use the token process on the desktop, insert
+			 * a valid session directly into the local DB.
+			 */
+			MongoClient client = new MongoClient("localhost");
+			DB galcon = client.getDB("galcon");
+			DBCollection usersCollection = galcon.getCollection("users");
+
+			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
+			if (user == null) {
+				BasicDBObject newUser = new BasicDBObject("email", GameLoop.USER.email)
+						.append("xp", 0)
+						.append("wins", 0)
+						.append("losses", 0)
+						.append("coins", 1)
+						.append("useCoins", -1)
+						.append("watchedAd", false)
+						.append("session",
+								new BasicDBObject("id", session.session).append("expireDate",
+										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))
+						.append("rankInfo", new BasicDBObject("level", 1).append("startFrom", 0).append("endAt", 50));
+				usersCollection.insert(newUser);
+			} else {
+				user.put(
+						"session",
+						new BasicDBObject("id", session.session).append("expireDate",
+								new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)));
+				usersCollection.update(new BasicDBObject("email", GameLoop.USER.email), user);
+			}
+			client.close();
+
+			callback.onConnectionResult(session);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setGameLoop(GameLoop gameLoop) {
+
+	}
 }

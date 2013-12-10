@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.screen.widget.ShaderTextField.ShaderTextFieldStyle;
 
 public class UISkin extends Skin {
 
@@ -27,9 +28,20 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.WHITE));
 
 		/*
+		 * TextField
+		 */
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("textFieldBg"));
+			trd.setLeftWidth(20);
+			trd.setRightWidth(20);
+			TextureRegionDrawable cursor = new TextureRegionDrawable(menusAtlas.findRegion("cursor"));
+			add(Constants.UI.TEXT_FIELD, new ShaderTextFieldStyle(Fonts.getInstance(assetManager).mediumFont(),
+					Color.BLACK, cursor, null, trd));
+		}
+		/*
 		 * Colors
 		 */
-		add(Constants.UI.DEFAULT_BG_COLOR, new Color(48.0f / 255.0f, 150.0f / 255.0f, 200.0f / 255.0f, 1), Color.class);
+		add(Constants.UI.DEFAULT_BG_COLOR, new Color(0.0f, 0.0f, 0.0f, 1.0f), Color.class);
 
 		/*
 		 * ImageText Buttons
@@ -48,6 +60,10 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("wait"));
 			add(Constants.UI.WAIT_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
+			add(Constants.UI.OK_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 
 		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(

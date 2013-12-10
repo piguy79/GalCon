@@ -25,11 +25,13 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.Config;
 import com.xxx.galcon.Connection;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.R;
-import com.xxx.galcon.UserInfo;
 import com.xxx.galcon.http.UrlConstants;
 import com.xxx.galcon.model.AvailableGames;
 
@@ -62,8 +64,16 @@ public class PingService extends Service {
 		}
 
 		private void pingForPendingMove() {
+			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+			String session = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
+			String handle = prefs.getString(Constants.HANDLE, "");
+
+			if (session.isEmpty() || handle.isEmpty()) {
+				return;
+			}
+
 			final Map<String, String> args = new HashMap<String, String>();
-			args.put("userName", UserInfo.getUser(PingService.this));
+			args.put("playerHandle", handle);
 
 			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 

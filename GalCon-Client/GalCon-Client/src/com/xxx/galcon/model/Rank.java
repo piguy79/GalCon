@@ -14,7 +14,7 @@ public class Rank extends JsonConvertible {
 	
 	
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.level =jsonObject.getLong(Constants.LEVEL);
 		this.startFrom  = Integer.parseInt(jsonObject.getString(Constants.START_FROM));
 		this.endAt  = Integer.parseInt(jsonObject.getString(Constants.END_AT));

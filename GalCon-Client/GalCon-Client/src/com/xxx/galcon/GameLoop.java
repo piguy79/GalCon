@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,8 +26,8 @@ import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.LevelSelectionScreen;
 import com.xxx.galcon.screen.NoMoreCoinsDialog;
-import com.xxx.galcon.screen.ScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
+import com.xxx.galcon.screen.signin.SignInProcessScreens;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -34,7 +35,7 @@ public class GameLoop extends Game {
 
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 	private BoardScreen boardScreen;
-	private ScreenContainer screenContainer;
+	private SignInProcessScreens signInProcessScreens;
 	private GameListScreen currentGameScreen;
 	private LevelSelectionScreen levelSelectionScreen;
 	private NoMoreCoinsDialog noMoreCoinsScreen;
@@ -50,14 +51,19 @@ public class GameLoop extends Game {
 	private boolean loadingNewCoins = false;
 	private boolean inAppBillingSetup = false;
 
-	public GameLoop(Player player, GameAction gameAction, SocialAction socialAction, Configuration config) {
+	public GameLoop(GameAction gameAction, SocialAction socialAction, Configuration config) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		GameLoop.CONFIG = config;
-		GameLoop.USER = player;
+
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setGameAction(gameAction);
 		tweenManager = new TweenManager();
+
+		Player player = new Player();
+		GameLoop.USER = player;
+
+		gameAction.setGameLoop(this);
 	}
 
 	@Override
@@ -72,6 +78,9 @@ public class GameLoop extends Game {
 
 	@Override
 	public void create() {
+		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		GameLoop.USER.email = prefs.getString(Constants.EMAIL, "");
+
 		/*
 		 * Assume OpenGL ES 2.0 support has been validated by platform specific
 		 * file.
@@ -100,12 +109,17 @@ public class GameLoop extends Game {
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(assetManager, tweenManager);
-		screenContainer = new ScreenContainer(skin, socialAction, gameAction, assetManager);
+		signInProcessScreens = new SignInProcessScreens(skin, socialAction, gameAction, assetManager);
 		currentGameScreen = new CurrentGameScreen(assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
 
-		setScreen(screenContainer);
+		setScreen(signInProcessScreens);
+	}
+
+	public void reset() {
+		signInProcessScreens.resetState();
+		setScreen(signInProcessScreens);
 	}
 
 	@Override
@@ -124,17 +138,17 @@ public class GameLoop extends Game {
 	}
 
 	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
-		if (currentScreen instanceof ScreenContainer) {
+		if (currentScreen instanceof SignInProcessScreens) {
 			String nextScreen = (String) result;
 
-			if (nextScreen.equals(Constants.New)) {
+			if (nextScreen.equals(Strings.NEW)) {
 				if (USER.coins == 0) {
 					noMoreCoinsScreen.resetState();
 					return noMoreCoinsScreen;
 				}
 				levelSelectionScreen.resetState();
 				return levelSelectionScreen;
-			} else if (nextScreen.equals(Constants.CONTINUE)) {
+			} else if (nextScreen.equals(Strings.CONTINUE)) {
 				currentGameScreen.resetState();
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
 				return currentGameScreen;
@@ -148,8 +162,8 @@ public class GameLoop extends Game {
 			} else if (result instanceof String) {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
-					screenContainer.resetState();
-					return screenContainer;
+					signInProcessScreens.resetState();
+					return signInProcessScreens;
 				}
 			}
 		} else if (currentScreen instanceof BoardScreen) {
@@ -163,19 +177,19 @@ public class GameLoop extends Game {
 		} else if (currentScreen instanceof LevelSelectionScreen) {
 			String action = (String) result;
 			if (action.equals(Action.BACK)) {
-				screenContainer.resetState();
-				return screenContainer;
+				signInProcessScreens.resetState();
+				return signInProcessScreens;
 			} else if (action.startsWith(Action.PLAY)) {
 				String level = action.split(":")[1];
 				boardScreen.resetState();
-				boardScreen.previousScreen = screenContainer;
+				boardScreen.previousScreen = signInProcessScreens;
 				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
 						Long.valueOf(level));
 				return boardScreen;
 			} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
 				String level = action.split(":")[1];
 				boardScreen.resetState();
-				boardScreen.previousScreen = screenContainer;
+				boardScreen.previousScreen = signInProcessScreens;
 				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
 						Long.valueOf(level));
 				return boardScreen;
@@ -183,12 +197,13 @@ public class GameLoop extends Game {
 		} else if (currentScreen instanceof NoMoreCoinsDialog) {
 			String action = (String) result;
 			if (action.endsWith(Action.DIALOG_CANCEL)) {
-				screenContainer.resetState();
-				return screenContainer;
+				signInProcessScreens.resetState();
+				return signInProcessScreens;
 			}
 		}
 
-		throw new IllegalStateException("Cannot handle the result coming from screen: " + currentScreen);
+		throw new IllegalStateException("Cannot handle the result (" + result + ") coming from screen: "
+				+ currentScreen);
 	}
 
 	private void checkCoindStats() {

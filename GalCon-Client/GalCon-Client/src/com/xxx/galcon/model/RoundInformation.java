@@ -27,7 +27,7 @@ public class RoundInformation extends JsonConvertible {
 	
 	
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.currentRound = jsonObject.getInt(Constants.ROUND_NUMBER);
 				
 		players = new ArrayList<String>();

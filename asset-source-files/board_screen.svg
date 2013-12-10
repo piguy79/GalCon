@@ -357,7 +357,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.6125"
      inkscape:cx="-66.122449"
-     inkscape:cy="444.08163"
+     inkscape:cy="378.77551"
      inkscape:document-units="px"
      inkscape:current-layer="layer16"
      showgrid="true"
@@ -1267,5 +1267,13 @@
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/wait.png"
        inkscape:export-xdpi="164.17911"
        inkscape:export-ydpi="164.17911" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.771;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect5916"
+       width="460"
+       height="80"
+       x="-880"
+       y="1220"
+       ry="27.517124" />
   </g>
 </svg>

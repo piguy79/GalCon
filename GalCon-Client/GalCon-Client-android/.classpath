@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-    <classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-    <classpathentry combineaccessrules="false" exported="true" kind="src" path="/GalCon-Client"/>
-    <classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-    <classpathentry kind="src" path="src"/>
-    <classpathentry kind="src" path="gen"/>
-    <classpathentry kind="output" path="bin/classes"/>
-    <classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
-    <classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
-    <classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/gdx-freetype.jar" sourcepath="/GalCon-Client/libs/gdx-freetype-sources.jar"/>
-    <classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/gdx.jar" sourcepath="/GalCon-Client/libs/gdx-sources.jar"/>
-    <classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/joda-time-2.2.jar"/>
-    <classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/tween-engine-api.jar"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GalCon-Client"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/gdx.jar" sourcepath="/GalCon-Client/libs/gdx-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/joda-time-2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/tween-engine-api.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -1,9 +1,9 @@
 package com.xxx.galcon.http;
 
 public interface AuthenticationListener {
-	void onSignInFailed();
+	void onSignInFailed(String failureMessage);
 
-	void onSignInSucceeded(String token);
+	void onSignInSucceeded(String authProvider, String token);
 
 	void onSignOut();
 }

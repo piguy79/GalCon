@@ -33,7 +33,7 @@ public class Point extends JsonConvertible implements JsonConstructable{
 	
 	
 	@Override
-	public void consume(JSONObject jsonObject){
+	protected void doConsume(JSONObject jsonObject){
 		try {
 			this.x = Float.parseFloat(jsonObject.getString(Constants.X));
 			this.y = Float.parseFloat(jsonObject.getString(Constants.Y));

@@ -14,7 +14,7 @@ public class AvailableGames extends JsonConvertible {
 	List<MinifiedGame> allGames = new ArrayList<MinifiedGame>();
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		JSONArray games = jsonObject.optJSONArray(Constants.ITEMS);
 
 		if (games != null) {

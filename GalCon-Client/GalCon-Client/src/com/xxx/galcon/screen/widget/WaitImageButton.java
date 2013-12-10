@@ -20,7 +20,7 @@ public class WaitImageButton extends ImageButton {
 		setVisible(true);
 	}
 
-	public void end() {
+	public void stop() {
 		startTime = 0;
 		setVisible(false);
 	}
@@ -30,11 +30,10 @@ public class WaitImageButton extends ImageButton {
 		float elapsedSeconds = (float) (System.currentTimeMillis() - startTime) / 1000.0f;
 
 		float alpha = elapsedSeconds % 2;
-		if (alpha > 1) {
-			alpha = 1 - alpha;
+		if (alpha >= 1) {
+			alpha = 2 - alpha;
 		}
 
 		super.draw(batch, alpha);
 	}
-
 }

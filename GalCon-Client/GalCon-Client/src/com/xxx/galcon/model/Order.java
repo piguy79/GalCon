@@ -50,7 +50,7 @@ public class Order extends JsonConvertible implements JsonConstructable{
 	
 	
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.orderId = jsonObject.getString("orderId");
 		this.packageName = jsonObject.getString("packageName");
 		this.purchaseTime = jsonObject.getString("purchaseTime");

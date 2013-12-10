@@ -13,21 +13,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.xxx.galcon.Constants;
-import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.ConfigConstants;
 import com.xxx.galcon.config.ConfigResolver;
-import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
  * Class representing a Player.
  * 
  * @author conormullen
- *
+ * 
  */
-public class Player extends JsonConvertible{
-	
-	public String name;
+public class Player extends JsonConvertible {
+
+	public String email;
 	public String handle;
 	public Integer xp;
 	public List<String> currentGames;
@@ -36,63 +34,65 @@ public class Player extends JsonConvertible{
 	public Long usedCoins;
 	public boolean watchedAd;
 	public List<Order> consumedOrders;
-	
-	
+
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
-		this.name = jsonObject.getString(Constants.NAME);
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
+		if (!jsonObject.has(Constants.EMAIL)) {
+			return;
+		}
+
+		this.email = jsonObject.getString(Constants.EMAIL);
 		this.handle = jsonObject.optString(Constants.HANDLE);
-		this.xp  = jsonObject.getInt(Constants.XP);
+		this.xp = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.getInt(Constants.COINS);
 		this.usedCoins = jsonObject.optLong(Constants.USED_COINS);
 		this.watchedAd = jsonObject.getBoolean(Constants.WATCHED_AD);
-		
+
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();
 		rank.consume(rankInfo);
-		
+
 		this.currentGames = new ArrayList<String>();
-		
+
 		JSONArray currentGamesJson = jsonObject.getJSONArray(Constants.CURRENT_GAMES);
 		for (int i = 0; i < currentGamesJson.length(); i++) {
 			String game = currentGamesJson.getString(i);
 			this.currentGames.add(game);
 		}
-		
+
 		this.consumedOrders = new ArrayList<Order>();
 		JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
-		for(int i = 0 ; i < consumedOrders.length(); i++){
+		for (int i = 0; i < consumedOrders.length(); i++) {
 			JSONObject orderObject = consumedOrders.getJSONObject(i);
 			Order order = new Order();
-			order.consume(orderObject); 
+			order.consume(orderObject);
 			this.consumedOrders.add(order);
 		}
-		
-	}
-	
-	public boolean hasCoinInformation(){
-		return usedCoins != null && coins != null;
+
 	}
 
+	public boolean hasCoinInformation() {
+		return usedCoins != null && coins != null;
+	}
 
 	public boolean hasMoved(GameBoard gameBoard) {
 		return gameBoard.roundInformation.players.contains(handle);
 	}
-	
-	public Long timeSinceCoinsHaveBeenUsed(){
-		return  new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
+
+	public Long timeSinceCoinsHaveBeenUsed() {
+		return new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
 	}
-	
-	public Long timeRemainingForNewcoins(){
+
+	public Long timeRemainingForNewcoins() {
 		return timeLapse() - timeSinceCoinsHaveBeenUsed();
 	}
-	
-	public Long timeLapse(){
+
+	public Long timeLapse() {
 		return Long.parseLong(ConfigResolver.getByConfigKey(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
 	}
-	
-	public DateTime timeRemainingUntilCoinsAvailable(){
-		
+
+	public DateTime timeRemainingUntilCoinsAvailable() {
+
 		if (usedCoins != null && usedCoins != -1L) {
 
 			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
@@ -100,11 +100,9 @@ public class Player extends JsonConvertible{
 			if (timeSinceUsedCoins < timeLapse()) {
 				return new DateTime(timeLapse() - timeSinceUsedCoins);
 			}
-		} 
-		
+		}
+
 		return null;
 	}
-	
-	
 
 }

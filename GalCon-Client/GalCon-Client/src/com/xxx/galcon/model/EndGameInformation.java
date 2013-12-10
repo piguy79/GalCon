@@ -20,7 +20,7 @@ public class EndGameInformation extends JsonConvertible {
 	public boolean draw;
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.winnerHandle = jsonObject.optString(Constants.WINNER_HANDLE);
 		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
 		this.draw = jsonObject.optBoolean(Constants.DRAW);

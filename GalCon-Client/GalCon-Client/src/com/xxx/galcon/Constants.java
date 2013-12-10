@@ -11,10 +11,22 @@ public class Constants {
 
 	public static class UI {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
+
 		public static final String DEFAULT_FONT = "defaultFont";
 		public static final String LARGE_FONT = "largeFont";
+
+		public static final String TEXT_FIELD = "textField";
+
+		public static final String OK_BUTTON = "okButton";
 		public static final String WAIT_BUTTON = "waitButton";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
+	}
+
+	public static class Auth {
+		public static final String SOCIAL_AUTH_PROVIDER = "socialAuthProvider";
+		public static final String SOCIAL_AUTH_PROVIDER_GOOGLE = "google";
+		public static final String LAST_SESSION_ID = "lastSessionId";
+		public static final String EMAIL = "email";
 	}
 
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect. Please try again.";
@@ -30,6 +42,7 @@ public class Constants {
 	public static final String PLAYERS = "players";
 	public static final String ITEMS = "items";
 	public static final String ID = "_id";
+	public static final String EMAIL = "email";
 	public static final String NAME = "name";
 	public static final String CREATED = "created";
 	public static final String REASON = "reason";
@@ -48,9 +61,7 @@ public class Constants {
 	public static final String LOSER_HANDLES = "loserHandles";
 	public static final String HEIGHT = "height";
 	public static final String JOIN = "Join";
-	public static final String CONTINUE = "Continue";
 	public static final String LEADERBOARDS = "Leaderboards";
-	public static final String New = "New";
 	public static final String RANK = "rank";
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
@@ -78,8 +89,6 @@ public class Constants {
 	public static final String WATCHED_AD = "watchedAd";
 	public static final String COINS = "coins";
 	public static final String USED_COINS = "usedCoins";
-	public static final String SOCIAL_AUTH_PROVIDER = "socialAuthProvider";
-	public static final String SOCIAL_AUTH_PROVIDER_GOOGLE = "google";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

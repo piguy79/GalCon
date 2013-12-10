@@ -14,7 +14,7 @@ public class Inventory extends JsonConvertible {
 	public List<InventoryItem> inventory;
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.inventory = new ArrayList<InventoryItem>();
 		
 		JSONArray array = jsonObject.getJSONArray("items");

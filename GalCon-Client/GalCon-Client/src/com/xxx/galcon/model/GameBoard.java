@@ -31,7 +31,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.players = new ArrayList<Player>();
 		JSONArray playersJson = jsonObject.getJSONArray(Constants.PLAYERS);
 		for (int i = 0; i < playersJson.length(); i++) {

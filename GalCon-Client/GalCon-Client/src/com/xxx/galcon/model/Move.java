@@ -64,7 +64,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	}
 
 	@Override
-	public void consume(JSONObject jsonObject) throws JSONException {
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		fromPlanet = jsonObject.getString("fromPlanet");
 		toPlanet = jsonObject.getString("toPlanet");
 		shipsToMove = jsonObject.getInt("fleet");
