@@ -10,7 +10,6 @@ import static com.xxx.galcon.Util.createShader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -36,7 +35,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 	private ShaderProgram fontShader;
 	private ShaderLabel chooseHandleLabel;
-	private ShaderLabel signInLabel;
 	private WaitImageButton waitImage;
 	private ImageButton okImageButton;
 	private ShaderTextField handleTextField;
@@ -81,14 +79,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		signInLabel = new ShaderLabel(fontShader, "", skin, Constants.UI.DEFAULT_FONT);
-		signInLabel.setAlignment(Align.center);
-		signInLabel.setWidth(width);
-		signInLabel.setX(width / 2 - signInLabel.getWidth() / 2);
-		signInLabel.setY(0.6f * height);
-		signInLabel.setColor(Color.RED);
-		stage.addActor(signInLabel);
-
 		chooseHandleLabel = new ShaderLabel(fontShader, "Galactic explorer,\nchoose a username", skin,
 				Constants.UI.DEFAULT_FONT);
 		chooseHandleLabel.setAlignment(Align.center);
@@ -121,7 +111,8 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				signInLabel.setText("");
+				handleTextField.getOnscreenKeyboard().show(false);
+				chooseHandleLabel.setText("");
 				requestHandle();
 			}
 		});
@@ -130,7 +121,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	private void requestHandle() {
 		String text = handleTextField.getText();
 		if (text.length() < 3) {
-			signInLabel.setText(Strings.HANDLE_VALID_LENGTH);
+			chooseHandleLabel.setText(Strings.HANDLE_VALID_LENGTH);
 		} else {
 			waitImage.start();
 			gameAction.requestHandleForEmail(userHandleResponseHandler, GameLoop.USER.email, handleTextField.getText());
@@ -139,8 +130,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
+		handleTextField.getOnscreenKeyboard().show(false);
 	}
 
 	@Override
@@ -169,12 +159,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			handleTextField.addAction(sequence(delay(0.5f),
 					moveTo(-Gdx.graphics.getWidth(), handleTextField.getY(), 0.9f, pow3)));
 			okImageButton.addAction(sequence(delay(0.5f),
-					moveTo(-Gdx.graphics.getWidth(), okImageButton.getY(), 0.9f, pow3)));
-		}
-
-		if (signInLabel != null) {
-			signInLabel.addAction(sequence(delay(0.75f),
-					moveTo(-Gdx.graphics.getWidth(), signInLabel.getY(), 0.9f, pow3), run(new Runnable() {
+					moveTo(-Gdx.graphics.getWidth(), okImageButton.getY(), 0.9f, pow3), run(new Runnable() {
 						@Override
 						public void run() {
 							result = "hasHandle";
@@ -222,14 +207,14 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			}
 
 			if (response.reason != null) {
-				signInLabel.setText(response.reason);
+				chooseHandleLabel.setText(response.reason);
 			}
 			waitImage.stop();
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-			signInLabel.setText(msg);
+			chooseHandleLabel.setText(msg);
 			waitImage.stop();
 		}
 	}
