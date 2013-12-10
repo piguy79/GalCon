@@ -26,6 +26,7 @@ import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,7 +194,8 @@ public class AndroidGameAction implements GameAction {
 
 	}
 
-	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves, List<HarvestMove> harvestMoves) {
+	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
+			List<HarvestMove> harvestMoves) {
 		try {
 			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
 			activity.runOnUiThread(new Runnable() {
@@ -434,7 +436,7 @@ public class AndroidGameAction implements GameAction {
 		protected JsonConvertible doInBackground(String... params) {
 			try {
 				savedParams.params = params;
-				Log.i(TAG, "Invoking call: " + params);
+				Log.i(TAG, "Invoking call: " + Arrays.toString(params));
 				return Connection.doRequest(connectivityManager, establishConnection(params), converter);
 			} catch (IOException e) {
 				Log.wtf(LOG_NAME, e);
@@ -446,7 +448,14 @@ public class AndroidGameAction implements GameAction {
 
 		@Override
 		protected void onPostExecute(final JsonConvertible result) {
-			if (result.errorMessage == null) {
+			if (result.errorMessage != null && !result.errorMessage.isEmpty()) {
+				Log.w(TAG, "Call failed with error: " + result.errorMessage);
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						callback.onConnectionError(result.errorMessage);
+					}
+				});
+			} else {
 				if (result.sessionExpired) {
 					Log.i(TAG, "Session expired, beginning silent sign in");
 					Gdx.app.postRunnable(new Runnable() {
@@ -466,13 +475,6 @@ public class AndroidGameAction implements GameAction {
 						}
 					});
 				}
-			} else {
-				Log.w(TAG, "Call failed with error: " + result.errorMessage);
-				Gdx.app.postRunnable(new Runnable() {
-					public void run() {
-						callback.onConnectionError(result.errorMessage);
-					}
-				});
 			}
 		}
 	}
