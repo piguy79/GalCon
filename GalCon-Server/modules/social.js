@@ -50,6 +50,7 @@ exports.exchangeToken = function(authProvider, token) {
 			.withAuthClient(oAuthClient)
 			.execute(function(err, result) {
 				if(err) {
+					console.log("Google Plus API - Error - " + err);
 					console.log("Google Plus API - Error Code - " + err.code);
 					console.log("Google Plus API - Errors - " + err.errors);
 					console.log("Google Plus API - Message - " + err.message);
