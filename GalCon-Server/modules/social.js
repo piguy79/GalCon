@@ -1,7 +1,8 @@
 var googleapis = require('googleapis'),
 	mongoose = require('mongoose'),
 	crypto = require('crypto'),
-	userManager = require('./model/user');
+	userManager = require('./model/user'),
+	rankManager = require('./model/rank');
 
 var isValid = function(authProvider, token) {
 	if (authProvider !== "google") {

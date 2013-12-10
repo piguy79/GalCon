@@ -1,0 +1,45 @@
+
+levelSelection.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+level_select_bg_bottom
+  rotate: false
+  xy: 2, 706
+  size: 800, 300
+  orig: 800, 300
+  offset: 0, 0
+  index: -1
+level_select_card_shadow
+  rotate: false
+  xy: 2, 4
+  size: 537, 700
+  orig: 537, 700
+  offset: 0, 0
+  index: -1
+reg_play
+  rotate: false
+  xy: 541, 354
+  size: 376, 350
+  orig: 376, 350
+  offset: 0, 0
+  index: -1
+social_play
+  rotate: false
+  xy: 541, 2
+  size: 376, 350
+  orig: 376, 350
+  offset: 0, 0
+  index: -1
+
+levelSelection2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+level_card_black
+  rotate: false
+  xy: 2, 2
+  size: 550, 750
+  orig: 550, 750
+  offset: 0, 0
+  index: -1

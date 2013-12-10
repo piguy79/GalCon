@@ -111,6 +111,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				signInLabel.setText("");
 				waitImage.start();
 				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
