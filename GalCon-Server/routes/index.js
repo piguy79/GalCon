@@ -146,7 +146,7 @@ exports.requestHandleForEmail = function(req, res) {
 			if (user) {
 				res.json({
 					created : false,
-					reason : "Username already chosen by another player"
+					reason : "Username already chosen"
 				});
 			} else {
 				var innerp = userManager.findUserByEmail(email);
