@@ -1,11 +1,12 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Util.createShader;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -38,6 +40,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private int selectedMapKey = 0;
 
 	private AssetManager assetManager;
+	private ShaderProgram fontShader;
 
 	private String loadingMessage = "Loading...";
 
@@ -54,14 +57,14 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private Actor loadingTextActor;
 	private Actor headerTextActor;
 
-	private InputProcessor oldInputProcessor;
-
 	private TextureAtlas levelSelectionAtlas;
 	private TextureAtlas levelsAtlas;
 
 	public LevelSelectionScreen(Skin skin, AssetManager assetManager) {
 		this.assetManager = assetManager;
 		this.skin = skin;
+
+		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		levelsAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
@@ -87,11 +90,13 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		headerTextActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).largeFont();
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
 				font.setColor(Color.WHITE);
 				String text = "Choose Your Galaxy";
 				float halfFontWidth = font.getBounds(text).width / 2;
+				batch.setShader(fontShader);
 				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .97f);
+				batch.setShader(null);
 				font.setColor(Color.WHITE);
 			};
 		};
@@ -102,12 +107,12 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		loadingTextActor = new Actor() {
 			@Override
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
-				if (loadingMessage.length() > 15) {
-					font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
-				}
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
+
 				float halfFontWidth = font.getBounds(loadingMessage).width / 2;
+				batch.setShader(fontShader);
 				font.draw(batch, loadingMessage, getWidth() / 2 - halfFontWidth, getHeight() * .4f);
+				batch.setShader(null);
 			}
 		};
 		loadingTextActor.setWidth(Gdx.graphics.getWidth());
@@ -157,13 +162,13 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		if (allMaps == null) {
 			UIConnectionWrapper.findAllMaps(this);
 		}
-		oldInputProcessor = Gdx.input.getInputProcessor();
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(oldInputProcessor);
+
 	}
 
 	@Override
@@ -241,9 +246,11 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 					}
 				}
 
-				BitmapFont font = Fonts.getInstance(assetManager).largeFont();
+				BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 				float halfFontWidth = font.getBounds(text).width / 2;
+				batch.setShader(fontShader);
 				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .92f);
+				batch.setShader(null);
 			};
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
@@ -351,23 +358,25 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			width -= xOffset;
 			height -= yOffset;
 
+			BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
 			BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
-			BitmapFont largeFont = Fonts.getInstance(assetManager).largeFont();
 			batch.draw(levelSelectionCard, x, y, width, height);
-
-			String text = map.title;
-			largeFont.setColor(Color.WHITE);
-			float halfFontWidth = largeFont.getBounds(text).width / 2;
-			largeFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .85f);
-
-			text = map.description;
-			mediumFont.setColor(Color.WHITE);
-			halfFontWidth = mediumFont.getBounds(text).width / 2;
-			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
 
 			int mapHeight = (int) (getHeight() * .55f);
 			int mapWidth = (int) (getWidth() * .9f);
 			batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth, mapHeight);
+
+			String text = map.title;
+			mediumFont.setColor(Color.WHITE);
+			float halfFontWidth = mediumFont.getBounds(text).width / 2;
+			batch.setShader(fontShader);
+			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .85f);
+
+			text = map.description;
+			smallFont.setColor(Color.WHITE);
+			halfFontWidth = smallFont.getBounds(text).width / 2;
+			smallFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
+			batch.setShader(null);
 		}
 	}
 }
