@@ -49,7 +49,6 @@ exports.exchangeToken = function(authProvider, token) {
 		client.plus.people
 			.get({userId: "me"})
 			.withAuthClient(oAuthClient)
-			.withApiKey("AIzaSyDihDl3Zwgt6Ax4wbr6PiIJz7d5iyR-4ZM")
 			.execute(function(err, result) {
 				if(err) {
 					console.log("Google Plus API - Error - %j", err);
