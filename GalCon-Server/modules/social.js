@@ -42,15 +42,14 @@ exports.exchangeToken = function(authProvider, token) {
 		return gapiP;
 	}).then(function(client) {
 		var gapiP = new mongoose.Promise();
-		var clientId = "1066768766862-h9rj77gvp9la86lqfhfp9g16dd9eh50r.apps.googleusercontent.com";
-		var clientSecret = "tyLlMmDvcLV-CQmlG2Eec-7L";
-		var oAuthClient = new googleapis.OAuth2Client(clientId, clientSecret, "");
+		var oAuthClient = new googleapis.OAuth2Client();
 		oAuthClient.setCredentials({
 			  access_token: token
 			});
 		client.plus.people
 			.get({userId: "me"})
 			.withAuthClient(oAuthClient)
+			.withApiKey("AIzaSyDihDl3Zwgt6Ax4wbr6PiIJz7d5iyR-4ZM")
 			.execute(function(err, result) {
 				if(err) {
 					console.log("Google Plus API - Error - %j", err);
