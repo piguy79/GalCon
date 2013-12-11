@@ -130,7 +130,9 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 	@Override
 	public void hide() {
-		handleTextField.getOnscreenKeyboard().show(false);
+		if (handleTextField != null) {
+			handleTextField.getOnscreenKeyboard().show(false);
+		}
 	}
 
 	@Override
