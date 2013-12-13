@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -40,8 +41,9 @@ public class MoveHud extends Table {
 		setWidth(width);
 		setHeight(height);
 		createTable();
-		addPerformMoveButton();
 		addMoveButtons();
+		addPerformMoveButton();
+		
 	}
 
 	private void createTable() {
@@ -67,19 +69,18 @@ public class MoveHud extends Table {
 		moveButtonHolder = new Table();
 		moveButtonHolder.setWidth(getWidth() * 0.95f);
 		moveButtonHolder.setHeight(getHeight() * 0.95f);
-		moveButtonHolder.setX(getX());
-		moveButtonHolder.setY(getY());
+		
+		moveButtonHolder.pad(5);
+		
+		moveButtonHolder.left().bottom().pad(5).padLeft(5).padRight(5).padBottom(getHeight() * 0.12f).defaults().width(getWidth() * 0.15f)
+		.height(getHeight() * 0.85f);
 		
 		scrollPane = new ScrollPane(moveButtonHolder);
 		scrollPane.setScrollingDisabled(false, true);
 		scrollPane.setFadeScrollBars(false);
 		scrollPane.setWidth(moveButtonHolder.getWidth());
 		
-		addActor(scrollPane);
-		
-		moveButtonHolder.defaults().padLeft(5).padRight(5).left().width(moveButtonHolder.getWidth() * 0.15f)
-		.height(moveButtonHolder.getHeight() * 0.9f);
-		
+		addActor(scrollPane);		
 		
 		
 		for(Move move : moves.keySet()){
