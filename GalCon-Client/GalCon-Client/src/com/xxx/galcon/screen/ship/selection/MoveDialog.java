@@ -25,6 +25,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
+import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.MoveEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.Dialog;
@@ -119,6 +120,7 @@ public class MoveDialog extends Dialog {
 		cancelButton.setColor(0, 0, 0, 0);
 		cancelButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
+			fire(new CancelDialogEvent());
 			hide();
 		}});
 		
