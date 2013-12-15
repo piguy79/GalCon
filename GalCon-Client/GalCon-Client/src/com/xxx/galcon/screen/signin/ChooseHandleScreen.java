@@ -220,4 +220,9 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			waitImage.stop();
 		}
 	}
+	
+	@Override
+	public boolean hideTitleArea() {
+		return false;
+	}
 }

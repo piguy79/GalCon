@@ -204,4 +204,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			addAuthenticationMethodsToStage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 	}
+
+	@Override
+	public boolean hideTitleArea() {
+		return false;
+	}
 }

@@ -1,5 +1,10 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.math.Interpolation.pow3;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
 
 import java.util.Collections;
@@ -9,7 +14,6 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -25,16 +29,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.tablelayout.Cell;
-import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
-import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.screen.hud.HeaderHud;
 
-public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultCallback<Maps> {
+public class LevelSelectionScreen implements PartialScreenFeedback, UIConnectionResultCallback<Maps> {
 
 	private List<Map> allMaps;
 	private int selectedMapKey = 0;
@@ -56,6 +59,10 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 	private ImageButton backButton;
 	private Actor loadingTextActor;
 	private Actor headerTextActor;
+	private Actor choiceActor;
+	private Actor bottomBar;
+	private ImageButton randomPlayButton;
+	private ImageButton friendsPlayButton;
 
 	private TextureAtlas levelSelectionAtlas;
 	private TextureAtlas levelsAtlas;
@@ -68,102 +75,6 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 		levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		levelsAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
-
-		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
-		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_black");
-		this.levelSelectCardShadow = levelSelectionAtlas.findRegion("level_select_card_shadow");
-
-		stage = new Stage();
-		cardTable = new Table();
-		backButton = new ImageButton(skin, "backButton");
-		backButton.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Action.BACK;
-			}
-		});
-
-		headerTextActor = new Actor() {
-			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
-				font.setColor(Color.WHITE);
-				String text = "Choose Your Galaxy";
-				float halfFontWidth = font.getBounds(text).width / 2;
-				batch.setShader(fontShader);
-				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .97f);
-				batch.setShader(null);
-				font.setColor(Color.WHITE);
-			};
-		};
-
-		stage.addActor(headerTextActor);
-		stage.addActor(backButton);
-
-		loadingTextActor = new Actor() {
-			@Override
-			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
-
-				float halfFontWidth = font.getBounds(loadingMessage).width / 2;
-				batch.setShader(fontShader);
-				font.draw(batch, loadingMessage, getWidth() / 2 - halfFontWidth, getHeight() * .4f);
-				batch.setShader(null);
-			}
-		};
-		loadingTextActor.setWidth(Gdx.graphics.getWidth());
-		loadingTextActor.setHeight(Gdx.graphics.getHeight());
-		stage.addActor(loadingTextActor);
-	}
-
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		stage.act(delta);
-		stage.draw();
-
-		// if (((InGameInputProcessor)
-		// Gdx.input.getInputProcessor()).isBackKeyPressed()) {
-		// returnValue = Action.BACK;
-		// }
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		stage.setViewport(width, height, true);
-
-		int tableHeight = (int) (height * .7f);
-
-		cardTable.setX(0);
-		cardTable.setY(height * .5f - tableHeight * .42f);
-		cardTable.setWidth(width);
-		cardTable.setHeight(tableHeight);
-
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
-		backButton.setX(10);
-		backButton.setY(height - buttonHeight - 5);
-		backButton.setWidth(buttonHeight);
-		backButton.setHeight(buttonHeight);
-
-		headerTextActor.setWidth(width);
-		headerTextActor.setHeight(height);
-	}
-
-	@Override
-	public void show() {
-		Color bg = skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
-		Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
-
-		if (allMaps == null) {
-			UIConnectionWrapper.findAllMaps(this);
-		}
-
-		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -171,21 +82,46 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 	}
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
+	private void startHideSequence(final String retVal) {
+		int modifier = -1;
+		if (retVal.equals(Action.BACK)) {
+			modifier = 1;
+		}
+		choiceActor.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), choiceActor.getY(), 0.9f, pow3)));
+		cardTable.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), cardTable.getY(), 0.9f, pow3)));
+		bottomBar.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), bottomBar.getY(), 0.9f, pow3)));
 
-	}
+		headerTextActor.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), headerTextActor.getY(), 0.9f, pow3)));
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
+		loadingTextActor.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
 
-	}
+		randomPlayButton.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
 
-	@Override
-	public void dispose() {
-		stage.dispose();
+		friendsPlayButton.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
+
+		backButton.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), backButton.getY(), 0.9f, pow3), run(new Runnable() {
+					@Override
+					public void run() {
+						choiceActor.remove();
+						cardTable.remove();
+						bottomBar.remove();
+						headerTextActor.remove();
+						loadingTextActor.remove();
+						randomPlayButton.remove();
+						friendsPlayButton.remove();
+						backButton.remove();
+						returnValue = retVal;
+					}
+				})));
+
 	}
 
 	@Override
@@ -229,7 +165,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			table.add(new CardActor(map, assetManager)).expandX().fillX();
 		}
 
-		Actor choiceActor = new Actor() {
+		choiceActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
 				String text = "";
 				float scrollX = scrollPane.getScrollX();
@@ -249,7 +185,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 				BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
 				float halfFontWidth = font.getBounds(text).width / 2;
 				batch.setShader(fontShader);
-				font.draw(batch, text, (getWidth() / 2 - halfFontWidth), getHeight() * .92f);
+				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .92f);
 				batch.setShader(null);
 			};
 		};
@@ -260,7 +196,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		loadingTextActor.remove();
 		stage.addActor(cardTable);
 
-		Actor bottomBar = new Actor() {
+		bottomBar = new Actor() {
 			@Override
 			public void draw(SpriteBatch batch, float parentAlpha) {
 				batch.draw(levelSelectBgBottom, getX(), getY(), getWidth(), getHeight());
@@ -272,7 +208,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 		bottomBar.setHeight(height * 0.18f);
 		stage.addActor(bottomBar);
 
-		ImageButton randomPlayButton = new ImageButton(skin, "regularPlay");
+		randomPlayButton = new ImageButton(skin, "regularPlay");
 		int buttonWidth = (int) (height * 0.15f);
 		int buttonHeight = (int) (height * 0.15f);
 		int margin = (int) (width * 0.1f);
@@ -290,12 +226,12 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Action.PLAY + ":" + selectedMapKey;
+				startHideSequence(Action.PLAY + ":" + selectedMapKey);
 			}
 		});
 		stage.addActor(randomPlayButton);
 
-		ImageButton friendsPlayButton = new ImageButton(skin, "socialPlay");
+		friendsPlayButton = new ImageButton(skin, "socialPlay");
 		friendsPlayButton.setX(width - margin - buttonWidth);
 		friendsPlayButton.setY(ymargin);
 		friendsPlayButton.setWidth(buttonWidth);
@@ -308,7 +244,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey;
+				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
 		});
 		stage.addActor(friendsPlayButton);
@@ -360,6 +296,7 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 
 			BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
 			BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
+
 			batch.draw(levelSelectionCard, x, y, width, height);
 
 			int mapHeight = (int) (getHeight() * .55f);
@@ -378,5 +315,92 @@ public class LevelSelectionScreen implements ScreenFeedback, UIConnectionResultC
 			smallFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
 			batch.setShader(null);
 		}
+	}
+
+	@Override
+	public void show(Stage stage, float width, float height) {
+		this.stage = stage;
+
+		int tableHeight = (int) (height * .7f);
+		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
+
+		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
+		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_black");
+		this.levelSelectCardShadow = levelSelectionAtlas.findRegion("level_select_card_shadow");
+
+		cardTable = new Table();
+		cardTable.setX(0);
+		cardTable.setY(height * .5f - tableHeight * .42f);
+		cardTable.setWidth(width);
+		cardTable.setHeight(tableHeight);
+
+		backButton = new ImageButton(skin, "backButton");
+		backButton.setX(10);
+		backButton.setY(height - buttonHeight - 5);
+		backButton.setWidth(buttonHeight);
+		backButton.setHeight(buttonHeight);
+		backButton.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				startHideSequence(Action.BACK);
+			}
+		});
+
+		headerTextActor = new Actor() {
+			public void draw(SpriteBatch batch, float parentAlpha) {
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
+				font.setColor(Color.WHITE);
+				String text = "Choose Your Galaxy";
+				float halfFontWidth = font.getBounds(text).width / 2;
+				batch.setShader(fontShader);
+				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .97f);
+				batch.setShader(null);
+				font.setColor(Color.WHITE);
+			};
+		};
+		headerTextActor.setWidth(width);
+		headerTextActor.setHeight(height);
+
+		stage.addActor(headerTextActor);
+		stage.addActor(backButton);
+
+		loadingTextActor = new Actor() {
+			@Override
+			public void draw(SpriteBatch batch, float parentAlpha) {
+				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
+
+				float halfFontWidth = font.getBounds(loadingMessage).width / 2;
+				batch.setShader(fontShader);
+				font.draw(batch, loadingMessage, getX() + getWidth() / 2 - halfFontWidth, getHeight() * .4f);
+				batch.setShader(null);
+			}
+		};
+		loadingTextActor.setWidth(width);
+		loadingTextActor.setHeight(height);
+		stage.addActor(loadingTextActor);
+
+		if (allMaps == null) {
+			UIConnectionWrapper.findAllMaps(this);
+		} else {
+			Maps maps = new Maps();
+			maps.allMaps = allMaps;
+			onConnectionResult(maps);
+		}
+	}
+
+	@Override
+	public void render(float delta) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	@Override
+	public boolean hideTitleArea() {
+		return true;
 	}
 }

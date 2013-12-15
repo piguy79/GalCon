@@ -17,33 +17,27 @@ import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
-//github.com/piguy79/GalCon.git
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
-import com.xxx.galcon.screen.CurrentGameScreen;
 import com.xxx.galcon.screen.GameListScreen;
-import com.xxx.galcon.screen.LevelSelectionScreen;
-import com.xxx.galcon.screen.NoMoreCoinsDialog;
+import com.xxx.galcon.screen.MenuScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
-import com.xxx.galcon.screen.signin.SignInProcessScreens;
 
 public class GameLoop extends Game {
 	public static Player USER;
 	public static Configuration CONFIG;
 
 	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
-	private BoardScreen boardScreen;
-	private SignInProcessScreens signInProcessScreens;
-	private GameListScreen currentGameScreen;
-	private LevelSelectionScreen levelSelectionScreen;
-	private NoMoreCoinsDialog noMoreCoinsScreen;
 
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
 	public UISkin skin = new UISkin();
 	public TweenManager tweenManager;
+
+	private MenuScreenContainer menuScreenContainer;
+	private BoardScreen boardScreen;
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
@@ -109,17 +103,13 @@ public class GameLoop extends Game {
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
-		signInProcessScreens = new SignInProcessScreens(skin, socialAction, gameAction, assetManager);
-		currentGameScreen = new CurrentGameScreen(assetManager);
-		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
-		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
-
-		setScreen(signInProcessScreens);
+		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, assetManager, tweenManager);
+		setScreen(menuScreenContainer);
 	}
 
 	public void reset() {
-		signInProcessScreens.resetState();
-		setScreen(signInProcessScreens);
+		menuScreenContainer.resetState();
+		setScreen(menuScreenContainer);
 	}
 
 	@Override
@@ -130,80 +120,37 @@ public class GameLoop extends Game {
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
-		ScreenFeedback screen = getScreen();
-		Object result = screen.getRenderResult();
+		Object result = ((ScreenFeedback) getScreen()).getRenderResult();
 		if (result != null) {
-			setScreen(nextScreen(screen, result));
-		}
-	}
-
-	private ScreenFeedback nextScreen(ScreenFeedback currentScreen, Object result) {
-		if (currentScreen instanceof SignInProcessScreens) {
-			String nextScreen = (String) result;
-
-			if (nextScreen.equals(Strings.NEW)) {
-				if (USER.coins == 0) {
-					noMoreCoinsScreen.resetState();
-					return noMoreCoinsScreen;
+			if (getScreen() instanceof MenuScreenContainer) {
+				String action = (String) result;
+				if (action.startsWith(Action.PLAY)) {
+					String level = action.split(":")[1];
+					gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
+							Long.valueOf(level));
+					setScreen(boardScreen);
+				} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
+					String level = action.split(":")[1];
+					gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
+							Long.valueOf(level));
+					setScreen(boardScreen);
 				}
-				levelSelectionScreen.resetState();
-				return levelSelectionScreen;
-			} else if (nextScreen.equals(Strings.CONTINUE)) {
-				currentGameScreen.resetState();
-				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, USER.handle);
-				return currentGameScreen;
-			}
-		} else if (currentScreen instanceof GameListScreen) {
-			if (result instanceof GameBoard) {
-				boardScreen.resetState();
-				boardScreen.previousScreen = currentScreen;
-				boardScreen.setGameBoard((GameBoard) result);
-				return boardScreen;
-			} else if (result instanceof String) {
+			} else if (getScreen() instanceof GameListScreen) {
+				if (result instanceof GameBoard) {
+					boardScreen.resetState();
+					boardScreen.setGameBoard((GameBoard) result);
+					setScreen(boardScreen);
+				}
+			} else if (getScreen() instanceof BoardScreen) {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
-					signInProcessScreens.resetState();
-					return signInProcessScreens;
+//					currentScreen.resetState();
+//					((BoardScreen) currentScreen).previousScreen.resetState();
+//
+//					return ((BoardScreen) currentScreen).previousScreen;
 				}
 			}
-		} else if (currentScreen instanceof BoardScreen) {
-			String action = (String) result;
-			if (action.equals(Action.BACK)) {
-				currentScreen.resetState();
-				((BoardScreen) currentScreen).previousScreen.resetState();
-
-				return ((BoardScreen) currentScreen).previousScreen;
-			}
-		} else if (currentScreen instanceof LevelSelectionScreen) {
-			String action = (String) result;
-			if (action.equals(Action.BACK)) {
-				signInProcessScreens.resetState();
-				return signInProcessScreens;
-			} else if (action.startsWith(Action.PLAY)) {
-				String level = action.split(":")[1];
-				boardScreen.resetState();
-				boardScreen.previousScreen = signInProcessScreens;
-				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
-						Long.valueOf(level));
-				return boardScreen;
-			} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
-				String level = action.split(":")[1];
-				boardScreen.resetState();
-				boardScreen.previousScreen = signInProcessScreens;
-				gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), USER.handle,
-						Long.valueOf(level));
-				return boardScreen;
-			}
-		} else if (currentScreen instanceof NoMoreCoinsDialog) {
-			String action = (String) result;
-			if (action.endsWith(Action.DIALOG_CANCEL)) {
-				signInProcessScreens.resetState();
-				return signInProcessScreens;
-			}
 		}
-
-		throw new IllegalStateException("Cannot handle the result (" + result + ") coming from screen: "
-				+ currentScreen);
 	}
 
 	private void checkCoindStats() {
@@ -232,15 +179,5 @@ public class GameLoop extends Game {
 			gameAction.consumeExistingOrders();
 			inAppBillingSetup = true;
 		}
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-	}
-
-	@Override
-	public ScreenFeedback getScreen() {
-		return (ScreenFeedback) super.getScreen();
 	}
 }

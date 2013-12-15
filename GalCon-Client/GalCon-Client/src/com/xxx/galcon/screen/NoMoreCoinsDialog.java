@@ -33,7 +33,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -43,7 +43,7 @@ import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.widget.PaymentButton;
 
-public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCallback<Player>,
+public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player>,
 		StoreResultCallback<Inventory> {
 
 	private Stage stage;
@@ -272,26 +272,8 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	}
 
 	@Override
-	public void show() {
-		Color bg = skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
-		Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
-
-		oldInputProcessor = Gdx.input.getInputProcessor();
-		Gdx.input.setInputProcessor(stage);
-	}
-
-	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(oldInputProcessor);
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-
 	}
 
 	@Override
@@ -319,6 +301,17 @@ public class NoMoreCoinsDialog implements ScreenFeedback, UIConnectionResultCall
 	@Override
 	public void onResult(Inventory result) {
 		createLayout(result);
+	}
+
+	@Override
+	public void show(Stage stage, float width, float height) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	@Override
+	public boolean hideTitleArea() {
+		return true;
 	}
 
 }

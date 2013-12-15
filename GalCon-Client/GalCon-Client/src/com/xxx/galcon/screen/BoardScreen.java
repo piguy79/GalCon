@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -34,7 +34,6 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
-import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
@@ -56,7 +55,6 @@ public class BoardScreen implements ScreenFeedback {
 	private ShaderProgram fontShader;
 	private List<Move> moves;
 
-
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	private List<Planet> moveSelectedPlanets = new ArrayList<Planet>(2);
 	List<Move> inProgressMoves = new ArrayList<Move>();
@@ -69,29 +67,25 @@ public class BoardScreen implements ScreenFeedback {
 	private TextureAtlas gameBoardAtlas;
 	private AssetManager assetManager;
 
-	public ScreenFeedback previousScreen;
-
 	boolean intro = true;
 	float introTimeBegin = 0.0f;
 	float introElapsedTime = 2.8f;
 
-
 	private String returnCode = null;
 	private MoveFactory moveFactory;
 	private UISkin skin;
-	
+
 	private Stage stage;
-	
+
 	private Table boardTable;
 	private InputProcessor oldInputProcessor;
 	private MoveDialog moveDialog;
 	private MoveHud moveHud;
-	
+
 	private Map<String, PlanetButton> planetButtons = new HashMap<String, PlanetButton>();
 	private Map<String, Integer> planetToMoveCount = new HashMap<String, Integer>();
-	
+
 	private boolean planetMoveChange = false;
-	
 
 	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
@@ -101,15 +95,14 @@ public class BoardScreen implements ScreenFeedback {
 		levelAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
 		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
-
 		this.moveFactory = new MoveFactory();
 		this.moves = new ArrayList<Move>();
-		
+
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-		
+
 		stage = new Stage();
 		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		
+
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {
@@ -129,20 +122,18 @@ public class BoardScreen implements ScreenFeedback {
 		boardTable.setWidth(Gdx.graphics.getWidth());
 		boardTable.setHeight(Gdx.graphics.getHeight() * 0.8f);
 		boardTable.setY(Gdx.graphics.getHeight() * 0.1f);
-		
-		
+
 		stage.addActor(boardTable);
 		createGrid();
 		createPlanets();
 		createMoveHud();
 		createMoves();
-		
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	private void createMoves() {
-		for(Move move : moves){
+		for (Move move : moves) {
 			ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
 			shipMoveButton.setHeight((boardTable.getHeight() / gameBoard.heightInTiles) * 0.4f);
 			shipMoveButton.setWidth((boardTable.getWidth() / gameBoard.widthInTiles) * 0.4f);
@@ -150,120 +141,123 @@ public class BoardScreen implements ScreenFeedback {
 			shipMoveButton.setX(movePosition.x);
 			shipMoveButton.setY(movePosition.y);
 			stage.addActor(shipMoveButton);
-			
+
 			Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
 			shipMoveButton.addAction(Actions.moveTo(newPosition.x, newPosition.y, 1.2f));
 		}
-		
+
 	}
 
 	private void createMoveHud() {
 		moveHud = new MoveHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f);
 		moveHud.addMoves(moves);
-		
+
 		moveHud.addListener(new MoveListener() {
-			
+
 			@Override
 			protected void performMove(Move move) {
 				renderMoveDialog(move);
 			}
-			
+
 			@Override
 			public void sendMove() {
 				List<Move> currentRoundMoves = new ArrayList<Move>();
-				for(Move move : moves){
-					if(move.startingRound == gameBoard.roundInformation.currentRound){
+				for (Move move : moves) {
+					if (move.startingRound == gameBoard.roundInformation.currentRound) {
 						currentRoundMoves.add(move);
 					}
 				}
-				UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, currentRoundMoves, new ArrayList<HarvestMove>());
+				UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, currentRoundMoves,
+						new ArrayList<HarvestMove>());
 			}
 
 		});
-		
+
 		stage.addActor(moveHud);
-		
+
 	}
 
 	private void createGrid() {
-		
+
 		float yOffset = boardTable.getHeight() / gameBoard.heightInTiles;
 		float xOffset = boardTable.getWidth() / gameBoard.widthInTiles;
 		Color grey = Color.GRAY;
 		grey.a = 0.6f;
 		TextureRegion lineRegion = gameBoardAtlas.findRegion("line");
-		
-		for(int i = 1; i < gameBoard.heightInTiles; i++){
+
+		for (int i = 1; i < gameBoard.heightInTiles; i++) {
 			Line line = new Line(grey, Gdx.graphics.getWidth(), lineRegion);
 			line.setY((yOffset * i) + boardTable.getY());
 			line.setHeight(Gdx.graphics.getHeight() * 0.005f);
 			stage.addActor(line);
-		
+
 		}
-		
-		for(int i = 1; i < gameBoard.widthInTiles; i++){
+
+		for (int i = 1; i < gameBoard.widthInTiles; i++) {
 			Line horizontalLine = new Line(grey, Gdx.graphics.getWidth() * 0.005f, lineRegion);
 			horizontalLine.setY(boardTable.getY());
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
 			stage.addActor(horizontalLine);
 		}
-		
-		
+
 	}
-	
-	private Point pointInWorld(float x, float y){
+
+	private Point pointInWorld(float x, float y) {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 		float yOffset = boardTable.getY();
-		
+
 		return new Point(tileWidthInWorld * x, (tileHeightInWorld * y) + yOffset);
 	}
-	
-	private void createPlanets(){
+
+	private void createPlanets() {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 		float yOffset = boardTable.getY();
-		
+
 		TextureRegionDrawable planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("planet2"));
 		planetTexture.setMinWidth(tileWidthInWorld * 0.9f);
 		planetTexture.setMinHeight(tileHeightInWorld * 0.9f);
-				
-		TextButtonStyle style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(assetManager).mediumFont());
-		for(final Planet planet : gameBoard.planets){
-			final PlanetButton planetButton = new PlanetButton(fontShader,  "" + planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()), style, planet);	
-			
+
+		TextButtonStyle style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(
+				assetManager).mediumFont());
+		for (final Planet planet : gameBoard.planets) {
+			final PlanetButton planetButton = new PlanetButton(fontShader, ""
+					+ planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()), style, planet);
+
 			planetButton.setX(tileWidthInWorld * planet.position.x);
-			planetButton.setY((tileHeightInWorld * planet.position.y) + yOffset);	
+			planetButton.setY((tileHeightInWorld * planet.position.y) + yOffset);
 			planetButton.setColor(planet.getColor());
-			
-			planetButton.addListener(new ClickListener(){
+
+			planetButton.addListener(new ClickListener() {
 
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					planetButton.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f), Actions.color(planet.getColor(), 0.7f))));
-					if(touchedPlanets.size() < 2){
+					planetButton.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
+							Actions.color(planet.getColor(), 0.7f))));
+					if (touchedPlanets.size() < 2) {
 						touchedPlanets.add(planet);
 						renderDialog();
-					}else{
+					} else {
 						clearTouchedPlanets();
 					}
-				}	
-				
+				}
+
 			});
 			stage.addActor(planetButton);
 			planetButtons.put(planet.name, planetButton);
 			planetToMoveCount.put(planet.name, 0);
-		}		
+		}
 	}
-	
+
 	private void renderDialog() {
-		if(touchedPlanets.size() > 1){
+		if (touchedPlanets.size() > 1) {
 			Planet userPlanet = touchedUserPlanet(touchedPlanets);
-			if(userPlanet != null){
+			if (userPlanet != null) {
 				Planet otherPlanet = otherPlanet(touchedPlanets, userPlanet);
 				renderMoveDialog(userPlanet, otherPlanet);
-			}else{
+			} else {
 				Planet toKeep = touchedPlanets.get(1);
 				touchedPlanets.clear();
 				touchedPlanets.add(toKeep);
@@ -272,18 +266,18 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private Planet otherPlanet(List<Planet> planets, Planet userPlanet) {
-		for(Planet planet : planets){
-			if(!planet.name.equals(userPlanet.name)){
+		for (Planet planet : planets) {
+			if (!planet.name.equals(userPlanet.name)) {
 				return planet;
 			}
 		}
-		
+
 		return null;
 	}
 
 	private Planet touchedUserPlanet(List<Planet> planets) {
-		for(Planet planet : planets){
-			if(planet.owner != null && planet.owner.equals(GameLoop.USER.handle)){
+		for (Planet planet : planets) {
+			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle)) {
 				return planet;
 			}
 		}
@@ -292,15 +286,16 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderMoveDialog(Planet one, Planet two) {
 		Integer offSetCount = planetToMoveCount.get(one.name) == null ? 0 : planetToMoveCount.get(one.name);
-		moveDialog = new MoveDialog(one,two, offSetCount, one.numberOfShips - offSetCount,  assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
+		moveDialog = new MoveDialog(one, two, offSetCount, one.numberOfShips - offSetCount, assetManager,
+				boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
 		setupPositionOFMoveDialog();
-		
+
 		moveDialog.addListener(new MoveListener() {
-			
+
 			@Override
 			protected void performMove(Move move) {
 				clearTouchedPlanets();
-				Integer count =  planetToMoveCount.get(move.fromPlanet);
+				Integer count = planetToMoveCount.get(move.fromPlanet);
 				planetToMoveCount.put(move.fromPlanet, count + move.shipsToMove);
 				moves.add(move);
 				moveHud.addMove(move);
@@ -308,13 +303,14 @@ public class BoardScreen implements ScreenFeedback {
 				clearMoveActions(move);
 				planetMoveChange = true;
 			}
-			
+
 		});
 	}
-	
+
 	private void clearMoveActions(Move move) {
 		planetButtons.get(move.fromPlanet).clearActions();
-		planetButtons.get(move.fromPlanet).addAction(Actions.color(move.fromPlanet(gameBoard.planets).getColor(), 0.4f));
+		planetButtons.get(move.fromPlanet)
+				.addAction(Actions.color(move.fromPlanet(gameBoard.planets).getColor(), 0.4f));
 		planetButtons.get(move.toPlanet).clearActions();
 		planetButtons.get(move.toPlanet).addAction(Actions.color(move.toPlanet(gameBoard.planets).getColor(), 0.4f));
 	}
@@ -322,48 +318,47 @@ public class BoardScreen implements ScreenFeedback {
 	private void setupPositionOFMoveDialog() {
 		float initialY = boardTable.getY() + (boardTable.getHeight() * 0.6f);
 		float initialX = boardTable.getX() + boardTable.getWidth() * 0.05f;
-		
+
 		moveDialog.setPosition(-boardTable.getWidth(), initialY);
-		
+
 		moveDialog.show(new Point(initialX, initialY));
 		stage.addActor(moveDialog);
 	}
-	
+
 	private void renderMoveDialog(Move move) {
 		int offset = planetToMoveCount.get(move.fromPlanet(gameBoard.planets).name);
-		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets), offset,  assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
+		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
+				offset, assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
 		setupPositionOFMoveDialog();
 	}
-
 
 	private boolean roundHasAlreadyBeenAnimated() {
 		return roundAnimated == gameBoard.roundInformation.currentRound;
 	}
 
-	
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}
-	
 
 	@Override
-	public void render(float delta) {	
-		
-		if(planetMoveChange){
+	public void render(float delta) {
+
+		if (planetMoveChange) {
 			applyMovesToPlanetButtons();
 			planetMoveChange = false;
 		}
-		
+
 		stage.act(delta);
 		stage.draw();
 	}
 
 	private void applyMovesToPlanetButtons() {
-		for(Planet planet : gameBoard.planets){
+		for (Planet planet : gameBoard.planets) {
 			int offSet = planetToMoveCount.get(planet.name);
-			planetButtons.get(planet.name).setText(new StringBuilder().append(planet.numberOfShips - offSet).toString());
+			planetButtons.get(planet.name)
+					.setText(new StringBuilder().append(planet.numberOfShips - offSet).toString());
 		}
 	}
 
@@ -422,7 +417,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setConnectionError(String msg) {
-		
+
 	}
 
 	public class PerformMoveResultHandler implements UIConnectionResultCallback<GameBoard> {
@@ -436,7 +431,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionError(String msg) {
-			
+
 		}
 	}
 
@@ -451,7 +446,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionError(String msg) {
-			
+
 		}
 	}
 

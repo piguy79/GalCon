@@ -17,13 +17,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.InGameInputProcessor.TouchPoint;
-import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
@@ -35,7 +36,7 @@ import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 
-public class GameListScreen implements ScreenFeedback, UIConnectionResultCallback<AvailableGames> {
+public class GameListScreen implements PartialScreenFeedback, UIConnectionResultCallback<AvailableGames> {
 	private SpriteBatch spriteBatch;
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -54,13 +55,6 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 		this.assetManager = assetManager;
 
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-
-		resume();
-	}
-
-	@Override
-	public void dispose() {
-		spriteBatch.dispose();
 	}
 
 	protected boolean showGamesThatHaveBeenWon() {
@@ -115,8 +109,7 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 				MinifiedGame board = iter.next();
 				if (board.hasWinner()) {
 					if (!showGamesThatHaveBeenWon()
-							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000
-									* 60 * 60 * 24))) {
+							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
 						iter.remove();
 					}
 				}
@@ -205,7 +198,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 
 		String playerDescription = "";
 		for (String player : otherPlayers) {
-			//playerDescription = playerDescription + " [" + player + " (Lvl " + player.rank.level + ") ]";
+			// playerDescription = playerDescription + " [" + player + " (Lvl "
+			// + player.rank.level + ") ]";
 			playerDescription = playerDescription + " [" + player + "]";
 		}
 		return playerDescription;
@@ -216,30 +210,8 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void show() {
-		ExternalActionWrapper.recoverUsedCoinsCount();
-	}
-
-	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void resume() {
 
 	}
 
@@ -285,5 +257,15 @@ public class GameListScreen implements ScreenFeedback, UIConnectionResultCallbac
 			overlay = new DismissableOverlay(menusAtlas, new TextOverlay(CONNECTION_ERROR_MESSAGE, "medium",
 					menusAtlas, assetManager));
 		}
+	}
+
+	@Override
+	public void show(Stage stage, float width, float height) {
+		ExternalActionWrapper.recoverUsedCoinsCount();
+	}
+	
+	@Override
+	public boolean hideTitleArea() {
+		return true;
 	}
 }

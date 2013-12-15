@@ -1,5 +1,10 @@
 package com.xxx.galcon.screen.signin;
 
+import static com.badlogic.gdx.math.Interpolation.pow3;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
 
 import org.joda.time.DateTime;
@@ -84,7 +89,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Strings.NEW;
+				startHideSequence(Strings.NEW);
 			}
 		});
 		stage.addActor(newLabel);
@@ -102,10 +107,26 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				returnValue = Strings.CONTINUE;
+				startHideSequence(Strings.CONTINUE);
 			}
 		});
 		stage.addActor(continueLabel);
+	}
+
+	private void startHideSequence(final String retVal) {
+		newLabel.addAction(sequence(delay(0.25f), moveTo(-Gdx.graphics.getWidth(), newLabel.getY(), 0.9f, pow3)));
+
+		continueLabel.addAction(sequence(delay(0.25f),
+				moveTo(-Gdx.graphics.getWidth(), continueLabel.getY(), 0.9f, pow3), run(new Runnable() {
+					@Override
+					public void run() {
+						returnValue = retVal;
+
+						newLabel.remove();
+						continueLabel.remove();
+					}
+				})));
+
 	}
 
 	private String currentUserText() {
@@ -163,5 +184,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	@Override
 	public Object getRenderResult() {
 		return returnValue;
+	}
+
+	@Override
+	public boolean hideTitleArea() {
+		return false;
 	}
 }
