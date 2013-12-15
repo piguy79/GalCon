@@ -12,6 +12,8 @@ public abstract class MoveListener implements EventListener{
 			performMove(((MoveEvent)event).getMove());
 		}else if(event instanceof SendMoveEvent){
 			sendMove();
+		}else if(event instanceof CancelDialogEvent){
+			cancelDialog();
 		}
 		return false;
 	}
@@ -19,5 +21,7 @@ public abstract class MoveListener implements EventListener{
 	protected void performMove(Move move){}
 	
 	public void sendMove(){};
+	
+	public void cancelDialog(){};
 
 }

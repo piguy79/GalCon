@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -30,7 +31,6 @@ public class MoveHud extends Table {
 	private Map<Move, MoveButton> moves;
 	private Table moveButtonHolder;
 	private ScrollPane scrollPane;
-	private Table innerContainer;
 
 	public MoveHud(AssetManager assetManager, UISkin skin,ShaderProgram fontShader, float width, float height) {
 		super();
@@ -41,8 +41,9 @@ public class MoveHud extends Table {
 		setWidth(width);
 		setHeight(height);
 		createTable();
-		addPerformMoveButton();
 		addMoveButtons();
+		addPerformMoveButton();
+		
 	}
 
 	private void createTable() {
@@ -66,24 +67,21 @@ public class MoveHud extends Table {
 
 	private void addMoveButtons() {
 		moveButtonHolder = new Table();
-		moveButtonHolder.setWidth(getWidth() * 0.8f);
-		moveButtonHolder.setHeight(getHeight() * 0.9f);
-		moveButtonHolder.setX(0);
-		moveButtonHolder.setY(getY() - (getHeight() * 0.53f));
+		moveButtonHolder.setWidth(getWidth() * 0.95f);
+		moveButtonHolder.setHeight(getHeight() * 0.95f);
 		
-		innerContainer = new Table();
-		scrollPane = new ScrollPane(innerContainer);
+		moveButtonHolder.pad(5);
+		
+		moveButtonHolder.left().bottom().pad(5).padLeft(5).padRight(5).padBottom(getHeight() * 0.12f).defaults().width(getWidth() * 0.15f)
+		.height(getHeight() * 0.85f);
+		
+		scrollPane = new ScrollPane(moveButtonHolder);
 		scrollPane.setScrollingDisabled(false, true);
 		scrollPane.setFadeScrollBars(false);
 		scrollPane.setWidth(moveButtonHolder.getWidth());
 		
-		moveButtonHolder.addActor(scrollPane);
+		addActor(scrollPane);		
 		
-		innerContainer.defaults().padLeft(5).padRight(5).left().width(moveButtonHolder.getWidth() * 0.15f)
-		.height(moveButtonHolder.getHeight() * 0.9f);
-		
-		
-		addActor(moveButtonHolder);
 		
 		for(Move move : moves.keySet()){
 			addMoveToMap(move);
@@ -119,10 +117,15 @@ public class MoveHud extends Table {
 	}
 	
 	public void renderMoves(){
-		innerContainer.clearChildren();
+		moveButtonHolder.clearChildren();
 		for(MoveButton button : moves.values()){
-			innerContainer.add(button);
+			moveButtonHolder.add(button);
 		}
+	}
+	
+	public void removeMove(Move move){
+		moves.remove(move);
+		renderMoves();
 	}
 
 }
