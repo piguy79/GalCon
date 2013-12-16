@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -123,9 +125,13 @@ public class MoveHud extends Table {
 		}
 	}
 	
-	public void removeMove(Move move){
-		moves.remove(move);
-		renderMoves();
+	public void removeMove(final Move move){
+		moves.get(move).addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
+		public void run() {
+			moves.remove(move);
+			renderMoves();
+		}}));
+		
 	}
 
 }
