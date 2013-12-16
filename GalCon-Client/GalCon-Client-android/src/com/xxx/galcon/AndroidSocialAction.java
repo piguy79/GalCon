@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.social.Authorizer;
@@ -47,6 +49,23 @@ public class AndroidSocialAction implements SocialAction {
 
 	@Override
 	public void getToken(AuthenticationListener listener) {
-		authorizer.getToken(listener);
+		setupAuthorizer();
+
+		if (authorizer == null) {
+			listener.onSignInFailed("Select login provider");
+		} else {
+			authorizer.getToken(listener);
+		}
+	}
+
+	private void setupAuthorizer() {
+		if (authorizer != null) {
+			return;
+		}
+		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER, "");
+		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
+			authorizer = new GooglePlusAuthorization(activity);
+		}
 	}
 }
