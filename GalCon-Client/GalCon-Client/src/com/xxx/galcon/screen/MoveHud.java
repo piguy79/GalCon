@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -18,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.event.MoveEvent;
@@ -33,13 +33,15 @@ public class MoveHud extends Table {
 	private Map<Move, MoveButton> moves;
 	private Table moveButtonHolder;
 	private ScrollPane scrollPane;
+	private GameBoard gameBoard;
 
-	public MoveHud(AssetManager assetManager, UISkin skin,ShaderProgram fontShader, float width, float height) {
+	public MoveHud(AssetManager assetManager, UISkin skin,GameBoard gameBoard, ShaderProgram fontShader, float width, float height) {
 		super();
 		this.assetManager = assetManager;
 		this.skin = skin;
 		this.moves = new HashMap<Move, MoveButton>();
 		this.fontShader = fontShader;
+		this.gameBoard = gameBoard;
 		setWidth(width);
 		setHeight(height);
 		createTable();
@@ -55,14 +57,17 @@ public class MoveHud extends Table {
 	}
 	
 	private void addPerformMoveButton() {
-		ActionButton performMove =  new ActionButton(skin,"performMoveButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
-		performMove.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				fire(new SendMoveEvent());
-			}
-		});
-		addActor(performMove);
+		if(!GameLoop.USER.hasMoved(gameBoard)){
+			ActionButton performMove =  new ActionButton(skin,"performMoveButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
+			performMove.addListener(new ClickListener(){
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					fire(new SendMoveEvent());
+				}
+			});
+			addActor(performMove);
+		}
+		
 	}
 	
 
@@ -95,12 +100,15 @@ public class MoveHud extends Table {
 	private void addMoveToMap(final Move move) {
 		if(moves.get(move) == null){
 			float buttonWidth = moveButtonHolder.getWidth() * 0.15f;
-			MoveButton button = new MoveButton(assetManager, move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.6f);
+			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.6f);
 			
-			button.addListener(new ClickListener(){@Override
-			public void clicked(InputEvent event, float x, float y) {
-				fire(new MoveEvent(move));
-			}});
+			if(move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard)){
+				button.addListener(new ClickListener(){@Override
+					public void clicked(InputEvent event, float x, float y) {
+						fire(new MoveEvent(move));
+				}});
+			}
+			
 			moves.put(move, button);
 		}
 	}

@@ -135,21 +135,24 @@ public class BoardScreen implements ScreenFeedback {
 	private void createMoves() {
 		for (Move move : moves) {
 			ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
-			shipMoveButton.setHeight((boardTable.getHeight() / gameBoard.heightInTiles) * 0.4f);
-			shipMoveButton.setWidth((boardTable.getWidth() / gameBoard.widthInTiles) * 0.4f);
+			float tileHeight = boardTable.getHeight() / gameBoard.heightInTiles;
+			shipMoveButton.setHeight(tileHeight * 0.4f);
+			float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
+			shipMoveButton.setWidth(tileWidth * 0.4f);
 			Point movePosition = pointInWorld(move.previousPosition.x, move.previousPosition.y);
-			shipMoveButton.setX(movePosition.x);
-			shipMoveButton.setY(movePosition.y);
+			shipMoveButton.setX(movePosition.x + (tileWidth / 2));
+			shipMoveButton.setY(movePosition.y + (tileHeight / 2));
+			shipMoveButton.rotate(90);
 			stage.addActor(shipMoveButton);
 
 			Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
-			shipMoveButton.addAction(Actions.moveTo(newPosition.x, newPosition.y, 1.2f));
+			shipMoveButton.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
 		}
 
 	}
 
 	private void createMoveHud() {
-		moveHud = new MoveHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f);
+		moveHud = new MoveHud(assetManager, skin, gameBoard, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f);
 		moveHud.addMoves(moves);
 
 		moveHud.addListener(new MoveListener() {
@@ -263,8 +266,12 @@ public class BoardScreen implements ScreenFeedback {
 			Planet userPlanet = touchedUserPlanet(touchedPlanets);
 			if (userPlanet != null) {
 				Planet otherPlanet = otherPlanet(touchedPlanets, userPlanet);
-				renderMoveDialog(userPlanet, otherPlanet);
-
+				if(!GameLoop.USER.hasMoved(gameBoard)){
+					renderMoveDialog(userPlanet, otherPlanet);
+				}else{
+					clearMoveActions(userPlanet);
+					clearMoveActions(otherPlanet);
+				}
 			} else {
 				clearMoveActions(touchedPlanets.get(0));
 				Planet toKeep = touchedPlanets.get(1);
