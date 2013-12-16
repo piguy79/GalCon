@@ -160,7 +160,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		if (handleTextField != null) {
 			handleTextField.addAction(sequence(delay(0.5f),
 					moveTo(-Gdx.graphics.getWidth(), handleTextField.getY(), 0.9f, pow3)));
-			okImageButton.addAction(sequence(delay(0.5f),
+			okImageButton.addAction(sequence(delay(0.6f),
 					moveTo(-Gdx.graphics.getWidth(), okImageButton.getY(), 0.9f, pow3), run(new Runnable() {
 						@Override
 						public void run() {
