@@ -25,6 +25,7 @@ public class MoveButton extends Table {
 		this.move = move;
 		this.skin = skin;
 		this.fontShader = fontShader;
+		setFillParent(false);
 		setWidth(width);
 		setHeight(height);
 		
@@ -46,8 +47,8 @@ public class MoveButton extends Table {
 		ShaderLabel fleet = new ShaderLabel(fontShader, "" + move.shipsToMove, skin, Constants.UI.DEFAULT_FONT_BLACK);
 		
 		add(fleet).expandX().right();
-		row();
-		add(duration).expandX().left();
+		row().height(getHeight() * 0.4f);
+		add(duration).expandX().left().padBottom(getHeight() * 0.1f);
 		
 	}
 

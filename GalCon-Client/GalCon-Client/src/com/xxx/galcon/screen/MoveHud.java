@@ -95,7 +95,7 @@ public class MoveHud extends Table {
 	private void addMoveToMap(final Move move) {
 		if(moves.get(move) == null){
 			float buttonWidth = moveButtonHolder.getWidth() * 0.15f;
-			MoveButton button = new MoveButton(assetManager, move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.9f);
+			MoveButton button = new MoveButton(assetManager, move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.6f);
 			
 			button.addListener(new ClickListener(){@Override
 			public void clicked(InputEvent event, float x, float y) {
