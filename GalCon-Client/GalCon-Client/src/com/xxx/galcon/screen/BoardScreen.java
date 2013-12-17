@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -127,9 +128,17 @@ public class BoardScreen implements ScreenFeedback {
 		createGrid();
 		createPlanets();
 		createMoveHud();
+		createPlayerHud();
 		createMoves();
 
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	private void createPlayerHud() {
+		Point position = new Point(0, boardTable.getHeight() + moveHud.getHeight());
+		BoardScreenPlayerHud playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position);
+		stage.addActor(playerHud);
+		
 	}
 
 	private void createMoves() {
