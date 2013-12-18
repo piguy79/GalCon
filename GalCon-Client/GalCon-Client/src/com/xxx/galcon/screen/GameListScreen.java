@@ -1,6 +1,12 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.math.Interpolation.pow3;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
+import static com.xxx.galcon.Util.createShader;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,50 +17,57 @@ import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
-import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.InGameInputProcessor;
-import com.xxx.galcon.InGameInputProcessor.TouchPoint;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.MinifiedGame;
-import com.xxx.galcon.screen.hud.GameListHud;
-import com.xxx.galcon.screen.hud.Hud;
+import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class GameListScreen implements PartialScreenFeedback, UIConnectionResultCallback<AvailableGames> {
-	private SpriteBatch spriteBatch;
-	private final Matrix4 viewMatrix = new Matrix4();
-	private final Matrix4 transformMatrix = new Matrix4();
 	private Object returnValue;
 	private AvailableGames allGames;
-	private Hud gameListHud;
 	private String loadingMessage = "Loading...";
 	protected Overlay overlay;
 	protected AssetManager assetManager;
 
+	private ShaderProgram fontShader;
+
+	private UISkin skin;
+
+	private Stage stage;
+	private ShaderLabel loadingTextLabel;
+	private Table gameListTable;
+	private Table gamesTable;
+	private ImageButton backButton;
+
 	private TextureAtlas menusAtlas;
 
-	public GameListScreen(AssetManager assetManager) {
-		spriteBatch = new SpriteBatch();
-		gameListHud = new GameListHud(assetManager);
+	public GameListScreen(AssetManager assetManager, UISkin skin) {
 		this.assetManager = assetManager;
+		this.skin = skin;
 
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+
+		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 	}
 
 	protected boolean showGamesThatHaveBeenWon() {
@@ -68,109 +81,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		float width = Gdx.graphics.getWidth() / 2;
-		float height = Gdx.graphics.getHeight() / 2;
-
-		Integer touchX = null;
-		Integer touchY = null;
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch()) {
-			TouchPoint touchPoint = ip.getTouch();
-			int x = touchPoint.x / 2;
-			int y = touchPoint.y / 2;
-
-			touchX = x;
-			touchY = y;
-		}
-
-		viewMatrix.setToOrtho2D(0, 0, width, height);
-
-		spriteBatch.setProjectionMatrix(viewMatrix);
-		spriteBatch.setTransformMatrix(transformMatrix);
-		spriteBatch.begin();
-		spriteBatch.enableBlending();
-
-		BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
-		BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
-
-		if (allGames == null) {
-			BitmapFont font = mediumFont;
-			if (loadingMessage.length() > 15) {
-				font = smallFont;
-			}
-			float halfFontWidth = font.getBounds(loadingMessage).width / 2;
-			font.draw(spriteBatch, loadingMessage, width / 2 - halfFontWidth, height * .4f);
-		} else {
-			List<MinifiedGame> games = new ArrayList<MinifiedGame>(allGames.getAllGames());
-			for (ListIterator<MinifiedGame> iter = games.listIterator(); iter.hasNext();) {
-				MinifiedGame board = iter.next();
-				if (board.hasWinner()) {
-					if (!showGamesThatHaveBeenWon()
-							|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
-						iter.remove();
-					}
-				}
-			}
-
-			if (games.isEmpty()) {
-				String text = "No games available";
-				float halfFontWidth = mediumFont.getBounds(text).width / 2;
-				mediumFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * .4f);
-			} else {
-				float textY = 0.87f;
-				for (MinifiedGame gameBoard : games) {
-					String text = createLabelTextForAGame(gameBoard);
-					float halfFontWidth = smallFont.getBounds(text).width / 2;
-
-					if (gameBoard.moveAvailable && !gameBoard.hasWinner()) {
-						smallFont.setColor(0.2f, 1.0f, 0.2f, 1.0f);
-					}
-					smallFont.draw(spriteBatch, text, width / 2 - halfFontWidth, height * textY);
-					smallFont.setColor(Color.WHITE);
-					if (touchX != null && touchX >= width / 2 - halfFontWidth && touchX <= width / 2 + halfFontWidth) {
-						if (touchY != null && touchY <= height * textY && touchY >= height * (textY - .03f)) {
-							ip.consumeTouch();
-							overlay = new TextOverlay("Joining...", menusAtlas, true, assetManager);
-							takeActionOnGameboard(gameBoard, GameLoop.USER.handle);
-						}
-					}
-
-					textY -= 0.05f;
-				}
-			}
-		}
-
-		spriteBatch.end();
-
-		if (overlay != null) {
-			gameListHud.setTouchEnabled(false);
-			overlay.render(delta);
-
-			if (overlay instanceof DismissableOverlay) {
-				if (((DismissableOverlay) overlay).isDismissed()) {
-					overlay = null;
-				}
-			}
-		} else {
-			gameListHud.setTouchEnabled(true);
-		}
-
-		gameListHud.render(delta);
-		if (gameListHud.getRenderResult() != null) {
-			String result = (String) gameListHud.getRenderResult();
-			if (result == Action.REFRESH) {
-				refreshScreen();
-			} else {
-				returnValue = result;
-			}
-		}
-
-		if (((InGameInputProcessor) Gdx.input.getInputProcessor()).isBackKeyPressed()) {
-			returnValue = Action.BACK;
-		}
 	}
 
 	private String createLabelTextForAGame(MinifiedGame gameBoard) {
@@ -211,8 +122,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
+		this.stage = null;
 	}
 
 	@Override
@@ -234,6 +144,37 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		allGames = null;
 		overlay = null;
 		allGames = result;
+
+		showGames();
+	}
+
+	private void showGames() {
+		if (allGames == null || stage == null) {
+			return;
+		}
+
+		List<MinifiedGame> games = new ArrayList<MinifiedGame>(allGames.getAllGames());
+		for (ListIterator<MinifiedGame> iter = games.listIterator(); iter.hasNext();) {
+			MinifiedGame board = iter.next();
+			if (board.hasWinner()) {
+				if (!showGamesThatHaveBeenWon()
+						|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
+					iter.remove();
+				}
+			}
+		}
+
+		if (games.isEmpty()) {
+			loadingMessage = "No games available";
+		} else {
+			for (MinifiedGame gameBoard : games) {
+				String text = createLabelTextForAGame(gameBoard);
+				ShaderLabel label = new ShaderLabel(fontShader, text, skin, Constants.UI.DEFAULT_FONT);
+				gameListTable.add(label);
+
+				gameListTable.row();
+			}
+		}
 	}
 
 	@Override
@@ -259,11 +200,81 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 	}
 
+	private void startHideSequence(final String retVal) {
+		int modifier = -1;
+		if (retVal.equals(Action.BACK)) {
+			modifier = 1;
+		}
+
+		backButton.addAction(sequence(delay(0.25f),
+				moveTo(modifier * Gdx.graphics.getWidth(), backButton.getY(), 0.9f, pow3), run(new Runnable() {
+					@Override
+					public void run() {
+						backButton.remove();
+						returnValue = retVal;
+					}
+				})));
+	}
+
 	@Override
 	public void show(Stage stage, float width, float height) {
 		ExternalActionWrapper.recoverUsedCoinsCount();
+
+		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
+		backButton = new ImageButton(skin, "backButton");
+		backButton.setX(10);
+		backButton.setY(height - buttonHeight - 5);
+		backButton.setWidth(buttonHeight);
+		backButton.setHeight(buttonHeight);
+		backButton.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				startHideSequence(Action.BACK);
+			}
+		});
+
+		loadingTextLabel = new ShaderLabel(fontShader, loadingMessage, skin, Constants.UI.DEFAULT_FONT);
+		loadingTextLabel.setAlignment(Align.center);
+		loadingTextLabel.setWidth(width);
+		loadingTextLabel.setX(width / 2 - loadingTextLabel.getWidth() / 2);
+		loadingTextLabel.setY(0.45f * height);
+		loadingTextLabel.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+			}
+		});
+		stage.addActor(loadingTextLabel);
+
+		gamesTable = new Table();
+		final ScrollPane scrollPane = new ScrollPane(gamesTable);
+		scrollPane.setScrollingDisabled(true, false);
+		scrollPane.setFadeScrollBars(false);
+
+		float tableHeight = height * 0.8f;
+		gameListTable = new Table();
+		gameListTable.setX(0);
+		gameListTable.setY(height * .5f - tableHeight * .42f);
+		gameListTable.setWidth(width);
+		gameListTable.setHeight(tableHeight);
+		gameListTable.add(scrollPane);
+		gameListTable.top();
+		stage.addActor(gameListTable);
+
+		this.stage = stage;
+		showGames();
 	}
-	
+
 	@Override
 	public boolean hideTitleArea() {
 		return true;

@@ -73,7 +73,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager);
 		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
-		currentGameScreen = new CurrentGameScreen(assetManager);
+		currentGameScreen = new CurrentGameScreen(assetManager, skin);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
 
 		screenResultHandlers.put(SignInScreen.class, new SignInScreenResultHandler());

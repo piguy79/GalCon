@@ -1,10 +1,5 @@
 package com.xxx.galcon.screen;
 
-import static com.badlogic.gdx.math.Interpolation.pow3;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
 
 import java.util.Collections;
@@ -28,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.PartialScreenFeedback;
@@ -56,13 +52,11 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private Skin skin;
 	private Stage stage;
 	private Table cardTable;
-	private ImageButton backButton;
 	private Actor loadingTextActor;
-	private Actor headerTextActor;
 	private Actor choiceActor;
-	private Actor bottomBar;
-	private ImageButton randomPlayButton;
-	private ImageButton friendsPlayButton;
+	private ImageButton backButton;
+
+	private Array<Actor> actors = new Array<Actor>();
 
 	private TextureAtlas levelSelectionAtlas;
 	private TextureAtlas levelsAtlas;
@@ -83,45 +77,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	}
 
 	private void startHideSequence(final String retVal) {
-		int modifier = -1;
-		if (retVal.equals(Action.BACK)) {
-			modifier = 1;
-		}
-		choiceActor.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), choiceActor.getY(), 0.9f, pow3)));
-		cardTable.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), cardTable.getY(), 0.9f, pow3)));
-		bottomBar.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), bottomBar.getY(), 0.9f, pow3)));
-
-		headerTextActor.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), headerTextActor.getY(), 0.9f, pow3)));
-
-		loadingTextActor.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
-
-		randomPlayButton.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
-
-		friendsPlayButton.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), loadingTextActor.getY(), 0.9f, pow3)));
-
-		backButton.addAction(sequence(delay(0.25f),
-				moveTo(modifier * Gdx.graphics.getWidth(), backButton.getY(), 0.9f, pow3), run(new Runnable() {
-					@Override
-					public void run() {
-						choiceActor.remove();
-						cardTable.remove();
-						bottomBar.remove();
-						headerTextActor.remove();
-						loadingTextActor.remove();
-						randomPlayButton.remove();
-						friendsPlayButton.remove();
-						backButton.remove();
-						returnValue = retVal;
-					}
-				})));
-
+		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
+			@Override
+			public void run() {
+				returnValue = retVal;
+			}
+		});
 	}
 
 	@Override
@@ -191,12 +152,14 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
 		choiceActor.setHeight(Gdx.graphics.getHeight());
+		actors.add(choiceActor);
 		stage.addActor(choiceActor);
 
 		loadingTextActor.remove();
+		actors.add(cardTable);
 		stage.addActor(cardTable);
 
-		bottomBar = new Actor() {
+		Actor bottomBar = new Actor() {
 			@Override
 			public void draw(SpriteBatch batch, float parentAlpha) {
 				batch.draw(levelSelectBgBottom, getX(), getY(), getWidth(), getHeight());
@@ -206,9 +169,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		bottomBar.setY(0);
 		bottomBar.setWidth(width);
 		bottomBar.setHeight(height * 0.18f);
+		actors.add(bottomBar);
 		stage.addActor(bottomBar);
 
-		randomPlayButton = new ImageButton(skin, "regularPlay");
+		ImageButton randomPlayButton = new ImageButton(skin, "regularPlay");
 		int buttonWidth = (int) (height * 0.15f);
 		int buttonHeight = (int) (height * 0.15f);
 		int margin = (int) (width * 0.1f);
@@ -229,9 +193,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				startHideSequence(Action.PLAY + ":" + selectedMapKey);
 			}
 		});
+		actors.add(randomPlayButton);
 		stage.addActor(randomPlayButton);
 
-		friendsPlayButton = new ImageButton(skin, "socialPlay");
+		ImageButton friendsPlayButton = new ImageButton(skin, "socialPlay");
 		friendsPlayButton.setX(width - margin - buttonWidth);
 		friendsPlayButton.setY(ymargin);
 		friendsPlayButton.setWidth(buttonWidth);
@@ -247,6 +212,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
 		});
+		actors.add(friendsPlayButton);
 		stage.addActor(friendsPlayButton);
 
 		backButton.remove();
@@ -320,6 +286,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	@Override
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
+		this.actors.clear();
 
 		int tableHeight = (int) (height * .7f);
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
@@ -351,7 +318,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 
-		headerTextActor = new Actor() {
+		Actor headerTextActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
 				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
 				font.setColor(Color.WHITE);
@@ -366,7 +333,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		headerTextActor.setWidth(width);
 		headerTextActor.setHeight(height);
 
+		actors.add(headerTextActor);
 		stage.addActor(headerTextActor);
+		actors.add(backButton);
 		stage.addActor(backButton);
 
 		loadingTextActor = new Actor() {
@@ -382,6 +351,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		};
 		loadingTextActor.setWidth(width);
 		loadingTextActor.setHeight(height);
+		actors.add(loadingTextActor);
 		stage.addActor(loadingTextActor);
 
 		if (allMaps == null) {
@@ -398,7 +368,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public boolean hideTitleArea() {
 		return true;
