@@ -5,14 +5,18 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.event.TransitionEvent;
+import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
@@ -81,6 +85,13 @@ public class BoardScreenPlayerHud extends Table {
 	private Actor createBackButton() {
 		float buttonSize = getHeight() * 0.8f;
 		ActionButton backButton = new ActionButton(skin, "backButton", buttonSize, buttonSize);
+		backButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent clickEvent, float x, float y) {
+				TransitionEvent event = new TransitionEvent(Action.BACK);
+				fire(event);
+			}
+		});
 		return backButton;
 	}
 

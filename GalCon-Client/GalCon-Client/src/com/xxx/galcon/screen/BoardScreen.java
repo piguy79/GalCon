@@ -23,7 +23,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -43,6 +42,7 @@ import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.event.MoveListener;
+import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
 import com.xxx.galcon.screen.ship.selection.MoveDialog;
 import com.xxx.galcon.screen.widget.Line;
@@ -57,11 +57,9 @@ public class BoardScreen implements ScreenFeedback {
 	private List<Move> moves;
 
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
-	private List<Planet> moveSelectedPlanets = new ArrayList<Planet>(2);
 	List<Move> inProgressMoves = new ArrayList<Move>();
 	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
-	private float[] moveSelectedPlanetsCoords = new float[4];
 
 	private TextureAtlas planetAtlas;
 	private TextureAtlas levelAtlas;
@@ -73,7 +71,6 @@ public class BoardScreen implements ScreenFeedback {
 	float introElapsedTime = 2.8f;
 
 	private String returnCode = null;
-	private MoveFactory moveFactory;
 	private UISkin skin;
 
 	private Stage stage;
@@ -82,11 +79,14 @@ public class BoardScreen implements ScreenFeedback {
 	private InputProcessor oldInputProcessor;
 	private MoveDialog moveDialog;
 	private MoveHud moveHud;
+	private BoardScreenPlayerHud playerHud;
 
 	private Map<String, PlanetButton> planetButtons = new HashMap<String, PlanetButton>();
 	private Map<String, Integer> planetToMoveCount = new HashMap<String, Integer>();
 
 	private boolean planetMoveChange = false;
+	
+	private MenuScreenContainer previousScreen;
 
 	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
@@ -96,7 +96,6 @@ public class BoardScreen implements ScreenFeedback {
 		levelAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
 		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
-		this.moveFactory = new MoveFactory();
 		this.moves = new ArrayList<Move>();
 
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
@@ -126,9 +125,9 @@ public class BoardScreen implements ScreenFeedback {
 
 		stage.addActor(boardTable);
 		createGrid();
-		createPlanets();
 		createMoveHud();
 		createPlayerHud();
+		createPlanets();
 		createMoves();
 
 		Gdx.input.setInputProcessor(stage);
@@ -136,9 +135,17 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createPlayerHud() {
 		Point position = new Point(0, boardTable.getHeight() + moveHud.getHeight());
-		BoardScreenPlayerHud playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position);
+		playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position);
+		playerHud.addListener(new TransitionEventListener(){
+			@Override
+			public void transition(String action) {
+				if(action.equals(Action.BACK)){
+					stage.dispose();
+					returnCode = action;
+				}
+			}
+		});
 		stage.addActor(playerHud);
-		
 	}
 
 	private void createMoves() {
@@ -521,5 +528,13 @@ public class BoardScreen implements ScreenFeedback {
 
 	public List<Move> getPendingMoves() {
 		return inProgressMoves;
+	}
+	
+	public MenuScreenContainer getPreviousScreen() {
+		return previousScreen;
+	}
+	
+	public void setPreviousScreen(MenuScreenContainer previousScreen) {
+		this.previousScreen = previousScreen;
 	}
 }
