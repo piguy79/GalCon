@@ -155,16 +155,36 @@ public class BoardScreen implements ScreenFeedback {
 			shipMoveButton.setHeight(tileHeight * 0.4f);
 			float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
 			shipMoveButton.setWidth(tileWidth * 0.4f);
+			shipMoveButton.setOrigin(shipMoveButton.getWidth()/2, shipMoveButton.getHeight()/2);
+			
+			
 			Point movePosition = pointInWorld(move.previousPosition.x, move.previousPosition.y);
-			shipMoveButton.setX(movePosition.x + (tileWidth / 2));
-			shipMoveButton.setY(movePosition.y + (tileHeight / 2));
-			shipMoveButton.rotate(90);
-			stage.addActor(shipMoveButton);
-
+			
+			Table wrapper = setupRotationWrapper(shipMoveButton, tileHeight,
+					tileWidth, movePosition);
+			
+			wrapper.setRotation(move.angleOfMovement());
+						
 			Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
-			shipMoveButton.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
+			wrapper.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
+			stage.addActor(wrapper);
+			
 		}
 
+	}
+
+	private Table setupRotationWrapper(ImageButton shipMoveButton,
+			float tileHeight, float tileWidth, Point movePosition) {
+		Table wrapper = new Table();
+		
+		wrapper.defaults().width(tileWidth * 0.25f).height(tileWidth * 0.25f).pad(0);
+		wrapper.add(shipMoveButton);			
+		wrapper.setX(movePosition.x + (tileWidth / 2));
+		wrapper.setY(movePosition.y + (tileHeight / 2));
+		wrapper.setTransform(true);
+		wrapper.setOrigin(wrapper.getPrefWidth() / 2, wrapper.getPrefHeight() / 2);
+		wrapper.setScaleX(1.5f);
+		return wrapper;
 	}
 
 	private void createMoveHud() {
