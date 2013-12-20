@@ -445,7 +445,7 @@ public class AndroidGameAction implements GameAction {
 		protected JsonConvertible doInBackground(String... params) {
 			try {
 				savedParams.params = params;
-				Log.i(TAG, "Invoking call: " + Arrays.toString(params));
+				Log.i(TAG, "Invoking call at path: " + path + ", " + Arrays.toString(params));
 				return Connection.doRequest(connectivityManager, establishConnection(params), converter);
 			} catch (IOException e) {
 				Log.wtf(LOG_NAME, e);
