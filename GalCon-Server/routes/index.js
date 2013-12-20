@@ -191,11 +191,12 @@ var minfiyGameResponse = function(games, playerHandle){
 		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === playerHandle}).length === 0;	
 		return {
 			id : game._id,
-			players : _.pluck(game.players, 'handle'),
+			players : _.map(game.players, function(player) { return { handle : player.handle, rank : player.rankInfo.level}}),
 			createdDate : game.createdDate,
 			moveAvailable : iHaveAMove,
 			winner : game.endGameInformation.winnerHandle,
-			winningDate : game.endGameInformation.winningDate
+			winningDate : game.endGameInformation.winningDate,
+			map : game.map
 		};
 	});
 }

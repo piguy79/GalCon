@@ -12,6 +12,7 @@ public class Constants {
 	public static class UI {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
 
+		public static final String SMALL_FONT = "smallFont";
 		public static final String DEFAULT_FONT = "defaultFont";
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
 		public static final String LARGE_FONT = "largeFont";
@@ -20,6 +21,8 @@ public class Constants {
 
 		public static final String OK_BUTTON = "okButton";
 		public static final String WAIT_BUTTON = "waitButton";
+		public static final String CELL_BG = "cellBg";
+		public static final String DIALOG_BG = "dialogBg";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
 	}
 

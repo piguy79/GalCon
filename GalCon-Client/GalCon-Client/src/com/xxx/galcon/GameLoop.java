@@ -123,20 +123,20 @@ public class GameLoop extends Game {
 		Object result = ((ScreenFeedback) getScreen()).getRenderResult();
 		if (result != null) {
 			if (getScreen() instanceof MenuScreenContainer) {
-				String action = (String) result;
-				if (action.startsWith(Action.PLAY)) {
-					String level = action.split(":")[1];
-					gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
-							Long.valueOf(level));
-					setScreen(boardScreen);
-				} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
-					String level = action.split(":")[1];
-					gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
-							Long.valueOf(level));
-					setScreen(boardScreen);
-				}
-			} else if (getScreen() instanceof GameListScreen) {
-				if (result instanceof GameBoard) {
+				if (result instanceof String) {
+					String action = (String) result;
+					if (action.startsWith(Action.PLAY)) {
+						String level = action.split(":")[1];
+						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
+								Long.valueOf(level));
+						setScreen(boardScreen);
+					} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
+						String level = action.split(":")[1];
+						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
+								Long.valueOf(level));
+						setScreen(boardScreen);
+					}
+				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					boardScreen.setGameBoard((GameBoard) result);
 					setScreen(boardScreen);
@@ -144,10 +144,11 @@ public class GameLoop extends Game {
 			} else if (getScreen() instanceof BoardScreen) {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
-//					currentScreen.resetState();
-//					((BoardScreen) currentScreen).previousScreen.resetState();
-//
-//					return ((BoardScreen) currentScreen).previousScreen;
+					// currentScreen.resetState();
+					// ((BoardScreen)
+					// currentScreen).previousScreen.resetState();
+					//
+					// return ((BoardScreen) currentScreen).previousScreen;
 				}
 			}
 		}

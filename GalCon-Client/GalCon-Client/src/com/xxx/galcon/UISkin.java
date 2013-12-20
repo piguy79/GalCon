@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.screen.widget.ShaderTextField.ShaderTextFieldStyle;
@@ -28,8 +29,8 @@ public class UISkin extends Skin {
 		add(Constants.UI.LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.WHITE));
 		add(Constants.UI.DEFAULT_FONT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.WHITE));
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
-
-
+		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
+		
 		/*
 		 * TextField
 		 */
@@ -56,6 +57,14 @@ public class UISkin extends Skin {
 			ButtonStyle style = new ButtonStyle(new NinePatchDrawable(up), new NinePatchDrawable(down), null);
 			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON, style);
 		}
+		
+		/*
+		 * Image
+		 */
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
+			add(Constants.UI.CELL_BG, trd, Drawable.class);
+		}
 
 		/*
 		 * Image Buttons
@@ -67,6 +76,10 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
 			add(Constants.UI.OK_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
+			add(Constants.UI.DIALOG_BG, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 
 		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(
@@ -81,11 +94,11 @@ public class UISkin extends Skin {
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("back"));
 		add("backButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
+
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
 		add("cancelButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
+
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
 		add("okButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
@@ -93,16 +106,14 @@ public class UISkin extends Skin {
 		textureRegionDrawable = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
 		add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
+
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("end_turn"));
 		add("performMoveButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
+
 		textureRegionDrawable = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
-		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
-		
-		
+		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+
 	}
 }

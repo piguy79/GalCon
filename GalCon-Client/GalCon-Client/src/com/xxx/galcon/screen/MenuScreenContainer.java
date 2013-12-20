@@ -73,7 +73,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager);
 		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
-		currentGameScreen = new CurrentGameScreen(assetManager, skin);
+		currentGameScreen = new GameListScreen(assetManager, skin);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
 
 		screenResultHandlers.put(SignInScreen.class, new SignInScreenResultHandler());
@@ -235,7 +235,6 @@ public class MenuScreenContainer implements ScreenFeedback {
 				}
 				return levelSelectionScreen;
 			} else if (nextScreen.equals(Strings.CONTINUE)) {
-				UIConnectionWrapper.findCurrentGamesByPlayerHandle(currentGameScreen, GameLoop.USER.handle);
 				return currentGameScreen;
 			}
 

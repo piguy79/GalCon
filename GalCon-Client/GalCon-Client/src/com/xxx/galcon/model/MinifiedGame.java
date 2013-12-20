@@ -12,44 +12,52 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class MinifiedGame extends JsonConvertible {
-	
+
 	public String id;
 	public Date createdDate;
-	public List<String> players;
+	public List<MinifiedPlayer> players;
 	public boolean moveAvailable;
 	public String winner;
 	public Date winningDate = null;
-	
-	
+	public int mapKey;
+
+	public static class MinifiedPlayer {
+		public String handle;
+		public int rank;
+	}
+
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.id = jsonObject.getString("id");
 		this.createdDate = formatDate(jsonObject, "createdDate");
-		this.players = new ArrayList<String>();
-		
+		this.players = new ArrayList<MinifiedPlayer>();
+
 		JSONArray playersJson = jsonObject.optJSONArray(Constants.PLAYERS);
 		if (playersJson != null) {
 			for (int i = 0; i < playersJson.length(); i++) {
-				String player = playersJson.getString(i);
-				this.players.add(player);
+				JSONObject player = playersJson.getJSONObject(i);
+				MinifiedPlayer minifiedPlayer = new MinifiedPlayer();
+				minifiedPlayer.handle = player.getString("handle");
+				minifiedPlayer.rank = player.getInt("rank");
+				this.players.add(minifiedPlayer);
 			}
 		}
-		
+
 		this.moveAvailable = jsonObject.getBoolean("moveAvailable");
 		this.winner = jsonObject.optString("winner");
 		this.winningDate = formatDate(jsonObject, "winningDate");
-		
+		this.mapKey = jsonObject.getInt("map");
 	}
-	
-	public boolean hasWinner(){
+
+	public boolean hasWinner() {
 		return winner != null && winner.length() > 0;
 	}
-	
-	public List<String> allPlayersExcept(String playerHandleToExclude) {
-		List<String> otherPlayers = new ArrayList<String>();
 
-		for (String player : this.players) {
-			if (!player.equals(playerHandleToExclude)) {
+	public List<MinifiedPlayer> allPlayersExcept(String playerHandleToExclude) {
+		List<MinifiedPlayer> otherPlayers = new ArrayList<MinifiedPlayer>();
+
+		for (MinifiedPlayer player : this.players) {
+			if (!player.handle.equals(playerHandleToExclude)) {
 				otherPlayers.add(player);
 			}
 		}

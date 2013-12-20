@@ -44,6 +44,7 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.AndroidGameActionCache.MapsCache;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.ConnectionException;
@@ -153,14 +154,21 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
+	private MapsCache mapCache = new MapsCache();
+
 	@Override
 	public void findAllMaps(final UIConnectionResultCallback<Maps> callback) {
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				new GetJsonRequestTask<Maps>(new HashMap<String, String>(), callback, FIND_ALL_MAPS, new Maps())
-						.execute("");
-			}
-		});
+		if (mapCache.getCachedMaps() != null) {
+			callback.onConnectionResult(mapCache.getCachedMaps());
+		} else {
+			mapCache.setDelegate(callback);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, new Maps())
+							.execute("");
+				}
+			});
+		}
 	}
 
 	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
