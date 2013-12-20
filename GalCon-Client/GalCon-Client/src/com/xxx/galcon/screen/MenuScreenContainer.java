@@ -130,6 +130,11 @@ public class MenuScreenContainer implements ScreenFeedback {
 		Gdx.input.setInputProcessor(stage);
 
 		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		if (currentScreen.hideTitleArea()) {
+			titleText.remove();
+		} else {
+			stage.addActor(titleText);
+		}
 	}
 
 	@Override
