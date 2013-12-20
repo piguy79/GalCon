@@ -40,7 +40,6 @@ import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
-import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
@@ -402,8 +401,10 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createNewMove(Move newMove) {
 		clearTouchedPlanets();
-		Integer count = planetToMoveCount.get(newMove.fromPlanet);
-		planetToMoveCount.put(newMove.fromPlanet, count + newMove.shipsToMove);
+		if(newMove.startingRound == gameBoard.roundInformation.currentRound){
+			Integer count = planetToMoveCount.get(newMove.fromPlanet);
+			planetToMoveCount.put(newMove.fromPlanet, count + newMove.shipsToMove);
+		}
 		moves.add(newMove);
 		moveHud.addMove(newMove);
 		moveDialog.hide();
