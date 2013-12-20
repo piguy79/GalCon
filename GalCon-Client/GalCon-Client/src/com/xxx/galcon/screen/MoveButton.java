@@ -18,7 +18,7 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class MoveButton extends Table {
 	
-	private static final Color ALREADY_MOVED = Color.valueOf("E8920C");
+	private static final Color NEW_MOVE = Color.valueOf("E8920C");
 	private AssetManager assetManager;
 	private AtlasRegion bgTexture;
 	private Move move;
@@ -45,10 +45,14 @@ public class MoveButton extends Table {
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
 		setBackground(new TextureRegionDrawable(bgTexture));
-		if(move.startingRound < gameBoard.roundInformation.currentRound || GameLoop.USER.hasMoved(gameBoard)){
-			addAction(Actions.color(ALREADY_MOVED, 0.4f));
+		if(isActive()){
+			addAction(Actions.color(NEW_MOVE, 0.4f));
 		}
 		addLabels();
+	}
+	
+	public boolean isActive(){
+		return move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard);
 	}
 
 

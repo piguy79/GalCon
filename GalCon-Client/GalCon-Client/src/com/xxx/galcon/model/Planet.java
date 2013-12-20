@@ -148,28 +148,29 @@ public class Planet extends JsonConvertible {
 	}
 	
 
+	// This should get simplified when we introduce the moon concept.
 	public Color getColor() {
 		Color OWNED_BY_ME_COLOR = Color.valueOf("28FF16");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color ABILITY_PLANET_COLOR = Color.valueOf("3F77B0");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
+		Color OWNED_BY_ME_WITH_ABILITY = Color.valueOf("439754");
+		Color OWNED_BY_OPPONENT_WITH_ABILITY = Color.valueOf("B23F44");
 		
 		Color color = DEFAULT_PLANET_COLOR;
 		
-		if(isOwnedBy(GameLoop.USER)){
-			color = color.mul(OWNED_BY_ME_COLOR);
+		if(isOwnedBy(GameLoop.USER) && hasAbility()){
+			return OWNED_BY_ME_WITH_ABILITY;
+		}else if(isOwnedBy(GameLoop.USER)){
+			return OWNED_BY_ME_COLOR;
 		}else if(!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)){
-			color = color.mul(OWNED_BY_OPPONENT_COLOR);
-		}else {
-			if(hasAbility()){
-				return ABILITY_PLANET_COLOR;
-			}
-			return color;
+			return OWNED_BY_OPPONENT_COLOR;
+		}else if(!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER) && hasAbility()) {
+			return OWNED_BY_OPPONENT_WITH_ABILITY;
+		}else if(hasAbility()){
+			return ABILITY_PLANET_COLOR;
 		}
-		
-		if(hasAbility()){
-			color = color.add(ABILITY_PLANET_COLOR);
-		}
+
 		return color;
 	}
 	

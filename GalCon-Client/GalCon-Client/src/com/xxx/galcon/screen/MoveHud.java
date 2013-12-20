@@ -102,7 +102,7 @@ public class MoveHud extends Table {
 			float buttonWidth = moveButtonHolder.getWidth() * 0.15f;
 			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.6f);
 			
-			if(move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard)){
+			if(button.isActive()){
 				button.addListener(new ClickListener(){@Override
 					public void clicked(InputEvent event, float x, float y) {
 						fire(new MoveEvent(move));

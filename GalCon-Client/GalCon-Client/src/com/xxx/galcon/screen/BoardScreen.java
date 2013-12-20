@@ -329,8 +329,12 @@ public class BoardScreen implements ScreenFeedback {
 
 	private Planet touchedUserPlanet(List<Planet> planets) {
 		for (Planet planet : planets) {
-			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle)) {
-				return planet;
+			
+			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle) && planet.numberOfShips > 0) {
+				Integer numShips = planetToMoveCount.get(planet.name);
+				if((planet.numberOfShips - numShips) > 0){
+					return planet;
+				}
 			}
 		}
 		return null;
