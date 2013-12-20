@@ -21,7 +21,6 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
-import com.xxx.galcon.screen.GameListScreen;
 import com.xxx.galcon.screen.MenuScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
@@ -129,29 +128,32 @@ public class GameLoop extends Game {
 						String level = action.split(":")[1];
 						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
 								Long.valueOf(level));
-						setScreen(boardScreen);
+						openBoardScreen();
 					} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
 						String level = action.split(":")[1];
 						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
 								Long.valueOf(level));
-						setScreen(boardScreen);
+						openBoardScreen();
 					}
 				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					boardScreen.setGameBoard((GameBoard) result);
-					setScreen(boardScreen);
+					openBoardScreen();
 				}
 			} else if (getScreen() instanceof BoardScreen) {
 				String action = (String) result;
 				if (action.equals(Action.BACK)) {
-					// currentScreen.resetState();
-					// ((BoardScreen)
-					// currentScreen).previousScreen.resetState();
-					//
-					// return ((BoardScreen) currentScreen).previousScreen;
+					boardScreen.resetState();
+					boardScreen.getPreviousScreen().resetState();
+					setScreen(boardScreen.getPreviousScreen());
 				}
 			}
 		}
+	}
+
+	private void openBoardScreen() {
+		boardScreen.setPreviousScreen((MenuScreenContainer) getScreen());
+		setScreen(boardScreen);
 	}
 
 	private void checkCoindStats() {

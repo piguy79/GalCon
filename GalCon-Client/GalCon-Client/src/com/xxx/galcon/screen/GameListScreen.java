@@ -225,7 +225,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
-			returnValue = result;
+			startHideSequence(result);
 		}
 
 		@Override
@@ -234,7 +234,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 	}
 
-	private void startHideSequence(final String retVal) {
+	private void startHideSequence(final Object retVal) {
 		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
 			@Override
 			public void run() {

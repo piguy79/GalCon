@@ -24,19 +24,11 @@ public class Planet extends JsonConvertible {
 	public String ability;
 	public Harvest harvest;
 	public String status;
-	private float [] planetBits = new float[4];
 
 	
 	public static final String ALIVE = "ALIVE";
 	
-	private static final int INDEX_PLANET_OWNED_BY_USER = 0;
-	private static final int INDEX_PLANET_OWNED_BY_ENEMY = 1;
-	private static final int INDEX_PLANET_TOUCHED = 2;
-	private static final int INDEX_PLANET_ABILITY = 3;
 	
-	private static final Color OWNED_BY_ME_COLOR = Color.valueOf("04B404FF");
-	private static final Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("FE2E2EFF");
-	private static final Color ABILITY_PLANET_COLOR = Color.valueOf("2E9AFEFF");
 
 	
 	
@@ -155,20 +147,14 @@ public class Planet extends JsonConvertible {
 		return this.status.equals(ALIVE);
 	}
 	
-	public float[] getPlanetBits() {
-		
-		String planetOwner = owner;
-		planetBits[INDEX_PLANET_TOUCHED] = touched ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_ABILITY] = hasAbility() ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_USER] = planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
-		planetBits[INDEX_PLANET_OWNED_BY_ENEMY] = !planetOwner.equals(OWNER_NO_ONE)
-				&& !planetOwner.equals(GameLoop.USER.handle) ? 1.0f : 0.0f;
-		
-		return planetBits;
-	}
 
 	public Color getColor() {
-		Color color = Color.valueOf("424242FF");
+		Color OWNED_BY_ME_COLOR = Color.valueOf("28FF16");
+		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
+		Color ABILITY_PLANET_COLOR = Color.valueOf("3F77B0");
+		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
+		
+		Color color = DEFAULT_PLANET_COLOR;
 		
 		if(isOwnedBy(GameLoop.USER)){
 			color = color.mul(OWNED_BY_ME_COLOR);
@@ -182,7 +168,7 @@ public class Planet extends JsonConvertible {
 		}
 		
 		if(hasAbility()){
-			color = color.add(new Color(0,0,0.5f, 1));
+			color = color.add(ABILITY_PLANET_COLOR);
 		}
 		return color;
 	}
