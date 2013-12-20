@@ -10,8 +10,8 @@ public class ExistingMoveDialog extends MoveDialog {
 	private Move move;
 
 	public ExistingMoveDialog(Move move, Planet fromPlanet, Planet toPlanet, int offset,
-			AssetManager assetManager, float width, float height, UISkin skin) {
-		super(fromPlanet, toPlanet, offset ,fromPlanet.numberOfShips, assetManager, width, height, skin);
+			AssetManager assetManager, float width, float height, UISkin skin, int currentRound) {
+		super(fromPlanet, toPlanet, offset ,fromPlanet.numberOfShips, assetManager, width, height, skin, currentRound);
 		this.move = move;
 		shipsToSend = move.shipsToMove;
 		slider.setValue(move.shipsToMove);

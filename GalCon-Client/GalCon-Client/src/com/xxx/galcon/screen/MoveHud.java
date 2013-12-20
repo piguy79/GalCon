@@ -142,4 +142,8 @@ public class MoveHud extends Table {
 		
 	}
 
+	public void removeMoves() {
+		moves.clear();
+	}
+
 }

@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
@@ -107,9 +108,17 @@ public class BoardScreen implements ScreenFeedback {
 	public void setGameBoard(GameBoard gameBoard) {
 		stage = new Stage();
 		this.gameBoard = gameBoard;
-		moves = gameBoard.movesInProgress;
+		moves = new ArrayList<Move>();
+		for(Move move : gameBoard.movesInProgress){
+			if(move.belongsToPlayer(GameLoop.USER)){
+				moves.add(move);
+			}
+		}
 		planetButtons.clear();
 		planetToMoveCount.clear();
+		if(moveHud != null){
+			moveHud.removeMoves();
+		}
 		planetMoveChange = true;
 		createLayout();
 	}
@@ -149,26 +158,36 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createMoves() {
 		for (Move move : moves) {
-			ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
-			float tileHeight = boardTable.getHeight() / gameBoard.heightInTiles;
-			shipMoveButton.setHeight(tileHeight * 0.4f);
-			float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
-			shipMoveButton.setWidth(tileWidth * 0.4f);
-			shipMoveButton.setOrigin(shipMoveButton.getWidth()/2, shipMoveButton.getHeight()/2);
-			
-			
-			Point movePosition = pointInWorld(move.previousPosition.x, move.previousPosition.y);
-			
-			Table wrapper = setupRotationWrapper(shipMoveButton, tileHeight,
-					tileWidth, movePosition);
-			
-			wrapper.setRotation(move.angleOfMovement());
-						
-			Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
-			wrapper.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
-			stage.addActor(wrapper);
-			
+			if(move.belongsToPlayer(GameLoop.USER)){
+				ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
+				float tileHeight = boardTable.getHeight() / gameBoard.heightInTiles;
+				shipMoveButton.setHeight(tileHeight * 0.4f);
+				float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
+				shipMoveButton.setWidth(tileWidth * 0.4f);
+				shipMoveButton.setOrigin(shipMoveButton.getWidth()/2, shipMoveButton.getHeight()/2);
+				
+				
+				Point movePosition = pointInWorld(move.previousPosition.x, move.previousPosition.y);
+				
+				Table wrapper = setupRotationWrapper(shipMoveButton, tileHeight,
+						tileWidth, movePosition);
+				
+				wrapper.setRotation(move.angleOfMovement());
+							
+				if(!roundHasAlreadyBeenAnimated()){
+					Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
+					wrapper.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
+				}
+				
+				
+				if(move.executed && !roundHasAlreadyBeenAnimated()){
+					wrapper.addAction(Actions.scaleTo(0, 0, 0.9f));
+				}
+				stage.addActor(wrapper);
+			}
 		}
+		
+		roundAnimated = gameBoard.roundInformation.currentRound;
 
 	}
 
@@ -342,7 +361,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoveDialog(final Planet one, final Planet two) {
 		Integer offSetCount = planetToMoveCount.get(one.name) == null ? 0 : planetToMoveCount.get(one.name);
 		moveDialog = new MoveDialog(one, two, offSetCount, one.numberOfShips - offSetCount, assetManager,
-				boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
+				boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {
@@ -380,7 +399,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoveDialog(final Move move) {
 		int offset = planetToMoveCount.get(move.fromPlanet(gameBoard.planets).name);
 		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
-				offset, assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin);
+				offset, assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {
@@ -530,9 +549,13 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
-			setGameBoard(result);
 			inProgressMoves.clear();
 			clearTouchedPlanets();
+			planetToMoveCount.clear();
+			inProgressHarvest.clear();
+			moves.clear();
+			
+			setGameBoard(result);
 		}
 
 		@Override

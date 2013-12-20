@@ -150,7 +150,7 @@ public class Planet extends JsonConvertible {
 
 	// This should get simplified when we introduce the moon concept.
 	public Color getColor() {
-		Color OWNED_BY_ME_COLOR = Color.valueOf("28FF16");
+		Color OWNED_BY_ME_COLOR = Color.valueOf("32B22D");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color ABILITY_PLANET_COLOR = Color.valueOf("3F77B0");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
