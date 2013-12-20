@@ -47,8 +47,8 @@ exports.joinGame = function(gameId, playerToJoin) {
 	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&playerHandle=" + playerToJoin);
 }
 
-exports.findCurrentGamesByPlayerHandle = function(playerHandle) {
-	return needleWithPromise(needle.get, "/findCurrentGamesByPlayerHandle?playerHandle=" + playerHandle);
+exports.findCurrentGamesByPlayerHandle = function(handle, session) {
+	return needleWithPromise(needle.get, "/findCurrentGamesByPlayerHandle?handle=" + handle + "&session=" + session);
 }
 
 exports.findAvailableGames = function(playerHandle) {

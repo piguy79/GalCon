@@ -82,13 +82,18 @@ var validate = function(propMap, res) {
 	return true;
 }
 	
-var validateSession = function(session, email) {
-	var p = getSessionStateForEmail(session, email);
+var validateSession = function(session, emailOrHandleMap) {
+	var key = _.keys(emailOrHandleMap)[0];
+	var value = _.values(emailOrHandleMap)[0];
+	
+	var p = getSessionState(session, key, value);
 	return p.then(function(state) {
 		if(state === "NOT FOUND") {
-			throw new ErrorWithResponse("Invalid session detected for email: " + session + ", " + email, { session : "invalid"});
+			throw new ErrorWithResponse("Invalid session detected for: " + session + ", " + value, { session : "invalid"});
 		} else if(state === "EXPIRED SESSION") {
-			var invalidP = userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
+			var obj = {};
+			obj[key] = value;
+			var invalidP = userManager.UserModel.findOneAndUpdate(obj, {$set : {session : {}}}).exec();
 			return invalidP.then(function() {
 				throw new ErrorWithResponse("Expired session", { session : "expired" });
 			});
@@ -96,8 +101,11 @@ var validateSession = function(session, email) {
 	});
 }
 
-var getSessionStateForEmail = function(session, email) {
-	var p = userManager.UserModel.findOne({email : email, 'session.id' : session}).exec();
+var getSessionState = function(session, key, value) {
+	var query = {'session.id' : session};
+	query[key] = value;
+
+	var p = userManager.UserModel.findOne(query).exec();
 	return p.then(function(user) {
 		if(user === null) {
 			return "NOT FOUND";
@@ -117,7 +125,7 @@ exports.findUserByEmail = function(req, res) {
 		return;
 	}
 	
-	var p = validateSession(session, email);
+	var p = validateSession(session, {"email" : email});
 	p.then(function() {
 		var validP = userManager.findUserByEmail(email);
 		return validP.then(function(user) {
@@ -139,7 +147,7 @@ exports.requestHandleForEmail = function(req, res) {
 		return;
 	}
 	
-	var p = validateSession(session, email);
+	var p = validateSession(session, {"email" : email});
 	p.then(function() {
 		var validP = userManager.findUserByHandle(handle);
 		return validP.then(function(user) {
@@ -172,23 +180,31 @@ exports.requestHandleForEmail = function(req, res) {
 }
 
 exports.findCurrentGamesByPlayerHandle = function(req, res) {
-	var playerHandle = req.query['playerHandle'];
-	var p = userManager.findUserByHandle(playerHandle);
-	p.then(function(user) {
-		if(!user) {
-			throw new Error("Could not find user object for handle: " + playerHandle);
-		}
-		return gameManager.findCollectionOfGames(user.currentGames);
-	}).then(function(games) {
-		
-		var minifiedGames = minfiyGameResponse(games, playerHandle);
-		res.json({items : minifiedGames});
+	var session = req.query['session'];
+	var handle = req.query['handle'];
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var p = userManager.findUserByHandle(handle);
+		return p.then(function(user) {
+			if(!user) {
+				throw new Error("Could not find user object for handle: " + handle);
+			}
+			return gameManager.findCollectionOfGames(user.currentGames);
+		}).then(function(games) {
+			var minifiedGames = minfiyGameResponse(games, handle);
+			res.json({items : minifiedGames});
+		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var minfiyGameResponse = function(games, playerHandle){
+var minfiyGameResponse = function(games, handle){
 	return _.map(games, function(game){
-		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === playerHandle}).length === 0;	
+		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === handle}).length === 0;	
 		return {
 			id : game._id,
 			players : _.map(game.players, function(player) { return { handle : player.handle, rank : player.rankInfo.level}}),

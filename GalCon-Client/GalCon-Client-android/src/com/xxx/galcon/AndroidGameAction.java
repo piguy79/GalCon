@@ -310,7 +310,8 @@ public class AndroidGameAction implements GameAction {
 	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback,
 			String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", playerHandle);
+		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,

@@ -57,7 +57,7 @@ describe("Find current games -", function() {
 		}).then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_2);
 		}).then(function() {
-			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE);
+			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(games) {
 			var availableGames = games.items;
 			expect(availableGames.length).toBe(0);
@@ -75,7 +75,7 @@ describe("Find current games -", function() {
 		}).then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_2);
 		}).then(function() {
-			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE);
+			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(games) {
 			var availableGames = games.items;
 			expect(availableGames.length).toBe(2);

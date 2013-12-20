@@ -150,7 +150,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", playerHandle);
+		args.put("session", getSession());
 		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(),
 				FIND_CURRENT_GAMES_BY_PLAYER_HANDLE, args, new AvailableGames()));
 	}
