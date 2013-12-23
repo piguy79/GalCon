@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen;
 
+import java.util.List;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -14,9 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.event.TransitionEvent;
-import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
@@ -26,11 +28,13 @@ public class BoardScreenPlayerHud extends Table {
 	private AssetManager assetManager;
 	private UISkin skin;
 	private ShaderProgram fontShader;
+	private List<Player> players;
 	
-	public BoardScreenPlayerHud(AssetManager assetManager, UISkin skin, ShaderProgram fontShader, float width, float height, Point position){
+	public BoardScreenPlayerHud(AssetManager assetManager, UISkin skin, ShaderProgram fontShader, float width, float height, Point position, List<Player> players){
 		this.assetManager = assetManager;
 		this.skin = skin;
 		this.fontShader = fontShader;
+		this.players = players;
 		setWidth(width);
 		setHeight(height);
 		setPosition(position.x, position.y);
@@ -43,27 +47,32 @@ public class BoardScreenPlayerHud extends Table {
 		Actor backButton = createBackButton();
 		Actor slashLine = createSlash();
 		Actor userTable = createUserTable();
+		Actor refreshButton = createRefreshButton();
 		
 		
 		addActorAtSize(backButton).padLeft(5);
 		addActorAtSize(slashLine);
 		add(userTable).width(getWidth() * 0.6f).height(getHeight());
+		addActorAtSize(refreshButton);
 
 	}
 	
+	
+
 	private Actor createUserTable() {
 		Table userTable = new Table();
 		userTable.center();
 		userTable.setHeight(getHeight());
-		userTable.add(new ShaderLabel(fontShader, "Conor", skin, Constants.UI.DEFAULT_FONT));
+		userTable.add(new ShaderLabel(fontShader, players.get(0).handle, skin, Constants.UI.DEFAULT_FONT));
 		userTable.row().height(0).width(0);
 		userTable.add(new ShaderLabel(fontShader, "vs", skin, Constants.UI.DEFAULT_FONT)).center();
 		userTable.row();
-		userTable.add(new ShaderLabel(fontShader, "Conor", skin, Constants.UI.DEFAULT_FONT)).padBottom(5);
+		userTable.add(new ShaderLabel(fontShader, players.size() > 1 ? players.get(1).handle : "Awaiting opponent", skin, Constants.UI.DEFAULT_FONT)).padBottom(5);
 
 		
 		return userTable;
 	}
+
 
 	private Cell<Actor> addActorAtSize(Actor actor){
 		return add(actor).width(actor.getWidth()).height(actor.getHeight());
@@ -93,6 +102,18 @@ public class BoardScreenPlayerHud extends Table {
 			}
 		});
 		return backButton;
+	}
+	
+	private Actor createRefreshButton() {
+		float buttonSize = getHeight() * 0.8f;
+		ActionButton refreshButton = new ActionButton(skin, "refreshButton", buttonSize, buttonSize);
+		refreshButton.addListener(new ClickListener(){@Override
+		public void clicked(InputEvent event, float x, float y) {
+			TransitionEvent transitionEvent = new TransitionEvent(Action.REFRESH);
+			fire(transitionEvent);
+		}});
+		
+		return refreshButton;
 	}
 
 	private void createTable() {

@@ -143,13 +143,15 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createPlayerHud() {
 		Point position = new Point(0, boardTable.getHeight() + moveHud.getHeight());
-		playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position);
+		playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position, gameBoard.players);
 		playerHud.addListener(new TransitionEventListener(){
 			@Override
 			public void transition(String action) {
 				if(action.equals(Action.BACK)){
 					stage.dispose();
 					returnCode = action;
+				}else if(action.equals(Action.REFRESH)){
+					UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
 				}
 			}
 		});
@@ -173,10 +175,13 @@ public class BoardScreen implements ScreenFeedback {
 						tileWidth, movePosition);
 				
 				wrapper.setRotation(move.angleOfMovement());
+				Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
+
 							
 				if(!roundHasAlreadyBeenAnimated()){
-					Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
 					wrapper.addAction(Actions.moveTo(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2), 1.2f));
+				}else{
+					wrapper.setPosition(newPosition.x+ (tileWidth / 2), newPosition.y + (tileHeight / 2));
 				}
 				
 				

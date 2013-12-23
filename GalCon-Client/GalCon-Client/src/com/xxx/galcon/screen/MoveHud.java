@@ -114,7 +114,7 @@ public class MoveHud extends Table {
 	}
 	
 	public void addMove(Move move){
-		if(move.playerHandle.equals(GameLoop.USER.handle)){
+		if(move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0){
 			addMoveToMap(move);
 			renderMoves();
 		}
