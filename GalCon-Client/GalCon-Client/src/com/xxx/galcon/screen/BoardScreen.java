@@ -143,7 +143,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createPlayerHud() {
 		Point position = new Point(0, boardTable.getHeight() + moveHud.getHeight());
-		playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position, gameBoard.players);
+		playerHud = new BoardScreenPlayerHud(assetManager, skin, fontShader, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.1f, position, gameBoard);
 		playerHud.addListener(new TransitionEventListener(){
 			@Override
 			public void transition(String action) {
@@ -268,7 +268,7 @@ public class BoardScreen implements ScreenFeedback {
 	private Point pointInWorld(float x, float y) {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
-		float yOffset = boardTable.getY();
+		float yOffset = moveHud.getHeight();
 
 		return new Point(tileWidthInWorld * x, (tileHeightInWorld * y) + yOffset);
 	}
