@@ -89,12 +89,13 @@ public class AndroidGameAction implements GameAction {
 
 		@Override
 		public void onSignInSucceeded(String authProvider, String token) {
-			Log.i(TAG, "Silent sign in succeeded.  Getting token...");
+			Log.i(TAG, "Silent sign in succeeded.  Getting session...");
 			AndroidGameAction.this.exchangeTokenForSession(new UIConnectionResultCallback<Session>() {
 
 				@Override
 				public void onConnectionResult(Session result) {
-					Log.i(TAG, "Silent sign in succeeded.  Token retrieved.");
+					Log.i(TAG, "Silent sign in succeeded.  Session retrieved.");
+					AndroidGameAction.this.setSession(result.session);
 					if (savedRequestParams.args != null) {
 						new GetJsonRequestTask<T>(savedRequestParams.args, savedRequestParams.callback,
 								savedRequestParams.path, savedRequestParams.converter).execute("");

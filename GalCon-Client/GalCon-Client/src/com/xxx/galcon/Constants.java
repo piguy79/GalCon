@@ -21,6 +21,10 @@ public class Constants {
 
 		public static final String OK_BUTTON = "okButton";
 		public static final String WAIT_BUTTON = "waitButton";
+		public static final String GREEN_BUTTON = "greenButton";
+		public static final String GREEN_BUTTON_TEXT = "greenButtonText";
+		public static final String GRAY_BUTTON = "grayButton";
+		public static final String GRAY_BUTTON_TEXT = "grayButtonText";
 		public static final String CELL_BG = "cellBg";
 		public static final String DIALOG_BG = "dialogBg";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";

@@ -10,24 +10,21 @@ import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
-import com.xxx.galcon.Strings;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -38,6 +35,7 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.screen.hud.HeaderHud;
+import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
@@ -54,19 +52,16 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	private Stage stage;
 	private ShaderLabel messageLabel;
-	private Table gameListTable;
+	private ScrollList<MinifiedGame> scrollList;
 	private Table gamesTable;
 	private ImageButton backButton;
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;
 
-	private TextureAtlas menusAtlas;
-
 	public GameListScreen(AssetManager assetManager, UISkin skin) {
 		this.assetManager = assetManager;
 		this.skin = skin;
 
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 	}
 
@@ -85,7 +80,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private String playerInfoText(List<MinifiedPlayer> otherPlayers) {
-
 		String playerDescription = "";
 		for (MinifiedPlayer player : otherPlayers) {
 			playerDescription = player.handle + " (Level " + player.rank + ")";
@@ -143,40 +137,20 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		if (games.isEmpty()) {
 			messageLabel.setText("No games available");
 		} else {
-			float height = Gdx.graphics.getHeight();
-			float width = Gdx.graphics.getWidth();
-			float rowHeight = height * 0.15f;
-			for (MinifiedGame game : games) {
-				gamesTable.add(createGameEntry(game)).height(rowHeight).width(width);
-				gamesTable.row();
+			for (final MinifiedGame game : games) {
+				scrollList.addRow(game, new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						takeActionOnGameboard(game, GameLoop.USER.handle);
+					}
+				});
 			}
 		}
 	}
 
-	private Group createGameEntry(final MinifiedGame game) {
-		float height = Gdx.graphics.getHeight();
-		float width = Gdx.graphics.getWidth();
-
-		float rowHeight = height * 0.15f;
-
-		Image imageRow = new Image(skin, Constants.UI.CELL_BG);
-		imageRow.setHeight(rowHeight);
-		imageRow.setWidth(width);
-		imageRow.setAlign(Align.center);
-
-		Group group = new Group();
-		group.addActor(imageRow);
-		group.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				takeActionOnGameboard(game, GameLoop.USER.handle);
-			}
-		});
+	private void createGameEntry(MinifiedGame game, Group group) {
+		float width = group.getWidth();
+		float rowHeight = group.getHeight();
 
 		String opponent;
 		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
@@ -208,8 +182,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		mapLabel.setX(width * 0.08f);
 
 		group.addActor(mapLabel);
-
-		return group;
 	}
 
 	@Override
@@ -296,27 +268,19 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		stage.addActor(messageLabel);
 
 		final float tableHeight = height * 0.89f;
-		gamesTable = new Table();
-		gamesTable.top();
-		final ScrollPane scrollPane = new ScrollPane(gamesTable) {
-			public float getPrefHeight() {
-				return tableHeight;
-			}
-
+		scrollList = new ScrollList<MinifiedGame>(skin) {
 			@Override
-			public float getPrefWidth() {
-				return width;
+			public void buildCell(MinifiedGame item, Group group) {
+				createGameEntry(item, group);
 			}
 		};
-		scrollPane.setScrollingDisabled(true, false);
-		scrollPane.setFadeScrollBars(false);
-		scrollPane.setX(0);
-		scrollPane.setY(0);
-		scrollPane.setWidth(width);
-		scrollPane.setHeight(tableHeight);
+		scrollList.setX(0);
+		scrollList.setY(0);
+		scrollList.setWidth(width);
+		scrollList.setHeight(tableHeight);
 
-		actors.add(scrollPane);
-		stage.addActor(scrollPane);
+		actors.add(scrollList);
+		stage.addActor(scrollList);
 
 		this.stage = stage;
 

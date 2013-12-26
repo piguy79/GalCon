@@ -25,7 +25,6 @@ import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.Strings;
-import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -279,7 +278,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		@Override
 		public PartialScreenFeedback processValue(Object value) {
 			String action = (String) value;
-			if (action.endsWith(Action.DIALOG_CANCEL)) {
+			if (action.equals(Action.BACK)) {
 				return mainMenuScreen;
 			}
 

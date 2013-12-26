@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -41,6 +42,19 @@ public class UISkin extends Skin {
 			TextureRegionDrawable cursor = new TextureRegionDrawable(menusAtlas.findRegion("cursor"));
 			add(Constants.UI.TEXT_FIELD, new ShaderTextFieldStyle(Fonts.getInstance(assetManager).mediumFont(),
 					Color.BLACK, cursor, null, trd));
+		}
+		/*
+		 * TextButton
+		 */
+		{
+			TextButtonStyle tbs = new TextButtonStyle();
+			tbs.font = Fonts.getInstance(assetManager).mediumFont();
+			add(Constants.UI.GRAY_BUTTON_TEXT, tbs);
+		}
+		{
+			TextButtonStyle tbs = new TextButtonStyle();
+			tbs.font = Fonts.getInstance(assetManager).mediumFont();
+			add(Constants.UI.GREEN_BUTTON_TEXT, tbs);
 		}
 		/*
 		 * Colors
@@ -80,6 +94,14 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
 			add(Constants.UI.DIALOG_BG, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("green_button"));
+			add(Constants.UI.GREEN_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("black_grey_button"));
+			add(Constants.UI.GRAY_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 
 		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(
