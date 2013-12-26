@@ -166,6 +166,14 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		vsLabel.setY(rowHeight * 0.6f);
 		group.addActor(vsLabel);
 
+		if(game.moveAvailable) {
+			ShaderLabel yourMoveLabel = new ShaderLabel(fontShader, "--your move--", skin, Constants.UI.DEFAULT_FONT_GREEN);
+			yourMoveLabel.setAlignment(Align.center);
+			yourMoveLabel.setWidth(width);
+			yourMoveLabel.setY(rowHeight * 0.4f);
+			group.addActor(yourMoveLabel);
+		}
+		
 		String mapTitle = "";
 		if (allMaps != null) {
 			for (Map map : allMaps.allMaps) {
