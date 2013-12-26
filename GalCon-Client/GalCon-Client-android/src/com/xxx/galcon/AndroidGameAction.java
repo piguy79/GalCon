@@ -43,6 +43,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.AndroidGameActionCache.MapsCache;
 import com.xxx.galcon.config.Configuration;
@@ -97,11 +98,21 @@ public class AndroidGameAction implements GameAction {
 					Log.i(TAG, "Silent sign in succeeded.  Session retrieved.");
 					AndroidGameAction.this.setSession(result.session);
 					if (savedRequestParams.args != null) {
+						savedRequestParams.args.put("session", getSession());
 						new GetJsonRequestTask<T>(savedRequestParams.args, savedRequestParams.callback,
 								savedRequestParams.path, savedRequestParams.converter).execute("");
 					} else {
-						new PostJsonRequestTask<T>(savedRequestParams.callback, savedRequestParams.path,
-								savedRequestParams.converter).execute(savedRequestParams.params);
+						try {
+							JSONObject object = new JSONObject(savedRequestParams.params[0]);
+							object.put("session", getSession());
+
+							new PostJsonRequestTask<T>(savedRequestParams.callback, savedRequestParams.path,
+									savedRequestParams.converter).execute(object.toString());
+						} catch (JSONException e) {
+							Log.e(TAG, "Could not reconstructor json request", e);
+							Crashlytics.logException(e);
+							gameLoop.reset();
+						}
 					}
 				}
 
