@@ -136,6 +136,10 @@ public class UISkin extends Skin {
 		textureRegionDrawable = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
 		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		
+		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("refresh"));
+		add("refreshButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
+				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
 
 	}
 }

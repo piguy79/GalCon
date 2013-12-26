@@ -58,7 +58,8 @@ public class MoveHud extends Table {
 	
 	private void addPerformMoveButton() {
 		if(!GameLoop.USER.hasMoved(gameBoard)){
-			ActionButton performMove =  new ActionButton(skin,"performMoveButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
+			float buttonSize = getHeight() * 0.85f;
+			ActionButton performMove =  new ActionButton(skin,"performMoveButton", buttonSize, buttonSize, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
@@ -77,9 +78,9 @@ public class MoveHud extends Table {
 		moveButtonHolder.setWidth(getWidth() * 0.95f);
 		moveButtonHolder.setHeight(getHeight() * 0.95f);
 		
-		moveButtonHolder.pad(5);
+		moveButtonHolder.pad(getWidth() * 0.05f);
 		
-		moveButtonHolder.left().bottom().pad(5).padLeft(5).padRight(5).padBottom(getHeight() * 0.12f).defaults().width(getWidth() * 0.15f)
+		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.5f).padBottom(getHeight() * 0.12f).defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.15f)
 		.height(getHeight() * 0.85f);
 		
 		scrollPane = new ScrollPane(moveButtonHolder);
@@ -114,7 +115,7 @@ public class MoveHud extends Table {
 	}
 	
 	public void addMove(Move move){
-		if(move.playerHandle.equals(GameLoop.USER.handle)){
+		if(move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0){
 			addMoveToMap(move);
 			renderMoves();
 		}
@@ -140,6 +141,10 @@ public class MoveHud extends Table {
 			renderMoves();
 		}}));
 		
+	}
+
+	public void removeMoves() {
+		moves.clear();
 	}
 
 }

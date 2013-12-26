@@ -48,11 +48,14 @@ public class MoveDialog extends Dialog {
 	
 	private List<Planet> planetsInvolved;
 	
+	private int currentRound;
+	
 
-	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin) {
+	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin, int currentRound) {
 		super(assetManager, width, height);
 		this.skin = skin;
 		this.max = max;
+		this.currentRound = currentRound;
 		this.planetsInvolved = new ArrayList<Planet>();
 		planetsInvolved.add(fromPlanet);
 		planetsInvolved.add(toPlanet);
@@ -133,7 +136,7 @@ public class MoveDialog extends Dialog {
 		
 		okButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Move move = MoveFactory.createMove(planetsInvolved, shipsToSend);
+			Move move = MoveFactory.createMove(planetsInvolved, shipsToSend, currentRound);
 			fire(new MoveEvent(move));
 		}});
 		addActor(okButton);
