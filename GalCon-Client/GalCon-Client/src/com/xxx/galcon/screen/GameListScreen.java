@@ -215,6 +215,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private void startHideSequence(final Object retVal) {
+		waitImage.stop();
 		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
 			@Override
 			public void run() {

@@ -16,7 +16,7 @@ public class Fonts {
 
 	private Fonts() {
 		float width = Gdx.graphics.getWidth();
-		float scaleFactor = width / 720.0f;
+		float scaleFactor = width / 680.0f;
 
 		smallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		smallFont.getRegion().getTexture().setFilter(Linear, Linear);

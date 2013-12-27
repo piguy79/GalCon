@@ -11,7 +11,6 @@ public class ShaderLabel extends Label {
 
 	public ShaderLabel(ShaderProgram shader, CharSequence text, Skin skin, String styleName) {
 		super(text, skin, styleName);
-
 		this.shader = shader;
 	}
 

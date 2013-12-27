@@ -1,51 +1,27 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.xxx.galcon.Fonts;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.xxx.galcon.Constants;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class TextOverlay extends Overlay {
 
-	private String[] textLines;
-	private String fontSize = "large";
+	private ShaderLabel shaderLabel;
 
-	private AssetManager assetManager;
+	public TextOverlay(String text, TextureAtlas menusAtlas, Skin skin, ShaderProgram fontShader) {
+		super(menusAtlas);
+		shaderLabel = new ShaderLabel(fontShader, text, skin, Constants.UI.DEFAULT_FONT);
 
-	public TextOverlay(String text, String fontSize, TextureAtlas menusAtlas, AssetManager assetManager) {
-		this(text, menusAtlas, true, assetManager);
-		this.fontSize = fontSize;
-	}
-
-	public TextOverlay(String text, TextureAtlas menusAtlas, boolean displayOverlayTexture, AssetManager assetManager) {
-		super(menusAtlas, displayOverlayTexture);
-		this.textLines = text.split("\n");
-		this.assetManager = assetManager;
+		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
+		shaderLabel.setBounds(0, y, Gdx.graphics.getWidth(), shaderLabel.getHeight());
 	}
 
 	@Override
-	protected void doCustomRender(float delta, SpriteBatch spriteBatch) {
-		BitmapFont font;
-		if (fontSize.equals("large")) {
-			font = Fonts.getInstance(assetManager).largeFont();
-		} else if (fontSize.equals("medium")) {
-			font = Fonts.getInstance(assetManager).mediumFont();
-		} else {
-			font = Fonts.getInstance(assetManager).smallFont();
-		}
-
-		int lineHeight = (int) (Gdx.graphics.getHeight() * 0.1);
-		int y = (int) (Gdx.graphics.getHeight() * 0.4f) + lineHeight * textLines.length;
-		for (int i = 0; i < textLines.length; ++i) {
-			String text = textLines[i];
-			float width = font.getBounds(text).width;
-
-			int x = (int) (Gdx.graphics.getWidth() / 2 - width / 2);
-			font.draw(spriteBatch, text, x, y);
-
-			y -= lineHeight;
-		}
+	protected void doCustomRender(SpriteBatch batch) {
+		shaderLabel.draw(batch, 0.5f);
 	}
 }

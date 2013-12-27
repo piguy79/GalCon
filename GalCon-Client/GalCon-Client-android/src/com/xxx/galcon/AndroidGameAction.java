@@ -160,7 +160,7 @@ public class AndroidGameAction implements GameAction {
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, new AvailableGames())
+				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, AvailableGames.class)
 						.execute("");
 			}
 		});
@@ -176,7 +176,7 @@ public class AndroidGameAction implements GameAction {
 			mapCache.setDelegate(callback);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, new Maps())
+					new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, Maps.class)
 							.execute("");
 				}
 			});
@@ -190,7 +190,7 @@ public class AndroidGameAction implements GameAction {
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<GameBoard>(args, callback, JOIN_GAME, new GameBoard()).execute("");
+				new GetJsonRequestTask<GameBoard>(args, callback, JOIN_GAME, GameBoard.class).execute("");
 			}
 		});
 	}
@@ -204,7 +204,7 @@ public class AndroidGameAction implements GameAction {
 
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback, MATCH_PLAYER_TO_GAME, new GameBoard()).execute(top
+					new PostJsonRequestTask<GameBoard>(callback, MATCH_PLAYER_TO_GAME, GameBoard.class).execute(top
 							.toString());
 				}
 			});
@@ -220,7 +220,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, new GameBoard()).execute(top.toString());
+					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, GameBoard.class).execute(top.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -238,7 +238,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, ADD_COINS, new Player()).execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, ADD_COINS, Player.class).execute(top.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -257,7 +257,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, new Player()).execute(top
+					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, Player.class).execute(top
 							.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -277,7 +277,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, new Player()).execute(top
+					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top
 							.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -297,7 +297,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining, usedCoins);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, new Player()).execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
 					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
@@ -314,7 +314,7 @@ public class AndroidGameAction implements GameAction {
 		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, new GameBoard()).execute("");
+				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, GameBoard.class).execute("");
 			}
 		});
 	}
@@ -327,7 +327,7 @@ public class AndroidGameAction implements GameAction {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_CURRENT_GAMES_BY_PLAYER_HANDLE,
-						new AvailableGames()).execute("");
+						AvailableGames.class).execute("");
 			}
 		});
 	}
@@ -339,7 +339,7 @@ public class AndroidGameAction implements GameAction {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
-						new AvailableGames()).execute("");
+						AvailableGames.class).execute("");
 			}
 		});
 	}
@@ -351,7 +351,7 @@ public class AndroidGameAction implements GameAction {
 		args.put("session", session);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_EMAIL, new Player()).execute("");
+				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_EMAIL, Player.class).execute("");
 			}
 		});
 	}
@@ -362,7 +362,7 @@ public class AndroidGameAction implements GameAction {
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, new Inventory())
+				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, Inventory.class)
 						.execute("");
 			}
 		});
@@ -375,7 +375,7 @@ public class AndroidGameAction implements GameAction {
 		args.put("type", type);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Configuration>(args, callback, FIND_CONFIG_BY_TYPE, new Configuration())
+				new GetJsonRequestTask<Configuration>(args, callback, FIND_CONFIG_BY_TYPE, Configuration.class)
 						.execute("");
 			}
 		});
@@ -387,7 +387,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.requestHandle(email, handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_EMAIL, new HandleResponse())
+					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_EMAIL, HandleResponse.class)
 							.execute(top.toString());
 				}
 			});
@@ -398,8 +398,8 @@ public class AndroidGameAction implements GameAction {
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
 
-		public PostJsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter) {
-			super(callback, path, converter, null);
+		public PostJsonRequestTask(UIConnectionResultCallback<T> callback, String path, Class<T> converterClass) {
+			super(callback, path, converterClass, null);
 		}
 
 		@Override
@@ -412,8 +412,8 @@ public class AndroidGameAction implements GameAction {
 		private Map<String, String> args;
 
 		public GetJsonRequestTask(Map<String, String> args, UIConnectionResultCallback<T> callback, String path,
-				JsonConvertible converter) {
-			super(callback, path, converter, args);
+				Class<T> converterClass) {
+			super(callback, path, converterClass, args);
 			this.args = args;
 		}
 
@@ -426,7 +426,7 @@ public class AndroidGameAction implements GameAction {
 	private class RequestParams<T> {
 		public Map<String, String> args;
 		public String path;
-		public JsonConvertible converter;
+		public Class<T> converter;
 		public UIConnectionResultCallback<T> callback;
 		public String[] params;
 	}
@@ -439,14 +439,20 @@ public class AndroidGameAction implements GameAction {
 
 		private RequestParams<T> savedParams = new RequestParams<T>();
 
-		public JsonRequestTask(UIConnectionResultCallback<T> callback, String path, JsonConvertible converter,
+		public JsonRequestTask(UIConnectionResultCallback<T> callback, String path, Class<T> converterClass,
 				Map<String, String> args) {
 			this.path = path;
-			this.converter = converter;
+			try {
+				this.converter = converterClass.newInstance();
+			} catch (InstantiationException e) {
+				Log.e(TAG, "Could not create converter class", e);
+			} catch (IllegalAccessException e) {
+				Log.e(TAG, "Could not create converter class", e);
+			}
 			this.callback = callback;
 
 			savedParams.path = path;
-			savedParams.converter = converter;
+			savedParams.converter = converterClass;
 			savedParams.callback = callback;
 			savedParams.args = args;
 		}
@@ -562,7 +568,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.userWithTime(playerHandle);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, new Player()).execute(top
+					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
 							.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -581,7 +587,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.exchangeToken(authProvider, token);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Session>(callback, EXCHANGE_TOKEN_FOR_SESSION, new Session()).execute(top
+					new PostJsonRequestTask<Session>(callback, EXCHANGE_TOKEN_FOR_SESSION, Session.class).execute(top
 							.toString());
 				}
 			});

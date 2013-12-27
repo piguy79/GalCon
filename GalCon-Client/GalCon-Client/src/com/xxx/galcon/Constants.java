@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Constants {
-	public static final String APP_TITLE = "GalCon";
+	public static final String APP_TITLE = "Solar Smash";
 
 	public static class UI {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";

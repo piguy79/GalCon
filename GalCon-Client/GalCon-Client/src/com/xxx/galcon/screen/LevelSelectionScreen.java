@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Fonts;
@@ -32,6 +33,10 @@ import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.screen.hud.HeaderHud;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class LevelSelectionScreen implements PartialScreenFeedback, UIConnectionResultCallback<Maps> {
 
@@ -40,8 +45,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private AssetManager assetManager;
 	private ShaderProgram fontShader;
-
-	private String loadingMessage = "Loading...";
 
 	private AtlasRegion levelSelectBgBottom;
 	private AtlasRegion levelSelectionCard;
@@ -52,14 +55,15 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private Skin skin;
 	private Stage stage;
 	private Table cardTable;
-	private Actor loadingTextActor;
 	private Actor choiceActor;
 	private ImageButton backButton;
+	protected WaitImageButton waitImage;
 
 	private Array<Actor> actors = new Array<Actor>();
 
 	private TextureAtlas levelSelectionAtlas;
 	private TextureAtlas levelsAtlas;
+	private TextureAtlas menusAtlas;
 
 	public LevelSelectionScreen(Skin skin, AssetManager assetManager) {
 		this.assetManager = assetManager;
@@ -69,6 +73,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		levelsAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
+		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 	}
 
 	@Override
@@ -77,6 +82,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	}
 
 	private void startHideSequence(final String retVal) {
+		waitImage.stop();
 		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
 			@Override
 			public void run() {
@@ -97,6 +103,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	@Override
 	public void onConnectionResult(Maps result) {
+		waitImage.stop();
 		this.allMaps = result.allMaps;
 		Collections.sort(this.allMaps, new Comparator<Map>() {
 			@Override
@@ -155,7 +162,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(choiceActor);
 		stage.addActor(choiceActor);
 
-		loadingTextActor.remove();
 		actors.add(cardTable);
 		stage.addActor(cardTable);
 
@@ -221,8 +227,17 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	@Override
 	public void onConnectionError(String msg) {
-		// TODO Auto-generated method stub
+		waitImage.stop();
 
+		final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(msg + "\n\nTouch to retry",
+				menusAtlas, skin, fontShader), new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				UIConnectionWrapper.findAllMaps(LevelSelectionScreen.this);
+			}
+		});
+
+		stage.addActor(ovrlay);
 	}
 
 	private class CardActor extends Actor {
@@ -288,6 +303,14 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		this.stage = stage;
 		this.actors.clear();
 
+		waitImage = new WaitImageButton(skin);
+		float buttonWidth = .25f * (float) width;
+		waitImage.setWidth(buttonWidth);
+		waitImage.setHeight(buttonWidth);
+		waitImage.setX(width / 2 - buttonWidth / 2);
+		waitImage.setY(height / 2 - buttonWidth / 2);
+		stage.addActor(waitImage);
+
 		int tableHeight = (int) (height * .7f);
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 
@@ -338,23 +361,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(backButton);
 		stage.addActor(backButton);
 
-		loadingTextActor = new Actor() {
-			@Override
-			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).smallFont();
-
-				float halfFontWidth = font.getBounds(loadingMessage).width / 2;
-				batch.setShader(fontShader);
-				font.draw(batch, loadingMessage, getX() + getWidth() / 2 - halfFontWidth, getHeight() * .4f);
-				batch.setShader(null);
-			}
-		};
-		loadingTextActor.setWidth(width);
-		loadingTextActor.setHeight(height);
-		actors.add(loadingTextActor);
-		stage.addActor(loadingTextActor);
-
 		if (allMaps == null) {
+			waitImage.start();
 			UIConnectionWrapper.findAllMaps(this);
 		} else {
 			Maps maps = new Maps();

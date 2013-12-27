@@ -1,46 +1,29 @@
 package com.xxx.galcon.screen.overlay;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.xxx.galcon.InGameInputProcessor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class DismissableOverlay extends Overlay {
 
 	private Overlay delegate;
-	private boolean dismissed = false;
-	private PostDismissAction postDismissAction;
 
-	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate) {
-		super(menusAtlas, delegate.isDisplayOverlayTexture());
+	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, ClickListener clickListener) {
+		super(menusAtlas);
 		this.delegate = delegate;
-		postDismissAction = new PostDismissAction() {
 
+		this.addListener(new ClickListener() {
 			@Override
-			public void apply() {
+			public void clicked(InputEvent event, float x, float y) {
+				DismissableOverlay.this.remove();
 			}
-		};
-	}
-
-	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, PostDismissAction postDismissAction) {
-		super(menusAtlas, delegate.isDisplayOverlayTexture());
-		this.delegate = delegate;
-		this.postDismissAction = postDismissAction;
+		});
+		this.addListener(clickListener);
 	}
 
 	@Override
-	protected void doCustomRender(float delta, SpriteBatch spriteBatch) {
-		delegate.doCustomRender(delta, spriteBatch);
-
-		InGameInputProcessor ip = (InGameInputProcessor) Gdx.input.getInputProcessor();
-		if (ip.didTouch()) {
-			dismissed = true;
-			postDismissAction.apply();
-			ip.consumeTouch();
-		}
-	}
-
-	public boolean isDismissed() {
-		return dismissed;
+	protected void doCustomRender(SpriteBatch batch) {
+		delegate.doCustomRender(batch);
 	}
 }

@@ -4,35 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public abstract class Overlay {
+public abstract class Overlay extends Actor {
 
 	private TextureRegion blackBackground;
-	private SpriteBatch spriteBatch;
-	private boolean displayOverlayTexture;
 
-	public Overlay(TextureAtlas menusAtlas, boolean displayOverlayTexture) {
+	public Overlay(TextureAtlas menusAtlas) {
 		blackBackground = menusAtlas.findRegion("transparent_square");
-		spriteBatch = new SpriteBatch();
-		this.displayOverlayTexture = displayOverlayTexture;
+		this.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	public void render(float delta) {
-		spriteBatch.begin();
-
-		if (displayOverlayTexture) {
-			spriteBatch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		}
-
-		doCustomRender(delta, spriteBatch);
-
-		spriteBatch.end();
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		batch.draw(blackBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		doCustomRender(batch);
 	}
 
-	protected abstract void doCustomRender(float delta, SpriteBatch spriteBatch);
-
-	public boolean isDisplayOverlayTexture() {
-		return displayOverlayTexture;
-	}
-
+	protected abstract void doCustomRender(SpriteBatch batch);
 }
