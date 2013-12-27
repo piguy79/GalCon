@@ -252,6 +252,15 @@ public class MenuScreenContainer implements ScreenFeedback {
 			String action = (String) value;
 			if (action.equals(Action.BACK)) {
 				return mainMenuScreen;
+			} else {
+				currentScreen.hide();
+				currentScreen = mainMenuScreen;
+				currentScreen.resetState();
+				if (currentScreen.hideTitleArea()) {
+					titleText.remove();
+				} else {
+					stage.addActor(titleText);
+				}
 			}
 
 			return null;
