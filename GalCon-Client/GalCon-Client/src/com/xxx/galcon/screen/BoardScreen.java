@@ -278,26 +278,35 @@ public class BoardScreen implements ScreenFeedback {
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 		float yOffset = boardTable.getY();
 
-		TextureRegionDrawable planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("planet2"));
+		TextureRegionDrawable planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("base_planet"));
 
-		float minPlanetWidth = tileWidthInWorld * 0.6f;
-		float minPlanetHeight = tileHeightInWorld * 0.6f;
-		planetTexture.setMinWidth(minPlanetWidth);
-		planetTexture.setMinHeight(minPlanetHeight);
+		float minPlanetSize = tileWidthInWorld * 0.4f;
+		planetTexture.setMinWidth(minPlanetSize);
+		planetTexture.setMinHeight(minPlanetSize);
 
 		TextButtonStyle style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(
 				assetManager).mediumFont());
 		for (final Planet planet : gameBoard.planets) {
 			float maxExpand = 5;
 			float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
-			planetTexture.setMinWidth(minPlanetWidth + ((minPlanetWidth * 0.2f) * expand));
-			planetTexture.setMinHeight(minPlanetHeight + ((minPlanetHeight * 0.2f) * expand));
+			float newPlanetSize = minPlanetSize + ((tileWidthInWorld * 0.08f) * expand);
+			planetTexture.setMinWidth(newPlanetSize);
+			planetTexture.setMinHeight(newPlanetSize);
 			final PlanetButton planetButton = new PlanetButton(fontShader, ""
 					+ planet.numberOfShipsToDisplay(gameBoard, roundHasAlreadyBeenAnimated()), style, planet);
 
 			planetButton.setX(tileWidthInWorld * planet.position.x);
 			planetButton.setY((tileHeightInWorld * planet.position.y) + yOffset);
 			planetButton.setColor(planet.getColor());
+			
+			
+			
+			//TextureRegion lineRegion = gameBoardAtlas.findRegion("line");
+			//Line line = new Line(new Color(0.9f, 0, 0, 1), 10, lineRegion);
+			//line.setHeight(10);
+			//line.setX(tileWidthInWorld * planet.position.x);
+			//line.setY((tileHeightInWorld * planet.position.y) + yOffset);
+			//stage.addActor(line);
 
 			planetButton.addListener(new ClickListener() {
 
