@@ -299,14 +299,12 @@ public class BoardScreen implements ScreenFeedback {
 			planetButton.setY((tileHeightInWorld * planet.position.y) + yOffset);
 			planetButton.setColor(planet.getColor());
 			
+			float xAdjust = (tileWidthInWorld / 2) - (planetButton.getWidth() / 2);
+			planetButton.setX(planetButton.getX() + xAdjust);
 			
+			float yAdjust = (tileHeightInWorld / 2) - (planetButton.getHeight() / 2);
+			planetButton.setY(planetButton.getY() + yAdjust);
 			
-			//TextureRegion lineRegion = gameBoardAtlas.findRegion("line");
-			//Line line = new Line(new Color(0.9f, 0, 0, 1), 10, lineRegion);
-			//line.setHeight(10);
-			//line.setX(tileWidthInWorld * planet.position.x);
-			//line.setY((tileHeightInWorld * planet.position.y) + yOffset);
-			//stage.addActor(line);
 
 			planetButton.addListener(new ClickListener() {
 
