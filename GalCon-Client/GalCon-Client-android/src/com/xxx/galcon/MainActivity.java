@@ -12,7 +12,6 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
@@ -25,7 +24,6 @@ import com.xxx.galcon.inappbilling.util.IabHelper.QueryInventoryFinishedListener
 import com.xxx.galcon.inappbilling.util.IabResult;
 import com.xxx.galcon.inappbilling.util.Purchase;
 import com.xxx.galcon.inappbilling.util.SkuDetails;
-import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Order;
@@ -58,7 +56,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Crashlytics.start(this);
+		// Crashlytics.start(this);
 
 		setupAdColony();
 
@@ -103,11 +101,10 @@ public class MainActivity extends AndroidApplication {
 
 			@Override
 			public void onConnectionResult(Inventory result) {
-				gameAction.loadStoreInventory(result, new StoreResultCallback<Inventory>() {
+				gameAction.loadStoreInventory(result, new UIConnectionResultCallback<Inventory>() {
 
 					@Override
-					public void onResult(final Inventory inventory) {
-
+					public void onConnectionResult(final Inventory inventory) {
 						mHelper.queryInventoryAsync(true, inventory.skus(), new QueryInventoryFinishedListener() {
 
 							@Override
@@ -125,6 +122,12 @@ public class MainActivity extends AndroidApplication {
 
 							}
 						});
+					}
+
+					@Override
+					public void onConnectionError(String msg) {
+						// TODO Auto-generated method stub
+
 					}
 				});
 			}
@@ -217,7 +220,7 @@ public class MainActivity extends AndroidApplication {
 		});
 	}
 
-	public void loadInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
+	public void loadInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
 
 		List<String> skuDetail = new ArrayList<String>();
 
@@ -246,8 +249,7 @@ public class MainActivity extends AndroidApplication {
 
 				Inventory inventory = new Inventory();
 				inventory.inventory = mappedInventoryItems;
-				callback.onResult(inventory);
-
+				callback.onConnectionResult(inventory);
 			}
 		});
 	}

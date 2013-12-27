@@ -5,7 +5,6 @@ import java.util.List;
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
-import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
@@ -74,7 +73,7 @@ public interface GameAction {
 
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback);
 
-	public void loadStoreInventory(Inventory inventory, StoreResultCallback<Inventory> callback);
+	public void loadStoreInventory(Inventory inventory, UIConnectionResultCallback<Inventory> callback);
 
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 

@@ -53,7 +53,6 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
@@ -529,7 +528,7 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
+	public void loadStoreInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
 		activity.runOnUiThread(new Runnable() {
 
 			@Override

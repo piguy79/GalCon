@@ -44,7 +44,6 @@ import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
-import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
@@ -191,7 +190,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void loadStoreInventory(final Inventory inventory, final StoreResultCallback<Inventory> callback) {
+	public void loadStoreInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
 		Inventory stock = new Inventory();
 		stock.inventory = inventory.inventory;
 
@@ -201,7 +200,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		inventoryItem = new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
 		stock.inventory.add(inventoryItem);
 
-		callback.onResult(stock);
+		callback.onConnectionResult(stock);
 	}
 
 	private InventoryItem createDummyInventoryItem() {

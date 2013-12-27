@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
@@ -18,6 +19,7 @@ public class TextOverlay extends Overlay {
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
 		shaderLabel.setBounds(0, y, Gdx.graphics.getWidth(), shaderLabel.getHeight());
+		shaderLabel.setAlignment(Align.center, Align.center);
 	}
 
 	@Override

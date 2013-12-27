@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -29,18 +30,19 @@ import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.inappbilling.util.StoreResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.hud.HeaderHud;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextButton;
+import com.xxx.galcon.screen.widget.WaitImageButton;
 
-public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player>,
-		StoreResultCallback<Inventory> {
-
+public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player>{
 	private Stage stage;
 	private Skin skin;
 	private Array<Actor> actors = new Array<Actor>();
@@ -51,10 +53,12 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private ImageButton timeRemaining;
 	private ShaderTextButton timeRemainingText;
 	private ImageButton backButton;
+	protected WaitImageButton waitImage;
 
 	private Object returnValue;
 
 	private AssetManager assetManager;
+	private TextureAtlas menusAtlas;
 
 	private Inventory inventoryResult;
 
@@ -63,6 +67,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		this.skin = skin;
 		this.assetManager = assetManager;
 
+		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		timeRemaining = new ImageButton(skin, Constants.UI.GRAY_BUTTON);
@@ -257,23 +262,27 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	@Override
 	public void onConnectionError(String msg) {
-
-	}
-
-	@Override
-	public void onResult(Inventory result) {
-		inventoryResult = result;
-		createLayout(stage, result);
+		
 	}
 
 	@Override
 	public void show(Stage stage, float width, float height) {
 		actors.clear();
 		this.stage = stage;
+
+		waitImage = new WaitImageButton(skin);
+		float buttonWidth = .25f * (float) width;
+		waitImage.setWidth(buttonWidth);
+		waitImage.setHeight(buttonWidth);
+		waitImage.setX(width / 2 - buttonWidth / 2);
+		waitImage.setY(height / 2 - buttonWidth / 2);
+		stage.addActor(waitImage);
+
 		if (inventoryResult == null) {
-			ExternalActionWrapper.loadStoreInventory(this);
+			waitImage.start();
+			ExternalActionWrapper.loadStoreInventory(inventoryCallback);
 		} else {
-			onResult(inventoryResult);
+			inventoryCallback.onConnectionResult(inventoryResult);
 		}
 	}
 
@@ -281,4 +290,28 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	public boolean hideTitleArea() {
 		return true;
 	}
+	
+	private UIConnectionResultCallback<Inventory> inventoryCallback = new UIConnectionResultCallback<Inventory>() {
+
+		@Override
+		public void onConnectionResult(Inventory result) {
+			inventoryResult = result;
+			createLayout(stage, result);
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			waitImage.stop();
+
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(msg, menusAtlas, skin, fontShader),
+					new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							ExternalActionWrapper.loadStoreInventory(inventoryCallback);
+						}
+					});
+
+			stage.addActor(ovrlay);
+		}
+	};
 }

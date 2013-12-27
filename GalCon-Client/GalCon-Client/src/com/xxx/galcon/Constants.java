@@ -38,7 +38,7 @@ public class Constants {
 		public static final String EMAIL = "email";
 	}
 
-	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect. Please try again.";
+	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect.\n\nTouch the screen\nto try again.";
 	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
 	public static final String PLANETS = "planets";
