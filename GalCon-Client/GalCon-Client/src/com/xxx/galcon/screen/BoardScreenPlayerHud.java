@@ -1,7 +1,5 @@
 package com.xxx.galcon.screen;
 
-import java.util.List;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -95,7 +93,7 @@ public class BoardScreenPlayerHud extends Table {
 		ImageButtonStyle style = new ImageButtonStyle(trd, trd, trd, trd, trd, trd);
 		ImageButton imagebutton = new ImageButton(style);
 		imagebutton.setHeight(getHeight());
-		imagebutton.setWidth(getWidth() * 0.1f);
+		imagebutton.setWidth(getWidth() * 0.08f);
 		
 		
 		return imagebutton;

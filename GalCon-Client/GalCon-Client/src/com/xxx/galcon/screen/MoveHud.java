@@ -68,14 +68,13 @@ public class MoveHud extends Table {
 			});
 			addActor(performMove);
 		}
-		
 	}
 	
 
 
 	private void addMoveButtons() {
 		moveButtonHolder = new Table();
-		moveButtonHolder.setWidth(getWidth() * 0.95f);
+		moveButtonHolder.setWidth(getWidth() * 0.7f);
 		moveButtonHolder.setHeight(getHeight() * 0.95f);
 		
 		moveButtonHolder.pad(getWidth() * 0.05f);

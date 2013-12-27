@@ -33,7 +33,6 @@ public class MoveButton extends Table {
 		this.skin = skin;
 		this.fontShader = fontShader;
 		this.gameBoard = gameBoard;
-		setFillParent(false);
 		setWidth(width);
 		setHeight(height);
 		

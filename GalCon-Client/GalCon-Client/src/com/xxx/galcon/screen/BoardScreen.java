@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
@@ -546,9 +545,11 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
-			setGameBoard(result);
 			inProgressMoves.clear();
+			inProgressHarvest.clear();
 			clearTouchedPlanets();
+			planetToMoveCount.clear();
+			setGameBoard(result);
 		}
 
 		@Override
