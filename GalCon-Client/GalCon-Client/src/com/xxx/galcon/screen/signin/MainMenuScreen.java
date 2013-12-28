@@ -1,10 +1,5 @@
 package com.xxx.galcon.screen.signin;
 
-import static com.badlogic.gdx.math.Interpolation.pow3;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
 
 import org.joda.time.DateTime;
@@ -20,8 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.Fonts;
@@ -29,6 +26,8 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.screen.Action;
+import com.xxx.galcon.screen.GraphicsUtils;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class MainMenuScreen implements PartialScreenFeedback {
@@ -45,6 +44,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private float percent;
 
 	private Actor loadingBar;
+
+	private Array<Actor> actors = new Array<Actor>();
 
 	private AssetManager assetManager;
 
@@ -93,6 +94,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 		});
 		stage.addActor(newLabel);
+		actors.add(newLabel);
 
 		continueLabel = new ShaderLabel(fontShader, Strings.CONTINUE, skin, Constants.UI.DEFAULT_FONT);
 		continueLabel.setAlignment(Align.center);
@@ -111,22 +113,23 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 		});
 		stage.addActor(continueLabel);
+		actors.add(continueLabel);
+
+		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
+		GraphicsUtils.setCommonButtonSize(coinImage);
+		coinImage.setX(width * 0.96f - coinImage.getWidth());
+		coinImage.setY(height * 0.97f - coinImage.getHeight());
+		stage.addActor(coinImage);
+		actors.add(coinImage);
 	}
 
 	private void startHideSequence(final String retVal) {
-		newLabel.addAction(sequence(delay(0.25f), moveTo(-Gdx.graphics.getWidth(), newLabel.getY(), 0.9f, pow3)));
-
-		continueLabel.addAction(sequence(delay(0.25f),
-				moveTo(-Gdx.graphics.getWidth(), continueLabel.getY(), 0.9f, pow3), run(new Runnable() {
-					@Override
-					public void run() {
-						returnValue = retVal;
-
-						newLabel.remove();
-						continueLabel.remove();
-					}
-				})));
-
+		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
+			@Override
+			public void run() {
+				returnValue = retVal;
+			}
+		});
 	}
 
 	private String currentUserText() {
@@ -163,6 +166,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	@Override
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
+		actors.clear();
 
 		addElementsToStage();
 

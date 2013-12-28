@@ -32,7 +32,6 @@ import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
-import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -312,7 +311,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		stage.addActor(waitImage);
 
 		int tableHeight = (int) (height * .7f);
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 
 		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
 		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_black");
@@ -325,10 +323,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		cardTable.setHeight(tableHeight);
 
 		backButton = new ImageButton(skin, "backButton");
+		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
-		backButton.setY(height - buttonHeight - 5);
-		backButton.setWidth(buttonHeight);
-		backButton.setHeight(buttonHeight);
+		backButton.setY(height - backButton.getHeight() - 5);
 		backButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

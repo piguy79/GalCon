@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 arrow_left_small_black
   rotate: false
-  xy: 948, 966
+  xy: 952, 966
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 948, 908
+  xy: 952, 908
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
@@ -26,58 +26,58 @@ arrow_solid_line
   index: -1
 back
   rotate: false
-  xy: 804, 528
+  xy: 804, 731
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
 bg
   rotate: false
-  xy: 2, 59
+  xy: 2, 413
   size: 800, 609
   orig: 800, 609
   offset: 0, 0
   index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 779, 11
+  xy: 804, 431
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
+coin
+  rotate: false
+  xy: 804, 873
+  size: 146, 149
+  orig: 146, 149
+  offset: 0, 0
+  index: -1
 cursor
   rotate: false
-  xy: 945, 486
+  xy: 945, 689
   size: 15, 182
   orig: 15, 182
   offset: 0, 0
   index: -1
 dialog_bg
   rotate: false
-  xy: 2, 670
+  xy: 2, 59
   size: 944, 352
   orig: 944, 352
   offset: 0, 0
   index: -1
 end_turn
   rotate: false
-  xy: 804, 386
+  xy: 804, 589
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
 forward
   rotate: false
-  xy: 804, 244
+  xy: 804, 447
   size: 139, 140
   orig: 139, 140
-  offset: 0, 0
-  index: -1
-refresh
-  rotate: false
-  xy: 804, 114
-  size: 128, 128
-  orig: 128, 128
   offset: 0, 0
   index: -1
 slider_bg
@@ -85,13 +85,6 @@ slider_bg
   xy: 2, 2
   size: 775, 55
   orig: 775, 55
-  offset: 0, 0
-  index: -1
-transparent_square
-  rotate: false
-  xy: 894, 12
-  size: 100, 100
-  orig: 100, 100
   offset: 0, 0
   index: -1
 
@@ -108,37 +101,44 @@ arrow_left
   index: -1
 black_grey_button
   rotate: false
-  xy: 604, 341
+  xy: 604, 266
   size: 373, 80
   orig: 373, 80
   offset: 0, 0
   index: -1
 cancel_button
   rotate: false
-  xy: 2, 2
+  xy: 604, 13
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 green_button
   rotate: false
-  xy: 508, 118
+  xy: 255, 32
   size: 300, 100
   orig: 300, 100
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 255, 2
+  xy: 2, 2
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 rect_button_blank
   rotate: false
-  xy: 604, 220
+  xy: 255, 134
   size: 338, 119
   orig: 338, 119
+  offset: 0, 0
+  index: -1
+refresh
+  rotate: false
+  xy: 852, 852
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
 textFieldBg
@@ -148,9 +148,16 @@ textFieldBg
   orig: 848, 155
   offset: 0, 0
   index: -1
+transparent_square
+  rotate: false
+  xy: 852, 750
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
 wait
   rotate: false
-  xy: 604, 423
+  xy: 604, 348
   size: 400, 400
   orig: 400, 400
   offset: 0, 0

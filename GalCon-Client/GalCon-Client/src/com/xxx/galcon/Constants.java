@@ -27,6 +27,7 @@ public class Constants {
 		public static final String GRAY_BUTTON = "grayButton";
 		public static final String GRAY_BUTTON_TEXT = "grayButtonText";
 		public static final String CELL_BG = "cellBg";
+		public static final String COIN = "coin";
 		public static final String DIALOG_BG = "dialogBg";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
 	}

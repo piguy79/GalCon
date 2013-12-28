@@ -9,6 +9,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.xxx.galcon.screen.hud.HeaderHud;
 
 public class GraphicsUtils {
 
@@ -43,5 +44,11 @@ public class GraphicsUtils {
 				runAtEnd.run();
 			}
 		})));
+	}
+
+	public static final void setCommonButtonSize(Actor actor) {
+		float buttonSize = (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
+		actor.setHeight(buttonSize);
+		actor.setWidth(buttonSize);
 	}
 }

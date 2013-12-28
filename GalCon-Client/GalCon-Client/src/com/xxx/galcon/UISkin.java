@@ -32,7 +32,7 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
-		
+
 		/*
 		 * TextField
 		 */
@@ -72,7 +72,7 @@ public class UISkin extends Skin {
 			ButtonStyle style = new ButtonStyle(new NinePatchDrawable(up), new NinePatchDrawable(down), null);
 			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON, style);
 		}
-		
+
 		/*
 		 * Image
 		 */
@@ -103,6 +103,10 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("black_grey_button"));
 			add(Constants.UI.GRAY_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("coin"));
+			add(Constants.UI.COIN, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 
 		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(
@@ -137,7 +141,7 @@ public class UISkin extends Skin {
 		textureRegionDrawable = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
 		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
-		
+
 		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("refresh"));
 		add("refreshButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
 				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));

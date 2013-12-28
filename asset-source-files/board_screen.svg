@@ -19,6 +19,17 @@
   <defs
      id="defs7776">
     <linearGradient
+       id="linearGradient3949">
+      <stop
+         style="stop-color:#ffffcd;stop-opacity:1;"
+         offset="0"
+         id="stop3951" />
+      <stop
+         id="stop3957"
+         offset="1"
+         style="stop-color:#ffe54e;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient10025">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
@@ -347,6 +358,17 @@
          stdDeviation="8.1818182"
          id="feGaussianBlur5914" />
     </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3949"
+       id="radialGradient3955"
+       cx="76.86142"
+       cy="54.840374"
+       fx="76.86142"
+       fy="54.840374"
+       r="71.087624"
+       gradientTransform="matrix(1.2753439e-7,0.87747182,-1.0487475,-2.1069927e-7,128.06594,-5.2132172)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -355,12 +377,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.6125"
-     inkscape:cx="-66.122449"
-     inkscape:cy="378.77551"
+     inkscape:zoom="1.225"
+     inkscape:cx="-38.836197"
+     inkscape:cy="626.38059"
      inkscape:document-units="px"
-     inkscape:current-layer="layer16"
-     showgrid="true"
+     inkscape:current-layer="layer11"
+     showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
      inkscape:window-x="0"
@@ -939,7 +961,7 @@
     <path
        inkscape:export-ydpi="123.81687"
        inkscape:export-xdpi="123.81687"
-       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/back.png"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/coin.png"
        transform="matrix(0.70811608,0,0,0.83363543,-169.95918,436.12245)"
        d="M 140,60 A 70,60 0 1 1 0,60 70,60 0 1 1 140,60 z"
        sodipodi:ry="60"
@@ -947,7 +969,7 @@
        sodipodi:cy="60"
        sodipodi:cx="70"
        id="path4170"
-       style="fill:#ffcc00;fill-opacity:1;stroke:#ffff80;stroke-width:2.17524695;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       style="fill:url(#radialGradient3955);fill-opacity:1;stroke:#ffcc00;stroke-width:9.50128946999999968;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        sodipodi:type="arc" />
     <path
        inkscape:export-ydpi="123.81687"
@@ -989,6 +1011,31 @@
        height="6.5574369"
        x="604.09839"
        y="1221.5737" />
+    <path
+       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m -127.30612,457.02041 6.08163,0 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 -6.08163,0 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 z"
+       id="rect3959"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccc" />
+    <path
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccc"
+       inkscape:connector-curvature="0"
+       id="path3962"
+       d="m -117.30612,456.81632 6.08163,0 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 0,3.875 -6.08163,0 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 0,-3.875 z"
+       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ffcc00;stroke-width:6.69999981;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path3964"
+       sodipodi:cx="-119.59184"
+       sodipodi:cy="488.67346"
+       sodipodi:rx="17.55102"
+       sodipodi:ry="17.244898"
+       d="m -106.34592,499.98713 a 17.55102,17.244898 0 1 1 -0.34742,-23.00846"
+       sodipodi:start="0.71558499"
+       sodipodi:end="5.5379297"
+       sodipodi:open="true"
+       transform="translate(2,0)" />
   </g>
   <g
      inkscape:groupmode="layer"
