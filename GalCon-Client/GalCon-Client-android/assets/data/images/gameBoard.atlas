@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 bottom_bar_expand_button
   rotate: false
-  xy: 169, 21
+  xy: 921, 492
   size: 85, 151
   orig: 85, 151
   offset: 0, 0
   index: -1
 bottom_bar_ship_button
   rotate: false
-  xy: 2, 20
+  xy: 754, 491
   size: 165, 152
   orig: 165, 152
   offset: 0, 0
@@ -24,30 +24,37 @@ line
   orig: 220, 16
   offset: 0, 0
   index: -1
+player_hud
+  rotate: false
+  xy: 2, 20
+  size: 750, 130
+  orig: 750, 130
+  offset: 0, 0
+  index: -1
 ship
   rotate: false
-  xy: 256, 90
+  xy: 921, 408
   size: 89, 82
   orig: 89, 82
   offset: 0, 0
   index: -1
 ship_selection_dialog
   rotate: false
-  xy: 2, 174
+  xy: 2, 152
   size: 621, 491
   orig: 621, 491
   offset: 0, 0
   index: -1
 ship_selection_dialog_bg
   rotate: false
-  xy: 2, 667
+  xy: 2, 645
   size: 944, 352
   orig: 944, 352
   offset: 0, 0
   index: -1
 slash_line
   rotate: false
-  xy: 625, 483
+  xy: 625, 461
   size: 121, 182
   orig: 121, 182
   offset: 0, 0
