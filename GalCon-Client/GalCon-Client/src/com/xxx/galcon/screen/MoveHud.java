@@ -89,18 +89,12 @@ public class MoveHud extends Table {
 		
 		addActor(scrollPane);		
 		
-		
-		for(Move move : moves.keySet()){
-			addMoveToMap(move);
-		}
-		
-		renderMoves();
 	}
 
 	private void addMoveToMap(final Move move) {
 		if(moves.get(move) == null){
 			float buttonWidth = moveButtonHolder.getWidth() * 0.15f;
-			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, moveButtonHolder.getHeight() * 0.6f);
+			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, getHeight() * 1.8f);
 			
 			if(button.isActive()){
 				button.addListener(new ClickListener(){@Override

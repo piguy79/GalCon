@@ -60,9 +60,9 @@ public class MoveButton extends Table {
 		ShaderLabel duration = new ShaderLabel(fontShader, "" + Math.round(move.duration), skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel fleet = new ShaderLabel(fontShader, "" + move.shipsToMove, skin, Constants.UI.DEFAULT_FONT_BLACK);
 		
-		add(fleet).expandX().right().height(getHeight() * 0.3f);
-		row().height(getHeight() * 0.4f);
-		add(duration).expandX().left().height(getHeight() * 0.3f);
+		add(fleet).right().height(getHeight() * 0.2f).expandX();
+		row().height(getHeight() * 0.2f).expandX();
+		add(duration).left().height(getHeight() * 0.3f).expandX();
 		
 	}
 

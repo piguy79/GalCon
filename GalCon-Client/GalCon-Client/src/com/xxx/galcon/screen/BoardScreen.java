@@ -106,6 +106,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		stage = new Stage();
+		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		this.gameBoard = gameBoard;
 		moves = new ArrayList<Move>();
 		for(Move move : gameBoard.movesInProgress){
