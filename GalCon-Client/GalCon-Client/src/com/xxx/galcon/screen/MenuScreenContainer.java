@@ -240,6 +240,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 				return levelSelectionScreen;
 			} else if (nextScreen.equals(Strings.CONTINUE)) {
 				return currentGameScreen;
+			} else if (nextScreen.equals(Action.COINS)) {
+				return noMoreCoinsScreen;
 			}
 
 			return null;

@@ -73,9 +73,8 @@ exports.addCoins = function(coinsToAdd, handle){
 exports.addCoinsForAnOrder = function(handle, order){
 	return UserModel.findOneAndUpdate(
 										{ 
-											handle : handle
-											, 
-												'consumedOrders.orderId' : 
+											handle : handle, 
+											'consumedOrders.orderId' : 
 													 					{
 														 					$nin : [order.orderId]
 													 					}
@@ -103,10 +102,10 @@ exports.deleteConsumedOrder = function(handle, order){
 
 exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){
 	var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
-	if(reducedTime < 0){
+	if(reducedTime < 0) {
 		reducedTime = -1;
 	}
-	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {usedCoins : usedCoins}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
+	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
 }
 
 exports.updateUsedCoins = function(handle, usedCoins){

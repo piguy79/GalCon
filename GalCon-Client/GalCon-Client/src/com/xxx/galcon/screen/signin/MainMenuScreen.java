@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -21,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ExternalActionWrapper;
-import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
@@ -53,6 +51,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderProgram fontShader;
 	private ShaderLabel newLabel;
 	private ShaderLabel continueLabel;
+	private ShaderLabel coinText;
 
 	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
 		this.gameAction = gameAction;
@@ -119,8 +118,28 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		GraphicsUtils.setCommonButtonSize(coinImage);
 		coinImage.setX(width * 0.96f - coinImage.getWidth());
 		coinImage.setY(height * 0.97f - coinImage.getHeight());
+		coinImage.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				startHideSequence(Action.COINS);
+			}
+		});
 		stage.addActor(coinImage);
 		actors.add(coinImage);
+
+		coinText = new ShaderLabel(fontShader, createCoinDisplay(), skin, Constants.UI.DEFAULT_FONT);
+		coinText.setAlignment(Align.right, Align.right);
+		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
+		float coinTextWidth = 0.4f * width;
+		coinText.setBounds(width * 0.93f - coinImage.getWidth() - coinTextWidth, yMidPoint - coinText.getHeight() / 2,
+				coinTextWidth, coinText.getHeight());
+		stage.addActor(coinText);
+		actors.add(coinText);
 	}
 
 	private void startHideSequence(final String retVal) {
@@ -138,10 +157,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-
+		coinText.setText(createCoinDisplay());
 	}
 
-	private void createCoinDisplay(int width, int height) {
+	private String createCoinDisplay() {
 		String coinsText = "";
 
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
@@ -153,10 +172,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			coinsText += GameLoop.USER.coins;
 		}
 
-		BitmapFont extraLargeFont = Fonts.getInstance(assetManager).mediumFont();
-		double percentageOfWidth = width * 0.04;
-		int x = (int) percentageOfWidth;
-		extraLargeFont.draw(spriteBatch, coinsText, x, (int) (height * .97f));
+		return coinsText;
 	}
 
 	private boolean hasAppConfigInformation() {

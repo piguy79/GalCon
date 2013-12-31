@@ -23,7 +23,7 @@ public class GraphicsUtils {
 			modifier = 1;
 		}
 
-		float delayInSeconds = 0.15f;
+		float delayInSeconds = 0.0f;
 		float durationInSeconds = 0.9f;
 
 		for (int i = 0; i < actors.size; ++i) {

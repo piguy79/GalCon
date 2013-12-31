@@ -37,9 +37,10 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		return Gdx.graphics.getWidth();
 	}
 
-	public void addRow(Actor actor) {
-		getWidget().add(actor).width(getRowWidth()).height(getRowHeight());
+	public Cell addRow(Actor actor) {
+		Cell cell = getWidget().add(actor);
 		getWidget().row();
+		return cell;
 	}
 
 	public void addRow(Item item, ClickListener clickListener) {

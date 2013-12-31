@@ -14,6 +14,7 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.PlayerUsedCoins;
 
 public class UIConnectionWrapper {
 	private static GameAction gameAction;
@@ -26,7 +27,8 @@ public class UIConnectionWrapper {
 		UIConnectionWrapper.gameAction = gameAction;
 	}
 
-	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves, List<HarvestMove> harvestMoves) {
+	public static void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
+			List<HarvestMove> harvestMoves) {
 		gameAction.performMoves(callback, gameId, moves, harvestMoves);
 	}
 
@@ -59,43 +61,45 @@ public class UIConnectionWrapper {
 		gameAction.joinGame(callback, id, playerHandle);
 
 	}
-	
-	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins){
-		try{
+
+	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins) {
+		try {
 			gameAction.addCoins(callback, playerHandle, numCoins);
-		}catch (ConnectionException e){
+		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
 	}
-	
-	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders){
-		try{
+
+	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle,
+			List<Order> orders) {
+		try {
 			gameAction.addCoinsForAnOrder(callback, playerHandle, orders);
-		}catch (ConnectionException e){
+		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
 	}
-	
-	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,Long timeRemaining, Long usedCoins){
-		try{
-			gameAction.reduceTimeUntilNextGame(callback, playerHandle,timeRemaining ,usedCoins);
-		}catch(ConnectionException e){
+
+	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,
+			Long timeRemaining, Long usedCoins) {
+		try {
+			gameAction.reduceTimeUntilNextGame(callback, playerHandle, timeRemaining, usedCoins);
+		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
 	}
-	
-	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type){
+
+	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {
 		gameAction.findConfigByType(callback, type);
 	}
-	
-	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback){
+
+	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback) {
 		gameAction.loadAvailableInventory(callback);
 	}
-	
-	public static void recoverUsedCoinsCount(UIConnectionResultCallback<Player> callback, String playerHandle){
-		try{
+
+	public static void recoverUsedCoinsCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
+		try {
 			gameAction.recoverUsedCoinCount(callback, playerHandle);
-		} catch(ConnectionException e){
+		} catch (ConnectionException e) {
 			callback.onConnectionError(e.getMessage());
 		}
 	}

@@ -76,11 +76,11 @@ public class JsonConstructor {
 
 	}
 
-	public static JSONObject userWithTime(String playerHandle) throws JSONException {
+	public static JSONObject user(String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
-		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
+		top.put("handle", handle);
+		top.put("session", session);
 
 		return top;
 	}
