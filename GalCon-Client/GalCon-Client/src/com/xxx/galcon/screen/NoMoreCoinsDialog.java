@@ -52,6 +52,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private ImageButton watchAd;
 	private ImageButton timeRemaining;
 	private ShaderTextButton timeRemainingText;
+	private Group coinGroup;
+	private ShaderLabel coinText;
 	private ImageButton backButton;
 	protected WaitImageButton waitImage;
 
@@ -67,9 +69,6 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-
-		timeRemaining = new ImageButton(skin, Constants.UI.GRAY_BUTTON);
-		timeRemainingText = new ShaderTextButton(fontShader, findTimeRemaining(), skin, Constants.UI.GRAY_BUTTON_TEXT);
 	}
 
 	private void createBackButton(final Stage stage, final float width, final float height) {
@@ -99,16 +98,20 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		final float height = Gdx.graphics.getHeight();
 		final float width = Gdx.graphics.getWidth();
 
-		timeRemaining.setX(0);
-		timeRemaining.setY(height * 0.8f);
-		timeRemaining.setWidth(width);
-		timeRemaining.setHeight(height * 0.1f);
-		timeRemainingText.setX(0);
-		timeRemainingText.setY(timeRemaining.getHeight() * 0.35f);
-		timeRemainingText.setWidth(width);
-		timeRemaining.addActor(timeRemainingText);
-		stage.addActor(timeRemaining);
-		actors.add(timeRemaining);
+		if (GameLoop.USER.usedCoins != -1) {
+			timeRemaining = new ImageButton(skin, Constants.UI.GRAY_BUTTON);
+			timeRemainingText = new ShaderTextButton(fontShader, findTimeRemaining(), skin,
+					Constants.UI.GRAY_BUTTON_TEXT);
+			timeRemaining.setBounds(0, height * 0.8f, width, height * 0.1f);
+			timeRemainingText.setX(0);
+			timeRemainingText.setY(timeRemaining.getHeight() * 0.35f);
+			timeRemainingText.setWidth(width);
+			timeRemaining.addActor(timeRemainingText);
+			stage.addActor(timeRemaining);
+			actors.add(timeRemaining);
+		} else {
+			addCoinImageGroup();
+		}
 
 		Actor inAppBillingTable = createInAppBillingButtons(stock.inventory);
 		actors.add(inAppBillingTable);
@@ -152,7 +155,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 					Constants.UI.GREEN_BUTTON_TEXT);
 			watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() / 3);
 			watchAdText.setWidth(watchAd.getWidth());
-			
+
 			ShaderTextButton watchAdTextDesc = new ShaderTextButton(fontShader, "(To cut wait time by 50%)", skin,
 					Constants.UI.GREEN_BUTTON_TEXT_SMALL);
 			watchAdTextDesc.setY(watchAd.getHeight() / 2 - watchAdTextDesc.getHeight() / 1.5f);
@@ -211,6 +214,34 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		return scrollList;
 	}
 
+	private void addCoinImageGroup() {
+		final float height = Gdx.graphics.getHeight();
+		final float width = Gdx.graphics.getWidth();
+
+		coinGroup = new Group();
+		coinGroup.setBounds(0, height * 0.8f, width, height * 0.1f);
+
+		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
+		float coinSize = coinGroup.getHeight() * 0.95f;
+		coinImage.setWidth(coinSize);
+		coinImage.setHeight(coinSize);
+		coinImage.setY((coinGroup.getHeight() - coinSize) / 2);
+
+		coinGroup.addActor(coinImage);
+
+		coinText = new ShaderLabel(fontShader, GameLoop.USER.coins.toString(), skin, Constants.UI.DEFAULT_FONT);
+		coinText.setAlignment(Align.right, Align.right);
+		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
+		float coinTextWidth = coinText.getWidth() * 4;
+		coinText.setBounds(width * 0.5f - coinImage.getWidth() / 2 - coinTextWidth, yMidPoint - coinText.getHeight()
+				/ 2, coinTextWidth, coinText.getHeight());
+		coinImage.setX(coinText.getX() + coinText.getWidth() + 0.05f * width);
+		coinGroup.addActor(coinText);
+
+		actors.add(coinGroup);
+		stage.addActor(coinGroup);
+	}
+
 	private String findTimeRemaining() {
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
@@ -222,7 +253,13 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	@Override
 	public void render(float delta) {
-		timeRemainingText.setText(findTimeRemaining());
+		if (timeRemainingText != null) {
+			timeRemainingText.setText(findTimeRemaining());
+		}
+
+		if (coinText != null) {
+			coinText.setText(GameLoop.USER.coins.toString());
+		}
 	}
 
 	@Override
