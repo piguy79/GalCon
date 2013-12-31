@@ -153,12 +153,12 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			watchAd.setHeight(watchAd.getWidth() * 0.3f);
 			ShaderTextButton watchAdText = new ShaderTextButton(fontShader, "Watch Ad", skin,
 					Constants.UI.GREEN_BUTTON_TEXT);
-			watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() / 3);
+			watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() * 0.3f);
 			watchAdText.setWidth(watchAd.getWidth());
 
 			ShaderTextButton watchAdTextDesc = new ShaderTextButton(fontShader, "(To cut wait time by 50%)", skin,
 					Constants.UI.GREEN_BUTTON_TEXT_SMALL);
-			watchAdTextDesc.setY(watchAd.getHeight() / 2 - watchAdTextDesc.getHeight() / 1.5f);
+			watchAdTextDesc.setY(watchAd.getHeight() / 2 - watchAdTextDesc.getHeight() * 0.9f);
 			watchAdTextDesc.setWidth(watchAd.getWidth());
 
 			watchAd.addActor(watchAdText);
