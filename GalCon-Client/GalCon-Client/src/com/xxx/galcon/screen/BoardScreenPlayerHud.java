@@ -129,7 +129,7 @@ public class BoardScreenPlayerHud extends Group {
 	
 	private void createSecondSlash() {
 		secondSlash = createSlash();
-		secondSlash.setX(firstSlash.getX() + (firstSlash.getWidth() * 0.5f));
+		secondSlash.setX(firstSlash.getX() + (firstSlash.getWidth() * 0.4f));
 		
 		addActor(secondSlash);
 	}
