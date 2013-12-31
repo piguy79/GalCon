@@ -65,14 +65,14 @@ public class BoardScreenPlayerHud extends Table {
 		if(!gameBoard.players.get(0).hasMoved(gameBoard)){
 			// Draw the line beside the name to indicate this player can move
 		}
-		userTable.add(new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.DEFAULT_FONT));
+		userTable.add(new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.SMALL_FONT));
 		userTable.row().height(0).width(0);
-		userTable.add(new ShaderLabel(fontShader, "vs", skin, Constants.UI.DEFAULT_FONT)).center();
+		userTable.add(new ShaderLabel(fontShader, "vs", skin, Constants.UI.SMALL_FONT)).center();
 		userTable.row();
 		if(gameBoard.players.size() > 1 && !gameBoard.players.get(1).hasMoved(gameBoard)){
 			// Draw the line for the second player indicating they can move again.
 		}
-		userTable.add(new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "Awaiting opponent", skin, Constants.UI.DEFAULT_FONT)).padBottom(5);
+		userTable.add(new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "Awaiting opponent", skin, Constants.UI.SMALL_FONT)).padBottom(5);
 
 		
 		return userTable;
