@@ -100,7 +100,7 @@ public class BoardScreenPlayerHud extends Group {
 	private void addPlayerLine(Player player, ShaderLabel referencePoint) {
 		if(!player.hasMoved(gameBoard)){
 			Actor line = line();
-			line.setX((referencePoint.getX() + (referencePoint.getTextBounds().width * 0.5f)) - line.getWidth() * 0.5f);
+			line.setX((referencePoint.getX() + ((referencePoint.getWidth() * 0.5f) - (referencePoint.getTextBounds().width * 0.5f))) - line.getWidth());
 			line.setY(referencePoint.getY() + (referencePoint.getTextBounds().height * 0.5f));
 			addActor(line);
 		}
