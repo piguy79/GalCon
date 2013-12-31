@@ -57,6 +57,11 @@ public class UISkin extends Skin {
 			tbs.font = Fonts.getInstance(assetManager).mediumFont();
 			add(Constants.UI.GREEN_BUTTON_TEXT, tbs);
 		}
+		{
+			TextButtonStyle tbs = new TextButtonStyle();
+			tbs.font = Fonts.getInstance(assetManager).smallFont();
+			add(Constants.UI.GREEN_BUTTON_TEXT_SMALL, tbs);
+		}
 		/*
 		 * Colors
 		 */

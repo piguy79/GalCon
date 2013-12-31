@@ -63,6 +63,7 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.PlayerUsedCoins;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
 import com.xxx.galcon.service.PingService;
@@ -238,9 +239,6 @@ public class AndroidGameAction implements GameAction {
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS, Player.class).execute(top.toString());
-					NotificationManager mNotificationManager = (NotificationManager) activity
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {
@@ -258,9 +256,6 @@ public class AndroidGameAction implements GameAction {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, Player.class).execute(top
 							.toString());
-					NotificationManager mNotificationManager = (NotificationManager) activity
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {
@@ -278,9 +273,6 @@ public class AndroidGameAction implements GameAction {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top
 							.toString());
-					NotificationManager mNotificationManager = (NotificationManager) activity
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {
@@ -297,9 +289,6 @@ public class AndroidGameAction implements GameAction {
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
-					NotificationManager mNotificationManager = (NotificationManager) activity
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {
@@ -562,16 +551,13 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String playerHandle) {
+	public void recoverUsedCoinCount(final UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
 		try {
-			final JSONObject top = JsonConstructor.userWithTime(playerHandle);
+			final JSONObject top = JsonConstructor.user(playerHandle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
-							.toString());
-					NotificationManager mNotificationManager = (NotificationManager) activity
-							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
+					new PostJsonRequestTask<PlayerUsedCoins>(callback, RECOVER_USED_COINS_COUNT, PlayerUsedCoins.class)
+							.execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {

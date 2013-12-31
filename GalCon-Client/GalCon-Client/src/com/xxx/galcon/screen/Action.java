@@ -2,6 +2,7 @@ package com.xxx.galcon.screen;
 
 public final class Action {
 	public static final String END_TURN = "END_TURN";
+	public static final String COINS = "COINS";
 	public static final String REFRESH = "REFRESH";
 	public static final String BACK = "BACK";
 	public static final String PLAY = "PLAY";

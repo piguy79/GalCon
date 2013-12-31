@@ -140,20 +140,6 @@ describe("Testing interactions with the user model", function(){
 		p.complete();
 	});
 	
-	it("You should not be able to reduce time with stale data", function(done){
-		var p = new mongoose.Promise();
-		p.then(function(){
-			return user.reduceTimeForWatchingAd('testWatchedAd', 999, 100, 0.5);
-		}).then(function(updatedUser){
-			expect(updatedUser).toBe(null);
-			done();
-		}).then(null, function(err){
-			console.log(err);
-			done();
-		});
-		p.complete();
-	});
-	
 	it("Should delete consumed orders from a user", function(done){
 
 		var p = new mongoose.Promise();

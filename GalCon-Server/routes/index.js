@@ -297,21 +297,28 @@ var updateUserTime = function(user, time, gameId){
 	return p;
 }
 
-exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res){
-	var handle = req.body.playerHandle;
-	var time = req.body.time;
+exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
+	var handle = req.body.handle;
+	var session = req.body.session;
 	
-	var userPromise = userManager.findUserWithGames(handle);
-	userPromise.then(function(user){
-		var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var userPromise = userManager.findUserWithGames(handle);
+		return userPromise.then(function(user){
+			var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
 		
-		if(user.usedCoins === -1 && gamesStillInProgress.length === 0 && user.currentGames.length > 0){
-			user.usedCoins = time;
-		}
+			if(user.usedCoins === -1 && gamesStillInProgress.length === 0 && user.coins === 0) {
+				user.usedCoins = Date.now();
+			}
 		
-		return user.withPromise(user.save);
-	}).then(function(user){
-		res.json(user);
+			return user.withPromise(user.save);
+		}).then(function(user) {
+			res.json({"usedCoins" : user.usedCoins});
+		});
 	}, logErrorAndSetResponse(req, res));
 }
 

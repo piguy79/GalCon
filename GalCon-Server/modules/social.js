@@ -79,7 +79,7 @@ exports.exchangeToken = function(authProvider, token) {
 				xp : 0,
 				wins : 0,
 				losses : 0,
-				coins : 1,
+				coins : 10,
 				usedCoins : -1,
 				watchedAd : false
 			});

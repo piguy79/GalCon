@@ -68,7 +68,6 @@ public class Player extends JsonConvertible {
 			order.consume(orderObject);
 			this.consumedOrders.add(order);
 		}
-
 	}
 
 	public boolean hasCoinInformation() {
@@ -92,9 +91,7 @@ public class Player extends JsonConvertible {
 	}
 
 	public DateTime timeRemainingUntilCoinsAvailable() {
-
 		if (usedCoins != null && usedCoins != -1L) {
-
 			Long timeSinceUsedCoins = timeSinceCoinsHaveBeenUsed();
 
 			if (timeSinceUsedCoins < timeLapse()) {
@@ -104,5 +101,4 @@ public class Player extends JsonConvertible {
 
 		return null;
 	}
-
 }

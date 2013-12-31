@@ -42,7 +42,7 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextButton;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
-public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player>{
+public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player> {
 	private Stage stage;
 	private Skin skin;
 	private Array<Actor> actors = new Array<Actor>();
@@ -57,7 +57,6 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	private Object returnValue;
 
-	private AssetManager assetManager;
 	private TextureAtlas menusAtlas;
 
 	private Inventory inventoryResult;
@@ -65,49 +64,12 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	public NoMoreCoinsDialog(Skin skin, AssetManager assetManager) {
 		super();
 		this.skin = skin;
-		this.assetManager = assetManager;
 
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		timeRemaining = new ImageButton(skin, Constants.UI.GRAY_BUTTON);
 		timeRemainingText = new ShaderTextButton(fontShader, findTimeRemaining(), skin, Constants.UI.GRAY_BUTTON_TEXT);
-
-		setupWatchAdButton();
-	}
-
-	private void setupWatchAdButton() {
-		watchAd = new ImageButton(skin, Constants.UI.GREEN_BUTTON);
-		ShaderTextButton watchAdText = new ShaderTextButton(fontShader, "Watch Ad", skin,
-				Constants.UI.GREEN_BUTTON_TEXT);
-		watchAdText.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-				if ((null != GameLoop.USER.usedCoins || GameLoop.USER.usedCoins != -1) && !GameLoop.USER.watchedAd) {
-					ExternalActionWrapper.showAd(new AdColonyVideoListener() {
-
-						@Override
-						public void onAdColonyVideoStarted() {
-						}
-
-						@Override
-						public void onAdColonyVideoFinished() {
-							GameLoop.USER.watchedAd = true;
-							UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER),
-									GameLoop.USER.handle, GameLoop.USER.timeRemainingForNewcoins(),
-									GameLoop.USER.usedCoins);
-						}
-					});
-				}
-			}
-		});
-		watchAd.add(watchAdText);
 	}
 
 	private void createBackButton(final Stage stage, final float width, final float height) {
@@ -183,7 +145,44 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		scrollList.setBounds(0, 0, width, height * 0.78f);
 
 		if (GameLoop.USER.usedCoins != -1L) {
-			scrollList.addRow(watchAd);
+			watchAd = new ImageButton(skin, Constants.UI.GREEN_BUTTON);
+			watchAd.setWidth(width * 0.5f);
+			watchAd.setHeight(watchAd.getWidth() * 0.3f);
+			ShaderTextButton watchAdText = new ShaderTextButton(fontShader, "Watch Ad", skin,
+					Constants.UI.GREEN_BUTTON_TEXT);
+			watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() / 3);
+			watchAdText.setWidth(watchAd.getWidth());
+			
+			ShaderTextButton watchAdTextDesc = new ShaderTextButton(fontShader, "(To cut wait time by 50%)", skin,
+					Constants.UI.GREEN_BUTTON_TEXT_SMALL);
+			watchAdTextDesc.setY(watchAd.getHeight() / 2 - watchAdTextDesc.getHeight() / 1.5f);
+			watchAdTextDesc.setWidth(watchAd.getWidth());
+
+			watchAd.addActor(watchAdText);
+			watchAd.addActor(watchAdTextDesc);
+			watchAdText.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					if (GameLoop.USER.usedCoins != -1 && !GameLoop.USER.watchedAd) {
+						ExternalActionWrapper.showAd(new AdColonyVideoListener() {
+
+							@Override
+							public void onAdColonyVideoStarted() {
+							}
+
+							@Override
+							public void onAdColonyVideoFinished() {
+								watchAd.setDisabled(true);
+								GameLoop.USER.watchedAd = true;
+								UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER),
+										GameLoop.USER.handle, GameLoop.USER.timeRemainingForNewcoins(),
+										GameLoop.USER.usedCoins);
+							}
+						});
+					}
+				}
+			});
+			scrollList.addRow(watchAd).width(watchAd.getWidth()).height(watchAd.getHeight());
 		}
 
 		Collections.sort(inventory, new Comparator<InventoryItem>() {
@@ -224,11 +223,6 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	@Override
 	public void render(float delta) {
 		timeRemainingText.setText(findTimeRemaining());
-		handleWatchAd();
-	}
-
-	private void handleWatchAd() {
-		watchAd.setDisabled(GameLoop.USER.watchedAd);
 	}
 
 	@Override
@@ -262,7 +256,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	@Override
 	public void onConnectionError(String msg) {
-		
+
 	}
 
 	@Override
@@ -290,11 +284,13 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	public boolean hideTitleArea() {
 		return true;
 	}
-	
+
 	private UIConnectionResultCallback<Inventory> inventoryCallback = new UIConnectionResultCallback<Inventory>() {
 
 		@Override
 		public void onConnectionResult(Inventory result) {
+			waitImage.stop();
+
 			inventoryResult = result;
 			createLayout(stage, result);
 		}
@@ -303,8 +299,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		public void onConnectionError(String msg) {
 			waitImage.stop();
 
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(msg, menusAtlas, skin, fontShader),
-					new ClickListener() {
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas,
+					new TextOverlay(msg, menusAtlas, skin, fontShader), new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							ExternalActionWrapper.loadStoreInventory(inventoryCallback);

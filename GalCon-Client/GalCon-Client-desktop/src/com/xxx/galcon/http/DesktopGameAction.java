@@ -54,6 +54,7 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.model.PlayerUsedCoins;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
 
@@ -298,7 +299,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	@Override
 	public void showAd(AdColonyVideoListener listener) {
-		// Do nothing right now.
+		listener.onAdColonyVideoFinished();
 	}
 
 	@Override
@@ -335,15 +336,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String playerHandle) {
+	public void recoverUsedCoinCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
 		try {
-			JSONObject top = JsonConstructor.userWithTime(playerHandle);
+			JSONObject top = JsonConstructor.user(playerHandle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args,
-					new Player()));
+			callback.onConnectionResult((PlayerUsedCoins) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT,
+					args, new PlayerUsedCoins()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -385,7 +386,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
-						.append("useCoins", -1)
+						.append("usedCoins", -1)
 						.append("watchedAd", false)
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",

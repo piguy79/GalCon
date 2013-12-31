@@ -24,6 +24,7 @@ public class Constants {
 		public static final String WAIT_BUTTON = "waitButton";
 		public static final String GREEN_BUTTON = "greenButton";
 		public static final String GREEN_BUTTON_TEXT = "greenButtonText";
+		public static final String GREEN_BUTTON_TEXT_SMALL = "greenButtonTextSmall";
 		public static final String GRAY_BUTTON = "grayButton";
 		public static final String GRAY_BUTTON_TEXT = "grayButtonText";
 		public static final String CELL_BG = "cellBg";
