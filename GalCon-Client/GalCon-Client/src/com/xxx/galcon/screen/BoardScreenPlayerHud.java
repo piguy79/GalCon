@@ -69,21 +69,21 @@ public class BoardScreenPlayerHud extends Group {
 	
 	private void createUserTable(){
 		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.SMALL_FONT);
-		firstPlayer.setWidth(getWidth() * 0.55f);
+		firstPlayer.setWidth(getWidth() * 0.5f);
 		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.1f));
 		firstPlayer.setAlignment(Align.center);
 		addActor(firstPlayer);
 		
 		vs = new ShaderLabel(fontShader, "vs", skin, Constants.UI.SMALL_FONT);
-		vs.setWidth(getWidth() * 0.55f);
+		vs.setWidth(getWidth() * 0.5f);
 		vs.setX(secondSlash.getX() + getWidth() * 0.1f);
 		vs.setY((firstPlayer.getY() - vs.getTextBounds().height) - getHeight() * 0.1f);
 		vs.setAlignment(Align.center);
 		addActor(vs);
 		
 		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "[waiting for opponent]", skin, Constants.UI.SMALL_FONT);
-		secondPlayer.setWidth(getWidth() * 0.55f);
+		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
 		secondPlayer.setAlignment(Align.center);
