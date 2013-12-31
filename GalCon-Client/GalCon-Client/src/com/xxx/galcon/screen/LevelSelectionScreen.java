@@ -284,15 +284,15 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth, mapHeight);
 
 			String text = map.title;
-			mediumFont.setColor(Color.WHITE);
+			mediumFont.setColor(Color.BLACK);
 			float halfFontWidth = mediumFont.getBounds(text).width / 2;
 			batch.setShader(fontShader);
-			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .85f);
+			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .88f);
 
 			text = map.description;
-			smallFont.setColor(Color.WHITE);
+			smallFont.setColor(Color.BLACK);
 			halfFontWidth = smallFont.getBounds(text).width / 2;
-			smallFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .18f);
+			smallFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .15f);
 			batch.setShader(null);
 		}
 	}
@@ -313,7 +313,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		int tableHeight = (int) (height * .7f);
 
 		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
-		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_black");
+		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_gray");
 		this.levelSelectCardShadow = levelSelectionAtlas.findRegion("level_select_card_shadow");
 
 		cardTable = new Table();
