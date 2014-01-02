@@ -8,12 +8,17 @@ var needle = require("needle"),
 	mongoose = require('mongoose'),
 	gameRunner = require('../fixtures/gameRunner');
 
+/*
+ * Coin tests will remain broken until all coin server work is complete
+ */
 describe("Update Used Coins to track countdown to coin refresh -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
+	PLAYER_1.coins = 1;
 	
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
 	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 2);
+	PLAYER_2.coins = 1;
 	
 	var MAP_KEY_1 = -100;
 	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
@@ -77,9 +82,10 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		var timeOfMove2 = 152423;
 		var winningMoves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, HOME_PLANET_2, 30, 1) ];
 
-		
-		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
-		p.then(function(game){
+		var p = userManager.UserModel.findOneAndUpdate({handle: PLAYER_1_HANDLE}, {$set : {coins : 2}}).exec();
+		p.then(function(user) {
+			gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		}).then(function(game){
 			gameId1 = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": gameId1}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
