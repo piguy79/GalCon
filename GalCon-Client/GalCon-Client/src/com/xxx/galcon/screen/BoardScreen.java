@@ -14,6 +14,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -100,7 +101,6 @@ public class BoardScreen implements ScreenFeedback {
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		stage = new Stage();
-		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
 	}
 
@@ -466,6 +466,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (planetMoveChange) {
 			applyMovesToPlanetButtons();
