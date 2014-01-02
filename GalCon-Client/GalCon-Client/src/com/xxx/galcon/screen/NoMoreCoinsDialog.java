@@ -102,7 +102,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			timeRemaining = new ImageButton(skin, Constants.UI.GRAY_BUTTON);
 			timeRemainingText = new ShaderTextButton(fontShader, findTimeRemaining(), skin,
 					Constants.UI.GRAY_BUTTON_TEXT);
-			timeRemaining.setBounds(0, height * 0.8f, width, height * 0.1f);
+			timeRemaining.setBounds(0, height * 0.75f, width, height * 0.15f);
 			timeRemainingText.setX(0);
 			timeRemainingText.setY(timeRemaining.getHeight() * 0.35f);
 			timeRemainingText.setWidth(width);
@@ -145,7 +145,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		};
 		final float height = Gdx.graphics.getHeight();
 		final float width = Gdx.graphics.getWidth();
-		scrollList.setBounds(0, 0, width, height * 0.78f);
+		scrollList.setBounds(0, 0, width, height * 0.75f);
 
 		if (GameLoop.USER.usedCoins != -1L) {
 			watchAd = new ImageButton(skin, Constants.UI.GREEN_BUTTON);
@@ -219,7 +219,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		final float width = Gdx.graphics.getWidth();
 
 		coinGroup = new Group();
-		coinGroup.setBounds(0, height * 0.8f, width, height * 0.1f);
+		coinGroup.setBounds(0, height * 0.75f, width, height * 0.15f);
 
 		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
 		float coinSize = coinGroup.getHeight() * 0.95f;
@@ -229,7 +229,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		coinGroup.addActor(coinImage);
 
-		coinText = new ShaderLabel(fontShader, GameLoop.USER.coins.toString(), skin, Constants.UI.DEFAULT_FONT);
+		coinText = new ShaderLabel(fontShader, GameLoop.USER.coins.toString(), skin, Constants.UI.LARGE_FONT);
 		coinText.setAlignment(Align.right, Align.right);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = coinText.getWidth() * 4;
