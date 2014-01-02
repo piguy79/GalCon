@@ -255,6 +255,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 			if (action.equals(Action.BACK)) {
 				return mainMenuScreen;
 			} else {
+				// clear back to main menu, then proceed to the gameboard
 				currentScreen.hide();
 				currentScreen = mainMenuScreen;
 				currentScreen.resetState();

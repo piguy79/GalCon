@@ -46,12 +46,12 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind) throws JSONException {
+	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
+		top.put("handle", playerHandle);
 		top.put("mapToFind", mapToFind);
-		top.put("time", new DateTime(DateTimeZone.UTC).getMillis());
+		top.put("session", session);
 
 		return top;
 	}

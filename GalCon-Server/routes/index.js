@@ -14,7 +14,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 var VALIDATE_MAP = {
 	email : validation.isEmail,
 	session : validation.isSession,
-	handle : validation.isHandle
+	handle : validation.isHandle,
+	mapKey : validation.isMapKey
 };
 
 exports.index = function(req, res) {
@@ -472,13 +473,25 @@ exports.findAllMaps = function(req, res) {
 
 exports.matchPlayerToGame = function(req, res) {
 	var mapToFind = req.body.mapToFind;
-	var playerHandle = req.body.playerHandle;
-	var time = req.body.time;
-
-	var p = userManager.findUserByHandle(playerHandle);
-	p.then(function(user) {
-		return findOrCreateGamePromise(user, time, mapToFind);
-	}).then(function(game) { res.json(game); }, logErrorAndSetResponse(req, res));
+	var handle = req.body.handle;
+	var session = req.body.session;
+	
+	if(!validate({session : session, handle : handle, mapKey : mapToFind}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var p = userManager.findUserByHandle(handle);
+		return p.then(function(user) {
+			if(user.coins < 1) {
+				throw new Error(user.handle + " attempted to start game with " + user.coins + " coins");
+			}
+			return findOrCreateGamePromise(user, Date.now(), mapToFind);
+		}).then(function(game) { 
+			res.json(game);
+		});
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 var findOrCreateGamePromise = function(user, time, mapToFind) {

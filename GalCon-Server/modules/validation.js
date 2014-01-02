@@ -28,6 +28,16 @@ exports.isEmail = function(email) {
 	return true;
 }
 
+exports.isMapKey = function(mapKey) {
+	try {
+		validator.check(mapKey).len(1, 4).isInt();
+	} catch(e) {
+		return false;
+	}
+	
+	return true;
+}
+
 exports.isHandle = function(handle) {
 	var updatedHandle = handle.replace(/^\s+/, '');
 	updatedHandle = updatedHandle.replace(/\s+$/, '');

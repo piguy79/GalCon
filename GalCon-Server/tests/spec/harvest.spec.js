@@ -63,7 +63,7 @@ describe("Harvest an ability planet -", function() {
 		var currentGameId;
 		var timeOfMove = 34728;
 		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
@@ -90,7 +90,7 @@ describe("Harvest an ability planet -", function() {
 		
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 8, 1) ];
 		
-		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
@@ -116,7 +116,7 @@ describe("Harvest an ability planet -", function() {
 		var currentGameId;
 		var timeOfMove = 271625;
 		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
@@ -150,7 +150,7 @@ describe("Harvest an ability planet -", function() {
 		var timeOfMove = 271625;
 		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
@@ -185,7 +185,7 @@ describe("Harvest an ability planet -", function() {
 		
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 14, 1) ];
 		
-		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, DEFENCE_MAP_KEY);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, DEFENCE_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
@@ -215,7 +215,7 @@ describe("Harvest an ability planet -", function() {
 		
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 14, 5) ];
 		
-		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, SPEED_MAP_KEY);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, SPEED_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
@@ -240,7 +240,7 @@ describe("Harvest an ability planet -", function() {
 		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		var reCaptureHarvestPlanet = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
@@ -281,7 +281,7 @@ describe("Harvest an ability planet -", function() {
 		
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 8, 1) ];
 		
-		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, ATTACK_MAP_KEY);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();

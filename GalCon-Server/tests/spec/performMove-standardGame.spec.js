@@ -70,7 +70,7 @@ describe("Perform Move - Standard -", function() {
 
 	var createMovesWithValidationSteps = function(moves, planets) {
 		var currentGameId;
-		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1);
+		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		
 		return p.then(function(game) {
 			currentGameId = game._id;

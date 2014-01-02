@@ -199,8 +199,7 @@ public class AndroidGameAction implements GameAction {
 	public void matchPlayerToGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle,
 			Long mapToFind) {
 		try {
-
-			final JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind);
+			final JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind, getSession());
 
 			activity.runOnUiThread(new Runnable() {
 				public void run() {

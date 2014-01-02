@@ -52,7 +52,7 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		var timeOfMove = 34728;
 		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, HOME_PLANET_2, 30, 1) ];
 		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		p.then(function(game){
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
@@ -78,12 +78,12 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		var winningMoves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, HOME_PLANET_2, 30, 1) ];
 
 		
-		var p = gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		p.then(function(game){
 			gameId1 = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": gameId1}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return gameRunner.createGameForPlayers(PLAYER_1_HANDLE, PLAYER_2_HANDLE, MAP_KEY_1);
+			return gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		}).then(function(game){
 			gameId2 = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": gameId2}, {$set: {planets: PLANETS}}).exec();

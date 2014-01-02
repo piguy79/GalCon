@@ -21,11 +21,11 @@ exports.findGame = function(gameId) {
 	return needleWithPromise(needle.get, "/findGameById?id=" + gameId);
 }
 
-exports.matchPlayerToGame = function(playerHandle, mapKey) {
+exports.matchPlayerToGame = function(playerHandle, mapKey, session) {
 	var postData = {
 		mapToFind : mapKey,
-		playerHandle : playerHandle,
-		time : new Date().getTime()
+		handle : playerHandle,
+		session : session
 	};
 
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);

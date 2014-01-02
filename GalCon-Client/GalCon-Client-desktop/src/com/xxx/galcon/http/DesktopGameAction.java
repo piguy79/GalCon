@@ -119,7 +119,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, Long mapToFind) {
 		try {
-			JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind);
+			JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
