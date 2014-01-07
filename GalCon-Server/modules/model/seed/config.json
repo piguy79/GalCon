@@ -24,7 +24,8 @@
 					"version" : 1,
 					"type" : "app",
 					"values" : {
-						"timeLapseForNewCoins" : "1200000"
+						"freeCoins" : 3,
+						"timeLapseForNewCoins" : 1200000
 					}
 				}
 			]

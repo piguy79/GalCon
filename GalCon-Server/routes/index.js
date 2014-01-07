@@ -370,17 +370,37 @@ exports.joinGame = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-exports.addCoins = function(req, res) {
-	var playerHandle = req.body.playerHandle;
-	var numCoins = req.body.numCoins;
+exports.addFreeCoins = function(req, res) {
+	var handle = req.body.handle;
+	var session = req.body.session;
 	
-	var p  = userManager.addCoins(numCoins, playerHandle);
-	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var p = userManager.findUserByHandle(handle);
+		return p.then(function(user) {
+			var innerp = configManager.findLatestConfig('app');
+			return innerp.then(function(config) {
+				var delay = config.values['timeLapseForNewCoins'];
+				if(user.coins === 0 && user.usedCoins !== -1 && user.usedCoins + delay < Date.now()) {
+					return userManager.addCoins(config.values['freeCoins'], handle);
+				} else {
+					return user;
+				}
+			}).then(function(user) {
+				res.json(user);
+			})
+		});
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.addCoinsForAnOrder = function(req, res) {
-	var playerHandle = req.body.playerHandle;
+	var handle = req.body.handle;
 	var orders = req.body.orders;
+	var session = req.body.session;
 	
 	if(orders && orders.length > 0){
 		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, playerHandle);
@@ -632,14 +652,6 @@ exports.findAllInventory = function(req, res){
 		res.json({items : inventory});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
-
-exports.updateUserCoinsInformation = function(req, res) {
-	var playerHandle = req.body.playerHandle;
-	var time = req.body.time;
-	
-	var p = userManager.updateUsedCoins(playerHandle, time);
-	p.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
-}
 
 exports.exchangeToken = function(req, res) {
 	var authProvider = req.body.authProvider;

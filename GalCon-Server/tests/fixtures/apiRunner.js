@@ -64,6 +64,15 @@ exports.addCoinsForAnOrder = function(playerHandle, orders){
 	return needleWithPromise(needle.post, '/addCoinsForAnOrder', postData);
 }
 
+exports.addFreeCoins = function(handle, session){
+	var postData = {
+		handle : handle,
+		session : session
+	};
+	
+	return needleWithPromise(needle.post, '/addFreeCoins', postData);
+}
+
 exports.deleteConsumedOrders = function(playerHandle, orders){
 	var postData = {
 			playerHandle : playerHandle,
