@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -51,8 +52,8 @@ public class MoveDialog extends Dialog {
 	private int currentRound;
 	
 
-	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin, int currentRound) {
-		super(assetManager, width, height);
+	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin, int currentRound, Stage stage) {
+		super(assetManager, width, height, stage);
 		this.skin = skin;
 		this.max = max;
 		this.currentRound = currentRound;
@@ -65,12 +66,13 @@ public class MoveDialog extends Dialog {
 		counter = new ShaderLabel(fontShader, shipsToSend + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		initialCount = new ShaderLabel(fontShader, (fromPlanet.numberOfShips - moveOffSetCount) + "", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		
+		
 		addSlider();
 		addCounter();
 		addCancelButton();
 		addOkButton();
 	}
-	
+
 
 	private void addSlider() {
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
@@ -162,7 +164,7 @@ public class MoveDialog extends Dialog {
 		cancelButton.addAction(Actions.fadeOut(0.4f));
 		okButton.addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
 		public void run() {
-			hideParent();
+			hideParent(0.4f);
 		}}));
 	}
 	
@@ -170,8 +172,8 @@ public class MoveDialog extends Dialog {
 		super.show(point, duration);
 	}
 	
-	public void hideParent(){
-		super.hide(0.4f);
+	public void hideParent(float duration){
+		super.hide(duration);
 	}
 
 }

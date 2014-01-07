@@ -44,9 +44,7 @@ public class MoveButton extends Group {
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
 		createBackground();
-		if(isActive()){
-			addAction(Actions.color(NEW_MOVE, 0.4f));
-		}
+		
 		addLabels();
 	}
 	
@@ -78,6 +76,11 @@ public class MoveButton extends Group {
 		Image backGround = new Image(new TextureRegionDrawable(bgTexture));
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
+		
+		if(isActive()){
+			backGround.addAction(Actions.color(NEW_MOVE, 0.4f));
+		}
+		
 		addActor(backGround);
 	}
 

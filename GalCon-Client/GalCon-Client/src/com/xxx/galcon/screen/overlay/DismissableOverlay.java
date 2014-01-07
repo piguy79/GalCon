@@ -1,6 +1,5 @@
 package com.xxx.galcon.screen.overlay;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -22,8 +21,4 @@ public class DismissableOverlay extends Overlay {
 		this.addListener(clickListener);
 	}
 
-	@Override
-	protected void doCustomRender(SpriteBatch batch) {
-		delegate.doCustomRender(batch);
-	}
 }
