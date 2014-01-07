@@ -16,6 +16,7 @@ public abstract class Overlay extends Group {
 		Image backGround = new Image(new TextureRegionDrawable(blackBackground));
 		backGround.setWidth(Gdx.graphics.getWidth());
 		backGround.setHeight(Gdx.graphics.getHeight());
+		backGround.setColor(0, 0, 0, 0.6f);
 				
 		addActor(backGround);
 	}
