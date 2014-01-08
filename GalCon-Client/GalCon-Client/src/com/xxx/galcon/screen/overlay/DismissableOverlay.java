@@ -9,8 +9,8 @@ public class DismissableOverlay extends Overlay {
 
 	private Overlay delegate;
 
-	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, ClickListener clickListener) {
-		super(menusAtlas);
+	public DismissableOverlay(TextureAtlas menusAtlas, float alpha,  Overlay delegate, ClickListener clickListener) {
+		super(menusAtlas, alpha);
 		this.delegate = delegate;
 
 		this.addListener(new ClickListener() {
@@ -22,8 +22,8 @@ public class DismissableOverlay extends Overlay {
 		this.addListener(clickListener);
 	}
 	
-	public DismissableOverlay(TextureAtlas menusAtlas,final Function func){
-		super(menusAtlas);
+	public DismissableOverlay(TextureAtlas menusAtlas, float alpha, final Function func){
+		super(menusAtlas, alpha);
 		
 		this.addListener(new ClickListener() {
 			@Override

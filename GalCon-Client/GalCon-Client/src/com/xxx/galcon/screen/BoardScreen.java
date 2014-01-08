@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -260,7 +261,7 @@ public class BoardScreen implements ScreenFeedback {
 		Point position = pointInWorld(move.currentPosition.x, move.currentPosition.y);
 		final Table moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld, PlanetButtonFactory.tileWidthInWorld, position);
 		
-		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, new Function() {
+		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, 0.9f, new Function() {
 			
 			@Override
 			public void apply() {
@@ -270,20 +271,21 @@ public class BoardScreen implements ScreenFeedback {
 			}
 		});
 		stage.addActor(overlay);
-		
-		
-		
 		stage.addActor(fromPlanet);
 		stage.addActor(toPlanet);
 		stage.addActor(moveToDisplay);
 
 		
-		fromPlanet.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
-				Actions.color(fromPlanet.planet.getColor(), 0.5f))));
+		fromPlanet.addAction(fadePlanetInAndOut(fromPlanet));
+		toPlanet.addAction(fadePlanetInAndOut(toPlanet));
+		moveToDisplay.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.9f),
+				Actions.color(Color.RED, 0.9f))));
 		
-		toPlanet.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
-				Actions.color(toPlanet.planet.getColor(), 0.5f))));
-		
+	}
+	
+	private RepeatAction fadePlanetInAndOut(PlanetButton planetButton){
+		return Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
+				Actions.color(planetButton.planet.getColor(), 0.5f)));
 	}
 
 	private void createGrid() {

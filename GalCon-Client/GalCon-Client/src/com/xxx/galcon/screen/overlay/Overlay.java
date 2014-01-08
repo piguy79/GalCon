@@ -11,12 +11,12 @@ public abstract class Overlay extends Group {
 
 	private TextureRegion blackBackground;
 
-	public Overlay(TextureAtlas menusAtlas) {
+	public Overlay(TextureAtlas menusAtlas, float alpha) {
 		blackBackground = menusAtlas.findRegion("transparent_square");
 		Image backGround = new Image(new TextureRegionDrawable(blackBackground));
 		backGround.setWidth(Gdx.graphics.getWidth());
 		backGround.setHeight(Gdx.graphics.getHeight());
-		backGround.setColor(0, 0, 0, 0.6f);
+		backGround.setColor(0, 0, 0, alpha);
 				
 		addActor(backGround);
 	}
