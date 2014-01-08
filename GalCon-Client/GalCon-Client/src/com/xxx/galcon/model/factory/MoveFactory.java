@@ -2,12 +2,19 @@ package com.xxx.galcon.model.factory;
 
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
+import com.xxx.galcon.model.Point;
 
 public class MoveFactory {
+	
+	private static UISkin skin;
 
 	public static Move createMove(List<Planet> availablePlanets, int fleetToSend, int round) {
 		if (fleetToSend <= 0) {
@@ -45,5 +52,38 @@ public class MoveFactory {
 
 			return move;
 		}
+	}
+	
+	public static void setSkin(UISkin skin) {
+		MoveFactory.skin = skin;
+	}
+	
+	public static Table createShipForDisplay(Move move, float tileHeight, float tileWidth, Point initialPointInWorld){
+		ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
+		shipMoveButton.setHeight(tileHeight * 0.4f);
+		shipMoveButton.setWidth(tileWidth * 0.4f);
+		shipMoveButton.setOrigin(shipMoveButton.getWidth()/2, shipMoveButton.getHeight()/2);
+				
+		Table wrapper = setupRotationWrapper(shipMoveButton, tileHeight,
+				tileWidth, initialPointInWorld);
+		
+		wrapper.setRotation(move.angleOfMovement());
+		
+		return wrapper;
+					
+	}
+	
+	private static Table setupRotationWrapper(ImageButton shipMoveButton,
+			float tileHeight, float tileWidth, Point movePosition) {
+		Table wrapper = new Table();
+		
+		wrapper.defaults().width(tileWidth * 0.25f).height(tileWidth * 0.25f).pad(0);
+		wrapper.add(shipMoveButton);			
+		wrapper.setX(movePosition.x + (tileWidth / 2));
+		wrapper.setY(movePosition.y + (tileHeight / 2));
+		wrapper.setTransform(true);
+		wrapper.setOrigin(wrapper.getPrefWidth() / 2, wrapper.getPrefHeight() / 2);
+		wrapper.setScaleX(1.5f);
+		return wrapper;
 	}
 }
