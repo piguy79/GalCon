@@ -44,14 +44,23 @@ public class PlanetButtonFactory {
 	}
 
 
-	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated){
+	public static PlanetButton createPlanetButtonWithExpansion(Planet planet, GameBoard gameBoard, boolean roundAnimated){
 		float maxExpand = 5;
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
 		float newPlanetSize = minPlanetSize + ((tileWidthInWorld * 0.08f) * expand);
-		planetTexture.setMinWidth(newPlanetSize);
-		planetTexture.setMinHeight(newPlanetSize);
+		
+		
+		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize);
+	}
+	
+	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated, float width, float height){
+		planetTexture.setMinWidth(width);
+		planetTexture.setMinHeight(height);
 		final PlanetButton planetButton = new PlanetButton(fontShader, ""
 				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), style, planet);
+		planetButton.setColor(planet.getColor());
+		planetButton.setHeight(height);
+		planetButton.setWidth(width);
 		
 		return planetButton;
 		

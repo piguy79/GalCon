@@ -45,11 +45,14 @@ import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.event.CancelDialogEvent;
+import com.xxx.galcon.screen.event.DialogEventListener;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
 import com.xxx.galcon.screen.ship.selection.MoveDialog;
+import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
 import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.PlanetButton;
 
@@ -253,8 +256,12 @@ public class BoardScreen implements ScreenFeedback {
 	}
 	
 	private void highlightMove(Move move) {
-		final PlanetButton fromPlanet = PlanetButtonFactory.createPlanetButton(gameBoard.getPlanet(move.fromPlanet), gameBoard, roundHasAlreadyBeenAnimated());
-		final PlanetButton toPlanet = PlanetButtonFactory.createPlanetButton(gameBoard.getPlanet(move.toPlanet), gameBoard, roundHasAlreadyBeenAnimated());
+		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
+		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
+		
+		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld);
+		final PlanetButton fromPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(gameBoard.getPlanet(move.fromPlanet), gameBoard, roundHasAlreadyBeenAnimated());
+		final PlanetButton toPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(gameBoard.getPlanet(move.toPlanet), gameBoard, roundHasAlreadyBeenAnimated());
 		positionPlanet(fromPlanet);
 		positionPlanet(toPlanet);
 		
@@ -329,7 +336,7 @@ public class BoardScreen implements ScreenFeedback {
 		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld);
 
 		for (final Planet planet : gameBoard.planets) {
-			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButton(planet, gameBoard, roundHasAlreadyBeenAnimated());
+			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButtonWithExpansion(planet, gameBoard, roundHasAlreadyBeenAnimated());
 			positionPlanet(planetButton);
 			
 
@@ -374,8 +381,10 @@ public class BoardScreen implements ScreenFeedback {
 			Planet userPlanet = touchedUserPlanet(touchedPlanets);
 			if (userPlanet != null) {
 				Planet otherPlanet = otherPlanet(touchedPlanets, userPlanet);
-				if(!GameLoop.USER.hasMoved(gameBoard)){
+				if(!GameLoop.USER.hasMoved(gameBoard) && otherPlanet != null){
 					renderMoveDialog(userPlanet, otherPlanet);
+				}else if(otherPlanet == null){
+					renderPlanetInformationDialog(userPlanet);
 				}else{
 					clearMoveActions(userPlanet);
 					clearMoveActions(otherPlanet);
@@ -387,6 +396,24 @@ public class BoardScreen implements ScreenFeedback {
 				touchedPlanets.add(toKeep);
 			}
 		}
+	}
+
+	private void renderPlanetInformationDialog(final Planet planet) {
+		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.5f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader, skin);
+		float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+		dialog.setX(-dialog.getWidth());
+		dialog.setY(dialogY);
+		stage.addActor(dialog);
+		dialog.show(new Point(Gdx.graphics.getWidth() * 0.05f, dialogY), 0.4f);
+		
+		dialog.addListener(new DialogEventListener() {
+			@Override
+			public void cancelDialog() {
+				super.cancelDialog();
+				clearMoveActions(planet);
+				touchedPlanets.clear();
+			}
+		});
 	}
 
 	private Planet otherPlanet(List<Planet> planets, Planet userPlanet) {

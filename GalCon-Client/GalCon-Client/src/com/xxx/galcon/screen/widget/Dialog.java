@@ -36,15 +36,13 @@ public class Dialog extends Table {
 	}
 	
 	private void addBackground() {
-		
-		
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-		dialogTextureBg = menusAtlas.findRegion("dialog_bg");
-		backGround = new Image(new TextureRegionDrawable(dialogTextureBg));
+		dialogTextureBg = menusAtlas.findRegion("dialog_bg_no_shadow");
+		TextureRegionDrawable tex = new TextureRegionDrawable(dialogTextureBg);
+		backGround = new Image(tex);
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
 		addActor(backGround);
-	
 	}
 
 	
