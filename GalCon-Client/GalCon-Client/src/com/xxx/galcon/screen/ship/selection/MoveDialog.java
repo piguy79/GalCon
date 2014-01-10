@@ -150,7 +150,7 @@ public class MoveDialog extends CancelEnabledDialog {
 	}
 	
 	
-	public void hide(){
+	public void doHide(){
 		okButton.addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
 		public void run() {
 			hideParent(0.4f);

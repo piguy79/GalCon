@@ -43,6 +43,11 @@ public abstract class CancelEnabledDialog extends Dialog{
 		cancelButton.addAction(Actions.sequence(Actions.delay(duration), Actions.color(new Color(0, 0, 0, 1), 0.4f)));
 	}
 	
-	public abstract void hide();
+	public void hide(){
+		cancelButton.addAction(Actions.fadeOut(0.4f));
+		doHide();
+	}
+	
+	public abstract void doHide();
 
 }

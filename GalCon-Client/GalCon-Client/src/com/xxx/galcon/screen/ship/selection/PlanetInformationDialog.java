@@ -122,7 +122,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 	}
 	
 	@Override
-	public void hide(){
+	public void doHide(){
 		harvestButton.addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
 		public void run() {
 			hideParent(0.4f);
