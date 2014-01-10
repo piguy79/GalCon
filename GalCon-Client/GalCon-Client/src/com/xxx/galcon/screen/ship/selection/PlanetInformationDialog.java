@@ -1,10 +1,12 @@
 package com.xxx.galcon.screen.ship.selection;
 
-import org.joda.time.field.OffsetDateTimeField;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
@@ -12,6 +14,8 @@ import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.display.AbilityDisplay;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.event.HarvestEvent;
+import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.CancelEnabledDialog;
 import com.xxx.galcon.screen.widget.PlanetButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -26,6 +30,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 	
 	private PlanetButton planetImage;
 	private int offset;
+	private ActionButton harvestButton;
 
 	public PlanetInformationDialog(AssetManager assetManager, float width,
 			float height, Stage stage, Planet planet, GameBoard gameboard, boolean animated, ShaderProgram fontShader, UISkin skin, int offset) {
@@ -38,6 +43,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		this.offset = offset;
 		createPlanetImage();
 		createLabels();
+		createHarvestButton();
 	}
 
 	private void createLabels() {
@@ -86,9 +92,49 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		addActor(planetImage);
 	}
 
+	
+	private void createHarvestButton(){
+		Point position = new Point(getWidth() - (cancelButton.getWidth() * 0.6f), cancelButton.getY());
+		harvestButton =  new ActionButton(skin,"okButton", position);
+		harvestButton.setColor(0, 0, 0, 0);
+		
+		harvestButton.addListener(new ClickListener(){@Override
+		public void clicked(InputEvent event, float x, float y) {
+			hide();
+			fire(new HarvestEvent(planet));
+		}});
+		addActor(harvestButton);
+	}
+	
+	public void displayButtons(){
+		harvestButton.addAction(Actions.fadeIn(0.4f));
+	}
+	
 	@Override
-	public void hide() {
-		super.hide(0.4f);
+	public void show(final Point point, float duration){
+		addAction(Actions.sequence(new RunnableAction(){@Override
+		public void run() {
+			showParent(point, 0.4f);
+		}}, Actions.delay(0.4f), new RunnableAction(){@Override
+		public void run() {
+			displayButtons();
+		}}));
+	}
+	
+	@Override
+	public void hide(){
+		harvestButton.addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
+		public void run() {
+			hideParent(0.4f);
+		}}));
+	}
+	
+	public void showParent(Point point, float duration){
+		super.show(point, duration);
+	}
+	
+	public void hideParent(float duration){
+		super.hide(duration);
 	}
 
 

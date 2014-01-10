@@ -26,12 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.xxx.galcon.Fonts;
 import com.xxx.galcon.Function;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
@@ -45,7 +42,6 @@ import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
-import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.DialogEventListener;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.TransitionEventListener;
@@ -246,7 +242,7 @@ public class BoardScreen implements ScreenFeedback {
 					}
 				}
 				UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, currentRoundMoves,
-						new ArrayList<HarvestMove>());
+						inProgressHarvest);
 			}
 
 		});
@@ -343,14 +339,15 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					System.out.println("Planet");
-					planetButton.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
-							Actions.color(planet.getColor(), 0.5f))));
-					if (touchedPlanets.size() < 2) {
-						touchedPlanets.add(planet);
-						renderDialog();
-					} else {
-						clearTouchedPlanets();
+					if((GameLoop.USER.hasMoved(gameBoard) && planet.isOwnedBy(GameLoop.USER)) || (!GameLoop.USER.hasMoved(gameBoard))){
+						planetButton.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
+								Actions.color(planet.getColor(), 0.5f))));
+						if (touchedPlanets.size() < 2) {
+							touchedPlanets.add(planet);
+							renderDialog();
+						} else {
+							clearTouchedPlanets();
+						}
 					}
 				}
 
@@ -391,8 +388,13 @@ public class BoardScreen implements ScreenFeedback {
 			} else {
 				clearMoveActions(touchedPlanets.get(0));
 				Planet toKeep = touchedPlanets.get(1);
-				touchedPlanets.clear();
-				touchedPlanets.add(toKeep);
+				if(toKeep.name.equals(touchedPlanets.get(0).name)){
+					touchedPlanets.clear();
+				}else{
+					touchedPlanets.clear();
+					touchedPlanets.add(toKeep);
+				}
+				
 			}
 		}
 	}
@@ -413,6 +415,16 @@ public class BoardScreen implements ScreenFeedback {
 				clearMoveActions(planet);
 				touchedPlanets.clear();
 			}
+		});
+		
+		dialog.addListener(new MoveListener() {
+			@Override
+			public void handleHarvest(Planet planet) {
+				inProgressHarvest.add(MoveFactory.createHarvestMove(planet));
+				clearTouchedPlanets();
+				clearMoveActions(planet);
+			}
+			
 		});
 	}
 

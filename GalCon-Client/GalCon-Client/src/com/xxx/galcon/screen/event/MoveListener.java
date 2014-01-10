@@ -3,6 +3,7 @@ package com.xxx.galcon.screen.event;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.Planet;
 
 public abstract class MoveListener implements EventListener{
 
@@ -14,6 +15,8 @@ public abstract class MoveListener implements EventListener{
 			sendMove();
 		}else if(event instanceof CancelDialogEvent){
 			cancelDialog();
+		}else if(event instanceof HarvestEvent){
+			handleHarvest(((HarvestEvent) event).getPlanetToHarvest());
 		}
 		return false;
 	}
@@ -23,5 +26,7 @@ public abstract class MoveListener implements EventListener{
 	public void sendMove(){};
 	
 	public void cancelDialog(){};
+	
+	public void handleHarvest(Planet planet){};
 
 }

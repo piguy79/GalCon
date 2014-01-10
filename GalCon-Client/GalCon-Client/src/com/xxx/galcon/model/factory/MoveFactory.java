@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.math.GalConMath;
+import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
@@ -85,5 +86,9 @@ public class MoveFactory {
 		wrapper.setOrigin(wrapper.getPrefWidth() / 2, wrapper.getPrefHeight() / 2);
 		wrapper.setScaleX(1.5f);
 		return wrapper;
+	}
+	
+	public static HarvestMove createHarvestMove(Planet planet){
+		return new HarvestMove(planet.name);
 	}
 }
