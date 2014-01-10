@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen.ship.selection;
 
+import org.joda.time.field.OffsetDateTimeField;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,15 +25,17 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 	private ShaderProgram fontShader;
 	
 	private PlanetButton planetImage;
+	private int offset;
 
 	public PlanetInformationDialog(AssetManager assetManager, float width,
-			float height, Stage stage, Planet planet, GameBoard gameboard, boolean animated, ShaderProgram fontShader, UISkin skin) {
+			float height, Stage stage, Planet planet, GameBoard gameboard, boolean animated, ShaderProgram fontShader, UISkin skin, int offset) {
 		super(assetManager, width, height, stage, skin);
 		this.planet = planet;
 		this.gameboard = gameboard;
 		this.animated = animated;
 		this.skin = skin;
 		this.fontShader = fontShader;
+		this.offset = offset;
 		createPlanetImage();
 		createLabels();
 	}
@@ -77,6 +81,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f, sizeBase * 0.4f);
 		planetImage.setX((getWidth() / 2) - (planetImage.getWidth()  /2));
 		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
+		planetImage.setText(new StringBuilder().append(planet.numberOfShips - offset).toString());
 		
 		addActor(planetImage);
 	}

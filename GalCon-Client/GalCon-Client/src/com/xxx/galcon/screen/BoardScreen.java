@@ -337,8 +337,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		for (final Planet planet : gameBoard.planets) {
 			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButtonWithExpansion(planet, gameBoard, roundHasAlreadyBeenAnimated());
-			positionPlanet(planetButton);
-			
+			positionPlanet(planetButton);	
 
 			planetButton.addListener(new ClickListener() {
 
@@ -399,7 +398,8 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void renderPlanetInformationDialog(final Planet planet) {
-		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.4f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader, skin);
+		int offset = planetToMoveCount.get(planet.name) != null ? planetToMoveCount.get(planet.name) : 0;;
+		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.4f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader, skin, offset);
 		float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 		dialog.setX(-dialog.getWidth());
 		dialog.setY(dialogY);
