@@ -399,12 +399,12 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void renderPlanetInformationDialog(final Planet planet) {
-		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.9f, Gdx.graphics.getHeight() * 0.5f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader, skin);
+		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.4f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader, skin);
 		float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 		dialog.setX(-dialog.getWidth());
 		dialog.setY(dialogY);
 		stage.addActor(dialog);
-		dialog.show(new Point(Gdx.graphics.getWidth() * 0.05f, dialogY), 0.4f);
+		dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY), 0.4f);
 		
 		dialog.addListener(new DialogEventListener() {
 			@Override
@@ -442,7 +442,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoveDialog(final Planet one, final Planet two) {
 		Integer offSetCount = planetToMoveCount.get(one.name) == null ? 0 : planetToMoveCount.get(one.name);
 		moveDialog = new MoveDialog(one, two, offSetCount, one.numberOfShips - offSetCount, assetManager,
-				boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound, stage);
+				boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound, stage);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {
@@ -469,7 +469,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void setupPositionOFMoveDialog() {
 		float initialY = boardTable.getY() + (boardTable.getHeight() * 0.6f);
-		float initialX = boardTable.getX() + boardTable.getWidth() * 0.05f;
+		float initialX = boardTable.getX() + boardTable.getWidth() * 0.1f;
 
 		moveDialog.setPosition(-boardTable.getWidth(), initialY);
 		
@@ -481,7 +481,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoveDialog(final Move move) {
 		int offset = planetToMoveCount.get(move.fromPlanet(gameBoard.planets).name);
 		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
-				offset, assetManager, boardTable.getWidth() * 0.9f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound, stage);
+				offset, assetManager, boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.3f, skin, gameBoard.roundInformation.currentRound, stage);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {

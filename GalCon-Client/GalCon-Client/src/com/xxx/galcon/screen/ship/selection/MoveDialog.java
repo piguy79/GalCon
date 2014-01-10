@@ -26,14 +26,16 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
+import com.xxx.galcon.screen.GraphicsUtils;
 import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.MoveEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
+import com.xxx.galcon.screen.widget.CancelEnabledDialog;
 import com.xxx.galcon.screen.widget.Dialog;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 
-public class MoveDialog extends Dialog {
+public class MoveDialog extends CancelEnabledDialog {
 	
 	private UISkin skin;
 	protected ShaderLabel counter;
@@ -42,7 +44,6 @@ public class MoveDialog extends Dialog {
 	protected int shipsToSend = 0;
 	private int max;
 	
-	private ActionButton cancelButton;
 	private ActionButton okButton;
 	
 	protected Slider slider;
@@ -53,7 +54,7 @@ public class MoveDialog extends Dialog {
 	
 
 	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin, int currentRound, Stage stage) {
-		super(assetManager, width, height, stage);
+		super(assetManager, width, height, stage, skin);
 		this.skin = skin;
 		this.max = max;
 		this.currentRound = currentRound;
@@ -69,7 +70,6 @@ public class MoveDialog extends Dialog {
 		
 		addSlider();
 		addCounter();
-		addCancelButton();
 		addOkButton();
 	}
 
@@ -120,20 +120,11 @@ public class MoveDialog extends Dialog {
 		addActor(countTable);
 	}
 	
-	private void addCancelButton(){
-		cancelButton = new ActionButton(skin,"cancelButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX(), getY()));
-		cancelButton.setColor(0, 0, 0, 0);
-		cancelButton.addListener(new ClickListener(){@Override
-		public void clicked(InputEvent event, float x, float y) {
-			fire(new CancelDialogEvent());
-			hide();
-		}});
-		
-		addActor(cancelButton);
-	}
+	
 	
 	private void addOkButton(){
-		okButton =  new ActionButton(skin,"okButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX() + (getWidth() * 0.87f), getY()));
+		Point position = new Point(getWidth() - (cancelButton.getWidth() * 0.6f), cancelButton.getY());
+		okButton =  new ActionButton(skin,"okButton", position);
 		okButton.setColor(0, 0, 0, 0);
 		
 		okButton.addListener(new ClickListener(){@Override
@@ -145,7 +136,6 @@ public class MoveDialog extends Dialog {
 	}
 	
 	public void displayButtons(){
-		cancelButton.addAction(Actions.fadeIn(0.4f));
 		okButton.addAction(Actions.fadeIn(0.4f));
 	}
 	
@@ -161,7 +151,6 @@ public class MoveDialog extends Dialog {
 	
 	
 	public void hide(){
-		cancelButton.addAction(Actions.fadeOut(0.4f));
 		okButton.addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
 		public void run() {
 			hideParent(0.4f);

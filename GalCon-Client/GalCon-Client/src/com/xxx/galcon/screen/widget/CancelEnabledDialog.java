@@ -12,7 +12,7 @@ import com.xxx.galcon.screen.event.CancelDialogEvent;
 
 public abstract class CancelEnabledDialog extends Dialog{
 	
-	private ActionButton cancelButton;
+	protected ActionButton cancelButton;
 	private UISkin skin;
 
 	public CancelEnabledDialog(AssetManager assetManager, float width,
@@ -23,7 +23,7 @@ public abstract class CancelEnabledDialog extends Dialog{
 	}
 	
 	private void addCancelButton(){
-		cancelButton = new ActionButton(skin,"cancelButton", getWidth() * 0.12f, getWidth() * 0.12f, new Point(getX(), getY()));
+		cancelButton = new ActionButton(skin,"cancelButton", new Point(getX(), getY()));
 		cancelButton.setX(cancelButton.getX() - (cancelButton.getWidth() * 0.4f));
 		cancelButton.setY(cancelButton.getY() - (cancelButton.getHeight() * 0.4f));
 		cancelButton.setColor(0, 0, 0, 0);

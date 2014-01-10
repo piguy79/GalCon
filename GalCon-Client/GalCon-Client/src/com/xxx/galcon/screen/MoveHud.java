@@ -59,7 +59,7 @@ public class MoveHud extends Table {
 	private void addPerformMoveButton() {
 		if(!GameLoop.USER.hasMoved(gameBoard)){
 			float buttonSize = getHeight() * 0.85f;
-			ActionButton performMove =  new ActionButton(skin,"performMoveButton", buttonSize, buttonSize, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
+			ActionButton performMove =  new ActionButton(skin,"performMoveButton", new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event, float x, float y) {

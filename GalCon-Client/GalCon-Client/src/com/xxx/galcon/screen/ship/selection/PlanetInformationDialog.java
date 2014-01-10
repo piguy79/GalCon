@@ -46,14 +46,15 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 
 		float padNameToValue = getWidth() * 0.05f;
 		float initialPadX = getWidth() * 0.02f;
+		float yPad = getHeight() * 0.1f;
 		
 		positionAndPlaceActor(regenName, new Point(initialPadX, planetImage.getY() - (regenName.getTextBounds().height * 2)));
 		positionAndPlaceActor(regenRate, new Point(regenName.getX() + regenName.getTextBounds().width + padNameToValue, regenName.getY()));
-		positionAndPlaceActor(populationName, new Point(initialPadX, regenName.getY() - (regenName.getTextBounds().height)));
+		positionAndPlaceActor(populationName, new Point(initialPadX, regenName.getY() - yPad));
 		positionAndPlaceActor(populationValue, new Point(populationName.getX() + populationName.getTextBounds().width + padNameToValue, populationName.getY()));
 		
 		if(planet.hasAbility()){
-			positionAndPlaceActor(abilityName, new Point(initialPadX, populationName.getY() - (populationName.getTextBounds().height)));
+			positionAndPlaceActor(abilityName, new Point(initialPadX, populationName.getY() - yPad));
 			positionAndPlaceActor(abilityValue, new Point(abilityName.getX() + abilityName.getTextBounds().width + padNameToValue, abilityName.getY()));
 		}
 		
@@ -71,8 +72,9 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 	}
 
 	private void createPlanetImage() {
-		PlanetButtonFactory.setup(assetManager, getWidth() * 0.4f, getWidth() * 0.4f);
-		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, getWidth() * 0.4f, getWidth() * 0.4f);
+		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
+		PlanetButtonFactory.setup(assetManager, sizeBase * 0.4f, sizeBase * 0.4f);
+		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f, sizeBase * 0.4f);
 		planetImage.setX((getWidth() / 2) - (planetImage.getWidth()  /2));
 		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
 		
