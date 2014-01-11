@@ -99,6 +99,7 @@ public class Constants {
 	public static final String VALUES = "values";
 	public static final String WATCHED_AD = "watchedAd";
 	public static final String COINS = "coins";
+	public static final String CANCELED = "canceled";
 	public static final String USED_COINS = "usedCoins";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");

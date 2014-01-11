@@ -7,10 +7,6 @@
 		{
 			"sku" : "coin_bundle_2",
 			"associatedCoins" : 5
-		},
-		{
-			"sku" : "android.test.purchased",
-			"associatedCoins" : 1
 		}
 	]	
 }

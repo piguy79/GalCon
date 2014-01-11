@@ -10,7 +10,6 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
-import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
@@ -55,14 +54,11 @@ public interface GameAction {
 
 	public void requestHandleForEmail(UIConnectionResultCallback<HandleResponse> callback, String email, String handle);
 
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException;
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins)
-			throws ConnectionException;
+	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String playerHandle);
 
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders)
-			throws ConnectionException;
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders);
 
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle,
 			List<Order> orders);
@@ -72,17 +68,7 @@ public interface GameAction {
 
 	public void showAd(AdColonyVideoListener listner);
 
-	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback);
-
-	public void loadStoreInventory(Inventory inventory, UIConnectionResultCallback<Inventory> callback);
-
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
-	public void consumeOrders(List<Order> orders);
-
-	public void consumeExistingOrders();
-
-	public void recoverUsedCoinCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String handle)
-			throws ConnectionException;
-
+	public void recoverUsedCoinCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String handle);
 }

@@ -5,8 +5,8 @@ import static com.xxx.galcon.Config.PORT;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
-import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
+import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -45,10 +45,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.xxx.galcon.AndroidGameActionCache.InventoryCache;
 import com.xxx.galcon.AndroidGameActionCache.MapsCache;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.AuthenticationListener;
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.SocialAction;
@@ -58,7 +58,6 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
-import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
@@ -170,8 +169,8 @@ public class AndroidGameAction implements GameAction {
 
 	@Override
 	public void findAllMaps(final UIConnectionResultCallback<Maps> callback) {
-		if (mapCache.getCachedMaps() != null) {
-			callback.onConnectionResult(mapCache.getCachedMaps());
+		if (mapCache.getCache() != null) {
+			callback.onConnectionResult(mapCache.getCache());
 		} else {
 			mapCache.setDelegate(callback);
 			activity.runOnUiThread(new Runnable() {
@@ -231,26 +230,24 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void addCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle,
-			final int numCoins) {
+	public void addFreeCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			final JSONObject top = JsonConstructor.addCoins(playerHandle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, ADD_COINS, Player.class).execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, ADD_FREE_COINS, Player.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-
 	}
 
 	@Override
 	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback, String playerHandle,
-			List<Order> orders) throws ConnectionException {
+			List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
+			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, Player.class).execute(top
@@ -260,7 +257,6 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-
 	}
 
 	@Override
@@ -319,8 +315,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException {
+	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
@@ -343,16 +338,21 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
+	private InventoryCache inventoryCache = new InventoryCache();
+
 	@Override
 	public void loadAvailableInventory(final UIConnectionResultCallback<Inventory> callback) {
-		final Map<String, String> args = new HashMap<String, String>();
-
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				new GetJsonRequestTask<Inventory>(args, callback, FIND_AVAILABLE_INVENTORY, Inventory.class)
-						.execute("");
-			}
-		});
+		if (inventoryCache.getCache() != null) {
+			callback.onConnectionResult(inventoryCache.getCache());
+		} else {
+			inventoryCache.setDelegate(callback);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new GetJsonRequestTask<Inventory>(new HashMap<String, String>(), inventoryCache,
+							FIND_AVAILABLE_INVENTORY, Inventory.class).execute("");
+				}
+			});
+		}
 	}
 
 	@Override
@@ -500,51 +500,6 @@ public class AndroidGameAction implements GameAction {
 			@Override
 			public void run() {
 				((MainActivity) activity).displayAd(listener);
-			}
-		});
-	}
-
-	@Override
-	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
-		activity.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				((MainActivity) activity).purchaseCoins(inventoryItem, callback);
-			}
-		});
-	}
-
-	@Override
-	public void loadStoreInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
-		activity.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				((MainActivity) activity).loadInventory(inventory, callback);
-			}
-		});
-
-	}
-
-	@Override
-	public void consumeOrders(final List<Order> orders) {
-		activity.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				((MainActivity) activity).consumeOrders(orders);
-			}
-		});
-	}
-
-	@Override
-	public void consumeExistingOrders() {
-		activity.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				((MainActivity) activity).setupInAppBilling();
 			}
 		});
 	}

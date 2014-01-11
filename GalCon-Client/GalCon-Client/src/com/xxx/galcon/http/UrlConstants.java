@@ -17,7 +17,7 @@ public class UrlConstants {
 
 	public static final String PERFORM_MOVES = "/performMoves";
 
-	public static final String ADD_COINS = "/addCoins";
+	public static final String ADD_FREE_COINS = "/addFreeCoins";
 
 	public static final String ADD_COINS_FOR_AN_ORDER = "/addCoinsForAnOrder";
 

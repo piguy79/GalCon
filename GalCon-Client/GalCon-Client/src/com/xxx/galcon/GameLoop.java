@@ -13,8 +13,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.config.Configuration;
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.InAppBillingAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.model.GameBoard;
@@ -40,17 +40,19 @@ public class GameLoop extends Game {
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
+	private InAppBillingAction inAppBillingAction;
 
 	private boolean loadingNewCoins = false;
-	private boolean inAppBillingSetup = false;
 
-	public GameLoop(GameAction gameAction, SocialAction socialAction, Configuration config) {
+	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction,
+			Configuration config) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
+		this.inAppBillingAction = inAppBillingAction;
 		GameLoop.CONFIG = config;
 
 		UIConnectionWrapper.setGameAction(gameAction);
-		ExternalActionWrapper.setGameAction(gameAction);
+		ExternalActionWrapper.setActions(gameAction, inAppBillingAction);
 		tweenManager = new TweenManager();
 
 		Player player = new Player();
@@ -102,7 +104,8 @@ public class GameLoop extends Game {
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
-		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, assetManager, tweenManager);
+		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, inAppBillingAction, assetManager,
+				tweenManager);
 		setScreen(menuScreenContainer);
 	}
 
@@ -115,7 +118,6 @@ public class GameLoop extends Game {
 	public void render() {
 		super.render();
 		checkCoindStats();
-		setupInAppBilling();
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
@@ -165,22 +167,11 @@ public class GameLoop extends Game {
 			} else if (timeRemaining == null && GameLoop.USER.coins == 0 && GameLoop.USER.usedCoins != -1) {
 				if (!loadingNewCoins) {
 					loadingNewCoins = true;
-					try {
-						gameAction.addCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle, 3);
-					} catch (ConnectionException e) {
-
-					}
+					gameAction.addFreeCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle);
 				}
 			} else {
 				loadingNewCoins = false;
 			}
-		}
-	}
-
-	private void setupInAppBilling() {
-		if (GameLoop.USER != null && GameLoop.USER.handle != null && !inAppBillingSetup) {
-			gameAction.consumeExistingOrders();
-			inAppBillingSetup = true;
 		}
 	}
 }

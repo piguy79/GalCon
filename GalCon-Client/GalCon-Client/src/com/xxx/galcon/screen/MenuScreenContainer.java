@@ -27,8 +27,10 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.InAppBillingAction;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.screen.signin.ChooseHandleScreen;
+import com.xxx.galcon.screen.signin.LoadingScreen;
 import com.xxx.galcon.screen.signin.MainMenuScreen;
 import com.xxx.galcon.screen.signin.SignInScreen;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -38,9 +40,6 @@ public class MenuScreenContainer implements ScreenFeedback {
 	private UISkin skin;
 	private ShaderProgram fontShader;
 
-	private SocialAction socialAction;
-	private GameAction gameAction;
-
 	private Stage stage;
 	private ShaderLabel titleText;
 
@@ -48,6 +47,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 	private MainMenuScreen mainMenuScreen;
 	private ChooseHandleScreen chooseHandleScreen;
 	private LevelSelectionScreen levelSelectionScreen;
+	private LoadingScreen loadingScreen;
 	private PartialScreenFeedback currentScreen;
 
 	private GameListScreen currentGameScreen;
@@ -58,15 +58,12 @@ public class MenuScreenContainer implements ScreenFeedback {
 	Map<Class<?>, ScreenResultHandler> screenResultHandlers = new HashMap<Class<?>, ScreenResultHandler>();
 
 	public MenuScreenContainer(UISkin skin, SocialAction socialAction, GameAction gameAction,
-			AssetManager assetManager, TweenManager tweenManager) {
+			InAppBillingAction inAppBillingAction, AssetManager assetManager, TweenManager tweenManager) {
 		this.skin = skin;
 		this.stage = new Stage();
 
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-
-		this.socialAction = socialAction;
-		this.gameAction = gameAction;
 
 		signInScreen = new SignInScreen(skin, socialAction, gameAction);
 		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager);
@@ -74,6 +71,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		currentGameScreen = new GameListScreen(assetManager, skin);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
+		loadingScreen = new LoadingScreen(skin, gameAction, inAppBillingAction, assetManager);
 
 		screenResultHandlers.put(SignInScreen.class, new SignInScreenResultHandler());
 		screenResultHandlers.put(ChooseHandleScreen.class, new ChooseHandleScreenResultHandler());
@@ -81,6 +79,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		screenResultHandlers.put(LevelSelectionScreen.class, new LevelSelectionScreenResultHandler());
 		screenResultHandlers.put(GameListScreen.class, new GameListScreenResultHandler());
 		screenResultHandlers.put(NoMoreCoinsDialog.class, new NoMoreCoinsDialogResultHandler());
+		screenResultHandlers.put(LoadingScreen.class, new LoadingScreenResultHandler());
 
 		currentScreen = signInScreen;
 	}
@@ -222,6 +221,16 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 				return signInScreen;
 			} else if (((String) value).equals("hasHandle")) {
+				return loadingScreen;
+			}
+			return null;
+		}
+	}
+
+	public class LoadingScreenResultHandler implements ScreenResultHandler {
+		@Override
+		public PartialScreenFeedback processValue(Object value) {
+			if (((String) value).equals(Action.DONE)) {
 				return mainMenuScreen;
 			}
 			return null;

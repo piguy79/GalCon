@@ -46,7 +46,8 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind, String session) throws JSONException {
+	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind, String session)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", playerHandle);
@@ -66,11 +67,11 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject addCoins(String playerHandle, int numCoins) throws JSONException {
+	public static JSONObject addCoins(String playerHandle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
-		top.put("numCoins", numCoins);
+		top.put("handle", playerHandle);
+		top.put("session", session);
 
 		return top;
 
@@ -85,10 +86,12 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders) throws JSONException {
+	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders, String session)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
+		top.put("handle", playerHandle);
+		top.put("session", session);
 		JSONArray jsonOrders = createOrdersJson(orders);
 		top.put("orders", jsonOrders);
 

@@ -9,13 +9,15 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	inventoryManager = require('../modules/model/inventory'), 
 	_ = require('underscore'),
 	socialManager = require('../modules/social'),
-	validation = require('../modules/validation');
+	validation = require('../modules/validation'),
+	googleapis = require('googleapis');
 
 var VALIDATE_MAP = {
 	email : validation.isEmail,
 	session : validation.isSession,
 	handle : validation.isHandle,
-	mapKey : validation.isMapKey
+	mapKey : validation.isMapKey,
+	orders : validation.isOrders
 };
 
 exports.index = function(req, res) {
@@ -402,13 +404,66 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var orders = req.body.orders;
 	var session = req.body.session;
 	
-	if(orders && orders.length > 0){
-		var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, playerHandle);
-		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
-	}else{
-		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
-		userReturnInfo(null);
+	if(!validate({session : session, handle : handle, orders : orders}, res)) {
+		return;
 	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		if(orders && orders.length > 0) {
+			var gapiP = new mongoose.Promise();
+			googleapis
+				.discover('androidpublisher', 'v1.1')
+				.execute(function(err, client) {
+					if(err) {
+						gapiP.reject(err.message);
+					} else {
+						gapiP.complete(client);
+					}
+				});
+			var lastP = gapiP;
+			_.each(orders, function(order) {
+				lastP = lastP.then(function(client) {
+					var gapiP = new mongoose.Promise();
+					var oAuthClient = new googleapis.OAuth2Client();
+					oAuthClient.setCredentials({
+						refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
+						access_token: "ya29.1.AADtN_W_-u9YM-kof2kK1nnryrUIQuAgNR_iRwmP9JwNcYaRzcr4uvSQqgFdkg"
+					});
+					client.androidpublisher.inapppurchases
+						.get({
+							packageName: order.packageName,
+							productId: order.productId,
+							token: order.token
+							})
+						.withAuthClient(oAuthClient)
+						.execute(function(err, result) {
+							if(err) {
+								console.log("Android Publisher API - Error - %j", err);
+								gapiP.reject(err.message);
+							} else {
+								console.log("Android Publisher API - Result - %j", result);
+
+								if(email === undefined || email.length < 3) {
+									gapiP.reject("Unable to find email address");
+								} else {
+									gapiP.complete();
+								}
+							}
+						});
+					return gapiP;
+				});
+				
+				return lastP.then(function() {
+					var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
+					return lastPromise.then(handleUserUpdate(req, res, handle));
+				});
+			});
+		} else {
+			var userReturnInfo = handleUserUpdate(req, res, handle);
+			userReturnInfo(null);
+		}
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.deleteConsumedOrders = function(req, res){

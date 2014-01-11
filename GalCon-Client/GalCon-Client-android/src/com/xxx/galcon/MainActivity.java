@@ -8,14 +8,17 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.config.Configuration;
+import com.xxx.galcon.http.InAppBillingAction.Callback;
 import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -27,7 +30,6 @@ import com.xxx.galcon.inappbilling.util.SkuDetails;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Order;
-import com.xxx.galcon.model.Player;
 import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
@@ -45,6 +47,7 @@ public class MainActivity extends AndroidApplication {
 
 	private AndroidGameAction gameAction;
 	private SocialAction socialAction;
+	private AndroidInAppBillingAction inAppBillingAction;
 
 	private IabHelper mHelper;
 
@@ -56,7 +59,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Crashlytics.start(this);
+		Crashlytics.start(this);
 
 		setupAdColony();
 
@@ -67,11 +70,12 @@ public class MainActivity extends AndroidApplication {
 
 		socialAction = new AndroidSocialAction(this);
 		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
+		inAppBillingAction = new AndroidInAppBillingAction(this);
 
 		Configuration config = new Configuration();
 		gameAction.findConfigByType(new SetConfigurationResultHandler(config), APPLICATION_CONFIG);
 
-		initialize(new GameLoop(gameAction, socialAction, config), cfg);
+		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction, config), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -79,93 +83,36 @@ public class MainActivity extends AndroidApplication {
 		startService(intent);
 	}
 
-	private UIConnectionResultCallback<Player> playerCallback = new UIConnectionResultCallback<Player>() {
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 
-		@Override
-		public void onConnectionResult(Player result) {
-			GameLoop.USER.coins = result.coins;
-			GameLoop.USER.usedCoins = result.usedCoins;
-			GameLoop.USER.watchedAd = result.watchedAd;
-			gameAction.consumeOrders(result.consumedOrders);
-		}
-
-		@Override
-		public void onConnectionError(String msg) {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
-	private void consumeAnyPurchasedOrders() {
-		UIConnectionWrapper.loadAvailableInventory(new UIConnectionResultCallback<Inventory>() {
-
-			@Override
-			public void onConnectionResult(Inventory result) {
-				gameAction.loadStoreInventory(result, new UIConnectionResultCallback<Inventory>() {
-
-					@Override
-					public void onConnectionResult(final Inventory inventory) {
-						mHelper.queryInventoryAsync(true, inventory.skus(), new QueryInventoryFinishedListener() {
-
-							@Override
-							public void onQueryInventoryFinished(IabResult result,
-									com.xxx.galcon.inappbilling.util.Inventory inv) {
-
-								List<Order> orders = new ArrayList<Order>();
-								for (InventoryItem item : inventory.inventory) {
-									if (inv.hasPurchase(item.sku)) {
-										orders.add(new Order(inv.getPurchase(item.sku).getOriginalJson(), item.numCoins));
-									}
-								}
-
-								UIConnectionWrapper.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, orders);
-
-							}
-						});
-					}
-
-					@Override
-					public void onConnectionError(String msg) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-			}
-
-			@Override
-			public void onConnectionError(String msg) {
-				complain("Unable to load inventory from server.");
-
-			}
-		});
-		List<String> skus = new ArrayList<String>();
-		skus.add("android.test.purchased");
-
+		mHelper.dispose();
 	}
 
-	public void setupInAppBilling() {
+	public void setupInAppBilling(final Callback callback) {
 		String base64EncodedPublicKey = ENCODED_APPLICATION_ID;
 
 		// Create the helper, passing it our context and the public key to
 		// verify signatures with
 		mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-		// enable debug logging (for a production application, you should set
-		// this to false).
-		mHelper.enableDebugLogging(true);
+		mHelper.enableDebugLogging(false);
 
 		mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 			public void onIabSetupFinished(IabResult result) {
-
-				if (!result.isSuccess()) {
-					complain("Problem setting up in-app billing: " + result);
-					return;
+				if (result.isSuccess()) {
+					callback.onSuccess("");
 				} else {
-					consumeAnyPurchasedOrders();
+					Crashlytics.log(Log.ERROR, LOG_NAME, "Could not setup in-app billing: [" + result.getResponse()
+							+ ", " + result.getMessage() + "]");
+					if (result.getResponse() == IabHelper.IABHELPER_REMOTE_EXCEPTION) {
+						callback.onFailure("retry");
+					} else {
+						callback.onFailure("In app billing not setup");
+					}
 				}
 			}
 		});
-
 	}
 
 	private void setupAdColony() {
@@ -204,35 +151,29 @@ public class MainActivity extends AndroidApplication {
 		ad.show(adListener);
 	}
 
-	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<Player> callback) {
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
 		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
 
 			@Override
-			public void onIabPurchaseFinished(IabResult result, Purchase info) {
-
+			public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
 				if (result.isSuccess()) {
 					List<Order> orders = new ArrayList<Order>();
-					orders.add(new Order(info.getOriginalJson(), inventoryItem.numCoins));
-
-					UIConnectionWrapper.addCoinsForAnOrder(callback, GameLoop.USER.handle, orders);
+					orders.add(purchaseToOrder(purchase));
+					callback.onConnectionResult(orders);
+				} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
+					callback.onConnectionResult(null);
+				} else {
+					callback.onConnectionError("Could not complete purchase");
 				}
 			}
 		});
 	}
 
-	public void loadInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
-
-		List<String> skuDetail = new ArrayList<String>();
-
-		for (InventoryItem item : inventory.inventory) {
-			skuDetail.add(item.sku);
-		}
-
-		mHelper.queryInventoryAsync(true, skuDetail, new QueryInventoryFinishedListener() {
+	public void loadStoreInventory(final Inventory inventoryResult, final UIConnectionResultCallback<Inventory> callback) {
+		mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
 
 			@Override
 			public void onQueryInventoryFinished(IabResult result, com.xxx.galcon.inappbilling.util.Inventory inv) {
-
 				if (result.isFailure()) {
 					complain("Unable to load inventory from Play Store.");
 					return;
@@ -240,10 +181,16 @@ public class MainActivity extends AndroidApplication {
 
 				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
-				for (InventoryItem item : inventory.inventory) {
+				for (InventoryItem item : inventoryResult.inventory) {
 					SkuDetails detail = inv.getSkuDetails(item.sku);
 					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
 							.getTitle(), item.numCoins);
+
+					if (inv.hasPurchase(detail.getSku())) {
+						Purchase purchase = inv.getPurchase(detail.getSku());
+						combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+					}
+
 					mappedInventoryItems.add(combinedItem);
 				}
 
@@ -254,22 +201,19 @@ public class MainActivity extends AndroidApplication {
 		});
 	}
 
-	public void consumeOrders(final List<Order> consumedOrders) {
+	public void consumeOrders(final List<Order> consumedOrders, final Callback callback) {
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 
 		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
 			@Override
 			public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-				gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
-					@Override
-					public void onConnectionResult(Player result) {
+				for (IabResult result : results) {
+					if (result.isFailure()) {
+						callback.onFailure(result.getMessage());
+						return;
 					}
-
-					@Override
-					public void onConnectionError(String msg) {
-						// TODO Auto-generated method stub
-					}
-				}, GameLoop.USER.handle, consumedOrders);
+				}
+				callback.onSuccess("");
 			}
 		});
 	}
@@ -302,5 +246,19 @@ public class MainActivity extends AndroidApplication {
 		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 		}
+	}
+
+	private Order purchaseToOrder(Purchase purchase) {
+		Order order = new Order();
+
+		order.orderId = purchase.getOrderId();
+		order.packageName = purchase.getPackageName();
+		order.purchaseTime = Long.toString(purchase.getPurchaseTime());
+		order.purchaseState = Integer.toString(purchase.getPurchaseState());
+		order.developerPayload = purchase.getDeveloperPayload();
+		order.token = purchase.getToken();
+		order.productId = purchase.getSku();
+
+		return order;
 	}
 }

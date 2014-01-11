@@ -9,10 +9,8 @@ import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
-import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
-import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.PlayerUsedCoins;
 
@@ -46,11 +44,7 @@ public class UIConnectionWrapper {
 	}
 
 	public static void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player) {
-		try {
-			gameAction.findGamesWithPendingMove(callback, player);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+		gameAction.findGamesWithPendingMove(callback, player);
 	}
 
 	public static void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
@@ -60,23 +54,6 @@ public class UIConnectionWrapper {
 	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		gameAction.joinGame(callback, id, playerHandle);
 
-	}
-
-	public static void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins) {
-		try {
-			gameAction.addCoins(callback, playerHandle, numCoins);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
-	}
-
-	public static void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle,
-			List<Order> orders) {
-		try {
-			gameAction.addCoinsForAnOrder(callback, playerHandle, orders);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
 	}
 
 	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,
@@ -92,15 +69,7 @@ public class UIConnectionWrapper {
 		gameAction.findConfigByType(callback, type);
 	}
 
-	public static void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback) {
-		gameAction.loadAvailableInventory(callback);
-	}
-
 	public static void recoverUsedCoinsCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
-		try {
-			gameAction.recoverUsedCoinCount(callback, playerHandle);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+		gameAction.recoverUsedCoinCount(callback, playerHandle);
 	}
 }

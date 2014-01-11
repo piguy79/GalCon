@@ -28,6 +28,7 @@ import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.http.InAppBillingAction.Callback;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Inventory;
@@ -56,6 +57,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private ShaderLabel coinText;
 	private ImageButton backButton;
 	protected WaitImageButton waitImage;
+
+	private InventoryItem lastPurchaseAttemptItem;
 
 	private Object returnValue;
 
@@ -205,7 +208,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 				scrollList.addRow(item, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						ExternalActionWrapper.purchaseCoins(item);
+						waitImage.start();
+						lastPurchaseAttemptItem = item;
+						ExternalActionWrapper.purchaseCoins(item, coinsCallback);
 					}
 				});
 			}
@@ -213,6 +218,38 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		return scrollList;
 	}
+
+	private Callback coinsCallback = new Callback() {
+		@Override
+		public void onSuccess(String msg) {
+			waitImage.stop();
+			lastPurchaseAttemptItem = null;
+
+			if (msg.equals(Constants.CANCELED)) {
+				// do nothing for now
+			} else {
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
+						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader), null);
+
+				stage.addActor(ovrlay);
+			}
+		}
+
+		@Override
+		public void onFailure(String msg) {
+			waitImage.stop();
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
+					"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
+					new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
+						}
+					});
+
+			stage.addActor(ovrlay);
+		}
+	};
 
 	private void addCoinImageGroup() {
 		final float height = Gdx.graphics.getHeight();
@@ -311,7 +348,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		if (inventoryResult == null) {
 			waitImage.start();
-			ExternalActionWrapper.loadStoreInventory(inventoryCallback);
+			ExternalActionWrapper.loadInventory(inventoryCallback);
 		} else {
 			inventoryCallback.onConnectionResult(inventoryResult);
 		}
@@ -340,7 +377,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 					new TextOverlay(msg, menusAtlas, skin, fontShader), new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							ExternalActionWrapper.loadStoreInventory(inventoryCallback);
+							ExternalActionWrapper.loadInventory(inventoryCallback);
 						}
 					});
 

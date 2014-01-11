@@ -19,7 +19,9 @@ public class DismissableOverlay extends Overlay {
 				DismissableOverlay.this.remove();
 			}
 		});
-		this.addListener(clickListener);
+		if (clickListener != null) {
+			this.addListener(clickListener);
+		}
 	}
 
 	@Override

@@ -3,8 +3,8 @@
  */
 package com.xxx.galcon.http;
 
-import static com.xxx.galcon.http.UrlConstants.ADD_COINS;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
+import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
@@ -49,7 +49,6 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
-import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
@@ -157,13 +156,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle)
-			throws ConnectionException {
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
 		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE,
 				args, new AvailableGames()));
-
 	}
 
 	@Override
@@ -188,28 +185,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		callback.onConnectionResult((Inventory) callURL(new GetClientRequest(), FIND_AVAILABLE_INVENTORY, args,
 				new Inventory()));
-	}
-
-	@Override
-	public void loadStoreInventory(final Inventory inventory, final UIConnectionResultCallback<Inventory> callback) {
-		Inventory stock = new Inventory();
-		stock.inventory = inventory.inventory;
-
-		InventoryItem inventoryItem = new InventoryItem("coin_bundle_1", "$1.99", "coin_bundle_1", 2);
-		stock.inventory.add(inventoryItem);
-
-		inventoryItem = new InventoryItem("coin_bundle_2", "$2.99", "coin_bundle_2", 6);
-		stock.inventory.add(inventoryItem);
-
-		callback.onConnectionResult(stock);
-	}
-
-	private InventoryItem createDummyInventoryItem() {
-		InventoryItem inventoryItem = new InventoryItem();
-		inventoryItem.name = "coin_bundle_1";
-		inventoryItem.sku = "coin_bundle_1";
-		inventoryItem.price = "$1.99";
-		return inventoryItem;
 	}
 
 	private JsonConvertible callURL(ClientRequest clientRequest, String path, Map<String, String> parameters,
@@ -250,14 +225,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoins(UIConnectionResultCallback<Player> callback, String playerHandle, int numCoins) {
+	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, numCoins);
+			JSONObject top = JsonConstructor.addCoins(playerHandle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS, args, new Player()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_FREE_COINS, args, new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -265,10 +240,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders)
-			throws ConnectionException {
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders) {
 		try {
-			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders);
+			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -303,11 +277,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<Player> callback) {
-		addCoins(callback, GameLoop.USER.handle, inventoryItem.numCoins);
-	}
-
-	@Override
 	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle,
 			Long timeRemaining, Long usedCoins) throws ConnectionException {
 		try {
@@ -320,18 +289,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-
-	}
-
-	@Override
-	public void consumeOrders(List<Order> orders) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void consumeExistingOrders() {
-		// TODO Auto-generated method stub
 
 	}
 
