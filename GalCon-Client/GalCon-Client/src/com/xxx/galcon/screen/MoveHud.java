@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -58,8 +59,7 @@ public class MoveHud extends Table {
 	
 	private void addPerformMoveButton() {
 		if(!GameLoop.USER.hasMoved(gameBoard)){
-			float buttonSize = getHeight() * 0.85f;
-			ActionButton performMove =  new ActionButton(skin,"performMoveButton", buttonSize, buttonSize, new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
+			ActionButton performMove =  new ActionButton(skin,"performMoveButton", new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
@@ -93,15 +93,14 @@ public class MoveHud extends Table {
 
 	private void addMoveToMap(final Move move) {
 		if(moves.get(move) == null){
-			float buttonWidth = moveButtonHolder.getWidth() * 0.15f;
-			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, getHeight() * 1.8f);
+			float buttonWidth = Gdx.graphics.getWidth() * 0.13f;
+			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, getHeight() * 0.85f);
 			
-			if(button.isActive()){
-				button.addListener(new ClickListener(){@Override
-					public void clicked(InputEvent event, float x, float y) {
-						fire(new MoveEvent(move));
-				}});
-			}
+			button.addListener(new ClickListener(){@Override
+				public void clicked(InputEvent event, float x, float y) {
+					fire(new MoveEvent(move));
+			}});
+			
 			
 			moves.put(move, button);
 		}

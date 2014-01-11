@@ -94,71 +94,83 @@ filter: Linear,Linear
 repeat: none
 arrow_left
   rotate: false
-  xy: 2, 255
+  xy: 2, 447
   size: 600, 568
   orig: 600, 568
   offset: 0, 0
   index: -1
 black_grey_button
   rotate: false
-  xy: 604, 266
+  xy: 2, 22
   size: 373, 80
   orig: 373, 80
   offset: 0, 0
   index: -1
-cancel_button
+dialog_bg_no_shadow
   rotate: false
-  xy: 604, 13
-  size: 251, 251
-  orig: 251, 251
+  xy: 2, 104
+  size: 813, 341
+  orig: 813, 341
   offset: 0, 0
   index: -1
 green_button
   rotate: false
-  xy: 255, 32
+  xy: 377, 2
   size: 300, 100
   orig: 300, 100
   offset: 0, 0
   index: -1
-ok_button
-  rotate: false
-  xy: 2, 2
-  size: 251, 251
-  orig: 251, 251
-  offset: 0, 0
-  index: -1
 rect_button_blank
   rotate: false
-  xy: 255, 134
+  xy: 604, 494
   size: 338, 119
   orig: 338, 119
   offset: 0, 0
   index: -1
 refresh
   rotate: false
-  xy: 852, 852
+  xy: 817, 364
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-textFieldBg
-  rotate: false
-  xy: 2, 825
-  size: 848, 155
-  orig: 848, 155
-  offset: 0, 0
-  index: -1
 transparent_square
   rotate: false
-  xy: 852, 750
+  xy: 679, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 wait
   rotate: false
-  xy: 604, 348
+  xy: 604, 615
   size: 400, 400
   orig: 400, 400
+  offset: 0, 0
+  index: -1
+
+menus3.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cancel_button
+  rotate: false
+  xy: 2, 2
+  size: 251, 251
+  orig: 251, 251
+  offset: 0, 0
+  index: -1
+ok_button
+  rotate: false
+  xy: 255, 2
+  size: 251, 251
+  orig: 251, 251
+  offset: 0, 0
+  index: -1
+textFieldBg
+  rotate: false
+  xy: 2, 255
+  size: 848, 155
+  orig: 848, 155
   offset: 0, 0
   index: -1

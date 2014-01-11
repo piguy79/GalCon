@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
@@ -16,7 +16,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
-public class MoveButton extends Table {
+public class MoveButton extends Group {
 	
 	private static final Color NEW_MOVE = Color.valueOf("E8920C");
 	private AssetManager assetManager;
@@ -43,10 +43,8 @@ public class MoveButton extends Table {
 	private void createLayout() {
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
-		setBackground(new TextureRegionDrawable(bgTexture));
-		if(isActive()){
-			addAction(Actions.color(NEW_MOVE, 0.4f));
-		}
+		createBackground();
+		
 		addLabels();
 	}
 	
@@ -57,13 +55,33 @@ public class MoveButton extends Table {
 
 
 	private void addLabels() {
+		float padding = getWidth() * 0.1f;
+		
 		ShaderLabel duration = new ShaderLabel(fontShader, "" + Math.round(move.duration), skin, Constants.UI.DEFAULT_FONT_BLACK);
+		duration.setX(getWidth() - (duration.getTextBounds().width + padding));
+		duration.setY(getHeight() - (duration.getTextBounds().height + padding));
+		
 		ShaderLabel fleet = new ShaderLabel(fontShader, "" + move.shipsToMove, skin, Constants.UI.DEFAULT_FONT_BLACK);
+		fleet.setX(0);
+		fleet.setY(0);
 		
-		add(fleet).right().height(getHeight() * 0.2f).expandX();
-		row().height(getHeight() * 0.2f).expandX();
-		add(duration).left().height(getHeight() * 0.3f).expandX();
+		addActor(duration);
+		addActor(fleet);
 		
+	}
+	
+	private void createBackground() {
+		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
+		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
+		Image backGround = new Image(new TextureRegionDrawable(bgTexture));
+		backGround.setWidth(getWidth());
+		backGround.setHeight(getHeight());
+		
+		if(isActive()){
+			backGround.addAction(Actions.color(NEW_MOVE, 0.4f));
+		}
+		
+		addActor(backGround);
 	}
 
 }

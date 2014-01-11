@@ -373,7 +373,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		public void onConnectionError(String msg) {
 			waitImage.stop();
 
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas,
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f,
 					new TextOverlay(msg, menusAtlas, skin, fontShader), new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {

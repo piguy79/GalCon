@@ -71,7 +71,7 @@ public class BoardScreenPlayerHud extends Group {
 		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.SMALL_FONT);
 		firstPlayer.setWidth(getWidth() * 0.5f);
 		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
-		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.1f));
+		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
 		firstPlayer.setAlignment(Align.center);
 		addActor(firstPlayer);
 		
