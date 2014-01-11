@@ -228,8 +228,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			if (msg.equals(Constants.CANCELED)) {
 				// do nothing for now
 			} else {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader), null);
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
+						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader),
+						new ClickListener() {
+						});
 
 				stage.addActor(ovrlay);
 			}
@@ -238,7 +240,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		@Override
 		public void onFailure(String msg) {
 			waitImage.stop();
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
 					"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
 					new ClickListener() {
 						@Override
@@ -373,13 +375,13 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		public void onConnectionError(String msg) {
 			waitImage.stop();
 
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f,
-					new TextOverlay(msg, menusAtlas, skin, fontShader), new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							ExternalActionWrapper.loadInventory(inventoryCallback);
-						}
-					});
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(msg, menusAtlas, skin,
+					fontShader), new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					ExternalActionWrapper.loadInventory(inventoryCallback);
+				}
+			});
 
 			stage.addActor(ovrlay);
 		}

@@ -424,7 +424,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 			var lastP = gapiP;
 			_.each(orders, function(order) {
 				lastP = lastP.then(function(client) {
-					var gapiP = new mongoose.Promise();
+					var newP = new mongoose.Promise();
 					var oAuthClient = new googleapis.OAuth2Client();
 					oAuthClient.setCredentials({
 						refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
@@ -440,25 +440,19 @@ exports.addCoinsForAnOrder = function(req, res) {
 						.execute(function(err, result) {
 							if(err) {
 								console.log("Android Publisher API - Error - %j", err);
-								gapiP.reject(err.message);
+								newP.reject(err.message);
 							} else {
 								console.log("Android Publisher API - Result - %j", result);
-
-								if(email === undefined || email.length < 3) {
-									gapiP.reject("Unable to find email address");
-								} else {
-									gapiP.complete();
-								}
+								newP.complete();
 							}
 						});
-					return gapiP;
-				});
-				
-				return lastP.then(function() {
-					var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
-					return lastPromise.then(handleUserUpdate(req, res, handle));
+					return newP;
 				});
 			});
+			return lastP.then(function() {
+				var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
+				return lastPromise.then(handleUserUpdate(req, res, handle));
+			}, logErrorAndSetResponse(req, res));
 		} else {
 			var userReturnInfo = handleUserUpdate(req, res, handle);
 			userReturnInfo(null);
