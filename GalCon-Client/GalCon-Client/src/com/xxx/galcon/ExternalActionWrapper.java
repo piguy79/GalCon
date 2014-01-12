@@ -104,7 +104,7 @@ public class ExternalActionWrapper {
 						gameAction.deleteConsumedOrders(new UIConnectionResultCallback<Player>() {
 							@Override
 							public void onConnectionResult(Player result) {
-
+								callback.onSuccess("");
 							}
 
 							@Override

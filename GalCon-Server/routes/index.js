@@ -425,7 +425,9 @@ exports.addCoinsForAnOrder = function(req, res) {
 			_.each(orders, function(order) {
 				lastP = lastP.then(function(client) {
 					var newP = new mongoose.Promise();
-					var oAuthClient = new googleapis.OAuth2Client();
+					var clientId = "1066768766862-6nqm53i5ab34js3oo8jcv05bkookob87.apps.googleusercontent.com";
+					var clientSecret = "2R4_ZmTBwBEAmEo7_W8hIyZn";
+					var oAuthClient = new googleapis.OAuth2Client(clientId, clientSecret);
 					oAuthClient.setCredentials({
 						refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
 						access_token: "ya29.1.AADtN_W_-u9YM-kof2kK1nnryrUIQuAgNR_iRwmP9JwNcYaRzcr4uvSQqgFdkg"
@@ -443,15 +445,24 @@ exports.addCoinsForAnOrder = function(req, res) {
 								newP.reject(err.message);
 							} else {
 								console.log("Android Publisher API - Result - %j", result);
-								newP.complete();
+								if(result.purchaseState == 0 && result.consumptionState == 1) {
+									newP.complete("credit");
+								} else {
+									newP.complete("noCredit");
+								}
 							}
 						});
 					return newP;
+				}).then(function(validationResult) {
+					if(validationResult === "credit") {
+						return userManager.addCoinsForAnOrder(handle, order);
+					} else {
+						return userManager.findUserByHandle(handle);
+					}
 				});
 			});
-			return lastP.then(function() {
-				var lastPromise = performFunctionToOrders(userManager.addCoinsForAnOrder, orders, handle);
-				return lastPromise.then(handleUserUpdate(req, res, handle));
+			return lastP.then(function(user) {
+				res.json(user);
 			}, logErrorAndSetResponse(req, res));
 		} else {
 			var userReturnInfo = handleUserUpdate(req, res, handle);

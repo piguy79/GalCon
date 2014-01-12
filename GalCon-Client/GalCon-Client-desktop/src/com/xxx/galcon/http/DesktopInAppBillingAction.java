@@ -31,8 +31,7 @@ public class DesktopInAppBillingAction implements InAppBillingAction {
 
 	@Override
 	public void consumeOrders(List<Order> orders, Callback callback) {
-		// TODO Auto-generated method stub
-
+		callback.onSuccess("");
 	}
 
 	@Override
@@ -50,13 +49,13 @@ public class DesktopInAppBillingAction implements InAppBillingAction {
 	private Order inventoryItemToOrder(InventoryItem item) {
 		Order order = new Order();
 
-		order.orderId = "1";
+		order.orderId = "12999763169054705758.1373298375155582";
 		order.packageName = "com.xxx.galcon";
-		order.purchaseTime = "3";
-		order.purchaseState = "4";
-		order.developerPayload = "5";
-		order.productId = "android.test.purchased";
-		order.token = "inapp:com.xxx.galcon:android.test.purchased";
+		order.purchaseTime = "1389472914739";
+		order.purchaseState = "0";
+		order.developerPayload = "";
+		order.productId = "coin_bundle_1";
+		order.token = "mdtmbbjzbsfwrlpswfahdcab.AO-J1OxWst5eVCNffM81rISyZFnO1n2mlfrEyCyg2yoBXnisdE_bTdufGAQ-XoNh7uTGnZgDINH8N71A4pto6poxVeIdBUVaChGNVxmBnJa65fmvHqixqm8";
 
 		return order;
 	}
