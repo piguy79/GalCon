@@ -11,12 +11,10 @@ import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Inventory extends JsonConvertible {
 
-	public List<InventoryItem> inventory;
+	public List<InventoryItem> inventory = new ArrayList<InventoryItem>();
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		this.inventory = new ArrayList<InventoryItem>();
-
 		JSONArray array = jsonObject.getJSONArray("items");
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject obj = array.getJSONObject(i);

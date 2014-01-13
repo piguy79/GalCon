@@ -228,7 +228,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			if (msg.equals(Constants.CANCELED)) {
 				// do nothing for now
 			} else {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 1.0f, new TextOverlay(
 						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader),
 						new ClickListener() {
 						});
@@ -240,7 +240,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		@Override
 		public void onFailure(String msg) {
 			waitImage.stop();
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, 1.0f, new TextOverlay(
 					"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
 					new ClickListener() {
 						@Override

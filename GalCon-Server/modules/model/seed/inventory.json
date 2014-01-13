@@ -1,24 +1,20 @@
 {
 	"inventory" : [
 		{
-			"sku" : "coins_1",
-			"associatedCoins" : 3
-		},
-		{
 			"sku" : "coins_2",
-			"associatedCoins" : 8
+			"associatedCoins" : 10
 		},
 		{
 			"sku" : "coins_3",
-			"associatedCoins" : 18
+			"associatedCoins" : 30
 		},
 		{
 			"sku" : "coins_4",
-			"associatedCoins" : 35
+			"associatedCoins" : 75
 		},
 		{
 			"sku" : "coins_5",
-			"associatedCoins" : 60
+			"associatedCoins" : 200
 		}
 	]	
 }

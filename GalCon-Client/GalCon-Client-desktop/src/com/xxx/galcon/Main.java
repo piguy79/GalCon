@@ -18,7 +18,7 @@ public class Main {
 
 		DesktopGameAction gameAction = new DesktopGameAction("localhost", 3000);
 		DesktopSocialAction socialAction = new DesktopSocialAction();
-		DesktopInAppBillingAction inAppBillAction = new DesktopInAppBillingAction(gameAction);
+		DesktopInAppBillingAction inAppBillAction = new DesktopInAppBillingAction();
 
 		final Configuration config = new Configuration();
 

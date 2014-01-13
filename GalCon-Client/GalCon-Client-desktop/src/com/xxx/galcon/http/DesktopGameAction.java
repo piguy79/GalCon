@@ -3,7 +3,6 @@
  */
 package com.xxx.galcon.http;
 
-import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -242,17 +241,32 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders) {
 		try {
-			JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders, getSession());
+			/*
+			 * Instead of trying to use the token process on the desktop, insert
+			 * a valid session directly into the local DB.
+			 */
+			MongoClient client = new MongoClient("localhost");
+			DB galcon = client.getDB("galcon");
+			DBCollection usersCollection = galcon.getCollection("users");
 
-			Map<String, String> args = new HashMap<String, String>();
-			args.put("json", top.toString());
+			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_COINS_FOR_AN_ORDER, args,
-					new Player()));
-		} catch (JSONException e) {
-			System.out.println(e);
+			for (Order order : orders) {
+				GameLoop.USER.coins = GameLoop.USER.coins
+						+ DesktopInAppBillingAction.storeItems.get(order.productId).numCoins;
+				user.put("coins", GameLoop.USER.coins);
+				user.put("usedCoins", -1);
+				user.put("watchedAd", false);
+				usersCollection.update(new BasicDBObject("email", GameLoop.USER.email), user);
+			}
+			client.close();
+
+			GameLoop.USER.watchedAd = false;
+			GameLoop.USER.usedCoins = -1L;
+			callback.onConnectionResult(GameLoop.USER);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
 		}
-
 	}
 
 	@Override
