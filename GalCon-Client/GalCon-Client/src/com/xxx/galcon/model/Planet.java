@@ -154,7 +154,7 @@ public class Planet extends JsonConvertible {
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color ABILITY_PLANET_COLOR = Color.valueOf("3F77B0");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
-		Color OWNED_BY_ME_WITH_ABILITY = Color.valueOf("439754");
+		Color OWNED_BY_ME_WITH_ABILITY = Color.valueOf("32B0A2");
 		Color OWNED_BY_OPPONENT_WITH_ABILITY = Color.valueOf("B23F44");
 		
 		Color color = DEFAULT_PLANET_COLOR;

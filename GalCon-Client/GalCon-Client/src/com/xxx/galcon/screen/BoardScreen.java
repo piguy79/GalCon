@@ -448,11 +448,8 @@ public class BoardScreen implements ScreenFeedback {
 	private Planet touchedUserPlanet(List<Planet> planets) {
 		for (Planet planet : planets) {
 
-			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle) && planet.numberOfShips > 0) {
-				Integer numShips = planetToMoveCount.get(planet.name);
-				if ((planet.numberOfShips - numShips) > 0) {
-					return planet;
-				}
+			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle)) {
+					return planet;				
 			}
 		}
 		return null;
@@ -460,9 +457,8 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderMoveDialog(final Planet one, final Planet two) {
 		Integer offSetCount = planetToMoveCount.get(one.name) == null ? 0 : planetToMoveCount.get(one.name);
-		moveDialog = new MoveDialog(one, two, offSetCount, one.numberOfShips - offSetCount, assetManager,
-				boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.3f, skin,
-				gameBoard.roundInformation.currentRound, stage);
+		moveDialog = new MoveDialog(one, two, offSetCount, assetManager,
+				boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.25f, skin, gameBoard.roundInformation.currentRound, stage);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {
@@ -500,8 +496,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoveDialog(final Move move) {
 		int offset = planetToMoveCount.get(move.fromPlanet(gameBoard.planets).name);
 		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
-				offset, assetManager, boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.3f, skin,
-				gameBoard.roundInformation.currentRound, stage);
+				offset, assetManager, boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.25f, skin, gameBoard.roundInformation.currentRound, stage);
 		setupPositionOFMoveDialog();
 
 		moveDialog.addListener(new MoveListener() {
