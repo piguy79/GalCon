@@ -1,6 +1,7 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -21,4 +22,8 @@ public class TextOverlay extends Overlay {
 		shaderLabel.setAlignment(Align.center, Align.center);
 	}
 
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		shaderLabel.draw(batch, parentAlpha);
+	}
 }

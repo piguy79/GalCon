@@ -267,10 +267,10 @@ public class BoardScreen implements ScreenFeedback {
 		final Table moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
 				PlanetButtonFactory.tileWidthInWorld, position);
 
-		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, 0.9f, new Runnable() {
+		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, 0.9f, new ClickListener() {
 
 			@Override
-			public void run() {
+			public void clicked(InputEvent event, float x, float y) {
 				fromPlanet.remove();
 				toPlanet.remove();
 				moveToDisplay.remove();

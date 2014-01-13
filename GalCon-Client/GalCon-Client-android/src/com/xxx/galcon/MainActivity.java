@@ -3,7 +3,6 @@ package com.xxx.galcon;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -123,17 +122,6 @@ public class MainActivity extends AndroidApplication {
 		}
 	}
 
-	void complain(String message) {
-		alert("Error: " + message);
-	}
-
-	void alert(String message) {
-		AlertDialog.Builder bld = new AlertDialog.Builder(this);
-		bld.setMessage(message);
-		bld.setNeutralButton("OK", null);
-		bld.create().show();
-	}
-
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -175,7 +163,7 @@ public class MainActivity extends AndroidApplication {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, com.xxx.galcon.inappbilling.util.Inventory inv) {
 				if (result.isFailure()) {
-					complain("Unable to load inventory from Play Store.");
+					callback.onConnectionError("Unable to load inventory from Play Store.");
 					return;
 				}
 
