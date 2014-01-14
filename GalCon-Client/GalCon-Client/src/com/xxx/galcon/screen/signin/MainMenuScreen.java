@@ -17,15 +17,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
-import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.GraphicsUtils;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class MainMenuScreen implements PartialScreenFeedback {
@@ -46,12 +51,15 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private Array<Actor> actors = new Array<Actor>();
 
 	private AssetManager assetManager;
+	private TextureAtlas menusAtlas;
 
 	private Skin skin;
 	private ShaderProgram fontShader;
 	private ShaderLabel newLabel;
 	private ShaderLabel continueLabel;
 	private ShaderLabel coinText;
+
+	private boolean userLoaded = false;
 
 	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
 		this.gameAction = gameAction;
@@ -60,6 +68,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		this.assetManager = assetManager;
+		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 	}
 
 	private void addElementsToStage() {
@@ -161,13 +170,15 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private String createCoinDisplay() {
+		if (!userLoaded) {
+			return "--";
+		}
 		String coinsText = "";
 
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
 		if (timeRemaining != null) {
 			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
-
 		} else {
 			coinsText += GameLoop.USER.coins;
 		}
@@ -186,9 +197,33 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		addElementsToStage();
 
-		ExternalActionWrapper.recoverUsedCoinsCount();
-
 		Gdx.input.setInputProcessor(stage);
+
+		loadUser();
+	}
+
+	private void loadUser() {
+		userLoaded = false;
+		gameAction.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
+
+			@Override
+			public void onConnectionResult(Player result) {
+				userLoaded = true;
+				GameLoop.USER = result;
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 1.0f, new TextOverlay(
+						"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
+						new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								loadUser();
+							}
+						});
+			}
+		}, GameLoop.USER.handle);
 	}
 
 	@Override

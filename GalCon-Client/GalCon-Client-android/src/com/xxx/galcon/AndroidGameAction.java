@@ -62,7 +62,6 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.PlayerUsedCoins;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
 import com.xxx.galcon.service.PingService;
@@ -505,13 +504,13 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void recoverUsedCoinCount(final UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
+	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
 			final JSONObject top = JsonConstructor.user(playerHandle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<PlayerUsedCoins>(callback, RECOVER_USED_COINS_COUNT, PlayerUsedCoins.class)
-							.execute(top.toString());
+					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
+							.toString());
 				}
 			});
 		} catch (JSONException e) {

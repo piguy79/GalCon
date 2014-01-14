@@ -14,7 +14,6 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.PlayerUsedCoins;
 import com.xxx.galcon.model.Session;
 
 /**
@@ -70,5 +69,5 @@ public interface GameAction {
 
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
-	public void recoverUsedCoinCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String handle);
+	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle);
 }

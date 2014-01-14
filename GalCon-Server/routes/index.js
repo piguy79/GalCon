@@ -320,7 +320,7 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
 		
 			return user.withPromise(user.save);
 		}).then(function(user) {
-			res.json({"usedCoins" : user.usedCoins});
+			res.json(user);
 		});
 	}, logErrorAndSetResponse(req, res));
 }

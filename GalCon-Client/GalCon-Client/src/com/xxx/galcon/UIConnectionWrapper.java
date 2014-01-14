@@ -12,7 +12,6 @@ import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.PlayerUsedCoins;
 
 public class UIConnectionWrapper {
 	private static GameAction gameAction;
@@ -67,9 +66,5 @@ public class UIConnectionWrapper {
 
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {
 		gameAction.findConfigByType(callback, type);
-	}
-
-	public static void recoverUsedCoinsCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
-		gameAction.recoverUsedCoinCount(callback, playerHandle);
 	}
 }

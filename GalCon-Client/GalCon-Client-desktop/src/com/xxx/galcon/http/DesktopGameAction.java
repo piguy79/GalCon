@@ -52,7 +52,6 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.PlayerUsedCoins;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
 
@@ -307,15 +306,15 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void recoverUsedCoinCount(UIConnectionResultCallback<PlayerUsedCoins> callback, String playerHandle) {
+	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
 			JSONObject top = JsonConstructor.user(playerHandle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((PlayerUsedCoins) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT,
-					args, new PlayerUsedCoins()));
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args,
+					new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

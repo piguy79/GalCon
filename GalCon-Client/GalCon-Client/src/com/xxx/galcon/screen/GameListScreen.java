@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.Constants;
-import com.xxx.galcon.ExternalActionWrapper;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -226,7 +225,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	@Override
 	public void show(Stage stage, final float width, float height) {
-		ExternalActionWrapper.recoverUsedCoinsCount();
 		actors.clear();
 
 		waitImage = new WaitImageButton(skin);

@@ -55,15 +55,6 @@ exports.findAvailableGames = function(playerHandle) {
 	return needleWithPromise(needle.get, "/findAvailableGames?playerHandle=" + playerHandle);
 }
 
-exports.addCoinsForAnOrder = function(playerHandle, orders){
-	var postData = {
-			playerHandle : playerHandle,
-			orders : orders
-	};
-	
-	return needleWithPromise(needle.post, '/addCoinsForAnOrder', postData);
-}
-
 exports.addFreeCoins = function(handle, session){
 	var postData = {
 		handle : handle,

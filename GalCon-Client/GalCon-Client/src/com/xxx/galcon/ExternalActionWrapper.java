@@ -12,7 +12,6 @@ import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Order;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.model.PlayerUsedCoins;
 
 public class ExternalActionWrapper {
 
@@ -142,22 +141,4 @@ public class ExternalActionWrapper {
 			}
 		});
 	}
-
-	public static void recoverUsedCoinsCount() {
-		if (GameLoop.USER != null && GameLoop.USER.hasCoinInformation() && GameLoop.USER.usedCoins == -1L) {
-			UIConnectionWrapper.recoverUsedCoinsCount(new UIConnectionResultCallback<PlayerUsedCoins>() {
-
-				@Override
-				public void onConnectionResult(PlayerUsedCoins result) {
-					GameLoop.USER.usedCoins = result.usedCoins;
-				}
-
-				@Override
-				public void onConnectionError(String msg) {
-					System.out.println("Unable to recover usedCoins count. " + msg);
-				}
-			}, GameLoop.USER.handle);
-		}
-	}
-
 }

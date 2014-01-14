@@ -157,67 +157,6 @@ describe("Testing interactions with the user model", function(){
 		p.complete();
 	});
 	
-	
-	it("Should add coins for multiple orders", function(done){
-		
-		var secondOrder = {
-				orderId : "4532",
-			    packageName : "package",
-			    productId : "4",
-			    purchaseTime : "12543",
-			    purchaseState : "DONE",
-			    developerPayload : "",
-			    token : "TOK",
-			    associatedCoins : 1
-			};
-		
-		var p = apiRunner.addCoinsForAnOrder('test', [testOrder, secondOrder]);
-		p.then(function(user){
-			expect(user.consumedOrders.length).toBe(2);
-			done();
-		}, function(err){
-			expect(true).toBe(false);
-			console.log(err);
-			done();
-		});
-	});
-	
-	it("Should not duplicate an order", function(done){
-		
-		var p = apiRunner.addCoinsForAnOrder('testWatchedAd', [testOrder]);
-		p.then(function(user){
-			expect(user.consumedOrders.length).toBe(1);
-			done();
-		}, function(err){
-			expect(true).toBe(false);
-			console.log(err);
-			done();
-		});
-	});
-	
-	it("Should add any new orders which do not currently exist.", function(done){
-	
-		var secondOrder = {
-			orderId : "4532",
-		    packageName : "package",
-		    productId : "4",
-		    purchaseTime : "12543",
-		    purchaseState : "DONE",
-		    developerPayload : "",
-		    token : "TOK"
-		};
-		
-		var p = apiRunner.addCoinsForAnOrder('testWatchedAd', [testOrder, secondOrder]);
-		p.then(function(user){
-			expect(user.consumedOrders.length).toBe(2);
-			done();
-		}, function(err){
-			expect(true).toBe(false);
-			console.log(err);
-			done();
-		});
-	});
-	
 	afterEach(function(done){
 		user.UserModel.remove().where('handle').in(_.pluck(testUsers, 'handle')).exec(function(){
 			done();
