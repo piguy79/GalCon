@@ -34,6 +34,7 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
@@ -49,6 +50,7 @@ import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
 import com.xxx.galcon.screen.ship.selection.MoveDialog;
 import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
 import com.xxx.galcon.screen.widget.Line;
+import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
 
 public class BoardScreen implements ScreenFeedback {
@@ -83,6 +85,8 @@ public class BoardScreen implements ScreenFeedback {
 	private MoveDialog moveDialog;
 	private MoveHud moveHud;
 	private BoardScreenPlayerHud playerHud;
+	
+	private List<Moon> moons = new ArrayList<Moon>();
 
 	private Map<String, PlanetButton> planetButtons = new HashMap<String, PlanetButton>();
 	private Map<String, Integer> planetToMoveCount = new HashMap<String, Integer>();
@@ -359,7 +363,26 @@ public class BoardScreen implements ScreenFeedback {
 			stage.addActor(planetButton);
 			planetButtons.put(planet.name, planetButton);
 			planetToMoveCount.put(planet.name, 0);
+			
+			if(planet.hasAbility()){
+				createMoon(planet);
+			}
 		}
+	}
+
+	private void createMoon(Planet planet) {
+		final Moon moon = PlanetButtonFactory.createMoon(assetManager, planet,
+				 PlanetButtonFactory.tileHeightInWorld / 4, PlanetButtonFactory.tileWidthInWorld / 4);
+		
+		PlanetButton associatedAbilityPlanet = planetButtons.get(planet.name);
+		float relativeX = associatedAbilityPlanet.centerPoint().x - (moon.getWidth() / 2);
+		float relativeY = associatedAbilityPlanet.centerPoint().y - (moon.getHeight() / 2);
+		
+		moon.setX(relativeX - PlanetButtonFactory.tileWidthInWorld / 2);
+		moon.setY(relativeY);
+		
+		moons.add(moon);
+		stage.addActor(moon);	
 	}
 
 	private void positionPlanet(final PlanetButton planetButton) {
@@ -557,10 +580,35 @@ public class BoardScreen implements ScreenFeedback {
 		if (planetMoveChange) {
 			applyMovesToPlanetButtons();
 			planetMoveChange = false;
-		}
+		}	
+		renderMoons();
 
 		stage.act(delta);
 		stage.draw();
+	}
+
+	private void renderMoons() {
+		for(Moon moon : moons){
+			Point newPosition = findMoonPosition(moon);
+			moon.setX(newPosition.x);
+			moon.setY(newPosition.y);
+		}
+		
+	}
+
+	private Point findMoonPosition(Moon moon) {
+		PlanetButton associatedPlanet = planetButtons.get(moon.associatedPlanet.name);
+		if(moon.angle == 360){
+			moon.angle = 0;
+		}
+		
+		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
+		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
+		
+		Point movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(), tileWidthInWorld / 2, tileHeightInWorld / 2, moon.angle);
+		moon.angle = (float) (moon.angle + moon.rateOfOrbit);
+		
+		return movePoint;
 	}
 
 	private void applyMovesToPlanetButtons() {

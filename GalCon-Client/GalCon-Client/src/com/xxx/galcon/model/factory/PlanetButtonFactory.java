@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
+import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
 
 public class PlanetButtonFactory {
@@ -33,9 +34,11 @@ public class PlanetButtonFactory {
 		PlanetButtonFactory.style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(
 				assetManager).mediumFont());
 		
+		
 		PlanetButtonFactory.minPlanetSize = tileWidthInWorld * 0.4f;
 		PlanetButtonFactory.planetTexture.setMinWidth(minPlanetSize);
 		PlanetButtonFactory.planetTexture.setMinHeight(minPlanetSize);
+		
 	}
 	
 	
@@ -63,8 +66,14 @@ public class PlanetButtonFactory {
 		planetButton.setWidth(width);
 		
 		return planetButton;
+	}
+	
+	public static Moon createMoon(AssetManager assetManager, Planet planet, float height, float width){
+		final Moon moon = new Moon(assetManager, planet, height, width);
+		moon.setHeight(height);
+		moon.setWidth(width);
 		
-		
+		return moon;
 	}
 
 }
