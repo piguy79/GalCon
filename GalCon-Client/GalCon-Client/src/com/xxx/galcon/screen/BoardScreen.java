@@ -346,8 +346,6 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					if ((GameLoop.USER.hasMoved(gameBoard) && planet.isOwnedBy(GameLoop.USER))
-							|| (!GameLoop.USER.hasMoved(gameBoard))) {
 						planetButton.addAction(Actions.forever(Actions.sequence(
 								Actions.color(new Color(0, 0, 0, 0), 0.7f), Actions.color(planet.getColor(), 0.5f))));
 						if (touchedPlanets.size() < 2) {
@@ -356,7 +354,7 @@ public class BoardScreen implements ScreenFeedback {
 						} else {
 							clearTouchedPlanets();
 						}
-					}
+					
 				}
 
 			});
@@ -401,29 +399,45 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderDialog() {
 		if (touchedPlanets.size() > 1) {
-			Planet userPlanet = touchedUserPlanet(touchedPlanets);
-			if (userPlanet != null) {
-				Planet otherPlanet = otherPlanet(touchedPlanets, userPlanet);
-				if (!GameLoop.USER.hasMoved(gameBoard) && otherPlanet != null) {
+			if(GameLoop.USER.hasMoved(gameBoard)){
+				if(planetsAreTheSame(touchedPlanets)){
+					renderPlanetInformationDialog(touchedPlanets.get(0));
+				}else{
+					highlightNewPlanet();
+				}
+			}else{
+				if(planetsAreTheSame(touchedPlanets)){
+					renderPlanetInformationDialog(touchedPlanets.get(0));					
+				}else if(!userPlanetInSelection()){
+					highlightNewPlanet();
+				}else{
+					Planet userPlanet = touchedUserPlanet(touchedPlanets);
+					Planet otherPlanet = otherPlanet(touchedPlanets, userPlanet);
 					renderMoveDialog(userPlanet, otherPlanet);
-				} else if (otherPlanet == null) {
-					renderPlanetInformationDialog(userPlanet);
-				} else {
-					clearMoveActions(userPlanet);
-					clearMoveActions(otherPlanet);
 				}
-			} else {
-				clearMoveActions(touchedPlanets.get(0));
-				Planet toKeep = touchedPlanets.get(1);
-				if (toKeep.name.equals(touchedPlanets.get(0).name)) {
-					touchedPlanets.clear();
-				} else {
-					touchedPlanets.clear();
-					touchedPlanets.add(toKeep);
-				}
-
 			}
 		}
+	}
+
+	private boolean userPlanetInSelection() {
+		for(Planet planet : touchedPlanets){
+			if(planet.isOwnedBy(GameLoop.USER)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void highlightNewPlanet() {
+		clearMoveActions(touchedPlanets.get(0));
+		Planet toKeep = touchedPlanets.get(1);
+		touchedPlanets.clear();
+		touchedPlanets.add(toKeep);
+		
+	}
+
+	private boolean planetsAreTheSame(List<Planet> touchedPlanets2) {
+		return touchedPlanets2.get(0).name.equals(touchedPlanets2.get(1).name);
 	}
 
 	private void renderPlanetInformationDialog(final Planet planet) {
