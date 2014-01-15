@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.Planet;
 
 public class Moon extends Image{
@@ -14,7 +15,16 @@ public class Moon extends Image{
 	
 	public Moon(AssetManager assetManager, Planet associatedPlanet, float height, float width){
 		TextureAtlas planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		TextureRegionDrawable moon = new TextureRegionDrawable(planetAtlas.findRegion("dead_planet"));
+		TextureRegionDrawable moon;
+		if(associatedPlanet.ability.equals(Constants.ABILITY_ATTACK_INCREASE)){
+			moon = new TextureRegionDrawable(planetAtlas.findRegion("attackMoon"));
+
+		}else if(associatedPlanet.ability.equals(Constants.ABILITY_DEFENCE_INCREASE)){
+			moon = new TextureRegionDrawable(planetAtlas.findRegion("defenseMoon"));
+
+		}else{
+			moon = new TextureRegionDrawable(planetAtlas.findRegion("speedMoon"));
+		}
 		moon.setMinHeight(height);
 		moon.setMinWidth(width);
 		setDrawable(moon);

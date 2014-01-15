@@ -30,12 +30,12 @@ public class PlanetButtonFactory {
 		PlanetButtonFactory.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		PlanetButtonFactory.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		PlanetButtonFactory.planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("base_planet"));
+		PlanetButtonFactory.planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("planet4"));
 		PlanetButtonFactory.style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(
 				assetManager).mediumFont());
 		
-		
-		PlanetButtonFactory.minPlanetSize = tileWidthInWorld * 0.4f;
+		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
+		PlanetButtonFactory.minPlanetSize = largest * 0.7f;
 		PlanetButtonFactory.planetTexture.setMinWidth(minPlanetSize);
 		PlanetButtonFactory.planetTexture.setMinHeight(minPlanetSize);
 		
@@ -50,7 +50,8 @@ public class PlanetButtonFactory {
 	public static PlanetButton createPlanetButtonWithExpansion(Planet planet, GameBoard gameBoard, boolean roundAnimated){
 		float maxExpand = 5;
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
-		float newPlanetSize = minPlanetSize + ((tileWidthInWorld * 0.09f) * expand);
+		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
+		float newPlanetSize = minPlanetSize + ((largest * 0.05f) * expand);
 		
 		
 		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize);
@@ -61,6 +62,7 @@ public class PlanetButtonFactory {
 		planetTexture.setMinHeight(height);
 		final PlanetButton planetButton = new PlanetButton(fontShader, ""
 				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), style, planet);
+
 		planetButton.setColor(planet.getColor());
 		planetButton.setHeight(height);
 		planetButton.setWidth(width);

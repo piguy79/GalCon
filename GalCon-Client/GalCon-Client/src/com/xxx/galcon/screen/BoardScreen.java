@@ -371,7 +371,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createMoon(Planet planet) {
 		final Moon moon = PlanetButtonFactory.createMoon(assetManager, planet,
-				 PlanetButtonFactory.tileHeightInWorld * 0.3f, PlanetButtonFactory.tileWidthInWorld * 0.3f);
+				 PlanetButtonFactory.tileHeightInWorld * 0.4f, PlanetButtonFactory.tileWidthInWorld * 0.4f);
 		
 		PlanetButton associatedAbilityPlanet = planetButtons.get(planet.name);
 		float relativeX = associatedAbilityPlanet.centerPoint().x - (moon.getWidth() / 2);
@@ -605,23 +605,29 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoons() {
 		for(Moon moon : moons){
 			Point newPosition = findMoonPosition(moon);
-			moon.setX(newPosition.x - (moon.getWidth() /2));
-			moon.setY(newPosition.y - (moon.getHeight() / 2));
+			if(newPosition != null){
+				moon.setX(newPosition.x - (moon.getWidth() /2));
+				moon.setY(newPosition.y - (moon.getHeight() / 2));
+			}
 		}
 		
 	}
 
 	private Point findMoonPosition(Moon moon) {
 		PlanetButton associatedPlanet = planetButtons.get(moon.associatedPlanet.name);
-		if(moon.angle == 360){
-			moon.angle = 0;
+		Point movePoint = null;
+		if(associatedPlanet != null && gameBoard != null){
+			if(moon.angle == 360){
+				moon.angle = 0;
+			}
+			
+			float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
+			float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
+			
+			movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(), tileWidthInWorld / 2, tileHeightInWorld / 2, moon.angle);
+			moon.angle = (float) (moon.angle + moon.rateOfOrbit);
 		}
 		
-		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
-		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
-		
-		Point movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(), tileWidthInWorld / 2, tileHeightInWorld / 2, moon.angle);
-		moon.angle = (float) (moon.angle + moon.rateOfOrbit);
 		
 		return movePoint;
 	}

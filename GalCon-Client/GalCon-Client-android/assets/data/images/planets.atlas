@@ -3,39 +3,46 @@ planets.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+attackMoon
+  rotate: false
+  xy: 2, 588
+  size: 501, 430
+  orig: 501, 430
+  offset: 0, 0
+  index: -1
 dead_planet
   rotate: false
-  xy: 2, 2
+  xy: 2, 13
   size: 208, 208
   orig: 208, 208
   offset: 0, 0
   index: -1
+defenseMoon
+  rotate: false
+  xy: 505, 625
+  size: 447, 393
+  orig: 447, 393
+  offset: 0, 0
+  index: -1
 planet1
   rotate: false
-  xy: 2, 614
+  xy: 505, 223
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
-planet2
+speedMoon
   rotate: false
-  xy: 404, 212
-  size: 400, 400
-  orig: 400, 400
+  xy: 2, 229
+  size: 388, 357
+  orig: 388, 357
   offset: 0, 0
   index: -1
-planet2-glow
+sun
   rotate: false
-  xy: 2, 212
-  size: 400, 400
-  orig: 400, 400
-  offset: 0, 0
-  index: -1
-planet2-touch
-  rotate: false
-  xy: 404, 614
-  size: 400, 400
-  orig: 400, 400
+  xy: 212, 2
+  size: 225, 225
+  orig: 225, 225
   offset: 0, 0
   index: -1
 
@@ -45,29 +52,55 @@ filter: Linear,Linear
 repeat: none
 base_planet
   rotate: false
-  xy: 2, 2
+  xy: 2, 523
   size: 281, 281
   orig: 281, 281
   offset: 0, 0
   index: -1
+planet2
+  rotate: false
+  xy: 404, 2
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
+planet2-glow
+  rotate: false
+  xy: 621, 404
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
+planet2-touch
+  rotate: false
+  xy: 2, 121
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
+planet4
+  rotate: false
+  xy: 285, 523
+  size: 334, 281
+  orig: 334, 281
+  offset: 0, 0
+  index: -1
+
+planets3.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
 planet3
   rotate: false
-  xy: 404, 285
+  xy: 404, 2
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
 planet3-touch
   rotate: false
-  xy: 2, 285
+  xy: 2, 2
   size: 400, 400
   orig: 400, 400
-  offset: 0, 0
-  index: -1
-sun
-  rotate: false
-  xy: 285, 58
-  size: 225, 225
-  orig: 225, 225
   offset: 0, 0
   index: -1
