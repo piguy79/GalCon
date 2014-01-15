@@ -50,7 +50,7 @@ public class PlanetButtonFactory {
 	public static PlanetButton createPlanetButtonWithExpansion(Planet planet, GameBoard gameBoard, boolean roundAnimated){
 		float maxExpand = 5;
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
-		float newPlanetSize = minPlanetSize + ((tileWidthInWorld * 0.08f) * expand);
+		float newPlanetSize = minPlanetSize + ((tileWidthInWorld * 0.09f) * expand);
 		
 		
 		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize);

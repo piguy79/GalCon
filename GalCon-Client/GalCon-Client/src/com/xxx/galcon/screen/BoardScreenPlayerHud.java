@@ -68,7 +68,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 	
 	private void createUserTable(){
-		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.SMALL_FONT);
+		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, findFontStyleForPlayer(0));
 		firstPlayer.setWidth(getWidth() * 0.5f);
 		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
@@ -82,40 +82,32 @@ public class BoardScreenPlayerHud extends Group {
 		vs.setAlignment(Align.center);
 		addActor(vs);
 		
-		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "[waiting for opponent]", skin, Constants.UI.SMALL_FONT);
+		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "[waiting for opponent]", skin,gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.SMALL_FONT_GREEN);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
 		secondPlayer.setAlignment(Align.center);
 		addActor(secondPlayer);
 		
-		addPlayerLine(gameBoard.players.get(0), firstPlayer);
-		if(gameBoard.players.size() > 1){
-			addPlayerLine(gameBoard.players.get(1), secondPlayer);
-		}
-		
 		
 	}
 
-	private void addPlayerLine(Player player, ShaderLabel referencePoint) {
-		if(!player.hasMoved(gameBoard)){
-			Actor line = line();
-			line.setX((referencePoint.getX() + ((referencePoint.getWidth() * 0.5f) - (referencePoint.getTextBounds().width * 0.5f))) - line.getWidth());
-			line.setY(referencePoint.getY() + (referencePoint.getTextBounds().height * 0.5f));
-			addActor(line);
+	private String findFontStyleForPlayer(int index) {
+		String playerFontStyle = Constants.UI.SMALL_FONT;
+		if(gameBoard.players.size() > index && !gameBoard.players.get(index).hasMoved(gameBoard)){
+			playerFontStyle = Constants.UI.SMALL_FONT_GREEN;
 		}
+		return playerFontStyle;
 	}
-	
-	private Actor line(){
-		TextureRegion lineRegion = gameBoardAtlas.findRegion("line");
-		Line line = new Line(Color.valueOf("E8920C"), getWidth() * 0.05f, lineRegion);
-		line.setHeight(getHeight() * 0.1f);
-		
-		return line;
-	}
+
+
 	
 	private String playerInfo(Player player){
-		return player.handle + "(" + player.rank.level + ")";
+		String playerInfo = player.handle + "(" + player.rank.level + ")";
+		if(player.hasMoved(gameBoard)){
+			return playerInfo;
+		}
+		return "--" + playerInfo + "--";
 	}
 
 

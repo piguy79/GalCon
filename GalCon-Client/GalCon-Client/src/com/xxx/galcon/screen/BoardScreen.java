@@ -46,6 +46,7 @@ import com.xxx.galcon.screen.event.DialogEventListener;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
 import com.xxx.galcon.screen.ship.selection.MoveDialog;
 import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
@@ -604,8 +605,8 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderMoons() {
 		for(Moon moon : moons){
 			Point newPosition = findMoonPosition(moon);
-			moon.setX(newPosition.x);
-			moon.setY(newPosition.y);
+			moon.setX(newPosition.x - (moon.getWidth() /2));
+			moon.setY(newPosition.y - (moon.getHeight() / 2));
 		}
 		
 	}

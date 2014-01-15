@@ -20,7 +20,7 @@ public class Moon extends Image{
 		setDrawable(moon);
 		this.associatedPlanet = associatedPlanet;
 		rateOfOrbit = Math.random();
-		if(rateOfOrbit == 0){
+		if(rateOfOrbit < 0.4){
 			rateOfOrbit = 0.5;
 		}		
 	}

@@ -32,6 +32,7 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
+		add(Constants.UI.SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.GREEN));
 
 		/*
 		 * TextField
