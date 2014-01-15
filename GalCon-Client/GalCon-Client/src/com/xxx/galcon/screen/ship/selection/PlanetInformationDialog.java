@@ -17,6 +17,7 @@ import com.xxx.galcon.model.factory.PlanetButtonFactory;
 import com.xxx.galcon.screen.event.HarvestEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.CancelEnabledDialog;
+import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
@@ -42,8 +43,21 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		this.fontShader = fontShader;
 		this.offset = offset;
 		createPlanetImage();
+		if(planet.hasAbility()){
+			createMoonImage();
+		}
 		createLabels();
 		createHarvestButton();
+	}
+
+	private void createMoonImage() {
+		float sizeBase = Math.max(getHeight(), getWidth());
+		float size = sizeBase * 0.15f;
+		Moon moon = PlanetButtonFactory.createMoon(assetManager, planet, size, size);
+		moon.setX((planetImage.getX() + (planetImage.getWidth() * 1.1f)) - (size / 2));
+		moon.setY((planetImage.getY() + (planetImage.getHeight() * 0.7f)) - (size / 2));
+		addActor(moon);
+		
 	}
 
 	private void createLabels() {

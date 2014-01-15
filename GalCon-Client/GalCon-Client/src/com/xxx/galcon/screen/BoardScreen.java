@@ -66,7 +66,6 @@ public class BoardScreen implements ScreenFeedback {
 	List<Move> inProgressMoves = new ArrayList<Move>();
 	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
-	private TextureAtlas planetAtlas;
 	private TextureAtlas levelAtlas;
 	private TextureAtlas gameBoardAtlas;
 	private TextureAtlas menuAtlas;
@@ -102,7 +101,6 @@ public class BoardScreen implements ScreenFeedback {
 		this.assetManager = assetManager;
 		this.skin = skin;
 
-		planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
 		levelAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
 		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);

@@ -2,22 +2,15 @@ package com.xxx.galcon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
@@ -25,7 +18,6 @@ import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.event.TransitionEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
-import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class BoardScreenPlayerHud extends Group {
@@ -35,7 +27,6 @@ public class BoardScreenPlayerHud extends Group {
 	private UISkin skin;
 	private ShaderProgram fontShader;
 	private GameBoard gameBoard;
-	private TextureAtlas gameBoardAtlas;
 	
 	private ActionButton backButton;
 	private Image firstSlash;
@@ -49,7 +40,6 @@ public class BoardScreenPlayerHud extends Group {
 		this.skin = skin;
 		this.fontShader = fontShader;
 		this.gameBoard = gameBoard;
-		this.gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
 		setWidth(Gdx.graphics.getWidth());
 		setHeight(height);
