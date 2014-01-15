@@ -95,6 +95,8 @@ public class BoardScreen implements ScreenFeedback {
 	private boolean planetMoveChange = false;
 
 	private MenuScreenContainer previousScreen;
+	
+	private TextOverlay moveOverlay;
 
 	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
@@ -246,6 +248,8 @@ public class BoardScreen implements ScreenFeedback {
 						currentRoundMoves.add(move);
 					}
 				}
+				moveOverlay = new TextOverlay("Uploading ship movements", menuAtlas, skin, fontShader);
+				stage.addActor(moveOverlay);
 				UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, currentRoundMoves,
 						inProgressHarvest);
 			}
@@ -271,6 +275,10 @@ public class BoardScreen implements ScreenFeedback {
 		Point position = pointInWorld(move.currentPosition.x, move.currentPosition.y);
 		final Table moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
 				PlanetButtonFactory.tileWidthInWorld, position);
+		
+		final SingleMoveInfoHud sinlgeMoveHud = new SingleMoveInfoHud(move, assetManager, fontShader,skin,  Gdx.graphics.getWidth(), moveHud.getHeight());
+		sinlgeMoveHud.setX(moveHud.getX());
+		sinlgeMoveHud.setY(moveHud.getY());
 
 		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, 0.9f, new ClickListener() {
 
@@ -279,12 +287,14 @@ public class BoardScreen implements ScreenFeedback {
 				fromPlanet.remove();
 				toPlanet.remove();
 				moveToDisplay.remove();
+				sinlgeMoveHud.remove();
 			}
 		});
 		stage.addActor(overlay);
 		stage.addActor(fromPlanet);
 		stage.addActor(toPlanet);
 		stage.addActor(moveToDisplay);
+		stage.addActor(sinlgeMoveHud);
 
 		fromPlanet.addAction(fadePlanetInAndOut(fromPlanet));
 		toPlanet.addAction(fadePlanetInAndOut(toPlanet));
@@ -707,11 +717,12 @@ public class BoardScreen implements ScreenFeedback {
 			clearTouchedPlanets();
 			planetToMoveCount.clear();
 			setGameBoard(result);
+			moveOverlay.remove();
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-
+			moveOverlay.remove();
 		}
 	}
 
