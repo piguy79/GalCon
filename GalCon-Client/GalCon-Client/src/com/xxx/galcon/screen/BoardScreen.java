@@ -632,7 +632,7 @@ public class BoardScreen implements ScreenFeedback {
 			float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 			float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 			
-			movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(), tileWidthInWorld / 2, tileHeightInWorld / 2, moon.angle);
+			movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(), tileWidthInWorld * 0.6f, tileHeightInWorld / 2, moon.angle);
 			moon.angle = (float) (moon.angle + moon.rateOfOrbit);
 		}
 		
