@@ -371,7 +371,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createMoon(Planet planet) {
 		final Moon moon = PlanetButtonFactory.createMoon(assetManager, planet,
-				 PlanetButtonFactory.tileHeightInWorld / 4, PlanetButtonFactory.tileWidthInWorld / 4);
+				 PlanetButtonFactory.tileHeightInWorld * 0.3f, PlanetButtonFactory.tileWidthInWorld * 0.3f);
 		
 		PlanetButton associatedAbilityPlanet = planetButtons.get(planet.name);
 		float relativeX = associatedAbilityPlanet.centerPoint().x - (moon.getWidth() / 2);
