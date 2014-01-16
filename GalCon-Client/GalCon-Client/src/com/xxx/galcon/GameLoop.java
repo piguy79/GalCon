@@ -115,7 +115,7 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
-		checkCoindStats();
+		checkCoinStats();
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
@@ -156,8 +156,8 @@ public class GameLoop extends Game {
 		setScreen(boardScreen);
 	}
 
-	private void checkCoindStats() {
-		if (GameLoop.USER != null && GameLoop.USER.coins != null) {
+	private void checkCoinStats() {
+		if (GameLoop.USER != null && GameLoop.USER.coins != null && GameLoop.CONFIG != null) {
 			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
 
 			if (timeRemaining != null) {

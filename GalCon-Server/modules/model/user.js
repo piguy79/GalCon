@@ -97,18 +97,23 @@ exports.addCoinsForAnOrder = function(handle, order){
 
 exports.deleteConsumedOrder = function(handle, order){
 	return UserModel.findOneAndUpdate({handle : handle}, {$pull : {consumedOrders : {'orderId' : order.orderId}}}).exec();
-	
 }
 
-exports.reduceTimeForWatchingAd = function(handle, reduceBy){
+exports.reduceTimeForWatchingAd = function(handle, config){
 	var p = exports.findUserByHandle(handle);
 	return p.then(function(user) {
-		var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
+		var timeReduction = config.values['timeReduction'];
+		var timeLapseForNewCoins = config.values['timeLapseForNewCoins'];
+		var timeRemaining = user.usedCoins + timeLapseForNewCoins - Date.now();
+		var reducedTime = Math.floor(timeRemaining * timeReduction);
+		var updatedUsedCoins;
 		if(reducedTime < 0) {
-			reducedTime = -1;
+			updatedUsedCoins = -1;
+		} else {
+			updatedUsedCoins = user.usedCoins + reducedTime;
 		}
 		
-		return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
+		return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : updatedUsedCoins, watchedAd : true}}).exec();
 	});
 }
 

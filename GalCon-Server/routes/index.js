@@ -527,7 +527,7 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 	p.then(function() {
 		var innerp = configManager.findLatestConfig('app');
 		return innerp.then(function(config){
-			return userManager.reduceTimeForWatchingAd(handle, config.values['timeReduction']);
+			return userManager.reduceTimeForWatchingAd(handle, config);
 		}).then(handleUserUpdate(req, res, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 }

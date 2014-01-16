@@ -78,15 +78,11 @@ public class Player extends JsonConvertible {
 		return gameBoard.roundInformation.players.contains(handle);
 	}
 
-	public Long timeSinceCoinsHaveBeenUsed() {
+	private Long timeSinceCoinsHaveBeenUsed() {
 		return new DateTime(DateTimeZone.UTC).getMillis() - usedCoins;
 	}
 
-	public Long timeRemainingForNewcoins() {
-		return timeLapse() - timeSinceCoinsHaveBeenUsed();
-	}
-
-	public Long timeLapse() {
+	private Long timeLapse() {
 		return Long.parseLong(ConfigResolver.getByConfigKey(ConfigConstants.TIME_LAPSE_FOR_NEW_COINS));
 	}
 

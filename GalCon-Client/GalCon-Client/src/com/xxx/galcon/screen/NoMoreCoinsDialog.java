@@ -52,6 +52,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private ShaderLabel timeRemainingText;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
+	protected Overlay purchaseOverlay;
+	private Group coinGroup;
 
 	private InventoryItem lastPurchaseAttemptItem;
 
@@ -112,17 +114,17 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		final float height = Gdx.graphics.getHeight();
 		final float width = Gdx.graphics.getWidth();
 
-		Group group = new Group();
-		group.setBounds(0, height * 0.75f, width, height * 0.15f);
+		coinGroup = new Group();
+		coinGroup.setBounds(0, height * 0.75f, width, height * 0.15f);
 
 		if (GameLoop.USER.usedCoins != -1) {
-			addTimeRemainingText(group);
+			addTimeRemainingText(coinGroup);
 		} else {
-			addCoinImageGroup(group);
+			addCoinImageGroup(coinGroup);
 		}
 
-		actors.add(group);
-		stage.addActor(group);
+		actors.add(coinGroup);
+		stage.addActor(coinGroup);
 
 		Actor inAppBillingTable = createInAppBillingButtons(stock.inventory);
 		actors.add(inAppBillingTable);
@@ -176,7 +178,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 				scrollList.addRow(item, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						waitImage.start();
+						purchaseOverlay = new TextOverlay("Purchasing...", menusAtlas, skin, fontShader);
+						stage.addActor(purchaseOverlay);
+
 						lastPurchaseAttemptItem = item;
 						ExternalActionWrapper.purchaseCoins(item, coinsCallback);
 					}
@@ -190,12 +194,15 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private Callback coinsCallback = new Callback() {
 		@Override
 		public void onSuccess(String msg) {
-			waitImage.stop();
+			purchaseOverlay.remove();
+			purchaseOverlay = null;
 			lastPurchaseAttemptItem = null;
 
 			if (msg.equals(Constants.CANCELED)) {
 				// do nothing for now
 			} else {
+				coinGroup.clear();
+				addCoinImageGroup(coinGroup);
 				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader), null);
 
@@ -205,7 +212,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		@Override
 		public void onFailure(String msg) {
-			waitImage.stop();
+			purchaseOverlay.remove();
+			purchaseOverlay = null;
+
 			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 					"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
 					new ClickListener() {
