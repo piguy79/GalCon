@@ -29,10 +29,21 @@ public class Moon extends Image{
 		moon.setMinWidth(width);
 		setDrawable(moon);
 		this.associatedPlanet = associatedPlanet;
+		setupMovementSpeedAndDirection();
+		
+	}
+
+	private void setupMovementSpeedAndDirection() {
+		
 		rateOfOrbit = Math.random();
 		if(rateOfOrbit < 0.4){
 			rateOfOrbit = 0.5;
-		}		
+		}
+		
+		if(associatedPlanet.shipRegenRate <= 3){
+			angle = 360;
+			rateOfOrbit  = rateOfOrbit * -1;
+		}
 	}
 
 }

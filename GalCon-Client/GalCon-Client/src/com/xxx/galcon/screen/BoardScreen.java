@@ -166,11 +166,15 @@ public class BoardScreen implements ScreenFeedback {
 	private void createHarvest() {
 		for(Moon moon : moons){
 			if(moon.associatedPlanet.isUnderHarvest() && moon.getActions().size == 0){
-				float duration = 0.8f;
-				moon.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0.5f), duration), Actions.color(new Color(0.9f, 0, 0, 1), duration))));
+				addActionToMoon(moon);
 			}
 		}
 		
+	}
+
+	private void addActionToMoon(Moon moon) {
+		float duration = 1.5f;
+		moon.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 1), duration), Actions.color(new Color(0.9f, 0, 0, 1), duration))));
 	}
 
 	private void createPlayerHud() {
@@ -495,6 +499,11 @@ public class BoardScreen implements ScreenFeedback {
 			@Override
 			public void handleHarvest(Planet planet) {
 				inProgressHarvest.add(MoveFactory.createHarvestMove(planet));
+				for(Moon moon : moons){
+					if(moon.associatedPlanet.name.equals(planet.name)){
+						addActionToMoon(moon);
+					}
+				}
 				clearTouchedPlanets();
 				clearMoveActions(planet);
 			}
@@ -637,7 +646,6 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderMoons() {
 		for(Moon moon : moons){
-			
 			Point newPosition = findMoonPosition(moon);
 			if(newPosition != null){
 				moon.setX(newPosition.x - (moon.getWidth() /2));
