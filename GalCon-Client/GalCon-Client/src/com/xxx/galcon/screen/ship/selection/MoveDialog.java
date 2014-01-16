@@ -5,6 +5,8 @@ import static com.xxx.galcon.Util.createShader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.field.OffsetDateTimeField;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -53,10 +55,10 @@ public class MoveDialog extends CancelEnabledDialog {
 	private int currentRound;
 	
 
-	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, int max, AssetManager assetManager, float width, float height, UISkin skin, int currentRound, Stage stage) {
+	public MoveDialog(Planet fromPlanet,Planet toPlanet, int moveOffSetCount, AssetManager assetManager, float width, float height, UISkin skin, int currentRound, Stage stage) {
 		super(assetManager, width, height, stage, skin);
 		this.skin = skin;
-		this.max = max;
+		this.max = fromPlanet.numberOfShips - moveOffSetCount;
 		this.currentRound = currentRound;
 		this.planetsInvolved = new ArrayList<Planet>();
 		planetsInvolved.add(fromPlanet);

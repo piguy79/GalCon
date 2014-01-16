@@ -2,22 +2,15 @@ package com.xxx.galcon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
@@ -25,7 +18,6 @@ import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.event.TransitionEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
-import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class BoardScreenPlayerHud extends Group {
@@ -35,7 +27,6 @@ public class BoardScreenPlayerHud extends Group {
 	private UISkin skin;
 	private ShaderProgram fontShader;
 	private GameBoard gameBoard;
-	private TextureAtlas gameBoardAtlas;
 	
 	private ActionButton backButton;
 	private Image firstSlash;
@@ -49,7 +40,6 @@ public class BoardScreenPlayerHud extends Group {
 		this.skin = skin;
 		this.fontShader = fontShader;
 		this.gameBoard = gameBoard;
-		this.gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
 		setWidth(Gdx.graphics.getWidth());
 		setHeight(height);
@@ -68,7 +58,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 	
 	private void createUserTable(){
-		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, Constants.UI.SMALL_FONT);
+		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, findFontStyleForPlayer(0));
 		firstPlayer.setWidth(getWidth() * 0.5f);
 		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
@@ -82,40 +72,32 @@ public class BoardScreenPlayerHud extends Group {
 		vs.setAlignment(Align.center);
 		addActor(vs);
 		
-		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "[waiting for opponent]", skin, Constants.UI.SMALL_FONT);
+		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : "[waiting for opponent]", skin,gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.SMALL_FONT_GREEN);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
 		secondPlayer.setAlignment(Align.center);
 		addActor(secondPlayer);
 		
-		addPlayerLine(gameBoard.players.get(0), firstPlayer);
-		if(gameBoard.players.size() > 1){
-			addPlayerLine(gameBoard.players.get(1), secondPlayer);
-		}
-		
 		
 	}
 
-	private void addPlayerLine(Player player, ShaderLabel referencePoint) {
-		if(!player.hasMoved(gameBoard)){
-			Actor line = line();
-			line.setX((referencePoint.getX() + ((referencePoint.getWidth() * 0.5f) - (referencePoint.getTextBounds().width * 0.5f))) - line.getWidth());
-			line.setY(referencePoint.getY() + (referencePoint.getTextBounds().height * 0.5f));
-			addActor(line);
+	private String findFontStyleForPlayer(int index) {
+		String playerFontStyle = Constants.UI.SMALL_FONT;
+		if(gameBoard.players.size() > index && !gameBoard.players.get(index).hasMoved(gameBoard)){
+			playerFontStyle = Constants.UI.SMALL_FONT_GREEN;
 		}
+		return playerFontStyle;
 	}
-	
-	private Actor line(){
-		TextureRegion lineRegion = gameBoardAtlas.findRegion("line");
-		Line line = new Line(Color.valueOf("E8920C"), getWidth() * 0.05f, lineRegion);
-		line.setHeight(getHeight() * 0.1f);
-		
-		return line;
-	}
+
+
 	
 	private String playerInfo(Player player){
-		return player.handle + "(" + player.rank.level + ")";
+		String playerInfo = player.handle + "(" + player.rank.level + ")";
+		if(player.hasMoved(gameBoard)){
+			return playerInfo;
+		}
+		return "--" + playerInfo + "--";
 	}
 
 
