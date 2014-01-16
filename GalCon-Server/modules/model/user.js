@@ -100,12 +100,16 @@ exports.deleteConsumedOrder = function(handle, order){
 	
 }
 
-exports.reduceTimeForWatchingAd = function(handle, usedCoins, timeRemaining, reduceBy){
-	var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
-	if(reducedTime < 0) {
-		reducedTime = -1;
-	}
-	return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
+exports.reduceTimeForWatchingAd = function(handle, reduceBy){
+	var p = exports.findUserByHandle(handle);
+	return p.then(function(user) {
+		var reducedTime = Math.floor(usedCoins - (timeRemaining * reduceBy));
+		if(reducedTime < 0) {
+			reducedTime = -1;
+		}
+		
+		return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : reducedTime, watchedAd : true}}).exec();
+	});
 }
 
 exports.updateUsedCoins = function(handle, usedCoins){

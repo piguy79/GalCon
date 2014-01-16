@@ -19,6 +19,7 @@ public class TextOverlay extends Overlay {
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
 		shaderLabel.setBounds(0, y, Gdx.graphics.getWidth(), shaderLabel.getHeight());
+		shaderLabel.setWrap(true);
 		shaderLabel.setAlignment(Align.center, Align.center);
 	}
 

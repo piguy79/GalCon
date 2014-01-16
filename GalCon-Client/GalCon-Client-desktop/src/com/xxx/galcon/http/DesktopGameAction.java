@@ -290,10 +290,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle,
-			Long timeRemaining, Long usedCoins) throws ConnectionException {
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
-			JSONObject top = JsonConstructor.reduceCall(playerHandle, timeRemaining, usedCoins);
+			JSONObject top = JsonConstructor.reduceCall(playerHandle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

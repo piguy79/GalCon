@@ -98,6 +98,10 @@ public class UISkin extends Skin {
 			add(Constants.UI.OK_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("question_mark"));
+			add(Constants.UI.QUESTION_MARK, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
 			add(Constants.UI.DIALOG_BG, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}

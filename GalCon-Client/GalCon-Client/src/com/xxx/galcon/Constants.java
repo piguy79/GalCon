@@ -21,6 +21,7 @@ public class Constants {
 		public static final String TEXT_FIELD = "textField";
 
 		public static final String OK_BUTTON = "okButton";
+		public static final String QUESTION_MARK = "questionMark";
 		public static final String WAIT_BUTTON = "waitButton";
 		public static final String GREEN_BUTTON = "greenButton";
 		public static final String GREEN_BUTTON_TEXT = "greenButtonText";

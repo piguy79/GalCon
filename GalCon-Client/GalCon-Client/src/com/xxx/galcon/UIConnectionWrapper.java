@@ -3,7 +3,6 @@ package com.xxx.galcon;
 import java.util.List;
 
 import com.xxx.galcon.config.Configuration;
-import com.xxx.galcon.http.ConnectionException;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
@@ -55,13 +54,8 @@ public class UIConnectionWrapper {
 
 	}
 
-	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle,
-			Long timeRemaining, Long usedCoins) {
-		try {
-			gameAction.reduceTimeUntilNextGame(callback, playerHandle, timeRemaining, usedCoins);
-		} catch (ConnectionException e) {
-			callback.onConnectionError(e.getMessage());
-		}
+	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle) {
+		gameAction.reduceTimeUntilNextGame(callback, playerHandle);
 	}
 
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {

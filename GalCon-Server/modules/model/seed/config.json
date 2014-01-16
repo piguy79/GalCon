@@ -3,31 +3,25 @@
 				{
 					"version" : 1,
 					"type" : "map",
-					"values" : 
-						{ "attackModifier": "25",
-						  "defenseModifier": "25",
-						  "speedModifier": "0.5",
-						  "blockModifier": "0.2" ,
-						  "harvestEnhancement" : "0.25",
-						  "harvestRounds" : "6",
-						  "harvestSavior" : "5"}
+					"values" : { 
+						"attackModifier": "25",
+						"defenseModifier": "25",
+					 	"speedModifier": "0.5",
+						"blockModifier": "0.2" ,
+						"harvestEnhancement" : "0.25",
+						"harvestRounds" : "6",
+						"harvestSavior" : "5"
+					}
 					
-				},
-				{
-					"version" : 1,
-					"type" : "payment",
-					"values" : {	 
-									"timeReduction" : "0.5"
-								}
 				},
 				{
 					"version" : 1,
 					"type" : "app",
 					"values" : {
 						"freeCoins" : 3,
-						"timeLapseForNewCoins" : 1200000
+						"timeLapseForNewCoins" : 3600000,
+						"timeReduction" : "0.5"
 					}
 				}
-			]
-	
+	]
 }

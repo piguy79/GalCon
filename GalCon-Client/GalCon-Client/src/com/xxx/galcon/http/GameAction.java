@@ -62,8 +62,7 @@ public interface GameAction {
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle,
 			List<Order> orders);
 
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle,
-			Long timeRemaining, Long usedCoins) throws ConnectionException;
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle);
 
 	public void showAd(AdColonyVideoListener listner);
 
