@@ -25,10 +25,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -53,6 +55,7 @@ import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
 import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class BoardScreen implements ScreenFeedback {
 
@@ -155,8 +158,19 @@ public class BoardScreen implements ScreenFeedback {
 		createPlayerHud();
 		createPlanets();
 		createMoves();
+		createHarvest();
 
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	private void createHarvest() {
+		for(Moon moon : moons){
+			if(moon.associatedPlanet.isUnderHarvest() && moon.getActions().size == 0){
+				float duration = 0.8f;
+				moon.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0.5f), duration), Actions.color(new Color(0.9f, 0, 0, 1), duration))));
+			}
+		}
+		
 	}
 
 	private void createPlayerHud() {
@@ -452,8 +466,15 @@ public class BoardScreen implements ScreenFeedback {
 	private void renderPlanetInformationDialog(final Planet planet) {
 		int offset = planetToMoveCount.get(planet.name) != null ? planetToMoveCount.get(planet.name) : 0;
 		;
+		float heightMul = 0.3f;
+		if(planet.hasAbility()){
+			heightMul += 0.1f;
+		}
+		if(planet.isUnderHarvest()){
+			heightMul += 0.1f;
+		}
 		PlanetInformationDialog dialog = new PlanetInformationDialog(assetManager, Gdx.graphics.getWidth() * 0.8f,
-				Gdx.graphics.getHeight() * 0.4f, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader,
+				Gdx.graphics.getHeight() * heightMul, stage, planet, gameBoard, roundHasAlreadyBeenAnimated(), fontShader,
 				skin, offset);
 		float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 		dialog.setX(-dialog.getWidth());
@@ -603,15 +624,20 @@ public class BoardScreen implements ScreenFeedback {
 		if (planetMoveChange) {
 			applyMovesToPlanetButtons();
 			planetMoveChange = false;
+			//renderHarvest();
 		}	
-		renderMoons();
+		if(gameBoard != null){
+			renderMoons();
+		}
+		
 
 		stage.act(delta);
 		stage.draw();
-	}
+	}	
 
 	private void renderMoons() {
 		for(Moon moon : moons){
+			
 			Point newPosition = findMoonPosition(moon);
 			if(newPosition != null){
 				moon.setX(newPosition.x - (moon.getWidth() /2));

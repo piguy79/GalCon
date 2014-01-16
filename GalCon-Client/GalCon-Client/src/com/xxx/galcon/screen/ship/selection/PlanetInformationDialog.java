@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
@@ -61,12 +62,14 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 	}
 
 	private void createLabels() {
-		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate:", skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel regenRate = new ShaderLabel(fontShader, Math.round(planet.shipRegenRate) + "", skin, Constants.UI.DEFAULT_FONT);
-		ShaderLabel populationName = new ShaderLabel(fontShader, "Population:", skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel populationValue = new ShaderLabel(fontShader, fakePopulation(planet), skin, Constants.UI.DEFAULT_FONT);
-		ShaderLabel abilityName = new ShaderLabel(fontShader, "Ability:      ", skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel abilityName = new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel abilityValue = new ShaderLabel(fontShader, AbilityDisplay.abilityDisplayNames.get(planet.ability), skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel harvestName = new ShaderLabel(fontShader, "Rounds until Death:", skin, Constants.UI.DEFAULT_FONT_BLACK);
+		ShaderLabel harvestValue = new ShaderLabel(fontShader, "" + findRoundsRemainingInHarvest(), skin, Constants.UI.DEFAULT_FONT);
 
 		float padNameToValue = getWidth() * 0.05f;
 		float initialPadX = getWidth() * 0.02f;
@@ -82,6 +85,22 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 			positionAndPlaceActor(abilityValue, new Point(abilityName.getX() + abilityName.getTextBounds().width + padNameToValue, abilityName.getY()));
 		}
 		
+		if(planet.isUnderHarvest()){
+			positionAndPlaceActor(harvestName, new Point(initialPadX, abilityName.getY() - yPad));
+			positionAndPlaceActor(harvestValue, new Point(harvestName.getX() + harvestName.getTextBounds().width + padNameToValue, harvestName.getY()));
+
+		}
+		
+	}
+
+	private int findRoundsRemainingInHarvest() {
+		if(planet.isUnderHarvest()){
+			String harvestRounds= gameboard.gameConfig.getValue("harvestRounds");
+			int roundNumber = Integer.parseInt(harvestRounds);
+			return roundNumber - (gameboard.roundInformation.currentRound - planet.harvest.startingRound);
+		}
+		
+		return -1;
 	}
 
 	private CharSequence fakePopulation(Planet planet) {
@@ -111,13 +130,22 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		Point position = new Point(getWidth() - (cancelButton.getWidth() * 0.6f), cancelButton.getY());
 		harvestButton =  new ActionButton(skin,"okButton", position);
 		harvestButton.setColor(0, 0, 0, 0);
+		if(isHarvestAvailable()){
+			harvestButton.setDisabled(true);
+		}
 		
 		harvestButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
 			hide();
-			fire(new HarvestEvent(planet));
+			if(isHarvestAvailable()){
+				fire(new HarvestEvent(planet));
+			}
 		}});
 		addActor(harvestButton);
+	}
+
+	private boolean isHarvestAvailable() {
+		return !planet.isUnderHarvest() && planet.hasAbility() && !planet.isAlive() && !GameLoop.USER.hasMoved(gameboard) && planet.isOwnedBy(GameLoop.USER);
 	}
 	
 	public void displayButtons(){

@@ -50,39 +50,32 @@ planets2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-base_planet
-  rotate: false
-  xy: 2, 523
-  size: 281, 281
-  orig: 281, 281
-  offset: 0, 0
-  index: -1
 planet2
   rotate: false
-  xy: 404, 2
+  xy: 404, 404
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
 planet2-glow
   rotate: false
-  xy: 621, 404
+  xy: 2, 404
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
 planet2-touch
   rotate: false
-  xy: 2, 121
+  xy: 2, 2
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
-planet4
+planet3-touch
   rotate: false
-  xy: 285, 523
-  size: 334, 281
-  orig: 334, 281
+  xy: 404, 2
+  size: 400, 400
+  orig: 400, 400
   offset: 0, 0
   index: -1
 
@@ -90,17 +83,31 @@ planets3.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-planet3
+base_planet
   rotate: false
   xy: 404, 2
+  size: 281, 281
+  orig: 281, 281
+  offset: 0, 0
+  index: -1
+harvest
+  rotate: false
+  xy: 687, 49
+  size: 232, 234
+  orig: 232, 234
+  offset: 0, 0
+  index: -1
+planet3
+  rotate: false
+  xy: 2, 166
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
-planet3-touch
+planet4
   rotate: false
-  xy: 2, 2
-  size: 400, 400
-  orig: 400, 400
+  xy: 404, 285
+  size: 334, 281
+  orig: 334, 281
   offset: 0, 0
   index: -1
