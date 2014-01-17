@@ -32,6 +32,7 @@ import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ShaderLabel;
+import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class MainMenuScreen implements PartialScreenFeedback {
 	private SpriteBatch spriteBatch;
@@ -58,8 +59,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel newLabel;
 	private ShaderLabel continueLabel;
 	private ShaderLabel coinText;
-
-	private boolean userLoaded = false;
+	protected WaitImageButton waitImage;
 
 	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
 		this.gameAction = gameAction;
@@ -166,13 +166,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		coinText.setText(createCoinDisplay());
+		if (coinText != null) {
+			coinText.setText(createCoinDisplay());
+		}
 	}
 
 	private String createCoinDisplay() {
-		if (!userLoaded) {
-			return "--";
-		}
 		String coinsText = "";
 
 		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
@@ -195,26 +194,31 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		this.stage = stage;
 		actors.clear();
 
-		addElementsToStage();
-
-		Gdx.input.setInputProcessor(stage);
+		waitImage = new WaitImageButton(skin);
+		float buttonWidth = .25f * (float) width;
+		waitImage.setWidth(buttonWidth);
+		waitImage.setHeight(buttonWidth);
+		waitImage.setX(width / 2 - buttonWidth / 2);
+		waitImage.setY(height / 2 - buttonWidth / 2);
+		stage.addActor(waitImage);
 
 		loadUser();
 	}
 
 	private void loadUser() {
-		userLoaded = false;
+		waitImage.start();
 		gameAction.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
 
 			@Override
 			public void onConnectionResult(Player result) {
-				userLoaded = true;
 				GameLoop.USER = result;
+				addElementsToStage();
+				waitImage.stop();
 			}
 
 			@Override
 			public void onConnectionError(String msg) {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 1.0f, new TextOverlay(
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 						"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
 						new ClickListener() {
 							@Override
@@ -222,6 +226,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 								loadUser();
 							}
 						});
+				stage.addActor(ovrlay);
 			}
 		}, GameLoop.USER.handle);
 	}

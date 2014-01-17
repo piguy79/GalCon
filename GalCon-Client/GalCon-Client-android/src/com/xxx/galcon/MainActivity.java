@@ -16,9 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
-import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.InAppBillingAction.Callback;
-import com.xxx.galcon.http.SetConfigurationResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.inappbilling.util.IabHelper;
@@ -41,7 +39,6 @@ public class MainActivity extends AndroidApplication {
 	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
 	final static String ZONE_ID = "vz592240fd26724b2a955912";
 
-	final static String APPLICATION_CONFIG = "app";
 	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSXCD3B6yYCKEeGA8y5q8G4Yc/XJCcg9QdFs+NIvE+YsTCSruh1sKKldOstcc6magpBjdGuNKMhSq+QiqN5irFbh3XcKoSiYR/5dX4J2bURxj1yI7H6yCwvAfBaw1xzhWyMJ8qUtj3FW8XejnWev5MgasrxCc2dNNBzJNCynOsreGhWVx+dlcqBITpv0ctMAb/gLw8MMFOFQ/r8+2Twl8RX+KOVjBrB3GelX7dUSAhynoBTgmyoC5qPId3pDlcwIKEt6iHJfP4bv7VBxhqOllATK5E8Ja2DIWPJQW9LSjkdQe1hXo/kv71pfAZj98691+PDCPxaUNmZzWER+KsbXMQIDAQAB";
 
 	private AndroidGameAction gameAction;
@@ -71,10 +68,7 @@ public class MainActivity extends AndroidApplication {
 		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
-		Configuration config = new Configuration();
-		gameAction.findConfigByType(new SetConfigurationResultHandler(config), APPLICATION_CONFIG);
-
-		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction, config), cfg);
+		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 

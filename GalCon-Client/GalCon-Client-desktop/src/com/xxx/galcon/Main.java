@@ -2,11 +2,9 @@ package com.xxx.galcon;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.DesktopGameAction;
 import com.xxx.galcon.http.DesktopInAppBillingAction;
 import com.xxx.galcon.http.DesktopSocialAction;
-import com.xxx.galcon.http.SetConfigurationResultHandler;
 
 public class Main {
 	public static void main(String[] args) {
@@ -20,10 +18,6 @@ public class Main {
 		DesktopSocialAction socialAction = new DesktopSocialAction();
 		DesktopInAppBillingAction inAppBillAction = new DesktopInAppBillingAction();
 
-		final Configuration config = new Configuration();
-
-		gameAction.findConfigByType(new SetConfigurationResultHandler(config), "app");
-
-		new LwjglApplication(new GameLoop(gameAction, socialAction, inAppBillAction, config), cfg);
+		new LwjglApplication(new GameLoop(gameAction, socialAction, inAppBillAction), cfg);
 	}
 }

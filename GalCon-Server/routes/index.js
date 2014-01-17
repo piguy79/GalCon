@@ -516,15 +516,20 @@ var handleUserUpdate = function(req, res, handle){
 
 
 exports.reduceTimeUntilNextGame = function(req, res) {
-	var handle = req.body.playerHandle;
-	var usedCoins = req.body.usedCoins;
-	var timeRemaining = req.body.timeRemaining;
+	var handle = req.body.handle;
+	var session = req.body.session;
 	
-	var p = configManager.findLatestConfig('payment');
-	p.then(function(config){
-		return userManager.reduceTimeForWatchingAd(handle, usedCoins, timeRemaining, config.values['timeReduction']);
-	}).then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
-
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var innerp = configManager.findLatestConfig('app');
+		return innerp.then(function(config){
+			return userManager.reduceTimeForWatchingAd(handle, config.values['timeReduction']);
+		}).then(handleUserUpdate(req, res, handle));
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findConfigByType = function(req, res) {

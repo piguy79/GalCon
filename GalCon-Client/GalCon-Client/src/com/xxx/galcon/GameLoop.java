@@ -44,12 +44,10 @@ public class GameLoop extends Game {
 
 	private boolean loadingNewCoins = false;
 
-	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction,
-			Configuration config) {
+	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		this.inAppBillingAction = inAppBillingAction;
-		GameLoop.CONFIG = config;
 
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setActions(gameAction, inAppBillingAction);

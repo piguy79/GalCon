@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
+import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.InAppBillingAction;
 import com.xxx.galcon.http.InAppBillingAction.Callback;
@@ -70,8 +71,28 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 		waitImage.start();
 
-		inAppBillingAction.setup(setupCallback);
+		gameAction.findConfigByType(configCallback, "app");
 	}
+
+	private UIConnectionResultCallback<Configuration> configCallback = new UIConnectionResultCallback<Configuration>() {
+		@Override
+		public void onConnectionResult(Configuration result) {
+			GameLoop.CONFIG = result;
+			inAppBillingAction.setup(setupCallback);
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
+					"Could not connect.\n\nTouch to retry", menusAtlas, skin, fontShader), new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					gameAction.findConfigByType(configCallback, "app");
+				}
+			});
+			stage.addActor(ovrlay);
+		}
+	};
 
 	private Callback setupCallback = new Callback() {
 
@@ -84,7 +105,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 		public void onFailure(String msg) {
 			waitImage.stop();
 			if (msg.equals("retry")) {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 						"Could not connect.\n\nTouch to retry", menusAtlas, skin, fontShader), new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
@@ -94,7 +115,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 				stage.addActor(ovrlay);
 			} else {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
 						"In-app purchases\nare not present\nand disabled.\n\nTouch to continue.", menusAtlas, skin,
 						fontShader), new ClickListener() {
 					@Override
@@ -195,13 +216,13 @@ public class LoadingScreen implements PartialScreenFeedback {
 	private void retryAddCoins(String msg) {
 		waitImage.stop();
 
-		final Overlay ovrlay = new DismissableOverlay(menusAtlas, 0.8f, new TextOverlay(msg, menusAtlas, skin,
-				fontShader), new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
-			}
-		});
+		final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(msg, menusAtlas, skin, fontShader),
+				new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
+					}
+				});
 
 		stage.addActor(ovrlay);
 	}

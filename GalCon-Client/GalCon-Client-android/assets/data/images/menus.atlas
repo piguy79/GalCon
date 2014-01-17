@@ -167,6 +167,13 @@ ok_button
   orig: 251, 251
   offset: 0, 0
   index: -1
+question_mark
+  rotate: false
+  xy: 508, 2
+  size: 251, 251
+  orig: 251, 251
+  offset: 0, 0
+  index: -1
 textFieldBg
   rotate: false
   xy: 2, 255

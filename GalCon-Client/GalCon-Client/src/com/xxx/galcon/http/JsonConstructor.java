@@ -116,12 +116,11 @@ public class JsonConstructor {
 		return jsonOrders;
 	}
 
-	public static JSONObject reduceCall(String playerHandle, Long timeRemaining, Long usedCoins) throws JSONException {
+	public static JSONObject reduceCall(String playerHandle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
-		top.put("timeRemaining", timeRemaining);
-		top.put("usedCoins", usedCoins);
+		top.put("handle", playerHandle);
+		top.put("session", session);
 
 		return top;
 	}

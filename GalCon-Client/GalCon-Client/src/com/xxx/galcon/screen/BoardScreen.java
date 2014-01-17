@@ -293,7 +293,7 @@ public class BoardScreen implements ScreenFeedback {
 		sinlgeMoveHud.setX(moveHud.getX());
 		sinlgeMoveHud.setY(moveHud.getY());
 
-		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, 0.9f, new ClickListener() {
+		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
