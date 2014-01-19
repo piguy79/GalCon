@@ -16,7 +16,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
-public class MoveButton extends Group {
+public class MoveButton extends Group implements Comparable<MoveButton> {
 	
 	private static final Color NEW_MOVE = Color.valueOf("E8920C");
 	private AssetManager assetManager;
@@ -82,6 +82,21 @@ public class MoveButton extends Group {
 		}
 		
 		addActor(backGround);
+	}
+	
+	public Move getMove() {
+		return move;
+	}
+
+
+	@Override
+	public int compareTo(MoveButton otherMove) {
+		if(this.move.startingRound < otherMove.getMove().startingRound){
+			return -1;
+		}else if(this.move.startingRound > otherMove.getMove().startingRound){
+			return 1;
+		}
+		return 0;
 	}
 
 }

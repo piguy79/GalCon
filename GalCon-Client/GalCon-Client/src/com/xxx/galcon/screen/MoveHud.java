@@ -1,5 +1,9 @@
 package com.xxx.galcon.screen;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +125,20 @@ public class MoveHud extends Table {
 	
 	public void renderMoves(){
 		moveButtonHolder.clearChildren();
-		for(MoveButton button : moves.values()){
+		List<MoveButton> movesToDisplay = new ArrayList<MoveButton>();
+		movesToDisplay.addAll(moves.values());
+		Collections.sort(movesToDisplay);
+		Collections.sort(movesToDisplay, new Comparator<MoveButton>() {@Override
+			public int compare(MoveButton move1, MoveButton move2) {
+				if(move1.getMove().duration < move2.getMove().duration){
+					return -1;
+				}else if(move1.getMove().duration > move2.getMove().duration){
+					return 1;
+				}
+				return 0;
+			}
+		});
+		for(MoveButton button : movesToDisplay){
 			moveButtonHolder.add(button);
 		}
 	}

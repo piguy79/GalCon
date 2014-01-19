@@ -136,16 +136,17 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		
 		harvestButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
-			hide();
+			
 			if(isHarvestAvailable()){
 				fire(new HarvestEvent(planet));
+				hide();
 			}
 		}});
 		addActor(harvestButton);
 	}
 
 	private boolean isHarvestAvailable() {
-		return !planet.isUnderHarvest() && planet.hasAbility() && !planet.isAlive() && !GameLoop.USER.hasMoved(gameboard) && planet.isOwnedBy(GameLoop.USER);
+		return !planet.isUnderHarvest() && planet.hasAbility() && planet.isAlive() && !GameLoop.USER.hasMoved(gameboard) && planet.isOwnedBy(GameLoop.USER);
 	}
 	
 	public void displayButtons(){
