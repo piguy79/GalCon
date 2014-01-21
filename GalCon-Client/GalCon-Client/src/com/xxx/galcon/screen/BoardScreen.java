@@ -22,7 +22,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -216,6 +218,7 @@ public class BoardScreen implements ScreenFeedback {
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(Actions.scaleTo(0, 0, 0.9f));
 				}
+				movetoDisplay.setTouchable(Touchable.disabled);
 				stage.addActor(movetoDisplay);
 			}
 		}

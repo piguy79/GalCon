@@ -65,24 +65,11 @@ public class MoveFactory {
 		ImageButton shipMoveButton = new ImageButton(skin.get("shipButton", ImageButtonStyle.class));
 		shipMoveButton.setHeight(tileHeight * 0.4f);
 		shipMoveButton.setWidth(tileWidth * 0.4f);
-		shipMoveButton.addListener(new InputListener(){
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				return false;
-			}
-		});
+
 		shipMoveButton.setOrigin(shipMoveButton.getWidth()/2, shipMoveButton.getHeight()/2);
 				
 		Table wrapper = setupRotationWrapper(shipMoveButton, tileHeight,
 				tileWidth, initialPointInWorld);
-		wrapper.addListener(new InputListener(){
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				return false;
-			}
-		});
 		
 		wrapper.setRotation(move.angleOfMovement());
 		
