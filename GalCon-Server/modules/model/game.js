@@ -48,6 +48,7 @@ var gameSchema = mongoose.Schema({
 			},
 			shipRegenRate : "Number",
 			numberOfShips : "Number",
+			population : "Number",
 			ability : "String",
 			harvest : {
 				status : "String",
@@ -201,10 +202,8 @@ var getAttackMultipler = function(player, game){
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
 		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);
-		console.log("BEFORE: " + enhancedAttackFleet);
 
 		enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
-		console.log("AFTER: " + enhancedAttackFleet);
 
 	}
 	

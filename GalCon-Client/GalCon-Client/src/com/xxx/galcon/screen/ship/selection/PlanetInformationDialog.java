@@ -65,7 +65,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel regenRate = new ShaderLabel(fontShader, Math.round(planet.shipRegenRate) + "", skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel populationValue = new ShaderLabel(fontShader, fakePopulation(planet), skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel populationValue = new ShaderLabel(fontShader, "" + Math.round(planet.population), skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel abilityName = new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel abilityValue = new ShaderLabel(fontShader, AbilityDisplay.abilityDisplayNames.get(planet.ability), skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel harvestName = new ShaderLabel(fontShader, "Rounds until Death:", skin, Constants.UI.DEFAULT_FONT_BLACK);

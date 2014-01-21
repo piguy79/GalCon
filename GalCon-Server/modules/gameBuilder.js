@@ -4,6 +4,7 @@ gameTypeAssembler = require('./model/gameType/gameTypeAssembler');
 var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
 var HOME_RADIUS_RATIO = .38;
+var MAX_POPULATION = 50000000;
 
 function GameBuilder(gameAttributes) {
 	this.currentPlanetNum = 0;
@@ -261,6 +262,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	planet.position = position;
 	planet.shipRegenRate = 0;
 	planet.numberOfShips = 0;
+	planet.population = Math.floor((Math.random() * MAX_POPULATION) + 1);
 	planet.ability = "";
 	planet.status = "ALIVE";
 

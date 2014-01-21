@@ -24,6 +24,7 @@ public class Planet extends JsonConvertible {
 	public String ability;
 	public Harvest harvest;
 	public String status;
+	public float population;
 
 	
 	public static final String ALIVE = "ALIVE";
@@ -51,6 +52,7 @@ public class Planet extends JsonConvertible {
 			Point position = new Point();
 			position.consume(positionJson);
 			this.position = position;
+			this.population = jsonObject.getInt(Constants.POPULATION);
 			this.id = jsonObject.getString(Constants.ID);
 			if(jsonObject.has("harvest")){
 				this.harvest = new Harvest();

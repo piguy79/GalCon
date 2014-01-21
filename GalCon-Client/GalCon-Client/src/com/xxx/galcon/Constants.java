@@ -103,6 +103,7 @@ public class Constants {
 	public static final String COINS = "coins";
 	public static final String CANCELED = "canceled";
 	public static final String USED_COINS = "usedCoins";
+	public static final String POPULATION = "population";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 
@@ -123,5 +124,6 @@ public class Constants {
 			add("regenBlock");
 		}
 	};
+	
 
 }
