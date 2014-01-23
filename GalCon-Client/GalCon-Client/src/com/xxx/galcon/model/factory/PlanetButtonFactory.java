@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Fonts;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.screen.widget.Moon;
@@ -15,8 +16,7 @@ import com.xxx.galcon.screen.widget.PlanetButton;
 
 public class PlanetButtonFactory {
 	
-	private static TextureRegionDrawable planetTexture;
-	private static TextButtonStyle style;
+	
 	private static TextureAtlas planetAtlas;
 	private static ShaderProgram fontShader;
 	
@@ -24,20 +24,23 @@ public class PlanetButtonFactory {
 	public static float tileWidthInWorld;
 	public static float tileHeightInWorld;
 	
-	public static void setup(AssetManager assetManager, float tileWidthInWorld, float tileHeightInWorld){
+	private static AssetManager assetManager;
+	private static UISkin skin;
+	
+	public static void setup(AssetManager assetManager, float tileWidthInWorld, float tileHeightInWorld, UISkin skin){
 		PlanetButtonFactory.tileWidthInWorld = tileWidthInWorld;
 		PlanetButtonFactory.tileHeightInWorld = tileHeightInWorld;
 		PlanetButtonFactory.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		PlanetButtonFactory.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		PlanetButtonFactory.planetTexture = new TextureRegionDrawable(planetAtlas.findRegion("planet4"));
-		PlanetButtonFactory.style = new TextButtonStyle(planetTexture, planetTexture, planetTexture, Fonts.getInstance(
-				assetManager).mediumFont());
+
 		
 		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
 		PlanetButtonFactory.minPlanetSize = largest * 0.7f;
-		PlanetButtonFactory.planetTexture.setMinWidth(minPlanetSize);
-		PlanetButtonFactory.planetTexture.setMinHeight(minPlanetSize);
+
+		
+		PlanetButtonFactory.assetManager = assetManager;
+		PlanetButtonFactory.skin = skin;
 		
 	}
 	
@@ -53,19 +56,13 @@ public class PlanetButtonFactory {
 		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
 		float newPlanetSize = minPlanetSize + ((largest * 0.05f) * expand);
 		
-		
 		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize);
 	}
 	
 	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated, float width, float height){
-		planetTexture.setMinWidth(width);
-		planetTexture.setMinHeight(height);
-		final PlanetButton planetButton = new PlanetButton(fontShader, ""
-				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), style, planet);
 
-		planetButton.setColor(planet.getColor());
-		planetButton.setHeight(height);
-		planetButton.setWidth(width);
+		final PlanetButton planetButton = new PlanetButton(assetManager, ""
+				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), planet, fontShader, skin, width, height);
 		
 		return planetButton;
 	}

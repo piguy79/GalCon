@@ -280,7 +280,7 @@ public class BoardScreen implements ScreenFeedback {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 
-		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld);
+		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld, skin);
 		final PlanetButton fromPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(
 				gameBoard.getPlanet(move.fromPlanet), gameBoard, roundHasAlreadyBeenAnimated());
 		final PlanetButton toPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(
@@ -361,7 +361,7 @@ public class BoardScreen implements ScreenFeedback {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 
-		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld);
+		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld, skin);
 
 		for (final Planet planet : gameBoard.planets) {
 			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButtonWithExpansion(planet, gameBoard,
@@ -373,7 +373,7 @@ public class BoardScreen implements ScreenFeedback {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 						planetButton.addAction(Actions.forever(Actions.sequence(
-								Actions.color(new Color(0, 0, 0, 0), 0.7f), Actions.color(planet.getColor(), 0.5f))));
+								Actions.color(new Color(0, 0, 0, 0.4f), 0.7f), Actions.color(planet.getColor(), 0.5f))));
 						if (touchedPlanets.size() < 2) {
 							touchedPlanets.add(planet);
 							renderDialog();
@@ -414,7 +414,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		planetButton.setX(PlanetButtonFactory.tileWidthInWorld * planetButton.planet.position.x);
 		planetButton.setY((PlanetButtonFactory.tileHeightInWorld * planetButton.planet.position.y) + yOffset);
-		planetButton.setColor(planetButton.planet.getColor());
+		//planetButton.setColor(planetButton.planet.getColor());
 
 		float xAdjust = (PlanetButtonFactory.tileWidthInWorld / 2) - (planetButton.getWidth() / 2);
 		planetButton.setX(planetButton.getX() + xAdjust);

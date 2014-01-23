@@ -116,7 +116,7 @@ public class PlanetInformationDialog extends CancelEnabledDialog {
 
 	private void createPlanetImage() {
 		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
-		PlanetButtonFactory.setup(assetManager, sizeBase * 0.4f, sizeBase * 0.4f);
+		PlanetButtonFactory.setup(assetManager, sizeBase * 0.4f, sizeBase * 0.4f, skin);
 		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f, sizeBase * 0.4f);
 		planetImage.setX((getWidth() / 2) - (planetImage.getWidth()  /2));
 		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
