@@ -314,8 +314,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		fromPlanet.addAction(fadePlanetInAndOut(fromPlanet));
 		toPlanet.addAction(fadePlanetInAndOut(toPlanet));
-		moveToDisplay.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.9f),
-				Actions.color(Color.RED, 0.9f))));
+		
 
 	}
 
