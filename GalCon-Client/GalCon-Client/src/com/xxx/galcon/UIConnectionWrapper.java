@@ -41,17 +41,12 @@ public class UIConnectionWrapper {
 		gameAction.findCurrentGamesByPlayerHandle(callback, playerHandle);
 	}
 
-	public static void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String player) {
-		gameAction.findGamesWithPendingMove(callback, player);
-	}
-
 	public static void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		gameAction.findAvailableGames(callback, playerHandle);
 	}
 
 	public static void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		gameAction.joinGame(callback, id, playerHandle);
-
 	}
 
 	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle) {

@@ -24,14 +24,6 @@ exports.index = function(req, res) {
 	res.render('index.html')
 };
 
-exports.findAllGames = function(req, res) {
-	gameManager.findAllGames(function(games) {
-		var returnObj = {};
-		returnObj.items = games;
-		res.json(returnObj);
-	});
-}
-
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];
@@ -53,11 +45,17 @@ exports.findAvailableGames = function(req, res) {
 }
 
 exports.findGamesWithPendingMove = function(req, res) {
-	var email = req.query['email'];
-	userManager.findUserByEmail(email, function(user) {
-		if (!user) {
-			res.json({});
-		} else {
+	var handle = req.query['handle'];
+	var session = req.query['session'];
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var p = userManager.findUserByHandle(handle);
+		return p.then(function(user) {
 			gameManager.findCollectionOfGames(user.currentGames, function(games) {
 				var len = games.length;
 				while (len--) {
@@ -69,8 +67,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 				var minifiedGames = minfiyGameResponse(games, user.handle);
 				res.json({items : minifiedGames});
 			});
-		}
-	});
+		});
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 var validate = function(propMap, res) {

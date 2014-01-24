@@ -46,7 +46,6 @@ app.configure('production', function() {
 // Routes
 app.get('/', routes.index);
 app.post('/matchPlayerToGame', routes.matchPlayerToGame);
-app.get('/findAllGames', routes.findAllGames);
 app.get('/findAllMaps', routes.findAllMaps);
 app.get('/findGameById', routes.findGameById);
 app.get('/joinGame', routes.joinGame);

@@ -315,7 +315,7 @@ public class AndroidGameAction implements GameAction {
 
 	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", playerHandle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,

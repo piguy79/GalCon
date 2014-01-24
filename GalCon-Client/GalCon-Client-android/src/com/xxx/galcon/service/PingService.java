@@ -73,7 +73,8 @@ public class PingService extends Service {
 			}
 
 			final Map<String, String> args = new HashMap<String, String>();
-			args.put("playerHandle", handle);
+			args.put("handle", handle);
+			args.put("session", session);
 
 			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -84,7 +85,7 @@ public class PingService extends Service {
 						new AvailableGames());
 				parseResult(result);
 			} catch (IOException e) {
-				Log.wtf("CONNECTION", e.getMessage());
+				Log.w("CONNECTION", e.getMessage());
 			}
 		}
 
@@ -92,7 +93,6 @@ public class PingService extends Service {
 			if (result != null && !result.getAllGames().isEmpty()) {
 				sendNotification(result);
 			}
-
 		}
 
 		private void sendNotification(AvailableGames games) {
