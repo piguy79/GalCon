@@ -138,8 +138,16 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void setSession(String session) {
+	public void setSession(final String session) {
 		this.session = session;
+
+		Gdx.app.postRunnable(new Runnable() {
+			public void run() {
+				Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+				prefs.putString(Constants.Auth.LAST_SESSION_ID, session);
+				prefs.flush();
+			}
+		});
 	}
 
 	public void setGameLoop(GameLoop gameLoop) {
@@ -328,7 +336,7 @@ public class AndroidGameAction implements GameAction {
 	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String email) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("email", email);
-		args.put("session", session);
+		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_EMAIL, Player.class).execute("");

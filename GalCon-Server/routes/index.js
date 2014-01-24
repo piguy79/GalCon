@@ -54,8 +54,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function() {
-		var p = userManager.findUserByHandle(handle);
-		return p.then(function(user) {
+		var innerp = userManager.findUserByHandle(handle);
+		return innerp.then(function(user) {
 			gameManager.findCollectionOfGames(user.currentGames, function(games) {
 				var len = games.length;
 				while (len--) {
