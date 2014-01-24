@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -82,7 +83,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private Stage stage;
 
-	private Table boardTable;
+	private Image boardTable;
 	private InputProcessor oldInputProcessor;
 	private MoveDialog moveDialog;
 	private MoveHud moveHud;
@@ -144,12 +145,14 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createLayout() {
-		boardTable = new Table();
 		AtlasRegion bg = levelAtlas.findRegion("" + gameBoard.map);
-		boardTable.setBackground(new TextureRegionDrawable(bg));
+
+		boardTable = new Image(new TextureRegionDrawable(bg));
 		boardTable.setWidth(Gdx.graphics.getWidth());
 		boardTable.setHeight(Gdx.graphics.getHeight() * 0.8f);
 		boardTable.setY(Gdx.graphics.getHeight() * 0.1f);
+		
+		boardTable.addListener(clearPlanetListener());
 
 		stage.addActor(boardTable);
 		createGrid();
@@ -322,6 +325,13 @@ public class BoardScreen implements ScreenFeedback {
 		return Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
 				Actions.color(planetButton.planet.getColor(), 0.5f)));
 	}
+	
+	private ClickListener clearPlanetListener(){
+		return new ClickListener(){@Override
+		public void clicked(InputEvent event, float x, float y) {
+			clearTouchedPlanets();
+		}};
+	}
 
 	private void createGrid() {
 
@@ -336,6 +346,7 @@ public class BoardScreen implements ScreenFeedback {
 			line.setY((yOffset * i) + boardTable.getY());
 			line.setHeight(Gdx.graphics.getHeight() * 0.005f);
 			stage.addActor(line);
+			line.addListener(clearPlanetListener());
 
 		}
 
@@ -344,6 +355,7 @@ public class BoardScreen implements ScreenFeedback {
 			horizontalLine.setY(boardTable.getY());
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
+			horizontalLine.addListener(clearPlanetListener());
 			stage.addActor(horizontalLine);
 		}
 
@@ -682,6 +694,12 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void clearTouchedPlanets() {
+		for(Planet planet : touchedPlanets){
+			PlanetButton button = planetButtons.get(planet.name);
+			button.setColor(planet.getColor());
+			button.clearActions();
+		}
+		
 		touchedPlanets.clear();
 
 		if (gameBoard == null || gameBoard.planets == null) {
