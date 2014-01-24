@@ -51,6 +51,10 @@ exports.findCurrentGamesByPlayerHandle = function(handle, session) {
 	return needleWithPromise(needle.get, "/findCurrentGamesByPlayerHandle?handle=" + handle + "&session=" + session);
 }
 
+exports.findGamesWithPendingMove = function(handle, session) {
+	return needleWithPromise(needle.get, "/findGamesWithPendingMove?handle=" + handle + "&session=" + session);
+}
+
 exports.findAvailableGames = function(playerHandle) {
 	return needleWithPromise(needle.get, "/findAvailableGames?playerHandle=" + playerHandle);
 }

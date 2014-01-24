@@ -56,19 +56,18 @@ exports.findGamesWithPendingMove = function(req, res) {
 	p.then(function() {
 		var innerp = userManager.findUserByHandle(handle);
 		return innerp.then(function(user) {
-			gameManager.findCollectionOfGames(user.currentGames, function(games) {
-				var len = games.length;
-				while (len--) {
-					if (games[len].currentRound.playersWhoMoved.indexOf(user.handle) >= 0
-							|| games[len].endGameInformation.winnerHandle) {
-						games.splice(len, 1);
-					}
+			return gameManager.findCollectionOfGames(user.currentGames);
+		}).then(function(games) {
+			var len = games.length;
+			while (len--) {
+				if (games[len].currentRound.playersWhoMoved.indexOf(handle) >= 0
+						|| games[len].endGameInformation.winnerHandle) {
+					games.splice(len, 1);
 				}
-				var minifiedGames = minfiyGameResponse(games, user.handle);
-				res.json({items : minifiedGames});
-			});
+			}
+			return minfiyGameResponse(games, handle);
 		});
-	}).then(null, logErrorAndSetResponse(req, res));
+	}).then(function(minifiedGames) { res.json({items : minifiedGames}); }, logErrorAndSetResponse(req, res));
 }
 
 var validate = function(propMap, res) {
