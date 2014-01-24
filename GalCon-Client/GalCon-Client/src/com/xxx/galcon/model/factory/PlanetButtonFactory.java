@@ -3,11 +3,7 @@ package com.xxx.galcon.model.factory;
 import static com.xxx.galcon.Util.createShader;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.xxx.galcon.Fonts;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
@@ -17,7 +13,6 @@ import com.xxx.galcon.screen.widget.PlanetButton;
 public class PlanetButtonFactory {
 	
 	
-	private static TextureAtlas planetAtlas;
 	private static ShaderProgram fontShader;
 	
 	private static float minPlanetSize;
@@ -31,9 +26,6 @@ public class PlanetButtonFactory {
 		PlanetButtonFactory.tileWidthInWorld = tileWidthInWorld;
 		PlanetButtonFactory.tileHeightInWorld = tileHeightInWorld;
 		PlanetButtonFactory.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-
-		PlanetButtonFactory.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-
 		
 		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
 		PlanetButtonFactory.minPlanetSize = largest * 0.7f;

@@ -17,8 +17,6 @@ public class PlanetButton extends Group {
 	private TextureAtlas planetAtlas;
 	private ShaderLabel label;
 	private Image bg;
-	private ShaderProgram fontShader;
-	private UISkin skin;
 	
 	private float centerXUsed;
 	private float centerYUsed;
@@ -27,7 +25,6 @@ public class PlanetButton extends Group {
 		super();
 		this.planet = planet;
 		this.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		this.fontShader = fontShader;
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -37,7 +34,6 @@ public class PlanetButton extends Group {
 		bg.setColor(planet.getColor());
 		label = new ShaderLabel(fontShader, countToDisplay, skin, Constants.UI.DEFAULT_FONT);
 		positionLabel();
-		
 		
 		addActor(bg);
 		addActor(label);
@@ -52,7 +48,7 @@ public class PlanetButton extends Group {
 
 	private void positionWithCachedValues() {
 		label.setX(centerXUsed - (label.getTextBounds().width / 2));
-		label.setY(centerYUsed - (label.getTextBounds().height / 2));
+		label.setY(centerYUsed - (label.getTextBounds().height * 0.6f));
 	}
 
 	public Point centerPoint() {
