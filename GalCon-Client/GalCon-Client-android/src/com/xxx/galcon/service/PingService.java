@@ -13,6 +13,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -25,15 +26,13 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.Config;
 import com.xxx.galcon.Connection;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.R;
 import com.xxx.galcon.http.UrlConstants;
-import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.GameCount;
 
 public class PingService extends Service {
 	public static final int NOTIFICATION_ID = 29484;
@@ -64,7 +63,7 @@ public class PingService extends Service {
 		}
 
 		private void pingForPendingMove() {
-			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+			SharedPreferences prefs = PingService.this.getSharedPreferences(Constants.GALCON_PREFS, MODE_PRIVATE);
 			String session = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
 			String handle = prefs.getString(Constants.HANDLE, "");
 
@@ -74,34 +73,32 @@ public class PingService extends Service {
 
 			final Map<String, String> args = new HashMap<String, String>();
 			args.put("handle", handle);
-			args.put("session", session);
 
 			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			try {
 				HttpURLConnection connection = Connection.establishGetConnection(Config.getValue(Config.HOST),
 						Config.getValue(Config.PORT), UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE, args);
-				AvailableGames result = (AvailableGames) Connection.doRequest(connectivityManager, connection,
-						new AvailableGames());
+				GameCount result = (GameCount) Connection.doRequest(connectivityManager, connection, new GameCount());
 				parseResult(result);
 			} catch (IOException e) {
 				Log.w("CONNECTION", e.getMessage());
 			}
 		}
 
-		private void parseResult(AvailableGames result) {
-			if (result != null && !result.getAllGames().isEmpty()) {
+		private void parseResult(GameCount result) {
+			if (result != null && result.count > 0) {
 				sendNotification(result);
 			}
 		}
 
-		private void sendNotification(AvailableGames games) {
+		private void sendNotification(GameCount result) {
 			if (isMainActivityActive()) {
 				return;
 			}
 
 			String text = "1 game is awaiting your move";
-			int numberOfGames = games.getAllGames().size();
+			int numberOfGames = result.count;
 			if (numberOfGames > 1) {
 				text = numberOfGames + " games are awaiting your move";
 			}

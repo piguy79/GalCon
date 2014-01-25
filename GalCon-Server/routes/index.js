@@ -46,28 +46,30 @@ exports.findAvailableGames = function(req, res) {
 
 exports.findGamesWithPendingMove = function(req, res) {
 	var handle = req.query['handle'];
-	var session = req.query['session'];
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({handle : handle}, res)) {
 		return;
 	}
 	
-	var p = validateSession(session, {"handle" : handle});
-	p.then(function() {
-		var innerp = userManager.findUserByHandle(handle);
-		return innerp.then(function(user) {
+	var p = userManager.findUserByHandle(handle);
+	return p.then(function(user) {
+		if(user) {
 			return gameManager.findCollectionOfGames(user.currentGames);
-		}).then(function(games) {
-			var len = games.length;
-			while (len--) {
-				if (games[len].currentRound.playersWhoMoved.indexOf(handle) >= 0
-						|| games[len].endGameInformation.winnerHandle) {
-					games.splice(len, 1);
-				}
+		}
+		return null;
+	}).then(function(games) {
+		if(games === null) {
+			return 0;
+		}
+		var count = 0;
+		for(i in games) {
+			if (games[i].currentRound.playersWhoMoved.indexOf(handle) == -1
+					&& !games[i].endGameInformation.winnerHandle) {
+				count += 1;
 			}
-			return minfiyGameResponse(games, handle);
-		});
-	}).then(function(minifiedGames) { res.json({items : minifiedGames}); }, logErrorAndSetResponse(req, res));
+		}
+		return count;
+	}).then(function(count) { res.json({c : count}); }, logErrorAndSetResponse(req, res));
 }
 
 var validate = function(propMap, res) {

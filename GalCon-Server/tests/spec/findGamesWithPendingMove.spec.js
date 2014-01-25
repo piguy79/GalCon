@@ -54,9 +54,21 @@ describe("Find games with pending move -", function() {
 		
 		p.then(function() {
 			return apiRunner.findGamesWithPendingMove(PLAYER_1_HANDLE, PLAYER_1.session.id);
-		}).then(function(games) {
-			var availableGames = games.items;
-			expect(availableGames.length).toBe(0);
+		}).then(function(result) {
+			expect(result.c).toBe(0);
+		}).then(null, function(err) {
+			expect(err.toString()).toBe(null);
+		}).then(done);
+	});
+	
+	it("Should not return any games for a non-existent user", function(done) {
+		var p = new mongoose.Promise();
+		p.complete();
+		
+		p.then(function() {
+			return apiRunner.findGamesWithPendingMove("BLAH_HANDLE");
+		}).then(function(result) {
+			expect(result.c).toBe(0);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -72,9 +84,8 @@ describe("Find games with pending move -", function() {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_2, PLAYER_1.session.id);
 		}).then(function() {
 			return apiRunner.findGamesWithPendingMove(PLAYER_1_HANDLE, PLAYER_1.session.id);
-		}).then(function(games) {
-			var availableGames = games.items;
-			expect(availableGames.length).toBe(2);
+		}).then(function(result) {
+			expect(result.c).toBe(2);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
