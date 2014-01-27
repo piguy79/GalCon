@@ -4,9 +4,15 @@ _ = require('underscore');
 
 describe("Testing the use of a store used by the applicaiton to map items in the Play store to in game curreny", function(){
 	
-	var testSkus = [{sku : "coins_1", associatedCoins : 4},{sku : "coins_2", associatedCoins : 3}];
+	var testSkus = [{sku : "fake_coins_1", associatedCoins : 4},{sku : "fake_coins_2", associatedCoins : 3}];
 	
 	beforeEach(function(done){
+		inventory.InventoryModel.remove().where("sku").in(_.pluck(testSkus, "sku")).exec(function(){
+			done();
+		});
+	});
+	
+	afterEach(function(done){
 		inventory.InventoryModel.remove().where("sku").in(_.pluck(testSkus, "sku")).exec(function(){
 			done();
 		});
