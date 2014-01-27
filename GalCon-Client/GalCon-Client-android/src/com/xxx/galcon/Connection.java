@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.json.JSONObject;
 
 import android.net.ConnectivityManager;
@@ -29,8 +31,8 @@ public class Connection {
 			sb.append(arg.getKey()).append("=").append(arg.getValue()).append("&");
 		}
 
-		URL url = new URL("http://" + host + ":" + port + path + sb.toString());
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		URL url = new URL("https://" + host + ":" + port + path + sb.toString());
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
 		connection.setRequestMethod("GET");
 		connection.connect();
@@ -40,8 +42,8 @@ public class Connection {
 
 	public static HttpURLConnection establishPostConnection(String host, String port, String path, String... params)
 			throws IOException {
-		URL url = new URL("http://" + host + ":" + port + path);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		URL url = new URL("https://" + host + ":" + port + path);
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");

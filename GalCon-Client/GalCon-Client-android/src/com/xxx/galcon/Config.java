@@ -10,14 +10,14 @@ public class Config {
 	private static final Map<String, String> DEV_VALUES = new HashMap<String, String>() {
 		{
 			put(HOST, "stormy-sands-7424.herokuapp.com");
-			put(PORT, "80");
+			put(PORT, "443");
 		}
 	};
 
 	private static final Map<String, String> PROD_VALUES = new HashMap<String, String>() {
 		{
 			put(HOST, "damp-crag-7750.herokuapp.com");
-			put(PORT, "80");
+			put(PORT, "443");
 		}
 	};
 
