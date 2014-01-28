@@ -78,18 +78,14 @@ exports.isValidMoves = function(arg){
 	if(!moves){
 		return true;
 	}
-	
-	
-	// Move MUST have a unique from and to planet
-	// Move can only be from a planet you own.
-	// Move can only be for a number of ships > 0 and <= the number of ships currently on a planet
+
 	
 	if(!_.isArray(moves)){
 		return false;
 	}
 		
 	return !_.some(moves, function(move){
-		return move.fromPlanet === move.toPlanet || move.playerHandle !== handle || !validator.isInt(move.fleet);
+		return move.fromPlanet === move.toPlanet || move.playerHandle !== handle || !validator.isInt(move.fleet) || move.fleet <= 0;
 	});
 	
 }

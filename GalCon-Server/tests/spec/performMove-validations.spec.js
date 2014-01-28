@@ -48,7 +48,7 @@ describe("Perform Move - Validations -", function() {
 		});
 	});
 
-	var createMovesWithValidationSteps = function(moves, planets) {
+	var createMovesWithValidationSteps = function(moves, planets, handle) {
 		var currentGameId;
 		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		
@@ -56,17 +56,7 @@ describe("Perform Move - Validations -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game) {
-			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
-		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(0);
-			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
-		}).then(function() {
-			return apiRunner.performMove(currentGameId, [], PLAYER_2_HANDLE);
-		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(1);
-			return game;
-		}).then(null, function(err) {
-			expect(err.toString()).toBe(null);
+			return apiRunner.performMove(currentGameId, moves, handle);
 		});
 	}
 
@@ -74,11 +64,92 @@ describe("Perform Move - Validations -", function() {
 		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_1_HOME_PLANET, 6, 1);
 		var moves = [ testMove ];
 
-		var p = createMovesWithValidationSteps(moves, PLANETS);
-		p.then(function(game) {
-			return apiRunner.performMove(game._id, [], PLAYER_2_HANDLE);
-		}).then(null, function(err) {
-			expect(err.toString()).toBe(null);
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves with a different player handle to the user executing should be blocked", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, "FAKE");
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves need to use a valid int for fleet count", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, "this", 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves need to use a valid positive int for fleet count", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, -4, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	/////////////////////
+	
+	it("Moves need to have a fleet count >= the number of ships on a planet. In aggregate", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 10, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves can only be from a planet owned by the user", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, -4, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves can only be from/to planets which exist on the game board", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, -4, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
 		}).then(done);
 	});
 
