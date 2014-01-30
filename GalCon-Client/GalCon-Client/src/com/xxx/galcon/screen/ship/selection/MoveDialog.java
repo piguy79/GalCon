@@ -86,7 +86,7 @@ public class MoveDialog extends CancelEnabledDialog {
 		sliderBg.setMinHeight(getHeight() * 0.2f);
 		sliderBg.setMinWidth(getWidth() * 0.8f);
 		sliderKnob.setMinHeight(getHeight() * 0.3f);
-		sliderKnob.setMinWidth(getWidth() * 0.1f);
+		sliderKnob.setMinWidth(getWidth() * 0.15f);
 		
 		skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
 		
