@@ -18,7 +18,7 @@ exports.validate = function(gameId, handle, moves){
 
 var runValidate = function(game, handle, moves){
 	return playerOwnsFromPlanets(game, handle, moves) && fleetsCannotExceedTheNumberOfShipsOnAPlanet(game.planets, moves) 
-	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle);
+	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game);
 }
 
 var playerOwnsFromPlanets = function(game, handle, moves){
