@@ -16,7 +16,7 @@
     , "needle" : "0.6.0"
     , "nodetime" : "0.8.14"
     , "underscore" : "1.5.2"
-    , "googleapis" : "0.4.7"
-    , "validator" : "2.0.0"
+    , "googleapis" : "0.6.1"
+    , "validator" : "3.2.0"
   }
 }

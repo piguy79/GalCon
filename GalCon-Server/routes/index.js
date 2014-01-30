@@ -17,7 +17,8 @@ var VALIDATE_MAP = {
 	session : validation.isSession,
 	handle : validation.isHandle,
 	mapKey : validation.isMapKey,
-	orders : validation.isOrders
+	orders : validation.isOrders,
+	move : validation.isValidMoves
 };
 
 exports.index = function(req, res) {
@@ -225,6 +226,10 @@ exports.performMoves = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var time = req.body.time;
 	var harvest = req.body.harvest;
+	
+	if(!validate({move : {moves : moves, handle : playerHandle}}, res)) {
+		return;
+	}
 
 	var p = gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
 	p.then(function(game) {
