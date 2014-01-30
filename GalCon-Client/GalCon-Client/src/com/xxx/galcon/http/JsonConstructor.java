@@ -22,11 +22,12 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject performMove(String gameId, List<Move> moves, List<HarvestMove> harvestMoves)
+	public static JSONObject performMove(String gameId, List<Move> moves, List<HarvestMove> harvestMoves, String session)
 			throws JSONException {
 		JSONObject top = new JSONObject();
 		top.put("playerHandle", GameLoop.USER.handle);
 		top.put("id", gameId);
+		top.put("session", session);
 		JSONArray jsonMoves = new JSONArray();
 
 		for (Move move : moves) {

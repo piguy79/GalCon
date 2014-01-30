@@ -222,7 +222,7 @@ public class AndroidGameAction implements GameAction {
 	public void performMoves(final UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
 			List<HarvestMove> harvestMoves) {
 		try {
-			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
+			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, GameBoard.class).execute(top.toString());

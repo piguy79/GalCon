@@ -37,7 +37,8 @@ exports.performMove = function(gameId, moves, playerHandle, time, harvest) {
 		id : gameId,
 		playerHandle : playerHandle,
 		time : time || 1000,
-		harvest : harvest || []
+		harvest : harvest || [],
+		session : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592"
 	}
 
 	return needleWithPromise(needle.post, "/performMoves", postData);

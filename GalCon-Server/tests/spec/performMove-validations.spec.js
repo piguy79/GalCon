@@ -5,6 +5,7 @@ var mongoose = require('../../modules/model/mongooseConnection').mongoose,
 	gameManager = require('../../modules/model/game'),
 	userManager = require('../../modules/model/user'),
 	mapManager = require('../../modules/model/map'),
+	gameRunner = require('../fixtures/gameRunner'),
 	_ = require('underscore');
 
 describe("Perform Move - Validations -", function() {
@@ -114,10 +115,40 @@ describe("Perform Move - Validations -", function() {
 	
 	/////////////////////
 	
-	it("Moves need to have a fleet count >= the number of ships on a planet. In aggregate", function(done) {
+	it("Move must be from a planet owned by the player", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, UNOWNED_PLANET_1 ,PLAYER_1_HOME_PLANET, 10, 1);
+		var moves = [ testMove ];
+
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves must contain a number of ships lower then that of ships on a planet", function(done) {
+		// This planet has 30 ships.
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 31, 1);
+		var moves = [ testMove ];
+	
+		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
+		p.then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+		},function(err) {
+			console.log(err);
+		}).then(done);
+	});
+	
+	it("Moves must contain a number of ships lower then that of ships on a planet - In aggragate", function(done) {
+		// This planet has 30 ships.
 		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 10, 1);
-		var moves = [ testMove ];
+		var testMoveExtra = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 21, 1);
 
+		var moves = [ testMove, testMoveExtra ];
+	
 		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
 		p.then(function(response){
 			expect(response.valid).toBe(false);
@@ -127,10 +158,11 @@ describe("Perform Move - Validations -", function() {
 		}).then(done);
 	});
 	
-	it("Moves can only be from a planet owned by the user", function(done) {
-		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, -4, 1);
-		var moves = [ testMove ];
+	it("Moves can only be toPlanets which exist on the game board", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, "FAKE", 10, 1);
 
+		var moves = [ testMove ];
+	
 		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
 		p.then(function(response){
 			expect(response.valid).toBe(false);
@@ -140,10 +172,11 @@ describe("Perform Move - Validations -", function() {
 		}).then(done);
 	});
 	
-	it("Moves can only be from/to planets which exist on the game board", function(done) {
-		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, -4, 1);
-		var moves = [ testMove ];
+	it("Moves can only be fromPlanets which exist on the game board", function(done) {
+		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, "FAKE", UNOWNED_PLANET_1, 10, 1);
 
+		var moves = [ testMove ];
+	
 		var p = createMovesWithValidationSteps(moves, PLANETS, PLAYER_1_HANDLE);
 		p.then(function(response){
 			expect(response.valid).toBe(false);
@@ -152,5 +185,31 @@ describe("Perform Move - Validations -", function() {
 			console.log(err);
 		}).then(done);
 	});
+	
+	it("Must only allow moves once per round", function(done) {
+		var currentGameId;
+		var timeOfMove = 34728;
+		
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		p.then(function(game){
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
+		}).then(function(game){
+			return apiRunner.performMove(currentGameId, [], PLAYER_1_HANDLE);
+		}).then(function(game){
+			return apiRunner.performMove(currentGameId, [], PLAYER_1_HANDLE);
+		}).then(function(response){
+			expect(response.valid).toBe(false);
+			expect(response.reason).toBe("Invalid move");
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+
+	});
+	
+	// Must have not moved already in this round
 
 });

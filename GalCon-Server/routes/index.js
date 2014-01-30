@@ -10,6 +10,7 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	_ = require('underscore'),
 	socialManager = require('../modules/social'),
 	validation = require('../modules/validation'),
+	moveValidation = require('../modules/move_validation'),
 	googleapis = require('googleapis');
 
 var VALIDATE_MAP = {
@@ -226,13 +227,22 @@ exports.performMoves = function(req, res) {
 	var playerHandle = req.body.playerHandle;
 	var time = req.body.time;
 	var harvest = req.body.harvest;
+	var session = req.body.session;
 	
-	if(!validate({move : {moves : moves, handle : playerHandle}}, res)) {
+	if(!validate({move : {moves : moves, handle : playerHandle}, session : session, handle : playerHandle}, res)) {
 		return;
 	}
-
-	var p = gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
-	p.then(function(game) {
+	
+	var p = validateSession(session, {"handle" : playerHandle});
+	p.then(function(){
+		return moveValidation.validate(gameId, playerHandle, moves);
+	}).then(function(result){
+		if(!result.success){
+			res.json({ valid : false, reason : "Invalid move" });
+		}else{
+			return gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
+		}
+	}).then(function(game) {
 		if (!game) {
 			res.json({
 				error : "Could not perform move, please try again"
