@@ -163,6 +163,17 @@ public class BoardScreen implements ScreenFeedback {
 		createHarvest();
 
 		Gdx.input.setInputProcessor(stage);
+		
+		if(gameBoard.hasWinner()){
+			String endGameMessage;
+			if(gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)){
+				endGameMessage = "Winner Text";
+			}else{
+				endGameMessage = "Loser Text";
+			}
+			TextOverlay winningOverlay = new TextOverlay(endGameMessage, menuAtlas, skin, fontShader);
+			stage.addActor(winningOverlay);
+		}
 	}
 
 	private void createHarvest() {

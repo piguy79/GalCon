@@ -14,17 +14,17 @@ public class TextOverlay extends Overlay {
 	private ShaderLabel shaderLabel;
 
 	public TextOverlay(String text, TextureAtlas menusAtlas, Skin skin, ShaderProgram fontShader) {
-		super(menusAtlas, 0.9f);
+		super(menusAtlas, 0.8f);
 		shaderLabel = new ShaderLabel(fontShader, text, skin, Constants.UI.DEFAULT_FONT);
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
 		shaderLabel.setBounds(0, y, Gdx.graphics.getWidth(), shaderLabel.getHeight());
 		shaderLabel.setWrap(true);
 		shaderLabel.setAlignment(Align.center, Align.center);
+		addActor(shaderLabel);
 	}
+	
+	
 
-	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		shaderLabel.draw(batch, parentAlpha);
-	}
+	
 }
