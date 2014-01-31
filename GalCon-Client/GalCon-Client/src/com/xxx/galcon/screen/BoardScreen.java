@@ -210,6 +210,7 @@ public class BoardScreen implements ScreenFeedback {
 						.createShipForDisplay(move, tileHeight, tileWidth, initialPointInWorld);
 
 				Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
+				boolean showMove = true;
 
 				if (!roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(Actions.moveTo(newPosition.x + (tileWidth / 2), newPosition.y
@@ -220,9 +221,14 @@ public class BoardScreen implements ScreenFeedback {
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(Actions.scaleTo(0, 0, 0.9f));
+				}else if(move.executed && roundHasAlreadyBeenAnimated()){
+					showMove = false;
 				}
 				movetoDisplay.setTouchable(Touchable.disabled);
-				stage.addActor(movetoDisplay);
+				
+				if(showMove){
+					stage.addActor(movetoDisplay);
+				}
 			}
 		}
 
@@ -230,18 +236,6 @@ public class BoardScreen implements ScreenFeedback {
 
 	}
 
-	private Table setupRotationWrapper(ImageButton shipMoveButton, float tileHeight, float tileWidth, Point movePosition) {
-		Table wrapper = new Table();
-
-		wrapper.defaults().width(tileWidth * 0.25f).height(tileWidth * 0.25f).pad(0);
-		wrapper.add(shipMoveButton);
-		wrapper.setX(movePosition.x + (tileWidth / 2));
-		wrapper.setY(movePosition.y + (tileHeight / 2));
-		wrapper.setTransform(true);
-		wrapper.setOrigin(wrapper.getPrefWidth() / 2, wrapper.getPrefHeight() / 2);
-		wrapper.setScaleX(1.5f);
-		return wrapper;
-	}
 
 	private void createMoveHud() {
 		moveHud = new MoveHud(assetManager, skin, gameBoard, fontShader, Gdx.graphics.getWidth(),
