@@ -102,6 +102,7 @@ public class MoveDialog extends CancelEnabledDialog {
 				counter.setText((int)slider.getValue() + "");
 				shipsToSend = (int)slider.getValue();
 				initialCount.setText("" + (max - shipsToSend));
+				okButton.setDisabled(shipsToSend == 0);
 			}
 		});
 		
@@ -131,9 +132,12 @@ public class MoveDialog extends CancelEnabledDialog {
 		
 		okButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Move move = MoveFactory.createMove(planetsInvolved, shipsToSend, currentRound);
-			fire(new MoveEvent(move));
+			if(!okButton.isDisabled()){
+				Move move = MoveFactory.createMove(planetsInvolved, shipsToSend, currentRound);
+				fire(new MoveEvent(move));
+			}
 		}});
+		okButton.setDisabled(shipsToSend == 0);
 		addActor(okButton);
 	}
 	

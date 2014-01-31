@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 arrow_left_small_black
   rotate: false
-  xy: 952, 966
+  xy: 952, 781
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 952, 908
+  xy: 952, 723
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
@@ -26,7 +26,7 @@ arrow_solid_line
   index: -1
 back
   rotate: false
-  xy: 804, 731
+  xy: 804, 546
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
@@ -40,21 +40,21 @@ bg
   index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 804, 431
+  xy: 1006, 1008
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 coin
   rotate: false
-  xy: 804, 873
+  xy: 804, 688
   size: 146, 149
   orig: 146, 149
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 945, 689
+  xy: 989, 840
   size: 15, 182
   orig: 15, 182
   offset: 0, 0
@@ -66,18 +66,18 @@ dialog_bg
   orig: 944, 352
   offset: 0, 0
   index: -1
-end_turn
+ok_button_disabled
   rotate: false
-  xy: 804, 589
-  size: 139, 140
-  orig: 139, 140
+  xy: 804, 839
+  size: 183, 183
+  orig: 183, 183
   offset: 0, 0
   index: -1
-forward
+refresh
   rotate: false
-  xy: 804, 447
-  size: 139, 140
-  orig: 139, 140
+  xy: 804, 416
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
 slider_bg
@@ -113,6 +113,20 @@ dialog_bg_no_shadow
   orig: 813, 341
   offset: 0, 0
   index: -1
+end_turn
+  rotate: false
+  xy: 817, 352
+  size: 139, 140
+  orig: 139, 140
+  offset: 0, 0
+  index: -1
+forward
+  rotate: false
+  xy: 817, 210
+  size: 139, 140
+  orig: 139, 140
+  offset: 0, 0
+  index: -1
 green_button
   rotate: false
   xy: 377, 2
@@ -125,13 +139,6 @@ rect_button_blank
   xy: 604, 494
   size: 338, 119
   orig: 338, 119
-  offset: 0, 0
-  index: -1
-refresh
-  rotate: false
-  xy: 817, 364
-  size: 128, 128
-  orig: 128, 128
   offset: 0, 0
   index: -1
 transparent_square
