@@ -5,44 +5,51 @@ filter: Linear,Linear
 repeat: none
 attackMoon
   rotate: false
-  xy: 2, 588
-  size: 501, 430
-  orig: 501, 430
+  xy: 327, 21
+  size: 222, 192
+  orig: 222, 192
   offset: 0, 0
   index: -1
 dead_planet
   rotate: false
-  xy: 2, 13
+  xy: 806, 809
   size: 208, 208
   orig: 208, 208
   offset: 0, 0
   index: -1
 defenseMoon
   rotate: false
-  xy: 505, 625
-  size: 447, 393
-  orig: 447, 393
+  xy: 2, 2
+  size: 323, 211
+  orig: 323, 211
   offset: 0, 0
   index: -1
 planet1
   rotate: false
-  xy: 505, 223
+  xy: 2, 617
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
-speedMoon
+planet2
   rotate: false
-  xy: 2, 229
-  size: 388, 357
-  orig: 388, 357
+  xy: 404, 215
+  size: 400, 400
+  orig: 400, 400
   offset: 0, 0
   index: -1
-sun
+planet2-glow
   rotate: false
-  xy: 212, 2
-  size: 225, 225
-  orig: 225, 225
+  xy: 2, 215
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
+planet2-touch
+  rotate: false
+  xy: 404, 617
+  size: 400, 400
+  orig: 400, 400
   offset: 0, 0
   index: -1
 
@@ -50,21 +57,21 @@ planets2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-planet2
+base_planet
   rotate: false
-  xy: 404, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 404, 240
+  size: 281, 281
+  orig: 281, 281
   offset: 0, 0
   index: -1
-planet2-glow
+harvest
   rotate: false
-  xy: 2, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 687, 287
+  size: 232, 234
+  orig: 232, 234
   offset: 0, 0
   index: -1
-planet2-touch
+planet3
   rotate: false
   xy: 2, 2
   size: 400, 400
@@ -73,41 +80,29 @@ planet2-touch
   index: -1
 planet3-touch
   rotate: false
-  xy: 404, 2
-  size: 400, 400
-  orig: 400, 400
-  offset: 0, 0
-  index: -1
-
-planets3.png
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-base_planet
-  rotate: false
-  xy: 404, 2
-  size: 281, 281
-  orig: 281, 281
-  offset: 0, 0
-  index: -1
-harvest
-  rotate: false
-  xy: 687, 49
-  size: 232, 234
-  orig: 232, 234
-  offset: 0, 0
-  index: -1
-planet3
-  rotate: false
-  xy: 2, 166
+  xy: 2, 404
   size: 400, 400
   orig: 400, 400
   offset: 0, 0
   index: -1
 planet4
   rotate: false
-  xy: 404, 285
+  xy: 404, 523
   size: 334, 281
   orig: 334, 281
+  offset: 0, 0
+  index: -1
+speedMoon
+  rotate: false
+  xy: 404, 3
+  size: 254, 235
+  orig: 254, 235
+  offset: 0, 0
+  index: -1
+sun
+  rotate: false
+  xy: 687, 60
+  size: 225, 225
+  orig: 225, 225
   offset: 0, 0
   index: -1

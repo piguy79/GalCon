@@ -303,6 +303,35 @@ describe("Harvest an ability planet -", function() {
 	});
 	
 	
-	
+	it("Should decrease a planets population while under harvest", function(done){
+		var currentGameId;
+		var timeOfMove = 271625;
+		
+		var abilityPlanet = elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "speedModifier");
+		abilityPlanet.population = 6000000;
+		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
+	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 9, { x : 3, y : 5}),
+	                    abilityPlanet];
+		
+		var moves = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 14, 5) ];
+		
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, SPEED_MAP_KEY);
+		p.then(function(game){
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
+		}).then(function(game){
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+		}).then(function(game){
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+		}).then(function(game){
+			var abilityHarvest = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
+			expect(abilityHarvest.population).toBe(4000000);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+	});
 	
 });
