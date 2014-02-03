@@ -828,7 +828,6 @@ public class BoardScreen implements ScreenFeedback {
 			moves.clear();
 
 			setGameBoard(result);
-//			overlay.remove();
 		}
 
 		@Override

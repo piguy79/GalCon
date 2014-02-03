@@ -61,6 +61,7 @@ public class MoveDialog extends OKCancelDialog {
 		addCounter();
 
 		okButton.setColor(0, 0, 0, 0);
+		okButton.setDisabled(shipsToSend == 0);
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
