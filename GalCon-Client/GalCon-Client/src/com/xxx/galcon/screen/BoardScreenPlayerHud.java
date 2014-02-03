@@ -1,5 +1,9 @@
 package com.xxx.galcon.screen;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +40,15 @@ public class BoardScreenPlayerHud extends Group {
 	private ShaderLabel firstPlayer;
 	private ShaderLabel vs;
 	private ShaderLabel secondPlayer;
+	
+	private final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
+		{
+			put(Constants.ABILITY_ATTACK_INCREASE, "A");
+			put(Constants.ABILITY_DEFENCE_INCREASE, "D");
+			put(Constants.ABILITY_SPEED, "S");
+			put(Constants.ABILITY_REGEN_BLOCK, "B");
+		}
+	};
 
 	public BoardScreenPlayerHud(AssetManager assetManager, UISkin skin, ShaderProgram fontShader, float width,
 			float height, Point position, GameBoard gameBoard) {
@@ -95,11 +108,17 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private String playerInfo(Player player) {
-		String playerInfo = player.handle + "(" + player.rank.level + ")";
-		if (player.hasMoved(gameBoard)) {
-			return playerInfo;
+		
+		String playerInfo = player.handle + "[" + player.rank.level + "]";
+		if (!player.hasMoved(gameBoard)) {
+			playerInfo = "--" +  playerInfo + "--";
 		}
-		return "--" + playerInfo + "--";
+		StringBuilder sb = new StringBuilder();
+		sb.append(playerInfo);
+		sb.append("  ");
+		sb.append(abilitiesToString(gameBoard.ownedPlanetAbilities(player)));
+		
+		return sb.toString();
 	}
 
 	private void createFirstSlash() {
@@ -160,5 +179,37 @@ public class BoardScreenPlayerHud extends Group {
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
 		addActor(backGround);
+	}
+	
+	
+
+	private Map<String, Integer> bonuses = new HashMap<String, Integer>();
+
+	private String abilitiesToString(List<String> planetAbilities) {
+		if (planetAbilities.isEmpty()) {
+			return "";
+		}
+		bonuses.clear();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < planetAbilities.size(); ++i) {
+			String ability = planetAbilities.get(i);
+			String abbrev = ABILITY_TO_ABBREVIATION.get(ability);
+			if (abbrev == null) {
+				throw new IllegalArgumentException("PlayerInfoHud does not understand: " + planetAbilities.get(i));
+			}
+			Integer configBonus = Integer.valueOf(gameBoard.gameConfig.getValue(ability));
+			Integer bonus = 0;
+			if (bonuses.containsKey(abbrev)) {
+				bonus = bonuses.get(abbrev);
+			}
+			bonus += configBonus;
+			bonuses.put(abbrev, bonus);
+		}
+
+		for (Map.Entry<String, Integer> values : bonuses.entrySet()) {
+			sb.append("+").append(values.getValue()).append("%").append(values.getKey()).append(" ");
+		}
+
+		return sb.toString();
 	}
 }
