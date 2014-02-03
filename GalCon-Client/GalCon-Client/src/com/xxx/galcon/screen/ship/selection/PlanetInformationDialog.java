@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen.ship.selection;
 
+import java.text.NumberFormat;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -76,7 +78,7 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		ShaderLabel regenRate = new ShaderLabel(fontShader, Math.round(planet.shipRegenRate) + "", skin,
 				Constants.UI.DEFAULT_FONT);
 		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel populationValue = new ShaderLabel(fontShader, "" + Math.round(planet.population), skin,
+		ShaderLabel populationValue = new ShaderLabel(fontShader, calculatePopulation(), skin,
 				Constants.UI.DEFAULT_FONT);
 		ShaderLabel abilityName = new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel abilityValue = new ShaderLabel(fontShader, AbilityDisplay.abilityDisplayNames.get(planet.ability),
@@ -111,6 +113,12 @@ public class PlanetInformationDialog extends OKCancelDialog {
 
 		}
 
+	}
+
+	private String calculatePopulation() {
+		NumberFormat format = NumberFormat.getInstance();
+
+		return "" + format.format(Math.round(planet.population));
 	}
 
 	private int findRoundsRemainingInHarvest() {

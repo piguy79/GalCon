@@ -1,5 +1,6 @@
 var validator = require("validator"),
-	_ = require("underscore");
+	_ = require("underscore"),
+	gameManager = require('./model/game');
 
 exports.isSession = function(session) {
 	if(session === undefined || session == null) {
@@ -20,18 +21,14 @@ exports.isSession = function(session) {
 }
 
 exports.isEmail = function(email) {
-	try {
-		validator.check(email).len(5, 100).isEmail();
-	} catch(e) {
-		return false;
-	}
 	
-	return true;
+	return	validator.isLength(email, 5, 100) && validator.isEmail(email);	
 }
 
 exports.isMapKey = function(mapKey) {
 	try {
-		validator.check(mapKey).len(1, 4).isInt();
+		validator.isLength(mapKey, 1, 4);
+		validator.isInt(mapKey);
 	} catch(e) {
 		return false;
 	}
@@ -40,20 +37,22 @@ exports.isMapKey = function(mapKey) {
 }
 
 exports.isOrders = function(orders) {
-	try {
-		if(!_.isArray(orders)) {
-			return false;
-		}
-		_.each(orders, function(order) {
-			validator.check(order.orderId).len(1, 200);
-			validator.check(order.packageName).len(1, 200);
-			validator.check(order.productId).len(1, 200);
-			validator.check(order.purchaseTime).len(1, 200);
-			validator.check(order.purchaseState).len(1, 200);
-			validator.check(order.developerPayload).len(0, 200);
-			validator.check(order.token).len(1, 200);
-		});
-	} catch(e) {
+	
+	if(!_.isArray(orders)) {
+		return false;
+	}
+		
+	var errorFound = _.some(orders, function(order){
+		return !validator.isLength(order.orderId, 1, 200) &&
+		!validator.isLength(order.packageName, 1, 200) &&
+		!validator.isLength(order.productId, 1, 200) &&
+		!validator.isLength(order.purchaseTime, 1, 200) &&
+		!validator.isLength(order.purchaseState, 1, 200) &&
+		!validator.isLength(order.developerPayload, 0, 200) &&
+		!validator.isLength(order.token, 1, 200);
+	});
+		
+	if(errorFound){
 		return false;
 	}
 	
@@ -71,3 +70,23 @@ exports.isHandle = function(handle) {
 	
 	return true;
 }
+
+exports.isValidMoves = function(arg){
+	var moves = arg['moves'];
+	var handle = arg['handle'];
+	
+	if(!moves){
+		return true;
+	}
+
+	
+	if(!_.isArray(moves)){
+		return false;
+	}
+		
+	return !_.some(moves, function(move){
+		return move.fromPlanet === move.toPlanet || move.playerHandle !== handle || !validator.isInt(move.fleet) || move.fleet <= 0;
+	});
+	
+}
+

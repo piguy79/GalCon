@@ -80,8 +80,7 @@ public class MoveDialog extends OKCancelDialog {
 		sliderBg.setMinHeight(getHeight() * 0.2f);
 		sliderBg.setMinWidth(getWidth() * 0.8f);
 		sliderKnob.setMinHeight(getHeight() * 0.3f);
-		sliderKnob.setMinWidth(getWidth() * 0.1f);
-
+		sliderKnob.setMinWidth(getWidth() * 0.15f);
 		skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
 
 		slider = new Slider(0, max, 1, false, skin);
@@ -96,6 +95,7 @@ public class MoveDialog extends OKCancelDialog {
 				counter.setText((int) slider.getValue() + "");
 				shipsToSend = (int) slider.getValue();
 				initialCount.setText("" + (max - shipsToSend));
+				okButton.setDisabled(shipsToSend == 0);
 			}
 		});
 

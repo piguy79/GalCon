@@ -87,7 +87,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
 			List<HarvestMove> harvestMoves) {
 		try {
-			JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves);
+			JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

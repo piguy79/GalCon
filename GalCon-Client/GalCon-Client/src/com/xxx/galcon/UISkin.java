@@ -97,7 +97,9 @@ public class UISkin extends Skin {
 		}
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
-			add(Constants.UI.OK_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+			ImageButtonStyle okButtonStyle = new ImageButtonStyle(trd, trd, trd, trd, trd, trd);
+			okButtonStyle.imageDisabled = new TextureRegionDrawable(menusAtlas.findRegion("ok_button_disabled"));
+			add(Constants.UI.OK_BUTTON, okButtonStyle);
 		}
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("question_mark"));
@@ -137,7 +139,9 @@ public class UISkin extends Skin {
 		add("cancelButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
-		add("okButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		ImageButtonStyle okButtonStyle = new ImageButtonStyle(trd, trd, trd, trd, trd, trd);
+		okButtonStyle.imageDisabled = new TextureRegionDrawable(menusAtlas.findRegion("ok_button_disabled"));
+		add("okButton", okButtonStyle);
 
 		trd = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
 		add("googlePlusButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));

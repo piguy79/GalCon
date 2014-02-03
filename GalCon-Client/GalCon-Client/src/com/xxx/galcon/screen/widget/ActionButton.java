@@ -11,5 +11,6 @@ public class ActionButton extends ImageButton {
 		super(skin, style);
 		GraphicsUtils.setCommonButtonSize(this);
 		setPosition(position.x, position.y);
+
 	}
 }
