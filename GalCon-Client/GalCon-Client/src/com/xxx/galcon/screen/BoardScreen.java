@@ -164,6 +164,10 @@ public class BoardScreen implements ScreenFeedback {
 
 		Gdx.input.setInputProcessor(stage);
 		
+		createEndGameOverlay();
+	}
+
+	private void createEndGameOverlay() {
 		if(gameBoard.hasWinner()){
 			String endGameMessage;
 			if(gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)){
@@ -171,8 +175,14 @@ public class BoardScreen implements ScreenFeedback {
 			}else{
 				endGameMessage = "Loser Text";
 			}
-			TextOverlay winningOverlay = new TextOverlay(endGameMessage, menuAtlas, skin, fontShader);
-			stage.addActor(winningOverlay);
+			TextOverlay overlay = new TextOverlay(endGameMessage, menuAtlas, skin, fontShader);
+			overlay.addListener(new ClickListener(){@Override
+				public void clicked(InputEvent event, float x, float y) {
+					stage.dispose();
+					returnCode = Action.BACK;
+				}
+			});
+			stage.addActor(overlay);
 		}
 	}
 
