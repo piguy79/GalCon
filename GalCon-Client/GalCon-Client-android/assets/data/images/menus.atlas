@@ -54,7 +54,7 @@ coin
   index: -1
 cursor
   rotate: false
-  xy: 945, 689
+  xy: 945, 466
   size: 15, 182
   orig: 15, 182
   offset: 0, 0
@@ -78,6 +78,13 @@ forward
   xy: 804, 447
   size: 139, 140
   orig: 139, 140
+  offset: 0, 0
+  index: -1
+options
+  rotate: false
+  xy: 945, 650
+  size: 47, 221
+  orig: 47, 221
   offset: 0, 0
   index: -1
 slider_bg
@@ -106,6 +113,13 @@ black_grey_button
   orig: 373, 80
   offset: 0, 0
   index: -1
+button_yellow
+  rotate: false
+  xy: 604, 475
+  size: 400, 138
+  orig: 400, 138
+  offset: 0, 0
+  index: -1
 dialog_bg_no_shadow
   rotate: false
   xy: 2, 104
@@ -118,20 +132,6 @@ green_button
   xy: 377, 2
   size: 300, 100
   orig: 300, 100
-  offset: 0, 0
-  index: -1
-rect_button_blank
-  rotate: false
-  xy: 604, 494
-  size: 338, 119
-  orig: 338, 119
-  offset: 0, 0
-  index: -1
-refresh
-  rotate: false
-  xy: 817, 364
-  size: 128, 128
-  orig: 128, 128
   offset: 0, 0
   index: -1
 transparent_square
@@ -155,28 +155,42 @@ filter: Linear,Linear
 repeat: none
 cancel_button
   rotate: false
-  xy: 2, 2
+  xy: 378, 255
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 255, 2
+  xy: 631, 255
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 question_mark
   rotate: false
-  xy: 508, 2
+  xy: 378, 2
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
+rect_button_blank
+  rotate: false
+  xy: 2, 10
+  size: 338, 119
+  orig: 338, 119
+  offset: 0, 0
+  index: -1
+refresh
+  rotate: false
+  xy: 2, 131
+  size: 374, 375
+  orig: 374, 375
+  offset: 0, 0
+  index: -1
 textFieldBg
   rotate: false
-  xy: 2, 255
+  xy: 2, 508
   size: 848, 155
   orig: 848, 155
   offset: 0, 0

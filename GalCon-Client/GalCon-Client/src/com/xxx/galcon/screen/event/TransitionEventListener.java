@@ -7,14 +7,13 @@ public class TransitionEventListener implements EventListener {
 
 	@Override
 	public boolean handle(Event event) {
-		if(event instanceof TransitionEvent){
+		if (event instanceof TransitionEvent) {
 			transition(((TransitionEvent) event).getAction());
 			return true;
 		}
 		return false;
 	}
-	
-	public void transition(String action){	
-	}
 
+	public void transition(String action) {
+	}
 }

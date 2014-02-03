@@ -233,6 +233,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
 		float coinSize = group.getHeight() * 0.95f;
+		coinImage.setLayoutEnabled(false);
 		coinImage.setWidth(coinSize);
 		coinImage.setHeight(coinSize);
 		coinImage.setY((group.getHeight() - coinSize) / 2);

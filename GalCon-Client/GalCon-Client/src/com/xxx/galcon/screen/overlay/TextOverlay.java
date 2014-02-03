@@ -14,7 +14,7 @@ public class TextOverlay extends Overlay {
 	private ShaderLabel shaderLabel;
 
 	public TextOverlay(String text, TextureAtlas menusAtlas, Skin skin, ShaderProgram fontShader) {
-		super(menusAtlas, 0.9f);
+		super(menusAtlas, 0.8f);
 		shaderLabel = new ShaderLabel(fontShader, text, skin, Constants.UI.DEFAULT_FONT);
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
@@ -25,6 +25,8 @@ public class TextOverlay extends Overlay {
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+
 		shaderLabel.draw(batch, parentAlpha);
 	}
 }

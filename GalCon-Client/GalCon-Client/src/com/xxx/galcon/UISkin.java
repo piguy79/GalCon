@@ -33,6 +33,7 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
 		add(Constants.UI.SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.GREEN));
+		add(Constants.UI.BASIC_BUTTON_TEXT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 
 		/*
 		 * TextField
@@ -115,46 +116,42 @@ public class UISkin extends Skin {
 			add(Constants.UI.GRAY_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("button_yellow"));
+			add(Constants.UI.BASIC_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		}
+		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("coin"));
 			add(Constants.UI.COIN, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 
-		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(
-				levelSelectionAtlas.findRegion("reg_play"));
-		add("regularPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("reg_play"));
+		add("regularPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(levelSelectionAtlas.findRegion("social_play"));
-		add("socialPlay", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("social_play"));
+		add("socialPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("back"));
-		add("backButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("back"));
+		add("backButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
-		add("cancelButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
+		add("cancelButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
-		add("okButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("ok_button"));
+		add("okButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
-		add("googlePlusButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
+		add("googlePlusButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("end_turn"));
-		add("performMoveButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("end_turn"));
+		add("performMoveButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
-		add("shipButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
+		add("shipButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
-		textureRegionDrawable = new TextureRegionDrawable(menusAtlas.findRegion("refresh"));
-		add("refreshButton", new ImageButtonStyle(textureRegionDrawable, textureRegionDrawable, textureRegionDrawable,
-				textureRegionDrawable, textureRegionDrawable, textureRegionDrawable));
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("refresh"));
+		add("refreshButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("options"));
+		add("optionsButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 	}
 }

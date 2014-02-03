@@ -21,6 +21,9 @@ public class Constants {
 
 		public static final String TEXT_FIELD = "textField";
 
+		public static final String BASIC_BUTTON = "basicButton";
+		public static final String BASIC_BUTTON_TEXT = "basicButtonText";
+
 		public static final String OK_BUTTON = "okButton";
 		public static final String QUESTION_MARK = "questionMark";
 		public static final String WAIT_BUTTON = "waitButton";
@@ -124,6 +127,5 @@ public class Constants {
 			add("regenBlock");
 		}
 	};
-	
 
 }
