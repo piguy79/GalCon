@@ -75,7 +75,7 @@ public class PlanetInformationDialog extends OKCancelDialog {
 
 	private void createLabels() {
 		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel regenRate = new ShaderLabel(fontShader, Math.round(planet.shipRegenRate) + "", skin,
+		ShaderLabel regenRate = new ShaderLabel(fontShader, findRegenRate(), skin,
 				Constants.UI.DEFAULT_FONT);
 		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel populationValue = new ShaderLabel(fontShader, calculatePopulation(), skin,
@@ -85,7 +85,7 @@ public class PlanetInformationDialog extends OKCancelDialog {
 				skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel harvestName = new ShaderLabel(fontShader, "Rounds until Death:", skin,
 				Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel harvestValue = new ShaderLabel(fontShader, "" + findRoundsRemainingInHarvest(), skin,
+		ShaderLabel harvestValue = new ShaderLabel(fontShader, findRoundsRemainingInHarvest(), skin,
 				Constants.UI.DEFAULT_FONT);
 
 		float padNameToValue = getWidth() * 0.05f;
@@ -105,14 +105,17 @@ public class PlanetInformationDialog extends OKCancelDialog {
 			positionAndPlaceActor(abilityValue, new Point(abilityName.getX() + abilityName.getTextBounds().width
 					+ padNameToValue, abilityName.getY()));
 		}
-
-		if (planet.isUnderHarvest()) {
+		
+		if(planet.isAlive() && planet.isUnderHarvest()){
 			positionAndPlaceActor(harvestName, new Point(initialPadX, abilityName.getY() - yPad));
 			positionAndPlaceActor(harvestValue, new Point(harvestName.getX() + harvestName.getTextBounds().width
 					+ padNameToValue, harvestName.getY()));
-
 		}
 
+	}
+
+	private String findRegenRate() {
+		return Math.round(planet.shipRegenRate) + "";
 	}
 
 	private String calculatePopulation() {
@@ -121,20 +124,21 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		return "" + format.format(Math.round(planet.population));
 	}
 
-	private int findRoundsRemainingInHarvest() {
+	private String findRoundsRemainingInHarvest() {
+
+		if(!planet.isAlive()){
+			return "0";
+		}
+		
 		if (planet.isUnderHarvest()) {
 			String harvestRounds = gameboard.gameConfig.getValue("harvestRounds");
 			int roundNumber = Integer.parseInt(harvestRounds);
-			return roundNumber - (gameboard.roundInformation.currentRound - planet.harvest.startingRound);
+			return "" + (roundNumber - (gameboard.roundInformation.currentRound - planet.harvest.startingRound));
 		}
 
-		return -1;
+		return "";
 	}
 
-	private CharSequence fakePopulation(Planet planet) {
-		double value = Math.random() * planet.shipRegenRate;
-		return Math.round(value) + ",000,000";
-	}
 
 	private void positionAndPlaceActor(ShaderLabel actor, Point position) {
 		actor.setX(position.x);
