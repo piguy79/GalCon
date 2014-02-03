@@ -475,7 +475,9 @@ public class AndroidGameAction implements GameAction {
 						callback.onConnectionError(result.errorMessage);
 					}
 				});
-			} else {
+			}else if(!result.valid){
+				callback.onConnectionError(result.reason);
+			}else {
 				if (result.sessionExpired) {
 					Log.i(TAG, "Session expired, beginning silent sign in");
 					Gdx.app.postRunnable(new Runnable() {

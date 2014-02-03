@@ -208,9 +208,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 				startHideSequence();
 			}
 
-			if (response.reason != null) {
-				chooseHandleLabel.setText(response.reason);
-			}
 			waitImage.stop();
 		}
 

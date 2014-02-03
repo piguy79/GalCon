@@ -105,9 +105,17 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
+			
+			HandleResponse response = (HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL,
+					args, new HandleResponse());
+			
+			if(response.valid){
+				callback.onConnectionResult(response);
+			}else{
+				callback.onConnectionError(response.reason);
+			}
 
-			callback.onConnectionResult((HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL,
-					args, new HandleResponse()));
+			
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

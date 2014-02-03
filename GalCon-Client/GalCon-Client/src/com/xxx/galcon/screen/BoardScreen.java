@@ -778,8 +778,6 @@ public class BoardScreen implements ScreenFeedback {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -805,12 +803,17 @@ public class BoardScreen implements ScreenFeedback {
 			clearTouchedPlanets();
 			planetToMoveCount.clear();
 			setGameBoard(result);
-//			overlay.remove();
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-//			overlay.remove();
+			String failure = "Unable to Upload Move Information";
+			final TextOverlay overlay = new TextOverlay(failure, menuAtlas, skin, fontShader);
+			overlay.addListener(new ClickListener(){@Override
+				public void clicked(InputEvent event, float x, float y) {
+					overlay.remove();
+				}
+			});
 		}
 	}
 
@@ -830,7 +833,14 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionError(String msg) {
-//			overlay.remove();
+			String failure = "Unable to load Game Information \n\nTry Again?";
+			final TextOverlay overlay = new TextOverlay(failure, menuAtlas, skin, fontShader);
+			overlay.addListener(new ClickListener(){@Override
+				public void clicked(InputEvent event, float x, float y) {
+					overlay.remove();
+					UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
+				}
+			});
 		}
 	}
 

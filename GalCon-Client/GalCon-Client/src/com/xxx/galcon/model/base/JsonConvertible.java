@@ -21,6 +21,8 @@ import org.json.JSONObject;
 public abstract class JsonConvertible {
 
 	public String errorMessage;
+	public boolean valid = true;
+	public String reason;
 
 	public boolean sessionExpired = false;
 	public boolean sessionInvalid = false;
@@ -39,8 +41,13 @@ public abstract class JsonConvertible {
 			} else if (session.equals("invalid")) {
 				sessionInvalid = true;
 			} else {
+				if(jsonObject.has("reason")){
+					valid = false;
+				}
+				reason = jsonObject.optString("reason");
 				doConsume(jsonObject);
 			}
+			
 		}
 	}
 
