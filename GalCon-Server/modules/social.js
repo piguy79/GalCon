@@ -76,7 +76,8 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email} ,{$push : {auth : "gp:" + authId}, $set : {session : {}}}).exec();
+		console.log("ID:::::" + authId);
+		return userManager.UserModel.findOneAndUpdate({email : email} ,{$push : {auth : authId}, $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({
