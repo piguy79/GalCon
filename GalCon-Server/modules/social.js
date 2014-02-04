@@ -63,7 +63,7 @@ exports.exchangeToken = function(authProvider, token) {
 						})
 					}
 					if(result.id){
-						authId = "gp" + result.id;
+						authId = "gp:" + result.id;
 					}
 					if(email === undefined || email.length < 3) {
 						gapiP.reject("Unable to find email address");
