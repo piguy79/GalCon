@@ -67,7 +67,7 @@ exports.exchangeToken = function(authProvider, token) {
 					}
 					if(email === undefined || email.length < 3) {
 						gapiP.reject("Unable to find email address");
-					} else if(id === undefined){
+					} else if(authId === undefined){
 						gapiP.reject("Unable to load ID");
 					} else {
 						gapiP.complete();
