@@ -63,7 +63,7 @@ exports.exchangeToken = function(authProvider, token) {
 						})
 					}
 					if(result.id){
-						authId = result.id;
+						authId = "gp" + result.id;
 					}
 					if(email === undefined || email.length < 3) {
 						gapiP.reject("Unable to find email address");
@@ -76,7 +76,6 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		console.log("ID:::::" + authId);
 		return userManager.UserModel.findOneAndUpdate({email : email} ,{$push : {auth : authId}, $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
@@ -85,6 +84,7 @@ exports.exchangeToken = function(authProvider, token) {
 				currentGames : [],
 				xp : 0,
 				wins : 0,
+				auth : [authId]
 				losses : 0,
 				coins : 10,
 				usedCoins : -1,
