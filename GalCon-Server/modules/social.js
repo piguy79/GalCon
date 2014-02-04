@@ -84,7 +84,7 @@ exports.exchangeToken = function(authProvider, token) {
 				currentGames : [],
 				xp : 0,
 				wins : 0,
-				auth : [authId]
+				auth : [authId],
 				losses : 0,
 				coins : 10,
 				usedCoins : -1,
