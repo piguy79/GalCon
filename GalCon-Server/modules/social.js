@@ -22,6 +22,7 @@ exports.exchangeToken = function(authProvider, token) {
 	p.complete();
 	
 	var email;
+	var id;
 	
 	return p.then(function() {
 		if(!isValid(authProvider, token)) {
@@ -61,8 +62,13 @@ exports.exchangeToken = function(authProvider, token) {
 							}
 						})
 					}
+					if(result.id){
+						id = result.id;
+					}
 					if(email === undefined || email.length < 3) {
 						gapiP.reject("Unable to find email address");
+					} else if(id === undefined){
+						gapiP.reject("Unable to load ID");
 					} else {
 						gapiP.complete();
 					}
@@ -70,7 +76,7 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email}, {$set : {session : {}}}).exec();
+		return userManager.UserModel.findOneAndUpdate({email : email}, $push : {auth : "gp:" + id} ,{$set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({

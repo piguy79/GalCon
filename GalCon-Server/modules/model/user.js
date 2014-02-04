@@ -24,6 +24,7 @@ var userSchema = mongoose.Schema({
 	    token : "String",
 	    associatedCoins : "Number"
 	}],
+	auth : [String],
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
