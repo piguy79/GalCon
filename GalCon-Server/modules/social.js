@@ -62,6 +62,7 @@ exports.exchangeToken = function(authProvider, token) {
 							}
 						})
 					}
+					console.log("ID:::: " + result.id);
 					if(result.id){
 						id = result.id;
 					}
