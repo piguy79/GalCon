@@ -157,6 +157,22 @@ describe("Testing interactions with the user model", function(){
 		p.complete();
 	});
 	
+	
+	it("should be able to search for Users", function(done){
+		var p = new mongoose.Promise();
+		p.then(function(){
+			return user.findUserMatchingSearch('t');
+		}).then(function(people){
+			expect(people.length).toBe(2);
+			done();
+		}).then(null, function(err){
+			console.log(err);
+			done();
+		});
+		
+		p.complete();
+	});
+	
 	afterEach(function(done){
 		user.UserModel.remove().where('handle').in(_.pluck(testUsers, 'handle')).exec(function(){
 			done();
