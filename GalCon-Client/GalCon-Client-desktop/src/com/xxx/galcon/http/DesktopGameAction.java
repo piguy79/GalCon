@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -358,6 +359,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
 			if (user == null) {
+				
 				BasicDBObject newUser = new BasicDBObject("email", GameLoop.USER.email)
 						.append("xp", 0)
 						.append("wins", 0)
@@ -365,6 +367,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("coins", 1)
 						.append("usedCoins", -1)
 						.append("watchedAd", false)
+						.append("auth", new BasicDBObject().append("g", GameLoop.USER.email))
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",
 										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))

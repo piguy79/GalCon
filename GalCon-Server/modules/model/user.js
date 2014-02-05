@@ -24,7 +24,11 @@ var userSchema = mongoose.Schema({
 	    token : "String",
 	    associatedCoins : "Number"
 	}],
-	auth : [String],
+	auth : {
+		g : "String",
+		t : "String",
+		f : "String"
+	},
 	coins : "Number",
 	usedCoins : "Number",
 	watchedAd : "Boolean",
@@ -39,6 +43,9 @@ userSchema.set('toObject', { getters: true });
 userSchema.index({email : 1});
 userSchema.index({handle: 1});
 userSchema.index({"sessions.sessionId" : 1});
+userSchema.index({"auth.g" : 1});
+userSchema.index({"auth.t" : 1});
+userSchema.index({"auth.f" : 1});
 
 var UserModel = db.model('User', userSchema);
 

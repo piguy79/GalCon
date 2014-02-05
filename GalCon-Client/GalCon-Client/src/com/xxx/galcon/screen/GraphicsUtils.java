@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Array;
 import com.xxx.galcon.screen.hud.HeaderHud;
 
 public class GraphicsUtils {
+	
+	public static float actionButtonSize = (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 
 	public static void hideAnimated(final Array<Actor> actors, boolean back, final Runnable runAtEnd) {
 		if (actors.size == 0) {
@@ -47,8 +49,7 @@ public class GraphicsUtils {
 	}
 
 	public static final void setCommonButtonSize(Actor actor) {
-		float buttonSize = (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
-		actor.setHeight(buttonSize);
-		actor.setWidth(buttonSize);
+		actor.setHeight(actionButtonSize);
+		actor.setWidth(actionButtonSize);
 	}
 }

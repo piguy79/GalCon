@@ -8,4 +8,5 @@ public interface SocialAction {
 	public void onActivityResult(int responseCode);
 	
 	public void getToken(AuthenticationListener listener);
+	
 }

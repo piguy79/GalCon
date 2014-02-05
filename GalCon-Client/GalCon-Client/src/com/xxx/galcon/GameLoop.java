@@ -21,6 +21,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
+import com.xxx.galcon.screen.FriendScreen;
 import com.xxx.galcon.screen.MenuScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 
@@ -37,6 +38,7 @@ public class GameLoop extends Game {
 
 	private MenuScreenContainer menuScreenContainer;
 	private BoardScreen boardScreen;
+	private FriendScreen friendScreen;
 
 	private GameAction gameAction;
 	private SocialAction socialAction;
@@ -102,6 +104,7 @@ public class GameLoop extends Game {
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
+		friendScreen = new FriendScreen(skin, assetManager);
 		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, inAppBillingAction, assetManager,
 				tweenManager);
 		setScreen(menuScreenContainer);
@@ -124,16 +127,14 @@ public class GameLoop extends Game {
 			if (getScreen() instanceof MenuScreenContainer) {
 				if (result instanceof String) {
 					String action = (String) result;
-					if (action.startsWith(Action.PLAY)) {
+					if (action.split(":")[0].equals(Action.PLAY)) {
 						String level = action.split(":")[1];
 						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
 								Long.valueOf(level));
 						openBoardScreen();
-					} else if (action.startsWith(Action.PLAY_WITH_FRIENDS)) {
-						String level = action.split(":")[1];
-						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
-								Long.valueOf(level));
-						openBoardScreen();
+					} else if (action.split(":")[0].equals(Action.PLAY_WITH_FRIENDS)) {
+						friendScreen.setPreviousScreen((MenuScreenContainer) getScreen());
+						setScreen(friendScreen);
 					}
 				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();
@@ -147,6 +148,13 @@ public class GameLoop extends Game {
 					boardScreen.getPreviousScreen().resetState();
 					setScreen(boardScreen.getPreviousScreen());
 				}
+			} else if(getScreen() instanceof FriendScreen){
+				String action = (String) result;
+				if(action.equals(Action.BACK)){
+					friendScreen.resetState();
+					friendScreen.getPreviousScreen().resetState();
+					setScreen(friendScreen.getPreviousScreen());
+				}
 			}
 		}
 	}
@@ -155,6 +163,7 @@ public class GameLoop extends Game {
 		boardScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 		setScreen(boardScreen);
 	}
+	
 
 	private void checkCoinStats() {
 		if (GameLoop.USER != null && GameLoop.USER.coins != null && GameLoop.CONFIG != null) {
