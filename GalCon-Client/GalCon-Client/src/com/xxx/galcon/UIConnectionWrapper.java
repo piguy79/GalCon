@@ -10,6 +10,7 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
+import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 
 public class UIConnectionWrapper {
@@ -55,5 +56,9 @@ public class UIConnectionWrapper {
 
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {
 		gameAction.findConfigByType(callback, type);
+	}
+	
+	public static void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm){
+		gameAction.searchForPlayers(callback, searchTerm);
 	}
 }

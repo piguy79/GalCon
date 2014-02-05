@@ -26,6 +26,15 @@ exports.index = function(req, res) {
 	res.render('index.html')
 };
 
+exports.searchUsers = function(req, res){
+	var searchTerm = req.query['searchTerm'];
+	
+	var p = userManager.findUserMatchingSearch(searchTerm);
+	p.then(function(people) {
+		res.json({items : people});
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
 	var playerHandle = req.query['playerHandle'];

@@ -16,7 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
+import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.People;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ShaderTextField;
@@ -66,6 +70,26 @@ public class FriendScreen implements ScreenFeedback {
 	private void createSearchButton() {
 		Point position = new Point(searchBox.getX() + searchBox.getWidth() + (GraphicsUtils.actionButtonSize * 0.25f), searchBox.getY());
 		searchButton = new ActionButton(skin, "okButton", position);
+		
+		searchButton.addListener(new ClickListener(){@Override
+		public void clicked(InputEvent event, float x, float y) {
+			UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
+				
+				@Override
+				public void onConnectionResult(People result) {
+					for(Player player: result.people){
+						System.out.print(player.handle);
+					}
+					
+				}
+				
+				@Override
+				public void onConnectionError(String msg) {
+					// TODO Auto-generated method stub
+					
+				}
+			}, searchBox.getText());
+		}});
 		
 		stage.addActor(searchButton);
 		

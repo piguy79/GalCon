@@ -19,6 +19,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -52,6 +53,7 @@ import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
+import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -176,6 +178,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("email", email);
 		args.put("session", session);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_EMAIL, args, new Player()));
+	}
+	
+	@Override
+	public void searchForPlayers(UIConnectionResultCallback<People> callback,
+			String searchTerm) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("searchTerm", searchTerm);
+		callback.onConnectionResult((People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People()));
 	}
 
 	@Override
@@ -392,4 +402,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void setGameLoop(GameLoop gameLoop) {
 
 	}
+
+	
 }

@@ -34,6 +34,8 @@ public class UrlConstants {
 	public static final String FIND_GAMES_WITH_A_PENDING_MOVE = "/findGamesWithPendingMove";
 	
 	public static final String FIND_USER_BY_EMAIL = "/findUserByEmail";
+	
+	public static final String SEARCH_FOR_USERS = "/search/user";
 
 	public static final String FIND_AVAILABLE_INVENTORY = "/inventory";
 
