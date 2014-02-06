@@ -54,4 +54,6 @@ public class DesktopSocialAction implements SocialAction {
 	public void getToken(AuthenticationListener listener) {
 		listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, "FAKE_TOKEN");
 	}
+
+	
 }

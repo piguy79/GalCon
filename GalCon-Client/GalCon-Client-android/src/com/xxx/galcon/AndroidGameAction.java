@@ -23,6 +23,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -61,6 +62,7 @@ import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
+import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -343,6 +345,19 @@ public class AndroidGameAction implements GameAction {
 			}
 		});
 	}
+	
+	@Override
+	public void searchForPlayers(final UIConnectionResultCallback<People> callback,
+			String searchTerm) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("searchTerm", searchTerm);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<People>(args, callback, SEARCH_FOR_USERS, People.class).execute("");
+			}
+		});
+		
+	}
 
 	private InventoryCache inventoryCache = new InventoryCache();
 
@@ -542,4 +557,6 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
+
+	
 }

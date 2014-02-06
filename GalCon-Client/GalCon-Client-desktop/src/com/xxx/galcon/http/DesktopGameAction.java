@@ -19,6 +19,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -51,6 +53,7 @@ import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
+import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Session;
 import com.xxx.galcon.model.base.JsonConvertible;
@@ -175,6 +178,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("email", email);
 		args.put("session", session);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_EMAIL, args, new Player()));
+	}
+	
+	@Override
+	public void searchForPlayers(UIConnectionResultCallback<People> callback,
+			String searchTerm) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("searchTerm", searchTerm);
+		callback.onConnectionResult((People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People()));
 	}
 
 	@Override
@@ -358,6 +369,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
 			if (user == null) {
+				
 				BasicDBObject newUser = new BasicDBObject("email", GameLoop.USER.email)
 						.append("xp", 0)
 						.append("wins", 0)
@@ -365,6 +377,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("coins", 1)
 						.append("usedCoins", -1)
 						.append("watchedAd", false)
+						.append("auth", new BasicDBObject().append("g", GameLoop.USER.email))
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",
 										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))
@@ -389,4 +402,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void setGameLoop(GameLoop gameLoop) {
 
 	}
+
+	
 }

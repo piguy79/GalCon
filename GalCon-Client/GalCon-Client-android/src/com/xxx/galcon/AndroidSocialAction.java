@@ -68,4 +68,5 @@ public class AndroidSocialAction implements SocialAction {
 			authorizer = new GooglePlusAuthorization(activity);
 		}
 	}
+
 }

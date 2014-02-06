@@ -13,6 +13,7 @@ import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Order;
+import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Session;
 
@@ -48,6 +49,8 @@ public interface GameAction {
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
 
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String email);
+	
+	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm);
 
 	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 

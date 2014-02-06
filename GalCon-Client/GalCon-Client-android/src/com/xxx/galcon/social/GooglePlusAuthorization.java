@@ -42,12 +42,14 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 		plusClient = new PlusClient.Builder(activity, this, this).setScopes(scopes).build();
 		plusClient.connect();
+		
 	}
 
 	@Override
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
 		new RetrieveTokenTask().execute(GameLoop.USER.email);
+		
 	}
 
 	@Override
@@ -147,4 +149,6 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 			}
 		}
 	}
+
+	
 }

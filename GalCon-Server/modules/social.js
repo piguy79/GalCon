@@ -63,7 +63,7 @@ exports.exchangeToken = function(authProvider, token) {
 						})
 					}
 					if(result.id){
-						authId = "gp:" + result.id;
+						authId = result.id;
 					}
 					if(email === undefined || email.length < 3) {
 						gapiP.reject("Unable to find email address");
@@ -76,7 +76,7 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email} ,{$push : {auth : authId}, $set : {session : {}}}).exec();
+		return userManager.UserModel.findOneAndUpdate({email : email, "auth.g" : authId} ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({
