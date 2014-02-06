@@ -10,19 +10,25 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.widget.ActionButton;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
@@ -42,6 +48,7 @@ public class FriendScreen implements ScreenFeedback {
 	private WaitImageButton waitImage;
 	private ActionButton backButton;
 	private ShaderTextField searchBox;
+	private ShaderLabel searchLabel;
 	private ActionButton searchButton;
 	
 	private String returnCode = null;
@@ -59,36 +66,55 @@ public class FriendScreen implements ScreenFeedback {
 
 	private void initialize() {
 		createBg();
-		createWaitImage();
+		//createWaitImage();
 		createBackButton();
+		createSearchLabel();
 		createSearchBox();
 		createSearchButton();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
 
+	private void createSearchLabel() {
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		searchLabel = new ShaderLabel(fontShader, "Search by Handle", skin, Constants.UI.DEFAULT_FONT);
+		searchLabel.setAlignment(Align.center);
+		searchLabel.setWidth(width * 0.75f);
+		searchLabel.setHeight(height * .08f);
+		searchLabel.setX(width * 0.5f - searchLabel.getWidth() * 0.6f);
+		searchLabel.setY(backButton.getY() - (height * 0.1f));
+		
+		stage.addActor(searchLabel);
+		
+	}
+
 	private void createSearchButton() {
 		Point position = new Point(searchBox.getX() + searchBox.getWidth() + (GraphicsUtils.actionButtonSize * 0.25f), searchBox.getY());
 		searchButton = new ActionButton(skin, "okButton", position);
+		//searchButton.setDisabled(true);
 		
 		searchButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
-			UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
-				
-				@Override
-				public void onConnectionResult(People result) {
-					for(Player player: result.people){
-						System.out.print(player.handle);
+			if(!searchButton.isDisabled()){
+				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
+					
+					@Override
+					public void onConnectionResult(People result) {
+						for(MinifiedPlayer player: result.people){
+							System.out.print(player.handle);
+						}
+						searchBox.getOnscreenKeyboard().show(false);
+						
 					}
 					
-				}
-				
-				@Override
-				public void onConnectionError(String msg) {
-					// TODO Auto-generated method stub
-					
-				}
-			}, searchBox.getText());
+					@Override
+					public void onConnectionError(String msg) {
+						searchLabel.setText(msg);
+					}
+				}, searchBox.getText());
+			}
 		}});
 		
 		stage.addActor(searchButton);
@@ -103,8 +129,16 @@ public class FriendScreen implements ScreenFeedback {
 		searchBox.setWidth(width * 0.75f);
 		searchBox.setHeight(height * .08f);
 		searchBox.setX(width * 0.5f - searchBox.getWidth() * 0.6f);
-		searchBox.setY(backButton.getY() - (height * 0.1f));
+		searchBox.setY(searchLabel.getY() - (height * 0.1f));
 		searchBox.setOnscreenKeyboard(new ShaderTextField.DefaultOnscreenKeyboard());
+		
+		searchBox.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				searchButton.setDisabled(searchBox.getText().length() >= 3);
+			}
+		});
 		
 		stage.addActor(searchBox);
 		
@@ -119,7 +153,7 @@ public class FriendScreen implements ScreenFeedback {
 		backButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("Clicked");
+				searchBox.getOnscreenKeyboard().show(false);
 				stage.dispose();
 				returnCode = Action.BACK;
 			}

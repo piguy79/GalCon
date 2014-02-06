@@ -185,7 +185,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			String searchTerm) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
-		callback.onConnectionResult((People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People()));
+		args.put("session", getSession());
+		People people =  (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
+		if(people.valid){
+			callback.onConnectionResult(people);
+		}else{
+			callback.onConnectionError(people.reason);
+		}
+		
 	}
 
 	@Override
