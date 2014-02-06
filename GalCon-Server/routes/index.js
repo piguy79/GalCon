@@ -29,10 +29,15 @@ exports.index = function(req, res) {
 
 exports.searchUsers = function(req, res){
 	var searchTerm = req.query['searchTerm'];
+	var session = req.query['session'];
+	
+	if(!validate({handle : searchTerm, session : session}, res)) {
+		return;
+	}
 	
 	var p = userManager.findUserMatchingSearch(searchTerm);
 	p.then(function(people) {
-		res.json({items : people});
+		res.json({items : _.map(people, function (person) { return {handle : person.handle, rank : person.rankInfo.level };})});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
