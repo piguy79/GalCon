@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -52,6 +51,7 @@ import com.xxx.galcon.screen.event.RefreshEvent;
 import com.xxx.galcon.screen.event.ResignEvent;
 import com.xxx.galcon.screen.event.TransitionEventListener;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.ship.selection.BoardScreenOptionsDialog;
 import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
@@ -130,6 +130,12 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {
+		inProgressMoves.clear();
+		clearTouchedPlanets();
+		planetToMoveCount.clear();
+		inProgressHarvest.clear();
+		moves.clear();
+
 		stage = new Stage();
 		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		this.gameBoard = gameBoard;
@@ -167,20 +173,21 @@ public class BoardScreen implements ScreenFeedback {
 		createHarvest();
 
 		Gdx.input.setInputProcessor(stage);
-		
+
 		createEndGameOverlay();
 	}
 
 	private void createEndGameOverlay() {
-		if(gameBoard.hasWinner()){
+		if (gameBoard.hasWinner()) {
 			String endGameMessage;
-			if(gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)){
+			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)) {
 				endGameMessage = "Winner Text";
-			}else{
+			} else {
 				endGameMessage = "Loser Text";
 			}
 			TextOverlay overlay = new TextOverlay(endGameMessage, menuAtlas, skin, fontShader);
-			overlay.addListener(new ClickListener(){@Override
+			overlay.addListener(new ClickListener() {
+				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					stage.dispose();
 					returnCode = Action.BACK;
@@ -228,11 +235,16 @@ public class BoardScreen implements ScreenFeedback {
 						@Override
 						public boolean handle(Event event) {
 							if (event instanceof ResignEvent) {
+								overlay = new TextOverlay("Refreshing", menuAtlas, skin, fontShader);
+								stage.addActor(overlay);
+								UIConnectionWrapper.resignGame(new UpdateBoardScreenResultHandler("Could not refresh"),
+										gameBoard.id, GameLoop.USER.handle);
 								return true;
 							} else if (event instanceof RefreshEvent) {
 								overlay = new TextOverlay("Refreshing", menuAtlas, skin, fontShader);
 								stage.addActor(overlay);
-								UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id,
+								UIConnectionWrapper.findGameById(
+										new UpdateBoardScreenResultHandler("Could not resign"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
 							}
@@ -268,12 +280,12 @@ public class BoardScreen implements ScreenFeedback {
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(Actions.scaleTo(0, 0, 0.9f));
-				}else if(move.executed && roundHasAlreadyBeenAnimated()){
+				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
 				}
 				movetoDisplay.setTouchable(Touchable.disabled);
-				
-				if(showMove){
+
+				if (showMove) {
 					stage.addActor(movetoDisplay);
 				}
 			}
@@ -282,7 +294,6 @@ public class BoardScreen implements ScreenFeedback {
 		roundAnimated = gameBoard.roundInformation.currentRound;
 
 	}
-
 
 	private void createMoveHud() {
 		moveHud = new MoveHud(assetManager, skin, gameBoard, fontShader, Gdx.graphics.getWidth(),
@@ -310,8 +321,8 @@ public class BoardScreen implements ScreenFeedback {
 				}
 				overlay = new TextOverlay("Uploading ship movements", menuAtlas, skin, fontShader);
 				stage.addActor(overlay);
-				UIConnectionWrapper.performMoves(new PerformMoveResultHandler(), gameBoard.id, currentRoundMoves,
-						inProgressHarvest);
+				UIConnectionWrapper.performMoves(new UpdateBoardScreenResultHandler("Could not send moves"),
+						gameBoard.id, currentRoundMoves, inProgressHarvest);
 			}
 
 		});
@@ -794,52 +805,23 @@ public class BoardScreen implements ScreenFeedback {
 
 	}
 
-	public class PerformMoveResultHandler implements UIConnectionResultCallback<GameBoard> {
+	public class UpdateBoardScreenResultHandler implements UIConnectionResultCallback<GameBoard> {
+		private String errorMessage;
+
+		public UpdateBoardScreenResultHandler(String errorMessage) {
+			this.errorMessage = errorMessage + "\n\nPlease try again";
+		}
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
-			inProgressMoves.clear();
-			inProgressHarvest.clear();
-			clearTouchedPlanets();
-			planetToMoveCount.clear();
 			setGameBoard(result);
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-			String failure = "Unable to Upload Move Information";
-			final TextOverlay overlay = new TextOverlay(failure, menuAtlas, skin, fontShader);
-			overlay.addListener(new ClickListener(){@Override
-				public void clicked(InputEvent event, float x, float y) {
-					overlay.remove();
-				}
-			});
-		}
-	}
-
-	public class FindGameByIdResultHandler implements UIConnectionResultCallback<GameBoard> {
-
-		@Override
-		public void onConnectionResult(GameBoard result) {
-			inProgressMoves.clear();
-			clearTouchedPlanets();
-			planetToMoveCount.clear();
-			inProgressHarvest.clear();
-			moves.clear();
-
-			setGameBoard(result);
-		}
-
-		@Override
-		public void onConnectionError(String msg) {
-			String failure = "Unable to load Game Information \n\nTry Again?";
-			final TextOverlay overlay = new TextOverlay(failure, menuAtlas, skin, fontShader);
-			overlay.addListener(new ClickListener(){@Override
-				public void clicked(InputEvent event, float x, float y) {
-					overlay.remove();
-					UIConnectionWrapper.findGameById(new FindGameByIdResultHandler(), gameBoard.id, GameLoop.USER.handle);
-				}
-			});
+			final Overlay ovrlay = new DismissableOverlay(menuAtlas, new TextOverlay(errorMessage, menuAtlas, skin,
+					fontShader), null);
+			stage.addActor(ovrlay);
 		}
 	}
 

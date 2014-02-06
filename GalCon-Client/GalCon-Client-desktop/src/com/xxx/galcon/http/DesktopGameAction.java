@@ -19,6 +19,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.RESIGN_GAME;
 import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
@@ -34,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jirbo.adcolony.AdColonyVideoListener;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -108,17 +108,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
-			
-			HandleResponse response = (HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL,
-					args, new HandleResponse());
-			
-			if(response.valid){
+
+			HandleResponse response = (HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL, args,
+					new HandleResponse());
+
+			if (response.valid) {
 				callback.onConnectionResult(response);
-			}else{
+			} else {
 				callback.onConnectionError(response.reason);
 			}
 
-			
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -179,20 +178,19 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("session", session);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_EMAIL, args, new Player()));
 	}
-	
+
 	@Override
-	public void searchForPlayers(UIConnectionResultCallback<People> callback,
-			String searchTerm) {
+	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
-		People people =  (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
-		if(people.valid){
+		People people = (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
+		if (people.valid) {
 			callback.onConnectionResult(people);
-		}else{
+		} else {
 			callback.onConnectionError(people.reason);
 		}
-		
+
 	}
 
 	@Override
@@ -376,7 +374,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
 			if (user == null) {
-				
+
 				BasicDBObject newUser = new BasicDBObject("email", GameLoop.USER.email)
 						.append("xp", 0)
 						.append("wins", 0)
@@ -410,5 +408,19 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	}
 
-	
+	@Override
+	public void resignGame(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle) {
+		try {
+			JSONObject top = JsonConstructor.resignGame(handle, getSession());
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(),
+					RESIGN_GAME.replace(":gameId", gameId), args, new GameBoard()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+
+	}
 }

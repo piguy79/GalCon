@@ -37,6 +37,10 @@ public class UIConnectionWrapper {
 		gameAction.findGameById(callback, id, playerHandle);
 	}
 
+	public static void resignGame(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle) {
+		gameAction.resignGame(callback, gameId, handle);
+	}
+
 	public static void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback,
 			String playerHandle) {
 		gameAction.findCurrentGamesByPlayerHandle(callback, playerHandle);
@@ -57,8 +61,8 @@ public class UIConnectionWrapper {
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {
 		gameAction.findConfigByType(callback, type);
 	}
-	
-	public static void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm){
+
+	public static void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm) {
 		gameAction.searchForPlayers(callback, searchTerm);
 	}
 }

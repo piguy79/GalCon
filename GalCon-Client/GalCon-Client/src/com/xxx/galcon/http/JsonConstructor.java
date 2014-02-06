@@ -47,12 +47,20 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject matchPlayerToGame(String playerHandle, Long mapToFind, String session)
-			throws JSONException {
+	public static JSONObject matchPlayerToGame(String handle, Long mapToFind, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("handle", playerHandle);
+		top.put("handle", handle);
 		top.put("mapToFind", mapToFind);
+		top.put("session", session);
+
+		return top;
+	}
+
+	public static JSONObject resignGame(String handle, String session) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
 		top.put("session", session);
 
 		return top;
@@ -68,10 +76,10 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject addCoins(String playerHandle, String session) throws JSONException {
+	public static JSONObject addCoins(String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("handle", playerHandle);
+		top.put("handle", handle);
 		top.put("session", session);
 
 		return top;
@@ -87,11 +95,10 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject addCoinsForAnOrder(String playerHandle, List<Order> orders, String session)
-			throws JSONException {
+	public static JSONObject addCoinsForAnOrder(String handle, List<Order> orders, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("handle", playerHandle);
+		top.put("handle", handle);
 		top.put("session", session);
 		JSONArray jsonOrders = createOrdersJson(orders);
 		top.put("orders", jsonOrders);
@@ -117,10 +124,10 @@ public class JsonConstructor {
 		return jsonOrders;
 	}
 
-	public static JSONObject reduceCall(String playerHandle, String session) throws JSONException {
+	public static JSONObject reduceCall(String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("handle", playerHandle);
+		top.put("handle", handle);
 		top.put("session", session);
 
 		return top;

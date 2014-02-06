@@ -427,6 +427,7 @@ exports.resignGame = function(req, res) {
 			if(!foundHandle) {
 				throw new Error("Invalid game");
 			}
+			game.endGameInformation.winningDate = Date.now();
 			
 			return updateWinnersAndLosers(game);
 		});

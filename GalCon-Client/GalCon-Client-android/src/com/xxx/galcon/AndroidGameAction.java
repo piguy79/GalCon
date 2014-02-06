@@ -23,6 +23,7 @@ import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
 import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.RESIGN_GAME;
 import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
@@ -345,10 +346,9 @@ public class AndroidGameAction implements GameAction {
 			}
 		});
 	}
-	
+
 	@Override
-	public void searchForPlayers(final UIConnectionResultCallback<People> callback,
-			String searchTerm) {
+	public void searchForPlayers(final UIConnectionResultCallback<People> callback, String searchTerm) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
@@ -357,7 +357,7 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<People>(args, callback, SEARCH_FOR_USERS, People.class).execute("");
 			}
 		});
-		
+
 	}
 
 	private InventoryCache inventoryCache = new InventoryCache();
@@ -491,9 +491,9 @@ public class AndroidGameAction implements GameAction {
 						callback.onConnectionError(result.errorMessage);
 					}
 				});
-			}else if(!result.valid){
+			} else if (!result.valid) {
 				callback.onConnectionError(result.reason);
-			}else {
+			} else {
 				if (result.sessionExpired) {
 					Log.i(TAG, "Session expired, beginning silent sign in");
 					Gdx.app.postRunnable(new Runnable() {
@@ -559,5 +559,19 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	
+	@Override
+	public void resignGame(final UIConnectionResultCallback<GameBoard> callback, final String gameId, String handle) {
+		try {
+			final JSONObject top = JsonConstructor.resignGame(handle, getSession());
+
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<GameBoard>(callback, RESIGN_GAME.replace(":gameId", gameId),
+							GameBoard.class).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+	}
 }

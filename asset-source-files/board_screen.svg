@@ -377,11 +377,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.225"
-     inkscape:cx="-38.836197"
-     inkscape:cy="626.38059"
+     inkscape:zoom="0.6125"
+     inkscape:cx="614.86253"
+     inkscape:cy="634.71752"
      inkscape:document-units="px"
-     inkscape:current-layer="layer11"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
@@ -557,6 +557,66 @@
        y="84.405289"
        ry="10"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/arrow_right.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687" />
+    <g
+       id="g4002"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/refresh.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687"
+       transform="matrix(0.74871822,0,0,0.68856889,331.64168,109.75015)">
+      <path
+         sodipodi:open="true"
+         sodipodi:end="7.8696896"
+         sodipodi:start="2.3684118"
+         d="m 1368.4307,269.84153 c -38.5724,-39.52662 -37.7988,-102.83839 1.7278,-141.4108 39.5266,-38.572415 102.8384,-37.798877 141.4108,1.72774 38.5724,39.52662 37.7988,102.83839 -1.7278,141.4108 -19.0679,18.60762 -44.7729,28.83688 -71.4122,28.41839"
+         sodipodi:ry="100"
+         sodipodi:rx="100"
+         sodipodi:cy="200"
+         sodipodi:cx="1440"
+         id="path3970"
+         style="fill:none;stroke:#000094;stroke-width:40.40000153;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:type="arc"
+         style="fill:none;stroke:#0025ec;stroke-width:27.70000076;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path3976"
+         sodipodi:cx="1440"
+         sodipodi:cy="200"
+         sodipodi:rx="100"
+         sodipodi:ry="100"
+         d="m 1369.6605,271.07995 c -39.2563,-38.84742 -39.5879,-102.16305 -0.7404,-141.41942 38.8474,-39.256371 102.163,-39.587894 141.4194,-0.74048 39.2563,38.84742 39.5879,102.16305 0.7404,141.41942 -19.4221,19.6266 -46.0951,30.34906 -73.6976,29.62626"
+         sodipodi:start="2.3509585"
+         sodipodi:end="7.8801616"
+         sodipodi:open="true" />
+      <rect
+         transform="matrix(0.46420584,-0.88572735,0.88572735,0.46420584,0,0)"
+         ry="16.458334"
+         y="1382.0076"
+         x="378.68787"
+         height="103.75"
+         width="32.916668"
+         id="rect3998"
+         style="fill:#0025ec;fill-opacity:1;fill-rule:nonzero;stroke:#000094;stroke-width:7.73618031;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         transform="matrix(0.63625742,0.77147683,-0.77147683,0.63625742,0,0)"
+         style="fill:#0025ec;fill-opacity:1;fill-rule:nonzero;stroke:#000094;stroke-width:7.73618031;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="rect4000"
+         width="32.916668"
+         height="103.75"
+         x="1117.2855"
+         y="-995.33234"
+         ry="16.458334" />
+    </g>
+    <rect
+       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#ffff80;stroke-width:1.671;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4008"
+       width="288.75"
+       height="98.75"
+       x="803.75"
+       y="36.25"
+       ry="16.458334"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/button_yellow.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
   </g>
@@ -1194,6 +1254,60 @@
            transform="matrix(-0.64500542,0.764178,-0.764178,-0.64500542,0,0)" />
       </g>
     </g>
+    <path
+       inkscape:export-ydpi="123.81687"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/question_mark.png"
+       transform="matrix(1.2857143,0,0,1.2857143,-282.2449,250.20408)"
+       d="m 1040,290 a 70,70 0 1 1 -140,0 70,70 0 1 1 140,0 z"
+       sodipodi:ry="70"
+       sodipodi:rx="70"
+       sodipodi:cy="290"
+       sodipodi:cx="970"
+       id="path3164"
+       style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
+    <text
+       xml:space="preserve"
+       style="font-size:144px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="932.24487"
+       y="678.65308"
+       id="text3166"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3168"
+         x="932.24487"
+         y="678.65308">?</tspan></text>
+    <g
+       id="g3944"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/options.png"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-ydpi="123.81687">
+      <rect
+         ry="0"
+         y="40"
+         x="1205.7142"
+         height="40.816326"
+         width="34.285713"
+         id="rect3170"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+      <rect
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="rect3940"
+         width="34.285713"
+         height="40.816326"
+         x="1205.7142"
+         y="100"
+         ry="0" />
+      <rect
+         ry="0"
+         y="160"
+         x="1205.7142"
+         height="40.816326"
+         width="34.285713"
+         id="rect3942"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1201,16 +1315,17 @@
      inkscape:label="OKButton"
      style="display:inline">
     <g
-       id="g4029">
+       id="g4029"
+       transform="translate(-73.469388,-13.061224)">
       <path
          sodipodi:type="arc"
-         style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.99966664;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         style="fill:#cccccc;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.99966669;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          id="path3960"
          sodipodi:cx="970"
          sodipodi:cy="290"
          sodipodi:rx="70"
          sodipodi:ry="70"
-         d="m 1040,290 a 70,70 0 1 1 -140,0 70,70 0 1 1 140,0 z"
+         d="m 1040,290 c 0,38.65993 -31.3401,70 -70,70 -38.65993,0 -70,-31.34007 -70,-70 0,-38.65993 31.34007,-70 70,-70 38.6599,0 70,31.34007 70,70 z"
          transform="matrix(1.2857143,0,0,1.2857143,-11.224493,80.408163)" />
       <g
          transform="translate(-11.428571,171.42857)"

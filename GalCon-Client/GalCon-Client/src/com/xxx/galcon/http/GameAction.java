@@ -33,41 +33,42 @@ public interface GameAction {
 
 	public void exchangeTokenForSession(UIConnectionResultCallback<Session> callback, String authProvider, String token);
 
-	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String playerHandle, Long mapToFind);
+	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapToFind);
 
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
+	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
 	public void findAllMaps(UIConnectionResultCallback<Maps> callback);
 
-	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
+	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
 
-	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle);
+	public void joinGame(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
+
+	public void resignGame(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
 
 	public void performMoves(UIConnectionResultCallback<GameBoard> callback, String gameId, List<Move> moves,
 			List<HarvestMove> harvestMoves);
 
-	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
+	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
 	public void findUserInformation(UIConnectionResultCallback<Player> callback, String email);
-	
+
 	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm);
 
 	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 
 	public void requestHandleForEmail(UIConnectionResultCallback<HandleResponse> callback, String email, String handle);
 
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle);
+	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
-	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String playerHandle);
+	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String handle);
 
-	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String playerHandle, List<Order> orders);
+	public void addCoinsForAnOrder(UIConnectionResultCallback<Player> callback, String handle, List<Order> orders);
 
-	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle,
-			List<Order> orders);
+	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String handle, List<Order> orders);
 
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle);
+	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String handle);
 
-	public void showAd(AdColonyVideoListener listner);
+	public void showAd(AdColonyVideoListener listener);
 
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
