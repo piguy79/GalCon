@@ -178,7 +178,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			statusText = "--your move--";
 		}
 
-		if (statusText.isEmpty()) {
+		if (!statusText.isEmpty()) {
 			ShaderLabel yourMoveLabel = new ShaderLabel(fontShader, statusText, skin, statusFont);
 			yourMoveLabel.setAlignment(Align.center);
 			yourMoveLabel.setWidth(width);
