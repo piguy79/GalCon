@@ -68,7 +68,7 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.harvest.status).toBe("ACTIVE");
@@ -83,7 +83,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should boost my attack ability when harvesting a planet.", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
 	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 11, { x : 3, y : 5}),
 	                    elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "attackModifier")];
@@ -95,9 +94,9 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
@@ -121,19 +120,19 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.harvest.status).toBe("ACTIVE");
 			expect(abilityPlanet.harvest.startingRound).toBe(0);
 		}).then(function(game){
-			return gameRunner.performTurns(6, currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurns(6, currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.shipRegenRate).toBe(0);
 			expect(abilityPlanet.status).toBe("DEAD");
 			expect(abilityPlanet.numberOfShips).toBe(22);
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.numberOfShips).toBe(22);
@@ -147,7 +146,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should reset the harvest state on a planet when it is captured during harvest", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
@@ -155,11 +153,12 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : captureHarvestPlanet, handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : captureHarvestPlanet, handle : PLAYER_2_HANDLE});
 		}).then(function(game){
+			console.log(game);
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
 			expect(abilityPlanet.harvest.status).toBe("INACTIVE");
@@ -190,9 +189,9 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE, harvest : [{planet : ABILITY_PLANET}]});
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var defendedPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(defendedPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
@@ -220,9 +219,9 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			expect(game.moves[0].duration).toBe(3.25);
 			done();
@@ -245,10 +244,10 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : captureHarvestPlanet, handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : captureHarvestPlanet, handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
@@ -257,7 +256,7 @@ describe("Harvest an ability planet -", function() {
 			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 30 - 12 = 18.
 			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 23
 			expect(abilityPlanet.numberOfShips).toBe(23);
-			return gameRunner.performTurn(currentGameId, {moves : reCaptureHarvestPlanet, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : reCaptureHarvestPlanet, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
@@ -286,9 +285,9 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}, {planet : ABILITY_PLANET_2}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}, {planet : ABILITY_PLANET_2}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
@@ -320,9 +319,9 @@ describe("Harvest an ability planet -", function() {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, time : timeOfMove, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
+			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityHarvest = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityHarvest.population).toBe(4000000);

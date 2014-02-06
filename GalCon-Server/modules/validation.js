@@ -21,8 +21,11 @@ exports.isSession = function(session) {
 }
 
 exports.isEmail = function(email) {
-	
-	return	validator.isLength(email, 5, 100) && validator.isEmail(email);	
+	return validator.isLength(email, 5, 100) && validator.isEmail(email);	
+}
+
+exports.isGameId = function(gameId) {
+	return validator.isLength(gameId, 16, 32) && validator.isAlphanumeric(gameId);
 }
 
 exports.isMapKey = function(mapKey) {

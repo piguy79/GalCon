@@ -31,12 +31,20 @@ exports.matchPlayerToGame = function(playerHandle, mapKey, session) {
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
 };
 
+exports.resignGame = function(gameId, handle, session) {
+	var postData = {
+		session : session,
+		handle : handle
+	};
+
+	return needleWithPromise(needle.post, "/games/" + gameId + "/resign", postData);
+};
+
 exports.performMove = function(gameId, moves, playerHandle, time, harvest) {
 	var postData = {
 		moves : moves,
 		id : gameId,
 		playerHandle : playerHandle,
-		time : time || 1000,
 		harvest : harvest || [],
 		session : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592"
 	}

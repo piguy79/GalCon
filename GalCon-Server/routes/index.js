@@ -19,7 +19,8 @@ var VALIDATE_MAP = {
 	handle : validation.isHandle,
 	mapKey : validation.isMapKey,
 	orders : validation.isOrders,
-	move : validation.isValidMoves
+	move : validation.isValidMoves,
+	gameId : validation.isGameId
 };
 
 exports.index = function(req, res) {
@@ -225,7 +226,6 @@ exports.performMoves = function(req, res) {
 	var gameId = req.body.id;
 	var moves = req.body.moves;
 	var playerHandle = req.body.playerHandle;
-	var time = req.body.time;
 	var harvest = req.body.harvest;
 	var session = req.body.session;
 	
@@ -253,7 +253,7 @@ exports.performMoves = function(req, res) {
 			
 			return p.then(function() {
 				if (game.endGameInformation.winnerHandle) {
-					return updateWinnersAndLosers(game, time);
+					return updateWinnersAndLosers(game);
 				}
 				return game;
 			}).then(function(gameToReturn) {
@@ -263,7 +263,7 @@ exports.performMoves = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var updateWinnersAndLosers = function(game, time) {
+var updateWinnersAndLosers = function(game) {
 	var winner;
 	
 	var p = new mongoose.Promise();
@@ -279,7 +279,7 @@ var updateWinnersAndLosers = function(game, time) {
 			} else {
 				player.losses += 1;
 			}
-			var coinPromise = updateUserTime(player, time, game._id);
+			var coinPromise = setTimeUntilFreeCoins(player, game._id);
 			return coinPromise.then(function(user){
 				player.usedCoins = user.usedCoins;
 				return player.withPromise(player.save);
@@ -288,6 +288,9 @@ var updateWinnersAndLosers = function(game, time) {
 	});
 	
 	return p.then(function() {
+		return game.withPromise(game.save);
+	}).then(function(updatedGame) {
+		game = updatedGame;
 		return rankManager.findRankForXp(winner.xp);
 	}).then(function(rank) {
 		winner.rankInfo = rank;
@@ -297,21 +300,17 @@ var updateWinnersAndLosers = function(game, time) {
 	});
 }
 
-var updateUserTime = function(user, time, gameId){
-	var p = new mongoose.Promise();
-	var userPromise = userManager.findUserWithGames(user.handle);
-	userPromise.then(function(foundUser){
-		
+var setTimeUntilFreeCoins = function(user, gameId){
+	var p = userManager.findUserWithGames(user.handle);
+	return p.then(function(foundUser){	
 		var gamesStillInProgress = _.filter(foundUser.currentGames, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
 		
 		if(foundUser.coins <= 0 && gamesStillInProgress.length === 0){
-			user.usedCoins = time;
+			user.usedCoins = Date.now();
 		}
 		
-		p.complete(user);
+		return user;
 	});
-	
-	return p;
 }
 
 exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
@@ -383,6 +382,40 @@ exports.joinGame = function(req, res) {
 		return user.withPromise(user.save);
 	}).then(function() {
 		res.json(game);
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+exports.resignGame = function(req, res) {
+	var handle = req.body.handle;
+	var session = req.body.session;
+	var gameId = req.params.id;
+	
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		var p1 = gameManager.findById(gameId);
+		return p1.then(function(game) {
+			if(game === null) {
+				throw new Error("Invalid game");
+			}
+			
+			var foundHandle = false;
+			for(i in game.players) {
+				if(game.players[i].handle !== handle) {
+					game.endGameInformation.winnerHandle = game.players[i].handle;
+				} else {
+					foundHandle = true;
+				}
+			}
+			if(!foundHandle) {
+				throw new Error("Invalid game");
+			}
+			
+			return updateWinnersAndLosers(game);
+		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -651,7 +684,7 @@ var logErrorAndSetResponse = function(req, res) {
 			res.json(err.responseObj);
 		} else {
 			res.json({
-				"error" : err
+				"error" : err.message
 			});
 		}
 	}

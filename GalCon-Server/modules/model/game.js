@@ -296,10 +296,6 @@ exports.createGame = function(gameAttributes) {
 	});
 };
 
-exports.findAllGames = function() {
-	return GameModel.find({}).populate('players').exec();
-}
-
 exports.findById = function(gameId){
 	return GameModel.findById(gameId).populate('players').exec();
 };

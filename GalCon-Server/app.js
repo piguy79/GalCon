@@ -49,6 +49,7 @@ app.post('/matchPlayerToGame', routes.matchPlayerToGame);
 app.get('/findAllMaps', routes.findAllMaps);
 app.get('/findGameById', routes.findGameById);
 app.get('/joinGame', routes.joinGame);
+app.post('/games/:id/resign', routes.resignGame);
 app.get('/findAvailableGames', routes.findAvailableGames);
 app.get('/findUserByEmail', routes.findUserByEmail);
 app.post('/requestHandleForEmail', routes.requestHandleForEmail);
