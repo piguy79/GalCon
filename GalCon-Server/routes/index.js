@@ -412,20 +412,20 @@ exports.resignGame = function(req, res) {
 			}
 			
 			var foundHandle = false;
-			for(i in game.players) {
-				if(game.players[i].handle !== handle) {
-					game.endGameInformation.winnerHandle = game.players[i].handle;
+			game.players.forEach(function(player) {
+				if(player.handle !== handle) {
+					game.endGameInformation.winnerHandle = player.handle;
 				} else {
 					foundHandle = true;
 				}
-			}
+			});
 			if(!foundHandle) {
 				throw new Error("Invalid game");
 			}
 			
 			return updateWinnersAndLosers(game);
 		});
-	}).then(null, logErrorAndSetResponse(req, res));
+	}).then(function(game) {res.json(game);}, logErrorAndSetResponse(req, res));
 }
 
 exports.addFreeCoins = function(req, res) {
