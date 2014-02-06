@@ -11,13 +11,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -25,9 +25,9 @@ import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.model.People;
-import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.widget.ActionButton;
+import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -50,6 +50,7 @@ public class FriendScreen implements ScreenFeedback {
 	private ShaderTextField searchBox;
 	private ShaderLabel searchLabel;
 	private ActionButton searchButton;
+	private ScrollList<MinifiedPlayer> scrollList;
 	
 	private String returnCode = null;
 
@@ -71,8 +72,41 @@ public class FriendScreen implements ScreenFeedback {
 		createSearchLabel();
 		createSearchBox();
 		createSearchButton();
+		createScrollList();
 		
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	private void createScrollList() {
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		final float tableHeight = height - (height - searchBox.getY());
+		scrollList = new ScrollList<MinifiedPlayer>(skin) {
+			@Override
+			public void buildCell(MinifiedPlayer item, Group group) {
+				createPlayerEntry(item, group);
+			}
+		};
+		scrollList.setX(0);
+		scrollList.setY(0);
+		scrollList.setWidth(width);
+		scrollList.setHeight(tableHeight);
+
+		stage.addActor(scrollList);
+		
+	}
+	
+	private void createPlayerEntry(MinifiedPlayer item, Group group) {
+		float width = Gdx.graphics.getWidth();
+		
+		ShaderLabel playerLabel = new ShaderLabel(fontShader, item.handle + "[" + item.rank +  "]", skin, Constants.UI.DEFAULT_FONT);
+		playerLabel.setAlignment(Align.center);
+		playerLabel.setWidth(width);
+		playerLabel.setY(group.getHeight() * 0.4f);
+		
+		group.addActor(playerLabel);
+
 	}
 
 	private void createSearchLabel() {
@@ -98,15 +132,20 @@ public class FriendScreen implements ScreenFeedback {
 		searchButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if(!searchButton.isDisabled()){
+				
 				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
 					
 					@Override
 					public void onConnectionResult(People result) {
 						for(MinifiedPlayer player: result.people){
 							System.out.print(player.handle);
+							scrollList.addRow(player, new ClickListener(){@Override
+							public void clicked(InputEvent event, float x,
+									float y) {
+								
+							}});
 						}
 						searchBox.getOnscreenKeyboard().show(false);
-						
 					}
 					
 					@Override
