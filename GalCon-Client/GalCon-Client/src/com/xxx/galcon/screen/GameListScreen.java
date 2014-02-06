@@ -165,14 +165,27 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		vsLabel.setY(rowHeight * 0.6f);
 		group.addActor(vsLabel);
 
-		if(game.moveAvailable) {
-			ShaderLabel yourMoveLabel = new ShaderLabel(fontShader, "--your move--", skin, Constants.UI.DEFAULT_FONT_GREEN);
+		String statusText = "";
+		String statusFont = Constants.UI.DEFAULT_FONT_GREEN;
+		if (game.hasWinner()) {
+			if (game.winner.equals(GameLoop.USER.handle)) {
+				statusText = "You Won";
+			} else {
+				statusText = "You Lost";
+				statusFont = Constants.UI.DEFAULT_FONT_RED;
+			}
+		} else if (game.moveAvailable) {
+			statusText = "--your move--";
+		}
+
+		if (statusText.isEmpty()) {
+			ShaderLabel yourMoveLabel = new ShaderLabel(fontShader, statusText, skin, statusFont);
 			yourMoveLabel.setAlignment(Align.center);
 			yourMoveLabel.setWidth(width);
 			yourMoveLabel.setY(rowHeight * 0.4f);
 			group.addActor(yourMoveLabel);
 		}
-		
+
 		String mapTitle = "";
 		if (allMaps != null) {
 			for (Map map : allMaps.allMaps) {
