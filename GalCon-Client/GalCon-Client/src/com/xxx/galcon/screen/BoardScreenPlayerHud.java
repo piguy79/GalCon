@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -16,7 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
@@ -40,7 +42,7 @@ public class BoardScreenPlayerHud extends Group {
 	private ShaderLabel firstPlayer;
 	private ShaderLabel vs;
 	private ShaderLabel secondPlayer;
-	
+
 	private final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
 		{
 			put(Constants.ABILITY_ATTACK_INCREASE, "A");
@@ -108,16 +110,16 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private String playerInfo(Player player) {
-		
+
 		String playerInfo = player.handle + "[" + player.rank.level + "]";
 		if (!player.hasMoved(gameBoard)) {
-			playerInfo = "--" +  playerInfo + "--";
+			playerInfo = "--" + playerInfo + "--";
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(playerInfo);
 		sb.append("  ");
 		sb.append(abilitiesToString(gameBoard.ownedPlanetAbilities(player)));
-		
+
 		return sb.toString();
 	}
 
@@ -156,11 +158,21 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createOptionsButton() {
-		ImageButton button = new ImageButton(skin, "optionsButton");
-		float ratio = button.getWidth() / button.getHeight();
+		ImageButton button = new ImageButton(skin, "optionsButton") {
+			@Override
+			public void layout() {
+				super.layout();
+			}
+
+			@Override
+			public void draw(SpriteBatch batch, float parentAlpha) {
+				super.draw(batch, parentAlpha);
+			}
+		};
+
 		float height = getHeight() * 0.6f;
-		float width = ratio * height;
-		button.setColor(Color.BLUE);
+		float width = height;
+		button.getImage().setScaling(Scaling.fillY);
 		button.setBounds(getWidth() - width - 0.07f * getWidth(), getHeight() * 0.2f, width, height);
 		button.addListener(new ClickListener() {
 			@Override
@@ -180,8 +192,6 @@ public class BoardScreenPlayerHud extends Group {
 		backGround.setHeight(getHeight());
 		addActor(backGround);
 	}
-	
-	
 
 	private Map<String, Integer> bonuses = new HashMap<String, Integer>();
 

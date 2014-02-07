@@ -134,7 +134,7 @@ public class UISkin extends Skin {
 		add("socialPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("back"));
-		add("backButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		add("backButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
 		add("cancelButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
@@ -154,9 +154,9 @@ public class UISkin extends Skin {
 		add("shipButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("refresh"));
-		add("refreshButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		add("refreshButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("options"));
-		add("optionsButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+		add("optionsButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
 	}
 }
