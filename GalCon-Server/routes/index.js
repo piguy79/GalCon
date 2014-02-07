@@ -2,6 +2,7 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	gameBuilder = require('../modules/gameBuilder'), 
 	gameManager = require('../modules/model/game'), 
 	userManager = require('../modules/model/user'), 
+	gameQueueManager = require('../modules/model/gameQueue'),
 	rankManager = require('../modules/model/rank'), 
 	mapManager = require('../modules/model/map'), 
 	configManager = require('../modules/model/config'), 
@@ -794,3 +795,52 @@ exports.exchangeToken = function(req, res) {
 		res.json({session : session});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
+
+exports.inviteUserToGame = function(req, res){
+	var requesterHandle = req.body.requesterHandle;
+	var inviteeHandle = req.body.inviteeHandle;
+	var mapKey = req.body.mapKey;
+	var session = req.body.session;
+	
+	if(!validate({session : session, handle : requesterHandle, handle : inviteeHandle, mapKey : mapKey}, res)) {
+		return;
+	}
+	var requestingUser;
+	var currentGame;
+	
+	var p = userManager.findUserByHandle(requesterHandle);
+	p.then(function(user){
+		requestingUser = user;
+		return generateGamePromise(user, Date.now(), mapKey);
+	}).then(function(game){
+		currentGame = game;
+		var queueItem = {
+				requester : requestingUser,
+				invitee : inviteeHandle,
+				game : game,
+				creaatedtime : Date.now()
+		};
+		return gameQueueManager.GameQueueModel.withPromise(gameQueueManager.GameQueueModel.create, [queueItem]);
+	}).then(function(queueItem){
+		res.json(currentGame);
+	}).then(null, logErrorAndSetResponse(req, res));
+	
+}
+
+exports.findPendingInvites = function(req, res){
+	var handle = req.query['handle']; 
+	
+	var p = gameQueueManager.findByInvitee(handle);
+	p.then(function(queue){
+		var returnList = _.map(queue, function(item){
+			return {
+				requester : {
+					handle : item.requester.handle,
+					rank : item.requester.rankInfo.level
+				},
+				gameId : item.gameId
+			};
+		});
+		res.json({items : returnList});
+	}).then(null, logErrorAndSetResponse(req, res));
+};

@@ -13,6 +13,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
@@ -47,6 +48,7 @@ import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
@@ -342,6 +344,25 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			System.out.println(e);
 		}
 	}
+	
+
+	@Override
+	public void invitePlayerForGame(
+			UIConnectionResultCallback<GameBoard> callback,
+			String requesterHandle, String inviteeHandle, Long mapKey) {
+		try {
+			JSONObject top = JsonConstructor.invite(requesterHandle, inviteeHandle, getSession(), mapKey);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), INVITE_USER_TO_PLAY, args,
+					new GameBoard()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
 
 	private String session;
 
@@ -423,4 +444,5 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
+
 }

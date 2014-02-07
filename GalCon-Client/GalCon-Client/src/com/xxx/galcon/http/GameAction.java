@@ -7,6 +7,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
@@ -73,4 +74,6 @@ public interface GameAction {
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
 	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle);
+	
+	public void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey);
 }

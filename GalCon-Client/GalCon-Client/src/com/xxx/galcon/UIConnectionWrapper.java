@@ -7,6 +7,7 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
@@ -64,5 +65,9 @@ public class UIConnectionWrapper {
 
 	public static void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm) {
 		gameAction.searchForPlayers(callback, searchTerm);
+	}
+	
+	public static void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey){
+		gameAction.invitePlayerForGame(callback, requesterHandle, inviteeHandle, mapKey);
 	}
 }

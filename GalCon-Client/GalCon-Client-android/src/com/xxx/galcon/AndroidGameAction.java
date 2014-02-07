@@ -17,6 +17,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
@@ -299,6 +300,23 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
+	
+	@Override
+	public void invitePlayerForGame(
+			final UIConnectionResultCallback<GameBoard> callback,
+			String requesterHandle, String inviteeHandle, Long mapKey) {
+		try {
+			final JSONObject top = JsonConstructor.invite(requesterHandle, inviteeHandle, getSession(), mapKey);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<GameBoard>(callback, INVITE_USER_TO_PLAY, GameBoard.class).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+		
+	}
 
 	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		final Map<String, String> args = new HashMap<String, String>();
@@ -574,4 +592,5 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
+
 }

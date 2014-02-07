@@ -19,11 +19,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
+import com.xxx.galcon.model.GameInviteRequest;
 import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.widget.ActionButton;
@@ -52,7 +55,10 @@ public class FriendScreen implements ScreenFeedback {
 	private ActionButton searchButton;
 	private ScrollList<MinifiedPlayer> scrollList;
 	
+	
+	private GameInviteRequest gameInviteRequest;
 	private String returnCode = null;
+	private Long mapKey;
 
 
 	
@@ -132,16 +138,18 @@ public class FriendScreen implements ScreenFeedback {
 		searchButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if(!searchButton.isDisabled()){
-				
+				scrollList.clearRows();
 				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
 					
 					@Override
 					public void onConnectionResult(People result) {
-						for(MinifiedPlayer player: result.people){
+						for(final MinifiedPlayer player: result.people){
 							System.out.print(player.handle);
 							scrollList.addRow(player, new ClickListener(){@Override
 							public void clicked(InputEvent event, float x,
 									float y) {
+								gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, player.handle, mapKey);
+								returnCode = Action.INVITE_PLAYER;
 								
 							}});
 						}
@@ -284,15 +292,24 @@ public class FriendScreen implements ScreenFeedback {
 	@Override
 	public void resetState() {
 		returnCode = null;
-		
+		gameInviteRequest = null;
+		mapKey = null;
 	}
 	
 	public MenuScreenContainer getPreviousScreen() {
 		return previousScreen;
 	}
+	
+	public GameInviteRequest getGameInviteRequest(){
+		return gameInviteRequest;
+	}
 
 	public void setPreviousScreen(MenuScreenContainer previousScreen) {
 		this.previousScreen = previousScreen;
+	}
+
+	public void setMapType(String mapKey) {
+		this.mapKey = Long.valueOf(mapKey);
 	}
 
 }

@@ -31,6 +31,17 @@ exports.matchPlayerToGame = function(playerHandle, mapKey, session) {
 	return needleWithPromise(needle.post, "/matchPlayerToGame", postData);
 };
 
+exports.invitePlayer = function(requesterHandle, inviteeHandle, mapKey, session) {
+	var postData = {
+		requesterHandle : requesterHandle,
+		inviteeHandle : inviteeHandle,
+		mapKey : mapKey,
+		session : session
+	};
+
+	return needleWithPromise(needle.post, "/gamequeue/invite", postData);
+};
+
 exports.resignGame = function(gameId, handle, session) {
 	var postData = {
 		session : session,
