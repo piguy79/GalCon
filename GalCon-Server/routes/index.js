@@ -107,14 +107,19 @@ var validateSession = function(session, emailOrHandleMap) {
 	
 	var p = getSessionState(session, key, value);
 	return p.then(function(state) {
+		var msg;
 		if(state === "NOT FOUND") {
-			throw new ErrorWithResponse("Invalid session detected for: " + session + ", " + value, { session : "invalid"});
+			msg = "Invalid session detected for: " + session + ", " + value;
 		} else if(state === "EXPIRED SESSION") {
+			msg = "Expired session";
+		}
+		
+		if(msg !== undefined) {
 			var obj = {};
 			obj[key] = value;
 			var invalidP = userManager.UserModel.findOneAndUpdate(obj, {$set : {session : {}}}).exec();
 			return invalidP.then(function() {
-				throw new ErrorWithResponse("Expired session", { session : "expired" });
+				throw new ErrorWithResponse(msg, { session : "expired" });
 			});
 		}
 	});

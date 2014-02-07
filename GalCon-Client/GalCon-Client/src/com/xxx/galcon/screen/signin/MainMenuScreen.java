@@ -219,7 +219,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			@Override
 			public void onConnectionError(String msg) {
 				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-						"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
+						"Could not retrieve user.\n\nPlease try again.", menusAtlas, skin, fontShader),
 						new ClickListener() {
 							@Override
 							public void clicked(InputEvent event, float x, float y) {

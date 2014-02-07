@@ -176,7 +176,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 		@Override
 		public void onConnectionResult(Player player) {
-			if (player.sessionExpired || player.sessionInvalid) {
+			if (player.sessionExpired) {
 				result = "signIn";
 			} else {
 				if (player.handle != null && !player.handle.isEmpty()) {
@@ -217,7 +217,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			waitImage.stop();
 		}
 	}
-	
+
 	@Override
 	public boolean hideTitleArea() {
 		return false;

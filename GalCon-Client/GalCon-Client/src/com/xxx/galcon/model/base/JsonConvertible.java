@@ -25,7 +25,6 @@ public abstract class JsonConvertible {
 	public String reason;
 
 	public boolean sessionExpired = false;
-	public boolean sessionInvalid = false;
 
 	/**
 	 * This method is used to add attributs to a class from a JsonObject.
@@ -38,8 +37,6 @@ public abstract class JsonConvertible {
 			String session = jsonObject.optString("session", "");
 			if (session.equals("expired")) {
 				sessionExpired = true;
-			} else if (session.equals("invalid")) {
-				sessionInvalid = true;
 			} else {
 				if(jsonObject.has("reason")){
 					valid = false;
