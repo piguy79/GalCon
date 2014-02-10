@@ -12,6 +12,7 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	socialManager = require('../modules/social'),
 	validation = require('../modules/validation'),
 	moveValidation = require('../modules/move_validation'),
+	inviteValidation = require('../modules/invite_validation'),
 	googleapis = require('googleapis');
 
 var VALIDATE_MAP = {
@@ -743,7 +744,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 
-var generateGamePromise = function(user, time, mapToFind) {
+var generateGamePromise = function(user, time, mapToFind, social) {
 	var p = mapManager.findMapByKey(mapToFind);
 	return p.then(function(map) {
 		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
@@ -762,8 +763,11 @@ var generateGamePromise = function(user, time, mapToFind) {
 			createdTime : time,
 			rankOfInitialPlayer : user.rankInfo.level,
 			map : map.key,
-			gameType : map.gameType[gameTypeIndex]
+			gameType : map.gameType[gameTypeIndex],
+			social : social
 		};
+		
+		
 
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
@@ -801,17 +805,23 @@ exports.inviteUserToGame = function(req, res){
 	var inviteeHandle = req.body.inviteeHandle;
 	var mapKey = req.body.mapKey;
 	var session = req.body.session;
-	
+		
 	if(!validate({session : session, handle : requesterHandle, handle : inviteeHandle, mapKey : mapKey}, res)) {
 		return;
 	}
 	var requestingUser;
 	var currentGame;
-	
-	var p = userManager.findUserByHandle(requesterHandle);
-	p.then(function(user){
-		requestingUser = user;
-		return generateGamePromise(user, Date.now(), mapKey);
+		
+	var p = validateSession(session, {"handle" : requesterHandle});
+	p.then(function(){
+		return userManager.findUserByHandle(requesterHandle);;
+	}).then(function(user){
+		if(!inviteValidation.validate(user)){
+			throw new Error("Invalid Invite Request");
+		}else{
+			requestingUser = user;
+			return generateGamePromise(user, Date.now(), mapKey, inviteeHandle);
+		}
 	}).then(function(game){
 		currentGame = game;
 		var queueItem = {

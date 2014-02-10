@@ -15,6 +15,7 @@ var gameSchema = mongoose.Schema({
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
+	social: "String",
 	config : {
 		version : "Number",
 		values : {}
@@ -486,23 +487,20 @@ exports.addUser = function(gameId, player){
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
 	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
-		return filterOutPlayer(games, playerHandle);
+		return filterOutPlayerAndSocial(games, playerHandle);
 	});
 }
 
 exports.findGameAtAMap = function(mapToFind, playerHandle){
 	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
 	return p.then(function(games) {
-		return filterOutPlayer(games, playerHandle);
+		return filterOutPlayerAndSocial(games, playerHandle);
 	});
 }
 
-var filterOutPlayer = function(games, playerHandle){
-	var filteredGames = [];
-	games.forEach(function(game) {
-		if(game.players[0].handle != playerHandle) {
-			filteredGames.push(game);
-		}
+var filterOutPlayerAndSocial = function(games, playerHandle){
+	var filteredGames = _.filter(games, function(game){
+		return game.players[0].handle != playerHandle && !game.social;
 	});
 	
 	return filteredGames;

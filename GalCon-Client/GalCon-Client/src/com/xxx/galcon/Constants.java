@@ -108,6 +108,8 @@ public class Constants {
 	public static final String CANCELED = "canceled";
 	public static final String USED_COINS = "usedCoins";
 	public static final String POPULATION = "population";
+	public static final String SOCIAL = "social";
+
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

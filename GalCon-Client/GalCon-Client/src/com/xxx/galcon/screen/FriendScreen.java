@@ -51,6 +51,7 @@ public class FriendScreen implements ScreenFeedback {
 	private WaitImageButton waitImage;
 	private ActionButton backButton;
 	private ShaderTextField searchBox;
+	private ShaderLabel noResultsFound;
 	private ShaderLabel searchLabel;
 	private ActionButton searchButton;
 	private ScrollList<MinifiedPlayer> scrollList;
@@ -79,8 +80,23 @@ public class FriendScreen implements ScreenFeedback {
 		createSearchBox();
 		createSearchButton();
 		createScrollList();
+		createNoResultsFound();
 		
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	private void createNoResultsFound() {
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		noResultsFound = new ShaderLabel(fontShader, "Unable to find a Match ", skin, Constants.UI.DEFAULT_FONT);
+		noResultsFound.setAlignment(Align.center);
+		noResultsFound.setWidth(width);
+		noResultsFound.setY(height / 2);
+		noResultsFound.setVisible(false);
+		
+		stage.addActor(noResultsFound);
+		
 	}
 
 	private void createScrollList() {
@@ -143,8 +159,12 @@ public class FriendScreen implements ScreenFeedback {
 					
 					@Override
 					public void onConnectionResult(People result) {
+						if(result == null || result.people.size() == 0){
+							noResultsFound.setVisible(true);
+						}else{
+							noResultsFound.setVisible(false);
+						}
 						for(final MinifiedPlayer player: result.people){
-							System.out.print(player.handle);
 							scrollList.addRow(player, new ClickListener(){@Override
 							public void clicked(InputEvent event, float x,
 									float y) {
