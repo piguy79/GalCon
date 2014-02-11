@@ -50,6 +50,8 @@ public class UrlConstants {
 	public static final String RESIGN_GAME = "/games/:gameId/resign";
 
 	public static final String RECOVER_USED_COINS_COUNT = "/updateUsedCoinsRecover";
+	
+	public static final String INVITE_USER_TO_PLAY = "/gamequeue/invite";
 
 	public static final String EXCHANGE_TOKEN_FOR_SESSION = "/sessions/exchangeToken";
 

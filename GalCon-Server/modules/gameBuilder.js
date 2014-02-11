@@ -16,6 +16,7 @@ function GameBuilder(gameAttributes) {
 	this.createdTime = gameAttributes.createdTime;
 	this.rankOfInitialPlayer = gameAttributes.rankOfInitialPlayer;
 	this.map = gameAttributes.map;
+	this.social = gameAttributes.social;
 	this.currentRound = {
 		roundNumber : 0,
 		playersWhoMoved : []

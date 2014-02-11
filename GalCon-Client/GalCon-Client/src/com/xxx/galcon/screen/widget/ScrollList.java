@@ -42,6 +42,10 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		getWidget().row();
 		return cell;
 	}
+	
+	public void clearRows(){
+		getWidget().clearChildren();
+	}
 
 	public void addRow(Item item, ClickListener clickListener) {
 		float width = getRowWidth();

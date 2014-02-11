@@ -12,12 +12,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.InAppBillingAction;
 import com.xxx.galcon.http.SetPlayerResultHandler;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameInviteRequest;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
@@ -134,6 +136,7 @@ public class GameLoop extends Game {
 						openBoardScreen();
 					} else if (action.split(":")[0].equals(Action.PLAY_WITH_FRIENDS)) {
 						friendScreen.setPreviousScreen((MenuScreenContainer) getScreen());
+						friendScreen.setMapType(action.split(":")[1]);
 						setScreen(friendScreen);
 					}
 				} else if (result instanceof GameBoard) {
@@ -154,6 +157,12 @@ public class GameLoop extends Game {
 					friendScreen.resetState();
 					friendScreen.getPreviousScreen().resetState();
 					setScreen(friendScreen.getPreviousScreen());
+				} if(action.equals(Action.INVITE_PLAYER)){
+					boardScreen.setPreviousScreen(friendScreen.getPreviousScreen());
+					GameInviteRequest gameInviteRequest = friendScreen.getGameInviteRequest();
+					friendScreen.resetState();
+					gameAction.invitePlayerForGame(new SetGameBoardResultHandler(boardScreen), gameInviteRequest.requesterHandle, gameInviteRequest.inviteeHandle, gameInviteRequest.mapKey);
+					setScreen(boardScreen);
 				}
 			}
 		}

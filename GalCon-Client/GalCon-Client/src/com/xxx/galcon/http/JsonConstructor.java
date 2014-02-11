@@ -94,6 +94,17 @@ public class JsonConstructor {
 
 		return top;
 	}
+	
+	public static JSONObject invite(String requesterHandle, String inviteeHandle, String session, Long mapKey) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("requesterHandle", requesterHandle);
+		top.put("inviteeHandle", inviteeHandle);
+		top.put("session", session);
+		top.put("mapKey", mapKey);
+
+		return top;
+	}
 
 	public static JSONObject addCoinsForAnOrder(String handle, List<Order> orders, String session) throws JSONException {
 		JSONObject top = new JSONObject();

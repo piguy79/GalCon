@@ -66,6 +66,7 @@ app.get('/config', routes.findConfigByType);
 app.get('/inventory', routes.findAllInventory);
 app.post('/sessions/exchangeToken', routes.exchangeToken);
 app.get('/search/user', routes.searchUsers);
+app.post('/gamequeue/invite', routes.inviteUserToGame);
 
 
 var port = process.env.PORT || 3000;
