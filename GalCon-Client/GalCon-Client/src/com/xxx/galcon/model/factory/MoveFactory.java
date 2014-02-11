@@ -6,8 +6,6 @@ import static java.lang.Math.sqrt;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.math.GalConMath;
@@ -97,20 +95,6 @@ public class MoveFactory {
 		ship.setRotation(move.angleOfMovement());
 
 		return ship;
-	}
-
-	private static Table setupRotationWrapper(ImageButton shipMoveButton, float tileHeight, float tileWidth,
-			Point movePosition) {
-		Table wrapper = new Table();
-
-		wrapper.defaults().width(tileWidth * 0.25f).height(tileWidth * 0.25f).pad(0);
-		wrapper.add(shipMoveButton);
-		wrapper.setX(movePosition.x + (tileWidth / 2));
-		wrapper.setY(movePosition.y + (tileHeight / 2));
-		wrapper.setTransform(true);
-		wrapper.setOrigin(wrapper.getPrefWidth() / 2, wrapper.getPrefHeight() / 2);
-		wrapper.setScaleX(1.5f);
-		return wrapper;
 	}
 
 	public static HarvestMove createHarvestMove(Planet planet) {
