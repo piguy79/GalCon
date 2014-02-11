@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.xxx.galcon.Util.createShader;
 
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.GameLoop;
@@ -265,21 +266,25 @@ public class BoardScreen implements ScreenFeedback {
 				float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
 				Point initialPointInWorld = pointInWorld(move.previousPosition.x, move.previousPosition.y);
 
-				Table movetoDisplay = MoveFactory
+				Image movetoDisplay = MoveFactory
 						.createShipForDisplay(move, tileHeight, tileWidth, initialPointInWorld);
 
 				Point newPosition = pointInWorld(move.currentPosition.x, move.currentPosition.y);
 				boolean showMove = true;
 
+				float shipMidPointOffsetX = movetoDisplay.getWidth() * 0.5f;
+				float shipMidPointOffsetY = movetoDisplay.getHeight() * 0.5f;
+
 				if (!roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(Actions.moveTo(newPosition.x + (tileWidth / 2), newPosition.y
-							+ (tileHeight / 2), 1.2f));
+					movetoDisplay.addAction(moveTo(newPosition.x + (tileWidth / 2) - shipMidPointOffsetX, newPosition.y
+							+ (tileHeight / 2) - shipMidPointOffsetY, 1.2f));
 				} else {
-					movetoDisplay.setPosition(newPosition.x + (tileWidth / 2), newPosition.y + (tileHeight / 2));
+					movetoDisplay.setPosition(newPosition.x + (tileWidth / 2) - shipMidPointOffsetX, newPosition.y
+							+ (tileHeight / 2) - shipMidPointOffsetY);
 				}
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(Actions.scaleTo(0, 0, 0.9f));
+					movetoDisplay.addAction(scaleTo(0, 0, 0.5f));
 				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
 				}
@@ -343,7 +348,7 @@ public class BoardScreen implements ScreenFeedback {
 		positionPlanet(toPlanet);
 
 		Point position = pointInWorld(move.currentPosition.x, move.currentPosition.y);
-		final Table moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
+		final Image moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
 				PlanetButtonFactory.tileWidthInWorld, position);
 
 		final SingleMoveInfoHud sinlgeMoveHud = new SingleMoveInfoHud(move, assetManager, fontShader, skin,
@@ -397,14 +402,14 @@ public class BoardScreen implements ScreenFeedback {
 		for (int i = 1; i < gameBoard.heightInTiles; i++) {
 			Line line = new Line(grey, Gdx.graphics.getWidth(), lineRegion);
 			line.setY((yOffset * i) + boardTable.getY());
-			line.setHeight(Gdx.graphics.getHeight() * 0.005f);
+			line.setHeight(Gdx.graphics.getHeight() * 0.004f);
 			stage.addActor(line);
 			line.addListener(clearPlanetListener());
 
 		}
 
 		for (int i = 1; i < gameBoard.widthInTiles; i++) {
-			Line horizontalLine = new Line(grey, Gdx.graphics.getWidth() * 0.005f, lineRegion);
+			Line horizontalLine = new Line(grey, Gdx.graphics.getWidth() * 0.006f, lineRegion);
 			horizontalLine.setY(boardTable.getY());
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
@@ -680,13 +685,13 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return roundAnimated == gameBoard.roundInformation.currentRound;
+		return false;
+		// return roundAnimated == gameBoard.roundInformation.currentRound;
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

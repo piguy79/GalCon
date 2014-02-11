@@ -17,6 +17,13 @@ bottom_bar_ship_button
   orig: 165, 152
   offset: 0, 0
   index: -1
+explosion_particle
+  rotate: false
+  xy: 748, 341
+  size: 151, 148
+  orig: 151, 148
+  offset: 0, 0
+  index: -1
 line
   rotate: false
   xy: 2, 2

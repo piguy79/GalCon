@@ -30,7 +30,7 @@ import com.xxx.galcon.screen.event.SendMoveEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
 
 public class MoveHud extends Table {
-	
+
 	private AssetManager assetManager;
 	private UISkin skin;
 	private ShaderProgram fontShader;
@@ -40,7 +40,8 @@ public class MoveHud extends Table {
 	private ScrollPane scrollPane;
 	private GameBoard gameBoard;
 
-	public MoveHud(AssetManager assetManager, UISkin skin,GameBoard gameBoard, ShaderProgram fontShader, float width, float height) {
+	public MoveHud(AssetManager assetManager, UISkin skin, GameBoard gameBoard, ShaderProgram fontShader, float width,
+			float height) {
 		super();
 		this.assetManager = assetManager;
 		this.skin = skin;
@@ -52,7 +53,6 @@ public class MoveHud extends Table {
 		createTable();
 		addMoveButtons();
 		addPerformMoveButton();
-		
 	}
 
 	private void createTable() {
@@ -60,11 +60,12 @@ public class MoveHud extends Table {
 		bgTexture = gameBoardAtlas.findRegion("bottom_bar");
 		setBackground(new TextureRegionDrawable(bgTexture));
 	}
-	
+
 	private void addPerformMoveButton() {
-		if(!GameLoop.USER.hasMoved(gameBoard)){
-			ActionButton performMove =  new ActionButton(skin,"performMoveButton", new Point(getX() + (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
-			performMove.addListener(new ClickListener(){
+		if (!GameLoop.USER.hasMoved(gameBoard)) {
+			ActionButton performMove = new ActionButton(skin, "performMoveButton", new Point(getX()
+					+ (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
+			performMove.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					fire(new SendMoveEvent());
@@ -73,83 +74,86 @@ public class MoveHud extends Table {
 			addActor(performMove);
 		}
 	}
-	
-
 
 	private void addMoveButtons() {
 		moveButtonHolder = new Table();
 		moveButtonHolder.setWidth(getWidth() * 0.7f);
 		moveButtonHolder.setHeight(getHeight() * 0.95f);
-		
+
 		moveButtonHolder.pad(getWidth() * 0.05f);
-		
-		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.5f).padBottom(getHeight() * 0.12f).defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.15f)
-		.height(getHeight() * 0.85f);
-		
+
+		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.5f).padBottom(getHeight() * 0.12f)
+				.defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.15f).height(getHeight() * 0.85f);
+
 		scrollPane = new ScrollPane(moveButtonHolder);
 		scrollPane.setScrollingDisabled(false, true);
 		scrollPane.setFadeScrollBars(false);
 		scrollPane.setWidth(moveButtonHolder.getWidth());
-		
-		addActor(scrollPane);		
-		
+
+		addActor(scrollPane);
+
 	}
 
 	private void addMoveToMap(final Move move) {
-		if(moves.get(move) == null){
+		if (moves.get(move) == null) {
 			float buttonWidth = Gdx.graphics.getWidth() * 0.13f;
-			MoveButton button = new MoveButton(assetManager,gameBoard,  move,skin, fontShader, buttonWidth, getHeight() * 0.85f);
-			
-			button.addListener(new ClickListener(){@Override
+			MoveButton button = new MoveButton(assetManager, gameBoard, move, skin, fontShader, buttonWidth,
+					getHeight() * 0.85f);
+
+			button.addListener(new ClickListener() {
+				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					fire(new MoveEvent(move));
-			}});
-			
-			
+				}
+			});
+
 			moves.put(move, button);
 		}
 	}
-	
-	public void addMove(Move move){
-		if(move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0){
+
+	public void addMove(Move move) {
+		if (move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0) {
 			addMoveToMap(move);
 			renderMoves();
 		}
 	}
-	
-	public void addMoves(List<Move> moves){
-		for(Move move : moves){
+
+	public void addMoves(List<Move> moves) {
+		for (Move move : moves) {
 			addMove(move);
 		}
 	}
-	
-	public void renderMoves(){
+
+	public void renderMoves() {
 		moveButtonHolder.clearChildren();
 		List<MoveButton> movesToDisplay = new ArrayList<MoveButton>();
 		movesToDisplay.addAll(moves.values());
 		Collections.sort(movesToDisplay);
-		Collections.sort(movesToDisplay, new Comparator<MoveButton>() {@Override
+		Collections.sort(movesToDisplay, new Comparator<MoveButton>() {
+			@Override
 			public int compare(MoveButton move1, MoveButton move2) {
-				if(move1.getMove().duration < move2.getMove().duration){
+				if (move1.getMove().duration < move2.getMove().duration) {
 					return -1;
-				}else if(move1.getMove().duration > move2.getMove().duration){
+				} else if (move1.getMove().duration > move2.getMove().duration) {
 					return 1;
 				}
 				return 0;
 			}
 		});
-		for(MoveButton button : movesToDisplay){
+		for (MoveButton button : movesToDisplay) {
 			moveButtonHolder.add(button);
 		}
 	}
-	
-	public void removeMove(final Move move){
-		moves.get(move).addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction(){@Override
-		public void run() {
-			moves.remove(move);
-			renderMoves();
-		}}));
-		
+
+	public void removeMove(final Move move) {
+		moves.get(move).addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction() {
+			@Override
+			public void run() {
+				moves.remove(move);
+				renderMoves();
+			}
+		}));
+
 	}
 
 	public void removeMoves() {

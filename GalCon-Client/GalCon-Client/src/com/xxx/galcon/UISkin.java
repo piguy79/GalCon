@@ -88,6 +88,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
 			add(Constants.UI.CELL_BG, trd, Drawable.class);
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
+			add("shipImage", trd, Drawable.class);
+		}
 
 		/*
 		 * Image Buttons

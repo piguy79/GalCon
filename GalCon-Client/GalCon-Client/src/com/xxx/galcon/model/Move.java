@@ -1,6 +1,5 @@
 package com.xxx.galcon.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -92,7 +91,6 @@ public class Move extends JsonConvertible implements JsonConstructable {
 
 	public float angleOfMovement() {
 		return new Vector2(endPosition.x - currentAnimation.x, endPosition.y - currentAnimation.y).angle();
-
 	}
 	
 	public Planet fromPlanet(List<Planet> planets){
@@ -114,7 +112,4 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		
 		return null;
 	}
-
-	
-
 }
