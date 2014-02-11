@@ -685,8 +685,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return false;
-		// return roundAnimated == gameBoard.roundInformation.currentRound;
+		return roundAnimated == gameBoard.roundInformation.currentRound;
 	}
 
 	@Override
