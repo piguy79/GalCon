@@ -32,14 +32,20 @@ exports.index = function(req, res) {
 exports.searchUsers = function(req, res){
 	var searchTerm = req.query['searchTerm'];
 	var session = req.query['session'];
+	var handle = req.query['handle'];
 	
 	if(!validate({handle : searchTerm, session : session}, res)) {
 		return;
 	}
 	
-	var p = userManager.findUserMatchingSearch(searchTerm);
+	var p = userManager.findUserMatchingSearch(searchTerm, handle);
 	p.then(function(people) {
-		res.json({items : _.map(people, function (person) { return {handle : person.handle, rank : person.rankInfo.level };})});
+		res.json({items : _.map(people, function (person) { 
+			return {
+					handle : person.handle, 
+					rank : person.rankInfo.level 
+				};
+			})});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 

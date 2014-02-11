@@ -187,6 +187,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
+		args.put("handle", GameLoop.USER.handle);
 		People people = (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
 		if (people.valid) {
 			callback.onConnectionResult(people);

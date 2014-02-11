@@ -161,9 +161,9 @@ describe("Testing interactions with the user model", function(){
 	it("should be able to search for Users", function(done){
 		var p = new mongoose.Promise();
 		p.then(function(){
-			return user.findUserMatchingSearch('t');
+			return user.findUserMatchingSearch('t', 'test');
 		}).then(function(people){
-			expect(people.length).toBe(2);
+			expect(people.length).toBe(1);
 			done();
 		}).then(null, function(err){
 			console.log(err);

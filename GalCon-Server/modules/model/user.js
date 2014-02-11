@@ -65,8 +65,8 @@ exports.findUserWithGames = function(handle){
 	return UserModel.findOne({"handle" : handle}).populate('currentGames').exec();
 }
 
-exports.findUserMatchingSearch = function(handle){
-	return UserModel.find({"handle" : new RegExp('^'+handle+'.*', "i")}).limit(10).exec();
+exports.findUserMatchingSearch = function(searchTerm, handle){
+	return UserModel.find({"handle" : new RegExp('^'+searchTerm+'.*', "i"), handle : {$ne : handle}}).limit(10).exec();
 }
 
 exports.addCoins = function(coinsToAdd, handle){
