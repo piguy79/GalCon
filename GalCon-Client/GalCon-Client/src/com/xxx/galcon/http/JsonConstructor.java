@@ -65,6 +65,14 @@ public class JsonConstructor {
 
 		return top;
 	}
+	
+	public static JSONObject findFriends(String session) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("session", session);
+
+		return top;
+	}
 
 	public static JSONObject requestHandle(String email, String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();

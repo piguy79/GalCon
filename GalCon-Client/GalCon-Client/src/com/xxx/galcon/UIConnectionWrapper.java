@@ -70,4 +70,8 @@ public class UIConnectionWrapper {
 	public static void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey){
 		gameAction.invitePlayerForGame(callback, requesterHandle, inviteeHandle, mapKey);
 	}
+	
+	public static void findFriends(UIConnectionResultCallback<People> callback, String handle){
+		gameAction.findFriends(callback, handle);
+	}
 }

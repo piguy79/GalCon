@@ -13,6 +13,10 @@ var userSchema = mongoose.Schema({
 		id : "String",
 		expireDate : "Date"
 	},
+	friends : [{
+		user : {type: mongoose.Schema.ObjectId, ref: 'User'},
+		played : "Number"
+	}],
 	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
 	consumedOrders : [{
 		orderId : "String",
@@ -54,7 +58,7 @@ exports.findUserByEmail = function(email) {
 }
 
 exports.findUserByHandle = function(handle){
-	return UserModel.findOne({"handle" : handle}).exec();
+	return UserModel.findOne({"handle" : handle}).populate('friends.user').exec();
 }
 
 exports.findUserWithGames = function(handle){

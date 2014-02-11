@@ -76,4 +76,6 @@ public interface GameAction {
 	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle);
 	
 	public void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey);
+	
+	public void findFriends(UIConnectionResultCallback<People> callback, String handle);
 }
