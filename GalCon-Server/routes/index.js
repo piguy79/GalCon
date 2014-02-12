@@ -857,6 +857,11 @@ exports.inviteUserToGame = function(req, res){
 
 exports.findPendingInvites = function(req, res){
 	var handle = req.query['handle']; 
+	var session = req.query['session'];
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
 	
 	var p = gameQueueManager.findByInvitee(handle);
 	p.then(function(queue){
@@ -866,7 +871,16 @@ exports.findPendingInvites = function(req, res){
 					handle : item.requester.handle,
 					rank : item.requester.rankInfo.level
 				},
-				gameId : item.gameId
+				inviteeHandle : handle,
+				minifiedGame : {
+					id : item.game._id,
+					players : _.map(game.players, function(player) { return { handle : player.handle, rank : player.rankInfo.level}}),
+					createdDate : item.game.createdDate,
+					moveAvailable : true,
+					winner : item.game.endGameInformation.winnerHandle,
+					winningDate : item.game.endGameInformation.winningDate,
+					map : item.game.map
+				}
 			};
 		});
 		res.json({items : returnList});

@@ -68,6 +68,7 @@ app.post('/sessions/exchangeToken', routes.exchangeToken);
 app.get('/search/user', routes.searchUsers);
 app.get('/friends', routes.findFriends);
 app.post('/gamequeue/invite', routes.inviteUserToGame);
+app.get('/gamequeue/pending', routes.findPendingInvites);
 
 
 var port = process.env.PORT || 3000;

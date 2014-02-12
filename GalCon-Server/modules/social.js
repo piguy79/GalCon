@@ -76,7 +76,7 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email, "auth.g" : authId} ,{ $set : {session : {}}}).exec();
+		return userManager.UserModel.findOneAndUpdate({email : email} ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({
@@ -84,7 +84,7 @@ exports.exchangeToken = function(authProvider, token) {
 				currentGames : [],
 				xp : 0,
 				wins : 0,
-				auth : [authId],
+				auth : {g : authId},
 				losses : 0,
 				coins : 10,
 				usedCoins : -1,

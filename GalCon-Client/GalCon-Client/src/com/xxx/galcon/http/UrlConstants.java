@@ -51,6 +51,8 @@ public class UrlConstants {
 	
 	public static final String FIND_FRIENDS = "/friends";
 
+	public static final String FIND_PENDING_INVITE = "/gamequeue/pending";
+
 	public static final String RECOVER_USED_COINS_COUNT = "/updateUsedCoinsRecover";
 	
 	public static final String INVITE_USER_TO_PLAY = "/gamequeue/invite";

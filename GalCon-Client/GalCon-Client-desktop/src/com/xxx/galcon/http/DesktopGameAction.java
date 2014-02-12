@@ -13,6 +13,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
@@ -50,6 +51,7 @@ import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
+import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
@@ -461,6 +463,21 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} else {
 			callback.onConnectionError(people.reason);
 		}
+	}
+
+	@Override
+	public void findPendingIvites(
+			UIConnectionResultCallback<GameQueue> callback, String handle) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("session", getSession());
+		args.put("handle", handle);
+		GameQueue queue = (GameQueue) callURL(new GetClientRequest(), FIND_PENDING_INVITE, args, new People());
+		if (queue.valid) {
+			callback.onConnectionResult(queue);
+		} else {
+			callback.onConnectionError(queue.reason);
+		}
+		
 	}
 
 

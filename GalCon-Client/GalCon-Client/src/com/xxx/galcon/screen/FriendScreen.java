@@ -24,7 +24,7 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
-import com.xxx.galcon.model.GameQueue;
+import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.model.GameInviteRequest;
 import com.xxx.galcon.model.People;

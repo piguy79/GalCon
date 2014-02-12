@@ -17,6 +17,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
@@ -59,6 +60,7 @@ import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
@@ -604,6 +606,21 @@ public class AndroidGameAction implements GameAction {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<People>(args, callback, FIND_FRIENDS, People.class)
+						.execute("");
+			}
+		});
+		
+	}
+
+	@Override
+	public void findPendingIvites(
+			final UIConnectionResultCallback<GameQueue> callback, String handle) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("session", getSession());
+		args.put("handle", handle);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<GameQueue>(args, callback, FIND_PENDING_INVITE, GameQueue.class)
 						.execute("");
 			}
 		});
