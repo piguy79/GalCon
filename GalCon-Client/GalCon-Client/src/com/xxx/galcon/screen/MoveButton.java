@@ -55,7 +55,7 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	private void addLabels() {
 		float padding = getWidth() * 0.1f;
 
-		ShaderLabel duration = new ShaderLabel(fontShader, "" + Math.ceil(move.duration), skin,
+		ShaderLabel duration = new ShaderLabel(fontShader, "" + (int) Math.ceil(move.duration), skin,
 				Constants.UI.DEFAULT_FONT_BLACK);
 		duration.setX(getWidth() - (duration.getTextBounds().width + padding));
 		duration.setY(getHeight() - (duration.getTextBounds().height + padding));
@@ -66,7 +66,6 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 
 		addActor(duration);
 		addActor(fleet);
-
 	}
 
 	private void createBackground() {

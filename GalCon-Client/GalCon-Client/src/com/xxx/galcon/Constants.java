@@ -37,6 +37,7 @@ public class Constants {
 		public static final String COIN = "coin";
 		public static final String DIALOG_BG = "dialogBg";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
+		public static final String EXPLOSION_PARTICLE = "explosionParticle";
 	}
 
 	public static class Auth {
@@ -109,7 +110,6 @@ public class Constants {
 	public static final String USED_COINS = "usedCoins";
 	public static final String POPULATION = "population";
 	public static final String SOCIAL = "social";
-
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

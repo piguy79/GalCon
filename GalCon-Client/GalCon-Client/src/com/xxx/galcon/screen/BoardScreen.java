@@ -1,8 +1,16 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
+import static java.lang.Math.floor;
+import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -33,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -284,7 +294,8 @@ public class BoardScreen implements ScreenFeedback {
 				}
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(scaleTo(0, 0, 0.5f));
+					movetoDisplay.addAction(scaleTo(0, 0, 0.8f));
+					addExplosion(move, tileWidth, tileHeight, 0.8f);
 				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
 				}
@@ -297,7 +308,41 @@ public class BoardScreen implements ScreenFeedback {
 		}
 
 		roundAnimated = gameBoard.roundInformation.currentRound;
+	}
 
+	private void addExplosion(Move move, float tileWidth, float tileHeight, float delay) {
+		int minNumberOfParticles = 6;
+		int maxNumberOfParticles = 15;
+		float ratio = ((float) move.shipsToMove) / 30.0f;
+		int numberOfParticles = min(maxNumberOfParticles, (int) floor(minNumberOfParticles
+				+ (maxNumberOfParticles - minNumberOfParticles) * ratio));
+
+		float circumference = (float) Math.PI * 2.0f;
+		float startRadius = tileWidth * 0.05f;
+		float particleSize = tileWidth * 0.2f;
+		float radiansBetweenParticles = circumference / (float) numberOfParticles;
+
+		Point tileCenter = pointInWorld(move.endPosition.x, move.endPosition.y);
+		tileCenter.x += tileWidth * 0.5f;
+		tileCenter.y += tileHeight * 0.5f;
+
+		for (float currentAngle = 0; currentAngle < circumference; currentAngle += radiansBetweenParticles) {
+			Image particle = new Image(skin, Constants.UI.EXPLOSION_PARTICLE);
+
+			float yStartOffset = (float) Math.sin(currentAngle) * startRadius;
+			float xStartOffset = (float) Math.cos(currentAngle) * startRadius;
+
+			particle.setColor(Color.CLEAR);
+			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
+			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
+			particle.addAction(sequence(delay(delay), color(Color.GREEN)));
+			particle.addAction(sequence(delay(delay),
+					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
+			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
+			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
+
+			stage.addActor(particle);
+		}
 	}
 
 	private void createMoveHud() {
@@ -685,7 +730,8 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return roundAnimated == gameBoard.roundInformation.currentRound;
+		// return roundAnimated == gameBoard.roundInformation.currentRound;
+		return false;
 	}
 
 	@Override
