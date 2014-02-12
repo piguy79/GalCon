@@ -14,6 +14,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
+import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
@@ -370,6 +371,7 @@ public class AndroidGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
+		args.put("handle", GameLoop.USER.handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<People>(args, callback, SEARCH_FOR_USERS, People.class).execute("");
@@ -591,6 +593,21 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
+
+	@Override
+	public void findFriends(final UIConnectionResultCallback<People> callback,
+			final String handle) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("session", getSession());
+		args.put("handle", handle);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<People>(args, callback, FIND_FRIENDS, People.class)
+						.execute("");
+			}
+		});
+		
 	}
 
 }

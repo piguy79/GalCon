@@ -10,6 +10,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 import static com.xxx.galcon.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
+import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
@@ -186,6 +187,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
+		args.put("handle", GameLoop.USER.handle);
 		People people = (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
 		if (people.valid) {
 			callback.onConnectionResult(people);
@@ -444,5 +446,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
+	
+
+	@Override
+	public void findFriends(UIConnectionResultCallback<People> callback,
+			String handle) {
+		
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("session", getSession());
+		args.put("handle", handle);
+		People people = (People) callURL(new GetClientRequest(), FIND_FRIENDS, args, new People());
+		if (people.valid) {
+			callback.onConnectionResult(people);
+		} else {
+			callback.onConnectionError(people.reason);
+		}
+	}
+
 
 }

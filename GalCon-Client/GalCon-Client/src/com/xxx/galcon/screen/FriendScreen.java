@@ -74,13 +74,14 @@ public class FriendScreen implements ScreenFeedback {
 
 	private void initialize() {
 		createBg();
-		//createWaitImage();
+		createWaitImage();
 		createBackButton();
 		createSearchLabel();
 		createSearchBox();
 		createSearchButton();
 		createScrollList();
 		createNoResultsFound();
+		showFriends();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -154,30 +155,27 @@ public class FriendScreen implements ScreenFeedback {
 		searchButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if(!searchButton.isDisabled()){
+				waitImage.setVisible(true);
 				scrollList.clearRows();
 				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
 					
 					@Override
 					public void onConnectionResult(People result) {
+						waitImage.setVisible(false);
 						if(result == null || result.people.size() == 0){
 							noResultsFound.setVisible(true);
 						}else{
 							noResultsFound.setVisible(false);
 						}
-						for(final MinifiedPlayer player: result.people){
-							scrollList.addRow(player, new ClickListener(){@Override
-							public void clicked(InputEvent event, float x,
-									float y) {
-								gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, player.handle, mapKey);
-								returnCode = Action.INVITE_PLAYER;
-								
-							}});
-						}
+						displayPeople(result);
 						searchBox.getOnscreenKeyboard().show(false);
 					}
+
+					
 					
 					@Override
 					public void onConnectionError(String msg) {
+						waitImage.setVisible(false);
 						searchLabel.setText(msg);
 					}
 				}, searchBox.getText());
@@ -186,6 +184,19 @@ public class FriendScreen implements ScreenFeedback {
 		
 		stage.addActor(searchButton);
 		
+	}
+	
+	private void displayPeople(People result) {
+		scrollList.clearRows();
+		for(final MinifiedPlayer player: result.people){
+			scrollList.addRow(player, new ClickListener(){@Override
+				public void clicked(InputEvent event, float x,
+						float y) {
+					gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, player.handle, mapKey);
+					returnCode = Action.INVITE_PLAYER;
+					
+				}});
+		}
 	}
 
 	private void createSearchBox() {
@@ -330,6 +341,22 @@ public class FriendScreen implements ScreenFeedback {
 
 	public void setMapType(String mapKey) {
 		this.mapKey = Long.valueOf(mapKey);
+	}
+
+	private void showFriends() {
+		waitImage.setVisible(true);
+		UIConnectionWrapper.findFriends(new UIConnectionResultCallback<People>() {
+			@Override
+			public void onConnectionResult(People result) {
+				waitImage.setVisible(false);
+				displayPeople(result);
+			}
+			
+			@Override
+			public void onConnectionError(String msg) {
+				waitImage.setVisible(false);				
+			}
+		}, GameLoop.USER.handle);
 	}
 
 }

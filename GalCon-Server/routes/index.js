@@ -32,14 +32,20 @@ exports.index = function(req, res) {
 exports.searchUsers = function(req, res){
 	var searchTerm = req.query['searchTerm'];
 	var session = req.query['session'];
+	var handle = req.query['handle'];
 	
 	if(!validate({handle : searchTerm, session : session}, res)) {
 		return;
 	}
 	
-	var p = userManager.findUserMatchingSearch(searchTerm);
+	var p = userManager.findUserMatchingSearch(searchTerm, handle);
 	p.then(function(people) {
-		res.json({items : _.map(people, function (person) { return {handle : person.handle, rank : person.rankInfo.level };})});
+		res.json({items : _.map(people, function (person) { 
+			return {
+					handle : person.handle, 
+					rank : person.rankInfo.level 
+				};
+			})});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -814,7 +820,7 @@ exports.inviteUserToGame = function(req, res){
 		
 	var p = validateSession(session, {"handle" : requesterHandle});
 	p.then(function(){
-		return userManager.findUserByHandle(requesterHandle);;
+		return userManager.findUserByHandle(requesterHandle);
 	}).then(function(user){
 		if(!inviteValidation.validate(user)){
 			throw new Error("Invalid Invite Request");
@@ -831,10 +837,22 @@ exports.inviteUserToGame = function(req, res){
 				creaatedtime : Date.now()
 		};
 		return gameQueueManager.GameQueueModel.withPromise(gameQueueManager.GameQueueModel.create, [queueItem]);
-	}).then(function(queueItem){
+	}).then(function(){
+		return userManager.findUserByHandle(inviteeHandle);
+	}).then(function(invitee){
+		var existingFriend =  _.filter(requestingUser.friends, function(friend){
+			return friend.user && friend.user.handle === inviteeHandle;
+		});
+		if(existingFriend && existingFriend.length > 0){
+			return userManager.UserModel.update({handle : requestingUser.handle , 'friends.user' : invitee._id } , 
+	                {$inc : {'friends.$.played' : 1} }).exec();
+		}else{
+			return userManager.UserModel.findOneAndUpdate({handle : requestingUser.handle}, {$push : {friends : {user : invitee, played :  1}}}).exec();
+
+		}
+	}).then(function(savedUser){
 		res.json(currentGame);
 	}).then(null, logErrorAndSetResponse(req, res));
-	
 }
 
 exports.findPendingInvites = function(req, res){
@@ -854,3 +872,28 @@ exports.findPendingInvites = function(req, res){
 		res.json({items : returnList});
 	}).then(null, logErrorAndSetResponse(req, res));
 };
+
+exports.findFriends = function(req, res){
+	var handle = req.query['handle'];
+	var session = req.query['session'];
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return userManager.findUserByHandle(handle);
+	}).then(function(user){
+		var sortedFriends = _.sortBy(user.friends, function(friend){
+			return -friend.played;
+		});
+		var result = _.map(sortedFriends, function(friend){
+			return {
+				handle : friend.user.handle,
+				rank : friend.user.rankInfo.level
+			}
+		})
+		res.json({items : result});
+	}).then(null, logErrorAndSetResponse(req, res));
+}
