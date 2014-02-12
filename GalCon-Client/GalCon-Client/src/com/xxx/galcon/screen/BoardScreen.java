@@ -78,10 +78,9 @@ public class BoardScreen implements ScreenFeedback {
 	private Camera camera;
 	private GameBoard gameBoard;
 	private ShaderProgram fontShader;
-	private List<Move> moves;
+	private List<Move> allMoves;
 
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
-	List<Move> inProgressMoves = new ArrayList<Move>();
 	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
 	private TextureAtlas levelAtlas;
@@ -123,7 +122,7 @@ public class BoardScreen implements ScreenFeedback {
 		gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 
-		this.moves = new ArrayList<Move>();
+		this.allMoves = new ArrayList<Move>();
 
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
@@ -137,24 +136,19 @@ public class BoardScreen implements ScreenFeedback {
 
 			}
 		});
-
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {
-		inProgressMoves.clear();
 		clearTouchedPlanets();
 		planetToMoveCount.clear();
 		inProgressHarvest.clear();
-		moves.clear();
+		allMoves.clear();
 
 		stage = new Stage();
 		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		this.gameBoard = gameBoard;
-		moves = new ArrayList<Move>();
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.belongsToPlayer(GameLoop.USER)) {
-				moves.add(move);
-			}
+			allMoves.add(move);
 		}
 		planetButtons.clear();
 		planetToMoveCount.clear();
@@ -270,8 +264,8 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createMoves() {
 		MoveFactory.setSkin(skin);
-		for (Move move : moves) {
-			if (move.belongsToPlayer(GameLoop.USER)) {
+		for (Move move : allMoves) {
+			if (move.belongsToPlayer(GameLoop.USER) || move.executed) {
 				float tileHeight = boardTable.getHeight() / gameBoard.heightInTiles;
 				float tileWidth = boardTable.getWidth() / gameBoard.widthInTiles;
 				Point initialPointInWorld = pointInWorld(move.previousPosition.x, move.previousPosition.y);
@@ -293,9 +287,15 @@ public class BoardScreen implements ScreenFeedback {
 							+ (tileHeight / 2) - shipMidPointOffsetY);
 				}
 
+				Color color = Color.GREEN;
+				if (!move.belongsToPlayer(GameLoop.USER)) {
+					color = Color.BLACK;
+					movetoDisplay.setColor(color);
+				}
+
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(scaleTo(0, 0, 0.8f));
-					addExplosion(move, tileWidth, tileHeight, 0.8f);
+					addExplosion(move, tileWidth, tileHeight, 0.8f, color);
 				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
 				}
@@ -310,7 +310,7 @@ public class BoardScreen implements ScreenFeedback {
 		roundAnimated = gameBoard.roundInformation.currentRound;
 	}
 
-	private void addExplosion(Move move, float tileWidth, float tileHeight, float delay) {
+	private void addExplosion(Move move, float tileWidth, float tileHeight, float delay, Color color) {
 		int minNumberOfParticles = 6;
 		int maxNumberOfParticles = 15;
 		float ratio = ((float) move.shipsToMove) / 30.0f;
@@ -335,7 +335,7 @@ public class BoardScreen implements ScreenFeedback {
 			particle.setColor(Color.CLEAR);
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
 			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
-			particle.addAction(sequence(delay(delay), color(Color.GREEN)));
+			particle.addAction(sequence(delay(delay), color(color)));
 			particle.addAction(sequence(delay(delay),
 					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
 			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
@@ -346,9 +346,17 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createMoveHud() {
+		final List<Move> userMoves = new ArrayList<Move>();
+
+		for (Move move : allMoves) {
+			if (move.belongsToPlayer(GameLoop.USER)) {
+				userMoves.add(move);
+			}
+		}
+
 		moveHud = new MoveHud(assetManager, skin, gameBoard, fontShader, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight() * 0.1f);
-		moveHud.addMoves(moves);
+		moveHud.addMoves(userMoves);
 
 		moveHud.addListener(new MoveListener() {
 
@@ -364,8 +372,9 @@ public class BoardScreen implements ScreenFeedback {
 			@Override
 			public void sendMove() {
 				List<Move> currentRoundMoves = new ArrayList<Move>();
-				for (Move move : moves) {
-					if (move.startingRound == gameBoard.roundInformation.currentRound) {
+				for (Move move : allMoves) {
+					if (move.belongsToPlayer(GameLoop.USER)
+							&& move.startingRound == gameBoard.roundInformation.currentRound) {
 						currentRoundMoves.add(move);
 					}
 				}
@@ -374,7 +383,6 @@ public class BoardScreen implements ScreenFeedback {
 				UIConnectionWrapper.performMoves(new UpdateBoardScreenResultHandler("Could not send moves"),
 						gameBoard.id, currentRoundMoves, inProgressHarvest);
 			}
-
 		});
 
 		stage.addActor(moveHud);
@@ -437,7 +445,6 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createGrid() {
-
 		float yOffset = boardTable.getHeight() / gameBoard.heightInTiles;
 		float xOffset = boardTable.getWidth() / gameBoard.widthInTiles;
 		Color grey = Color.GRAY;
@@ -461,7 +468,6 @@ public class BoardScreen implements ScreenFeedback {
 			horizontalLine.addListener(clearPlanetListener());
 			stage.addActor(horizontalLine);
 		}
-
 	}
 
 	private Point pointInWorld(float x, float y) {
@@ -710,7 +716,7 @@ public class BoardScreen implements ScreenFeedback {
 			Integer count = planetToMoveCount.get(newMove.fromPlanet);
 			planetToMoveCount.put(newMove.fromPlanet, count + newMove.shipsToMove);
 		}
-		moves.add(newMove);
+		allMoves.add(newMove);
 		moveHud.addMove(newMove);
 		moveDialog.hide();
 
@@ -720,13 +726,12 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void deleteMove(Move move) {
-		moves.remove(move);
+		allMoves.remove(move);
 		int offset = planetToMoveCount.get(move.fromPlanet);
 		offset -= move.shipsToMove;
 		planetToMoveCount.put(move.fromPlanet, offset);
 		planetMoveChange = true;
 		moveHud.removeMove(move);
-
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
@@ -878,14 +883,9 @@ public class BoardScreen implements ScreenFeedback {
 	public void resetState() {
 		returnCode = null;
 		roundAnimated = -2;
-		inProgressMoves.clear();
 		clearTouchedPlanets();
 
 		gameBoard = null;
-	}
-
-	public List<Move> getPendingMoves() {
-		return inProgressMoves;
 	}
 
 	public MenuScreenContainer getPreviousScreen() {
