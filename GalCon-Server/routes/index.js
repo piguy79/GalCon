@@ -441,6 +441,20 @@ exports.acceptInvite = function(req, res){
 		currentUser.currentGames.push(currentGame);
 		return currentUser.withPromise(currentUser.save);
 	}).then(function(user){
+		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
+	}).then(function(gameQueueItem){
+		return userManager.findUserByHandle(gameQueueItem.requester.handle);
+	}).then(function(requestingUser){
+		var existingFriend =  _.filter(currentUser.friends, function(friend){
+			return friend.user && friend.user.handle === requestingUser.handle;
+		});
+		if(existingFriend && existingFriend.length > 0){
+			return userManager.UserModel.update({handle : currentUser.handle , 'friends.user' : requestingUser._id } , 
+	                {$inc : {'friends.$.played' : 1} }).exec();
+		}else{
+			return userManager.UserModel.findOneAndUpdate({handle : currentUser.handle}, {$push : {friends : {user : requestingUser, played :  1}}}).exec();
+		}
+	}).then(function(){
 		return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
 	}).then(function(){
 		res.json(processGameReturn(currentGame))
