@@ -69,6 +69,7 @@ app.get('/search/user', routes.searchUsers);
 app.get('/friends', routes.findFriends);
 app.post('/gamequeue/invite', routes.inviteUserToGame);
 app.get('/gamequeue/pending', routes.findPendingInvites);
+app.get('/gamequeue/accept', routes.acceptInvite);
 
 
 var port = process.env.PORT || 3000;

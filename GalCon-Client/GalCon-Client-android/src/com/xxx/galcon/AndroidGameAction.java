@@ -5,6 +5,7 @@ import static com.xxx.galcon.Config.PORT;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
+import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
@@ -622,6 +623,22 @@ public class AndroidGameAction implements GameAction {
 			public void run() {
 				new GetJsonRequestTask<GameQueue>(args, callback, FIND_PENDING_INVITE, GameQueue.class)
 						.execute("");
+			}
+		});
+		
+	}
+
+	@Override
+	public void acceptInvite(final UIConnectionResultCallback<GameBoard> callback,
+			String gameId, String handle) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("handle", handle);
+		args.put("gameId", gameId);
+		args.put("session", getSession());
+
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<GameBoard>(args, callback, ACCEPT_INVITE, GameBoard.class).execute("");
 			}
 		});
 		

@@ -81,4 +81,7 @@ public interface GameAction {
 	public void findFriends(UIConnectionResultCallback<People> callback, String handle);
 	
 	public void findPendingIvites(UIConnectionResultCallback<GameQueue> callback, String handle);
+	
+	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
+
 }

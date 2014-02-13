@@ -79,4 +79,8 @@ public class UIConnectionWrapper {
 	public static void findPendingInvites(UIConnectionResultCallback<GameQueue> callback, String handle){
 		gameAction.findPendingIvites(callback, handle);
 	}
+	
+	public static void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle){
+		gameAction.acceptInvite(callback, gameId, handle);
+	}
 }

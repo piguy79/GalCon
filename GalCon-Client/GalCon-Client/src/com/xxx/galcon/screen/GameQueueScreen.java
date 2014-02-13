@@ -170,7 +170,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 				public void clicked(InputEvent event, float x,
 						float y) {
 					
-					UIConnectionWrapper.joinGame(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
+					UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
 				}});
 		}
 	}

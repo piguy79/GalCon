@@ -412,6 +412,41 @@ exports.joinGame = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
+exports.acceptInvite = function(req, res){
+	var gameId = req.query['gameId'];
+	var handle = req.query['handle'];
+	var session = req.query['session'];
+	
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
+		return;
+	}
+	
+	var currentUser;
+	var currentGame;
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return userManager.findUserByHandle(handle);
+	}).then(function(user){
+		currentUser = user;
+		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
+	}).then(function(game){
+		if(game.social && game.social === handle){
+			return gameManager.addUser(gameId, currentUser);
+		}else{
+			throw Error("User was no invited.");
+		}
+	}).then(function(savedGame){
+		currentGame = savedGame
+		currentUser.currentGames.push(currentGame);
+		return currentUser.withPromise(currentUser.save);
+	}).then(function(user){
+		return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
+	}).then(function(){
+		res.json(processGameReturn(currentGame))
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
 exports.resignGame = function(req, res) {
 	var handle = req.body.handle;
 	var session = req.body.session;

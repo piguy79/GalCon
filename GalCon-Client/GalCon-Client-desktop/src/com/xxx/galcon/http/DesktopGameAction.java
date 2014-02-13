@@ -3,6 +3,7 @@
  */
 package com.xxx.galcon.http;
 
+import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -477,6 +478,17 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} else {
 			callback.onConnectionError(queue.reason);
 		}
+		
+	}
+
+	@Override
+	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback,
+			String gameId, String handle) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("handle", handle);
+		args.put("gameId", gameId);
+		args.put("session", getSession());
+		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), ACCEPT_INVITE, args, new GameBoard()));
 		
 	}
 
