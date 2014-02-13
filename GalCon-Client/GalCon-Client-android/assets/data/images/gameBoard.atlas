@@ -40,9 +40,9 @@ player_hud
   index: -1
 ship
   rotate: false
-  xy: 921, 408
-  size: 89, 82
-  orig: 89, 82
+  xy: 921, 403
+  size: 97, 87
+  orig: 97, 87
   offset: 0, 0
   index: -1
 ship_selection_dialog

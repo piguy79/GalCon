@@ -289,9 +289,10 @@ public class BoardScreen implements ScreenFeedback {
 
 				Color color = Color.GREEN;
 				if (!move.belongsToPlayer(GameLoop.USER)) {
-					color = Color.BLACK;
-					movetoDisplay.setColor(color);
+					color = Color.RED;
 				}
+
+				movetoDisplay.setColor(color);
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(scaleTo(0, 0, 0.8f));
