@@ -429,15 +429,19 @@ exports.acceptInvite = function(req, res){
 		return userManager.findUserByHandle(handle);
 	}).then(function(user){
 		currentUser = user;
+		if(currentUser.coins < 1){
+			throw new Error(handle + " attempted to join a game with insufficient coins.");
+		}
 		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game){
 		if(game.social && game.social === handle){
 			return gameManager.addUser(gameId, currentUser);
 		}else{
-			throw Error("User was no invited.");
+			throw new Error("User was no invited.");
 		}
 	}).then(function(savedGame){
 		currentGame = savedGame
+		currentUser.coins--;
 		currentUser.currentGames.push(currentGame);
 		return currentUser.withPromise(currentUser.save);
 	}).then(function(user){
