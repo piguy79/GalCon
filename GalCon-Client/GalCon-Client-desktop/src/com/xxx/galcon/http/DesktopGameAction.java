@@ -221,11 +221,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			String postResponse = executeHttpRequest(clientRequest, path, parameters);
 			return buildObjectsFromResponse(converter, postResponse);
 		} catch (MalformedURLException e) {
-			System.out.println(e);
+			System.out.println(e.getStackTrace());
 		} catch (IOException e) {
-			System.out.println(e);
+			System.out.println(e.getStackTrace());
 		} catch (URISyntaxException e) {
-			System.out.println(e);
+			System.out.println(e.getStackTrace());
 		}
 
 		return null;
@@ -246,7 +246,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			return converter;
 
 		} catch (JSONException e) {
-			System.out.println(e);
+			System.out.println(e.getStackTrace());
 		}
 
 		return null;
@@ -471,7 +471,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("session", getSession());
 		args.put("handle", handle);
-		GameQueue queue = (GameQueue) callURL(new GetClientRequest(), FIND_PENDING_INVITE, args, new People());
+		GameQueue queue = (GameQueue) callURL(new GetClientRequest(), FIND_PENDING_INVITE, args, new GameQueue());
 		if (queue.valid) {
 			callback.onConnectionResult(queue);
 		} else {

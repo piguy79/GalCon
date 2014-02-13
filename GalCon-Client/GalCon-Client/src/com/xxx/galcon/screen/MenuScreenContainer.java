@@ -51,6 +51,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 	private PartialScreenFeedback currentScreen;
 
 	private GameListScreen currentGameScreen;
+	private GameQueueScreen gameQueueScreen;
 	private NoMoreCoinsDialog noMoreCoinsScreen;
 
 	private TextureAtlas menusAtlas;
@@ -70,6 +71,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		currentGameScreen = new GameListScreen(assetManager, skin);
+		gameQueueScreen = new GameQueueScreen(skin);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
 		loadingScreen = new LoadingScreen(skin, gameAction, inAppBillingAction, assetManager);
 
@@ -78,8 +80,10 @@ public class MenuScreenContainer implements ScreenFeedback {
 		screenResultHandlers.put(MainMenuScreen.class, new MainMenuScreenResultHandler());
 		screenResultHandlers.put(LevelSelectionScreen.class, new LevelSelectionScreenResultHandler());
 		screenResultHandlers.put(GameListScreen.class, new GameListScreenResultHandler());
+		screenResultHandlers.put(GameQueueScreen.class, new GameListScreenResultHandler());
 		screenResultHandlers.put(NoMoreCoinsDialog.class, new NoMoreCoinsDialogResultHandler());
 		screenResultHandlers.put(LoadingScreen.class, new LoadingScreenResultHandler());
+		
 
 		currentScreen = signInScreen;
 	}
@@ -251,6 +255,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 				return currentGameScreen;
 			} else if (nextScreen.equals(Action.COINS)) {
 				return noMoreCoinsScreen;
+			} else if(nextScreen.equals(Strings.INVITES)){
+				return gameQueueScreen;
 			}
 
 			return null;

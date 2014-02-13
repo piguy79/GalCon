@@ -408,7 +408,7 @@ exports.joinGame = function(req, res) {
 		user.currentGames.push(game);
 		return user.withPromise(user.save);
 	}).then(function() {
-		res.json(game);
+		res.json(processGameReturn(game));
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -874,7 +874,6 @@ exports.findPendingInvites = function(req, res){
 				inviteeHandle : handle,
 				minifiedGame : {
 					id : item.game._id,
-					players : _.map(game.players, function(player) { return { handle : player.handle, rank : player.rankInfo.level}}),
 					createdDate : item.game.createdDate,
 					moveAvailable : true,
 					winner : item.game.endGameInformation.winnerHandle,

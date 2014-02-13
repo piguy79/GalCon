@@ -24,6 +24,7 @@ import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.FriendScreen;
+import com.xxx.galcon.screen.GameQueueScreen;
 import com.xxx.galcon.screen.MenuScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 

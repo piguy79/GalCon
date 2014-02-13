@@ -58,6 +58,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderProgram fontShader;
 	private ShaderLabel newLabel;
 	private ShaderLabel continueLabel;
+	private ShaderLabel inviteLabel;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 
@@ -122,6 +123,25 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		});
 		stage.addActor(continueLabel);
 		actors.add(continueLabel);
+		
+		inviteLabel = new ShaderLabel(fontShader, Strings.INVITES, skin, Constants.UI.DEFAULT_FONT);
+		inviteLabel.setAlignment(Align.center);
+		inviteLabel.setWidth(width);
+		inviteLabel.setX(width / 2 - continueLabel.getWidth() / 2);
+		inviteLabel.setY(0.21f * height);
+		inviteLabel.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				startHideSequence(Strings.INVITES);
+			}
+		});
+		stage.addActor(inviteLabel);
+		actors.add(inviteLabel);
 
 		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);

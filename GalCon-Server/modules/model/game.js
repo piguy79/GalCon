@@ -466,7 +466,7 @@ var processMoves = function(player, game) {
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
 exports.addUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}).exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;

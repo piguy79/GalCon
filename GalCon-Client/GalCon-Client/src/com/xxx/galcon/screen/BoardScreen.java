@@ -796,6 +796,11 @@ public class BoardScreen implements ScreenFeedback {
 			planetButtons.get(planet.name)
 					.setText(new StringBuilder().append(planet.numberOfShips - offSet).toString());
 		}
+		
+		for(Move move : moves){
+			PlanetButton planet = planetButtons.get(move.toPlanet);
+			// Do something to highlight planets with pending moves
+		}
 	}
 
 	private void clearTouchedPlanets() {
