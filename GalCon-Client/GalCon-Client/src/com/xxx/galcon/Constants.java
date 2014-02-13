@@ -19,6 +19,7 @@ public class Constants {
 		public static final String DEFAULT_FONT_GREEN = "defaultFontGreen";
 		public static final String DEFAULT_FONT_RED = "defaultFontRed";
 		public static final String LARGE_FONT = "largeFont";
+		public static final String LARGE_FONT_BLACK = "largeFontBlack";
 
 		public static final String TEXT_FIELD = "textField";
 

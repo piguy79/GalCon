@@ -82,8 +82,8 @@ public class MoveHud extends Table {
 
 		moveButtonHolder.pad(getWidth() * 0.05f);
 
-		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.5f).padBottom(getHeight() * 0.12f)
-				.defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.15f).height(getHeight() * 0.85f);
+		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.4f).padBottom(getHeight() * 0.12f)
+				.defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.1f).height(getHeight() * 0.85f);
 
 		scrollPane = new ScrollPane(moveButtonHolder);
 		scrollPane.setScrollingDisabled(false, true);
@@ -91,12 +91,11 @@ public class MoveHud extends Table {
 		scrollPane.setWidth(moveButtonHolder.getWidth());
 
 		addActor(scrollPane);
-
 	}
 
 	private void addMoveToMap(final Move move) {
 		if (moves.get(move) == null) {
-			float buttonWidth = Gdx.graphics.getWidth() * 0.13f;
+			float buttonWidth = Gdx.graphics.getWidth() * 0.09f;
 			MoveButton button = new MoveButton(assetManager, gameBoard, move, skin, fontShader, buttonWidth,
 					getHeight() * 0.85f);
 

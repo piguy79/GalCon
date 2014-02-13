@@ -53,16 +53,17 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	}
 
 	private void addLabels() {
-		float padding = getWidth() * 0.1f;
+		float padX = getWidth() * 0.1f;
+		float padY = getHeight() * 0.1f;
 
 		ShaderLabel duration = new ShaderLabel(fontShader, "" + (int) Math.ceil(move.duration), skin,
 				Constants.UI.DEFAULT_FONT_BLACK);
-		duration.setX(getWidth() - (duration.getTextBounds().width + padding));
-		duration.setY(getHeight() - (duration.getTextBounds().height + padding));
+		duration.setX(getWidth() - (duration.getTextBounds().width + padX));
+		duration.setY(getHeight() - (duration.getTextBounds().height + padY));
 
 		ShaderLabel fleet = new ShaderLabel(fontShader, "" + move.shipsToMove, skin, Constants.UI.DEFAULT_FONT_BLACK);
-		fleet.setX(0);
-		fleet.setY(0);
+		fleet.setX(padX);
+		fleet.setY(padY + fleet.getStyle().font.getDescent());
 
 		addActor(duration);
 		addActor(fleet);
