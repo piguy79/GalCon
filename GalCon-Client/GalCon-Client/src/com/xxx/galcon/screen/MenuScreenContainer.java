@@ -256,6 +256,9 @@ public class MenuScreenContainer implements ScreenFeedback {
 			} else if (nextScreen.equals(Action.COINS)) {
 				return noMoreCoinsScreen;
 			} else if(nextScreen.equals(Strings.INVITES)){
+				if (GameLoop.USER.coins == 0) {
+					return noMoreCoinsScreen;
+				}
 				return gameQueueScreen;
 			}
 
