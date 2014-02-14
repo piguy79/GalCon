@@ -429,18 +429,36 @@ exports.acceptInvite = function(req, res){
 		return userManager.findUserByHandle(handle);
 	}).then(function(user){
 		currentUser = user;
+		if(currentUser.coins < 1){
+			throw new Error(handle + " attempted to join a game with insufficient coins.");
+		}
 		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game){
 		if(game.social && game.social === handle){
 			return gameManager.addUser(gameId, currentUser);
 		}else{
-			throw Error("User was no invited.");
+			throw new Error("User was no invited.");
 		}
 	}).then(function(savedGame){
 		currentGame = savedGame
+		currentUser.coins--;
 		currentUser.currentGames.push(currentGame);
 		return currentUser.withPromise(currentUser.save);
 	}).then(function(user){
+		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
+	}).then(function(gameQueueItem){
+		return userManager.findUserByHandle(gameQueueItem.requester.handle);
+	}).then(function(requestingUser){
+		var existingFriend =  _.filter(currentUser.friends, function(friend){
+			return friend.user && friend.user.handle === requestingUser.handle;
+		});
+		if(existingFriend && existingFriend.length > 0){
+			return userManager.UserModel.update({handle : currentUser.handle , 'friends.user' : requestingUser._id } , 
+	                {$inc : {'friends.$.played' : 1} }).exec();
+		}else{
+			return userManager.UserModel.findOneAndUpdate({handle : currentUser.handle}, {$push : {friends : {user : requestingUser, played :  1}}}).exec();
+		}
+	}).then(function(){
 		return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
 	}).then(function(){
 		res.json(processGameReturn(currentGame))
