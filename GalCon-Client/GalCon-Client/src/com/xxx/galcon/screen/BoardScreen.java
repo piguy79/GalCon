@@ -6,6 +6,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
@@ -65,8 +66,6 @@ import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.ship.selection.BoardScreenOptionsDialog;
-import com.xxx.galcon.screen.ship.selection.ExistingMoveDialog;
-import com.xxx.galcon.screen.ship.selection.MoveDialog;
 import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
 import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.Moon;
@@ -99,7 +98,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private Image boardTable;
 	private InputProcessor oldInputProcessor;
-	private MoveDialog moveDialog;
+	private ShipSelectionHud shipSelectionHud;
 	private MoveHud moveHud;
 	private BoardScreenPlayerHud playerHud;
 
@@ -133,7 +132,6 @@ public class BoardScreen implements ScreenFeedback {
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				stage.getRoot().fire(event);
-
 			}
 		});
 	}
@@ -652,15 +650,16 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderMoveDialog(final Planet one, final Planet two) {
 		Integer offSetCount = planetToMoveCount.get(one.name) == null ? 0 : planetToMoveCount.get(one.name);
-		moveDialog = new MoveDialog(one, two, offSetCount, assetManager, boardTable.getWidth() * 0.8f,
-				boardTable.getHeight() * 0.25f, skin, gameBoard.roundInformation.currentRound, stage);
-		setupPositionOFMoveDialog();
+		shipSelectionHud = new ShipSelectionHud(one, two, offSetCount, 0, gameBoard.roundInformation.currentRound,
+				assetManager, skin);
+		showShipSelectionHud();
 
-		moveDialog.addListener(new MoveListener() {
+		shipSelectionHud.addListener(new MoveListener() {
 
 			@Override
 			protected void performMove(Move move) {
 				createNewMove(move);
+				closeShipSelectionHud();
 			}
 
 			@Override
@@ -668,8 +667,9 @@ public class BoardScreen implements ScreenFeedback {
 				clearTouchedPlanets();
 				clearMoveActions(one);
 				clearMoveActions(two);
+				
+				closeShipSelectionHud();
 			}
-
 		});
 	}
 
@@ -678,37 +678,47 @@ public class BoardScreen implements ScreenFeedback {
 		planetButtons.get(planet.name).addAction(Actions.color(planet.getColor(), 0.4f));
 	}
 
-	private void setupPositionOFMoveDialog() {
-		float initialY = boardTable.getY() + (boardTable.getHeight() * 0.6f);
-		float initialX = boardTable.getX() + boardTable.getWidth() * 0.1f;
+	private void showShipSelectionHud() {
+		float height = Gdx.graphics.getHeight() * 0.1f;
 
-		moveDialog.setPosition(-boardTable.getWidth(), initialY);
+		shipSelectionHud.setPosition(0, Gdx.graphics.getHeight());
+		stage.addActor(shipSelectionHud);
 
-		moveDialog.show(new Point(initialX, initialY));
-		stage.addActor(moveDialog);
+		shipSelectionHud.addAction(moveTo(0, Gdx.graphics.getHeight() - height, 0.5f, Interpolation.circleOut));
 	}
 
 	private void renderMoveDialog(final Move move) {
 		int offset = planetToMoveCount.get(move.fromPlanet(gameBoard.planets).name);
-		moveDialog = new ExistingMoveDialog(move, move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
-				offset, assetManager, boardTable.getWidth() * 0.8f, boardTable.getHeight() * 0.25f, skin,
-				gameBoard.roundInformation.currentRound, stage);
-		setupPositionOFMoveDialog();
+		shipSelectionHud = new ShipSelectionHud(move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
+				offset, move.shipsToMove, gameBoard.roundInformation.currentRound, assetManager, skin);
+		showShipSelectionHud();
 
-		moveDialog.addListener(new MoveListener() {
+		shipSelectionHud.addListener(new MoveListener() {
 			@Override
 			public void cancelDialog() {
 				deleteMove(move);
+				closeShipSelectionHud();
 			}
 		});
 
-		moveDialog.addListener(new MoveListener() {
+		shipSelectionHud.addListener(new MoveListener() {
 			@Override
 			protected void performMove(Move newMove) {
 				deleteMove(move);
 				createNewMove(newMove);
+				closeShipSelectionHud();
 			}
 		});
+	}
+
+	private void closeShipSelectionHud() {
+		shipSelectionHud.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
+				run(new Runnable() {
+					@Override
+					public void run() {
+						shipSelectionHud.remove();
+					}
+				})));
 	}
 
 	private void createNewMove(Move newMove) {
@@ -719,7 +729,6 @@ public class BoardScreen implements ScreenFeedback {
 		}
 		allMoves.add(newMove);
 		moveHud.addMove(newMove);
-		moveDialog.hide();
 
 		clearMoveActions(newMove.fromPlanet(gameBoard.planets));
 		clearMoveActions(newMove.toPlanet(gameBoard.planets));
@@ -796,8 +805,7 @@ public class BoardScreen implements ScreenFeedback {
 			planetButtons.get(planet.name)
 					.setText(new StringBuilder().append(planet.numberOfShips - offSet).toString());
 		}
-		
-		
+
 	}
 
 	private void clearTouchedPlanets() {
