@@ -248,7 +248,6 @@ GameBuilder.prototype.createHomePlanet = function(x, y) {
 	planet.numberOfShips = 30;
 	planet.shipRegenRate = 5;
 	planet.isHome = "Y";
-	planet.ability = "attackModifier";
 
 	return planet;
 }

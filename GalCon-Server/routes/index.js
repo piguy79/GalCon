@@ -465,6 +465,43 @@ exports.acceptInvite = function(req, res){
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
+exports.declineInvite = function(req, res){
+	var gameId = req.query['gameId'];
+	var handle = req.query['handle'];
+	var session = req.query['session'];
+	
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
+		return;
+	}
+	
+	var requester;
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
+	}).then(function(gameQueueItem){
+		if(gameQueueItem.invitee === handle){
+			requester = gameQueueItem.requester;
+			return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
+		}else{
+			throw new Error("User" + handle +  " cannot decline game.");
+		}
+	}).then(function(){
+		requester.coins++;
+		requester.usedCoins = -1;
+		var currentGames = _.filter(requester.currentGames, function(id){
+			return id != gameId;
+		});
+		
+		requester.currentGames = currentGames;
+		return requester.withPromise(requester.save);
+	}).then(function(){
+		return gameManager.GameModel.remove({_id : gameId}).exec();
+	}).then(function(){
+		res.json({sucess : true});
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
 exports.resignGame = function(req, res) {
 	var handle = req.body.handle;
 	var session = req.body.session;

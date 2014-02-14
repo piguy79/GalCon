@@ -5,6 +5,7 @@ package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
+import static com.xxx.galcon.http.UrlConstants.DECLINE_INVITE;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
 import static com.xxx.galcon.http.UrlConstants.FIND_AVAILABLE_GAMES;
@@ -50,6 +51,7 @@ import com.xxx.galcon.http.request.ClientRequest;
 import com.xxx.galcon.http.request.GetClientRequest;
 import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
@@ -489,6 +491,17 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("gameId", gameId);
 		args.put("session", getSession());
 		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), ACCEPT_INVITE, args, new GameBoard()));
+		
+	}
+
+	@Override
+	public void declineInvite(UIConnectionResultCallback<BaseResult> callback,
+			String gameId, String handle) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("handle", handle);
+		args.put("gameId", gameId);
+		args.put("session", getSession());
+		callback.onConnectionResult((BaseResult) callURL(new GetClientRequest(), DECLINE_INVITE, args, new BaseResult()));
 		
 	}
 
