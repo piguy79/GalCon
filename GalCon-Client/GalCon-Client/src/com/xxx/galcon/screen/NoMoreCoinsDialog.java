@@ -364,10 +364,34 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		if (inventoryResult == null) {
 			waitImage.start();
-			ExternalActionWrapper.loadInventory(inventoryCallback);
+			loadUser();
 		} else {
 			inventoryCallback.onConnectionResult(inventoryResult);
 		}
+	}
+	
+	private void loadUser() {
+		UIConnectionWrapper.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
+
+			@Override
+			public void onConnectionResult(Player result) {
+				GameLoop.USER = result;
+				ExternalActionWrapper.loadInventory(inventoryCallback);
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
+						"Could not retrieve user.\n\nPlease try again.", menusAtlas, skin, fontShader),
+						new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								loadUser();
+							}
+						});
+				stage.addActor(ovrlay);
+			}
+		}, GameLoop.USER.handle);
 	}
 
 	@Override

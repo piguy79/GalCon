@@ -88,4 +88,8 @@ public class UIConnectionWrapper {
 	public static void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle){
 		gameAction.declineInvite(callback, gameId, handle);
 	}
+
+	public static void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle) {
+		gameAction.recoverUsedCoinCount(callback, handle);
+	}
 }
