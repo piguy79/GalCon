@@ -14,6 +14,8 @@ public class Constants {
 
 		public static final String SMALL_FONT = "smallFont";
 		public static final String SMALL_FONT_GREEN = "smallFontGreen";
+		public static final String SMALL_FONT_RED = "smallFontRed";
+
 		public static final String DEFAULT_FONT = "defaultFont";
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
 		public static final String DEFAULT_FONT_GREEN = "defaultFontGreen";

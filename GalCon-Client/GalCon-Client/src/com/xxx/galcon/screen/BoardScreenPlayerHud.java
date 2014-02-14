@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.xxx.galcon.Constants;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
@@ -90,8 +91,8 @@ public class BoardScreenPlayerHud extends Group {
 		addActor(vs);
 
 		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1))
-				: "[waiting for opponent]", skin, gameBoard.players.size() > 1 ? findFontStyleForPlayer(1)
-				: Constants.UI.SMALL_FONT_GREEN);
+				: waitingLabel(), skin, gameBoard.players.size() > 1 ? findFontStyleForPlayer(1)
+				: Constants.UI.SMALL_FONT_RED);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
@@ -100,10 +101,17 @@ public class BoardScreenPlayerHud extends Group {
 
 	}
 
+	private String waitingLabel() {
+		if(gameBoard.social != null){
+			return "[waiting for " + gameBoard.social + "]";
+		}
+		return "[waiting for opponent]";
+	}
+
 	private String findFontStyleForPlayer(int index) {
-		String playerFontStyle = Constants.UI.SMALL_FONT;
-		if (gameBoard.players.size() > index && !gameBoard.players.get(index).hasMoved(gameBoard)) {
-			playerFontStyle = Constants.UI.SMALL_FONT_GREEN;
+		String playerFontStyle = Constants.UI.SMALL_FONT_GREEN;
+		if (gameBoard.players.size() > index && !gameBoard.players.get(index).handle.equals(GameLoop.USER.handle)) {
+			playerFontStyle = Constants.UI.SMALL_FONT_RED;
 		}
 		return playerFontStyle;
 	}

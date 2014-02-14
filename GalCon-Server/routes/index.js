@@ -244,7 +244,8 @@ var minfiyGameResponse = function(games, handle){
 			moveAvailable : iHaveAMove,
 			winner : game.endGameInformation.winnerHandle,
 			winningDate : game.endGameInformation.winningDate,
-			map : game.map
+			map : game.map,
+			social : game.social
 		};
 	});
 }
@@ -968,7 +969,8 @@ exports.findPendingInvites = function(req, res){
 					moveAvailable : true,
 					winner : item.game.endGameInformation.winnerHandle,
 					winningDate : item.game.endGameInformation.winningDate,
-					map : item.game.map
+					map : item.game.map,
+					social : item.game.social
 				}
 			};
 		});
