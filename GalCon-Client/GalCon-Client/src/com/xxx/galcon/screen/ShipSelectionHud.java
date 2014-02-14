@@ -45,7 +45,7 @@ public class ShipSelectionHud extends Group {
 		this.setWidth(Gdx.graphics.getWidth());
 		this.setHeight(Gdx.graphics.getHeight() * 0.1f);
 
-		this.max = fromPlanet.numberOfShips - moveOffSetCount - initialNumber;
+		this.max = fromPlanet.numberOfShips - moveOffSetCount + initialNumber;
 		this.shipsToSend = initialNumber;
 		this.currentRound = currentRound;
 		this.planetsInvolved = new ArrayList<Planet>();
