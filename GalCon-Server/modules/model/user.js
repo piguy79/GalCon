@@ -137,4 +137,33 @@ exports.updateUsedCoins = function(handle, usedCoins){
 	return UserModel.findOneAndUpdate({handle : handle}, {$set : {usedCoins : usedCoins}}).exec();
 }
 
+exports.joinAGame = function(user, game){
+	return UserModel.findOneAndUpdate({$and : [{handle : user.handle}, {coins : {$gt : 0}}]}, 
+			{
+				$inc : {coins : -1},
+				$push : {currentGames : game}
+			}).exec();
+}
+
+exports.removeAGame = function(user, gameId){
+	return UserModel.findOneAndUpdate({handle : user.handle},
+			{
+				$inc : {coins : 1},
+				$set : {usedCoins : -1},
+				$pull : {currentGames : gameId}
+			}).exec();
+}
+
+exports.updateFriend = function(user, updateFriend){
+	var existingFriend =  _.filter(user.friends, function(friend){
+		return friend.user && friend.user.handle === updateFriend.handle;
+	});
+	if(existingFriend && existingFriend.length > 0){
+		return UserModel.update({handle : user.handle , 'friends.user' : updateFriend._id } , 
+                {$inc : {'friends.$.played' : 1} }).exec();
+	}else{
+		return UserModel.findOneAndUpdate({handle : user.handle}, {$push : {friends : {user : updateFriend, played :  1}}}).exec();
+	}
+}
+
 exports.UserModel = UserModel;

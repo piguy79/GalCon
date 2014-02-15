@@ -438,33 +438,26 @@ exports.acceptInvite = function(req, res){
 		if(game.social && game.social === handle){
 			return gameManager.addUser(gameId, currentUser);
 		}else{
-			throw new Error("User was no invited.");
+			throw new Error("User was not invited.");
 		}
 	}).then(function(savedGame){
-		currentGame = savedGame
-		currentUser.coins--;
-		currentUser.currentGames.push(currentGame);
-		return currentUser.withPromise(currentUser.save);
+		return userManage.joinAGame(currentUser, savedGame);
 	}).then(function(user){
+		if(!user){
+			throw new Error('Unable to join the game');
+		}
 		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
 	}).then(function(gameQueueItem){
 		return userManager.findUserByHandle(gameQueueItem.requester.handle);
 	}).then(function(requestingUser){
-		var existingFriend =  _.filter(currentUser.friends, function(friend){
-			return friend.user && friend.user.handle === requestingUser.handle;
-		});
-		if(existingFriend && existingFriend.length > 0){
-			return userManager.UserModel.update({handle : currentUser.handle , 'friends.user' : requestingUser._id } , 
-	                {$inc : {'friends.$.played' : 1} }).exec();
-		}else{
-			return userManager.UserModel.findOneAndUpdate({handle : currentUser.handle}, {$push : {friends : {user : requestingUser, played :  1}}}).exec();
-		}
+		return userManager.updateFriend(currentUser, requestingUser);
 	}).then(function(){
 		return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
 	}).then(function(){
 		res.json(processGameReturn(currentGame))
 	}).then(null, logErrorAndSetResponse(req, res));
 }
+
 
 exports.declineInvite = function(req, res){
 	var gameId = req.query['gameId'];
@@ -488,14 +481,7 @@ exports.declineInvite = function(req, res){
 			throw new Error("User" + handle +  " cannot decline game.");
 		}
 	}).then(function(){
-		requester.coins++;
-		requester.usedCoins = -1;
-		var currentGames = _.filter(requester.currentGames, function(id){
-			return id != gameId;
-		});
-		
-		requester.currentGames = currentGames;
-		return requester.withPromise(requester.save);
+		return userManager.removeAGame(requester, gameId);
 	}).then(function(){
 		return gameManager.GameModel.remove({_id : gameId}).exec();
 	}).then(function(){
@@ -931,16 +917,7 @@ exports.inviteUserToGame = function(req, res){
 	}).then(function(){
 		return userManager.findUserByHandle(inviteeHandle);
 	}).then(function(invitee){
-		var existingFriend =  _.filter(requestingUser.friends, function(friend){
-			return friend.user && friend.user.handle === inviteeHandle;
-		});
-		if(existingFriend && existingFriend.length > 0){
-			return userManager.UserModel.update({handle : requestingUser.handle , 'friends.user' : invitee._id } , 
-	                {$inc : {'friends.$.played' : 1} }).exec();
-		}else{
-			return userManager.UserModel.findOneAndUpdate({handle : requestingUser.handle}, {$push : {friends : {user : invitee, played :  1}}}).exec();
-
-		}
+		return userManager.updateFriend(requestingUser, invitee);
 	}).then(function(savedUser){
 		res.json(currentGame);
 	}).then(null, logErrorAndSetResponse(req, res));
