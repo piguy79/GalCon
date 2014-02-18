@@ -8,8 +8,14 @@ exports.validate = function(gameId, handle, moves){
 	var promise = new mongoose.Promise();
 	var p = gameManager.findById(gameId);
 	p.then(function(game) {
-		var valid = runValidate(game, handle, moves);
+		var valid = false;
+		if(moves && moves.length > 0){
+			valid = runValidate(game, handle, moves);
+		}else{
+			valid = runPlayerValidate(game, handle);
+		}
 		promise.complete({success : valid});
+		
 	}).then(null, function(err){promise.complete({success : false});});
 	
 	return promise;
@@ -18,7 +24,11 @@ exports.validate = function(gameId, handle, moves){
 
 var runValidate = function(game, handle, moves){
 	return playerOwnsFromPlanets(game, handle, moves) && fleetsCannotExceedTheNumberOfShipsOnAPlanet(game.planets, moves) 
-	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game);
+	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game) && playerIsPartOfThisGame(game, handle);
+}
+
+var runPlayerValidate = function(game, handle){
+	return playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game) && playerIsPartOfThisGame(game, handle);
 }
 
 var playerOwnsFromPlanets = function(game, handle, moves){
@@ -72,4 +82,12 @@ var gameIsNotOver = function(game){
 	};
 	
 	return true;
+}
+
+var playerIsPartOfThisGame = function(game, handle){
+	var movePlayer = _.filter(game.players, function(player){
+		return player.handle === handle;
+	});
+		
+	return movePlayer && movePlayer !== "" ? true : false;
 }
