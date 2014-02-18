@@ -60,6 +60,7 @@ import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
@@ -639,6 +640,22 @@ public class AndroidGameAction implements GameAction {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<GameBoard>(args, callback, ACCEPT_INVITE, GameBoard.class).execute("");
+			}
+		});
+		
+	}
+
+	@Override
+	public void declineInvite(final UIConnectionResultCallback<BaseResult> callback,
+			String gameId, String handle) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("handle", handle);
+		args.put("gameId", gameId);
+		args.put("session", getSession());
+
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<BaseResult>(args, callback, ACCEPT_INVITE, BaseResult.class).execute("");
 			}
 		});
 		

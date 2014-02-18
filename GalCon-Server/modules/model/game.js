@@ -316,7 +316,7 @@ exports.findAvailableGames = function(player) {
 };
 
 exports.findCollectionOfGames = function(searchIds){
-	return GameModel.find({_id : {$in : searchIds}}, '_id players endGameInformation createdDate currentRound map').populate('players').exec();
+	return GameModel.find({_id : {$in : searchIds}}, '_id players endGameInformation createdDate currentRound map social').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {

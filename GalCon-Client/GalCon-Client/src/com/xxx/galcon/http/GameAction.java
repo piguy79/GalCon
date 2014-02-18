@@ -6,6 +6,7 @@ import com.jirbo.adcolony.AdColonyVideoListener;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
@@ -83,5 +84,8 @@ public interface GameAction {
 	public void findPendingIvites(UIConnectionResultCallback<GameQueue> callback, String handle);
 	
 	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
+	
+	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle);
+
 
 }

@@ -12,6 +12,7 @@ var gameQueueSchema = mongoose.Schema({
 gameQueueSchema.set('toObject', { getters: true });
 gameQueueSchema.index({requester : 1});
 gameQueueSchema.index({invitee : 1});
+gameQueueSchema.index({game : 1});
 
 var GameQueueModel = db.model('GameQueue', gameQueueSchema);
 exports.GameQueueModel = GameQueueModel;

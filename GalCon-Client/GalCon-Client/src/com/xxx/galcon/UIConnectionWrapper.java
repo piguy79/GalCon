@@ -6,6 +6,7 @@ import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
@@ -82,5 +83,13 @@ public class UIConnectionWrapper {
 	
 	public static void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle){
 		gameAction.acceptInvite(callback, gameId, handle);
+	}
+	
+	public static void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle){
+		gameAction.declineInvite(callback, gameId, handle);
+	}
+
+	public static void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle) {
+		gameAction.recoverUsedCoinCount(callback, handle);
 	}
 }

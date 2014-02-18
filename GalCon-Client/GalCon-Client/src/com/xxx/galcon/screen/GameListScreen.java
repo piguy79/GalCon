@@ -154,7 +154,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		String opponent;
 		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
 		if (otherPlayers.size() == 0) {
-			opponent = "[waiting for opponent]";
+			opponent = waitingLabel(game);
 		} else {
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}
@@ -202,6 +202,13 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		mapLabel.setX(width * 0.08f);
 
 		group.addActor(mapLabel);
+	}
+
+	private String waitingLabel(MinifiedGame game) {
+		if(game.social != null){
+			return "[waiting for " + game.social + "]";
+		}
+		return "[waiting for opponent]";
 	}
 
 	@Override
