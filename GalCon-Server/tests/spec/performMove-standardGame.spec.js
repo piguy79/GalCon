@@ -18,8 +18,10 @@ describe("Perform Move - Standard -", function() {
 	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
 
 	var PLAYER_1_HOME_PLANET = "HOME_PLANET_1";
+	var PLAYER_2_HOME_PLANET = "HOME_PLANET_2";
 	var UNOWNED_PLANET_1 = "UNOWNED_PLANET_1";
-	var PLANETS = [ elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
+	var PLANETS = [ elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}),
+	                elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 3, 30, { x : 3, y : 4}),
 	                              elementBuilder.createPlanet(UNOWNED_PLANET_1, "", 3, 20, { x : 3, y : 5}) ];
 	
 	beforeEach(function(done) {
@@ -158,6 +160,7 @@ describe("Perform Move - Standard -", function() {
 		}).then(done);
 	});
 
+	// The game is over when the second move is run
 	it("Move should be deleted after next round", function(done) {
 		var testMove = elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 6, 1);
 		var moves = [ testMove ];
