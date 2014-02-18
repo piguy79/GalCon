@@ -146,7 +146,7 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should reset the harvest state on a planet when it is captured during harvest", function(done){
 		var currentGameId;
-		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
+		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 20, 1) ];
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
@@ -158,14 +158,13 @@ describe("Harvest an ability planet -", function() {
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : captureHarvestPlanet, handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			console.log(game);
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
 			expect(abilityPlanet.harvest.status).toBe("INACTIVE");
 			expect(abilityPlanet.harvest.saveRound).toBe(1);
 			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 30 - 12 = 18.
 			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 23
-			expect(abilityPlanet.numberOfShips).toBe(23);
+			expect(abilityPlanet.numberOfShips).toBe(13);
 			done();
 		}).then(null, function(err){
 			console.log(err);
@@ -236,7 +235,7 @@ describe("Harvest an ability planet -", function() {
 	it("Should remove the harvest status if a saved planet is recaptured", function(done){
 		var currentGameId;
 		var timeOfMove = 271625;
-		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
+		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 20, 1) ];
 		var reCaptureHarvestPlanet = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
@@ -253,9 +252,9 @@ describe("Harvest an ability planet -", function() {
 			expect(abilityPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
 			expect(abilityPlanet.harvest.status).toBe("INACTIVE");
 			expect(abilityPlanet.harvest.saveRound).toBe(1);
-			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 30 - 12 = 18.
-			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 23
-			expect(abilityPlanet.numberOfShips).toBe(23);
+			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 20 - 12 = 8.
+			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 13
+			expect(abilityPlanet.numberOfShips).toBe(13);
 			return gameRunner.performTurn(currentGameId, {moves : reCaptureHarvestPlanet, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
