@@ -3,6 +3,7 @@ package com.xxx.galcon.screen;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
@@ -12,6 +13,8 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Util.createShader;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -111,7 +113,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private MenuScreenContainer previousScreen;
 
-	private TextOverlay overlay;
+	private Overlay overlay;
 
 	public BoardScreen(UISkin skin, AssetManager assetManager, TweenManager tweenManager) {
 		this.assetManager = assetManager;
@@ -316,16 +318,16 @@ public class BoardScreen implements ScreenFeedback {
 		int numberOfParticles = min(maxNumberOfParticles, (int) floor(minNumberOfParticles
 				+ (maxNumberOfParticles - minNumberOfParticles) * ratio));
 
-		float circumference = (float) Math.PI * 2.0f;
+		float circleInRadians = (float) Math.PI * 2.0f;
 		float startRadius = tileWidth * 0.05f;
 		float particleSize = tileWidth * 0.2f;
-		float radiansBetweenParticles = circumference / (float) numberOfParticles;
+		float radiansBetweenParticles = circleInRadians / (float) numberOfParticles;
 
 		Point tileCenter = pointInWorld(move.endPosition.x, move.endPosition.y);
 		tileCenter.x += tileWidth * 0.5f;
 		tileCenter.y += tileHeight * 0.5f;
 
-		for (float currentAngle = 0; currentAngle < circumference; currentAngle += radiansBetweenParticles) {
+		for (float currentAngle = 0; currentAngle < circleInRadians; currentAngle += radiansBetweenParticles) {
 			Image particle = new Image(skin, Constants.UI.EXPLOSION_PARTICLE);
 
 			float yStartOffset = (float) Math.sin(currentAngle) * startRadius;
@@ -341,6 +343,52 @@ public class BoardScreen implements ScreenFeedback {
 			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
 
 			stage.addActor(particle);
+		}
+	}
+
+	private void highlightPath(Planet fromPlanet, Planet toPlanet, float tileWidth, float tileHeight) {
+		float tileDistance = GalConMath.distance(fromPlanet.position, toPlanet.position);
+		float numParticles = (float) Math.ceil(tileDistance * 2.0f);
+
+		float particleSize = tileWidth * 0.2f;
+
+		Point startPointInWorld = pointInWorld(fromPlanet.position.x, fromPlanet.position.y);
+		startPointInWorld.x += tileWidth * 0.5f;
+		startPointInWorld.y += tileHeight * 0.5f;
+
+		Point endPointInWorld = pointInWorld(toPlanet.position.x, toPlanet.position.y);
+		endPointInWorld.x += tileWidth * 0.5f;
+		endPointInWorld.y += tileHeight * 0.5f;
+
+		float distanceInPixels = (float) sqrt(pow(endPointInWorld.x - startPointInWorld.x, 2)
+				+ pow(endPointInWorld.y - startPointInWorld.y, 2));
+		float distanceBetweenParticlesInPixels = distanceInPixels / numParticles;
+
+		float angle = (float) Math.atan((endPointInWorld.y - startPointInWorld.y)
+				/ (endPointInWorld.x - startPointInWorld.x));
+
+		if (endPointInWorld.x < startPointInWorld.x) {
+			angle -= Math.PI;
+		}
+
+		float startDelay = 0.0f;
+		for (float dist = tileHeight * 0.25f; dist < distanceInPixels; dist += distanceBetweenParticlesInPixels) {
+			Image particle = new Image(skin, "shipImage");
+
+			float yStartOffset = (float) Math.sin(angle) * dist;
+			float xStartOffset = (float) Math.cos(angle) * dist;
+
+			particle.setColor(Color.YELLOW);
+			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
+			particle.setBounds(startPointInWorld.x + xStartOffset - particleSize * 0.5f, startPointInWorld.y
+					+ yStartOffset - particleSize * 0.5f, particleSize, particleSize);
+			particle.rotate((float) Math.toDegrees(angle));
+			particle.addAction(sequence(delay(startDelay),
+					forever(sequence(color(Color.BLACK, 0.5f), color(Color.YELLOW, 0.5f)))));
+			startDelay += 0.1f;
+
+			particle.setY(particle.getY() - getHudHeight());
+			overlay.addActor(particle);
 		}
 	}
 
@@ -363,8 +411,9 @@ public class BoardScreen implements ScreenFeedback {
 			protected void performMove(Move move) {
 				if (move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard)) {
 					renderMoveDialog(move);
+					highlight(move, false);
 				} else {
-					highlightMove(move);
+					highlight(move, true);
 				}
 			}
 
@@ -387,51 +436,83 @@ public class BoardScreen implements ScreenFeedback {
 		stage.addActor(moveHud);
 	}
 
-	private void highlightMove(Move move) {
+	private void highlight(Move move, boolean dismissable) {
+		highlight(move, move.fromPlanet, move.toPlanet, dismissable);
+	}
+
+	private void highlight(Planet fromPlanet, Planet toPlanet, boolean dismissable) {
+		highlight(null, fromPlanet.name, toPlanet.name, dismissable);
+	}
+
+	private void highlight(final Move move, String fromPlanetName, String toPlanetName, boolean dismissable) {
 		float tileWidthInWorld = boardTable.getWidth() / gameBoard.widthInTiles;
 		float tileHeightInWorld = boardTable.getHeight() / gameBoard.heightInTiles;
 
 		PlanetButtonFactory.setup(assetManager, tileWidthInWorld, tileHeightInWorld, skin);
-		final PlanetButton fromPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(
-				gameBoard.getPlanet(move.fromPlanet), gameBoard, roundHasAlreadyBeenAnimated());
-		final PlanetButton toPlanet = PlanetButtonFactory.createPlanetButtonWithExpansion(
-				gameBoard.getPlanet(move.toPlanet), gameBoard, roundHasAlreadyBeenAnimated());
-		positionPlanet(fromPlanet);
-		positionPlanet(toPlanet);
+		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButtonWithExpansion(
+				gameBoard.getPlanet(fromPlanetName), gameBoard, roundHasAlreadyBeenAnimated());
+		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButtonWithExpansion(
+				gameBoard.getPlanet(toPlanetName), gameBoard, roundHasAlreadyBeenAnimated());
+		positionPlanet(fromPlanetButton);
+		positionPlanet(toPlanetButton);
 
-		Point position = pointInWorld(move.currentPosition.x, move.currentPosition.y);
-		final Image moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
-				PlanetButtonFactory.tileWidthInWorld, position);
+		final Image moveToDisplay;
+		final SingleMoveInfoHud singleMoveHud;
+		if (move != null) {
+			Point position = pointInWorld(move.currentPosition.x, move.currentPosition.y);
+			moveToDisplay = MoveFactory.createShipForDisplay(move, PlanetButtonFactory.tileHeightInWorld,
+					PlanetButtonFactory.tileWidthInWorld, position);
+			singleMoveHud = new SingleMoveInfoHud(move, assetManager, fontShader, skin, Gdx.graphics.getWidth(),
+					moveHud.getHeight());
+			singleMoveHud.setX(moveHud.getX());
+			singleMoveHud.setY(moveHud.getY());
+		} else {
+			moveToDisplay = null;
+			singleMoveHud = null;
+		}
 
-		final SingleMoveInfoHud sinlgeMoveHud = new SingleMoveInfoHud(move, assetManager, fontShader, skin,
-				Gdx.graphics.getWidth(), moveHud.getHeight());
-		sinlgeMoveHud.setX(moveHud.getX());
-		sinlgeMoveHud.setY(moveHud.getY());
+		if (dismissable) {
+			overlay = new DismissableOverlay(menuAtlas, new ClickListener() {
 
-		DismissableOverlay overlay = new DismissableOverlay(menuAtlas, new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					fromPlanetButton.remove();
+					toPlanetButton.remove();
+					if (singleMoveHud != null) {
+						singleMoveHud.remove();
+					}
 
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				fromPlanet.remove();
-				toPlanet.remove();
-				moveToDisplay.remove();
-				sinlgeMoveHud.remove();
-			}
-		});
+					if (moveToDisplay != null) {
+						moveToDisplay.remove();
+					}
+				}
+			});
+			overlay.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - getHudHeight());
+		} else {
+			float hudHeight = getHudHeight();
+			overlay = new Overlay(menuAtlas);
+			overlay.setBounds(0, hudHeight, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - 2 * hudHeight);
+
+			fromPlanetButton.setY(fromPlanetButton.getY() - hudHeight);
+			toPlanetButton.setY(toPlanetButton.getY() - hudHeight);
+		}
+
 		stage.addActor(overlay);
-		stage.addActor(fromPlanet);
-		stage.addActor(toPlanet);
-		stage.addActor(moveToDisplay);
-		stage.addActor(sinlgeMoveHud);
+		overlay.addActor(fromPlanetButton);
+		overlay.addActor(toPlanetButton);
+		if (moveToDisplay != null) {
+			stage.addActor(moveToDisplay);
+		}
+		if (singleMoveHud != null) {
+			stage.addActor(singleMoveHud);
+		}
 
-		fromPlanet.addAction(fadePlanetInAndOut(fromPlanet));
-		toPlanet.addAction(fadePlanetInAndOut(toPlanet));
-
+		highlightPath(gameBoard.getPlanet(fromPlanetName), gameBoard.getPlanet(toPlanetName), tileWidthInWorld,
+				tileHeightInWorld);
 	}
 
-	private RepeatAction fadePlanetInAndOut(PlanetButton planetButton) {
-		return Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 0), 0.7f),
-				Actions.color(planetButton.planet.getColor(), 0.5f)));
+	private float getHudHeight() {
+		return Gdx.graphics.getHeight() * 0.1f;
 	}
 
 	private ClickListener clearPlanetListener() {
@@ -653,13 +734,15 @@ public class BoardScreen implements ScreenFeedback {
 		shipSelectionHud = new ShipSelectionHud(one, two, offSetCount, 0, gameBoard.roundInformation.currentRound,
 				assetManager, skin);
 		showShipSelectionHud();
+		highlight(one, two, false);
 
 		shipSelectionHud.addListener(new MoveListener() {
 
 			@Override
 			protected void performMove(Move move) {
 				createNewMove(move);
-				closeShipSelectionHud();
+				hideShipSelectionHud();
+				overlay.remove();
 			}
 
 			@Override
@@ -667,8 +750,9 @@ public class BoardScreen implements ScreenFeedback {
 				clearTouchedPlanets();
 				clearMoveActions(one);
 				clearMoveActions(two);
-				
-				closeShipSelectionHud();
+
+				hideShipSelectionHud();
+				overlay.remove();
 			}
 		});
 	}
@@ -681,10 +765,10 @@ public class BoardScreen implements ScreenFeedback {
 	private void showShipSelectionHud() {
 		float height = Gdx.graphics.getHeight() * 0.1f;
 
-		shipSelectionHud.setPosition(0, Gdx.graphics.getHeight());
+		shipSelectionHud.setPosition(0, -height);
 		stage.addActor(shipSelectionHud);
 
-		shipSelectionHud.addAction(moveTo(0, Gdx.graphics.getHeight() - height, 0.5f, Interpolation.circleOut));
+		shipSelectionHud.addAction(moveTo(0, 0, 0.5f, Interpolation.circleOut));
 	}
 
 	private void renderMoveDialog(final Move move) {
@@ -692,12 +776,14 @@ public class BoardScreen implements ScreenFeedback {
 		shipSelectionHud = new ShipSelectionHud(move.fromPlanet(gameBoard.planets), move.toPlanet(gameBoard.planets),
 				offset, move.shipsToMove, gameBoard.roundInformation.currentRound, assetManager, skin);
 		showShipSelectionHud();
+		highlight(move, false);
 
 		shipSelectionHud.addListener(new MoveListener() {
 			@Override
 			public void cancelDialog() {
 				deleteMove(move);
-				closeShipSelectionHud();
+				hideShipSelectionHud();
+				overlay.remove();
 			}
 		});
 
@@ -706,14 +792,15 @@ public class BoardScreen implements ScreenFeedback {
 			protected void performMove(Move newMove) {
 				deleteMove(move);
 				createNewMove(newMove);
-				closeShipSelectionHud();
+				hideShipSelectionHud();
+				overlay.remove();
 			}
 		});
 	}
 
-	private void closeShipSelectionHud() {
-		shipSelectionHud.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
-				run(new Runnable() {
+	private void hideShipSelectionHud() {
+		shipSelectionHud.addAction(sequence(
+				moveTo(0, 0 - Gdx.graphics.getHeight() * 0.1f, 0.5f, Interpolation.circleOut), run(new Runnable() {
 					@Override
 					public void run() {
 						shipSelectionHud.remove();

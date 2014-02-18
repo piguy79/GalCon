@@ -10,7 +10,7 @@ public class DismissableOverlay extends Overlay {
 	private Overlay delegate;
 
 	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, ClickListener clickListener) {
-		super(menusAtlas, 0.8f);
+		super(menusAtlas);
 		this.delegate = delegate;
 
 		this.addListener(new ClickListener() {
