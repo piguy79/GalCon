@@ -1058,6 +1058,8 @@ public class BoardScreen implements ScreenFeedback {
 
 		gameBoard = null;
 		moveShipCount = null;
+		moveInfoHud = null;
+		moveHud = null;
 	}
 
 	public MenuScreenContainer getPreviousScreen() {
