@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
@@ -74,6 +75,7 @@ import com.xxx.galcon.screen.ship.selection.PlanetInformationDialog;
 import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
+import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class BoardScreen implements ScreenFeedback {
 
@@ -104,6 +106,7 @@ public class BoardScreen implements ScreenFeedback {
 	private InputProcessor oldInputProcessor;
 	private ShipSelectionHud shipSelectionHud;
 	private SingleMoveInfoHud moveInfoHud;
+	private ShaderLabel moveShipCount;
 	private MoveHud moveHud;
 	private BoardScreenPlayerHud playerHud;
 
@@ -774,9 +777,26 @@ public class BoardScreen implements ScreenFeedback {
 
 			@Override
 			public void sliderUpdate(int value) {
-				moveInfoHud.updateShips(value);
+				updateShipCount(value);
 			}
 		});
+	}
+
+	private void updateShipCount(int value) {
+		moveInfoHud.updateShips(value);
+		if (moveShipCount == null) {
+			moveShipCount = new ShaderLabel(fontShader, "0", skin, Constants.UI.X_LARGE_FONT);
+			moveShipCount.setWidth(Gdx.graphics.getWidth());
+			moveShipCount.setX(0);
+			moveShipCount.setY(Gdx.graphics.getHeight() * 0.5f - moveShipCount.getHeight() * 0.5f);
+			moveShipCount.setAlignment(Align.center, Align.center);
+			moveShipCount.setTouchable(Touchable.disabled);
+			stage.addActor(moveShipCount);
+		}
+		moveShipCount.clearActions();
+		moveShipCount.setText("" + value);
+		moveShipCount.setColor(Color.WHITE);
+		moveShipCount.addAction(alpha(0.0f, 0.8f));
 	}
 
 	private void clearMoveActions(Planet planet) {
@@ -828,7 +848,7 @@ public class BoardScreen implements ScreenFeedback {
 
 			@Override
 			public void sliderUpdate(int value) {
-				moveInfoHud.updateShips(value);
+				updateShipCount(value);
 			}
 		});
 	}
@@ -844,6 +864,11 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void hideMoveInfoHud() {
+		if (moveShipCount != null) {
+			moveShipCount.remove();
+			moveShipCount = null;
+		}
+
 		if (moveInfoHud != null) {
 			moveInfoHud.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
 					run(new Runnable() {
@@ -1032,6 +1057,7 @@ public class BoardScreen implements ScreenFeedback {
 		clearTouchedPlanets();
 
 		gameBoard = null;
+		moveShipCount = null;
 	}
 
 	public MenuScreenContainer getPreviousScreen() {
