@@ -17,20 +17,26 @@ public abstract class MoveListener implements EventListener {
 			cancelDialog();
 		} else if (event instanceof HarvestEvent) {
 			handleHarvest(((HarvestEvent) event).getPlanetToHarvest());
+		} else if (event instanceof SliderUpdateEvent) {
+			sliderUpdate(((SliderUpdateEvent) event).value);
 		}
 		return false;
+	}
+
+	public void sliderUpdate(int value) {
+
 	}
 
 	protected void performMove(Move move) {
 	}
 
 	public void sendMove() {
-	};
+	}
 
 	public void cancelDialog() {
-	};
+	}
 
 	public void handleHarvest(Planet planet) {
-	};
+	}
 
 }

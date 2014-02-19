@@ -1,4 +1,4 @@
-package com.xxx.galcon.screen;
+package com.xxx.galcon.screen.hud;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.MoveEvent;
+import com.xxx.galcon.screen.event.SliderUpdateEvent;
 import com.xxx.galcon.screen.widget.ActionButton;
 
 public class ShipSelectionHud extends Group {
@@ -121,6 +122,7 @@ public class ShipSelectionHud extends Group {
 			public void changed(ChangeEvent event, Actor actor) {
 				shipsToSend = (int) slider.getValue();
 				okButton.setDisabled(shipsToSend == 0);
+				fire(new SliderUpdateEvent(shipsToSend));
 			}
 		});
 
