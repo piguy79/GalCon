@@ -54,3 +54,24 @@ exports.authIdFromGoogle = function(token){
 	
 	return returnP;
 };
+
+exports.authIdFromFacebook = function(token){
+	var returnP = new mongoose.Promise();
+	
+	var clientP = new mongoose.Promise();
+	clientP.complete();
+	clientP.then(function(){
+		var client = facebook.user(token);
+		client.me.info(function(err, data){
+			console.log("Error from FB: " + err);
+			console.log("Data from FB: " + data);
+			if(err){
+				returnP.reject("Unable to load ID");
+			}else{
+				returnP.complete(data.id);
+			}
+		});
+	});
+	return returnP;
+	
+}

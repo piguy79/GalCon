@@ -7,7 +7,8 @@ var googleapis = require('googleapis'),
 	socialProviders = require('./socialProviders');
 
 var authIdRequest = {
-		google : socialProviders.authIdFromGoogle
+		google : socialProviders.authIdFromGoogle,
+		facebook : socialProviders.authIdFromFacebook
 };
 
 var isValid = function(authProvider, token) {
