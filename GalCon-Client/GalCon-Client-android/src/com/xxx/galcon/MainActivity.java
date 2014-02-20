@@ -13,6 +13,10 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
+import com.facebook.Session;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
@@ -31,7 +35,9 @@ import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
-	public static final int SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
+	public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
+	public static final int FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE = 57030;
+
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
@@ -223,12 +229,27 @@ public class MainActivity extends AndroidApplication {
 
 	@Override
 	protected void onActivityResult(int request, int response, Intent data) {
-		if (request == SIGN_IN_ACTIVITY_RESULT_CODE) {
+		if (request == GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(response);
 		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
+		}  else if(request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE){
+			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE, response, data);
+			socialAction.onActivityResult(response);
 		}
 	}
+	
+	public String findUserName(){
+		
+		return "";
+	}
+	
+	@Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = Session.getActiveSession();
+        Session.saveSession(session, outState);
+    }
 
 	private Order purchaseToOrder(Purchase purchase) {
 		Order order = new Order();

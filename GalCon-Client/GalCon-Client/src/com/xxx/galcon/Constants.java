@@ -46,6 +46,7 @@ public class Constants {
 	public static class Auth {
 		public static final String SOCIAL_AUTH_PROVIDER = "socialAuthProvider";
 		public static final String SOCIAL_AUTH_PROVIDER_GOOGLE = "google";
+		public static final String SOCIAL_AUTH_PROVIDER_FACEBOOK = "facebook";
 		public static final String LAST_SESSION_ID = "lastSessionId";
 		public static final String EMAIL = "email";
 	}

@@ -93,7 +93,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	public void onConnectionFailed(ConnectionResult result) {
 		if (result.hasResolution()) {
 			try {
-				result.startResolutionForResult(activity, MainActivity.SIGN_IN_ACTIVITY_RESULT_CODE);
+				result.startResolutionForResult(activity, MainActivity.GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE);
 			} catch (SendIntentException e) {
 				Crashlytics.logException(e);
 				Gdx.app.postRunnable(new Runnable() {
