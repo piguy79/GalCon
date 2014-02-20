@@ -48,19 +48,23 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	@Override
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
-		new RetrieveTokenTask().execute(GameLoop.USER.email);
-		
+		if(plusClient.isConnected()){
+			new RetrieveTokenTask().execute(plusClient.getAccountName());
+		}else{
+			plusClient = new PlusClient.Builder(activity, this, this).setScopes(scopes).build();
+			plusClient.connect();
+		}
 	}
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		GameLoop.USER.email = plusClient.getAccountName();
+		GameLoop.USER.authId = plusClient.getCurrentPerson().getId()  + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		prefs.putString(Constants.EMAIL, GameLoop.USER.email);
+		prefs.putString(Constants.ID, GameLoop.USER.authId);
 		prefs.flush();
 
-		new RetrieveTokenTask().execute(GameLoop.USER.email);
+		new RetrieveTokenTask().execute(plusClient.getAccountName());
 	}
 
 	@Override

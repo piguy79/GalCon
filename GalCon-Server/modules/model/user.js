@@ -3,7 +3,7 @@ var mongoose = require('./mongooseConnection').mongoose
 ,ObjectId = require('mongoose').Types.ObjectId;
 
 var userSchema = mongoose.Schema({
-	email : "String",
+	authId : "String",
 	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
@@ -44,17 +44,14 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.set('toObject', { getters: true });
-userSchema.index({email : 1});
+userSchema.index({authId : 1});
 userSchema.index({handle: 1});
 userSchema.index({"sessions.sessionId" : 1});
-userSchema.index({"auth.g" : 1});
-userSchema.index({"auth.t" : 1});
-userSchema.index({"auth.f" : 1});
 
 var UserModel = db.model('User', userSchema);
 
-exports.findUserByEmail = function(email) {
-	return UserModel.findOne({email : email}).exec();
+exports.findUserById = function(id) {
+	return UserModel.findOne({authId : id}).exec();
 }
 
 exports.findUserByHandle = function(handle){

@@ -19,14 +19,14 @@ import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
-import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
-import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.xxx.galcon.http.UrlConstants.RESIGN_GAME;
 import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
@@ -359,13 +359,13 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String email) {
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String id) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("email", email);
+		args.put("id", id);
 		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_EMAIL, Player.class).execute("");
+				new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_ID, Player.class).execute("");
 			}
 		});
 	}
@@ -414,13 +414,13 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void requestHandleForEmail(final UIConnectionResultCallback<HandleResponse> callback, String email,
+	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id,
 			String handle) {
 		try {
-			final JSONObject top = JsonConstructor.requestHandle(email, handle, getSession());
+			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_EMAIL, HandleResponse.class)
+					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class)
 							.execute(top.toString());
 				}
 			});

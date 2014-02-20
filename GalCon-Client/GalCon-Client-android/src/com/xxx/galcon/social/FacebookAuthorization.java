@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -51,7 +52,16 @@ public class FacebookAuthorization implements Authorizer {
 
 	@Override
 	public void onActivityResult(int responseCode) {
-       ((MainActivity)activity).findUserName();
+       Request.newGraphPathRequest(Session.getActiveSession(), "me", new Request.Callback() {
+		
+		@Override
+		public void onCompleted(Response response) {
+			System.out.println(response.toString());
+			
+		}
+	}).executeAsync();
+      
+       
 	}
 	
 	

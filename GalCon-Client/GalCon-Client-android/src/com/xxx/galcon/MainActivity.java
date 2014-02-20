@@ -239,10 +239,6 @@ public class MainActivity extends AndroidApplication {
 		}
 	}
 	
-	public String findUserName(){
-		
-		return "";
-	}
 	
 	@Override
     protected void onSaveInstanceState(Bundle outState) {

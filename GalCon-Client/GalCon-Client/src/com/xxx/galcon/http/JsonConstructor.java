@@ -74,10 +74,10 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject requestHandle(String email, String handle, String session) throws JSONException {
+	public static JSONObject requestHandle(String id, String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("email", email);
+		top.put("id", id);
 		top.put("handle", handle);
 		top.put("session", session);
 

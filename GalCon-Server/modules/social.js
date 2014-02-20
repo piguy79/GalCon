@@ -21,7 +21,6 @@ exports.exchangeToken = function(authProvider, token) {
 	var p = new mongoose.Promise();
 	p.complete();
 	
-	var email;
 	var authId;
 	
 	return p.then(function() {
@@ -55,19 +54,10 @@ exports.exchangeToken = function(authProvider, token) {
 					console.log("Google Plus API - Error - %j", err);
 					gapiP.reject(err.message);
 				} else {
-					if(result.emails) {
-						result.emails.forEach(function(emailObj) {
-							if(emailObj.type === "account") {
-								email = emailObj.value;
-							}
-						})
-					}
 					if(result.id){
-						authId = result.id;
+						authId = result.id + ":" + authProvider;
 					}
-					if(email === undefined || email.length < 3) {
-						gapiP.reject("Unable to find email address");
-					} else if(authId === undefined){
+					if(authId === undefined){
 						gapiP.reject("Unable to load ID");
 					} else {
 						gapiP.complete();
@@ -76,15 +66,14 @@ exports.exchangeToken = function(authProvider, token) {
 			});
 		return gapiP;
 	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email} ,{ $set : {session : {}}}).exec();
+		return userManager.UserModel.findOneAndUpdate({authId : authId} ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({
-				email : email,
+				authId : authId,
 				currentGames : [],
 				xp : 0,
 				wins : 0,
-				auth : {g : authId},
 				losses : 0,
 				coins : 10,
 				usedCoins : -1,
@@ -105,7 +94,7 @@ exports.exchangeToken = function(authProvider, token) {
 			id : session,
 			expireDate : Date.now() + 4 * 60 * 60 * 1000
 		};
-		return userManager.UserModel.findOneAndUpdate({email : email}, {$set : {email : email, session : sessionObj}}, {upsert: true}).exec();
+		return userManager.UserModel.findOneAndUpdate({authId : authId}, {$set : {authId : authId, session : sessionObj}}, {upsert: true}).exec();
 	}).then(function(user) {
 		return user.session.id;
 	});

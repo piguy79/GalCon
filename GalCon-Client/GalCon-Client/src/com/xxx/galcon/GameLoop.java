@@ -77,7 +77,7 @@ public class GameLoop extends Game {
 	@Override
 	public void create() {
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		GameLoop.USER.email = prefs.getString(Constants.EMAIL, "");
+		
 
 		/*
 		 * Assume OpenGL ES 2.0 support has been validated by platform specific
