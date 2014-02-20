@@ -1,0 +1,54 @@
+BoardScreen
+	X Make the back button work by fixing the logic in GameLoop.
+	X Make ships rotate towards the planet they are moving towards.
+	X Fix planet positioning. - DO THIS NEXT.
+	X Handle moving with 0 ships.
+	X The weird render problem on the top left of the screen
+	X Handle the fact that everything is still clickable when a dialog is present
+	X Add back the ability to click a move from a previous round and see its target and destination planets
+	X Create a planet information dialog
+	X Planet info dialog planet ship number is incorrect
+	X Fix the button placement on the moveDialog. Make the Move Dialog a CancelEnabledDialog
+	X Things are screwed up after closing the dialog. This seems to be related to selecting two different planets when its not your turn.
+	X Add back the ability to add a harvest move. - THIS WILL NEED SOME REFACTORING ON THE MOVE HUD
+	X Click a free planet, then click it again. Now click an owned planet. There is a bug where the dialog shows but only your planet is glowing
+	X The Move Hud gets screwed up when adding active moves. They start to overlap eachother
+	X Fix the layout of the names in the player hud.
+	X Finalize colors for the planets. - THE Green looks horrible, too bright. The red is too close to ship color. Moons would help with weird color
+	X The huds need work in general to make sure sizing is correct for buttons and any other actors.
+	X It looks better with two slash lines in the player hud
+	X The cancel button needs to fade out first when cancelled like the other buttons
+	X The planet info dialog is not showing when its not your move
+	X 0 Ship movements needs protection
+	X The number of ships available when opening the existing move dialog is wrong.
+	X Add a moon to the planet information dialog
+	- Create a new icon for the harvest button.
+	X The Harvest button should only be enabled when you have an ability planet which is not currently under harvest.
+	X Should there be a way to cancel a harvest? I dont think so - NO
+	X Moons for ability planets
+	X The orbit on moons looks like it is slightly to the right, investigate this
+	M We will need a texture for each type of ability. - the current ones look really out of place next to the flat planets
+	X I need to show that a harvest is in progress. FOR NOW I HAVE JUST MADE THE MOON GLOW
+	X Add a population count to planets, store it, decrease it while under harvest - NEED to DECREASE WHILE UNDER HARVEST
+	X Make it obvious when a planet is "DEAD". - WORK ON THIS NEXT 
+	X Sort moves in the MoveHud
+	X I think ships are eating the touch event for planets - WORK ON THIS NEXT
+	X Planets look stretched on bigger maps.
+	X Show a loading dialog when the user clicks send move.
+	X Check with Matt about the fading in and out on the highlightMove function
+	X The renderDialog method is garbage... CLEAN IT UP! This also includes making planet information displayable for all planets
+	X Create a Hud to display when a move is selected showing the # of ships sent along with the # of rounds to send them. Display it where the MoveHud usually is
+	X Change the button to be a group. Add the image and label seperatly.
+	X Do something about planet info when the planet is DEAD
+	X Moves which have been executed are still visible after you animate and then perform move.
+	- Moon textures need to be done.
+	- Speed ability is not displayed when showing a planet. I think this is actually regen which is not displayed
+	- Are we still going with block regen? - Possibly invert to act as a regen bonus. See if this is too unbalanced
+	X Ship slider is not the correct size on the move dialog
+	X End game scenario - Server side too. I now block any further moves if the game is over.
+	- Text on the current move select. Seems a little crap
+	- Handle moves which over shoot a planet
+	- Some better way to represent when a planet is clicked. Not very obvious right now.
+	
+MoveButton
+	X The Labels still do not display correctly.
