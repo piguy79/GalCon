@@ -50,7 +50,7 @@ public class MoveFactory {
 
 			float dist = (float) sqrt(pow(xLength, 2) + pow(yLength, 2));
 
-			float offsetRadius = 0.15f;
+			float offsetRadius = 0.08f;
 			float ratio = offsetRadius / dist;
 
 			float xOffset = xLength * ratio;
@@ -68,9 +68,8 @@ public class MoveFactory {
 			move.previousPosition = pos;
 			move.currentPosition = pos;
 			move.startPosition = pos;
-
-			move.playerHandle = GameLoop.USER.handle;
 			move.duration = GalConMath.distance(startX, startY, endX, endY);
+			move.playerHandle = GameLoop.USER.handle;
 
 			return move;
 		}

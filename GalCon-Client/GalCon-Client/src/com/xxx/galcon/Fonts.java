@@ -13,6 +13,7 @@ public class Fonts {
 	private BitmapFont smallFont;
 	private BitmapFont mediumFont;
 	private BitmapFont largeFont;
+	private BitmapFont xLargeFont;
 
 	private Fonts() {
 		float width = Gdx.graphics.getWidth();
@@ -29,6 +30,10 @@ public class Fonts {
 		largeFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		largeFont.getRegion().getTexture().setFilter(Linear, Linear);
 		largeFont.setScale(3.0f * scaleFactor);
+
+		xLargeFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
+		xLargeFont.getRegion().getTexture().setFilter(Linear, Linear);
+		xLargeFont.setScale(9.0f * scaleFactor);
 	}
 
 	public static Fonts getInstance(AssetManager assetManager) {
@@ -48,5 +53,9 @@ public class Fonts {
 
 	public BitmapFont largeFont() {
 		return largeFont;
+	}
+
+	public BitmapFont xLargeFont() {
+		return xLargeFont;
 	}
 }
