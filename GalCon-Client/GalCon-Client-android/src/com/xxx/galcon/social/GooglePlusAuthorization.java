@@ -19,6 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.model.people.Person;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
@@ -27,7 +28,7 @@ import com.xxx.galcon.http.AuthenticationListener;
 
 public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks, OnConnectionFailedListener {
 	private PlusClient plusClient;
-	private String scopes = Scopes.PLUS_LOGIN + " https://www.googleapis.com/auth/userinfo.email";
+	private String scopes = Scopes.PLUS_LOGIN;
 
 	private Activity activity;
 	private AuthenticationListener listener;
