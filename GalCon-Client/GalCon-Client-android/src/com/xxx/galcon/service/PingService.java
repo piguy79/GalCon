@@ -1,5 +1,9 @@
 package com.xxx.galcon.service;
 
+import static com.xxx.galcon.Config.HOST;
+import static com.xxx.galcon.Config.PORT;
+import static com.xxx.galcon.Config.PROTOCOL;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -26,6 +30,7 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.xxx.galcon.AndroidConfig;
 import com.xxx.galcon.Config;
 import com.xxx.galcon.Connection;
 import com.xxx.galcon.Constants;
@@ -41,6 +46,7 @@ public class PingService extends Service {
 	private static final int SLEEP_TIME = 4 * 60 * 1000;
 	private static final int LONG_SLEEP_TIME = 60 * 60 * 1000;
 	private static final String DELETE_KEY = "DELETE";
+	private Config config = new AndroidConfig();
 
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -77,8 +83,9 @@ public class PingService extends Service {
 			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 			try {
-				HttpURLConnection connection = Connection.establishGetConnection(Config.getValue(Config.HOST),
-						Config.getValue(Config.PORT), UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE, args);
+				HttpURLConnection connection = Connection
+						.establishGetConnection(config.getValue(PROTOCOL), config.getValue(HOST),
+								config.getValue(PORT), UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE, args);
 				GameCount result = (GameCount) Connection.doRequest(connectivityManager, connection, new GameCount());
 				parseResult(result);
 			} catch (IOException e) {

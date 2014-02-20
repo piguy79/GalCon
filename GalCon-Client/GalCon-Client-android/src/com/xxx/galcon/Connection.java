@@ -23,7 +23,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
 public class Connection {
 	public static final int CONNECTION_TIMEOUT = 10000;
 
-	public static HttpURLConnection establishGetConnection(String host, String port, String path,
+	public static HttpURLConnection establishGetConnection(String protocol, String host, String port, String path,
 			Map<String, String> args) throws IOException {
 		StringBuilder sb = new StringBuilder("?");
 
@@ -31,7 +31,7 @@ public class Connection {
 			sb.append(arg.getKey()).append("=").append(arg.getValue()).append("&");
 		}
 
-		URL url = new URL("https://" + host + ":" + port + path + sb.toString());
+		URL url = new URL(protocol + "://" + host + ":" + port + path + sb.toString());
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
 		connection.setRequestMethod("GET");
@@ -40,9 +40,9 @@ public class Connection {
 		return connection;
 	}
 
-	public static HttpURLConnection establishPostConnection(String host, String port, String path, String... params)
-			throws IOException {
-		URL url = new URL("https://" + host + ":" + port + path);
+	public static HttpURLConnection establishPostConnection(String protocol, String host, String port, String path,
+			String... params) throws IOException {
+		URL url = new URL(protocol + "://" + host + ":" + port + path);
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
 		connection.setDoOutput(true);

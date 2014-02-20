@@ -2,6 +2,7 @@ package com.xxx.galcon;
 
 import static com.xxx.galcon.Config.HOST;
 import static com.xxx.galcon.Config.PORT;
+import static com.xxx.galcon.Config.PROTOCOL;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.MainActivity.LOG_NAME;
@@ -81,6 +82,7 @@ public class AndroidGameAction implements GameAction {
 	private Activity activity;
 	private SocialAction socialAction;
 	private GameLoop gameLoop;
+	private Config config = new AndroidConfig();
 
 	private class SilentSignInAuthenticationListener<T extends JsonConvertible> implements AuthenticationListener {
 
@@ -305,22 +307,22 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
-	
+
 	@Override
-	public void invitePlayerForGame(
-			final UIConnectionResultCallback<GameBoard> callback,
-			String requesterHandle, String inviteeHandle, Long mapKey) {
+	public void invitePlayerForGame(final UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
+			String inviteeHandle, Long mapKey) {
 		try {
 			final JSONObject top = JsonConstructor.invite(requesterHandle, inviteeHandle, getSession(), mapKey);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback, INVITE_USER_TO_PLAY, GameBoard.class).execute(top.toString());
+					new PostJsonRequestTask<GameBoard>(callback, INVITE_USER_TO_PLAY, GameBoard.class).execute(top
+							.toString());
 				}
 			});
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-		
+
 	}
 
 	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
@@ -414,8 +416,7 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id,
-			String handle) {
+	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id, String handle) {
 		try {
 			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
 			activity.runOnUiThread(new Runnable() {
@@ -437,7 +438,8 @@ public class AndroidGameAction implements GameAction {
 
 		@Override
 		public HttpURLConnection establishConnection(String... params) throws IOException {
-			return Connection.establishPostConnection(Config.getValue(HOST), Config.getValue(PORT), path, params);
+			return Connection.establishPostConnection(config.getValue(PROTOCOL), config.getValue(HOST),
+					config.getValue(PORT), path, params);
 		}
 	}
 
@@ -452,7 +454,8 @@ public class AndroidGameAction implements GameAction {
 
 		@Override
 		public HttpURLConnection establishConnection(String... params) throws IOException {
-			return Connection.establishGetConnection(Config.getValue(HOST), Config.getValue(PORT), path, args);
+			return Connection.establishGetConnection(config.getValue(PROTOCOL), config.getValue(HOST),
+					config.getValue(PORT), path, args);
 		}
 	}
 
@@ -600,38 +603,33 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void findFriends(final UIConnectionResultCallback<People> callback,
-			final String handle) {
+	public void findFriends(final UIConnectionResultCallback<People> callback, final String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("session", getSession());
 		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<People>(args, callback, FIND_FRIENDS, People.class)
-						.execute("");
+				new GetJsonRequestTask<People>(args, callback, FIND_FRIENDS, People.class).execute("");
 			}
 		});
-		
+
 	}
 
 	@Override
-	public void findPendingIvites(
-			final UIConnectionResultCallback<GameQueue> callback, String handle) {
+	public void findPendingIvites(final UIConnectionResultCallback<GameQueue> callback, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("session", getSession());
 		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<GameQueue>(args, callback, FIND_PENDING_INVITE, GameQueue.class)
-						.execute("");
+				new GetJsonRequestTask<GameQueue>(args, callback, FIND_PENDING_INVITE, GameQueue.class).execute("");
 			}
 		});
-		
+
 	}
 
 	@Override
-	public void acceptInvite(final UIConnectionResultCallback<GameBoard> callback,
-			String gameId, String handle) {
+	public void acceptInvite(final UIConnectionResultCallback<GameBoard> callback, String gameId, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", handle);
 		args.put("gameId", gameId);
@@ -642,12 +640,11 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<GameBoard>(args, callback, ACCEPT_INVITE, GameBoard.class).execute("");
 			}
 		});
-		
+
 	}
 
 	@Override
-	public void declineInvite(final UIConnectionResultCallback<BaseResult> callback,
-			String gameId, String handle) {
+	public void declineInvite(final UIConnectionResultCallback<BaseResult> callback, String gameId, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", handle);
 		args.put("gameId", gameId);
@@ -658,7 +655,7 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<BaseResult>(args, callback, ACCEPT_INVITE, BaseResult.class).execute("");
 			}
 		});
-		
+
 	}
 
 }
