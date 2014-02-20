@@ -9,7 +9,6 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
-import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Move;
