@@ -33,7 +33,7 @@ exports.exchangeToken = function(authProvider, token) {
 			throw new Error("Invalid request");
 		}
 	}).then(function() {
-		return authIdRequest[authProvider].call(this, token);
+		return authIdRequest['google'].call(this, token);
 	}).then(function(authId) {
 		var authId = authId;
 		return userManager.UserModel.findOneAndUpdate({authId : authId} ,{ $set : {session : {}}}).exec();
