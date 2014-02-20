@@ -16,14 +16,14 @@ import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
-import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.xxx.galcon.http.UrlConstants.JOIN_GAME;
 import static com.xxx.galcon.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.xxx.galcon.http.UrlConstants.PERFORM_MOVES;
 import static com.xxx.galcon.http.UrlConstants.RECOVER_USED_COINS_COUNT;
 import static com.xxx.galcon.http.UrlConstants.REDUCE_TIME;
-import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_EMAIL;
+import static com.xxx.galcon.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.xxx.galcon.http.UrlConstants.RESIGN_GAME;
 import static com.xxx.galcon.http.UrlConstants.SEARCH_FOR_USERS;
 
@@ -54,7 +54,6 @@ import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
-import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Inventory;
@@ -110,14 +109,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 	}
 
-	public void requestHandleForEmail(UIConnectionResultCallback<HandleResponse> callback, String email, String handle) {
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle) {
 		try {
-			JSONObject top = JsonConstructor.requestHandle(email, handle, getSession());
+			JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			HandleResponse response = (HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_EMAIL, args,
+			HandleResponse response = (HandleResponse) callURL(new PostClientRequest(), REQUEST_HANDLE_FOR_ID, args,
 					new HandleResponse());
 
 			if (response.valid) {
@@ -180,11 +179,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String email) {
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id) {
 		Map<String, String> args = new HashMap<String, String>();
-		args.put("email", email);
+		args.put("id", id);
 		args.put("session", session);
-		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_EMAIL, args, new Player()));
+		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_ID, args, new Player()));
 	}
 
 	@Override
@@ -281,7 +280,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
+			DBObject user = usersCollection.findOne(new BasicDBObject("authId", GameLoop.USER.authId));
 
 			for (Order order : orders) {
 				GameLoop.USER.coins = GameLoop.USER.coins
@@ -289,7 +288,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 				user.put("coins", GameLoop.USER.coins);
 				user.put("usedCoins", -1);
 				user.put("watchedAd", false);
-				usersCollection.update(new BasicDBObject("email", GameLoop.USER.email), user);
+				usersCollection.update(new BasicDBObject("authId", GameLoop.USER.authId), user);
 			}
 			client.close();
 
@@ -400,17 +399,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("email", GameLoop.USER.email));
+			DBObject user = usersCollection.findOne(new BasicDBObject("authId", GameLoop.USER.authId));
 			if (user == null) {
 
-				BasicDBObject newUser = new BasicDBObject("email", GameLoop.USER.email)
+				BasicDBObject newUser = new BasicDBObject("authId", GameLoop.USER.authId)
 						.append("xp", 0)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
 						.append("usedCoins", -1)
 						.append("watchedAd", false)
-						.append("auth", new BasicDBObject().append("g", GameLoop.USER.email))
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",
 										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))
@@ -421,7 +419,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						"session",
 						new BasicDBObject("id", session.session).append("expireDate",
 								new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)));
-				usersCollection.update(new BasicDBObject("email", GameLoop.USER.email), user);
+				usersCollection.update(new BasicDBObject("authId", GameLoop.USER.authId), user);
 			}
 			client.close();
 

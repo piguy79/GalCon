@@ -9,4 +9,5 @@
     <string name="connection_error_title">Connection Error</string>
     <string name="connection_error">Unable to connect. Please try again.</string>
     <string name="retry">Retry</string>
+    <string name="fb_app_id">257147704459293</string>
 </resources>

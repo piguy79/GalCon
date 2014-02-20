@@ -1,8 +1,13 @@
 var googleapis = require('googleapis'),
+	facebook = require('facebook-api'),
 	mongoose = require('mongoose'),
 	crypto = require('crypto'),
 	userManager = require('./model/user'),
 	rankManager = require('./model/rank');
+
+var authIdRequest = {
+		google : authIdFromGoogle
+};
 
 var isValid = function(authProvider, token) {
 	if (authProvider !== "google") {
@@ -21,7 +26,6 @@ exports.exchangeToken = function(authProvider, token) {
 	var p = new mongoose.Promise();
 	p.complete();
 	
-	var email;
 	var authId;
 	
 	return p.then(function() {
@@ -29,62 +33,17 @@ exports.exchangeToken = function(authProvider, token) {
 			throw new Error("Invalid request");
 		}
 	}).then(function() {
-		var gapiP = new mongoose.Promise();
-		googleapis
-			.discover('plus', 'v1')
-			.execute(function(err, client) {
-			if(err) {
-				gapiP.reject(err.message);
-			} else {
-				gapiP.complete(client);
-			}
-		});
-		
-		return gapiP;
-	}).then(function(client) {
-		var gapiP = new mongoose.Promise();
-		var oAuthClient = new googleapis.OAuth2Client();
-		oAuthClient.setCredentials({
-			  access_token: token
-			});
-		client.plus.people
-			.get({userId: "me"})
-			.withAuthClient(oAuthClient)
-			.execute(function(err, result) {
-				if(err) {
-					console.log("Google Plus API - Error - %j", err);
-					gapiP.reject(err.message);
-				} else {
-					if(result.emails) {
-						result.emails.forEach(function(emailObj) {
-							if(emailObj.type === "account") {
-								email = emailObj.value;
-							}
-						})
-					}
-					if(result.id){
-						authId = result.id;
-					}
-					if(email === undefined || email.length < 3) {
-						gapiP.reject("Unable to find email address");
-					} else if(authId === undefined){
-						gapiP.reject("Unable to load ID");
-					} else {
-						gapiP.complete();
-					}
-				}
-			});
-		return gapiP;
-	}).then(function() {
-		return userManager.UserModel.findOneAndUpdate({email : email} ,{ $set : {session : {}}}).exec();
+		return authIdRequest['google'].call(this, token);
+	}).then(function(authId) {
+		var authId = authId;
+		return userManager.UserModel.findOneAndUpdate({authId : authId} ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
 			user = new userManager.UserModel({
-				email : email,
+				authId : authId,
 				currentGames : [],
 				xp : 0,
 				wins : 0,
-				auth : {g : authId},
 				losses : 0,
 				coins : 10,
 				usedCoins : -1,
@@ -105,8 +64,59 @@ exports.exchangeToken = function(authProvider, token) {
 			id : session,
 			expireDate : Date.now() + 4 * 60 * 60 * 1000
 		};
-		return userManager.UserModel.findOneAndUpdate({email : email}, {$set : {email : email, session : sessionObj}}, {upsert: true}).exec();
+		return userManager.UserModel.findOneAndUpdate({authId : authId}, {$set : {authId : authId, session : sessionObj}}, {upsert: true}).exec();
 	}).then(function(user) {
 		return user.session.id;
 	});
+}
+
+
+
+var authIdFromGoogle = function(token){
+	var returnP = new mongoose.Promise();
+	
+	var gapiP = new mongoose.Promise();
+	gapiP.complete();
+	gapiP.then(function(){
+		var discoverP = new mongoose.Promise();
+		googleapis
+			.discover('plus', 'v1')
+			.execute(function(err, client) {
+			if(err) {
+				discoverP.reject(err.message);
+			} else {
+				discoverP.complete(client);
+			}
+		});
+		
+		return discoverP;
+	}).then(function(client){
+		var authP = new mongoose.Promise();
+		var oAuthClient = new googleapis.OAuth2Client();
+		oAuthClient.setCredentials({
+			  access_token: token
+			});
+		client.plus.people
+			.get({userId: "me"})
+			.withAuthClient(oAuthClient)
+			.execute(function(err, result) {
+				if(err) {
+					console.log("Google Plus API - Error - %j", err);
+					authP.reject(err.message);
+				} else {
+					if(authId === undefined){
+						authP.reject("Unable to load ID");
+					} else {
+						authP.complete(result.id);
+					}
+				}
+			});
+		return authP;
+	}).then(function(authId){
+		returnP.complete(authId);
+	}, function(err){
+		returnP.reject(err);
+	});
+	
+	return returnP;
 }

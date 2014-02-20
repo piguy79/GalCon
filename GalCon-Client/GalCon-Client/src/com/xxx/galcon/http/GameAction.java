@@ -53,13 +53,13 @@ public interface GameAction {
 
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String email);
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id);
 
 	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm);
 
 	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 
-	public void requestHandleForEmail(UIConnectionResultCallback<HandleResponse> callback, String email, String handle);
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle);
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String handle);
 

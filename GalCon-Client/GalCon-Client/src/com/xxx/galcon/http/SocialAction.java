@@ -6,7 +6,7 @@ public interface SocialAction {
 	public void signIn(String authProvider);
 
 	public void onActivityResult(int responseCode);
-	
+		
 	public void getToken(AuthenticationListener listener);
 	
 }

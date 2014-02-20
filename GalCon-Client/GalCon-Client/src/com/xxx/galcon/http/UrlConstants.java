@@ -33,7 +33,7 @@ public class UrlConstants {
 
 	public static final String FIND_GAMES_WITH_A_PENDING_MOVE = "/findGamesWithPendingMove";
 	
-	public static final String FIND_USER_BY_EMAIL = "/findUserByEmail";
+	public static final String FIND_USER_BY_ID = "/findUserById";
 	
 	public static final String SEARCH_FOR_USERS = "/search/user";
 
@@ -41,7 +41,7 @@ public class UrlConstants {
 
 	public static final String FIND_CONFIG_BY_TYPE = "/config";
 
-	public static final String REQUEST_HANDLE_FOR_EMAIL = "/requestHandleForEmail";
+	public static final String REQUEST_HANDLE_FOR_ID = "/requestHandleForId";
 
 	public static final String FIND_RANK_INFORMATION = "/rank";
 

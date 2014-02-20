@@ -109,9 +109,9 @@ var validate = function(propMap, res) {
 	return true;
 }
 	
-var validateSession = function(session, emailOrHandleMap) {
-	var key = _.keys(emailOrHandleMap)[0];
-	var value = _.values(emailOrHandleMap)[0];
+var validateSession = function(session, authIdOrHandleMap) {
+	var key = _.keys(authIdOrHandleMap)[0];
+	var value = _.values(authIdOrHandleMap)[0];
 	
 	var p = getSessionState(session, key, value);
 	return p.then(function(state) {
@@ -149,17 +149,17 @@ var getSessionState = function(session, key, value) {
 	});
 }
 
-exports.findUserByEmail = function(req, res) {
-	var email = req.query['email'];
+exports.findUserById = function(req, res) {
+	var id = req.query['id'];
 	var session = req.query['session'];
 	
-	if(!validate({email : email, session : session}, res)) {
+	if(!validate({session : session}, res)) {
 		return;
 	}
 	
-	var p = validateSession(session, {"email" : email});
+	var p = validateSession(session, {"authId" : id});
 	p.then(function() {
-		var validP = userManager.findUserByEmail(email);
+		var validP = userManager.findUserById(id);
 		return validP.then(function(user) {
 			if (user) {
 				res.json(user);
@@ -170,16 +170,16 @@ exports.findUserByEmail = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-exports.requestHandleForEmail = function(req, res) {
+exports.requestHandleForId = function(req, res) {
 	var session = req.body['session'];
-	var email = req.body['email'];
+	var id = req.body['id'];
 	var handle = req.body['handle'];
 	
-	if(!validate({email : email, session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle}, res)) {
 		return;
 	}
 	
-	var p = validateSession(session, {"email" : email});
+	var p = validateSession(session, {"authId" : id});
 	p.then(function() {
 		var validP = userManager.findUserByHandle(handle);
 		return validP.then(function(user) {
@@ -189,10 +189,10 @@ exports.requestHandleForEmail = function(req, res) {
 					reason : "Username already chosen"
 				});
 			} else {
-				var innerp = userManager.findUserByEmail(email);
+				var innerp = userManager.findUserById(id);
 				return innerp.then(function(user) {
 					if(user === null) {
-						console.error("Attempted to create handle for invalid email: " + email);
+						console.error("Attempted to create handle for invalid id: " + email);
 						return null;
 					} else if(user.handle !== undefined) {
 						res.json({ created : false, reason : "Cannot change handle" });

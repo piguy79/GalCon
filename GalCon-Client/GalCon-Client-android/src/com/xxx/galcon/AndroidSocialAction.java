@@ -5,6 +5,7 @@ import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.social.Authorizer;
+import com.xxx.galcon.social.FacebookAuthorization;
 import com.xxx.galcon.social.GooglePlusAuthorization;
 
 public class AndroidSocialAction implements SocialAction {
@@ -25,6 +26,8 @@ public class AndroidSocialAction implements SocialAction {
 			public void run() {
 				if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 					authorizer = new GooglePlusAuthorization(activity);
+				}else if(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)){
+					authorizer = new FacebookAuthorization(activity);
 				}
 
 				authorizer.signIn(authListener);

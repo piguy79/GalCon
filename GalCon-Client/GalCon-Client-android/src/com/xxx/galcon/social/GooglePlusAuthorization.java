@@ -19,6 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.model.people.Person;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
@@ -27,7 +28,7 @@ import com.xxx.galcon.http.AuthenticationListener;
 
 public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks, OnConnectionFailedListener {
 	private PlusClient plusClient;
-	private String scopes = Scopes.PLUS_LOGIN + " https://www.googleapis.com/auth/userinfo.email";
+	private String scopes = Scopes.PLUS_LOGIN;
 
 	private Activity activity;
 	private AuthenticationListener listener;
@@ -48,19 +49,23 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	@Override
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
-		new RetrieveTokenTask().execute(GameLoop.USER.email);
-		
+		if(plusClient.isConnected()){
+			new RetrieveTokenTask().execute(plusClient.getAccountName());
+		}else{
+			plusClient = new PlusClient.Builder(activity, this, this).setScopes(scopes).build();
+			plusClient.connect();
+		}
 	}
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		GameLoop.USER.email = plusClient.getAccountName();
+		GameLoop.USER.authId = plusClient.getCurrentPerson().getId()  + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		prefs.putString(Constants.EMAIL, GameLoop.USER.email);
+		prefs.putString(Constants.ID, GameLoop.USER.authId);
 		prefs.flush();
 
-		new RetrieveTokenTask().execute(GameLoop.USER.email);
+		new RetrieveTokenTask().execute(plusClient.getAccountName());
 	}
 
 	@Override
@@ -93,7 +98,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	public void onConnectionFailed(ConnectionResult result) {
 		if (result.hasResolution()) {
 			try {
-				result.startResolutionForResult(activity, MainActivity.SIGN_IN_ACTIVITY_RESULT_CODE);
+				result.startResolutionForResult(activity, MainActivity.GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE);
 			} catch (SendIntentException e) {
 				Crashlytics.logException(e);
 				Gdx.app.postRunnable(new Runnable() {

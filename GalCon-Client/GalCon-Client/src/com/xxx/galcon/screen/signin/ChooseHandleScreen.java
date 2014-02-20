@@ -57,8 +57,8 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		this.stage = stage;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		String email = prefs.getString(Constants.EMAIL, "");
-		if (email.isEmpty()) {
+		String id = prefs.getString(Constants.ID, "");
+		if (id.isEmpty()) {
 			result = "signIn";
 			return;
 		}
@@ -72,7 +72,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		stage.addActor(waitImage);
 
 		waitImage.start();
-		gameAction.findUserInformation(findUserHandler, email);
+		gameAction.findUserInformation(findUserHandler, id);
 	}
 
 	private void addHandleFields() {
@@ -124,7 +124,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			chooseHandleLabel.setText(Strings.HANDLE_VALID_LENGTH);
 		} else {
 			waitImage.start();
-			gameAction.requestHandleForEmail(userHandleResponseHandler, GameLoop.USER.email, handleTextField.getText());
+			gameAction.requestHandleForId(userHandleResponseHandler, GameLoop.USER.authId, handleTextField.getText());
 		}
 	}
 

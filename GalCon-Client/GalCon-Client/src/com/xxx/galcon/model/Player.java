@@ -24,8 +24,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * 
  */
 public class Player extends JsonConvertible {
-
-	public String email;
+	public String authId;
 	public String handle;
 	public Integer xp;
 	public List<String> currentGames;
@@ -37,11 +36,8 @@ public class Player extends JsonConvertible {
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		if (!jsonObject.has(Constants.EMAIL)) {
-			return;
-		}
 
-		this.email = jsonObject.getString(Constants.EMAIL);
+		this.authId = jsonObject.getString("authId");
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.getInt(Constants.COINS);

@@ -41,6 +41,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	private ShaderLabel signInLabel;
 	private WaitImageButton waitImage;
 	private Button googlePlusButton;
+	private Button facebookButton;
 
 	private String returnValue = null;
 
@@ -80,11 +81,11 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String socialAuthProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
-		String email = prefs.getString(Constants.EMAIL, "");
+		String id = prefs.getString(Constants.ID, "");
 
 		if (socialAuthProvider != null && !socialAuthProvider.isEmpty()) {
 			String lastSessionId = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
-			if (lastSessionId.isEmpty() || email.isEmpty()) {
+			if (lastSessionId.isEmpty() || id.isEmpty()) {
 				waitImage.start();
 				socialAction.signIn(socialAuthProvider);
 			} else {
@@ -97,6 +98,11 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addAuthenticationMethodsToStage(float width, float height) {
+		addGooglePlusButton(width, height);
+		addFacebookButton(width, height);
+	}
+
+	private void addGooglePlusButton(float width, float height) {
 		googlePlusButton = new Button(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON);
 		googlePlusButton.setWidth(0.4f * width);
 		googlePlusButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
@@ -122,6 +128,33 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		googlePlusButton.addAction(sequence(delay(0.1f),
 				moveTo(currentX, googlePlusButton.getY(), 0.9f, Interpolation.pow3)));
 	}
+	
+	private void addFacebookButton(float width, float height) {
+		facebookButton = new Button(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON);
+		facebookButton.setWidth(0.4f * width);
+		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
+		facebookButton.setY(0.4f * height);
+		stage.addActor(facebookButton);
+
+		facebookButton.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				signInLabel.setText("");
+				waitImage.start();
+				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+			}
+		});
+
+		float currentX = facebookButton.getX();
+		facebookButton.setX(width * 2);
+		facebookButton.addAction(sequence(delay(0.1f),
+				moveTo(currentX, facebookButton.getY(), 0.9f, Interpolation.pow3)));
+	}
 
 	@Override
 	public void hide() {
@@ -132,6 +165,11 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		if (googlePlusButton != null) {
 			googlePlusButton.addAction(sequence(delay(0.25f),
 					moveTo(-Gdx.graphics.getWidth(), googlePlusButton.getY(), 0.9f, pow3)));
+		}
+		
+		if (facebookButton != null) {
+			facebookButton.addAction(sequence(delay(0.25f),
+					moveTo(-Gdx.graphics.getWidth(), facebookButton.getY(), 0.9f, pow3)));
 		}
 
 		signInLabel.addAction(sequence(delay(0.5f), moveTo(-Gdx.graphics.getWidth(), signInLabel.getY(), 0.9f, pow3),
