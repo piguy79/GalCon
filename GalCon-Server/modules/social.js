@@ -5,6 +5,10 @@ var googleapis = require('googleapis'),
 	userManager = require('./model/user'),
 	rankManager = require('./model/rank');
 
+var authIdRequest = {
+		google : authIdFromGoogle
+};
+
 var isValid = function(authProvider, token) {
 	if (authProvider !== "google") {
 		console.log("Invalid auth provider: " + authProvider);
@@ -66,9 +70,7 @@ exports.exchangeToken = function(authProvider, token) {
 	});
 }
 
-var authIdRequest = {
-		google : authIdFromGoogle
-}
+
 
 var authIdFromGoogle = function(token){
 	var returnP = new mongoose.Promise();
