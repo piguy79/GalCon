@@ -125,6 +125,7 @@ var validateSession = function(session, authIdOrHandleMap) {
 		if(msg !== undefined) {
 			var obj = {};
 			obj[key] = value;
+			console.log("Setting session to empty for : " + obj);
 			var invalidP = userManager.UserModel.findOneAndUpdate(obj, {$set : {session : {}}}).exec();
 			return invalidP.then(function() {
 				throw new ErrorWithResponse(msg, { session : "expired" });

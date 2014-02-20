@@ -82,18 +82,16 @@ public class FacebookAuthorization implements Authorizer {
       
        
 	}
-	
-	
 
 	@Override
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
 		
 		Session session = Session.getActiveSession();
-        if (!session.isOpened() && !session.isClosed()) {
+        if (session == null) {
             session.openForRead(createRequest().setCallback(statusCallback));
-        } else {
-            Session.openActiveSession(activity, true, statusCallback);
+        } else if(session.isOpened()){
+           listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
         }
 		
 	}
