@@ -42,9 +42,13 @@ public class FacebookAuthorization implements Authorizer {
 	public void signIn(AuthenticationListener listener) {
 		this.listener = listener;
 		
-		Session session = createSession();
-		session.openForRead(createRequest().setCallback(statusCallback));
-		
+		Session current = Session.getActiveSession();
+		if(current != null && current.isOpened()){
+			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, current.getAccessToken());
+		}else{
+			Session session = createSession();
+			session.openForRead(createRequest().setCallback(statusCallback));
+		}
 	}
 	
 	private Session createSession() {
@@ -101,6 +105,8 @@ public class FacebookAuthorization implements Authorizer {
         public void call(Session session, SessionState state, Exception exception) {
             if(SessionState.CLOSED_LOGIN_FAILED == state){
             	listener.onSignInFailed("Unable to connect to Facebook.");
+            }else if(SessionState.OPENED == state){
+            	listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, session.getAccessToken());
             }
         }
     }

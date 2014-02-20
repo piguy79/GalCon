@@ -63,8 +63,6 @@ exports.authIdFromFacebook = function(token){
 	clientP.then(function(){
 		var client = facebook.user(token);
 		client.me.info(function(err, data){
-			console.log("Error from FB: " + err);
-			console.log("Data from FB: " + data);
 			if(err){
 				returnP.reject("Unable to load ID");
 			}else{
