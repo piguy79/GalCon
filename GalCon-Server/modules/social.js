@@ -36,8 +36,9 @@ exports.exchangeToken = function(authProvider, token) {
 	}).then(function() {
 		console.log(authIdRequest);
 		return authIdRequest[authProvider].call(this, token);
-	}).then(function(authId) {
-		authId = authId;
+	}).then(function(id) {
+		console.log("Returned authID: " + id);
+		authId = id + ":" + authProvider;
 		return userManager.UserModel.findOneAndUpdate({authId : authId} ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
