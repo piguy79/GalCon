@@ -38,7 +38,7 @@ exports.authIdFromGoogle = function(token){
 					console.log("Google Plus API - Error - %j", err);
 					authP.reject(err.message);
 				} else {
-					if(authId === undefined){
+					if(result.id === undefined){
 						authP.reject("Unable to load ID");
 					} else {
 						authP.complete(result.id);
