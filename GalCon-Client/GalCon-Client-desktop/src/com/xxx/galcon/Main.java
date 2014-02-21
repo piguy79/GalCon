@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.xxx.galcon.http.DesktopGameAction;
 import com.xxx.galcon.http.DesktopInAppBillingAction;
 import com.xxx.galcon.http.DesktopSocialAction;
+import com.xxx.galcon.screen.widget.ShaderTextField;
 
 public class Main {
 	public static void main(String[] args) {
@@ -18,6 +19,7 @@ public class Main {
 		DesktopSocialAction socialAction = new DesktopSocialAction();
 		DesktopInAppBillingAction inAppBillAction = new DesktopInAppBillingAction();
 
-		new LwjglApplication(new GameLoop(gameAction, socialAction, inAppBillAction), cfg);
+		new LwjglApplication(new GameLoop(gameAction, socialAction, inAppBillAction,
+				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
 	}
 }

@@ -34,6 +34,7 @@ import com.xxx.galcon.screen.signin.LoadingScreen;
 import com.xxx.galcon.screen.signin.MainMenuScreen;
 import com.xxx.galcon.screen.signin.SignInScreen;
 import com.xxx.galcon.screen.widget.ShaderLabel;
+import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 
 public class MenuScreenContainer implements ScreenFeedback {
 
@@ -59,7 +60,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 	Map<Class<?>, ScreenResultHandler> screenResultHandlers = new HashMap<Class<?>, ScreenResultHandler>();
 
 	public MenuScreenContainer(UISkin skin, SocialAction socialAction, GameAction gameAction,
-			InAppBillingAction inAppBillingAction, AssetManager assetManager, TweenManager tweenManager) {
+			InAppBillingAction inAppBillingAction, AssetManager assetManager, TweenManager tweenManager,
+			OnscreenKeyboard keyboard) {
 		this.skin = skin;
 		this.stage = new Stage();
 
@@ -68,7 +70,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 		signInScreen = new SignInScreen(skin, socialAction, gameAction);
 		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager);
-		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager);
+		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager, keyboard);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		currentGameScreen = new GameListScreen(assetManager, skin);
 		gameQueueScreen = new GameQueueScreen(skin);
@@ -83,7 +85,6 @@ public class MenuScreenContainer implements ScreenFeedback {
 		screenResultHandlers.put(GameQueueScreen.class, new GameListScreenResultHandler());
 		screenResultHandlers.put(NoMoreCoinsDialog.class, new NoMoreCoinsDialogResultHandler());
 		screenResultHandlers.put(LoadingScreen.class, new LoadingScreenResultHandler());
-		
 
 		currentScreen = signInScreen;
 	}
@@ -255,7 +256,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 				return currentGameScreen;
 			} else if (nextScreen.equals(Action.COINS)) {
 				return noMoreCoinsScreen;
-			} else if(nextScreen.equals(Strings.INVITES)){
+			} else if (nextScreen.equals(Strings.INVITES)) {
 				if (GameLoop.USER.coins == 0) {
 					return noMoreCoinsScreen;
 				}

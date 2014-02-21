@@ -13,9 +13,6 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
-import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
-import com.facebook.Response;
 import com.facebook.Session;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
@@ -31,13 +28,13 @@ import com.xxx.galcon.inappbilling.util.SkuDetails;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Order;
+import com.xxx.galcon.screen.widget.ShaderTextField;
 import com.xxx.galcon.service.PingService;
 
 public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
 	public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
 	public static final int FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE = 57030;
-
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
@@ -61,7 +58,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Crashlytics.start(this);
+		// Crashlytics.start(this);
 
 		setupAdColony();
 
@@ -74,7 +71,8 @@ public class MainActivity extends AndroidApplication {
 		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
-		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction), cfg);
+		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
+				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -233,19 +231,19 @@ public class MainActivity extends AndroidApplication {
 			socialAction.onActivityResult(response);
 		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
-		}  else if(request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE){
-			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE, response, data);
+		} else if (request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE) {
+			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
+					response, data);
 			socialAction.onActivityResult(response);
 		}
 	}
-	
-	
+
 	@Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Session session = Session.getActiveSession();
-        Session.saveSession(session, outState);
-    }
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Session session = Session.getActiveSession();
+		Session.saveSession(session, outState);
+	}
 
 	private Order purchaseToOrder(Purchase purchase) {
 		Order order = new Order();

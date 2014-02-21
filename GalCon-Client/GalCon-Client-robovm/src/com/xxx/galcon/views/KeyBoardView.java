@@ -8,102 +8,91 @@ import org.robovm.cocoatouch.uikit.UITextAutocapitalizationType;
 import org.robovm.cocoatouch.uikit.UITextAutocorrectionType;
 import org.robovm.cocoatouch.uikit.UITextSpellCheckingType;
 import org.robovm.cocoatouch.uikit.UIView;
+import org.robovm.objc.ObjCRuntime;
 
 public class KeyBoardView extends UIView implements UIKeyInput {
 
+	static {
+		ObjCRuntime.bind();
+	}
+
 	@Override
 	public UITextAutocapitalizationType getAutocapitalizationType() {
-		// TODO Auto-generated method stub
-		return null;
+		return UITextAutocapitalizationType.None;
 	}
 
 	@Override
 	public void setAutocapitalizationType(UITextAutocapitalizationType v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public UITextAutocorrectionType getAutocorrectionType() {
-		// TODO Auto-generated method stub
-		return null;
+		return UITextAutocorrectionType.No;
 	}
 
 	@Override
 	public void setAutocorrectionType(UITextAutocorrectionType v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean isEnablesReturnKeyAutomatically() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public void setEnablesReturnKeyAutomatically(boolean v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public UIKeyboardAppearance getKeyboardAppearance() {
-		// TODO Auto-generated method stub
-		return null;
+		return UIKeyboardAppearance.Default;
 	}
 
 	@Override
 	public void setKeyboardAppearance(UIKeyboardAppearance v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public UIKeyboardType getKeyboardType() {
-		// TODO Auto-generated method stub
-		return null;
+		return UIKeyboardType.Alphabet;
 	}
 
 	@Override
 	public void setKeyboardType(UIKeyboardType v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public UIReturnKeyType getReturnKeyType() {
-		// TODO Auto-generated method stub
-		return null;
+		return UIReturnKeyType.Go;
 	}
 
 	@Override
 	public void setReturnKeyType(UIReturnKeyType v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean isSecureTextEntry() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void setSecureTextEntry(boolean v) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public UITextSpellCheckingType getSpellCheckingType() {
-		// TODO Auto-generated method stub
-		return null;
+		return UITextSpellCheckingType.No;
 	}
 
 	@Override
 	public void setSpellCheckingType(UITextSpellCheckingType v) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -115,8 +104,7 @@ public class KeyBoardView extends UIView implements UIKeyInput {
 
 	@Override
 	public boolean hasText() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -125,4 +113,8 @@ public class KeyBoardView extends UIView implements UIKeyInput {
 
 	}
 
+	@Override
+	public boolean canBecomeFirstResponder() {
+		return true;
+	}
 }

@@ -135,13 +135,13 @@ public class BoardScreen implements ScreenFeedback {
 
 		stage = new Stage();
 
-		stage.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				stage.getRoot().fire(event);
-			}
-		});
+//		stage.addListener(new ClickListener() {
+//			@Override
+//			public void clicked(InputEvent event, float x, float y) {
+//				super.clicked(event, x, y);
+//				stage.getRoot().fire(event);
+//			}
+//		});
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {

@@ -27,6 +27,7 @@ import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
+import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class ChooseHandleScreen implements PartialScreenFeedback {
@@ -44,12 +45,14 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	private FindUserHandler findUserHandler = new FindUserHandler();
 
 	private String result = null;
+	private OnscreenKeyboard keyboard;
 
-	public ChooseHandleScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
+	public ChooseHandleScreen(Skin skin, GameAction gameAction, AssetManager assetManager, OnscreenKeyboard keyboard) {
 		this.skin = skin;
 		this.gameAction = gameAction;
 
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+		this.keyboard = keyboard;
 	}
 
 	@Override
@@ -84,15 +87,15 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		chooseHandleLabel.setAlignment(Align.center);
 		chooseHandleLabel.setWidth(width);
 		chooseHandleLabel.setX(width / 2 - chooseHandleLabel.getWidth() / 2);
-		chooseHandleLabel.setY(0.5f * height);
+		chooseHandleLabel.setY(0.55f * height);
 		stage.addActor(chooseHandleLabel);
 
 		handleTextField = new ShaderTextField(fontShader, "", skin, Constants.UI.TEXT_FIELD);
 		handleTextField.setWidth(width * 0.75f);
 		handleTextField.setHeight(height * .08f);
 		handleTextField.setX(width * 0.5f - handleTextField.getWidth() * 0.6f);
-		handleTextField.setY(0.4f * height);
-		handleTextField.setOnscreenKeyboard(new ShaderTextField.DefaultOnscreenKeyboard());
+		handleTextField.setY(0.45f * height);
+		handleTextField.setOnscreenKeyboard(keyboard);
 
 		stage.addActor(handleTextField);
 
@@ -100,7 +103,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		okImageButton.setWidth(height * .08f);
 		okImageButton.setHeight(height * .08f);
 		okImageButton.setX(width / 2 + handleTextField.getWidth() * 0.42f);
-		okImageButton.setY(0.4f * height);
+		okImageButton.setY(0.45f * height);
 		stage.addActor(okImageButton);
 
 		okImageButton.addListener(new InputListener() {

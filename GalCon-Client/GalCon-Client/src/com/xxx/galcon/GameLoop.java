@@ -12,7 +12,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.InAppBillingAction;
@@ -24,9 +23,9 @@ import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.FriendScreen;
-import com.xxx.galcon.screen.GameQueueScreen;
 import com.xxx.galcon.screen.MenuScreenContainer;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
+import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 
 public class GameLoop extends Game {
 	public static Player USER;
@@ -49,10 +48,14 @@ public class GameLoop extends Game {
 
 	private boolean loadingNewCoins = false;
 
-	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction) {
+	private OnscreenKeyboard keyboard;
+
+	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction,
+			OnscreenKeyboard keyboard) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
 		this.inAppBillingAction = inAppBillingAction;
+		this.keyboard = keyboard;
 
 		UIConnectionWrapper.setGameAction(gameAction);
 		ExternalActionWrapper.setActions(gameAction, inAppBillingAction);
@@ -77,7 +80,6 @@ public class GameLoop extends Game {
 	@Override
 	public void create() {
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		
 
 		/*
 		 * Assume OpenGL ES 2.0 support has been validated by platform specific
@@ -109,7 +111,7 @@ public class GameLoop extends Game {
 		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
 		friendScreen = new FriendScreen(skin, assetManager, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, inAppBillingAction, assetManager,
-				tweenManager);
+				tweenManager, keyboard);
 		setScreen(menuScreenContainer);
 	}
 
@@ -152,17 +154,20 @@ public class GameLoop extends Game {
 					boardScreen.getPreviousScreen().resetState();
 					setScreen(boardScreen.getPreviousScreen());
 				}
-			} else if(getScreen() instanceof FriendScreen){
+			} else if (getScreen() instanceof FriendScreen) {
 				String action = (String) result;
-				if(action.equals(Action.BACK)){
+				if (action.equals(Action.BACK)) {
 					friendScreen.resetState();
 					friendScreen.getPreviousScreen().resetState();
 					setScreen(friendScreen.getPreviousScreen());
-				} if(action.equals(Action.INVITE_PLAYER)){
+				}
+				if (action.equals(Action.INVITE_PLAYER)) {
 					boardScreen.setPreviousScreen(friendScreen.getPreviousScreen());
 					GameInviteRequest gameInviteRequest = friendScreen.getGameInviteRequest();
 					friendScreen.resetState();
-					gameAction.invitePlayerForGame(new SetGameBoardResultHandler(boardScreen), gameInviteRequest.requesterHandle, gameInviteRequest.inviteeHandle, gameInviteRequest.mapKey);
+					gameAction.invitePlayerForGame(new SetGameBoardResultHandler(boardScreen),
+							gameInviteRequest.requesterHandle, gameInviteRequest.inviteeHandle,
+							gameInviteRequest.mapKey);
 					setScreen(boardScreen);
 				}
 			}
@@ -173,7 +178,6 @@ public class GameLoop extends Game {
 		boardScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 		setScreen(boardScreen);
 	}
-	
 
 	private void checkCoinStats() {
 		if (GameLoop.USER != null && GameLoop.USER.coins != null && GameLoop.CONFIG != null) {
