@@ -105,8 +105,8 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addGooglePlusButton(float width, float height) {
-		googlePlusButton = new Button(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON);
-		googlePlusButton.setWidth(0.4f * width);
+		googlePlusButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		googlePlusButton.setWidth(0.7f * width);
 		googlePlusButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
 		googlePlusButton.setY(0.3f * height);
 		stage.addActor(googlePlusButton);
@@ -133,9 +133,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	
 	private void addFacebookButton(float width, float height) {
 		facebookButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		facebookButton.setWidth(0.4f * width);
+		facebookButton.setWidth(0.7f * width);
 		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
-		facebookButton.setY(0.4f * height);
+		facebookButton.setY(0.2f * height);
 		stage.addActor(facebookButton);
 
 		facebookButton.addListener(new InputListener() {

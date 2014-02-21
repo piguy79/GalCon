@@ -125,7 +125,7 @@ public class FriendScreen implements ScreenFeedback {
 		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
 		gpButton.setX(fbButton.getX() - (gpButton.getWidth() * 1.1f));
-		gpButton.setY(backButton.getY());
+		gpButton.setY(backButton.getY() - (gpButton.getHeight() * 0.25f));
 		
 		stage.addActor(gpButton);
 		
@@ -138,7 +138,7 @@ public class FriendScreen implements ScreenFeedback {
 		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
 		fbButton.setX(Gdx.graphics.getWidth() - fbButton.getWidth());
-		fbButton.setY(backButton.getY());
+		fbButton.setY(backButton.getY() - (fbButton.getHeight() * 0.25f));
 		
 		stage.addActor(fbButton);
 		
