@@ -1,11 +1,14 @@
 package com.xxx.galcon.http;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
+import com.xxx.galcon.model.Friend;
 
 public class DesktopSocialAction implements SocialAction {
 
@@ -53,6 +56,14 @@ public class DesktopSocialAction implements SocialAction {
 	@Override
 	public void getToken(AuthenticationListener listener) {
 		listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, "FAKE_TOKEN");
+	}
+
+	@Override
+	public void getFriends(FriendsListener listener) {
+		Friend friend = new Friend("12345", "Pal", "url");
+		List<Friend> friends = new ArrayList<Friend>();
+		friends.add(friend);
+		listener.onFriendsLoadedSuccess(friends);
 	}
 
 	

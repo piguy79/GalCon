@@ -23,6 +23,7 @@ public class MinifiedGame extends JsonConvertible {
 	public String social;
 
 	public static class MinifiedPlayer {
+		public String authId;
 		public String handle;
 		public int rank;
 	}
@@ -38,6 +39,7 @@ public class MinifiedGame extends JsonConvertible {
 			for (int i = 0; i < playersJson.length(); i++) {
 				JSONObject player = playersJson.getJSONObject(i);
 				MinifiedPlayer minifiedPlayer = new MinifiedPlayer();
+				minifiedPlayer.authId = player.getString("authId");
 				minifiedPlayer.handle = player.getString("handle");
 				minifiedPlayer.rank = player.getInt("rank");
 				this.players.add(minifiedPlayer);

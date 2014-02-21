@@ -93,6 +93,22 @@ public class JsonConstructor {
 		return top;
 
 	}
+	
+	public static JSONObject matchingFriends(List<String> authIds, String handle, String session) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		JSONArray jsonFriends = new JSONArray();
+
+		for (String authId : authIds) {
+			jsonFriends.put(authId);
+		}
+		top.put("authIds", jsonFriends);
+
+		return top;
+
+	}
 
 	public static JSONObject user(String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();

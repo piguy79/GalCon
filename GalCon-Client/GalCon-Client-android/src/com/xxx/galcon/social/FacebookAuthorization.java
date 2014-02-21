@@ -1,6 +1,11 @@
 package com.xxx.galcon.social;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -11,12 +16,15 @@ import com.badlogic.gdx.Preferences;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
+import com.facebook.Request.GraphUserListCallback;
 import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.model.GraphObject;
+import com.facebook.model.GraphUser;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -25,6 +33,8 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendsListener;
+import com.xxx.galcon.model.Friend;
 
 
 public class FacebookAuthorization implements Authorizer {
@@ -93,7 +103,7 @@ public class FacebookAuthorization implements Authorizer {
 		
 		Session session = Session.getActiveSession();
         if (session == null) {
-            session.openForRead(createRequest().setCallback(statusCallback));
+           listener.onSignInFailed("Unable to retrieve token.");
         } else if(session.isOpened()){
            listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
         }
@@ -110,5 +120,56 @@ public class FacebookAuthorization implements Authorizer {
             }
         }
     }
+
+	@Override
+	public void getFriends(final FriendsListener listener) {
+		
+		if(Session.getActiveSession() == null || !Session.getActiveSession().isOpened()){
+			Session session = createSession();
+			session.openForRead(createRequest().setCallback(new StatusCallback() {
+				
+				@Override
+				public void call(Session session, SessionState state, Exception exception) {
+					if(SessionState.OPENED == state){
+						requestFriendInfo(listener, session);
+					}
+					
+				}
+			}));
+		}else{
+			requestFriendInfo(listener, Session.getActiveSession());
+		}
+		
+	}
+	
+	private void requestFriendInfo(final FriendsListener listener,
+			Session session) {
+		Bundle parameters = new Bundle();
+		parameters.putString("fields", "id, name, picture");
+		
+		
+		Request friendRequest = Request.newMyFriendsRequest(session, new GraphUserListCallback() {
+			@Override
+			public void onCompleted(List<GraphUser> users, Response response) {
+				List<Friend> friends = new ArrayList<Friend>();
+				for(GraphUser user : users){
+					String imageUrl = "";
+					JSONObject jsonObject = user.getInnerJSONObject();
+					try {
+						JSONObject picture = jsonObject.getJSONObject("picture").getJSONObject("data");
+						imageUrl = picture.getString("url");
+					} catch (JSONException e) {
+						
+					}
+					Friend friend = new Friend(user.getId(), user.getName(), imageUrl);
+					friends.add(friend);
+				}
+				listener.onFriendsLoadedSuccess(friends);
+			}
+		});
+		friendRequest.setParameters(parameters);
+		friendRequest.executeAsync();
+		
+	}
 
 }

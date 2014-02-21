@@ -23,6 +23,7 @@ public class People extends JsonConvertible {
 			for(int i = 0; i < peopleReturn.length(); i++){
 				JSONObject personJson = peopleReturn.getJSONObject(i);
 				MinifiedPlayer person = new MinifiedPlayer(); 
+				person.authId = personJson.getString("authId");
 				person.handle = personJson.getString("handle");
 				person.rank = personJson.getInt("rank");
 				people.add(person);

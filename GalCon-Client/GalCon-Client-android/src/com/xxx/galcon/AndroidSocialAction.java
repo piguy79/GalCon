@@ -3,6 +3,7 @@ package com.xxx.galcon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.social.Authorizer;
 import com.xxx.galcon.social.FacebookAuthorization;
@@ -69,7 +70,20 @@ public class AndroidSocialAction implements SocialAction {
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER, "");
 		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 			authorizer = new GooglePlusAuthorization(activity);
+		} else if(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)){
+			authorizer = new FacebookAuthorization(activity);
 		}
+	}
+
+	@Override
+	public void getFriends(final FriendsListener listener) {
+		setupAuthorizer();
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				authorizer.getFriends(listener);
+			}
+		});
+		
 	}
 
 }

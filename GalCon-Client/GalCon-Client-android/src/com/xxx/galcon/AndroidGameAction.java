@@ -18,6 +18,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
@@ -658,6 +659,23 @@ public class AndroidGameAction implements GameAction {
 				new GetJsonRequestTask<BaseResult>(args, callback, ACCEPT_INVITE, BaseResult.class).execute("");
 			}
 		});
+		
+	}
+
+	@Override
+	public void findMatchingFriends(
+			final UIConnectionResultCallback<People> callback, List<String> authIds,
+			String handle) {
+		try {
+			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
 		
 	}
 
