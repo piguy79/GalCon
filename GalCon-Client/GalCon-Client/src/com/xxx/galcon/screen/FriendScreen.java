@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -61,7 +62,6 @@ public class FriendScreen implements ScreenFeedback {
 	
 	private WaitImageButton waitImage;
 	private ActionButton backButton;
-	private ActionButton shareButton;
 	private ShaderTextField searchBox;
 	private ShaderLabel noResultsFound;
 	private ActionButton searchButton;
@@ -69,7 +69,11 @@ public class FriendScreen implements ScreenFeedback {
 	private ShaderLabel allText;
 	private ImageButton friendsButton;
 	private ShaderLabel friendsLabel;
+	
+	private Group searchLabelGroup;
 	private ScrollList<CombinedFriend> scrollList;
+	private List<CombinedFriend> loadedFriends = new ArrayList<CombinedFriend>();
+	private int screenState = 1;
 	
 	
 	private GameInviteRequest gameInviteRequest;
@@ -96,11 +100,11 @@ public class FriendScreen implements ScreenFeedback {
 		createBg();
 		createWaitImage();
 		createBackButton();
-		createShareButton();
 		createAllTabButton();
 		createFriendsTabButton();
 		createSearchBox();
 		createSearchButton();
+		createSearchLabels();
 		createScrollList();
 		createNoResultsFound();
 		showFriends();
@@ -109,35 +113,14 @@ public class FriendScreen implements ScreenFeedback {
 	}
 
 
-
-	private void createShareButton() {
-		Point position = new Point(Gdx.graphics.getWidth() - (GraphicsUtils.actionButtonSize), 0);
-		shareButton = new ActionButton(skin, "okButton", position);
-		GraphicsUtils.setCommonButtonSize(backButton);
-		shareButton.setX(position.x);
-		shareButton.setY(Gdx.graphics.getHeight() - backButton.getHeight() - 5);
-		shareButton.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				socialAction.getFriends(new FriendsListener() {
-					
-					@Override
-					public void onFriendsLoadedSuccess(List<Friend> friends) {
-						noResultsFound.setVisible(true);
-						noResultsFound.setText("" + friends.size());
-						
-					}
-					
-					@Override
-					public void onFriendsLoadedFail(String error) {
-						noResultsFound.setVisible(true);
-						noResultsFound.setText(error);
-						
-					}
-				});
-			}
-		});
-		stage.addActor(shareButton);
+	private void createSearchLabels() {
+		float height = Gdx.graphics.getHeight();
+		
+		searchLabelGroup = new Group();
+		searchLabelGroup.setX(0);
+		searchLabelGroup.setY(searchBox.getY() - (height * 0.05f));
+		
+		stage.addActor(searchLabelGroup);
 		
 	}
 
@@ -159,7 +142,7 @@ public class FriendScreen implements ScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		
-		final float tableHeight = height - (height - searchBox.getY());
+		final float tableHeight = height - (height - searchLabelGroup.getY());
 		scrollList = new ScrollList<CombinedFriend>(skin) {
 			@Override
 			public void buildCell(CombinedFriend item, Group group) {
@@ -198,6 +181,7 @@ public class FriendScreen implements ScreenFeedback {
 		float tabY = height * 0.8f - bHeight * 0.5f;
 				
 		allButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
+		allButton.addListener(allClickListener);
 		createTabButton(bWidth, bHeight, 0f, tabY, allButton, allText, "All");
 	}
 	
@@ -216,14 +200,14 @@ public class FriendScreen implements ScreenFeedback {
 
 	private void createTabButton(float tabWidth, float tabHeight, float x, float y, ImageButton button, ShaderLabel label, String labelText) {
 		button.setLayoutEnabled(false);
-		button
-				.setBounds(x, y, tabWidth, tabHeight);
+		button.setBounds(x, y, tabWidth, tabHeight);
 
 		label = new ShaderLabel(fontShader, labelText, skin, Constants.UI.BASIC_BUTTON_TEXT);
 		label.setAlignment(Align.center);
 		label.setX(button.getX());
 		label.setY(button.getY() + button.getHeight() / 2 - label.getHeight() * 0.5f);
 		label.setWidth(button.getWidth());
+		label.setTouchable(Touchable.disabled);
 
 		stage.addActor(button);
 		stage.addActor(label);
@@ -238,30 +222,65 @@ public class FriendScreen implements ScreenFeedback {
 		searchButton.addListener(new ClickListener(){@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if(!searchButton.isDisabled()){
-				waitImage.setVisible(true);
-				scrollList.clearRows();
-				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
-					
-					@Override
-					public void onConnectionResult(People result) {
-						waitImage.setVisible(false);
-						if(result == null || result.people.size() == 0){
-							noResultsFound.setText("No results found.");
-							noResultsFound.setVisible(true);
-						}else{
-							noResultsFound.setVisible(false);
-						}
-						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people));
-						searchBox.getOnscreenKeyboard().show(false);
-					}		
-					
-					@Override
-					public void onConnectionError(String msg) {
-						waitImage.setVisible(false);
-						noResultsFound.setText(msg);
-					}
-				}, searchBox.getText());
+				if(screenState == 1){
+					searchAllUsers();
+				}else{
+					filterUser();
+				}
 			}
+		}
+
+		private void filterUser() {
+			searchBox.getOnscreenKeyboard().show(false);
+			if(searchBox.getText().isEmpty()){
+				displayPeople(loadedFriends);
+			}else{
+				List<CombinedFriend> filteredFriends = new ArrayList<CombinedFriend>();
+				for(CombinedFriend friend : loadedFriends){
+					if(friend.getDisplay().toLowerCase().contains(searchBox.getText().toLowerCase())){
+						filteredFriends.add(friend);
+					}
+				}
+				
+				displayPeople(filteredFriends);
+				
+				ShaderLabel label = new ShaderLabel(fontShader, "Filtered Friends: ", skin, Constants.UI.DEFAULT_FONT);
+				populateSearchLabelGroup(label);
+			}
+			
+			
+			
+		}
+
+		private void searchAllUsers() {
+			waitImage.setVisible(true);
+			scrollList.clearRows();
+			UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
+				
+				@Override
+				public void onConnectionResult(People result) {
+					waitImage.setVisible(false);
+					if(result == null || result.people.size() == 0){
+						noResultsFound.setText("No results found.");
+						noResultsFound.setVisible(true);
+						ShaderLabel label = new ShaderLabel(fontShader, "", skin, Constants.UI.DEFAULT_FONT);
+						populateSearchLabelGroup(label);
+					}else{
+						ShaderLabel label = new ShaderLabel(fontShader, "Search Results: ", skin, Constants.UI.DEFAULT_FONT);
+						populateSearchLabelGroup(label);
+						noResultsFound.setVisible(false);
+					}
+					
+					displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people));
+					searchBox.getOnscreenKeyboard().show(false);
+				}		
+				
+				@Override
+				public void onConnectionError(String msg) {
+					waitImage.setVisible(false);
+					noResultsFound.setText(msg);
+				}
+			}, searchBox.getText());
 		}});
 		
 		stage.addActor(searchButton);
@@ -427,9 +446,18 @@ public class FriendScreen implements ScreenFeedback {
 	public void setMapType(String mapKey) {
 		this.mapKey = Long.valueOf(mapKey);
 	}
+	
+	private void populateSearchLabelGroup(Actor actor){
+		searchLabelGroup.clearChildren();
+		searchLabelGroup.addActor(actor);
+	}
 
 	private void showFriends() {
 		waitImage.setVisible(true);
+		
+		ShaderLabel label = new ShaderLabel(fontShader, "Recent Opponents: ", skin, Constants.UI.DEFAULT_FONT);
+		populateSearchLabelGroup(label);
+		
 		UIConnectionWrapper.findFriends(new UIConnectionResultCallback<People>() {
 			@Override
 			public void onConnectionResult(People result) {
@@ -444,9 +472,31 @@ public class FriendScreen implements ScreenFeedback {
 		}, GameLoop.USER.handle);
 	}
 	
+	private ClickListener allClickListener = new ClickListener(){
+		public void clicked(InputEvent event, float x, float y) {
+			clearActiveTab("Search by handle.", 1);
+			showFriends();
+		}
+
+		
+	};
+	
+	private void clearActiveTab(String searchMessageText, int state) {
+		searchBox.setMessageText(searchMessageText);
+		searchBox.setText("");
+		searchBox.getOnscreenKeyboard().show(false);
+		screenState = state;
+		noResultsFound.setVisible(false);
+		scrollList.clearRows();
+	};
+	
 	private ClickListener friendClickListener = new ClickListener(){
 		public void clicked(InputEvent event, float x, float y) {
 			waitImage.setVisible(true);
+			clearActiveTab("Filter...", 2);
+			ShaderLabel label = new ShaderLabel(fontShader, "Friends: ", skin, Constants.UI.DEFAULT_FONT);
+			populateSearchLabelGroup(label);
+
 			socialAction.getFriends(new FriendsListener() {
 				
 				@Override
@@ -457,6 +507,7 @@ public class FriendScreen implements ScreenFeedback {
 					gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
 						public void onConnectionResult(People result) {
 							List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
+							loadedFriends = combinedFriends;
 							displayPeople(combinedFriends);
 						};
 						

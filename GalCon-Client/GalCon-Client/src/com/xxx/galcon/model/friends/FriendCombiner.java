@@ -16,7 +16,7 @@ public class FriendCombiner {
 			boolean matchForFriend = false;
 			for(MinifiedPlayer player : players){
 				if(samePerson(friend, player)){
-					GalConFriend galConFriend = new GalConFriend(player.authId, friend.image, player.handle, player.rank);
+					GalconSocialUser galConFriend = new GalconSocialUser(player.authId, friend.image, player.handle, player.rank, friend.name);
 					combinedFriends.add(galConFriend);
 					matchForFriend = true;
 					playersAlreadyMatchingASocialFriend.add(player.authId);

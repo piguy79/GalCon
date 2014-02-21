@@ -1,5 +1,8 @@
 package com.xxx.galcon.screen.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -23,6 +26,7 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		this.setScrollingDisabled(true, false);
 		this.setFadeScrollBars(false);
 	}
+	
 
 	@Override
 	public Table getWidget() {

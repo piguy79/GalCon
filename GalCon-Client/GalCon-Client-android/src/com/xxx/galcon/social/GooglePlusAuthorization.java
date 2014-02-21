@@ -199,7 +199,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				List<Friend> friends = new ArrayList<Friend>();
 				for(int i = 0; i < personBuffer.getCount(); i++){
 					Person person = personBuffer.get(i);
-					Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
+					Friend friend = new Friend(person.getId() + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, person.getDisplayName(), "");
 					friends.add(friend);
 				}
 				listener.onFriendsLoadedSuccess(friends);
