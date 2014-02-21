@@ -68,7 +68,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, plusClient.getCurrentPerson().getId());
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		prefs.putString(Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
+		prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE + Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 		prefs.flush();
 
 		new RetrieveTokenTask().execute(plusClient.getAccountName());

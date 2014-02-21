@@ -111,6 +111,18 @@ public class JsonConstructor {
 		return top;
 
 	}
+	
+	public static JSONObject addProvider(String handle, String session, String authProvider, String id) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		top.put("authProvider", authProvider);
+		top.put("id", id);
+
+		return top;
+
+	}
 
 	public static JSONObject user(String handle, String session) throws JSONException {
 		JSONObject top = new JSONObject();

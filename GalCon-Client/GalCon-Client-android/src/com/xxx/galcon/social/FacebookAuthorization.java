@@ -1,6 +1,5 @@
 package com.xxx.galcon.social;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,30 +7,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.crashlytics.android.Crashlytics;
-import com.facebook.FacebookRequestError;
 import com.facebook.Request;
 import com.facebook.Request.GraphUserListCallback;
-import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
-import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
-import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.model.Friend;
@@ -85,9 +75,9 @@ public class FacebookAuthorization implements Authorizer {
 		public void onCompleted(Response response) {
 			GraphObject user = response.getGraphObject();
 			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getProperty("id").toString());
-
+			
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-			prefs.putString(Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+			prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 			prefs.flush();
 			
 			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());

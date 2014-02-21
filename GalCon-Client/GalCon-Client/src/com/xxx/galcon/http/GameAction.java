@@ -88,6 +88,8 @@ public interface GameAction {
 	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle);
 	
 	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle, String authProvider);
+	
+	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id, String authProvider);
 
 
 }

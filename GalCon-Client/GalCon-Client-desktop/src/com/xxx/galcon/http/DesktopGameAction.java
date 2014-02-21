@@ -5,6 +5,7 @@ package com.xxx.galcon.http;
 
 import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
+import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.xxx.galcon.http.UrlConstants.DECLINE_INVITE;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -525,6 +526,23 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			callback.onConnectionResult((People) callURL(new PostClientRequest(), FIND_MATCHING_FRIENDS, args,
 					new People()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
+
+	@Override
+	public void addProviderToUser(UIConnectionResultCallback<Player> callback,
+			String handle, String id, String authProvider) {
+		try {
+			JSONObject top = JsonConstructor.addProvider(handle, id, authProvider, authProvider);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_PROVIDER_TO_USER, args,
+					new Player()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

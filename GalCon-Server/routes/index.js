@@ -1008,3 +1008,24 @@ exports.findMatchingFriends = function(req, res){
 	}).then(null, logErrorAndSetResponse(req, res));
 	
 }
+
+exports.addProviderToUser = function(req, res){
+	var session = req.body.session;
+	var authProvider = req.body.authProvider;
+	var id = req.body.id;
+	var handle = req.body.handle;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		var setObj = {};
+		var setKey = "auth." + authProvider;
+		setObj[setKey] = id;
+		return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
+	}).then(function(user){
+		res.json(user);
+	}).then(null, logErrorAndSetResponse(req, res));
+}

@@ -67,7 +67,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 
 		signInScreen = new SignInScreen(skin, socialAction, gameAction);
-		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager);
+		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager, socialAction);
 		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager);
 		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
 		currentGameScreen = new GameListScreen(assetManager, skin);

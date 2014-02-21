@@ -5,6 +5,7 @@ import static com.xxx.galcon.Util.createShader;
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -23,7 +24,9 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
+import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
@@ -52,6 +55,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private Array<Actor> actors = new Array<Actor>();
 
 	private AssetManager assetManager;
+	private SocialAction socialAction;
 	private TextureAtlas menusAtlas;
 
 	private Skin skin;
@@ -61,11 +65,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel inviteLabel;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
+	private ImageButton fbButton;
 
-	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager) {
+	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager, SocialAction socialAction) {
 		this.gameAction = gameAction;
 		this.skin = skin;
-
+		this.socialAction = socialAction;
 		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		this.assetManager = assetManager;
@@ -169,6 +174,62 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				coinTextWidth, coinText.getHeight());
 		stage.addActor(coinText);
 		actors.add(coinText);
+		
+		addFbButton();
+	}
+
+	private void addFbButton() {
+		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		fbButton.setX(10);
+		fbButton.setY(0);
+		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		
+		fbButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				socialAction.addAuthDetails(new AuthenticationListener() {
+					
+					@Override
+					public void onSignOut() {
+						System.out.println("Sign out failed");
+						
+					}
+					
+					@Override
+					public void onSignInSucceeded(String authProvider, String token) {
+						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+						String id = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID);
+						prefs.flush();
+						
+						gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
+							@Override
+							public void onConnectionResult(Player result) {
+								GameLoop.USER = result;
+								
+							}
+							
+							@Override
+							public void onConnectionError(String msg) {
+								
+								
+							}
+						}, GameLoop.USER.handle, id, authProvider);
+						
+					}
+					
+					@Override
+					public void onSignInFailed(String failureMessage) {
+						System.out.println("Sign in failed");
+						
+					}
+				}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+			}
+		});
+		
+		stage.addActor(fbButton);
+		actors.add(fbButton);;
+		
 	}
 
 	private void startHideSequence(final String retVal) {
