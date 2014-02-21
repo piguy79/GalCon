@@ -17,8 +17,19 @@
   <libs>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
+    <lib>../../../robovm-ios-bindings/google-play-game-services/libs/GoogleOpenSource-1.5.a</lib>
+    <lib>../../../robovm-ios-bindings/google-play-game-services/libs/GooglePlus-1.5.a</lib>
   </libs>
   <frameworks>
+    <framework>AddressBook</framework>
+    <framework>AssetsLibrary</framework>
+    <framework>Foundation</framework>
+    <framework>SystemConfiguration</framework>
+    <framework>Security</framework>
+    <framework>MediaPlayer</framework>
+    <framework>CoreText</framework>
+    <framework>CoreMotion</framework>
+    <framework>CoreLocation</framework>
     <framework>UIKit</framework>
     <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>

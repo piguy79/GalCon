@@ -24,6 +24,17 @@
     <string>${app.build}</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>SolarSmashIOS</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+           		<string>com.xxx.galcon.SolarSmashIOS</string>
+           	</array>
+        </dict>
+    </array>
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>

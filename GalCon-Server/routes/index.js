@@ -46,17 +46,17 @@ exports.searchUsers = function(req, res){
 
 exports.findGameById = function(req, res) {
 	var searchId = req.query['id'];
-	var playerHandle = req.query['playerHandle'];
+	var handle = req.query['handle'];
 	
 	var p = gameManager.findById(searchId);
 	p.then(function(game) {
-		res.json(processGameReturn(game, playerHandle));
+		res.json(processGameReturn(game, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findAvailableGames = function(req, res) {
-	var playerHandle = req.query['playerHandle'];
-	var p = gameManager.findAvailableGames(playerHandle);
+	var handle = req.query['handle'];
+	var p = gameManager.findAvailableGames(handle);
 	p.then(function(games) {
 		var returnObj = {};
 		returnObj.items = games;
@@ -386,11 +386,11 @@ decrementPlanetShipNumber = function(game, move) {
 
 exports.joinGame = function(req, res) {
 	var gameId = req.query['id'];
-	var playerHandle = req.query['playerHandle'];
+	var handle = req.query['handle'];
 
 	var user;
 	var game;
-	var p = userManager.findUserByHandle(playerHandle);
+	var p = userManager.findUserByHandle(handle);
 	p.then(function(foundUser) {
 		user = foundUser;
 		return gameManager.addUser(gameId, user);

@@ -53,11 +53,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.crashlytics.android.Crashlytics;
 import com.jirbo.adcolony.AdColonyVideoListener;
-import com.xxx.galcon.AndroidGameActionCache.InventoryCache;
-import com.xxx.galcon.AndroidGameActionCache.MapsCache;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
+import com.xxx.galcon.http.GameActionCache.InventoryCache;
+import com.xxx.galcon.http.GameActionCache.MapsCache;
 import com.xxx.galcon.http.JsonConstructor;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -172,9 +172,9 @@ public class AndroidGameAction implements GameAction {
 		this.socialAction = socialAction;
 	}
 
-	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
+	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", handle);
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -201,9 +201,9 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
+	public void joinGame(final UIConnectionResultCallback<GameBoard> callback, String id, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", handle);
 		args.put("id", id);
 
 		activity.runOnUiThread(new Runnable() {
@@ -214,10 +214,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void matchPlayerToGame(final UIConnectionResultCallback<GameBoard> callback, String playerHandle,
-			Long mapToFind) {
+	public void matchPlayerToGame(final UIConnectionResultCallback<GameBoard> callback, String handle, Long mapToFind) {
 		try {
-			final JSONObject top = JsonConstructor.matchPlayerToGame(playerHandle, mapToFind, getSession());
+			final JSONObject top = JsonConstructor.matchPlayerToGame(handle, mapToFind, getSession());
 
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
@@ -249,9 +248,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void addFreeCoins(final UIConnectionResultCallback<Player> callback, final String playerHandle) {
+	public void addFreeCoins(final UIConnectionResultCallback<Player> callback, final String handle) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(playerHandle, getSession());
+			final JSONObject top = JsonConstructor.addCoins(handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_FREE_COINS, Player.class).execute(top.toString());
@@ -263,10 +262,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback, String playerHandle,
-			List<Order> orders) {
+	public void addCoinsForAnOrder(final UIConnectionResultCallback<Player> callback, String handle, List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.addCoinsForAnOrder(playerHandle, orders, getSession());
+			final JSONObject top = JsonConstructor.addCoinsForAnOrder(handle, orders, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, Player.class).execute(top
@@ -279,10 +277,10 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void deleteConsumedOrders(final UIConnectionResultCallback<Player> callback, String playerHandle,
+	public void deleteConsumedOrders(final UIConnectionResultCallback<Player> callback, String handle,
 			List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
+			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top
@@ -296,9 +294,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(final UIConnectionResultCallback<Player> callback, final String playerHandle) {
+	public void reduceTimeUntilNextGame(final UIConnectionResultCallback<Player> callback, final String handle) {
 		try {
-			final JSONObject top = JsonConstructor.reduceCall(playerHandle, getSession());
+			final JSONObject top = JsonConstructor.reduceCall(handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
@@ -326,10 +324,10 @@ public class AndroidGameAction implements GameAction {
 
 	}
 
-	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
+	public void findGameById(final UIConnectionResultCallback<GameBoard> callback, String id, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-		args.put("playerHandle", playerHandle);
+		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, GameBoard.class).execute("");
@@ -337,10 +335,9 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback,
-			String playerHandle) {
+	public void findCurrentGamesByPlayerHandle(final UIConnectionResultCallback<AvailableGames> callback, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("handle", playerHandle);
+		args.put("handle", handle);
 		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -350,9 +347,9 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
+	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
-		args.put("handle", playerHandle);
+		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
@@ -557,9 +554,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String playerHandle) {
+	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String handle) {
 		try {
-			final JSONObject top = JsonConstructor.user(playerHandle, getSession());
+			final JSONObject top = JsonConstructor.user(handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
@@ -660,20 +657,20 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void findMatchingFriends(
-			final UIConnectionResultCallback<People> callback, List<String> authIds,
+	public void findMatchingFriends(final UIConnectionResultCallback<People> callback, List<String> authIds,
 			String handle) {
 		try {
 			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top.toString());
+					new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top
+							.toString());
 				}
 			});
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-		
+
 	}
 
 }

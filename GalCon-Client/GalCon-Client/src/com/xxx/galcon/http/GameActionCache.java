@@ -1,10 +1,9 @@
-package com.xxx.galcon;
+package com.xxx.galcon.http;
 
-import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.Maps;
 
-public class AndroidGameActionCache {
+public class GameActionCache {
 	public static class MapsCache implements UIConnectionResultCallback<Maps> {
 		private UIConnectionResultCallback<Maps> delegate;
 		private Maps cache;

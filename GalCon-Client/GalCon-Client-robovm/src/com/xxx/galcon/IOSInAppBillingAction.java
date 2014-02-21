@@ -1,5 +1,6 @@
 package com.xxx.galcon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.xxx.galcon.http.InAppBillingAction;
@@ -12,26 +13,24 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 	@Override
 	public void loadInventory(Inventory inventory, UIConnectionResultCallback<Inventory> callback) {
-		// TODO Auto-generated method stub
+		Inventory inv = new Inventory();
+		inv.inventory = new ArrayList<InventoryItem>();
 
+		callback.onConnectionResult(inv);
 	}
 
 	@Override
 	public void setup(Callback callback) {
-		// TODO Auto-generated method stub
-
+		callback.onSuccess("");
 	}
 
 	@Override
 	public void consumeOrders(List<Order> orders, Callback callback) {
-		// TODO Auto-generated method stub
-
+		callback.onSuccess("");
 	}
 
 	@Override
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<List<Order>> callback) {
-		// TODO Auto-generated method stub
-
+		callback.onConnectionResult(null);
 	}
-
 }
