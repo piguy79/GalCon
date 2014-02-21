@@ -115,17 +115,25 @@ public class FacebookAuthorization implements Authorizer {
 	public void getFriends(final FriendsListener listener) {
 		
 		if(Session.getActiveSession() == null || !Session.getActiveSession().isOpened()){
-			Session session = createSession();
-			session.openForRead(createRequest().setCallback(new StatusCallback() {
+			signIn(new AuthenticationListener() {
 				
 				@Override
-				public void call(Session session, SessionState state, Exception exception) {
-					if(SessionState.OPENED == state){
-						requestFriendInfo(listener, session);
-					}
+				public void onSignOut() {
+					// TODO Auto-generated method stub
 					
 				}
-			}));
+				
+				@Override
+				public void onSignInSucceeded(String authProvider, String token) {
+					requestFriendInfo(listener, Session.getActiveSession());
+				}
+				
+				@Override
+				public void onSignInFailed(String failureMessage) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 		}else{
 			requestFriendInfo(listener, Session.getActiveSession());
 		}

@@ -66,6 +66,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private ImageButton fbButton;
+	private ImageButton gpButton;
 
 	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager, SocialAction socialAction) {
 		this.gameAction = gameAction;
@@ -176,6 +177,25 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		actors.add(coinText);
 		
 		addFbButton();
+		addGpButton();
+	}
+	
+	private void addGpButton() {
+		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		gpButton.setX(fbButton.getX() + (fbButton.getWidth() * 1.1f));
+		gpButton.setY(0);
+		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		
+		gpButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+			}
+		});
+		
+		stage.addActor(gpButton);
+		actors.add(gpButton);
 	}
 
 	private void addFbButton() {
@@ -188,48 +208,54 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		fbButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				socialAction.addAuthDetails(new AuthenticationListener() {
-					
-					@Override
-					public void onSignOut() {
-						System.out.println("Sign out failed");
-						
-					}
-					
-					@Override
-					public void onSignInSucceeded(String authProvider, String token) {
-						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-						String id = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID);
-						prefs.flush();
-						
-						gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
-							@Override
-							public void onConnectionResult(Player result) {
-								GameLoop.USER = result;
-								
-							}
-							
-							@Override
-							public void onConnectionError(String msg) {
-								
-								
-							}
-						}, GameLoop.USER.handle, id, authProvider);
-						
-					}
-					
-					@Override
-					public void onSignInFailed(String failureMessage) {
-						System.out.println("Sign in failed");
-						
-					}
-				}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 			}
+
+			
 		});
 		
 		stage.addActor(fbButton);
 		actors.add(fbButton);;
 		
+	}
+	
+	private void registerSocialProvider(String authProvider) {
+		socialAction.addAuthDetails(new AuthenticationListener() {
+			
+			@Override
+			public void onSignOut() {
+				System.out.println("Sign out failed");
+				
+			}
+			
+			@Override
+			public void onSignInSucceeded(String authProvider, String token) {
+				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+				String id = prefs.getString(authProvider + Constants.ID);
+				prefs.flush();
+				
+				gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
+					@Override
+					public void onConnectionResult(Player result) {
+						GameLoop.USER = result;
+						
+					}
+					
+					@Override
+					public void onConnectionError(String msg) {
+						
+						
+					}
+				}, GameLoop.USER.handle, id, authProvider);
+				
+			}
+			
+			@Override
+			public void onSignInFailed(String failureMessage) {
+				System.out.println("Sign in failed");
+				
+			}
+		}, authProvider);
 	}
 
 	private void startHideSequence(final String retVal) {

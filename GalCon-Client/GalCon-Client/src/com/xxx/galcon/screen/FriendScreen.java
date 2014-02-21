@@ -121,15 +121,15 @@ public class FriendScreen implements ScreenFeedback {
 
 
 	private void showGpButton() {
-		gpButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		gpButton.setX(fbButton.getX() - gpButton.getWidth());
+		gpButton.setX(fbButton.getX() - (gpButton.getWidth() * 1.1f));
 		gpButton.setY(backButton.getY());
 		
-		stage.addActor(fbButton);
+		stage.addActor(gpButton);
 		
-		fbButton.addListener(gpButtonListener);
+		gpButton.addListener(gpButtonListener);
 		
 	}
 

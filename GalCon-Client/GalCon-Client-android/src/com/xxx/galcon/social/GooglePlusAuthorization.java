@@ -166,26 +166,26 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		if(plusClient != null && plusClient.isConnected()){
 			retrieveFriends(listener);
 		}else{
-			plusClient = new PlusClient.Builder(activity, new ConnectionCallbacks() {
+			signIn(new AuthenticationListener() {
 				
 				@Override
-				public void onDisconnected() {					
+				public void onSignOut() {
+					// TODO Auto-generated method stub
+					
 				}
 				
 				@Override
-				public void onConnected(Bundle connectionHint) {
+				public void onSignInSucceeded(String authProvider, String token) {
 					retrieveFriends(listener);
 					
 				}
-			}, new OnConnectionFailedListener() {
 				
 				@Override
-				public void onConnectionFailed(ConnectionResult result) {
-					listener.onFriendsLoadedFail("Unable to connect to GP");
+				public void onSignInFailed(String failureMessage) {
+					// TODO Auto-generated method stub
 					
 				}
-			}).setScopes(scopes).build();
-			plusClient.connect();
+			});
 		}
 		
 	}

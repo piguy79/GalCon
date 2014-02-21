@@ -143,7 +143,7 @@ public class UISkin extends Skin {
 			add(Constants.UI.FACEBOOK_SIGN_IN_BUTTON, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
 		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("google_plus_normal"));
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("google_plus_custom_normal"));
 			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
 
