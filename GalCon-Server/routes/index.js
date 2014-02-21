@@ -1000,7 +1000,7 @@ exports.findMatchingFriends = function(req, res){
 	p.then(function(){
 		var search = {};
 		var searchKey = "auth." + authProvider;
-		search[authProvider] = {$in : authIDs};
+		search[searchKey] = {$in : authIDs};
 		return userManager.UserModel.find(search).exec();
 	}).then(function(users){
 		var result = _.map(users, minifyUser);
