@@ -4,6 +4,7 @@
 package com.xxx.galcon.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -24,7 +25,7 @@ import com.xxx.galcon.model.base.JsonConvertible;
  * 
  */
 public class Player extends JsonConvertible {
-	public String authId;
+	public Auth auth;
 	public String handle;
 	public Integer xp;
 	public List<String> currentGames;
@@ -37,7 +38,9 @@ public class Player extends JsonConvertible {
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
 
-		this.authId = jsonObject.getString("authId");
+		JSONObject authObject = jsonObject.getJSONObject("auth");
+		this.auth = new Auth();
+		auth.consume(authObject);
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.getInt(Constants.COINS);
@@ -68,6 +71,17 @@ public class Player extends JsonConvertible {
 
 	public boolean hasCoinInformation() {
 		return usedCoins != null && coins != null;
+	}
+	
+	public void addAuthProvider(String authProvider, String id){
+		if(auth == null){
+			auth = new Auth();
+			auth.auth = new HashMap<String, String>();
+		}else if(auth.auth == null){
+			auth.auth = new HashMap<String, String>();
+		}
+		
+		auth.auth.put(authProvider, id);
 	}
 
 	public boolean hasMoved(GameBoard gameBoard) {

@@ -39,20 +39,25 @@ exports.exchangeToken = function(authProvider, token) {
 		return authIdRequest[authProvider].call(this, token);
 	}).then(function(id) {
 		console.log("Returned authID: " + id);
-		authId = id + ":" + authProvider;
-		return userManager.UserModel.findOneAndUpdate({authId : authId} ,{ $set : {session : {}}}).exec();
+		authId = id;
+		var key = 'auth.' + authProvider;
+		var search = {};
+		search[key] = authId;
+		return userManager.UserModel.findOneAndUpdate(search ,{ $set : {session : {}}}).exec();
 	}).then(function(user) {
 		if(user === null) {
-			user = new userManager.UserModel({
-				authId : authId,
-				currentGames : [],
-				xp : 0,
-				wins : 0,
-				losses : 0,
-				coins : 10,
-				usedCoins : -1,
-				watchedAd : false
-			});
+			var authKey = 'auth.' + authProvider;
+			var newUser = {
+					currentGames : [],
+					xp : 0,
+					wins : 0,
+					losses : 0,
+					coins : 10,
+					usedCoins : -1,
+					watchedAd : false
+			};
+			newUser[authKey] = authId;
+			user = new userManager.UserModel(newUser);
 			var innerp = rankManager.findRankByName("1");
 			return innerp.then(function(rank) {
 				user.rankInfo = rank;
@@ -68,7 +73,10 @@ exports.exchangeToken = function(authProvider, token) {
 			id : session,
 			expireDate : Date.now() + 4 * 60 * 60 * 1000
 		};
-		return userManager.UserModel.findOneAndUpdate({authId : authId}, {$set : {authId : authId, session : sessionObj}}, {upsert: true}).exec();
+		var authKey = 'auth.' + authProvider;
+		var auth = {};
+		auth[authKey] = authId;
+		return userManager.UserModel.findOneAndUpdate(auth, {$set : {authId : authId, session : sessionObj}}, {upsert: true}).exec();
 	}).then(function(user) {
 		return user.session.id;
 	});

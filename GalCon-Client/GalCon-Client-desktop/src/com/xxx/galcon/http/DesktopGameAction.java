@@ -40,12 +40,15 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.jirbo.adcolony.AdColonyVideoListener;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.request.ClientRequest;
@@ -110,9 +113,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 	}
 
-	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle) {
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle, String authProvider) {
 		try {
-			JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
+			JSONObject top = JsonConstructor.requestHandle(id, handle, getSession(), authProvider);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -180,9 +183,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id) {
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id, String authProvider) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
+		args.put("authProvider", authProvider);
 		args.put("session", session);
 		callback.onConnectionResult((Player) callURL(new GetClientRequest(), FIND_USER_BY_ID, args, new Player()));
 	}
@@ -280,8 +284,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			MongoClient client = new MongoClient("localhost");
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
+			
+			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+			String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("authId", GameLoop.USER.authId));
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)));
 
 			for (Order order : orders) {
 				GameLoop.USER.coins = GameLoop.USER.coins
@@ -289,7 +296,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 				user.put("coins", GameLoop.USER.coins);
 				user.put("usedCoins", -1);
 				user.put("watchedAd", false);
-				usersCollection.update(new BasicDBObject("authId", GameLoop.USER.authId), user);
+				usersCollection.update(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
 			}
 			client.close();
 
@@ -399,11 +406,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			MongoClient client = new MongoClient("localhost");
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
+			
+		
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("authId", GameLoop.USER.authId));
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)));
 			if (user == null) {
 
-				BasicDBObject newUser = new BasicDBObject("authId", GameLoop.USER.authId)
+				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider, GameLoop.USER.auth.getID(authProvider)))
 						.append("xp", 0)
 						.append("wins", 0)
 						.append("losses", 0)
@@ -420,7 +429,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						"session",
 						new BasicDBObject("id", session.session).append("expireDate",
 								new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)));
-				usersCollection.update(new BasicDBObject("authId", GameLoop.USER.authId), user);
+				usersCollection.update(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
 			}
 			client.close();
 
@@ -507,9 +516,9 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void findMatchingFriends(
 			UIConnectionResultCallback<People> callback, List<String> authIds,
-			String handle) {
+			String handle, String authProvider) {
 		try {
-			JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+			JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());

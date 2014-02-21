@@ -3,6 +3,7 @@ package com.xxx.galcon.model.friends;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.Friend;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 
@@ -16,10 +17,10 @@ public class FriendCombiner {
 			boolean matchForFriend = false;
 			for(MinifiedPlayer player : players){
 				if(samePerson(friend, player)){
-					GalconSocialUser galConFriend = new GalconSocialUser(player.authId, friend.image, player.handle, player.rank, friend.name);
+					GalconSocialUser galConFriend = new GalconSocialUser(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), friend.image, player.handle, player.rank, friend.name);
 					combinedFriends.add(galConFriend);
 					matchForFriend = true;
-					playersAlreadyMatchingASocialFriend.add(player.authId);
+					playersAlreadyMatchingASocialFriend.add(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 				}
 			}
 			
@@ -30,8 +31,8 @@ public class FriendCombiner {
 		}
 		
 		for(MinifiedPlayer player : players){
-			if(!playersAlreadyMatchingASocialFriend.contains(player.authId)){
-				GalConFriend galconFriend = new GalConFriend(player.authId, "", player.handle, player.rank);
+			if(!playersAlreadyMatchingASocialFriend.contains(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE))){
+				GalConFriend galconFriend = new GalConFriend(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), "", player.handle, player.rank);
 				combinedFriends.add(galconFriend);
 			}
 		}
@@ -40,7 +41,7 @@ public class FriendCombiner {
 	}
 	
 	private static boolean samePerson(Friend friend, MinifiedPlayer player){
-		return friend.id.equals(player.authId);
+		return friend.id.equals(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 	}
 
 }

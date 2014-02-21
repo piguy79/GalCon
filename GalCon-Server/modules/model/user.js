@@ -3,7 +3,6 @@ var mongoose = require('./mongooseConnection').mongoose
 ,ObjectId = require('mongoose').Types.ObjectId;
 
 var userSchema = mongoose.Schema({
-	authId : "String",
 	handle : "String",
 	createdDate : "Date",
 	xp : "Number",
@@ -29,9 +28,9 @@ var userSchema = mongoose.Schema({
 	    associatedCoins : "Number"
 	}],
 	auth : {
-		g : "String",
-		t : "String",
-		f : "String"
+		google : "String",
+		twitter : "String",
+		facebook : "String"
 	},
 	coins : "Number",
 	usedCoins : "Number",
@@ -44,14 +43,20 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.set('toObject', { getters: true });
-userSchema.index({authId : 1});
+userSchema.index({'auth.google' : 1});
+userSchema.index({'auth.twitter' : 1});
+userSchema.index({'auth.facebook' : 1});
 userSchema.index({handle: 1});
 userSchema.index({"sessions.sessionId" : 1});
 
 var UserModel = db.model('User', userSchema);
 
-exports.findUserById = function(id) {
-	return UserModel.findOne({authId : id}).exec();
+exports.findUserById = function(id, authProvider) {
+	var searchKey = 'auth.' + authProvider;
+	var search = {};
+	search[searchKey] = id;
+	
+	return UserModel.findOne(search).exec();
 }
 
 exports.findUserByHandle = function(handle){

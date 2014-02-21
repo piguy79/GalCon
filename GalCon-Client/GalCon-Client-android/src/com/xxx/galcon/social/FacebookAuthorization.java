@@ -84,10 +84,10 @@ public class FacebookAuthorization implements Authorizer {
 		@Override
 		public void onCompleted(Response response) {
 			GraphObject user = response.getGraphObject();
-			GameLoop.USER.authId = user.getProperty("id")  + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK;
+			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getProperty("id").toString());
 
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-			prefs.putString(Constants.ID, GameLoop.USER.authId);
+			prefs.putString(Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 			prefs.flush();
 			
 			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
@@ -164,7 +164,7 @@ public class FacebookAuthorization implements Authorizer {
 					Friend friend = new Friend(user.getId() + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getName(), imageUrl);
 					friends.add(friend);
 				}
-				listener.onFriendsLoadedSuccess(friends);
+				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 			}
 		});
 		friendRequest.setParameters(parameters);

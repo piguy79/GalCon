@@ -53,13 +53,13 @@ public interface GameAction {
 
 	public void findCurrentGamesByPlayerHandle(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id);
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id, String authProvider);
 
 	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm);
 
 	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 
-	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle);
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle, String authProvider);
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String handle);
 
@@ -87,7 +87,7 @@ public interface GameAction {
 	
 	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle);
 	
-	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle);
+	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle, String authProvider);
 
 
 }

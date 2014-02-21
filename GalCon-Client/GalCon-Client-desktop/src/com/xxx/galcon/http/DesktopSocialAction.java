@@ -30,10 +30,10 @@ public class DesktopSocialAction implements SocialAction {
 					public void run() {
 						int rand = (int) (Math.random() * 10000);
 						String id = "me" + rand + ":google";
-						GameLoop.USER.authId = id;
+						GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, id);
 
 						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-						prefs.putString(Constants.ID, GameLoop.USER.authId);
+						prefs.putString(Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 						prefs.flush();
 
 						listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, "FAKE_TOKEN");
@@ -63,7 +63,7 @@ public class DesktopSocialAction implements SocialAction {
 		Friend friend = new Friend("12345", "Pal", "url");
 		List<Friend> friends = new ArrayList<Friend>();
 		friends.add(friend);
-		listener.onFriendsLoadedSuccess(friends);
+		listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 	}
 
 	

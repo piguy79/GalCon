@@ -360,9 +360,10 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String id) {
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String id, String authProvider) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
+		args.put("authProvider", authProvider);
 		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -416,9 +417,9 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id,
-			String handle) {
+			String handle, String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
+			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class)
@@ -665,9 +666,9 @@ public class AndroidGameAction implements GameAction {
 	@Override
 	public void findMatchingFriends(
 			final UIConnectionResultCallback<People> callback, List<String> authIds,
-			String handle) {
+			String handle, String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top.toString());

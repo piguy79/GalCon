@@ -65,10 +65,10 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		GameLoop.USER.authId = plusClient.getCurrentPerson().getId()  + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
+		GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, plusClient.getCurrentPerson().getId());
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		prefs.putString(Constants.ID, GameLoop.USER.authId);
+		prefs.putString(Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 		prefs.flush();
 
 		new RetrieveTokenTask().execute(plusClient.getAccountName());
@@ -202,7 +202,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 					Friend friend = new Friend(person.getId() + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, person.getDisplayName(), "");
 					friends.add(friend);
 				}
-				listener.onFriendsLoadedSuccess(friends);
+				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		}, null);
 	}
