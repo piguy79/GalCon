@@ -44,6 +44,8 @@ public class Constants {
 		public static final String FACEBOOK_SIGN_IN_BUTTON = "facebookSignInButton";
 
 		public static final String EXPLOSION_PARTICLE = "explosionParticle";
+
+		public static final String GOOGLE_PLUS_SIGN_IN_NORMAL = "googlePlusSignInImageButton";
 	}
 
 	public static class Auth {

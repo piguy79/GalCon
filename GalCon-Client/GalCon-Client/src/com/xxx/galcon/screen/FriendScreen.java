@@ -2,6 +2,7 @@ package com.xxx.galcon.screen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
+import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.Util.createShader;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -69,6 +71,9 @@ public class FriendScreen implements ScreenFeedback {
 	private ShaderLabel allText;
 	private ImageButton friendsButton;
 	private ShaderLabel friendsLabel;
+	private ImageButton fbButton;
+	private ImageButton gpButton;
+
 	
 	private Group searchLabelGroup;
 	private ScrollList<CombinedFriend> scrollList;
@@ -108,10 +113,37 @@ public class FriendScreen implements ScreenFeedback {
 		createScrollList();
 		createNoResultsFound();
 		showFriends();
+		showFbButton();
+		showGpButton();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
 
+
+	private void showGpButton() {
+		gpButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		gpButton.setX(fbButton.getX() - gpButton.getWidth());
+		gpButton.setY(backButton.getY());
+		
+		stage.addActor(fbButton);
+		
+		fbButton.addListener(gpButtonListener);
+		
+	}
+
+	private void showFbButton() {
+		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		fbButton.setX(Gdx.graphics.getWidth() - fbButton.getWidth());
+		fbButton.setY(backButton.getY());
+		
+		stage.addActor(fbButton);
+		
+		fbButton.addListener(fbButtonListener);
+	}
 
 	private void createSearchLabels() {
 		float height = Gdx.graphics.getHeight();
@@ -477,8 +509,18 @@ public class FriendScreen implements ScreenFeedback {
 			clearActiveTab("Search by handle.", 1);
 			showFriends();
 		}
-
-		
+	};
+	
+	private ClickListener fbButtonListener = new ClickListener(){
+		public void clicked(InputEvent event, float x, float y) {
+			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+		};
+	};
+	
+	private ClickListener gpButtonListener = new ClickListener(){
+		public void clicked(InputEvent event, float x, float y) {
+			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+		};
 	};
 	
 	private void clearActiveTab(String searchMessageText, int state) {
@@ -492,50 +534,59 @@ public class FriendScreen implements ScreenFeedback {
 	
 	private ClickListener friendClickListener = new ClickListener(){
 		public void clicked(InputEvent event, float x, float y) {
-			waitImage.setVisible(true);
-			clearActiveTab("Filter...", 2);
-			ShaderLabel label = new ShaderLabel(fontShader, "Friends: ", skin, Constants.UI.DEFAULT_FONT);
-			populateSearchLabelGroup(label);
+			Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+			String socialAuthProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
+			
+			loadFriends(socialAuthProvider);
+		}
 
-			socialAction.getFriends(new FriendsListener() {
-				
-				@Override
-				public void onFriendsLoadedSuccess(final List<Friend> friends, final String authProviderUsed) {
-					
-					List<String> authIds = createAuthIdList(friends);
-					
-					gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
-						public void onConnectionResult(People result) {
-							List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
-							loadedFriends = combinedFriends;
-							displayPeople(combinedFriends);
-						};
-						
-						public void onConnectionError(String msg) {
-							waitImage.setVisible(false);
-							noResultsFound.setVisible(true);
-							noResultsFound.setText("Failed loading friends.");
-						};
-					}, authIds, GameLoop.USER.handle, authProviderUsed);
-					
-				}
-				
-				private List<String> createAuthIdList(List<Friend> friends) {
-					List<String> authIds = new ArrayList<String>();
-					
-					for(Friend friend : friends){
-						authIds.add(friend.id);
-					}
-					return authIds;
-				}
-
-				@Override
-				public void onFriendsLoadedFail(String error) {
-					noResultsFound.setText("Unable to load friends.");
-					noResultsFound.setVisible(true);
-				}
-			});
-		};
+		
 	};
+	
+	public void loadFriends(String authProvider) {
+		waitImage.setVisible(true);
+		clearActiveTab("Filter...", 2);
+		ShaderLabel label = new ShaderLabel(fontShader, "Friends: ", skin, Constants.UI.DEFAULT_FONT);
+		populateSearchLabelGroup(label);
+
+		socialAction.getFriends(new FriendsListener() {
+			
+			@Override
+			public void onFriendsLoadedSuccess(final List<Friend> friends, final String authProviderUsed) {
+				
+				List<String> authIds = createAuthIdList(friends);
+				
+				gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
+					public void onConnectionResult(People result) {
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
+						loadedFriends = combinedFriends;
+						displayPeople(combinedFriends);
+					};
+					
+					public void onConnectionError(String msg) {
+						waitImage.setVisible(false);
+						noResultsFound.setVisible(true);
+						noResultsFound.setText("Failed loading friends.");
+					};
+				}, authIds, GameLoop.USER.handle, authProviderUsed);
+				
+			}
+			
+			@Override
+			public void onFriendsLoadedFail(String error) {
+				noResultsFound.setText("Unable to load friends.");
+				noResultsFound.setVisible(true);
+			}
+		}, authProvider);
+	};
+	
+	private List<String> createAuthIdList(List<Friend> friends) {
+		List<String> authIds = new ArrayList<String>();
+		
+		for(Friend friend : friends){
+			authIds.add(friend.id);
+		}
+		return authIds;
+	}
 
 }

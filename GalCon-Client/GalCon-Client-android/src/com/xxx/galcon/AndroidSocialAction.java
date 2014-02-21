@@ -80,8 +80,8 @@ public class AndroidSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void getFriends(final FriendsListener listener) {
-		setupAuthorizer();
+	public void getFriends(final FriendsListener listener, String authProvider) {
+		setupAuthorizer(authProvider);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				authorizer.getFriends(listener);

@@ -33,7 +33,7 @@ public class DesktopSocialAction implements SocialAction {
 						GameLoop.USER.addAuthProvider(provider, id);
 						
 						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-						prefs.putString(Constants.ID, GameLoop.USER.auth.getID(provider));
+						prefs.putString(provider + Constants.ID, GameLoop.USER.auth.getID(provider));
 						prefs.flush();
 
 						listener.onSignInSucceeded(provider, "FAKE_TOKEN");
@@ -59,11 +59,11 @@ public class DesktopSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void getFriends(FriendsListener listener) {
+	public void getFriends(FriendsListener listener, String authProvider) {
 		Friend friend = new Friend("12345", "Pal", "url");
 		List<Friend> friends = new ArrayList<Friend>();
 		friends.add(friend);
-		listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+		listener.onFriendsLoadedSuccess(friends, authProvider);
 	}
 
 	@Override
