@@ -41,6 +41,8 @@ public class Constants {
 		public static final String COIN = "coin";
 		public static final String DIALOG_BG = "dialogBg";
 		public static final String GOOGLE_PLUS_SIGN_IN_BUTTON = "googlePlusSignInButton";
+		public static final String FACEBOOK_SIGN_IN_BUTTON = "facebookSignInButton";
+
 		public static final String EXPLOSION_PARTICLE = "explosionParticle";
 	}
 

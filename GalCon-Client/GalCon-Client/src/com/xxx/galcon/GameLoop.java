@@ -107,7 +107,7 @@ public class GameLoop extends Game {
 		Tween.setCombinedAttributesLimit(4);
 
 		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
-		friendScreen = new FriendScreen(skin, assetManager);
+		friendScreen = new FriendScreen(skin, assetManager, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, inAppBillingAction, assetManager,
 				tweenManager);
 		setScreen(menuScreenContainer);

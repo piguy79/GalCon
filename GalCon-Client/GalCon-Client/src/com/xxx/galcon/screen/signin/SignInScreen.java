@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.PartialScreenFeedback;
@@ -130,7 +131,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 	
 	private void addFacebookButton(float width, float height) {
-		facebookButton = new Button(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_BUTTON);
+		facebookButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		facebookButton.setWidth(0.4f * width);
 		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
 		facebookButton.setY(0.4f * height);

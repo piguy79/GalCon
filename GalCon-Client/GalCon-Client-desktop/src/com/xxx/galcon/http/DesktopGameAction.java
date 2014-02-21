@@ -15,6 +15,7 @@ import static com.xxx.galcon.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HAND
 import static com.xxx.galcon.http.UrlConstants.FIND_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.xxx.galcon.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.xxx.galcon.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.xxx.galcon.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.xxx.galcon.http.UrlConstants.FIND_USER_BY_ID;
 import static com.xxx.galcon.http.UrlConstants.INVITE_USER_TO_PLAY;
@@ -500,6 +501,24 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("gameId", gameId);
 		args.put("session", getSession());
 		callback.onConnectionResult((BaseResult) callURL(new GetClientRequest(), DECLINE_INVITE, args, new BaseResult()));
+		
+	}
+
+	@Override
+	public void findMatchingFriends(
+			UIConnectionResultCallback<People> callback, List<String> authIds,
+			String handle) {
+		try {
+			JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((People) callURL(new PostClientRequest(), FIND_MATCHING_FRIENDS, args,
+					new People()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
 		
 	}
 

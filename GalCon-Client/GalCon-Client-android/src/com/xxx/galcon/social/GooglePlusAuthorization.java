@@ -1,6 +1,8 @@
 package com.xxx.galcon.social;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.IntentSender.SendIntentException;
@@ -19,12 +21,16 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.PlusClient.OnPeopleLoadedListener;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendsListener;
+import com.xxx.galcon.model.Friend;
 
 public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks, OnConnectionFailedListener {
 	private PlusClient plusClient;
@@ -153,6 +159,52 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				});
 			}
 		}
+	}
+
+	@Override
+	public void getFriends(final FriendsListener listener) {
+		if(plusClient != null && plusClient.isConnected()){
+			retrieveFriends(listener);
+		}else{
+			plusClient = new PlusClient.Builder(activity, new ConnectionCallbacks() {
+				
+				@Override
+				public void onDisconnected() {					
+				}
+				
+				@Override
+				public void onConnected(Bundle connectionHint) {
+					retrieveFriends(listener);
+					
+				}
+			}, new OnConnectionFailedListener() {
+				
+				@Override
+				public void onConnectionFailed(ConnectionResult result) {
+					listener.onFriendsLoadedFail("Unable to connect to GP");
+					
+				}
+			}).setScopes(scopes).build();
+			plusClient.connect();
+		}
+		
+	}
+
+	private void retrieveFriends(final FriendsListener listener) {
+		plusClient.loadVisiblePeople(new OnPeopleLoadedListener() {
+			
+			@Override
+			public void onPeopleLoaded(ConnectionResult status,
+					PersonBuffer personBuffer, String nextPageToken) {
+				List<Friend> friends = new ArrayList<Friend>();
+				for(int i = 0; i < personBuffer.getCount(); i++){
+					Person person = personBuffer.get(i);
+					Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
+					friends.add(friend);
+				}
+				listener.onFriendsLoadedSuccess(friends);
+			}
+		}, null);
 	}
 
 	

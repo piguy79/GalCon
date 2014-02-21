@@ -9,4 +9,6 @@ public interface SocialAction {
 		
 	public void getToken(AuthenticationListener listener);
 	
+	public void getFriends(FriendsListener listener);
+	
 }

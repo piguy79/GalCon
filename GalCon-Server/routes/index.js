@@ -40,12 +40,7 @@ exports.searchUsers = function(req, res){
 	
 	var p = userManager.findUserMatchingSearch(searchTerm, handle);
 	p.then(function(people) {
-		res.json({items : _.map(people, function (person) { 
-			return {
-					handle : person.handle, 
-					rank : person.rankInfo.level 
-				};
-			})});
+		res.json({items : _.map(people, minifyUser)});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -936,10 +931,7 @@ exports.findPendingInvites = function(req, res){
 	p.then(function(queue){
 		var returnList = _.map(queue, function(item){
 			return {
-				requester : {
-					handle : item.requester.handle,
-					rank : item.requester.rankInfo.level
-				},
+				requester : minifyUser(item.requester),
 				inviteeHandle : handle,
 				minifiedGame : {
 					id : item.game._id,
@@ -972,11 +964,35 @@ exports.findFriends = function(req, res){
 			return -friend.played;
 		});
 		var result = _.map(sortedFriends, function(friend){
-			return {
-				handle : friend.user.handle,
-				rank : friend.user.rankInfo.level
-			}
+			return minifyUser(friend.user)
 		})
 		res.json({items : result});
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var minifyUser = function(user){
+	return {
+		authId : user.authId,
+		handle : user.handle,
+		rank : user.rankInfo.level
+	};
+}
+
+exports.findMatchingFriends = function(req, res){
+	var authIDs = req.body.authIds;
+	var session = req.body.session;
+	var handle = req.body.handle;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return userManager.UserModel.find({authId : {$in : authIDs}}).exec();
+	}).then(function(users){
+		var result = _.map(users, minifyUser);
+		res.json({items : result});
+	}).then(null, logErrorAndSetResponse(req, res));
+	
 }

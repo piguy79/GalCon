@@ -50,6 +50,8 @@ public class UrlConstants {
 	public static final String RESIGN_GAME = "/games/:gameId/resign";
 	
 	public static final String FIND_FRIENDS = "/friends";
+	
+	public static final String FIND_MATCHING_FRIENDS = "/friends/match";
 
 	public static final String FIND_PENDING_INVITE = "/gamequeue/pending";
 	
