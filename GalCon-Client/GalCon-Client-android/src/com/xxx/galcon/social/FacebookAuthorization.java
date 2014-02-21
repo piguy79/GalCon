@@ -161,7 +161,7 @@ public class FacebookAuthorization implements Authorizer {
 					} catch (JSONException e) {
 						
 					}
-					Friend friend = new Friend(user.getId(), user.getName(), imageUrl);
+					Friend friend = new Friend(user.getId() + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getName(), imageUrl);
 					friends.add(friend);
 				}
 				listener.onFriendsLoadedSuccess(friends);
