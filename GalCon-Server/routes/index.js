@@ -989,7 +989,7 @@ exports.findMatchingFriends = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return userManager.find({authId : {$in : authIDs}}).exec();
+		return userManager.UserModel.find({authId : {$in : authIDs}}).exec();
 	}).then(function(users){
 		var result = _.map(users, minifyUser);
 		res.json({items : result});
