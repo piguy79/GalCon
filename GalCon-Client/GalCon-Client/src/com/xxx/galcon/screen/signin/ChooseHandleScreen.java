@@ -57,8 +57,9 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		this.stage = stage;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		String id = prefs.getString(Constants.ID, "");
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
+		String id = prefs.getString(authProvider + Constants.ID, "");
+		
 		if (id.isEmpty()) {
 			result = "signIn";
 			return;

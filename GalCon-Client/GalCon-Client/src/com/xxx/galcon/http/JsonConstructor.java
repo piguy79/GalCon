@@ -112,7 +112,7 @@ public class JsonConstructor {
 
 	}
 	
-	public static JSONObject addProvider(String handle, String session, String authProvider, String id) throws JSONException {
+	public static JSONObject addProvider(String handle, String id, String session, String authProvider) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", handle);

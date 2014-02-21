@@ -685,7 +685,7 @@ public class AndroidGameAction implements GameAction {
 	public void addProviderToUser(final UIConnectionResultCallback<Player> callback,
 			String handle, String id, String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.addProvider(handle, id, authProvider, authProvider);
+			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top.toString());

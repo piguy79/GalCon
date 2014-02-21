@@ -82,10 +82,12 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String socialAuthProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
+		
 
 		if (socialAuthProvider != null && !socialAuthProvider.isEmpty()) {
+			String id = prefs.getString(socialAuthProvider + Constants.Auth.SOCIAL_AUTH_PROVIDER);
 			String lastSessionId = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
-			if (lastSessionId.isEmpty()) {
+			if (lastSessionId.isEmpty() || id.isEmpty()) {
 				waitImage.start();
 				socialAction.signIn(socialAuthProvider);
 			} else {

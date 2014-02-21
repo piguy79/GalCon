@@ -536,7 +536,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void addProviderToUser(UIConnectionResultCallback<Player> callback,
 			String handle, String id, String authProvider) {
 		try {
-			JSONObject top = JsonConstructor.addProvider(handle, id, authProvider, authProvider);
+			JSONObject top = JsonConstructor.addProvider(handle, id, getSession(),  authProvider);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
