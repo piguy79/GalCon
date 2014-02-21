@@ -72,6 +72,7 @@ app.get('/gamequeue/pending', routes.findPendingInvites);
 app.get('/gamequeue/accept', routes.acceptInvite);
 app.get('/gamequeue/decline', routes.declineInvite);
 app.post('/friends/match', routes.findMatchingFriends);
+app.post('/user/addProvider', routes.addProviderToUser);
 
 
 

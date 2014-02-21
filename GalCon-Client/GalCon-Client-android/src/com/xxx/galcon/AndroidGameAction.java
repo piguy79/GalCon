@@ -9,6 +9,7 @@ import static com.xxx.galcon.MainActivity.LOG_NAME;
 import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
+import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -359,9 +360,10 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String id) {
+	public void findUserInformation(final UIConnectionResultCallback<Player> callback, String id, String authProvider) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
+		args.put("authProvider", authProvider);
 		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -414,9 +416,10 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id, String handle) {
+	public void requestHandleForId(final UIConnectionResultCallback<HandleResponse> callback, String id, String handle,
+			String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
+			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class)
@@ -658,12 +661,29 @@ public class AndroidGameAction implements GameAction {
 
 	@Override
 	public void findMatchingFriends(final UIConnectionResultCallback<People> callback, List<String> authIds,
-			String handle) {
+			String handle, String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top
+							.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+
+	}
+
+	@Override
+	public void addProviderToUser(final UIConnectionResultCallback<Player> callback, String handle, String id,
+			String authProvider) {
+		try {
+			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top
 							.toString());
 				}
 			});

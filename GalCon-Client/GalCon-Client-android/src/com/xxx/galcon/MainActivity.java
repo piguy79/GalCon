@@ -229,12 +229,12 @@ public class MainActivity extends AndroidApplication {
 	protected void onActivityResult(int request, int response, Intent data) {
 		if (request == GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(response);
-		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
-			super.onActivityResult(request, response, data);
 		} else if (request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE) {
 			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
 					response, data);
 			socialAction.onActivityResult(response);
+		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
+			super.onActivityResult(request, response, data);
 		}
 	}
 

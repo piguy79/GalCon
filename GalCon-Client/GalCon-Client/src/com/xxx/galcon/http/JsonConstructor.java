@@ -74,12 +74,13 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject requestHandle(String id, String handle, String session) throws JSONException {
+	public static JSONObject requestHandle(String id, String handle, String session, String authProvider) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("id", id);
 		top.put("handle", handle);
 		top.put("session", session);
+		top.put("authProvider", authProvider);
 
 		return top;
 	}
@@ -94,17 +95,30 @@ public class JsonConstructor {
 
 	}
 	
-	public static JSONObject matchingFriends(List<String> authIds, String handle, String session) throws JSONException {
+	public static JSONObject matchingFriends(List<String> authIds, String handle, String session, String authProvider) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", handle);
 		top.put("session", session);
+		top.put("authProvider", authProvider);
 		JSONArray jsonFriends = new JSONArray();
 
 		for (String authId : authIds) {
 			jsonFriends.put(authId);
 		}
 		top.put("authIds", jsonFriends);
+
+		return top;
+
+	}
+	
+	public static JSONObject addProvider(String handle, String id, String session, String authProvider) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		top.put("authProvider", authProvider);
+		top.put("id", id);
 
 		return top;
 

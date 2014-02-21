@@ -68,6 +68,10 @@ public class AndroidSocialAction implements SocialAction {
 		}
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER, "");
+		setupAuthorizer(authProvider);
+	}
+	
+	private void setupAuthorizer(String authProvider){
 		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 			authorizer = new GooglePlusAuthorization(activity);
 		} else if(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)){
@@ -84,6 +88,16 @@ public class AndroidSocialAction implements SocialAction {
 			}
 		});
 		
+	}
+
+	@Override
+	public void addAuthDetails(final AuthenticationListener listener, final String authProvider) {
+		setupAuthorizer(authProvider);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				authorizer.signIn(listener);
+			}
+		});		
 	}
 
 }

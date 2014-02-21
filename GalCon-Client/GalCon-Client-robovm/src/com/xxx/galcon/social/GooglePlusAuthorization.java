@@ -26,10 +26,11 @@ public class GooglePlusAuthorization implements Authorizer {
 			if (error != null) {
 				listener.onSignInFailed(error.description());
 			} else {
-				GameLoop.USER.authId = gppSignIn.getUserId() + ":" + Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
+				GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, gppSignIn.getUserId()
+						.toString());
 
 				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-				prefs.putString(Constants.ID, GameLoop.USER.authId);
+				prefs.putString(Constants.ID, gppSignIn.getUserId().toString());
 				prefs.flush();
 
 				// hacky, but parse the access token out as it's not exposed

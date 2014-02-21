@@ -117,7 +117,7 @@ public class FriendScreen implements ScreenFeedback {
 		float height = Gdx.graphics.getHeight();
 		
 		searchLabelGroup = new Group();
-		searchLabelGroup.setX(0);
+		searchLabelGroup.setX(5);
 		searchLabelGroup.setY(searchBox.getY() - (height * 0.05f));
 		
 		stage.addActor(searchLabelGroup);
@@ -500,7 +500,7 @@ public class FriendScreen implements ScreenFeedback {
 			socialAction.getFriends(new FriendsListener() {
 				
 				@Override
-				public void onFriendsLoadedSuccess(final List<Friend> friends) {
+				public void onFriendsLoadedSuccess(final List<Friend> friends, final String authProviderUsed) {
 					
 					List<String> authIds = createAuthIdList(friends);
 					
@@ -516,7 +516,7 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setVisible(true);
 							noResultsFound.setText("Failed loading friends.");
 						};
-					}, authIds, GameLoop.USER.handle);
+					}, authIds, GameLoop.USER.handle, authProviderUsed);
 					
 				}
 				

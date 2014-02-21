@@ -56,11 +56,20 @@ public class IOSSocialAction implements SocialAction {
 		}
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER, "");
+		setupAuthorizer(authProvider);
+	}
+
+	private void setupAuthorizer(String authProvider) {
 		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 			authorizer = new GooglePlusAuthorization();
 		} else if (Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)) {
-
+//			authorizer = new FacebookAuthorization(activity);
 		}
 	}
 
+	@Override
+	public void addAuthDetails(AuthenticationListener listener, String authProvider) {
+		setupAuthorizer(authProvider);
+		authorizer.signIn(listener);
+	}
 }

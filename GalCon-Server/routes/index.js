@@ -107,7 +107,7 @@ var validate = function(propMap, res) {
 var validateSession = function(session, authIdOrHandleMap) {
 	var key = _.keys(authIdOrHandleMap)[0];
 	var value = _.values(authIdOrHandleMap)[0];
-	
+		
 	var p = getSessionState(session, key, value);
 	return p.then(function(state) {
 		var msg;
@@ -120,9 +120,10 @@ var validateSession = function(session, authIdOrHandleMap) {
 		if(msg !== undefined) {
 			var obj = {};
 			obj[key] = value;
-			console.log("Setting session to empty for : " + obj);
+			console.log(JSON.stringify(obj));
 			var invalidP = userManager.UserModel.findOneAndUpdate(obj, {$set : {session : {}}}).exec();
-			return invalidP.then(function() {
+			return invalidP.then(function(user) {
+				console.log("user: " + user);
 				throw new ErrorWithResponse(msg, { session : "expired" });
 			});
 		}
@@ -147,15 +148,18 @@ var getSessionState = function(session, key, value) {
 
 exports.findUserById = function(req, res) {
 	var id = req.query['id'];
+	var authProvider = req.query['authProvider']
 	var session = req.query['session'];
 	
 	if(!validate({session : session}, res)) {
 		return;
 	}
-	
-	var p = validateSession(session, {"authId" : id});
+	var key = 'auth.' + authProvider;
+	var query= {};
+	query[key] = id;
+	var p = validateSession(session, query);
 	p.then(function() {
-		var validP = userManager.findUserById(id);
+		var validP = userManager.findUserById(id, authProvider);
 		return validP.then(function(user) {
 			if (user) {
 				res.json(user);
@@ -169,13 +173,17 @@ exports.findUserById = function(req, res) {
 exports.requestHandleForId = function(req, res) {
 	var session = req.body['session'];
 	var id = req.body['id'];
+	var authProvider = req.body['authProvider'];
 	var handle = req.body['handle'];
 	
 	if(!validate({session : session, handle : handle}, res)) {
 		return;
 	}
 	
-	var p = validateSession(session, {"authId" : id});
+	var key = "auth." + authProvider;
+	var search = {};
+	search[key] = id;
+	var p = validateSession(session, search);
 	p.then(function() {
 		var validP = userManager.findUserByHandle(handle);
 		return validP.then(function(user) {
@@ -185,7 +193,7 @@ exports.requestHandleForId = function(req, res) {
 					reason : "Username already chosen"
 				});
 			} else {
-				var innerp = userManager.findUserById(id);
+				var innerp = userManager.findUserById(id, authProvider);
 				return innerp.then(function(user) {
 					if(user === null) {
 						console.error("Attempted to create handle for invalid id: " + email);
@@ -235,7 +243,7 @@ var minfiyGameResponse = function(games, handle){
 		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === handle}).length === 0;	
 		return {
 			id : game._id,
-			players : _.map(game.players, function(player) { return { handle : player.handle, rank : player.rankInfo.level}}),
+			players : _.map(game.players, minifyUser),
 			createdDate : game.createdDate,
 			moveAvailable : iHaveAMove,
 			winner : game.endGameInformation.winnerHandle,
@@ -972,7 +980,7 @@ exports.findFriends = function(req, res){
 
 var minifyUser = function(user){
 	return {
-		authId : user.authId,
+		auth : user.auth,
 		handle : user.handle,
 		rank : user.rankInfo.level
 	};
@@ -981,6 +989,7 @@ var minifyUser = function(user){
 exports.findMatchingFriends = function(req, res){
 	var authIDs = req.body.authIds;
 	var session = req.body.session;
+	var authProvider = req.body.authProvider;
 	var handle = req.body.handle;
 	
 	if(!validate({session : session, handle : handle}, res)) {
@@ -989,10 +998,34 @@ exports.findMatchingFriends = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return userManager.UserModel.find({authId : {$in : authIDs}}).exec();
+		var search = {};
+		var searchKey = "auth." + authProvider;
+		search[searchKey] = {$in : authIDs};
+		return userManager.UserModel.find(search).exec();
 	}).then(function(users){
 		var result = _.map(users, minifyUser);
 		res.json({items : result});
 	}).then(null, logErrorAndSetResponse(req, res));
 	
+}
+
+exports.addProviderToUser = function(req, res){
+	var session = req.body.session;
+	var authProvider = req.body.authProvider;
+	var id = req.body.id;
+	var handle = req.body.handle;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		var setObj = {};
+		var setKey = "auth." + authProvider;
+		setObj[setKey] = id;
+		return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
+	}).then(function(user){
+		res.json(user);
+	}).then(null, logErrorAndSetResponse(req, res));
 }

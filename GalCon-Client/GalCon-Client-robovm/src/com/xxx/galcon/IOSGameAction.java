@@ -8,6 +8,7 @@ import static com.xxx.galcon.Constants.GALCON_PREFS;
 import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
+import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -200,14 +201,6 @@ public class IOSGameAction implements GameAction {
 	}
 
 	@Override
-	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id) {
-		final Map<String, String> args = new HashMap<String, String>();
-		args.put("id", id);
-		args.put("session", getSession());
-		new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_ID, Player.class).execute("");
-	}
-
-	@Override
 	public void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
@@ -342,17 +335,6 @@ public class IOSGameAction implements GameAction {
 		args.put("gameId", gameId);
 		args.put("session", getSession());
 		new GetJsonRequestTask<BaseResult>(args, callback, ACCEPT_INVITE, BaseResult.class).execute("");
-	}
-
-	@Override
-	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle) {
-		try {
-			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession());
-			new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class).execute(top
-					.toString());
-		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
 	}
 
 	private class PostJsonRequestTask<T extends JsonConvertible> extends JsonRequestTask<T> {
@@ -528,10 +510,43 @@ public class IOSGameAction implements GameAction {
 	}
 
 	@Override
-	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle) {
+	public void findUserInformation(UIConnectionResultCallback<Player> callback, String id, String authProvider) {
+		final Map<String, String> args = new HashMap<String, String>();
+		args.put("id", id);
+		args.put("authProvider", authProvider);
+		args.put("session", getSession());
+		new GetJsonRequestTask<Player>(args, callback, FIND_USER_BY_ID, Player.class).execute("");
+	}
+
+	@Override
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle,
+			String authProvider) {
 		try {
-			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession());
+			final JSONObject top = JsonConstructor.requestHandle(id, handle, getSession(), authProvider);
+			new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class).execute(top
+					.toString());
+		} catch (JSONException e) {
+			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+	}
+
+	@Override
+	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle,
+			String authProvider) {
+		try {
+			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 			new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top.toString());
+		} catch (JSONException e) {
+			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+	}
+
+	@Override
+	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+			String authProvider) {
+		try {
+			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
+			new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top.toString());
 		} catch (JSONException e) {
 			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}

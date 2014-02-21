@@ -11,4 +11,6 @@ public interface SocialAction {
 	
 	public void getFriends(FriendsListener listener);
 	
+	public void addAuthDetails(AuthenticationListener listener, String authProvider);
+	
 }

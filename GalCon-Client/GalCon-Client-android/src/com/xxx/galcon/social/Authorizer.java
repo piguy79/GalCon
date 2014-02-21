@@ -13,4 +13,5 @@ public interface Authorizer {
 	
 	public void getFriends(FriendsListener listener);
 	
+		
 }
