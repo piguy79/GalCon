@@ -35,14 +35,12 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Friend;
-import com.xxx.galcon.model.GameQueueItem;
-import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
-import com.xxx.galcon.model.friends.CombinedFriend;
-import com.xxx.galcon.model.friends.FriendCombiner;
-import com.xxx.galcon.model.friends.GalConFriend;
 import com.xxx.galcon.model.GameInviteRequest;
 import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.model.friends.CombinedFriend;
+import com.xxx.galcon.model.friends.FriendCombiner;
+import com.xxx.galcon.model.friends.GalConFriend;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -67,10 +65,7 @@ public class FriendScreen implements ScreenFeedback {
 	private ShaderTextField searchBox;
 	private ShaderLabel noResultsFound;
 	private ActionButton searchButton;
-	private ImageButton allButton;
-	private ShaderLabel allText;
-	private ImageButton friendsButton;
-	private ShaderLabel friendsLabel;
+	private ImageButton galButton;
 	private ImageButton fbButton;
 	private ImageButton gpButton;
 
@@ -105,8 +100,6 @@ public class FriendScreen implements ScreenFeedback {
 		createBg();
 		createWaitImage();
 		createBackButton();
-		createAllTabButton();
-		createFriendsTabButton();
 		createSearchBox();
 		createSearchButton();
 		createSearchLabels();
@@ -115,10 +108,24 @@ public class FriendScreen implements ScreenFeedback {
 		showFriends();
 		showFbButton();
 		showGpButton();
+		showGalconButton();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
 
+
+	private void showGalconButton() {
+		galButton = new ImageButton(skin, Constants.UI.GALCON_SEARCH_IMAGE);
+		galButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		galButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		galButton.setX(gpButton.getX() - (galButton.getWidth() * 1.1f));
+		galButton.setY(backButton.getY() - (galButton.getHeight() * 0.25f));
+		
+		stage.addActor(galButton);
+		
+		galButton.addListener(allClickListener);
+		
+	}
 
 	private void showGpButton() {
 		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
@@ -200,49 +207,6 @@ public class FriendScreen implements ScreenFeedback {
 		
 		group.addActor(playerLabel);
 
-	}
-
-	
-	private void createAllTabButton(){
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();	
-		
-		float bWidth = width * 0.5f;
-		float bHeight = bWidth * 0.30f;
-		
-		float tabY = height * 0.8f - bHeight * 0.5f;
-				
-		allButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		allButton.addListener(allClickListener);
-		createTabButton(bWidth, bHeight, 0f, tabY, allButton, allText, "All");
-	}
-	
-	private void createFriendsTabButton() {
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-	
-		float bWidth = width * 0.5f;
-		float bHeight = bWidth * 0.30f;	
-		float tabY = height * 0.8f - bHeight * 0.5f;
-				
-		friendsButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		friendsButton.addListener(friendClickListener);
-		createTabButton(bWidth, bHeight, bWidth, tabY, friendsButton, friendsLabel, "Friends");
-	}
-
-	private void createTabButton(float tabWidth, float tabHeight, float x, float y, ImageButton button, ShaderLabel label, String labelText) {
-		button.setLayoutEnabled(false);
-		button.setBounds(x, y, tabWidth, tabHeight);
-
-		label = new ShaderLabel(fontShader, labelText, skin, Constants.UI.BASIC_BUTTON_TEXT);
-		label.setAlignment(Align.center);
-		label.setX(button.getX());
-		label.setY(button.getY() + button.getHeight() / 2 - label.getHeight() * 0.5f);
-		label.setWidth(button.getWidth());
-		label.setTouchable(Touchable.disabled);
-
-		stage.addActor(button);
-		stage.addActor(label);
 	}
 
 
@@ -343,7 +307,7 @@ public class FriendScreen implements ScreenFeedback {
 		searchBox.setWidth(width * 0.75f);
 		searchBox.setHeight(height * .08f);
 		searchBox.setX(width * 0.5f - searchBox.getWidth() * 0.6f);
-		searchBox.setY(allButton.getY() - (height * 0.1f));
+		searchBox.setY(backButton.getY() - (height * 0.1f));
 		searchBox.setOnscreenKeyboard(new ShaderTextField.DefaultOnscreenKeyboard());
 		
 		searchBox.addListener(new ChangeListener() {

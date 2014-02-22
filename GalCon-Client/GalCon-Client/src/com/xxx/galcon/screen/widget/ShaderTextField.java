@@ -520,9 +520,11 @@ public class ShaderTextField extends Widget implements Disableable {
 					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
 							style.messageFontColor.a * parentAlpha);
 				} else
-					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
+				font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
+				batch.setShader(fontShader);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
+				batch.setShader(null);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);

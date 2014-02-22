@@ -12,7 +12,7 @@ Google+_chiclet_Red
   index: -1
 common_signin_btn_icon_focus_dark
   rotate: false
-  xy: 2, 2
+  xy: 190, 2
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -21,14 +21,14 @@ common_signin_btn_icon_focus_dark
   index: -1
 google_plus_focus
   rotate: false
-  xy: 2, 2
+  xy: 190, 2
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 common_signin_btn_icon_normal_dark
   rotate: false
-  xy: 76, 2
+  xy: 264, 2
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -37,7 +37,7 @@ common_signin_btn_icon_normal_dark
   index: -1
 common_signin_btn_icon_pressed_dark
   rotate: false
-  xy: 150, 2
+  xy: 338, 2
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -51,6 +51,13 @@ facebook_normal
   orig: 177, 75
   offset: 0, 0
   index: -1
+galcon_search_custom_normal
+  rotate: false
+  xy: 2, 42
+  size: 186, 77
+  orig: 186, 77
+  offset: 0, 0
+  index: -1
 google_plus_custom_normal
   rotate: false
   xy: 196, 232
@@ -60,14 +67,14 @@ google_plus_custom_normal
   index: -1
 google_plus_normal
   rotate: false
-  xy: 224, 2
+  xy: 384, 237
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 google_plus_pressed
   rotate: false
-  xy: 298, 2
+  xy: 384, 163
   size: 72, 72
   orig: 72, 72
   offset: 0, 0

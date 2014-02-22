@@ -146,6 +146,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("google_plus_custom_normal"));
 			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("galcon_search_custom_normal"));
+			add(Constants.UI.GALCON_SEARCH_IMAGE, new ImageButtonStyle(null, null, null, trd, trd, trd));
+		}
 
 		TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("reg_play"));
 		add("regularPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
