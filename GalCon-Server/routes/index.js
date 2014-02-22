@@ -1021,6 +1021,14 @@ exports.addProviderToUser = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
+		var searchObj = {};
+		var searchKey = "auth." + authProvider;
+		searchObj[searchKey] = id;
+		return userManager.UserModel.findOne(searchObj).exec();
+	}).then(function(user){
+		if(user){
+			throw new Error("User already exists with a " + authProvider + " link.");
+		}
 		var setObj = {};
 		var setKey = "auth." + authProvider;
 		setObj[setKey] = id;
