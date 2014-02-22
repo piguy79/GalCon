@@ -27,7 +27,7 @@ public class PlanetButtonFactory {
 		PlanetButtonFactory.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
-		PlanetButtonFactory.minPlanetSize = largest * 0.7f;
+		PlanetButtonFactory.minPlanetSize = largest * 0.5f;
 
 		PlanetButtonFactory.assetManager = assetManager;
 		PlanetButtonFactory.skin = skin;
@@ -41,7 +41,7 @@ public class PlanetButtonFactory {
 		float maxExpand = 5;
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
 		float largest = Math.max(tileWidthInWorld, tileHeightInWorld);
-		float newPlanetSize = minPlanetSize + ((largest * 0.05f) * expand);
+		float newPlanetSize = minPlanetSize + ((largest * 0.09f) * expand);
 
 		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize);
 	}
