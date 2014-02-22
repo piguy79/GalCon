@@ -11,7 +11,5 @@ public interface Authorizer {
 	
 	public void getToken(AuthenticationListener listener);
 	
-	public void getFriends(FriendsListener listener);
-	
-		
+	public void getFriends(FriendsListener listener);	
 }

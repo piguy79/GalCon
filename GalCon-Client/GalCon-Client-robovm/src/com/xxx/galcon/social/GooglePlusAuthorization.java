@@ -12,6 +12,7 @@ import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendsListener;
 
 public class GooglePlusAuthorization implements Authorizer {
 	private GPPSignIn gppSignIn;
@@ -62,5 +63,17 @@ public class GooglePlusAuthorization implements Authorizer {
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
 		gppSignIn.authenticate();
+	}
+
+	@Override
+	public void onActivityResult(int responseCode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getFriends(FriendsListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 }

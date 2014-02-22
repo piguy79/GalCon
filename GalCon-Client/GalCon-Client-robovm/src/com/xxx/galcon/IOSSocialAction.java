@@ -44,12 +44,6 @@ public class IOSSocialAction implements SocialAction {
 		}
 	}
 
-	@Override
-	public void getFriends(FriendsListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
 	private void setupAuthorizer() {
 		if (authorizer != null) {
 			return;
@@ -63,7 +57,7 @@ public class IOSSocialAction implements SocialAction {
 		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 			authorizer = new GooglePlusAuthorization();
 		} else if (Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)) {
-//			authorizer = new FacebookAuthorization(activity);
+			// authorizer = new FacebookAuthorization(activity);
 		}
 	}
 
@@ -71,5 +65,11 @@ public class IOSSocialAction implements SocialAction {
 	public void addAuthDetails(AuthenticationListener listener, String authProvider) {
 		setupAuthorizer(authProvider);
 		authorizer.signIn(listener);
+	}
+
+	@Override
+	public void getFriends(FriendsListener listener, String authProvider) {
+		setupAuthorizer(authProvider);
+		authorizer.getFriends(listener);
 	}
 }
