@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 arrow_left_small_black
   rotate: false
-  xy: 906, 488
+  xy: 945, 558
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 945, 558
+  xy: 948, 405
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
@@ -40,7 +40,7 @@ bg
   index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 804, 428
+  xy: 1006, 1008
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -50,6 +50,13 @@ coin
   xy: 804, 688
   size: 146, 149
   orig: 146, 149
+  offset: 0, 0
+  index: -1
+count_label
+  rotate: false
+  xy: 906, 463
+  size: 81, 81
+  orig: 81, 81
   offset: 0, 0
   index: -1
 cursor

@@ -36,11 +36,11 @@ public class SingleMoveInfoHud extends Group {
 
 	private void createLabels() {
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "Sending", skin, Constants.UI.DEFAULT_FONT);
+			ShaderLabel label = new ShaderLabel(fontShader, "# of ships", skin, Constants.UI.DEFAULT_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.5f);
+			label.setWidth(getWidth() * 0.4f);
 			label.setAlignment(Align.center, Align.center);
 			addActor(label);
 		}
@@ -49,27 +49,27 @@ public class SingleMoveInfoHud extends Group {
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.5f);
+			label.setWidth(getWidth() * 0.4f);
 			label.setAlignment(Align.center, Align.center);
 			addActor(label);
 
 			shipsLabel = label;
 		}
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "Turns to arrive", skin, Constants.UI.DEFAULT_FONT);
+			ShaderLabel label = new ShaderLabel(fontShader, "Rounds to impact", skin, Constants.UI.DEFAULT_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.5f);
+			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.5f);
+			label.setWidth(getWidth() * 0.6f);
 			label.setAlignment(Align.center, Align.center);
 			addActor(label);
 		}
 		{
 			ShaderLabel label = new ShaderLabel(fontShader, "0", skin, Constants.UI.LARGE_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.5f);
+			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.5f);
+			label.setWidth(getWidth() * 0.6f);
 			label.setAlignment(Align.center, Align.center);
 			addActor(label);
 

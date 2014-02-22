@@ -47,6 +47,8 @@ public class Constants {
 
 		public static final String GOOGLE_PLUS_SIGN_IN_NORMAL = "googlePlusSignInImageButton";
 		public static final String GALCON_SEARCH_IMAGE = "galconSearchImage";
+		public static final String COUNT_LABEL = "countLabel";
+
 
 	}
 

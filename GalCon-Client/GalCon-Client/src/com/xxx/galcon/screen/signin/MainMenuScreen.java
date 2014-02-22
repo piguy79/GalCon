@@ -24,6 +24,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
+import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -34,6 +35,7 @@ import com.xxx.galcon.screen.GraphicsUtils;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.CountLabel;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
@@ -178,8 +180,29 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		
 		addFbButton();
 		addGpButton();
+		addContinueCount();
+		addInviteCount();
 	}
 	
+	private void addContinueCount() {
+		CountLabel countLabel = new CountLabel("2", fontShader, (UISkin) skin);
+		countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
+		countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
+		
+		stage.addActor(countLabel);
+		actors.add(countLabel);
+	}
+	
+	private void addInviteCount() {
+		CountLabel countLabel = new CountLabel("1", fontShader, (UISkin) skin);
+		countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
+		countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
+		
+		stage.addActor(countLabel);
+		actors.add(countLabel);
+		
+	}
+
 	private void addGpButton() {
 		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		gpButton.setX(fbButton.getX() + (fbButton.getWidth() * 1.1f));
