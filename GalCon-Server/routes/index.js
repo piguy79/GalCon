@@ -445,7 +445,7 @@ exports.acceptInvite = function(req, res){
 			throw new Error("User was not invited.");
 		}
 	}).then(function(savedGame){
-		return userManage.joinAGame(currentUser, savedGame);
+		return userManager.joinAGame(currentUser, savedGame);
 	}).then(function(user){
 		if(!user){
 			throw new Error('Unable to join the game');
