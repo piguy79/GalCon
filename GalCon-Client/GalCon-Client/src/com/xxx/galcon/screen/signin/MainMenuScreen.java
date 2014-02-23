@@ -29,6 +29,7 @@ import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
+import com.xxx.galcon.model.GameCount;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.GraphicsUtils;
@@ -80,7 +81,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 	}
 
-	private void addElementsToStage() {
+	private void addElementsToStage(GameCount gameCount) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
@@ -180,26 +181,29 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		
 		addFbButton();
 		addGpButton();
-		addContinueCount();
-		addInviteCount();
+		addContinueCount(gameCount);
+		addInviteCount(gameCount);
 	}
 	
-	private void addContinueCount() {
-		CountLabel countLabel = new CountLabel("2", fontShader, (UISkin) skin);
-		countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
-		countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
+	private void addContinueCount(GameCount gameCount) {
+		if(gameCount != null && gameCount.count > 0){
+			CountLabel countLabel = new CountLabel(gameCount.count, fontShader, (UISkin) skin);
+			countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
+			countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
+			
+			stage.addActor(countLabel);
+			actors.add(countLabel);
+		}
 		
-		stage.addActor(countLabel);
-		actors.add(countLabel);
 	}
 	
-	private void addInviteCount() {
-		CountLabel countLabel = new CountLabel("1", fontShader, (UISkin) skin);
-		countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
-		countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
+	private void addInviteCount(GameCount gameCount) {
+		//CountLabel countLabel = new CountLabel("1", fontShader, (UISkin) skin);
+		//countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
+		//countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
 		
-		stage.addActor(countLabel);
-		actors.add(countLabel);
+		//stage.addActor(countLabel);
+		//actors.add(countLabel);
 		
 	}
 
@@ -342,8 +346,19 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			@Override
 			public void onConnectionResult(Player result) {
 				GameLoop.USER = result;
-				addElementsToStage();
-				waitImage.stop();
+				gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
+					public void onConnectionResult(GameCount result) {
+						addElementsToStage(result);
+						waitImage.stop();
+					};
+					
+					@Override
+					public void onConnectionError(String msg) {
+						addElementsToStage(null);
+						waitImage.stop();
+					}
+				}, GameLoop.USER.handle);
+				
 			}
 
 			@Override

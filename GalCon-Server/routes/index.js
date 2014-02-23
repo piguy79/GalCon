@@ -1026,8 +1026,8 @@ exports.addProviderToUser = function(req, res){
 		searchObj[searchKey] = id;
 		return userManager.UserModel.findOne(searchObj).exec();
 	}).then(function(user){
-		if(user){
-			throw new Error("User already exists with a " + authProvider + " link.");
+		if(user && user.handle !== handle){
+			throw new Error("A user already exists with this " + authProvider + " linked.");
 		}
 		var setObj = {};
 		var setKey = "auth." + authProvider;

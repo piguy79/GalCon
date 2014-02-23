@@ -8,6 +8,7 @@ import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameCount;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.HandleResponse;
@@ -61,7 +62,7 @@ public interface GameAction {
 
 	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle, String authProvider);
 
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String handle);
+	public void findGamesWithPendingMove(UIConnectionResultCallback<GameCount> callback, String handle);
 
 	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String handle);
 

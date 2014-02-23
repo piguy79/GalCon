@@ -58,6 +58,7 @@ import com.xxx.galcon.http.request.PostClientRequest;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameCount;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
@@ -176,11 +177,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findGamesWithPendingMove(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
+	public void findGamesWithPendingMove(UIConnectionResultCallback<GameCount> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("playerHandle", playerHandle);
-		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE,
-				args, new AvailableGames()));
+		callback.onConnectionResult((GameCount) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE,
+				args, new GameCount()));
 	}
 
 	@Override

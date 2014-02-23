@@ -15,7 +15,7 @@ import com.xxx.galcon.screen.GraphicsUtils;
 
 public class CountLabel extends Group {
 	
-	private String count;
+	private int count;
 	private ImageButton background;
 
 	private ShaderLabel countLabel;
@@ -24,7 +24,7 @@ public class CountLabel extends Group {
 	private ShaderProgram fontShader;
 	private UISkin skin;
 	
-	public CountLabel(String count, ShaderProgram fontShader, UISkin skin){
+	public CountLabel(int count, ShaderProgram fontShader, UISkin skin){
 		this.count = count;
 		this.fontShader = fontShader;
 		this.skin = skin;
@@ -42,7 +42,7 @@ public class CountLabel extends Group {
 	}
 
 	private void createCountLabel() {
-		countLabel = new ShaderLabel(fontShader, count, skin, Constants.UI.SMALL_FONT);
+		countLabel = new ShaderLabel(fontShader, "" + count, skin, Constants.UI.SMALL_FONT);
 		countLabel.setX((background.getX() + (background.getWidth() / 2)) - (countLabel.getTextBounds().width / 2));
 		countLabel.setY(background.getY() + (background.getHeight() / 2) - (countLabel.getTextBounds().height * 0.7f));
 		

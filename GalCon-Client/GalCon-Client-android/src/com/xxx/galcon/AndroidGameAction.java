@@ -65,6 +65,7 @@ import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
+import com.xxx.galcon.model.GameCount;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.HarvestMove;
@@ -348,13 +349,13 @@ public class AndroidGameAction implements GameAction {
 		});
 	}
 
-	public void findGamesWithPendingMove(final UIConnectionResultCallback<AvailableGames> callback, String handle) {
+	public void findGamesWithPendingMove(final UIConnectionResultCallback<GameCount> callback, String handle) {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
-						AvailableGames.class).execute("");
+				new GetJsonRequestTask<GameCount>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
+						GameCount.class).execute("");
 			}
 		});
 	}
