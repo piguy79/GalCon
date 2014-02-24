@@ -41,19 +41,10 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class MainMenuScreen implements PartialScreenFeedback {
-	private SpriteBatch spriteBatch;
 	private String returnValue;
 	private GameAction gameAction;
 	private Stage stage;
 
-	private Image loadingFrame;
-	private Image loadingBarHidden;
-	private Image loadingBg;
-
-	private float startX, endX;
-	private float percent;
-
-	private Actor loadingBar;
 
 	private Array<Actor> actors = new Array<Actor>();
 
@@ -87,13 +78,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		assetManager.finishLoading();
-
-		TextureAtlas atlas = assetManager.get("data/images/loading.pack", TextureAtlas.class);
-
-		loadingFrame = new Image(atlas.findRegion("loading-frame"));
-		loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
-		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
-		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
 		newLabel = new ShaderLabel(fontShader, Strings.NEW, skin, Constants.UI.DEFAULT_FONT);
 		newLabel.setAlignment(Align.center);
@@ -154,7 +138,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);
-		coinImage.setX(width * 0.96f - coinImage.getWidth());
+		coinImage.setX(10);
 		coinImage.setY(height * 0.97f - coinImage.getHeight());
 		coinImage.addListener(new InputListener() {
 			@Override
@@ -171,10 +155,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		actors.add(coinImage);
 
 		coinText = new ShaderLabel(fontShader, createCoinDisplay(), skin, Constants.UI.DEFAULT_FONT);
-		coinText.setAlignment(Align.right, Align.right);
+		coinText.setAlignment(Align.left, Align.left);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = 0.4f * width;
-		coinText.setBounds(width * 0.93f - coinImage.getWidth() - coinTextWidth, yMidPoint - coinText.getHeight() / 2,
+		coinText.setBounds(10 + (coinImage.getWidth() * 1.1f), yMidPoint - coinText.getHeight() / 2,
 				coinTextWidth, coinText.getHeight());
 		stage.addActor(coinText);
 		actors.add(coinText);
@@ -209,10 +193,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private void addGpButton() {
 		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		gpButton.setX(fbButton.getX() + (fbButton.getWidth() * 1.1f));
-		gpButton.setY(0);
 		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		gpButton.setX(fbButton.getX() +- (fbButton.getWidth() * 1.1f));
+		gpButton.setY(fbButton.getY());
 		
 		gpButton.addListener(new ClickListener(){
 			@Override
@@ -227,10 +211,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private void addFbButton() {
 		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		fbButton.setX(10);
-		fbButton.setY(0);
 		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
+		fbButton.setX(Gdx.graphics.getWidth() - (fbButton.getWidth() * 1.1f));
+		fbButton.setY(Gdx.graphics.getHeight() - (fbButton.getHeight()));
 		
 		fbButton.addListener(new ClickListener(){
 			@Override
@@ -265,7 +249,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					@Override
 					public void onConnectionResult(Player result) {
 						GameLoop.USER = result;
-						
 					}
 					
 					@Override

@@ -205,10 +205,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private String waitingLabel(MinifiedGame game) {
-		if(game.social != null){
+		if(game.social != null && !game.social.isEmpty()){
 			return "[waiting for " + game.social + "]";
 		}
-		return "[waiting for opponent]";
+		return "[waiting for an opponent]";
 	}
 
 	@Override

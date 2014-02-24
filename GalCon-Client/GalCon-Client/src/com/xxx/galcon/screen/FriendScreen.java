@@ -30,6 +30,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -37,6 +38,7 @@ import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Friend;
 import com.xxx.galcon.model.GameInviteRequest;
 import com.xxx.galcon.model.People;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.friends.CombinedFriend;
 import com.xxx.galcon.model.friends.FriendCombiner;
@@ -144,7 +146,7 @@ public class FriendScreen implements ScreenFeedback {
 		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		fbButton.setX(Gdx.graphics.getWidth() - fbButton.getWidth());
+		fbButton.setX(Gdx.graphics.getWidth() - (fbButton.getWidth() * 1.1f));
 		fbButton.setY(backButton.getY() - (fbButton.getHeight() * 0.25f));
 		
 		stage.addActor(fbButton);
@@ -463,7 +465,7 @@ public class FriendScreen implements ScreenFeedback {
 			
 			@Override
 			public void onConnectionError(String msg) {
-				waitImage.setVisible(false);				
+				showError("Cound not load recent opponents.");				
 			}
 		}, GameLoop.USER.handle);
 	}
@@ -496,23 +498,57 @@ public class FriendScreen implements ScreenFeedback {
 		scrollList.clearRows();
 	};
 	
-	private ClickListener friendClickListener = new ClickListener(){
-		public void clicked(InputEvent event, float x, float y) {
-			Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
-			String socialAuthProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
-			
-			loadFriends(socialAuthProvider);
-		}
-
-		
-	};
 	
-	public void loadFriends(String authProvider) {
+	public void loadFriends(final String authProvider) {
 		waitImage.setVisible(true);
 		clearActiveTab("Filter...", 2);
 		ShaderLabel label = new ShaderLabel(fontShader, "Friends: ", skin, Constants.UI.DEFAULT_FONT);
 		populateSearchLabelGroup(label);
+		
+		if(GameLoop.USER.auth.getID(authProvider) == null){
+			socialAction.addAuthDetails(new AuthenticationListener() {
+				
+				@Override
+				public void onSignOut() {					
+				}
+				
+				@Override
+				public void onSignInSucceeded(final String authProvider, String token) {
+					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+					String id = prefs.getString(authProvider + Constants.ID);
+					prefs.flush();
+					
+					addProvider(authProvider, id);
+					
+				}
 
+				private void addProvider(final String authProvider, String id) {
+					gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
+						@Override
+						public void onConnectionResult(Player result) {
+							GameLoop.USER = result;
+							findFriendsByProvider(authProvider);
+						}
+						
+						@Override
+						public void onConnectionError(String msg) {
+							showError("Unable to connect " + authProvider);
+						}
+					}, GameLoop.USER.handle, id, authProvider);
+				}
+				
+				@Override
+				public void onSignInFailed(String failureMessage) {
+					showError("Unable to connect to " + authProvider);
+				}
+			}, authProvider);
+		}else{
+			findFriendsByProvider(authProvider);
+		}
+
+	}
+
+	private void findFriendsByProvider(String authProvider) {
 		socialAction.getFriends(new FriendsListener() {
 			
 			@Override
@@ -528,10 +564,10 @@ public class FriendScreen implements ScreenFeedback {
 					};
 					
 					public void onConnectionError(String msg) {
-						waitImage.setVisible(false);
-						noResultsFound.setVisible(true);
-						noResultsFound.setText("Failed loading friends.");
-					};
+						showError("Failed to load friends.");
+					}
+
+					
 				}, authIds, GameLoop.USER.handle, authProviderUsed);
 				
 			}
@@ -542,6 +578,12 @@ public class FriendScreen implements ScreenFeedback {
 				noResultsFound.setVisible(true);
 			}
 		}, authProvider);
+	};
+	
+	private void showError(String errorMsg) {
+		waitImage.setVisible(false);
+		noResultsFound.setVisible(true);
+		noResultsFound.setText(errorMsg);
 	};
 	
 	private List<String> createAuthIdList(List<Friend> friends) {
