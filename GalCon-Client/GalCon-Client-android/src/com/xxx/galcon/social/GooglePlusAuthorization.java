@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -21,6 +23,7 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.PlusShare;
 import com.google.android.gms.plus.PlusClient.OnPeopleLoadedListener;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
@@ -29,6 +32,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendPostListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.model.Friend;
 
@@ -38,6 +42,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	private Activity activity;
 	private AuthenticationListener listener;
+	private FriendPostListener friendPostListener;
 
 	public GooglePlusAuthorization(Activity activity) {
 		this.activity = activity;
@@ -49,7 +54,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 		plusClient = new PlusClient.Builder(activity, this, this).setScopes(scopes).build();
 		plusClient.connect();
-		
+				
 	}
 
 	@Override
@@ -95,6 +100,8 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 					listener.onSignInFailed(Strings.AUTH_FAIL);
 				}
 			});
+		} else if(responseCode == MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE){
+			friendPostListener.onPostSucceeded("Success");
 		} else {
 			Gdx.app.postRunnable(new Runnable() {
 				public void run() {
@@ -173,21 +180,17 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 			signIn(new AuthenticationListener() {
 				
 				@Override
-				public void onSignOut() {
-					// TODO Auto-generated method stub
-					
+				public void onSignOut() {					
 				}
 				
 				@Override
 				public void onSignInSucceeded(String authProvider, String token) {
 					retrieveFriends(listener);
-					
 				}
 				
 				@Override
 				public void onSignInFailed(String failureMessage) {
-					// TODO Auto-generated method stub
-					
+					listener.onFriendsLoadedFail(failureMessage);
 				}
 			});
 		}
@@ -209,6 +212,64 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		}, null);
+	}
+
+	@Override
+	public void postToFriend(final FriendPostListener listener,final  String id) {
+		friendPostListener = listener;
+		if(plusClient != null && plusClient.isConnected()){
+			startFriendPost(listener, id);
+		}else{
+			signIn(new AuthenticationListener() {
+				
+				@Override
+				public void onSignOut() {					
+				}
+				
+				@Override
+				public void onSignInSucceeded(String authProvider, String token) {
+					startFriendPost(listener, id);
+				}
+				
+				@Override
+				public void onSignInFailed(String failureMessage) {
+					listener.onPostFails("Unable to login to Google Plus.");
+				}
+			});
+		}
+	}
+
+	private void startFriendPost(final FriendPostListener listener, String id) {
+		plusClient.loadPeople(new OnPeopleLoadedListener() {
+			
+			@Override
+			public void onPeopleLoaded(ConnectionResult status,
+					PersonBuffer personBuffer, String nextPageToken) {
+				if(status.isSuccess()){
+					sendPost(personBuffer);
+				}else{
+					listener.onPostFails("Error Posting to Google Plus.");
+				}
+				
+			}
+		}, id);
+	}
+	
+	private void sendPost(PersonBuffer personBuffer){	
+		List<Person> people = new ArrayList<Person>();
+		
+		for(int i = 0; i < personBuffer.getCount(); i++){
+			Person person = personBuffer.get(i);
+			people.add(person);
+		}
+		
+		Intent shareIntent = new PlusShare.Builder(activity, plusClient)
+				.setText("Hi! Come join me playing Solar Smash. Invite me using the handle " + GameLoop.USER.handle).setType("text/plain")
+				.setRecipients(people)
+          .getIntent();
+		
+		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
+		
 	}
 
 	

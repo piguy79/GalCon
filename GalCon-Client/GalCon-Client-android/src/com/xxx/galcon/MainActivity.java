@@ -35,6 +35,8 @@ public class MainActivity extends AndroidApplication {
 	public static final String LOG_NAME = "GalCon";
 	public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
 	public static final int FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE = 57030;
+	public static final int GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE = 57031;
+
 
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
@@ -233,6 +235,8 @@ public class MainActivity extends AndroidApplication {
 			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
 					response, data);
 			socialAction.onActivityResult(response);
+		} else if(request == GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE){
+			socialAction.onActivityResult(request);
 		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 		}

@@ -3,6 +3,7 @@ package com.xxx.galcon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendPostListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.social.Authorizer;
@@ -98,6 +99,16 @@ public class AndroidSocialAction implements SocialAction {
 				authorizer.signIn(listener);
 			}
 		});		
+	}
+
+	@Override
+	public void postToFriends(final FriendPostListener listener, String authProvider, final String id) {
+		setupAuthorizer(authProvider);
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				authorizer.postToFriend(listener, id);
+			}
+		});	
 	}
 
 }

@@ -31,6 +31,7 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendPostListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -43,6 +44,7 @@ import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.friends.CombinedFriend;
 import com.xxx.galcon.model.friends.FriendCombiner;
 import com.xxx.galcon.model.friends.GalConFriend;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -295,8 +297,38 @@ public class FriendScreen implements ScreenFeedback {
 					if(friend.hasGalconAccount()){
 						gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, ((GalConFriend)friend).handle, mapKey);
 						returnCode = Action.INVITE_PLAYER;
+						
+					}else{
+						final TextOverlay overlay = createLoadingOverlay();
+						socialAction.postToFriends(new FriendPostListener() {
+							
+							@Override
+							public void onPostSucceeded(String msg) {
+								overlay.remove();
+							}
+							
+							@Override
+							public void onPostFails(String msg) {
+								overlay.remove();
+							}
+						}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, friend.authId);
 					}
-				}});
+				}
+
+			private TextOverlay createLoadingOverlay() {
+				final TextOverlay overlay = new TextOverlay("Loading sharing dialog.", menusAtlas, skin, fontShader);
+				WaitImageButton overlayWait = new WaitImageButton(skin);
+				float buttonWidth = .25f * (float) Gdx.graphics.getWidth();
+				overlayWait.setWidth(buttonWidth);
+				overlayWait.setHeight(buttonWidth);
+				overlayWait.setX(Gdx.graphics.getWidth() / 2 - buttonWidth / 2);
+				overlayWait.setY(Gdx.graphics.getHeight() / 2 + (buttonWidth));
+				overlay.addActor(overlayWait);
+
+				overlayWait.start();
+				stage.addActor(overlay);
+				return overlay;
+			}});
 		}
 	}
 

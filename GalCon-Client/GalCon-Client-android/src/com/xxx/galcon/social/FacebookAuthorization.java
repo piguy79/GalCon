@@ -23,6 +23,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
 import com.xxx.galcon.http.AuthenticationListener;
+import com.xxx.galcon.http.FriendPostListener;
 import com.xxx.galcon.http.FriendsListener;
 import com.xxx.galcon.model.Friend;
 
@@ -167,6 +168,13 @@ public class FacebookAuthorization implements Authorizer {
 		});
 		friendRequest.setParameters(parameters);
 		friendRequest.executeAsync();
+		
+	}
+
+
+	@Override
+	public void postToFriend(FriendPostListener listener, String id) {
+		// TODO Auto-generated method stub
 		
 	}
 
