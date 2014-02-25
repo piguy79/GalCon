@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -232,16 +233,24 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 	
 	private void registerSocialProvider(String authProvider) {
+		final TextOverlay overlay = new TextOverlay("Adding " + authProvider + " access.", menusAtlas, skin, fontShader);
+		stage.addActor(overlay);
 		socialAction.addAuthDetails(new AuthenticationListener() {
 			
 			@Override
-			public void onSignOut() {
-				System.out.println("Sign out failed");
-				
+			public void onSignOut() {				
 			}
 			
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
+				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
+					
+					@Override
+					public void run() {
+						overlay.remove();
+						
+					}
+				})));
 				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 				String id = prefs.getString(authProvider + Constants.ID);
 				prefs.flush();
@@ -263,7 +272,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			
 			@Override
 			public void onSignInFailed(String failureMessage) {
-				System.out.println("Sign in failed");
+				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
+					
+					@Override
+					public void run() {
+						overlay.remove();
+						
+					}
+				})));
 				
 			}
 		}, authProvider);
