@@ -341,7 +341,7 @@ public class FriendScreen implements ScreenFeedback {
 		searchBox.setWidth(width * 0.75f);
 		searchBox.setHeight(height * .08f);
 		searchBox.setX(width * 0.5f - searchBox.getWidth() * 0.6f);
-		searchBox.setY(backButton.getY() - (height * 0.1f));
+		searchBox.setY(backButton.getY() - (height * 0.15f));
 		searchBox.setOnscreenKeyboard(new ShaderTextField.DefaultOnscreenKeyboard());
 		
 		searchBox.addListener(new ChangeListener() {

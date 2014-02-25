@@ -6,10 +6,13 @@ import org.json.JSONObject;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 public class GameCount extends JsonConvertible {
-	public int count = 0;
+	public int pendingGameCount = 0;
+	public int inviteCount = 0;
+	
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		count = jsonObject.optInt("c");
+		pendingGameCount = jsonObject.optInt("c");
+		inviteCount = jsonObject.optInt("i");
 	}
 }

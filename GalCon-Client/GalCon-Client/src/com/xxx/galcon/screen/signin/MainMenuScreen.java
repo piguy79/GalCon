@@ -170,8 +170,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 	
 	private void addContinueCount(GameCount gameCount) {
-		if(gameCount != null && gameCount.count > 0){
-			CountLabel countLabel = new CountLabel(gameCount.count, fontShader, (UISkin) skin);
+		if(gameCount != null && gameCount.pendingGameCount > 0){
+			CountLabel countLabel = new CountLabel(gameCount.pendingGameCount, fontShader, (UISkin) skin);
 			countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
 			countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
 			
@@ -182,13 +182,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 	
 	private void addInviteCount(GameCount gameCount) {
-		//CountLabel countLabel = new CountLabel("1", fontShader, (UISkin) skin);
-		//countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
-		//countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
-		
-		//stage.addActor(countLabel);
-		//actors.add(countLabel);
-		
+		if(gameCount != null && gameCount.inviteCount > 0){
+			CountLabel countLabel = new CountLabel(gameCount.inviteCount, fontShader, (UISkin) skin);
+			countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
+			countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
+			
+			stage.addActor(countLabel);
+			actors.add(countLabel);
+		}
 	}
 
 	private void addGpButton() {

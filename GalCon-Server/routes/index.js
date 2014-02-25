@@ -71,6 +71,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 		return;
 	}
 	
+	var pendingMoveCount;
+	
 	var p = userManager.findUserByHandle(handle);
 	return p.then(function(user) {
 		if(user) {
@@ -89,7 +91,19 @@ exports.findGamesWithPendingMove = function(req, res) {
 			}
 		}
 		return count;
-	}).then(function(count) { res.json({c : count}); }, logErrorAndSetResponse(req, res));
+	}).then(function(count){
+		pendingMoveCount = count;
+		return gameQueueManager.findByInvitee(handle);
+	}).then(function(invites){
+		if(invites === null){
+			return 0;
+		}else{
+			return invites.length;
+		}
+	}).then(function(inviteCount) {
+		
+		res.json({c : pendingMoveCount, i : inviteCount}); 
+	}, logErrorAndSetResponse(req, res));
 }
 
 var validate = function(propMap, res) {
