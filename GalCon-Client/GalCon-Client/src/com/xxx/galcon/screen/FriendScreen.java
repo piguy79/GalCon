@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -78,6 +79,7 @@ public class FriendScreen implements ScreenFeedback {
 	private ScrollList<CombinedFriend> scrollList;
 	private List<CombinedFriend> loadedFriends = new ArrayList<CombinedFriend>();
 	private int screenState = 1;
+	private String selectedAuthProvider;
 	
 	
 	private GameInviteRequest gameInviteRequest;
@@ -302,16 +304,32 @@ public class FriendScreen implements ScreenFeedback {
 						final TextOverlay overlay = createLoadingOverlay();
 						socialAction.postToFriends(new FriendPostListener() {
 							
-							@Override
-							public void onPostSucceeded(String msg) {
+							public void onPostCancelled() {
 								overlay.remove();
+							};
+							
+							@Override
+							public void onPostSucceeded() {
+								createResultDialog(overlay, "Success! \nTap to dismiss");
+							}
+
+							private void createResultDialog(
+									final TextOverlay overlay,final String msg) {
+								overlay.remove();
+								final TextOverlay successOverlay = new TextOverlay(msg, menusAtlas, skin, fontShader);
+								stage.addActor(successOverlay);
+								successOverlay.addListener(new ClickListener(){
+									public void clicked(InputEvent event, float x, float y) {
+										successOverlay.remove();
+									};
+								});
 							}
 							
 							@Override
 							public void onPostFails(String msg) {
-								overlay.remove();
+								createResultDialog(overlay, msg);
 							}
-						}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, friend.authId);
+						}, selectedAuthProvider, friend.authId);
 					}
 				}
 
@@ -511,12 +529,14 @@ public class FriendScreen implements ScreenFeedback {
 	
 	private ClickListener fbButtonListener = new ClickListener(){
 		public void clicked(InputEvent event, float x, float y) {
+			selectedAuthProvider = Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK;
 			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 		};
 	};
 	
 	private ClickListener gpButtonListener = new ClickListener(){
 		public void clicked(InputEvent event, float x, float y) {
+			selectedAuthProvider = Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
 			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 		};
 	};

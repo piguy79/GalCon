@@ -1,6 +1,7 @@
 package com.xxx.galcon.social;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONException;
@@ -11,14 +12,18 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Request.GraphUserListCallback;
+import com.facebook.FacebookException;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.MainActivity;
@@ -52,6 +57,7 @@ public class FacebookAuthorization implements Authorizer {
 		}
 	}
 	
+	
 	private Session createSession() {
         Session activeSession = Session.getActiveSession();
         if (activeSession == null || activeSession.getState().isClosed()) {
@@ -67,6 +73,7 @@ public class FacebookAuthorization implements Authorizer {
 		request.setRequestCode(MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE);
 		return request;
 	}
+
 
 	@Override
 	public void onActivityResult(int responseCode) {
@@ -131,7 +138,7 @@ public class FacebookAuthorization implements Authorizer {
 				
 				@Override
 				public void onSignInFailed(String failureMessage) {
-					// TODO Auto-generated method stub
+					listener.onFriendsLoadedFail("Unable to connect to FB.");
 					
 				}
 			});
@@ -173,9 +180,56 @@ public class FacebookAuthorization implements Authorizer {
 
 
 	@Override
-	public void postToFriend(FriendPostListener listener, String id) {
-		// TODO Auto-generated method stub
+	public void postToFriend(final FriendPostListener listener,final String id) {
 		
+		signIn(new AuthenticationListener() {
+				
+			@Override
+			public void onSignOut() {					
+			}
+			
+			@Override
+			public void onSignInSucceeded(String authProvider, String token) {
+				showPostDialog(listener, id);
+			}
+			
+			@Override
+			public void onSignInFailed(String failureMessage) {
+				listener.onPostFails("Unable to connect to FB.");
+			}
+		});
+		
+	}
+
+
+	private void showPostDialog(final FriendPostListener listener, String id) {
+		Bundle params = new Bundle();
+	    params.putString("name", "Solar Smash invite");
+	    params.putString("caption", "Download Solar Smash now.");
+	    params.putString("description", "Hi! Come join me in playing Solar Smash. Invite me using the handle: " + GameLoop.USER.handle);
+	    params.putString("link", "https://developers.facebook.com/android");
+	    params.putString("to", id);
+	    params.putString("from", GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+	    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+	    
+	    WebDialog feedDialog = new WebDialog.FeedDialogBuilder(activity, Session.getActiveSession(), params)
+	    .setOnCompleteListener(new OnCompleteListener() {
+			
+			@Override
+			public void onComplete(Bundle values, FacebookException error) {
+				if(error != null){
+					if(error instanceof FacebookOperationCanceledException){
+						listener.onPostCancelled();
+					}else{
+						listener.onPostFails("Unable to post to FB.");
+					}
+				}else{
+					listener.onPostSucceeded();
+				}
+				
+			}
+		}).build(); 
+	    feedDialog.show();
 	}
 
 }

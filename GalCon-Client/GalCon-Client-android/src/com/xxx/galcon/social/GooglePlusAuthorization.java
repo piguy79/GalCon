@@ -101,7 +101,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				}
 			});
 		} else if(responseCode == MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE){
-			friendPostListener.onPostSucceeded("Success");
+			friendPostListener.onPostSucceeded();
 		} else {
 			Gdx.app.postRunnable(new Runnable() {
 				public void run() {
