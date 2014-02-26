@@ -47,6 +47,7 @@ import com.xxx.galcon.model.friends.FriendCombiner;
 import com.xxx.galcon.model.friends.GalConFriend;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ActionButton;
+import com.xxx.galcon.screen.widget.ButtonBar;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
@@ -112,49 +113,44 @@ public class FriendScreen implements ScreenFeedback {
 		createScrollList();
 		createNoResultsFound();
 		showFriends();
-		showFbButton();
-		showGpButton();
-		showGalconButton();
+		showSocialButtonBar();
+		createFbButton();
+		createGpButton();
+		createGalconButton();
 		
 		Gdx.input.setInputProcessor(stage);
 	}
 
 
-	private void showGalconButton() {
+	private void showSocialButtonBar() {
+		createGalconButton();
+		createFbButton();
+		createGpButton();
+		
+		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
+		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
+		ButtonBar buttonBar = new ButtonBar.ButtonBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f)
+								.buttonSize(buttonHeight, buttonWidth)
+								.align(ButtonBar.Align.RIGHT).addButton(fbButton).addButton(gpButton).addButton(galButton).build();
+		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
+		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
+		
+		stage.addActor(buttonBar);
+		
+	}
+
+	private void createGalconButton() {
 		galButton = new ImageButton(skin, Constants.UI.GALCON_SEARCH_IMAGE);
-		galButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		galButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		galButton.setX(gpButton.getX() - (galButton.getWidth() * 1.1f));
-		galButton.setY(backButton.getY() - (galButton.getHeight() * 0.25f));
-		
-		stage.addActor(galButton);
-		
 		galButton.addListener(allClickListener);
-		
 	}
 
-	private void showGpButton() {
+	private void createGpButton() {
 		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		gpButton.setX(fbButton.getX() - (gpButton.getWidth() * 1.1f));
-		gpButton.setY(backButton.getY() - (gpButton.getHeight() * 0.25f));
-		
-		stage.addActor(gpButton);
-		
 		gpButton.addListener(gpButtonListener);
-		
 	}
 
-	private void showFbButton() {
+	private void createFbButton() {
 		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		fbButton.setX(Gdx.graphics.getWidth() - (fbButton.getWidth() * 1.1f));
-		fbButton.setY(backButton.getY() - (fbButton.getHeight() * 0.25f));
-		
-		stage.addActor(fbButton);
-		
 		fbButton.addListener(fbButtonListener);
 	}
 

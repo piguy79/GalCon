@@ -76,7 +76,7 @@ public class DesktopSocialAction implements SocialAction {
 	@Override
 	public void postToFriends(FriendPostListener listener, String authProvider,
 			String id) {
-		listener.onPostSucceeded("Post complete");
+		listener.onPostSucceeded();
 		
 	}
 

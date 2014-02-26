@@ -37,6 +37,8 @@ import com.xxx.galcon.screen.GraphicsUtils;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.ButtonBar;
+import com.xxx.galcon.screen.widget.ButtonBar.ButtonBarBuilder;
 import com.xxx.galcon.screen.widget.CountLabel;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -164,12 +166,28 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(coinText);
 		actors.add(coinText);
 		
-		addFbButton();
-		addGpButton();
+		addSocialButtonBar();
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
 	}
 	
+	private void addSocialButtonBar() {
+		createFbButton();
+		createGpButton();		
+		
+		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
+		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
+		ButtonBar buttonBar = new ButtonBar.ButtonBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f)
+								.buttonSize(buttonHeight, buttonWidth)
+								.align(ButtonBar.Align.RIGHT).addButton(fbButton).addButton(gpButton).build();
+		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
+		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
+		
+		stage.addActor(buttonBar);
+		actors.add(buttonBar);
+		
+	}
+
 	private void addContinueCount(GameCount gameCount) {
 		if(gameCount != null && gameCount.pendingGameCount > 0){
 			CountLabel countLabel = new CountLabel(gameCount.pendingGameCount, fontShader, (UISkin) skin);
@@ -193,30 +211,18 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		}
 	}
 
-	private void addGpButton() {
-		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		gpButton.setX(fbButton.getX() +- (fbButton.getWidth() * 1.1f));
-		gpButton.setY(fbButton.getY());
-		
+	private void createGpButton() {
+		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);		
 		gpButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		});
-		
-		stage.addActor(gpButton);
-		actors.add(gpButton);
 	}
 
-	private void addFbButton() {
+	private void createFbButton() {
 		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		fbButton.setX(Gdx.graphics.getWidth() - (fbButton.getWidth() * 1.1f));
-		fbButton.setY(Gdx.graphics.getHeight() - (fbButton.getHeight()));
 		
 		fbButton.addListener(new ClickListener(){
 			@Override
@@ -226,9 +232,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			
 		});
-		
-		stage.addActor(fbButton);
-		actors.add(fbButton);;
 		
 	}
 	
