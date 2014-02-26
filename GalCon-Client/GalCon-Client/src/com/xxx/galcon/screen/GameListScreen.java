@@ -3,6 +3,8 @@ package com.xxx.galcon.screen;
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -125,6 +127,18 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		if (games.isEmpty()) {
 			messageLabel.setText("No games available");
 		} else {
+			Collections.sort(games, new Comparator<MinifiedGame>() {
+				@Override
+				public int compare(MinifiedGame o1, MinifiedGame o2) {
+					if (o1.moveAvailable && o2.moveAvailable) {
+						return 0;
+					} else if (o1.moveAvailable && !o2.moveAvailable) {
+						return -1;
+					}
+					return 1;
+				}
+			});
+
 			for (final MinifiedGame game : games) {
 				scrollList.addRow(game, new ClickListener() {
 					@Override
@@ -143,7 +157,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		String opponent;
 		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
 		if (otherPlayers.size() == 0) {
-			opponent = waitingLabel(game);
+			opponent = BoardScreen.Labels.waitingLabel(game.social);
 		} else {
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}
@@ -191,13 +205,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		mapLabel.setX(width * 0.08f);
 
 		group.addActor(mapLabel);
-	}
-
-	private String waitingLabel(MinifiedGame game) {
-		if (game.social != null) {
-			return "[waiting for " + game.social + "]";
-		}
-		return "[waiting for opponent]";
 	}
 
 	@Override

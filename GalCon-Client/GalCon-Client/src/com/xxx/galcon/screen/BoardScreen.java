@@ -1199,4 +1199,13 @@ public class BoardScreen implements ScreenFeedback {
 	public void setPreviousScreen(MenuScreenContainer previousScreen) {
 		this.previousScreen = previousScreen;
 	}
+	
+	public static class Labels {
+		public static String waitingLabel(String social){
+			if(social != null && !social.isEmpty()){
+				return "[waiting for " + social + "]";
+			}
+			return "[waiting for an opponent]";
+		}
+	}
 }

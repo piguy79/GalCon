@@ -4,13 +4,12 @@ import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -32,24 +31,15 @@ import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.ButtonBar;
 import com.xxx.galcon.screen.widget.CountLabel;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class MainMenuScreen implements PartialScreenFeedback {
-	private SpriteBatch spriteBatch;
 	private String returnValue;
 	private GameAction gameAction;
 	private Stage stage;
-
-	private Image loadingFrame;
-	private Image loadingBarHidden;
-	private Image loadingBg;
-
-	private float startX, endX;
-	private float percent;
-
-	private Actor loadingBar;
 
 	private Array<Actor> actors = new Array<Actor>();
 
@@ -76,13 +66,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		resources.assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		resources.assetManager.finishLoading();
-
-		TextureAtlas atlas = resources.assetManager.get("data/images/loading.pack", TextureAtlas.class);
-
-		loadingFrame = new Image(atlas.findRegion("loading-frame"));
-		loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
-		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
-		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
 		newLabel = new ShaderLabel(resources.fontShader, Strings.NEW, resources.skin, Constants.UI.DEFAULT_FONT);
 		newLabel.setAlignment(Align.center);
@@ -144,7 +127,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);
-		coinImage.setX(width * 0.96f - coinImage.getWidth());
+		coinImage.setX(10);
 		coinImage.setY(height * 0.97f - coinImage.getHeight());
 		coinImage.addListener(new InputListener() {
 			@Override
@@ -161,23 +144,42 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		actors.add(coinImage);
 
 		coinText = new ShaderLabel(resources.fontShader, createCoinDisplay(), resources.skin, Constants.UI.DEFAULT_FONT);
-		coinText.setAlignment(Align.right, Align.right);
+		coinText.setAlignment(Align.left, Align.left);
+
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = 0.4f * width;
-		coinText.setBounds(width * 0.93f - coinImage.getWidth() - coinTextWidth, yMidPoint - coinText.getHeight() / 2,
-				coinTextWidth, coinText.getHeight());
+		coinText.setBounds(10 + (coinImage.getWidth() * 1.1f), yMidPoint - coinText.getHeight() / 2, coinTextWidth,
+				coinText.getHeight());
 		stage.addActor(coinText);
 		actors.add(coinText);
 
-		addFbButton();
-		addGpButton();
+		addSocialButtonBar();
+
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
 	}
 
+	private void addSocialButtonBar() {
+		createFbButton();
+		createGpButton();
+
+		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
+		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
+		ButtonBar buttonBar = new ButtonBar.ButtonBarBuilder(Gdx.graphics.getHeight() * 0.1f,
+				Gdx.graphics.getWidth() * 0.6f).buttonSize(buttonHeight, buttonWidth).align(ButtonBar.Align.RIGHT)
+				.addButton(fbButton).addButton(gpButton).build();
+		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
+		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
+
+		stage.addActor(buttonBar);
+		actors.add(buttonBar);
+
+	}
+
 	private void addContinueCount(GameCount gameCount) {
-		if (gameCount != null && gameCount.count > 0) {
-			CountLabel countLabel = new CountLabel(gameCount.count, resources.fontShader, (UISkin) resources.skin);
+		if (gameCount != null && gameCount.pendingGameCount > 0) {
+			CountLabel countLabel = new CountLabel(gameCount.pendingGameCount, resources.fontShader,
+					(UISkin) resources.skin);
 			countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
 			countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
 
@@ -188,42 +190,28 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void addInviteCount(GameCount gameCount) {
-		// CountLabel countLabel = new CountLabel("1", fontShader, (UISkin)
-		// skin);
-		// countLabel.setX((Gdx.graphics.getWidth() / 2) +
-		// (inviteLabel.getTextBounds().width * 0.6f));
-		// countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() *
-		// 0.2f));
+		if (gameCount != null && gameCount.inviteCount > 0) {
+			CountLabel countLabel = new CountLabel(gameCount.inviteCount, resources.fontShader, (UISkin) resources.skin);
+			countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
+			countLabel.setY(inviteLabel.getY() + (inviteLabel.getHeight() * 0.2f));
 
-		// stage.addActor(countLabel);
-		// actors.add(countLabel);
-
+			stage.addActor(countLabel);
+			actors.add(countLabel);
+		}
 	}
 
-	private void addGpButton() {
+	private void createGpButton() {
 		gpButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		gpButton.setX(fbButton.getX() + (fbButton.getWidth() * 1.1f));
-		gpButton.setY(0);
-		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-
 		gpButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		});
-
-		stage.addActor(gpButton);
-		actors.add(gpButton);
 	}
 
-	private void addFbButton() {
+	private void createFbButton() {
 		fbButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		fbButton.setX(10);
-		fbButton.setY(0);
-		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
 
 		fbButton.addListener(new ClickListener() {
 			@Override
@@ -232,24 +220,27 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 
 		});
-
-		stage.addActor(fbButton);
-		actors.add(fbButton);
-		;
-
 	}
 
 	private void registerSocialProvider(String authProvider) {
+		final TextOverlay overlay = new TextOverlay("Adding " + authProvider + " access.", resources);
+		stage.addActor(overlay);
 		socialAction.addAuthDetails(new AuthenticationListener() {
 
 			@Override
 			public void onSignOut() {
-				System.out.println("Sign out failed");
-
 			}
 
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
+				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
+
+					@Override
+					public void run() {
+						overlay.remove();
+
+					}
+				})));
 				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 				String id = prefs.getString(authProvider + Constants.ID);
 				prefs.flush();
@@ -258,7 +249,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					@Override
 					public void onConnectionResult(Player result) {
 						GameLoop.USER = result;
-
 					}
 
 					@Override
@@ -271,8 +261,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void onSignInFailed(String failureMessage) {
-				System.out.println("Sign in failed");
+				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
 
+					@Override
+					public void run() {
+						overlay.remove();
+
+					}
+				})));
 			}
 		}, authProvider);
 	}

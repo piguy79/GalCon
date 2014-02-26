@@ -94,7 +94,7 @@ public class PingService extends Service {
 		}
 
 		private void parseResult(GameCount result) {
-			if (result != null && result.count > 0) {
+			if (result != null && result.pendingGameCount > 0) {
 				sendNotification(result);
 			}
 		}
@@ -105,7 +105,7 @@ public class PingService extends Service {
 			}
 
 			String text = "1 game is awaiting your move";
-			int numberOfGames = result.count;
+			int numberOfGames = result.pendingGameCount;
 			if (numberOfGames > 1) {
 				text = numberOfGames + " games are awaiting your move";
 			}

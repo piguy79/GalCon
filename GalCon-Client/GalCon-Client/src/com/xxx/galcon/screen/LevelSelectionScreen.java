@@ -26,6 +26,8 @@ import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
+import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.event.GameStartListener;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -34,9 +36,7 @@ import com.xxx.galcon.screen.widget.WaitImageButton;
 public class LevelSelectionScreen implements PartialScreenFeedback, UIConnectionResultCallback<Maps> {
 
 	private List<Map> allMaps;
-	private int selectedMapKey = 0;
 
-	private AtlasRegion levelSelectBgBottom;
 	private AtlasRegion levelSelectionCard;
 	private AtlasRegion levelSelectCardShadow;
 
@@ -92,9 +92,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -106,11 +103,20 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		float padSide = (Gdx.graphics.getWidth() - cardWidth) * 0.5f;
 
 		table.pad(10).padLeft(padSide).padRight(padSide).defaults().expandX().space(30).width(cardWidth)
-				.height(Gdx.graphics.getHeight() * .6f);
+				.height(Gdx.graphics.getHeight() * .7f);
 
 		for (int i = 0; i < allMaps.size(); ++i) {
 			final Map map = allMaps.get(i);
-			table.add(new CardActor(map, resources)).expandX().fillX();
+
+			CardActor card = new CardActor(map, resources);
+			card.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					createGameStartDialog(map.key);
+				}
+
+			});
+			table.add(card).expandX().fillX();
 		}
 
 		choiceActor = new Actor() {
@@ -126,7 +132,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
 						text = cell.getWidget().getMapTitle();
-						selectedMapKey = cell.getWidget().getMapKey();
 					}
 				}
 
@@ -145,64 +150,35 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(cardTable);
 		stage.addActor(cardTable);
 
-		Actor bottomBar = new Actor() {
-			@Override
-			public void draw(SpriteBatch batch, float parentAlpha) {
-				batch.draw(levelSelectBgBottom, getX(), getY(), getWidth(), getHeight());
-			}
-		};
-		bottomBar.setX(0);
-		bottomBar.setY(0);
-		bottomBar.setWidth(width);
-		bottomBar.setHeight(height * 0.18f);
-		actors.add(bottomBar);
-		stage.addActor(bottomBar);
+		backButton.remove();
+		stage.addActor(backButton);
+	}
 
-		ImageButton randomPlayButton = new ImageButton(resources.skin, "regularPlay");
-		int buttonWidth = (int) (height * 0.15f);
-		int buttonHeight = (int) (height * 0.15f);
-		int margin = (int) (width * 0.1f);
-		int ymargin = (int) (height * 0.02f);
+	private void createGameStartDialog(int selectedMapKey) {
+		final GameStartDialog dialog = new GameStartDialog(resources, Gdx.graphics.getWidth() * 0.8f,
+				Gdx.graphics.getHeight() * 0.5f, stage, selectedMapKey);
+		float dialogY = Gdx.graphics.getHeight() * 0.3f;
 
-		randomPlayButton.setX(margin);
-		randomPlayButton.setY(ymargin);
-		randomPlayButton.setWidth(buttonWidth);
-		randomPlayButton.setHeight(buttonHeight);
-		randomPlayButton.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		stage.addActor(dialog);
+		dialog.setX(-dialog.getWidth());
+		dialog.setY(dialogY);
+		Point startPoint = new Point(Gdx.graphics.getWidth() * 0.1f, dialogY);
+		dialog.show(startPoint);
+
+		dialog.addListener(new GameStartListener() {
 
 			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+			public void startGame(int selectedMapKey) {
+				dialog.hide();
 				startHideSequence(Action.PLAY + ":" + selectedMapKey);
 			}
-		});
-		actors.add(randomPlayButton);
-		stage.addActor(randomPlayButton);
-
-		ImageButton friendsPlayButton = new ImageButton(resources.skin, "socialPlay");
-		friendsPlayButton.setX(width - margin - buttonWidth);
-		friendsPlayButton.setY(ymargin);
-		friendsPlayButton.setWidth(buttonWidth);
-		friendsPlayButton.setHeight(buttonHeight);
-		friendsPlayButton.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
 
 			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+			public void startSocialGame(int selectedMapKey) {
+				dialog.hide();
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
 		});
-		actors.add(friendsPlayButton);
-		stage.addActor(friendsPlayButton);
-
-		backButton.remove();
-		stage.addActor(backButton);
 	}
 
 	@Override
@@ -292,13 +268,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		int tableHeight = (int) (height * .7f);
 
-		this.levelSelectBgBottom = resources.levelSelectionAtlas.findRegion("level_select_bg_bottom");
 		this.levelSelectionCard = resources.levelSelectionAtlas.findRegion("level_card_gray");
 		this.levelSelectCardShadow = resources.levelSelectionAtlas.findRegion("level_select_card_shadow");
 
 		cardTable = new Table();
 		cardTable.setX(0);
-		cardTable.setY(height * .5f - tableHeight * .42f);
+		cardTable.setY(height * .4f - tableHeight * .42f);
 		cardTable.setWidth(width);
 		cardTable.setHeight(tableHeight);
 

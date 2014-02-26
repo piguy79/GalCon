@@ -81,21 +81,14 @@ public class BoardScreenPlayerHud extends Group {
 		addActor(vs);
 
 		secondPlayer = new ShaderLabel(resources.fontShader,
-				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : waitingLabel(), resources.skin,
+				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : BoardScreen.Labels
+						.waitingLabel(gameBoard.social), resources.skin,
 				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.SMALL_FONT_RED);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
 		secondPlayer.setAlignment(Align.center);
 		addActor(secondPlayer);
-
-	}
-
-	private String waitingLabel() {
-		if (gameBoard.social != null) {
-			return "[waiting for " + gameBoard.social + "]";
-		}
-		return "[waiting for opponent]";
 	}
 
 	private String findFontStyleForPlayer(int index) {

@@ -179,7 +179,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void findGamesWithPendingMove(UIConnectionResultCallback<GameCount> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
+		args.put("handle", playerHandle);
 		callback.onConnectionResult((GameCount) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE,
 				args, new GameCount()));
 	}

@@ -121,7 +121,7 @@ public class GameLoop extends Game {
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		boardScreen = new BoardScreen(resources, tweenManager);
-		friendScreen = new FriendScreen(skin, assetManager, socialAction, gameAction);
+		friendScreen = new FriendScreen(resources, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(resources, socialAction, gameAction, inAppBillingAction,
 				tweenManager, keyboard);
 		setScreen(menuScreenContainer);
