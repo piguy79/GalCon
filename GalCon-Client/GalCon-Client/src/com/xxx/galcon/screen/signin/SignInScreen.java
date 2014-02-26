@@ -6,11 +6,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.xxx.galcon.Constants.GALCON_PREFS;
-import static com.xxx.galcon.Util.createShader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,19 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Session;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class SignInScreen implements PartialScreenFeedback, AuthenticationListener, UIConnectionResultCallback<Session> {
-
-	private UISkin skin;
-	private ShaderProgram fontShader;
 
 	private SocialAction socialAction;
 	private GameAction gameAction;
@@ -46,13 +41,12 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 	private String returnValue = null;
 
-	public SignInScreen(UISkin skin, SocialAction socialAction, GameAction gameAction) {
-		this.skin = skin;
+	private Resources resources;
 
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-
+	public SignInScreen(Resources resources, SocialAction socialAction, GameAction gameAction) {
 		this.socialAction = socialAction;
 		this.gameAction = gameAction;
+		this.resources = resources;
 		socialAction.registerSignInListener(this);
 	}
 
@@ -65,14 +59,14 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
 
-		signInLabel = new ShaderLabel(fontShader, "", skin, Constants.UI.DEFAULT_FONT);
+		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		signInLabel.setAlignment(Align.center);
 		signInLabel.setWidth(width);
 		signInLabel.setX(width / 2 - signInLabel.getWidth() / 2);
 		signInLabel.setY(0.6f * height);
 		stage.addActor(signInLabel);
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -82,7 +76,6 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String socialAuthProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
-		
 
 		if (socialAuthProvider != null && !socialAuthProvider.isEmpty()) {
 			String id = prefs.getString(socialAuthProvider + Constants.Auth.SOCIAL_AUTH_PROVIDER);
@@ -105,7 +98,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addGooglePlusButton(float width, float height) {
-		googlePlusButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		googlePlusButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		googlePlusButton.setWidth(0.7f * width);
 		googlePlusButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
 		googlePlusButton.setY(0.3f * height);
@@ -130,9 +123,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		googlePlusButton.addAction(sequence(delay(0.1f),
 				moveTo(currentX, googlePlusButton.getY(), 0.9f, Interpolation.pow3)));
 	}
-	
+
 	private void addFacebookButton(float width, float height) {
-		facebookButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		facebookButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		facebookButton.setWidth(0.7f * width);
 		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
 		facebookButton.setY(0.2f * height);
@@ -168,7 +161,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			googlePlusButton.addAction(sequence(delay(0.25f),
 					moveTo(-Gdx.graphics.getWidth(), googlePlusButton.getY(), 0.9f, pow3)));
 		}
-		
+
 		if (facebookButton != null) {
 			facebookButton.addAction(sequence(delay(0.25f),
 					moveTo(-Gdx.graphics.getWidth(), facebookButton.getY(), 0.9f, pow3)));

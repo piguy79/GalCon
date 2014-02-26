@@ -5,18 +5,19 @@ import static java.lang.Math.sqrt;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Scaling;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.math.GalConMath;
 import com.xxx.galcon.model.HarvestMove;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.BoardScreen.BoardCalculations;
+import com.xxx.galcon.screen.Resources;
 
 public class MoveFactory {
-
-	private static UISkin skin;
 
 	public static Move createMove(List<Planet> availablePlanets, int fleetToSend, int round) {
 		if (fleetToSend <= 0) {
@@ -75,25 +76,29 @@ public class MoveFactory {
 		}
 	}
 
-	public static void setSkin(UISkin skin) {
-		MoveFactory.skin = skin;
-	}
+	public static Image createShipForDisplay(float angle, Point point, Resources resources, BoardCalculations boardCalcs) {
+		Image ship = new Image(resources.skin, "shipImage");
 
-	public static Image createShipForDisplay(Move move, float tileHeight, float tileWidth, Point initialPointInWorld) {
-		Image ship = new Image(skin, "shipImage");
-
-		float ratio = ship.getWidth() / ship.getHeight();
-
-		ship.setHeight(tileHeight * 0.33f);
-		ship.setWidth(ratio * ship.getHeight());
+		ship.setScaling(Scaling.fillY);
+		float targetHeight = boardCalcs.getTileSize().height * 0.33f;
+		Vector2 vec = Scaling.fillY.apply(ship.getWidth(), ship.getHeight(), 1, targetHeight);
+		ship.setSize(vec.x, vec.y);
 
 		ship.setOrigin(ship.getWidth() / 2, ship.getHeight() / 2);
-		ship.setX(initialPointInWorld.x + (tileWidth * 0.5f) - ship.getWidth() * 0.5f);
-		ship.setY(initialPointInWorld.y + (tileHeight * 0.5f) - ship.getHeight() * 0.5f);
 
-		ship.setRotation(move.angleOfMovement());
+		Point pos = MoveFactory.getShipPosition(ship, point, boardCalcs);
+		ship.setPosition(pos.x, pos.y);
+
+		ship.setRotation(angle);
 
 		return ship;
+	}
+
+	public static Point getShipPosition(Image ship, Point point, BoardCalculations boardCalcs) {
+		Point pixelPoint = boardCalcs.tileCoordsToPixels(point);
+		pixelPoint.x -= ship.getWidth() * 0.5f;
+		pixelPoint.y -= ship.getHeight() * 0.5f;
+		return pixelPoint;
 	}
 
 	public static HarvestMove createHarvestMove(Planet planet) {

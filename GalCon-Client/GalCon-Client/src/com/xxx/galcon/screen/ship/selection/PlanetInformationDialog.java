@@ -2,7 +2,6 @@ package com.xxx.galcon.screen.ship.selection;
 
 import java.text.NumberFormat;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,6 +14,7 @@ import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.display.AbilityDisplay;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.HarvestEvent;
 import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.OKCancelDialog;
@@ -32,14 +32,12 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	private PlanetButton planetImage;
 	private int offset;
 
-	public PlanetInformationDialog(AssetManager assetManager, float width, float height, Stage stage, Planet planet,
-			GameBoard gameboard, boolean animated, ShaderProgram fontShader, UISkin skin, int offset) {
-		super(assetManager, width, height, stage, skin, OKCancelDialog.Type.OK_CANCEL);
+	public PlanetInformationDialog(Resources resources, float width, float height, Stage stage, Planet planet,
+			GameBoard gameboard, boolean animated, int offset) {
+		super(resources, width, height, stage, OKCancelDialog.Type.OK_CANCEL);
 		this.planet = planet;
 		this.gameboard = gameboard;
 		this.animated = animated;
-		this.skin = skin;
-		this.fontShader = fontShader;
 		this.offset = offset;
 		createPlanetImage();
 		if (planet.hasAbility()) {
@@ -64,19 +62,17 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	}
 
 	private void createMoonImage() {
-		float sizeBase = Math.max(getHeight(), getWidth());
-		float size = sizeBase * 0.15f;
-		Moon moon = PlanetButtonFactory.createMoon(assetManager, planet, size, size);
-		moon.setX((planetImage.getX() + (planetImage.getWidth() * 1.1f)) - (size / 2));
-		moon.setY((planetImage.getY() + (planetImage.getHeight() * 0.7f)) - (size / 2));
-		addActor(moon);
-
+//		float sizeBase = Math.max(getHeight(), getWidth());
+//		float size = sizeBase * 0.15f;
+//		Moon moon = PlanetButtonFactory.createMoon(resources, planet, size, size);
+//		moon.setX((planetImage.getX() + (planetImage.getWidth() * 1.1f)) - (size / 2));
+//		moon.setY((planetImage.getY() + (planetImage.getHeight() * 0.7f)) - (size / 2));
+//		addActor(moon);
 	}
 
 	private void createLabels() {
 		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel regenRate = new ShaderLabel(fontShader, findRegenRate(), skin,
-				Constants.UI.DEFAULT_FONT);
+		ShaderLabel regenRate = new ShaderLabel(fontShader, findRegenRate(), skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel populationValue = new ShaderLabel(fontShader, calculatePopulation(), skin,
 				Constants.UI.DEFAULT_FONT);
@@ -105,8 +101,8 @@ public class PlanetInformationDialog extends OKCancelDialog {
 			positionAndPlaceActor(abilityValue, new Point(abilityName.getX() + abilityName.getTextBounds().width
 					+ padNameToValue, abilityName.getY()));
 		}
-		
-		if(planet.isAlive() && planet.isUnderHarvest()){
+
+		if (planet.isAlive() && planet.isUnderHarvest()) {
 			positionAndPlaceActor(harvestName, new Point(initialPadX, abilityName.getY() - yPad));
 			positionAndPlaceActor(harvestValue, new Point(harvestName.getX() + harvestName.getTextBounds().width
 					+ padNameToValue, harvestName.getY()));
@@ -126,10 +122,10 @@ public class PlanetInformationDialog extends OKCancelDialog {
 
 	private String findRoundsRemainingInHarvest() {
 
-		if(!planet.isAlive()){
+		if (!planet.isAlive()) {
 			return "0";
 		}
-		
+
 		if (planet.isUnderHarvest()) {
 			String harvestRounds = gameboard.gameConfig.getValue("harvestRounds");
 			int roundNumber = Integer.parseInt(harvestRounds);
@@ -139,7 +135,6 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		return "";
 	}
 
-
 	private void positionAndPlaceActor(ShaderLabel actor, Point position) {
 		actor.setX(position.x);
 		actor.setY(position.y);
@@ -148,9 +143,8 @@ public class PlanetInformationDialog extends OKCancelDialog {
 
 	private void createPlanetImage() {
 		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
-		PlanetButtonFactory.setup(assetManager, sizeBase * 0.4f, sizeBase * 0.4f, skin);
 		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f,
-				sizeBase * 0.4f);
+				sizeBase * 0.4f, resources);
 		planetImage.setX((getWidth() / 2) - (planetImage.getWidth() / 2));
 		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
 		planetImage.setText(new StringBuilder().append(planet.numberOfShips - offset).toString());

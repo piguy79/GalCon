@@ -5,14 +5,13 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.OKDialogEvent;
 
@@ -23,11 +22,9 @@ public abstract class OKCancelDialog extends Dialog {
 
 	protected ActionButton cancelButton;
 	protected ActionButton okButton;
-	private UISkin skin;
 
-	public OKCancelDialog(AssetManager assetManager, float width, float height, Stage stage, UISkin skin, Type type) {
-		super(assetManager, width, height, stage);
-		this.skin = skin;
+	public OKCancelDialog(Resources resources, float width, float height, Stage stage, Type type) {
+		super(resources, width, height, stage);
 		addCancelButton();
 		if (type == Type.OK_CANCEL) {
 			addOkButton();
@@ -35,7 +32,7 @@ public abstract class OKCancelDialog extends Dialog {
 	}
 
 	private void addCancelButton() {
-		cancelButton = new ActionButton(skin, "cancelButton", new Point(getX(), getY()));
+		cancelButton = new ActionButton(resources.skin, "cancelButton", new Point(getX(), getY()));
 		cancelButton.setX(cancelButton.getX() - (cancelButton.getWidth() * 0.4f));
 		cancelButton.setY(cancelButton.getY() - (cancelButton.getHeight() * 0.4f));
 		cancelButton.setColor(0, 0, 0, 0);
@@ -52,7 +49,7 @@ public abstract class OKCancelDialog extends Dialog {
 	}
 
 	protected void addOkButton() {
-		okButton = new ActionButton(skin, "okButton", new Point(getWidth(), 0));
+		okButton = new ActionButton(resources.skin, "okButton", new Point(getWidth(), 0));
 		okButton.setX(okButton.getX() - (okButton.getWidth() * 0.6f));
 		okButton.setY(okButton.getY() - (okButton.getHeight() * 0.4f));
 		okButton.setColor(0, 0, 0, 0);

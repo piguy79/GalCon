@@ -1,7 +1,5 @@
 package com.xxx.galcon.screen;
 
-import static com.xxx.galcon.Util.createShader;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,15 +7,11 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -44,10 +38,7 @@ import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player> {
 	private Stage stage;
-	private Skin skin;
 	private Array<Actor> actors = new Array<Actor>();
-
-	private ShaderProgram fontShader;
 
 	private ShaderLabel timeRemainingText;
 	private ShaderLabel coinText;
@@ -59,21 +50,18 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	private Object returnValue;
 
-	private TextureAtlas menusAtlas;
-
 	private Inventory inventoryResult;
 
-	public NoMoreCoinsDialog(Skin skin, AssetManager assetManager) {
-		super();
-		this.skin = skin;
+	private Resources resources;
 
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+	public NoMoreCoinsDialog(Resources resources) {
+		super();
+		this.resources = resources;
 	}
 
 	private void createBackButton(final Stage stage, final float width, final float height) {
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
-		ImageButton backButton = new ImageButton(skin, "backButton");
+		ImageButton backButton = new ImageButton(resources.skin, "backButton");
 		backButton.setX(10);
 		backButton.setY(height - buttonHeight - 5);
 		backButton.setWidth(buttonHeight);
@@ -90,7 +78,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	private void createHelpButton(final Stage stage, final float width, final float height) {
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
-		ImageButton helpButton = new ImageButton(skin, Constants.UI.QUESTION_MARK);
+		ImageButton helpButton = new ImageButton(resources.skin, Constants.UI.QUESTION_MARK);
 		helpButton.setX(width - buttonHeight - 10);
 		helpButton.setY(height - buttonHeight - 5);
 		helpButton.setWidth(buttonHeight);
@@ -99,10 +87,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		helpButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				final Overlay ovrlay = new DismissableOverlay(
-						menusAtlas,
+						resources,
 						new TextOverlay(
 								"Free Coins\n\nFree coins are available after all games in progress have been completed. Upon completion, a cooldown period begins until the free coins are credited.\n\nWatch Ad\n\nWhen the cooldown timer is running, clicking on the watch ad button will reduce the cooldown by 50%.",
-								menusAtlas, skin, fontShader), null);
+								resources), null);
 				stage.addActor(ovrlay);
 			}
 		});
@@ -142,7 +130,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private Actor createInAppBillingButtons(List<InventoryItem> inventory) {
-		ScrollList<InventoryItem> scrollList = new ScrollList<InventoryItem>(skin) {
+		ScrollList<InventoryItem> scrollList = new ScrollList<InventoryItem>(resources.skin) {
 			@Override
 			public void buildCell(InventoryItem item, Group group) {
 				float width = group.getWidth();
@@ -150,7 +138,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 				String itemText = item.price + "  " + item.numCoins + " " + coinString(item.numCoins);
 
-				ShaderLabel coinLabel = new ShaderLabel(fontShader, itemText, skin, Constants.UI.DEFAULT_FONT);
+				ShaderLabel coinLabel = new ShaderLabel(resources.fontShader, itemText, resources.skin,
+						Constants.UI.DEFAULT_FONT);
 				coinLabel.setAlignment(Align.center);
 				coinLabel.setWidth(width);
 				coinLabel.setY(rowHeight * 0.4f);
@@ -178,7 +167,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 				scrollList.addRow(item, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						purchaseOverlay = new TextOverlay("Purchasing...", menusAtlas, skin, fontShader);
+						purchaseOverlay = new TextOverlay("Purchasing...", resources);
 						stage.addActor(purchaseOverlay);
 
 						lastPurchaseAttemptItem = item;
@@ -203,8 +192,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			} else {
 				coinGroup.clear();
 				addCoinImageGroup(coinGroup);
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-						"Coin purchase succeeded!\n\nGo forth and conquer.", menusAtlas, skin, fontShader), null);
+				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+						"Coin purchase succeeded!\n\nGo forth and conquer.", resources), null);
 
 				stage.addActor(ovrlay);
 			}
@@ -215,14 +204,13 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			purchaseOverlay.remove();
 			purchaseOverlay = null;
 
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-					"Could not complete purchase.\n\nPlease try again.", menusAtlas, skin, fontShader),
-					new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
-						}
-					});
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+					"Could not complete purchase.\n\nPlease try again.", resources), new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
+				}
+			});
 
 			stage.addActor(ovrlay);
 		}
@@ -231,7 +219,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private void addCoinImageGroup(Group group) {
 		final float width = Gdx.graphics.getWidth();
 
-		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
+		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
 		float coinSize = group.getHeight() * 0.95f;
 		coinImage.setLayoutEnabled(false);
 		coinImage.setWidth(coinSize);
@@ -240,7 +228,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		group.addActor(coinImage);
 
-		coinText = new ShaderLabel(fontShader, GameLoop.USER.coins.toString(), skin, Constants.UI.LARGE_FONT);
+		coinText = new ShaderLabel(resources.fontShader, GameLoop.USER.coins.toString(), resources.skin,
+				Constants.UI.LARGE_FONT);
 		coinText.setAlignment(Align.right, Align.right);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = coinText.getWidth() * 4;
@@ -251,7 +240,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private void addTimeRemainingText(Group group) {
-		timeRemainingText = new ShaderLabel(fontShader, findTimeRemaining(), skin, Constants.UI.LARGE_FONT);
+		timeRemainingText = new ShaderLabel(resources.fontShader, findTimeRemaining(), resources.skin,
+				Constants.UI.LARGE_FONT);
 		float yMidPoint = group.getHeight() * 0.5f;
 		float timeTextWidth = timeRemainingText.getWidth() * 1.5f;
 		timeRemainingText.setAlignment(Align.center, Align.center);
@@ -259,12 +249,12 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 				yMidPoint - timeRemainingText.getHeight() * 0.48f, timeTextWidth, timeRemainingText.getHeight());
 		group.addActor(timeRemainingText);
 
-		final ImageButton watchAd = new ImageButton(skin, Constants.UI.GREEN_BUTTON);
+		final ImageButton watchAd = new ImageButton(resources.skin, Constants.UI.GREEN_BUTTON);
 		float adWidth = group.getWidth() * 0.26f;
 		float adHeight = adWidth * 0.55f;
 		watchAd.setBounds(group.getWidth() * 0.73f, group.getHeight() * 0.5f - adHeight * 0.5f, adWidth, adHeight);
 
-		ShaderTextButton watchAdText = new ShaderTextButton(fontShader, "Watch\nAd", skin,
+		ShaderTextButton watchAdText = new ShaderTextButton(resources.fontShader, "Watch\nAd", resources.skin,
 				Constants.UI.GREEN_BUTTON_TEXT);
 		watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() * 0.5f);
 		watchAdText.setWidth(watchAd.getWidth());
@@ -354,7 +344,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		timeRemainingText = null;
 		this.stage = stage;
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -369,7 +359,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			inventoryCallback.onConnectionResult(inventoryResult);
 		}
 	}
-	
+
 	private void loadUser() {
 		UIConnectionWrapper.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
 
@@ -381,14 +371,13 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 			@Override
 			public void onConnectionError(String msg) {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-						"Could not retrieve user.\n\nPlease try again.", menusAtlas, skin, fontShader),
-						new ClickListener() {
-							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								loadUser();
-							}
-						});
+				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+						"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						loadUser();
+					}
+				});
 				stage.addActor(ovrlay);
 			}
 		}, GameLoop.USER.handle);
@@ -413,8 +402,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		public void onConnectionError(String msg) {
 			waitImage.stop();
 
-			final Overlay ovrlay = new DismissableOverlay(menusAtlas,
-					new TextOverlay(msg, menusAtlas, skin, fontShader), new ClickListener() {
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources),
+					new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							ExternalActionWrapper.loadInventory(inventoryCallback);

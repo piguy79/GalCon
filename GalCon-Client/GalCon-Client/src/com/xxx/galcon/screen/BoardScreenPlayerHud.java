@@ -4,12 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.UISkin;
+import com.xxx.galcon.model.Bounds;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
@@ -31,9 +27,7 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 public class BoardScreenPlayerHud extends Group {
 
 	private AtlasRegion bgTexture;
-	private AssetManager assetManager;
-	private UISkin skin;
-	private ShaderProgram fontShader;
+	private Resources resources;
 	private GameBoard gameBoard;
 
 	private ActionButton backButton;
@@ -52,16 +46,11 @@ public class BoardScreenPlayerHud extends Group {
 		}
 	};
 
-	public BoardScreenPlayerHud(AssetManager assetManager, UISkin skin, ShaderProgram fontShader, float width,
-			float height, Point position, GameBoard gameBoard) {
-		this.assetManager = assetManager;
-		this.skin = skin;
-		this.fontShader = fontShader;
+	public BoardScreenPlayerHud(Resources resources, Bounds bounds, GameBoard gameBoard) {
+		this.resources = resources;
 		this.gameBoard = gameBoard;
+		bounds.applyBounds(this);
 
-		setWidth(Gdx.graphics.getWidth());
-		setHeight(height);
-		setPosition(position.x, position.y);
 		createTable();
 		createLayout();
 	}
@@ -76,23 +65,24 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createUserTable() {
-		firstPlayer = new ShaderLabel(fontShader, playerInfo(gameBoard.players.get(0)), skin, findFontStyleForPlayer(0));
+		firstPlayer = new ShaderLabel(resources.fontShader, playerInfo(gameBoard.players.get(0)), resources.skin,
+				findFontStyleForPlayer(0));
 		firstPlayer.setWidth(getWidth() * 0.5f);
 		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
 		firstPlayer.setAlignment(Align.center);
 		addActor(firstPlayer);
 
-		vs = new ShaderLabel(fontShader, "vs", skin, Constants.UI.SMALL_FONT);
+		vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.SMALL_FONT);
 		vs.setWidth(getWidth() * 0.5f);
 		vs.setX(secondSlash.getX() + getWidth() * 0.1f);
 		vs.setY((firstPlayer.getY() - vs.getTextBounds().height) - getHeight() * 0.1f);
 		vs.setAlignment(Align.center);
 		addActor(vs);
 
-		secondPlayer = new ShaderLabel(fontShader, gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1))
-				: waitingLabel(), skin, gameBoard.players.size() > 1 ? findFontStyleForPlayer(1)
-				: Constants.UI.SMALL_FONT_RED);
+		secondPlayer = new ShaderLabel(resources.fontShader,
+				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : waitingLabel(), resources.skin,
+				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.SMALL_FONT_RED);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
@@ -102,7 +92,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private String waitingLabel() {
-		if(gameBoard.social != null){
+		if (gameBoard.social != null) {
 			return "[waiting for " + gameBoard.social + "]";
 		}
 		return "[waiting for opponent]";
@@ -145,15 +135,14 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private Image createSlash() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		TextureRegionDrawable trd = new TextureRegionDrawable(gameBoardAtlas.findRegion("slash_line"));
+		TextureRegionDrawable trd = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("slash_line"));
 		Image slash = new Image(trd);
 		slash.setWidth(getWidth() * 0.1f);
 		return slash;
 	}
 
 	private void createBackButton() {
-		backButton = new ActionButton(skin, "backButton", new Point(10, getHeight() * 0.1f));
+		backButton = new ActionButton(resources.skin, "backButton", new Point(10, getHeight() * 0.1f));
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent clickEvent, float x, float y) {
@@ -165,7 +154,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createOptionsButton() {
-		ImageButton button = new ImageButton(skin, "optionsButton") {
+		ImageButton button = new ImageButton(resources.skin, "optionsButton") {
 			@Override
 			public void layout() {
 				super.layout();
@@ -192,8 +181,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createTable() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		bgTexture = gameBoardAtlas.findRegion("player_hud");
+		bgTexture = resources.gameBoardAtlas.findRegion("player_hud");
 		Image backGround = new Image(new TextureRegionDrawable(bgTexture));
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());

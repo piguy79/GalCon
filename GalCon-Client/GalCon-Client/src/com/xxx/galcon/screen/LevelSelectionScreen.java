@@ -1,27 +1,21 @@
 package com.xxx.galcon.screen;
 
-import static com.xxx.galcon.Util.createShader;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -42,16 +36,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private List<Map> allMaps;
 	private int selectedMapKey = 0;
 
-	private AssetManager assetManager;
-	private ShaderProgram fontShader;
-
 	private AtlasRegion levelSelectBgBottom;
 	private AtlasRegion levelSelectionCard;
 	private AtlasRegion levelSelectCardShadow;
 
 	private Object returnValue;
 
-	private Skin skin;
 	private Stage stage;
 	private Table cardTable;
 	private Actor choiceActor;
@@ -60,19 +50,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private Array<Actor> actors = new Array<Actor>();
 
-	private TextureAtlas levelSelectionAtlas;
-	private TextureAtlas levelsAtlas;
-	private TextureAtlas menusAtlas;
+	private Resources resources;
 
-	public LevelSelectionScreen(Skin skin, AssetManager assetManager) {
-		this.assetManager = assetManager;
-		this.skin = skin;
-
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-
-		levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
-		levelsAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+	public LevelSelectionScreen(Resources resources) {
+		this.resources = resources;
 	}
 
 	@Override
@@ -129,7 +110,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		for (int i = 0; i < allMaps.size(); ++i) {
 			final Map map = allMaps.get(i);
-			table.add(new CardActor(map, assetManager)).expandX().fillX();
+			table.add(new CardActor(map, resources)).expandX().fillX();
 		}
 
 		choiceActor = new Actor() {
@@ -149,9 +130,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 					}
 				}
 
-				BitmapFont font = Fonts.getInstance(assetManager).mediumFont();
+				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
 				float halfFontWidth = font.getBounds(text).width / 2;
-				batch.setShader(fontShader);
+				batch.setShader(resources.fontShader);
 				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .92f);
 				batch.setShader(null);
 			};
@@ -177,7 +158,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(bottomBar);
 		stage.addActor(bottomBar);
 
-		ImageButton randomPlayButton = new ImageButton(skin, "regularPlay");
+		ImageButton randomPlayButton = new ImageButton(resources.skin, "regularPlay");
 		int buttonWidth = (int) (height * 0.15f);
 		int buttonHeight = (int) (height * 0.15f);
 		int margin = (int) (width * 0.1f);
@@ -201,7 +182,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(randomPlayButton);
 		stage.addActor(randomPlayButton);
 
-		ImageButton friendsPlayButton = new ImageButton(skin, "socialPlay");
+		ImageButton friendsPlayButton = new ImageButton(resources.skin, "socialPlay");
 		friendsPlayButton.setX(width - margin - buttonWidth);
 		friendsPlayButton.setY(ymargin);
 		friendsPlayButton.setWidth(buttonWidth);
@@ -228,13 +209,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	public void onConnectionError(String msg) {
 		waitImage.stop();
 
-		final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(msg, menusAtlas, skin, fontShader),
-				new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						UIConnectionWrapper.findAllMaps(LevelSelectionScreen.this);
-					}
-				});
+		final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				UIConnectionWrapper.findAllMaps(LevelSelectionScreen.this);
+			}
+		});
 
 		stage.addActor(ovrlay);
 	}
@@ -244,9 +224,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		private Map map;
 		private TextureRegion mapTex;
 
-		public CardActor(Map map, AssetManager assetManager) {
+		public CardActor(Map map, Resources resources) {
 			this.map = map;
-			this.mapTex = levelsAtlas.findRegion("" + map.key);
+			this.mapTex = resources.levelAtlas.findRegion("" + map.key);
 		}
 
 		public String getMapTitle() {
@@ -274,8 +254,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			width -= xOffset;
 			height -= yOffset;
 
-			BitmapFont smallFont = Fonts.getInstance(assetManager).smallFont();
-			BitmapFont mediumFont = Fonts.getInstance(assetManager).mediumFont();
+			BitmapFont smallFont = Fonts.getInstance(resources.assetManager).smallFont();
+			BitmapFont mediumFont = Fonts.getInstance(resources.assetManager).mediumFont();
 
 			batch.draw(levelSelectionCard, x, y, width, height);
 
@@ -286,7 +266,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			String text = map.title;
 			mediumFont.setColor(Color.BLACK);
 			float halfFontWidth = mediumFont.getBounds(text).width / 2;
-			batch.setShader(fontShader);
+			batch.setShader(resources.fontShader);
 			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .88f);
 
 			text = map.description;
@@ -302,7 +282,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		this.stage = stage;
 		this.actors.clear();
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -312,9 +292,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		int tableHeight = (int) (height * .7f);
 
-		this.levelSelectBgBottom = levelSelectionAtlas.findRegion("level_select_bg_bottom");
-		this.levelSelectionCard = levelSelectionAtlas.findRegion("level_card_gray");
-		this.levelSelectCardShadow = levelSelectionAtlas.findRegion("level_select_card_shadow");
+		this.levelSelectBgBottom = resources.levelSelectionAtlas.findRegion("level_select_bg_bottom");
+		this.levelSelectionCard = resources.levelSelectionAtlas.findRegion("level_card_gray");
+		this.levelSelectCardShadow = resources.levelSelectionAtlas.findRegion("level_select_card_shadow");
 
 		cardTable = new Table();
 		cardTable.setX(0);
@@ -322,7 +302,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		cardTable.setWidth(width);
 		cardTable.setHeight(tableHeight);
 
-		backButton = new ImageButton(skin, "backButton");
+		backButton = new ImageButton(resources.skin, "backButton");
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
 		backButton.setY(height - backButton.getHeight() - 5);
@@ -340,11 +320,11 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		Actor headerTextActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				BitmapFont font = Fonts.getInstance(LevelSelectionScreen.this.assetManager).mediumFont();
+				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
 				font.setColor(Color.WHITE);
 				String text = "Choose Your Galaxy";
 				float halfFontWidth = font.getBounds(text).width / 2;
-				batch.setShader(fontShader);
+				batch.setShader(resources.fontShader);
 				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .97f);
 				batch.setShader(null);
 				font.setColor(Color.WHITE);

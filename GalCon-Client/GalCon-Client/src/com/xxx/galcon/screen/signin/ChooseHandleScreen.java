@@ -5,17 +5,13 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-import static com.xxx.galcon.Util.createShader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
@@ -25,16 +21,15 @@ import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.HandleResponse;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
 import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class ChooseHandleScreen implements PartialScreenFeedback {
-	private Skin skin;
 	private Stage stage;
 
-	private ShaderProgram fontShader;
 	private ShaderLabel chooseHandleLabel;
 	private WaitImageButton waitImage;
 	private ImageButton okImageButton;
@@ -47,11 +42,12 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	private String result = null;
 	private OnscreenKeyboard keyboard;
 
-	public ChooseHandleScreen(Skin skin, GameAction gameAction, AssetManager assetManager, OnscreenKeyboard keyboard) {
-		this.skin = skin;
+	private Resources resources;
+
+	public ChooseHandleScreen(Resources resources, GameAction gameAction, OnscreenKeyboard keyboard) {
+		this.resources = resources;
 		this.gameAction = gameAction;
 
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 		this.keyboard = keyboard;
 	}
 
@@ -62,13 +58,13 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 		String id = prefs.getString(authProvider + Constants.ID, "");
-		
+
 		if (id.isEmpty()) {
 			result = "signIn";
 			return;
 		}
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -84,15 +80,15 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		chooseHandleLabel = new ShaderLabel(fontShader, "Galactic explorer,\nchoose a username", skin,
-				Constants.UI.DEFAULT_FONT);
+		chooseHandleLabel = new ShaderLabel(resources.fontShader, "Galactic explorer,\nchoose a username",
+				resources.skin, Constants.UI.DEFAULT_FONT);
 		chooseHandleLabel.setAlignment(Align.center);
 		chooseHandleLabel.setWidth(width);
 		chooseHandleLabel.setX(width / 2 - chooseHandleLabel.getWidth() / 2);
 		chooseHandleLabel.setY(0.55f * height);
 		stage.addActor(chooseHandleLabel);
 
-		handleTextField = new ShaderTextField(fontShader, "", skin, Constants.UI.TEXT_FIELD);
+		handleTextField = new ShaderTextField(resources.fontShader, "", resources.skin, Constants.UI.TEXT_FIELD);
 		handleTextField.setWidth(width * 0.75f);
 		handleTextField.setHeight(height * .08f);
 		handleTextField.setX(width * 0.5f - handleTextField.getWidth() * 0.6f);
@@ -101,7 +97,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 		stage.addActor(handleTextField);
 
-		okImageButton = new ImageButton(skin, Constants.UI.OK_BUTTON);
+		okImageButton = new ImageButton(resources.skin, Constants.UI.OK_BUTTON);
 		okImageButton.setWidth(height * .08f);
 		okImageButton.setHeight(height * .08f);
 		okImageButton.setX(width / 2 + handleTextField.getWidth() * 0.42f);
@@ -131,7 +127,8 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 			String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 			waitImage.start();
-			gameAction.requestHandleForId(userHandleResponseHandler, GameLoop.USER.auth.auth.get(authProvider), handleTextField.getText(), authProvider);
+			gameAction.requestHandleForId(userHandleResponseHandler, GameLoop.USER.auth.auth.get(authProvider),
+					handleTextField.getText(), authProvider);
 		}
 	}
 

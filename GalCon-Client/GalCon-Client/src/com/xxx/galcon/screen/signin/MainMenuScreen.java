@@ -1,22 +1,17 @@
 package com.xxx.galcon.screen.signin;
 
-import static com.xxx.galcon.Util.createShader;
-
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -33,6 +28,7 @@ import com.xxx.galcon.model.GameCount;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.GraphicsUtils;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -57,12 +53,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private Array<Actor> actors = new Array<Actor>();
 
-	private AssetManager assetManager;
+	private Resources resources;
 	private SocialAction socialAction;
-	private TextureAtlas menusAtlas;
 
-	private Skin skin;
-	private ShaderProgram fontShader;
 	private ShaderLabel newLabel;
 	private ShaderLabel continueLabel;
 	private ShaderLabel inviteLabel;
@@ -71,31 +64,27 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ImageButton fbButton;
 	private ImageButton gpButton;
 
-	public MainMenuScreen(Skin skin, GameAction gameAction, AssetManager assetManager, SocialAction socialAction) {
+	public MainMenuScreen(Resources resources, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
-		this.skin = skin;
 		this.socialAction = socialAction;
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-
-		this.assetManager = assetManager;
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		this.resources = resources;
 	}
 
 	private void addElementsToStage(GameCount gameCount) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		assetManager.load("data/images/loading.pack", TextureAtlas.class);
-		assetManager.finishLoading();
+		resources.assetManager.load("data/images/loading.pack", TextureAtlas.class);
+		resources.assetManager.finishLoading();
 
-		TextureAtlas atlas = assetManager.get("data/images/loading.pack", TextureAtlas.class);
+		TextureAtlas atlas = resources.assetManager.get("data/images/loading.pack", TextureAtlas.class);
 
 		loadingFrame = new Image(atlas.findRegion("loading-frame"));
 		loadingBarHidden = new Image(atlas.findRegion("loading-bar-hidden"));
 		loadingBg = new Image(atlas.findRegion("loading-frame-bg"));
 		loadingBar = new Image(atlas.findRegion("loading-bar-anim"));
 
-		newLabel = new ShaderLabel(fontShader, Strings.NEW, skin, Constants.UI.DEFAULT_FONT);
+		newLabel = new ShaderLabel(resources.fontShader, Strings.NEW, resources.skin, Constants.UI.DEFAULT_FONT);
 		newLabel.setAlignment(Align.center);
 		newLabel.setWidth(width);
 		newLabel.setX(width / 2 - newLabel.getWidth() / 2);
@@ -114,7 +103,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(newLabel);
 		actors.add(newLabel);
 
-		continueLabel = new ShaderLabel(fontShader, Strings.CONTINUE, skin, Constants.UI.DEFAULT_FONT);
+		continueLabel = new ShaderLabel(resources.fontShader, Strings.CONTINUE, resources.skin,
+				Constants.UI.DEFAULT_FONT);
 		continueLabel.setAlignment(Align.center);
 		continueLabel.setWidth(width);
 		continueLabel.setX(width / 2 - continueLabel.getWidth() / 2);
@@ -132,8 +122,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		});
 		stage.addActor(continueLabel);
 		actors.add(continueLabel);
-		
-		inviteLabel = new ShaderLabel(fontShader, Strings.INVITES, skin, Constants.UI.DEFAULT_FONT);
+
+		inviteLabel = new ShaderLabel(resources.fontShader, Strings.INVITES, resources.skin, Constants.UI.DEFAULT_FONT);
 		inviteLabel.setAlignment(Align.center);
 		inviteLabel.setWidth(width);
 		inviteLabel.setX(width / 2 - continueLabel.getWidth() / 2);
@@ -152,7 +142,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(inviteLabel);
 		actors.add(inviteLabel);
 
-		ImageButton coinImage = new ImageButton(skin, Constants.UI.COIN);
+		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);
 		coinImage.setX(width * 0.96f - coinImage.getWidth());
 		coinImage.setY(height * 0.97f - coinImage.getHeight());
@@ -170,7 +160,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(coinImage);
 		actors.add(coinImage);
 
-		coinText = new ShaderLabel(fontShader, createCoinDisplay(), skin, Constants.UI.DEFAULT_FONT);
+		coinText = new ShaderLabel(resources.fontShader, createCoinDisplay(), resources.skin, Constants.UI.DEFAULT_FONT);
 		coinText.setAlignment(Align.right, Align.right);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = 0.4f * width;
@@ -178,109 +168,111 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				coinTextWidth, coinText.getHeight());
 		stage.addActor(coinText);
 		actors.add(coinText);
-		
+
 		addFbButton();
 		addGpButton();
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
 	}
-	
+
 	private void addContinueCount(GameCount gameCount) {
-		if(gameCount != null && gameCount.count > 0){
-			CountLabel countLabel = new CountLabel(gameCount.count, fontShader, (UISkin) skin);
+		if (gameCount != null && gameCount.count > 0) {
+			CountLabel countLabel = new CountLabel(gameCount.count, resources.fontShader, (UISkin) resources.skin);
 			countLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
 			countLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
-			
+
 			stage.addActor(countLabel);
 			actors.add(countLabel);
 		}
-		
+
 	}
-	
+
 	private void addInviteCount(GameCount gameCount) {
-		//CountLabel countLabel = new CountLabel("1", fontShader, (UISkin) skin);
-		//countLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
-		//countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() * 0.2f));
-		
-		//stage.addActor(countLabel);
-		//actors.add(countLabel);
-		
+		// CountLabel countLabel = new CountLabel("1", fontShader, (UISkin)
+		// skin);
+		// countLabel.setX((Gdx.graphics.getWidth() / 2) +
+		// (inviteLabel.getTextBounds().width * 0.6f));
+		// countLabel.setY(inviteLabel.getY()+ (inviteLabel.getHeight() *
+		// 0.2f));
+
+		// stage.addActor(countLabel);
+		// actors.add(countLabel);
+
 	}
 
 	private void addGpButton() {
-		gpButton = new ImageButton(skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		gpButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		gpButton.setX(fbButton.getX() + (fbButton.getWidth() * 1.1f));
 		gpButton.setY(0);
 		gpButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		gpButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		
-		gpButton.addListener(new ClickListener(){
+
+		gpButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		});
-		
+
 		stage.addActor(gpButton);
 		actors.add(gpButton);
 	}
 
 	private void addFbButton() {
-		fbButton = new ImageButton(skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		fbButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		fbButton.setX(10);
 		fbButton.setY(0);
 		fbButton.setWidth(Gdx.graphics.getWidth() * 0.2f);
 		fbButton.setHeight(Gdx.graphics.getHeight() * 0.15f);
-		
-		fbButton.addListener(new ClickListener(){
+
+		fbButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 			}
 
-			
 		});
-		
+
 		stage.addActor(fbButton);
-		actors.add(fbButton);;
-		
+		actors.add(fbButton);
+		;
+
 	}
-	
+
 	private void registerSocialProvider(String authProvider) {
 		socialAction.addAuthDetails(new AuthenticationListener() {
-			
+
 			@Override
 			public void onSignOut() {
 				System.out.println("Sign out failed");
-				
+
 			}
-			
+
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
 				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 				String id = prefs.getString(authProvider + Constants.ID);
 				prefs.flush();
-				
+
 				gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
 					@Override
 					public void onConnectionResult(Player result) {
 						GameLoop.USER = result;
-						
+
 					}
-					
+
 					@Override
 					public void onConnectionError(String msg) {
-						
-						
+
 					}
 				}, GameLoop.USER.handle, id, authProvider);
-				
+
 			}
-			
+
 			@Override
 			public void onSignInFailed(String failureMessage) {
 				System.out.println("Sign in failed");
-				
+
 			}
 		}, authProvider);
 	}
@@ -328,7 +320,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		this.stage = stage;
 		actors.clear();
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -351,26 +343,25 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						addElementsToStage(result);
 						waitImage.stop();
 					};
-					
+
 					@Override
 					public void onConnectionError(String msg) {
 						addElementsToStage(null);
 						waitImage.stop();
 					}
 				}, GameLoop.USER.handle);
-				
+
 			}
 
 			@Override
 			public void onConnectionError(String msg) {
-				final Overlay ovrlay = new DismissableOverlay(menusAtlas, new TextOverlay(
-						"Could not retrieve user.\n\nPlease try again.", menusAtlas, skin, fontShader),
-						new ClickListener() {
-							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								loadUser();
-							}
-						});
+				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+						"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						loadUser();
+					}
+				});
 				stage.addActor(ovrlay);
 			}
 		}, GameLoop.USER.handle);

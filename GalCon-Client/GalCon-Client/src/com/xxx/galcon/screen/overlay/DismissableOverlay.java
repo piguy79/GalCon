@@ -1,16 +1,16 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.xxx.galcon.screen.Resources;
 
 public class DismissableOverlay extends Overlay {
 
 	private Overlay delegate;
 
-	public DismissableOverlay(TextureAtlas menusAtlas, Overlay delegate, ClickListener clickListener) {
-		super(menusAtlas);
+	public DismissableOverlay(Resources resources, Overlay delegate, ClickListener clickListener) {
+		super(resources);
 		this.delegate = delegate;
 
 		this.addListener(new ClickListener() {
@@ -24,8 +24,8 @@ public class DismissableOverlay extends Overlay {
 		}
 	}
 
-	public DismissableOverlay(TextureAtlas menusAtlas, ClickListener clickListener) {
-		this(menusAtlas, null, clickListener);
+	public DismissableOverlay(Resources resources, ClickListener clickListener) {
+		this(resources, null, clickListener);
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package com.xxx.galcon.screen.widget;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,33 +9,29 @@ import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.overlay.DialogOverlay;
 
 public class Dialog extends Group {
 
-	protected AssetManager assetManager;
+	protected Resources resources;
 	private AtlasRegion dialogTextureBg;
 	private Image background;
 	private DialogOverlay overlay;
 
-	private TextureAtlas menusAtlas;
-
-	public Dialog(AssetManager assetManager, float width, float height, Stage stage) {
+	public Dialog(Resources resources, float width, float height, Stage stage) {
 		super();
-		this.assetManager = assetManager;
+		this.resources = resources;
 		setWidth(width);
 		setHeight(height);
 
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-
-		overlay = new DialogOverlay(menusAtlas);
+		overlay = new DialogOverlay(resources);
 		stage.addActor(overlay);
 		addBackground();
 	}
 
 	private void addBackground() {
-		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-		dialogTextureBg = menusAtlas.findRegion("dialog_bg_no_shadow");
+		dialogTextureBg = resources.menuAtlas.findRegion("dialog_bg_no_shadow");
 		TextureRegionDrawable tex = new TextureRegionDrawable(dialogTextureBg);
 		background = new Image(tex);
 		background.setWidth(getWidth());

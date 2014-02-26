@@ -3,7 +3,6 @@ package com.xxx.galcon.screen;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.xxx.galcon.Constants.APP_TITLE;
-import static com.xxx.galcon.Util.createShader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +11,8 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.xxx.galcon.Constants;
@@ -25,7 +21,6 @@ import com.xxx.galcon.InGameInputProcessor;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.Strings;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.InAppBillingAction;
 import com.xxx.galcon.http.SocialAction;
@@ -37,9 +32,6 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 
 public class MenuScreenContainer implements ScreenFeedback {
-
-	private UISkin skin;
-	private ShaderProgram fontShader;
 
 	private Stage stage;
 	private ShaderLabel titleText;
@@ -55,27 +47,23 @@ public class MenuScreenContainer implements ScreenFeedback {
 	private GameQueueScreen gameQueueScreen;
 	private NoMoreCoinsDialog noMoreCoinsScreen;
 
-	private TextureAtlas menusAtlas;
+	private Resources resources;
 
 	Map<Class<?>, ScreenResultHandler> screenResultHandlers = new HashMap<Class<?>, ScreenResultHandler>();
 
-	public MenuScreenContainer(UISkin skin, SocialAction socialAction, GameAction gameAction,
-			InAppBillingAction inAppBillingAction, AssetManager assetManager, TweenManager tweenManager,
-			OnscreenKeyboard keyboard) {
-		this.skin = skin;
+	public MenuScreenContainer(Resources resources, SocialAction socialAction, GameAction gameAction,
+			InAppBillingAction inAppBillingAction, TweenManager tweenManager, OnscreenKeyboard keyboard) {
 		this.stage = new Stage();
+		this.resources = resources;
 
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-		menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-
-		signInScreen = new SignInScreen(skin, socialAction, gameAction);
-		mainMenuScreen = new MainMenuScreen(skin, gameAction, assetManager, socialAction);
-		chooseHandleScreen = new ChooseHandleScreen(skin, gameAction, assetManager, keyboard);
-		levelSelectionScreen = new LevelSelectionScreen(skin, assetManager);
-		currentGameScreen = new GameListScreen(assetManager, skin);
-		gameQueueScreen = new GameQueueScreen(skin);
-		noMoreCoinsScreen = new NoMoreCoinsDialog(skin, assetManager);
-		loadingScreen = new LoadingScreen(skin, gameAction, inAppBillingAction, assetManager);
+		signInScreen = new SignInScreen(resources, socialAction, gameAction);
+		mainMenuScreen = new MainMenuScreen(resources, gameAction, socialAction);
+		chooseHandleScreen = new ChooseHandleScreen(resources, gameAction, keyboard);
+		levelSelectionScreen = new LevelSelectionScreen(resources);
+		currentGameScreen = new GameListScreen(resources);
+		gameQueueScreen = new GameQueueScreen(resources);
+		noMoreCoinsScreen = new NoMoreCoinsDialog(resources);
+		loadingScreen = new LoadingScreen(resources, gameAction, inAppBillingAction);
 
 		screenResultHandlers.put(SignInScreen.class, new SignInScreenResultHandler());
 		screenResultHandlers.put(ChooseHandleScreen.class, new ChooseHandleScreenResultHandler());
@@ -106,7 +94,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void show() {
-		Color bg = skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
+		Color bg = resources.skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
 		Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
 
 		int width = Gdx.graphics.getWidth();
@@ -115,7 +103,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		stage.clear();
 		stage.setViewport(width, height, true);
 
-		Image bgImage = new Image(menusAtlas.findRegion("bg"));
+		Image bgImage = new Image(resources.menuAtlas.findRegion("bg"));
 		bgImage.setX(-2 * width);
 		bgImage.setWidth(width * 4);
 		bgImage.setY(-0.5f * height);
@@ -125,7 +113,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		bgImage.addAction(forever(rotateBy(360, 150)));
 		stage.addActor(bgImage);
 
-		titleText = new ShaderLabel(fontShader, APP_TITLE, skin, Constants.UI.LARGE_FONT);
+		titleText = new ShaderLabel(resources.fontShader, APP_TITLE, resources.skin, Constants.UI.LARGE_FONT);
 		titleText.setX(width / 2 - titleText.getWidth() / 2);
 		titleText.setY(height * 0.7f);
 		stage.addActor(titleText);

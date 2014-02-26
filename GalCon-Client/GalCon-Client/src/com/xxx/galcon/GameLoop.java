@@ -1,5 +1,7 @@
 package com.xxx.galcon;
 
+import static com.xxx.galcon.Util.createShader;
+
 import org.joda.time.DateTime;
 
 import aurelienribon.tweenengine.Tween;
@@ -24,6 +26,7 @@ import com.xxx.galcon.screen.Action;
 import com.xxx.galcon.screen.BoardScreen;
 import com.xxx.galcon.screen.FriendScreen;
 import com.xxx.galcon.screen.MenuScreenContainer;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.SetGameBoardResultHandler;
 import com.xxx.galcon.screen.widget.ShaderTextField.OnscreenKeyboard;
 
@@ -108,9 +111,18 @@ public class GameLoop extends Game {
 
 		Tween.setCombinedAttributesLimit(4);
 
-		boardScreen = new BoardScreen(skin, assetManager, tweenManager);
+		Resources resources = new Resources();
+		resources.skin = skin;
+		resources.assetManager = assetManager;
+		resources.levelAtlas = assetManager.get("data/images/levels.atlas", TextureAtlas.class);
+		resources.gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
+		resources.menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
+		resources.levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
+		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+
+		boardScreen = new BoardScreen(resources, tweenManager);
 		friendScreen = new FriendScreen(skin, assetManager, socialAction, gameAction);
-		menuScreenContainer = new MenuScreenContainer(skin, socialAction, gameAction, inAppBillingAction, assetManager,
+		menuScreenContainer = new MenuScreenContainer(resources, socialAction, gameAction, inAppBillingAction,
 				tweenManager, keyboard);
 		setScreen(menuScreenContainer);
 	}

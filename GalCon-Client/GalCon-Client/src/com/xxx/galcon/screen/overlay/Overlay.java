@@ -1,18 +1,18 @@
 package com.xxx.galcon.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.screen.Resources;
 
 public class Overlay extends Group {
 
 	private Image backGround;
 
-	public Overlay(TextureAtlas menusAtlas) {
-		TextureRegion blackBackground = menusAtlas.findRegion("transparent_square");
+	public Overlay(Resources resources) {
+		TextureRegion blackBackground = resources.menuAtlas.findRegion("transparent_square");
 		backGround = new Image(new TextureRegionDrawable(blackBackground));
 		backGround.setColor(0, 0, 0, 0.8f);
 		backGround.setWidth(Gdx.graphics.getWidth());

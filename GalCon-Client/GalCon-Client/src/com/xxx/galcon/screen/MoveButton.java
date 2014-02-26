@@ -1,17 +1,13 @@
 package com.xxx.galcon.screen;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -19,20 +15,16 @@ import com.xxx.galcon.screen.widget.ShaderLabel;
 public class MoveButton extends Group implements Comparable<MoveButton> {
 
 	private static final Color NEW_MOVE = Color.valueOf("E8920C");
-	private AssetManager assetManager;
 	private AtlasRegion bgTexture;
 	private Move move;
-	private UISkin skin;
-	private ShaderProgram fontShader;
 	private GameBoard gameBoard;
 
-	public MoveButton(AssetManager assetManager, GameBoard gameBoard, Move move, UISkin skin, ShaderProgram fontShader,
-			float width, float height) {
+	private Resources resources;
+
+	public MoveButton(Resources resources, GameBoard gameBoard, Move move, float width, float height) {
 		super();
-		this.assetManager = assetManager;
+		this.resources = resources;
 		this.move = move;
-		this.skin = skin;
-		this.fontShader = fontShader;
 		this.gameBoard = gameBoard;
 		setWidth(width);
 		setHeight(height);
@@ -41,8 +33,7 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	}
 
 	private void createLayout() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
+		bgTexture = resources.gameBoardAtlas.findRegion("bottom_bar_ship_button");
 		createBackground();
 
 		addLabels();
@@ -56,12 +47,13 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 		float padX = getWidth() * 0.1f;
 		float padY = getHeight() * 0.1f;
 
-		ShaderLabel duration = new ShaderLabel(fontShader, "" + (int) Math.ceil(move.duration), skin,
-				Constants.UI.DEFAULT_FONT_BLACK);
+		ShaderLabel duration = new ShaderLabel(resources.fontShader, "" + (int) Math.ceil(move.duration),
+				resources.skin, Constants.UI.DEFAULT_FONT_BLACK);
 		duration.setX(getWidth() - (duration.getTextBounds().width + padX));
 		duration.setY(getHeight() - (duration.getTextBounds().height + padY));
 
-		ShaderLabel fleet = new ShaderLabel(fontShader, "" + move.shipsToMove, skin, Constants.UI.DEFAULT_FONT_BLACK);
+		ShaderLabel fleet = new ShaderLabel(resources.fontShader, "" + move.shipsToMove, resources.skin,
+				Constants.UI.DEFAULT_FONT_BLACK);
 		fleet.setX(padX);
 		fleet.setY(padY + fleet.getStyle().font.getDescent());
 
@@ -70,8 +62,7 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	}
 
 	private void createBackground() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		bgTexture = gameBoardAtlas.findRegion("bottom_bar_ship_button");
+		bgTexture = resources.gameBoardAtlas.findRegion("bottom_bar_ship_button");
 		Image backGround = new Image(new TextureRegionDrawable(bgTexture));
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());

@@ -1,18 +1,16 @@
 package com.xxx.galcon.screen;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
@@ -21,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Point;
@@ -31,22 +28,18 @@ import com.xxx.galcon.screen.widget.ActionButton;
 
 public class MoveHud extends Table {
 
-	private AssetManager assetManager;
-	private UISkin skin;
-	private ShaderProgram fontShader;
 	private AtlasRegion bgTexture;
 	private Map<Move, MoveButton> moves;
 	private Table moveButtonHolder;
 	private ScrollPane scrollPane;
 	private GameBoard gameBoard;
 
-	public MoveHud(AssetManager assetManager, UISkin skin, GameBoard gameBoard, ShaderProgram fontShader, float width,
-			float height) {
+	private Resources resources;
+
+	public MoveHud(Resources resources, GameBoard gameBoard, float width, float height) {
 		super();
-		this.assetManager = assetManager;
-		this.skin = skin;
 		this.moves = new HashMap<Move, MoveButton>();
-		this.fontShader = fontShader;
+		this.resources = resources;
 		this.gameBoard = gameBoard;
 		setWidth(width);
 		setHeight(height);
@@ -56,14 +49,13 @@ public class MoveHud extends Table {
 	}
 
 	private void createTable() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		bgTexture = gameBoardAtlas.findRegion("bottom_bar");
+		bgTexture = resources.gameBoardAtlas.findRegion("bottom_bar");
 		setBackground(new TextureRegionDrawable(bgTexture));
 	}
 
 	private void addPerformMoveButton() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			ActionButton performMove = new ActionButton(skin, "performMoveButton", new Point(getX()
+			ActionButton performMove = new ActionButton(resources.skin, "performMoveButton", new Point(getX()
 					+ (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener() {
 				@Override
@@ -96,8 +88,7 @@ public class MoveHud extends Table {
 	private void addMoveToMap(final Move move) {
 		if (moves.get(move) == null) {
 			float buttonWidth = Gdx.graphics.getWidth() * 0.09f;
-			MoveButton button = new MoveButton(assetManager, gameBoard, move, skin, fontShader, buttonWidth,
-					getHeight() * 0.85f);
+			MoveButton button = new MoveButton(resources, gameBoard, move, buttonWidth, getHeight() * 0.85f);
 
 			button.addListener(new ClickListener() {
 				@Override
@@ -157,6 +148,19 @@ public class MoveHud extends Table {
 
 	public void removeMoves() {
 		moves.clear();
+		renderMoves();
 	}
 
+	private Set<Move> savedMoves = new HashSet<Move>();
+
+	public void saveMoves() {
+		savedMoves.clear();
+		savedMoves.addAll(moves.keySet());
+	}
+
+	public void restoreMoves() {
+		for (Move move : savedMoves) {
+			addMove(move);
+		}
+	}
 }

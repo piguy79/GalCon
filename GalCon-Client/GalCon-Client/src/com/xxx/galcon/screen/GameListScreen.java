@@ -1,7 +1,6 @@
 package com.xxx.galcon.screen;
 
 import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
-import static com.xxx.galcon.Util.createShader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,8 +8,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,7 +22,6 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
@@ -43,11 +39,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private AvailableGames allGames;
 	private Maps allMaps;
 
-	protected AssetManager assetManager;
-
-	private ShaderProgram fontShader;
-
-	private UISkin skin;
+	private Resources resources;
 
 	private Stage stage;
 	private ShaderLabel messageLabel;
@@ -57,11 +49,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;
 
-	public GameListScreen(AssetManager assetManager, UISkin skin) {
-		this.assetManager = assetManager;
-		this.skin = skin;
-
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
+	public GameListScreen(Resources resources) {
+		this.resources = resources;
 	}
 
 	protected boolean showGamesThatHaveBeenWon() {
@@ -159,7 +148,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}
 
-		ShaderLabel vsLabel = new ShaderLabel(fontShader, opponent, skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, opponent, resources.skin, Constants.UI.DEFAULT_FONT);
 		vsLabel.setAlignment(Align.center);
 		vsLabel.setWidth(width);
 		vsLabel.setY(rowHeight * 0.6f);
@@ -179,7 +168,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 
 		if (!statusText.isEmpty()) {
-			ShaderLabel yourMoveLabel = new ShaderLabel(fontShader, statusText, skin, statusFont);
+			ShaderLabel yourMoveLabel = new ShaderLabel(resources.fontShader, statusText, resources.skin, statusFont);
 			yourMoveLabel.setAlignment(Align.center);
 			yourMoveLabel.setWidth(width);
 			yourMoveLabel.setY(rowHeight * 0.4f);
@@ -195,7 +184,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				}
 			}
 		}
-		ShaderLabel mapLabel = new ShaderLabel(fontShader, mapTitle, skin, Constants.UI.SMALL_FONT);
+		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin, Constants.UI.SMALL_FONT);
 		mapLabel.setAlignment(Align.left);
 		mapLabel.setWidth(width);
 		mapLabel.setY(rowHeight * 0.15f);
@@ -205,7 +194,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private String waitingLabel(MinifiedGame game) {
-		if(game.social != null){
+		if (game.social != null) {
 			return "[waiting for " + game.social + "]";
 		}
 		return "[waiting for opponent]";
@@ -247,7 +236,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	public void show(Stage stage, final float width, float height) {
 		actors.clear();
 
-		waitImage = new WaitImageButton(skin);
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -256,7 +245,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		stage.addActor(waitImage);
 
 		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
-		backButton = new ImageButton(skin, "backButton");
+		backButton = new ImageButton(resources.skin, "backButton");
 		backButton.setX(10);
 		backButton.setY(height - buttonHeight - 5);
 		backButton.setWidth(buttonHeight);
@@ -275,7 +264,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		actors.add(backButton);
 		stage.addActor(backButton);
 
-		messageLabel = new ShaderLabel(fontShader, "", skin, Constants.UI.DEFAULT_FONT);
+		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		messageLabel.setAlignment(Align.center);
 		messageLabel.setWidth(width);
 		messageLabel.setX(width / 2 - messageLabel.getWidth() / 2);
@@ -295,7 +284,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		stage.addActor(messageLabel);
 
 		final float tableHeight = height * 0.89f;
-		scrollList = new ScrollList<MinifiedGame>(skin) {
+		scrollList = new ScrollList<MinifiedGame>(resources.skin) {
 			@Override
 			public void buildCell(MinifiedGame item, Group group) {
 				createGameEntry(item, group);

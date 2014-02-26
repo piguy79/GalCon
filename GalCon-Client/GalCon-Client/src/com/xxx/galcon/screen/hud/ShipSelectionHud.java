@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -17,11 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.factory.MoveFactory;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.MoveEvent;
 import com.xxx.galcon.screen.event.SliderUpdateEvent;
@@ -30,8 +28,7 @@ import com.xxx.galcon.screen.widget.ActionButton;
 public class ShipSelectionHud extends Group {
 
 	private Slider slider;
-	private AssetManager assetManager;
-	private UISkin skin;
+	private Resources resources;
 	private ActionButton okButton;
 
 	private int max;
@@ -40,9 +37,8 @@ public class ShipSelectionHud extends Group {
 	private int currentRound;
 
 	public ShipSelectionHud(Planet fromPlanet, Planet toPlanet, int moveOffSetCount, int initialNumber,
-			int currentRound, AssetManager assetManager, UISkin skin) {
-		this.assetManager = assetManager;
-		this.skin = skin;
+			int currentRound, Resources resources) {
+		this.resources = resources;
 		this.setWidth(Gdx.graphics.getWidth());
 		this.setHeight(Gdx.graphics.getHeight() * 0.1f);
 
@@ -62,8 +58,7 @@ public class ShipSelectionHud extends Group {
 	}
 
 	private void createBackground() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		AtlasRegion bgRegion = gameBoardAtlas.findRegion("player_hud");
+		AtlasRegion bgRegion = resources.gameBoardAtlas.findRegion("player_hud");
 		Image backGround = new Image(new TextureRegionDrawable(bgRegion));
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
@@ -71,7 +66,8 @@ public class ShipSelectionHud extends Group {
 	}
 
 	private void addCancelButton() {
-		final ActionButton cancelButton = new ActionButton(skin, "cancelButton", new Point(10, getHeight() * 0.1f));
+		final ActionButton cancelButton = new ActionButton(resources.skin, "cancelButton", new Point(10,
+				getHeight() * 0.1f));
 		cancelButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -83,7 +79,7 @@ public class ShipSelectionHud extends Group {
 	}
 
 	private void addOkButton() {
-		okButton = new ActionButton(skin, "okButton", new Point(0, getHeight() * 0.1f));
+		okButton = new ActionButton(resources.skin, "okButton", new Point(0, getHeight() * 0.1f));
 		okButton.setX(getWidth() - okButton.getWidth() - 10);
 		okButton.setDisabled(shipsToSend == 0);
 		okButton.addListener(new ClickListener() {
@@ -98,19 +94,16 @@ public class ShipSelectionHud extends Group {
 	}
 
 	private void addSlider() {
-		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-
-		Drawable sliderBg = new TextureRegionDrawable(menusAtlas.findRegion("slider_bg"));
-		Drawable sliderKnob = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
+		Drawable sliderBg = new TextureRegionDrawable(resources.menuAtlas.findRegion("slider_bg"));
+		Drawable sliderKnob = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("ship"));
 
 		sliderBg.setMinHeight(getHeight() * 0.2f);
 		sliderBg.setMinWidth(getWidth() * 0.6f);
 		sliderKnob.setMinHeight(getHeight() * 0.5f);
 		sliderKnob.setMinWidth(getWidth() * 0.12f);
-		skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
+		resources.skin.add("default-horizontal", new SliderStyle(sliderBg, sliderKnob));
 
-		slider = new Slider(0, max, 1, false, skin);
+		slider = new Slider(0, max, 1, false, resources.skin);
 		slider.setWidth(getWidth() * 0.6f);
 		slider.setHeight(getHeight() * 0.8f);
 		slider.setY(getHeight() * 0.05f);

@@ -1,11 +1,8 @@
 package com.xxx.galcon.screen;
 
-import static com.xxx.galcon.Util.createShader;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,7 +14,6 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
-import com.xxx.galcon.UISkin;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
@@ -31,26 +27,22 @@ import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class GameQueueScreen implements PartialScreenFeedback {
 	private InputProcessor oldInputProcessor;
-	
+
 	private Stage stage;
-	private ShaderProgram fontShader;
-	private UISkin skin;
-	
+	private Resources resources;
+
 	private Object returnCode = null;
-	
+
 	private ScrollList<GameQueueItem> scrollList;
 	private ActionButton backButton;
 	protected WaitImageButton waitImage;
 	private ShaderLabel messageLabel;
 
-	
 	private Array<Actor> actors = new Array<Actor>();
-	
-	public GameQueueScreen(UISkin skin){
-		this.skin = skin;
-		fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
-	}
 
+	public GameQueueScreen(Resources resources) {
+		this.resources = resources;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -59,38 +51,37 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		stage.act(delta);
 		stage.draw();
 	}
-	
-	private void initialize(){
+
+	private void initialize() {
 		createWaitImage();
 		createMessageLabel();
 		createBackButton();
 		createScrollList();
 		showQueueItems();
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
-	
+
 	private void createMessageLabel() {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-		
-		messageLabel = new ShaderLabel(fontShader, "", skin, Constants.UI.DEFAULT_FONT);
+
+		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		messageLabel.setAlignment(Align.center);
 		messageLabel.setWidth(width);
 		messageLabel.setX(width / 2 - messageLabel.getWidth() / 2);
 		messageLabel.setY(0.45f * height);
-		
+
 		actors.add(messageLabel);
 		stage.addActor(messageLabel);
-		
-	}
 
+	}
 
 	private void createWaitImage() {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-		
-		waitImage = new WaitImageButton(skin);
+
+		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
@@ -99,14 +90,13 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		stage.addActor(waitImage);
 	}
 
-
 	private void createBackButton() {
 		Point position = new Point(10, 0);
-		backButton = new ActionButton(skin, "backButton", position);
+		backButton = new ActionButton(resources.skin, "backButton", position);
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(position.x);
 		backButton.setY(Gdx.graphics.getHeight() - backButton.getHeight() - 5);
-		backButton.addListener(new ClickListener(){
+		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				startHideSequence(Action.BACK);
@@ -116,13 +106,12 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		stage.addActor(backButton);
 	}
 
-
 	private void createScrollList() {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-		
+
 		final float tableHeight = height - (height * 0.05f);
-		scrollList = new ScrollList<GameQueueItem>(skin) {
+		scrollList = new ScrollList<GameQueueItem>(resources.skin) {
 			@Override
 			public void buildCell(GameQueueItem item, Group group) {
 				createGameQueueItemEntry(item, group);
@@ -135,9 +124,9 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 		actors.add(scrollList);
 		stage.addActor(scrollList);
-		
+
 	}
-	
+
 	private void startHideSequence(final Object retVal) {
 		waitImage.stop();
 		GraphicsUtils.hideAnimated(actors, retVal.equals(Action.BACK), new Runnable() {
@@ -147,34 +136,37 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			}
 		});
 	}
-	
+
 	private void createGameQueueItemEntry(final GameQueueItem item, Group group) {
 		float width = Gdx.graphics.getWidth();
-		
-		ShaderLabel vsLabel = new ShaderLabel(fontShader, "vs ", skin, Constants.UI.DEFAULT_FONT);
+
+		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, "vs ", resources.skin, Constants.UI.DEFAULT_FONT);
 		vsLabel.setAlignment(Align.center);
 		vsLabel.setWidth(width);
 		vsLabel.setY(group.getHeight() * 0.6f);
-		
+
 		group.addActor(vsLabel);
-		
-		ShaderLabel playerLabel = new ShaderLabel(fontShader, item.requester.handle, skin, Constants.UI.DEFAULT_FONT);
+
+		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.requester.handle, resources.skin,
+				Constants.UI.DEFAULT_FONT);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWidth(width);
 		playerLabel.setY(group.getHeight() * 0.35f);
-		
+
 		group.addActor(playerLabel);
-		
-		final ShaderLabel levelLabel = new ShaderLabel(fontShader, "(Level " + item.requester.rank +  ")", skin, Constants.UI.DEFAULT_FONT);
+
+		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, "(Level " + item.requester.rank + ")",
+				resources.skin, Constants.UI.DEFAULT_FONT);
 		levelLabel.setAlignment(Align.center);
 		levelLabel.setWidth(width);
 		levelLabel.setY(group.getHeight() * 0.1f);
-		
+
 		group.addActor(levelLabel);
-		
+
 		float centerY = (group.getHeight() / 2) - (GraphicsUtils.actionButtonSize / 2);
-		ActionButton cancelButton = new ActionButton(skin, "cancelButton", new Point(GraphicsUtils.actionButtonSize / 2, centerY));
-		cancelButton.addListener(new ClickListener(){
+		ActionButton cancelButton = new ActionButton(resources.skin, "cancelButton", new Point(
+				GraphicsUtils.actionButtonSize / 2, centerY));
+		cancelButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				UIConnectionWrapper.declineInvite(new UIConnectionResultCallback<BaseResult>() {
@@ -182,7 +174,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 					public void onConnectionResult(BaseResult result) {
 						showQueueItems();
 					}
-					
+
 					@Override
 					public void onConnectionError(String msg) {
 						messageLabel.setText("Unable to decline invite.");
@@ -191,29 +183,30 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			}
 		});
 		group.addActor(cancelButton);
-		
-		ActionButton okButton = new ActionButton(skin, "okButton", new Point(group.getWidth() - (GraphicsUtils.actionButtonSize * 1.5f), centerY));
-		okButton.addListener(new ClickListener(){
+
+		ActionButton okButton = new ActionButton(resources.skin, "okButton", new Point(group.getWidth()
+				- (GraphicsUtils.actionButtonSize * 1.5f), centerY));
+		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
 			}
 		});
 		group.addActor(okButton);
-		
 
 	}
-	
+
 	private void displayQueue(GameQueue result) {
-		for(final GameQueueItem item: result.gameQueueItems){
-			scrollList.addRow(item, new ClickListener(){@Override
-				public void clicked(InputEvent event, float x,
-						float y) {
-					
-				}});
+		for (final GameQueueItem item : result.gameQueueItems) {
+			scrollList.addRow(item, new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+
+				}
+			});
 		}
 	}
-	
+
 	protected class SelectGameResultHander implements UIConnectionResultCallback<GameBoard> {
 
 		@Override
@@ -231,34 +224,31 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		waitImage.start();
 		scrollList.clearRows();
 		UIConnectionWrapper.findPendingInvites(new UIConnectionResultCallback<GameQueue>() {
-			
+
 			@Override
 			public void onConnectionResult(GameQueue result) {
 				waitImage.stop();
-				if(result == null || result.gameQueueItems.isEmpty()){
+				if (result == null || result.gameQueueItems.isEmpty()) {
 					messageLabel.setText("No invites found.");
-				}else{
+				} else {
 					messageLabel.setText("");
-					displayQueue(result);	
+					displayQueue(result);
 				}
 			}
-			
+
 			@Override
 			public void onConnectionError(String msg) {
 				waitImage.stop();
 				messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
-				
+
 			}
 		}, GameLoop.USER.handle);
 	}
-
-
 
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(oldInputProcessor);
 	}
-
 
 	@Override
 	public Object getRenderResult() {
@@ -267,9 +257,8 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 	@Override
 	public void resetState() {
-		returnCode = null;		
+		returnCode = null;
 	}
-
 
 	@Override
 	public void show(Stage stage, float width, float height) {
@@ -277,13 +266,12 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		this.stage = stage;
 		initialize();
 		oldInputProcessor = Gdx.input.getInputProcessor();
-		Gdx.input.setInputProcessor(stage);	
+		Gdx.input.setInputProcessor(stage);
 	}
-
 
 	@Override
 	public boolean hideTitleArea() {
-		
+
 		return true;
 	}
 

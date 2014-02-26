@@ -6,7 +6,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.RefreshEvent;
 import com.xxx.galcon.screen.event.ResignEvent;
 import com.xxx.galcon.screen.widget.OKCancelDialog;
@@ -29,11 +29,11 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ImageButton refreshButton;
 	private ShaderLabel refreshText;
 
-	public BoardScreenOptionsDialog(AssetManager assetManager, ShaderProgram fontShader, float width, float height,
-			Stage stage, UISkin skin) {
-		super(assetManager, width, height, stage, skin, OKCancelDialog.Type.CANCEL);
+	public BoardScreenOptionsDialog(Resources resources, float width, float height, Stage stage) {
+		super(resources, width, height, stage, OKCancelDialog.Type.CANCEL);
 
-		confirmText = new ShaderLabel(fontShader, "Are you sure you want to", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		confirmText = new ShaderLabel(resources.fontShader, "Are you sure you want to", resources.skin,
+				Constants.UI.BASIC_BUTTON_TEXT);
 		confirmText.setAlignment(Align.center);
 		confirmText.setY(getHeight() * 0.6f);
 		confirmText.setWidth(getWidth());
@@ -41,8 +41,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 
 		addActor(confirmText);
 
-		createResignButton(fontShader, skin);
-		createRefreshButton(fontShader, skin);
+		createResignButton(resources.fontShader, resources.skin);
+		createRefreshButton(resources.fontShader, resources.skin);
 	}
 
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {

@@ -1,31 +1,24 @@
 package com.xxx.galcon.screen.hud;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.Constants;
-import com.xxx.galcon.UISkin;
+import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 
 public class SingleMoveInfoHud extends Group {
-	private AssetManager assetManager;
-	private ShaderProgram fontShader;
-	private UISkin skin;
+	private Resources resources;
 	private ShaderLabel shipsLabel;
 	private ShaderLabel durationLabel;
 
 	private AtlasRegion bgRegion;
 
-	public SingleMoveInfoHud(AssetManager assetManager, ShaderProgram fontShader, UISkin skin, float width, float height) {
-		this.assetManager = assetManager;
-		this.fontShader = fontShader;
-		this.skin = skin;
+	public SingleMoveInfoHud(Resources resources, float width, float height) {
+		this.resources = resources;
 
 		setHeight(height);
 		setWidth(width);
@@ -36,7 +29,8 @@ public class SingleMoveInfoHud extends Group {
 
 	private void createLabels() {
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "# of ships", skin, Constants.UI.DEFAULT_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "# of ships", resources.skin,
+					Constants.UI.DEFAULT_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
@@ -45,7 +39,7 @@ public class SingleMoveInfoHud extends Group {
 			addActor(label);
 		}
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "0", skin, Constants.UI.LARGE_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
@@ -56,7 +50,8 @@ public class SingleMoveInfoHud extends Group {
 			shipsLabel = label;
 		}
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "Rounds to impact", skin, Constants.UI.DEFAULT_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds to impact", resources.skin,
+					Constants.UI.DEFAULT_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
@@ -65,7 +60,7 @@ public class SingleMoveInfoHud extends Group {
 			addActor(label);
 		}
 		{
-			ShaderLabel label = new ShaderLabel(fontShader, "0", skin, Constants.UI.LARGE_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
@@ -78,8 +73,7 @@ public class SingleMoveInfoHud extends Group {
 	}
 
 	private void createBackground() {
-		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
-		bgRegion = gameBoardAtlas.findRegion("player_hud");
+		bgRegion = resources.gameBoardAtlas.findRegion("player_hud");
 		Image backGround = new Image(new TextureRegionDrawable(bgRegion));
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
