@@ -263,7 +263,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			width -= xOffset;
 			height -= yOffset;
 
-			BitmapFont smallFont = Fonts.getInstance(resources.assetManager).smallFont();
+			BitmapFont smallFont = Fonts.getInstance(resources.assetManager).xSmallFont();
 			BitmapFont mediumFont = Fonts.getInstance(resources.assetManager).mediumFont();
 
 			batch.draw(levelSelectionCard, x, y, width, height);

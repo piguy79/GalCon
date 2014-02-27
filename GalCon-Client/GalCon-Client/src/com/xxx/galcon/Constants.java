@@ -12,9 +12,11 @@ public class Constants {
 	public static class UI {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
 
+		public static final String X_SMALL_FONT = "xSmallFont";
+		public static final String X_SMALL_FONT_GREEN = "xSmallFontGreen";
+		public static final String X_SMALL_FONT_RED = "xSmallFontRed";
+		
 		public static final String SMALL_FONT = "smallFont";
-		public static final String SMALL_FONT_GREEN = "smallFontGreen";
-		public static final String SMALL_FONT_RED = "smallFontRed";
 
 		public static final String DEFAULT_FONT = "defaultFont";
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
@@ -49,6 +51,10 @@ public class Constants {
 		public static final String GALCON_SEARCH_IMAGE = "galconSearchImage";
 		public static final String COUNT_LABEL = "countLabel";
 		public static final String SCROLL_HIGHLIGHT = "scrollHightlight";
+
+		public static final String SHARE_ICON = "shareIcon";
+		public static final String PLAY_ARROW = "playArrow";
+
 
 
 	}

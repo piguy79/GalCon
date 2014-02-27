@@ -4,6 +4,8 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -180,12 +182,43 @@ public class FriendScreen implements ScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 
 		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.getDisplay(), resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.SMALL_FONT);
 		playerLabel.setAlignment(Align.center);
-		playerLabel.setWidth(width);
-		playerLabel.setY(group.getHeight() * 0.4f);
+		playerLabel.setWrap(true);
+		playerLabel.setWidth(group.getWidth() * 0.5f);
+		
+		float startingYPosition = group.getHeight() * 0.4f;
+		float yPosition = startingYPosition;
+		String actionText = "Share";
+		
+		String imageToUse = Constants.UI.SHARE_ICON;
+		
+		if(item.hasGalconAccount()){
+			yPosition = group.getHeight() * 0.3f;
+			actionText = "Play";
+			imageToUse = Constants.UI.PLAY_ARROW;
+		}
+		playerLabel.setY(yPosition);
+		playerLabel.setX(group.getWidth() * 0.1f);
 
 		group.addActor(playerLabel);
+		
+		Image actionImage = new Image(resources.skin.getDrawable(imageToUse));
+		actionImage.setX(group.getWidth() * 0.7f);
+		actionImage.setWidth(group.getWidth() * 0.08f);
+		actionImage.setHeight(group.getHeight() * 0.4f);
+		actionImage.setY(startingYPosition - (actionImage.getHeight() * 0.2f));
+		group.addActor(actionImage);
+		
+		
+		ShaderLabel actionLabel = new ShaderLabel(resources.fontShader, actionText, resources.skin, Constants.UI.SMALL_FONT);
+		actionLabel.setX(group.getWidth() * 0.8f);
+		actionLabel.setY(startingYPosition);
+		actionLabel.setWidth(group.getWidth() * 0.4f);
+		actionLabel.setAlignment(Align.left);
+		group.addActor(actionLabel);
+		
+		
 
 	}
 
@@ -269,6 +302,18 @@ public class FriendScreen implements ScreenFeedback {
 	private void displayPeople(List<CombinedFriend> friends) {
 		waitImage.setVisible(false);
 		scrollList.clearRows();
+		
+		Collections.sort(friends, new Comparator<CombinedFriend>() {
+			public int compare(CombinedFriend o1, CombinedFriend o2) {
+				if(o1.hasGalconAccount() && o2.hasGalconAccount()){
+					return 0;
+				}else if(o1.hasGalconAccount() && !o2.hasGalconAccount()){
+					return -1;
+				}
+				return 1;
+			};
+		});
+		
 		for (final CombinedFriend friend : friends) {
 			scrollList.addRow(friend, new ClickListener() {
 				@Override

@@ -34,10 +34,12 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
 		add(Constants.UI.DEFAULT_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.RED));
+		add(Constants.UI.X_SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.WHITE));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
-		add(Constants.UI.SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.GREEN));
-		add(Constants.UI.SMALL_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.RED));
+		add(Constants.UI.X_SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.GREEN));
+		add(Constants.UI.X_SMALL_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.RED));
 		add(Constants.UI.BASIC_BUTTON_TEXT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
+		
 		
 
 		/*
@@ -66,7 +68,7 @@ public class UISkin extends Skin {
 		}
 		{
 			TextButtonStyle tbs = new TextButtonStyle();
-			tbs.font = Fonts.getInstance(assetManager).smallFont();
+			tbs.font = Fonts.getInstance(assetManager).xSmallFont();
 			add(Constants.UI.GREEN_BUTTON_TEXT_SMALL, tbs);
 		}
 		/*
@@ -99,6 +101,14 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(gameBoardAtlas.findRegion("explosion_particle"));
 			add(Constants.UI.EXPLOSION_PARTICLE, trd, Drawable.class);
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("share_icon"));
+			add(Constants.UI.SHARE_ICON, trd, Drawable.class);
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("play_arrow"));
+			add(Constants.UI.PLAY_ARROW, trd, Drawable.class);
 		}
 
 		/*

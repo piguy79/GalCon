@@ -198,7 +198,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				}
 			}
 		}
-		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin, Constants.UI.SMALL_FONT);
+		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin, Constants.UI.X_SMALL_FONT);
 		mapLabel.setAlignment(Align.left);
 		mapLabel.setWidth(width);
 		mapLabel.setY(rowHeight * 0.15f);

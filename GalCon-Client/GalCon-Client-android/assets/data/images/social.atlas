@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 Google+_chiclet_Red
   rotate: false
-  xy: 2, 121
+  xy: 2, 2
   size: 192, 188
   orig: 192, 188
   offset: 0, 0
   index: -1
 common_signin_btn_icon_focus_dark
   rotate: false
-  xy: 190, 2
+  xy: 746, 118
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -21,14 +21,14 @@ common_signin_btn_icon_focus_dark
   index: -1
 google_plus_focus
   rotate: false
-  xy: 190, 2
+  xy: 746, 118
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 common_signin_btn_icon_normal_dark
   rotate: false
-  xy: 264, 2
+  xy: 563, 22
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -37,7 +37,7 @@ common_signin_btn_icon_normal_dark
   index: -1
 common_signin_btn_icon_pressed_dark
   rotate: false
-  xy: 338, 2
+  xy: 637, 17
   size: 72, 72
   split: 9, 60, 9, 60
   pad: 12, 12, 12, 12
@@ -46,42 +46,56 @@ common_signin_btn_icon_pressed_dark
   index: -1
 facebook_normal
   rotate: false
-  xy: 196, 76
+  xy: 384, 36
   size: 177, 75
   orig: 177, 75
   offset: 0, 0
   index: -1
 galcon_search_custom_normal
   rotate: false
-  xy: 2, 42
+  xy: 196, 113
   size: 186, 77
   orig: 186, 77
   offset: 0, 0
   index: -1
 google_plus_custom_normal
   rotate: false
-  xy: 196, 232
+  xy: 196, 34
   size: 186, 77
   orig: 186, 77
   offset: 0, 0
   index: -1
 google_plus_normal
   rotate: false
-  xy: 384, 237
+  xy: 711, 17
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 google_plus_pressed
   rotate: false
-  xy: 384, 163
+  xy: 785, 44
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
+play_arrow
+  rotate: false
+  xy: 572, 96
+  size: 90, 94
+  orig: 90, 94
+  offset: 0, 0
+  index: -1
+share_icon
+  rotate: false
+  xy: 664, 91
+  size: 80, 99
+  orig: 80, 99
+  offset: 0, 0
+  index: -1
 twitter_custom_normal
   rotate: false
-  xy: 196, 153
+  xy: 384, 113
   size: 186, 77
   orig: 186, 77
   offset: 0, 0
