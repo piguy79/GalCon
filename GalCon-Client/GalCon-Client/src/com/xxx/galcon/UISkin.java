@@ -154,6 +154,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("count_label"));
 			add(Constants.UI.COUNT_LABEL, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("scroll_highlight"));
+			add(Constants.UI.SCROLL_HIGHLIGHT, trd, Drawable.class);
+		}
 
 		TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("reg_play"));
 		add("regularPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
