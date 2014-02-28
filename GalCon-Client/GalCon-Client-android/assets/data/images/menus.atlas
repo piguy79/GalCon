@@ -19,7 +19,7 @@ arrow_right_small_black
   index: -1
 arrow_solid_line
   rotate: false
-  xy: 779, 27
+  xy: 779, 19
   size: 113, 30
   orig: 113, 30
   offset: 0, 0
@@ -71,6 +71,13 @@ dialog_bg
   xy: 2, 59
   size: 944, 352
   orig: 944, 352
+  offset: 0, 0
+  index: -1
+highlight_bar
+  rotate: false
+  xy: 779, 51
+  size: 168, 6
+  orig: 168, 6
   offset: 0, 0
   index: -1
 ok_button_disabled

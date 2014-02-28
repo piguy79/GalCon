@@ -110,6 +110,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("play_arrow"));
 			add(Constants.UI.PLAY_ARROW, trd, Drawable.class);
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("highlight_bar"));
+			add(Constants.UI.HIGHLIGHT_BAR, trd, Drawable.class);
+		}
 
 		/*
 		 * Image Buttons

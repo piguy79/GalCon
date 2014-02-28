@@ -42,6 +42,7 @@ import com.xxx.galcon.model.friends.GalConFriend;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ActorBar;
+import com.xxx.galcon.screen.widget.HighlightActorBar;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.ShaderTextField;
@@ -107,13 +108,13 @@ public class FriendScreen implements ScreenFeedback {
 		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
 		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
 
-		ActorBar buttonBar = new ActorBar.ActorBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f)
-								.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f)
+		HighlightActorBar actorBar = new HighlightActorBar.HighlightActorBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f, resources.skin)
+								.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f).actorToHighlight(2)
 								.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).addActor(galButton).build();
-		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
-		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
+		actorBar.setX(Gdx.graphics.getWidth() * 0.4f);
+		actorBar.setY(Gdx.graphics.getHeight() - (actorBar.getHeight() * 1.1f));
 
-		stage.addActor(buttonBar);
+		stage.addActor(actorBar);
 
 	}
 
