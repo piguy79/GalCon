@@ -120,7 +120,7 @@ public class GameLoop extends Game {
 		resources.levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
-		boardScreen = new BoardScreen(resources, tweenManager);
+		boardScreen = new BoardScreen(resources);
 		friendScreen = new FriendScreen(resources, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(resources, socialAction, gameAction, inAppBillingAction,
 				tweenManager, keyboard);

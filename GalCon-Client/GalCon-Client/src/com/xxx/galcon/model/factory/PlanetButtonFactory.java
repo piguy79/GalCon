@@ -2,6 +2,7 @@ package com.xxx.galcon.model.factory;
 
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
+import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.BoardScreen.BoardCalculations;
 import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.widget.Moon;
@@ -13,23 +14,24 @@ public class PlanetButtonFactory {
 		super();
 	}
 
-	public static PlanetButton createPlanetButtonWithExpansion(Planet planet, GameBoard gameBoard,
-			boolean roundAnimated, BoardCalculations boardCalcs, Resources resources) {
+	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated,
+			BoardCalculations boardCalcs, Resources resources) {
 		float maxExpand = 5;
+
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
 		float newPlanetSize = boardCalcs.getMinPlanetRadius() + ((boardCalcs.getMaxPlanetRadius() * 0.09f) * expand);
 
-		return createPlanetButton(planet, gameBoard, roundAnimated, newPlanetSize, newPlanetSize, resources);
-	}
-
-	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated,
-			float width, float height, Resources resources) {
-
-		final PlanetButton planetButton = new PlanetButton(resources.assetManager, ""
+		PlanetButton button = new PlanetButton(resources.assetManager, ""
 				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), planet, resources.fontShader,
-				resources.skin, width, height);
+				resources.skin, newPlanetSize, newPlanetSize);
 
-		return planetButton;
+		Point point = boardCalcs.tileCoordsToPixels(button.planet.position);
+		boardCalcs.centerPoint(point, button);
+
+		button.setX(point.x);
+		button.setY(point.y);
+
+		return button;
 	}
 
 	public static Moon createMoon(Resources resources, Planet planet, BoardCalculations boardCalcs) {

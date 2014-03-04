@@ -27,7 +27,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public int startingRound;
 	public boolean executed;
 	public BattleStats battleStats;
-	
+
 	public Tween animation;
 
 	public Point currentAnimation = new Point();;
@@ -86,30 +86,27 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		currentAnimation = previousPosition;
 
 		animation.target(currentPosition.x, currentPosition.y);
-
 	}
 
 	public float angleOfMovement() {
-		return new Vector2(endPosition.x - currentAnimation.x, endPosition.y - currentAnimation.y).angle();
+		return new Vector2(endPosition.x - previousPosition.x, endPosition.y - previousPosition.y).angle();
 	}
-	
-	public Planet fromPlanet(List<Planet> planets){
+
+	public Planet fromPlanet(List<Planet> planets) {
 		return findPlanetForMove(planets, fromPlanet);
 	}
-	
-	public Planet toPlanet(List<Planet> planets){
+
+	public Planet toPlanet(List<Planet> planets) {
 		return findPlanetForMove(planets, toPlanet);
 	}
-	
+
 	private Planet findPlanetForMove(List<Planet> planets, String searchPlanet) {
-		
-		
-		for(Planet planet : planets){
-			if(searchPlanet.equals(planet.name)){
+		for (Planet planet : planets) {
+			if (searchPlanet.equals(planet.name)) {
 				return planet;
 			}
 		}
-		
+
 		return null;
 	}
 }

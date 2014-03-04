@@ -1,8 +1,5 @@
 package com.xxx.galcon.screen.hud;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,9 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.xxx.galcon.model.Move;
-import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
-import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.MoveEvent;
@@ -33,28 +28,23 @@ public class ShipSelectionHud extends Group {
 
 	private int max;
 	private int shipsToSend = 0;
-	private List<Planet> planetsInvolved;
-	private int currentRound;
+	private Move move;
 
-	public ShipSelectionHud(Planet fromPlanet, Planet toPlanet, int moveOffSetCount, int initialNumber,
-			int currentRound, Resources resources) {
+	public ShipSelectionHud(Move move, int shipsOnPlanet, Resources resources) {
 		this.resources = resources;
 		this.setWidth(Gdx.graphics.getWidth());
 		this.setHeight(Gdx.graphics.getHeight() * 0.1f);
+		this.move = move;
 
-		this.max = fromPlanet.numberOfShips - moveOffSetCount + initialNumber;
-		this.shipsToSend = initialNumber;
-		this.currentRound = currentRound;
-		this.planetsInvolved = new ArrayList<Planet>();
-		planetsInvolved.add(fromPlanet);
-		planetsInvolved.add(toPlanet);
+		this.max = shipsOnPlanet + move.shipsToMove;
+		this.shipsToSend = move.shipsToMove;
 
 		createBackground();
 		addOkButton();
 		addCancelButton();
 		addSlider();
 
-		this.slider.setValue(initialNumber);
+		this.slider.setValue(shipsToSend);
 	}
 
 	private void createBackground() {
@@ -85,8 +75,9 @@ public class ShipSelectionHud extends Group {
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Move move = MoveFactory.createMove(planetsInvolved, shipsToSend, currentRound);
-				fire(new MoveEvent(move));
+				int oldShipsToMove = move.shipsToMove;
+				move.shipsToMove = shipsToSend;
+				fire(new MoveEvent(oldShipsToMove, move));
 			}
 		});
 

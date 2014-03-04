@@ -1,5 +1,8 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +15,6 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -60,7 +62,14 @@ public class MoveHud extends Table {
 			performMove.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					fire(new SendMoveEvent());
+					List<Move> newMoves = new ArrayList<Move>();
+					for (Move move : gameBoard.movesInProgress) {
+						if (move.belongsToPlayer(GameLoop.USER)
+								&& move.startingRound == gameBoard.roundInformation.currentRound) {
+							newMoves.add(move);
+						}
+					}
+					fire(new SendMoveEvent(newMoves));
 				}
 			});
 			addActor(performMove);
@@ -93,11 +102,14 @@ public class MoveHud extends Table {
 			button.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					fire(new MoveEvent(move));
+					fire(new MoveEvent(0, move));
 				}
 			});
 
 			moves.put(move, button);
+		} else {
+			moves.remove(move);
+			addMoveToMap(move);
 		}
 	}
 
@@ -105,12 +117,6 @@ public class MoveHud extends Table {
 		if (move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0) {
 			addMoveToMap(move);
 			renderMoves();
-		}
-	}
-
-	public void addMoves(List<Move> moves) {
-		for (Move move : moves) {
-			addMove(move);
 		}
 	}
 
@@ -136,7 +142,11 @@ public class MoveHud extends Table {
 	}
 
 	public void removeMove(final Move move) {
-		moves.get(move).addAction(Actions.sequence(Actions.fadeOut(0.4f), new RunnableAction() {
+		if (!moves.containsKey(move)) {
+			return;
+		}
+
+		moves.get(move).addAction(sequence(fadeOut(0.4f), new RunnableAction() {
 			@Override
 			public void run() {
 				moves.remove(move);
@@ -159,6 +169,7 @@ public class MoveHud extends Table {
 	}
 
 	public void restoreMoves() {
+		moves.clear();
 		for (Move move : savedMoves) {
 			addMove(move);
 		}

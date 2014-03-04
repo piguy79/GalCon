@@ -20,7 +20,7 @@ import com.xxx.galcon.screen.Resources;
 public class MoveFactory {
 
 	public static Move createMove(List<Planet> availablePlanets, int fleetToSend, int round) {
-		if (fleetToSend <= 0) {
+		if (fleetToSend < 0) {
 			return null;
 		}
 
@@ -96,8 +96,8 @@ public class MoveFactory {
 
 	public static Point getShipPosition(Image ship, Point point, BoardCalculations boardCalcs) {
 		Point pixelPoint = boardCalcs.tileCoordsToPixels(point);
-		pixelPoint.x -= ship.getWidth() * 0.5f;
-		pixelPoint.y -= ship.getHeight() * 0.5f;
+		boardCalcs.centerPoint(pixelPoint, ship);
+
 		return pixelPoint;
 	}
 

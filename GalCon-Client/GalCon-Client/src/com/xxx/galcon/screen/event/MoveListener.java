@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen.event;
 
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.xxx.galcon.model.Move;
@@ -10,9 +12,10 @@ public abstract class MoveListener implements EventListener {
 	@Override
 	public boolean handle(Event event) {
 		if (event instanceof MoveEvent) {
-			performMove(((MoveEvent) event).getMove());
+			MoveEvent e = (MoveEvent) event;
+			performMove(e.getOldShipsToMove(), e.getMove());
 		} else if (event instanceof SendMoveEvent) {
-			sendMove();
+			sendMove(((SendMoveEvent) event).moves);
 		} else if (event instanceof CancelDialogEvent) {
 			cancelDialog();
 		} else if (event instanceof HarvestEvent) {
@@ -27,10 +30,10 @@ public abstract class MoveListener implements EventListener {
 
 	}
 
-	protected void performMove(Move move) {
+	protected void performMove(int oldShipsToSend, Move move) {
 	}
 
-	public void sendMove() {
+	public void sendMove(List<Move> moves) {
 	}
 
 	public void cancelDialog() {

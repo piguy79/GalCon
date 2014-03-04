@@ -11,8 +11,8 @@ public class Bounds {
 		this.size = size;
 	}
 
-	public int getTopY() {
-		return (int) origin.y + size.height;
+	public float getTopY() {
+		return origin.y + size.height;
 	}
 
 	public void applyBounds(Actor actor) {

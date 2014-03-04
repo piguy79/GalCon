@@ -142,14 +142,14 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	}
 
 	private void createPlanetImage() {
-		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
-		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f,
-				sizeBase * 0.4f, resources);
-		planetImage.setX((getWidth() / 2) - (planetImage.getWidth() / 2));
-		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
-		planetImage.setText(new StringBuilder().append(planet.numberOfShips - offset).toString());
-
-		addActor(planetImage);
+//		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
+//		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f,
+//				sizeBase * 0.4f, resources);
+//		planetImage.setX((getWidth() / 2) - (planetImage.getWidth() / 2));
+//		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
+//		planetImage.setText(new StringBuilder().append(planet.numberOfShips - offset).toString());
+//
+//		addActor(planetImage);
 	}
 
 	private boolean isHarvestAvailable() {

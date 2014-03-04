@@ -26,13 +26,7 @@ public class Planet extends JsonConvertible {
 	public String status;
 	public float population;
 
-	
 	public static final String ALIVE = "ALIVE";
-	
-	
-
-	
-	
 
 	public Planet() {
 
@@ -54,7 +48,7 @@ public class Planet extends JsonConvertible {
 			this.position = position;
 			this.population = jsonObject.getInt(Constants.POPULATION);
 			this.id = jsonObject.getString(Constants.ID);
-			if(jsonObject.has("harvest")){
+			if (jsonObject.has("harvest")) {
 				this.harvest = new Harvest();
 				this.harvest.consume(jsonObject.getJSONObject("harvest"));
 			}
@@ -76,95 +70,90 @@ public class Planet extends JsonConvertible {
 	public String getAbilityDescription() {
 		return Constants.PLANET_ABILITIES.get(ability);
 	}
-	
-	public List<Move> associatedTargetMoves(GameBoard gameBoard){
+
+	public List<Move> associatedTargetMoves(GameBoard gameBoard) {
 		List<Move> associatedMoves = new ArrayList<Move>();
-		
-		for(Move move : gameBoard.movesInProgress){
-			if(move.toPlanet.equals(this.name) && move.belongsToPlayer(GameLoop.USER)){
+
+		for (Move move : gameBoard.movesInProgress) {
+			if (move.toPlanet.equals(this.name) && move.belongsToPlayer(GameLoop.USER)) {
 				associatedMoves.add(move);
 			}
 		}
-		
+
 		return associatedMoves;
 	}
-	
-	public boolean isBeingAttacked(GameBoard gameBoard){
-		for(Move move : associatedTargetMoves(gameBoard)){
-			if(move.executed && !move.animation.isFinished()){
+
+	public boolean isBeingAttacked(GameBoard gameBoard) {
+		for (Move move : associatedTargetMoves(gameBoard)) {
+			if (move.executed && !move.animation.isFinished()) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	public String previousRoundOwner(GameBoard gameBoard) {
-		for(Move move : associatedTargetMoves(gameBoard)){
-			if(move.executed){
-				if(move.battleStats.previousPlanetOwner == null || move.battleStats.previousPlanetOwner.equals("")){
+		for (Move move : associatedTargetMoves(gameBoard)) {
+			if (move.executed) {
+				if (move.battleStats.previousPlanetOwner == null || move.battleStats.previousPlanetOwner.equals("")) {
 					return Constants.OWNER_NO_ONE;
 				}
 				return move.battleStats.previousPlanetOwner;
 			}
 		}
-		
-		
+
 		return owner;
 	}
 
 	public int numberOfShipsToDisplay(GameBoard gameBoard, boolean overrideAnimation) {
-
-		if(overrideAnimation){
+		if (overrideAnimation) {
 			return numberOfShips;
 		}
-		
+
 		int lowestFromExecutedMoves = 10000000;
 		boolean executedMovesFound = false;
-		
-		if(this.isBeingAttacked(gameBoard)){
-			for(Move move : associatedTargetMoves(gameBoard)){
-				if(move.executed && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves){
+
+		if (this.isBeingAttacked(gameBoard)) {
+			for (Move move : associatedTargetMoves(gameBoard)) {
+				if (move.executed && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
 					executedMovesFound = true;
-					lowestFromExecutedMoves =  move.battleStats.previousShipsOnPlanet;
+					lowestFromExecutedMoves = move.battleStats.previousShipsOnPlanet;
 				}
 			}
 		}
-		
-		if(executedMovesFound){
+
+		if (executedMovesFound) {
 			return lowestFromExecutedMoves;
 		}
 		return numberOfShips;
 	}
-	
-	public boolean isUnderHarvest(){
+
+	public boolean isUnderHarvest() {
 		return harvest != null && harvest.isActive();
 	}
-	
-	public boolean isSavedFromHarvest(){
+
+	public boolean isSavedFromHarvest() {
 		return harvest != null && !harvest.isActive();
 	}
-	
-	public boolean isAlive(){
+
+	public boolean isAlive() {
 		return this.status.equals(ALIVE);
 	}
-	
 
 	public Color getColor() {
 		Color OWNED_BY_ME_COLOR = Color.valueOf("2F8705");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
-		
+
 		Color color = DEFAULT_PLANET_COLOR;
-		
-		if(isOwnedBy(GameLoop.USER)){
+
+		if (isOwnedBy(GameLoop.USER)) {
 			return OWNED_BY_ME_COLOR;
-		}else if(!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)){
+		} else if (!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)) {
 			return OWNED_BY_OPPONENT_COLOR;
 		}
 
 		return color;
 	}
-	
-
 }

@@ -10,8 +10,11 @@ import com.xxx.galcon.screen.Resources;
 public class Overlay extends Group {
 
 	private Image backGround;
+	protected Resources resources;
 
 	public Overlay(Resources resources) {
+		this.resources = resources;
+
 		TextureRegion blackBackground = resources.menuAtlas.findRegion("transparent_square");
 		backGround = new Image(new TextureRegionDrawable(blackBackground));
 		backGround.setColor(0, 0, 0, 0.8f);
