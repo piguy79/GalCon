@@ -30,7 +30,7 @@ public class HighlightActorBar extends ActorBar {
 	private void createHighlightBar() {
 		highlightBar = new Image(skin.getDrawable(Constants.UI.HIGHLIGHT_BAR));
 		highlightBar.setWidth(actorWidth * 0.75f);
-		highlightBar.setHeight(actorHeight * 0.1f);
+		highlightBar.setHeight(actorHeight * 0.075f);
 		
 		Actor lastActor = (Actor) actors.toArray()[actorToHighlight];
 		

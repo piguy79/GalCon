@@ -56,6 +56,7 @@ public class Constants {
 		public static final String PLAY_ARROW = "playArrow";
 
 		public static final String HIGHLIGHT_BAR = "highlightBar";
+		public static final String BACK_ARROW_WHITE = "backArrowWhite";
 
 
 

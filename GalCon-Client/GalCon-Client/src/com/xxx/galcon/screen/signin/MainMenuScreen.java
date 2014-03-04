@@ -128,7 +128,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);
 		coinImage.setX(10);
-		coinImage.setY(height * 0.97f - coinImage.getHeight());
+		coinImage.setY(height * 0.98f - coinImage.getHeight());
 		coinImage.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

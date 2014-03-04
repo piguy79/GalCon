@@ -334,18 +334,10 @@ public class FriendScreen implements ScreenFeedback {
 
 							@Override
 							public void onPostSucceeded() {
-								createResultDialog(overlay, "Success! \nTap to dismiss");
 							}
 
 							private void createResultDialog(final TextOverlay overlay, final String msg) {
 								overlay.remove();
-								final TextOverlay successOverlay = new TextOverlay(msg, resources);
-								stage.addActor(successOverlay);
-								successOverlay.addListener(new ClickListener() {
-									public void clicked(InputEvent event, float x, float y) {
-										successOverlay.remove();
-									};
-								});
 							}
 
 							@Override
@@ -413,6 +405,7 @@ public class FriendScreen implements ScreenFeedback {
 			}
 		});
 		stage.addActor(backButton);
+		
 	}
 
 	private void createWaitImage() {
@@ -652,6 +645,7 @@ public class FriendScreen implements ScreenFeedback {
 			public void onFriendsLoadedFail(String error) {
 				noResultsFound.setText("Unable to load friends.");
 				noResultsFound.setVisible(true);
+				waitImage.setVisible(false);
 			}
 		}, authProvider);
 	};

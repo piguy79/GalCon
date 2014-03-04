@@ -181,6 +181,9 @@ public class UISkin extends Skin {
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("back"));
 		add("backButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
+		
+		trd = new TextureRegionDrawable(menusAtlas.findRegion("back_arrow_white"));
+		add(Constants.UI.BACK_ARROW_WHITE, new ImageButtonStyle(null, null, null, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("cancel_button"));
 		add("cancelButton", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
