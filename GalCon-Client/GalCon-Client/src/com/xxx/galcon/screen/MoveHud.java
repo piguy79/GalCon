@@ -45,6 +45,8 @@ public class MoveHud extends Table {
 		this.gameBoard = gameBoard;
 		setWidth(width);
 		setHeight(height);
+		setX(0);
+		setY(0);
 		createTable();
 		addMoveButtons();
 		addPerformMoveButton();

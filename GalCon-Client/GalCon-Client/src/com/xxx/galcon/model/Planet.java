@@ -114,7 +114,7 @@ public class Planet extends JsonConvertible {
 		int lowestFromExecutedMoves = 10000000;
 		boolean executedMovesFound = false;
 
-		if (this.isBeingAttacked(gameBoard)) {
+		if (isBeingAttacked(gameBoard)) {
 			for (Move move : associatedTargetMoves(gameBoard)) {
 				if (move.executed && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
 					executedMovesFound = true;

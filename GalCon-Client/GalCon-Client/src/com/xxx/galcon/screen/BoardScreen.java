@@ -7,6 +7,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static java.lang.Math.floor;
@@ -331,8 +332,26 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createMoves() {
+		Map<String, List<Move>> planetToMoves = new HashMap<String, List<Move>>();
 		for (Move move : gameBoard.movesInProgress) {
 			if (move.belongsToPlayer(GameLoop.USER) || move.executed) {
+				List<Move> planetMoves;
+				if (planetToMoves.containsKey(move.toPlanet)) {
+					planetMoves = planetToMoves.get(move.toPlanet);
+				} else {
+					planetMoves = new ArrayList<Move>();
+				}
+				planetMoves.add(move);
+				planetToMoves.put(move.toPlanet, planetMoves);
+			}
+		}
+
+		float delay = 0.0f;
+		for (Map.Entry<String, List<Move>> movesByPlanet : planetToMoves.entrySet()) {
+			final PlanetButton planetButton = planetButtons.get(movesByPlanet.getKey());
+
+			boolean anyMoveExecuted = false;
+			for (Move move : movesByPlanet.getValue()) {
 				Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.previousPosition,
 						resources, boardCalcs);
 
@@ -340,7 +359,8 @@ public class BoardScreen implements ScreenFeedback {
 
 				Point newShipPosition = MoveFactory.getShipPosition(movetoDisplay, move.currentPosition, boardCalcs);
 				if (!roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(moveTo(newShipPosition.x, newShipPosition.y, 1.2f));
+					movetoDisplay.addAction(delay(delay, moveTo(newShipPosition.x, newShipPosition.y, 1.2f)));
+					delay += 0.5f;
 				} else {
 					movetoDisplay.setPosition(newShipPosition.x, newShipPosition.y);
 				}
@@ -353,8 +373,9 @@ public class BoardScreen implements ScreenFeedback {
 				movetoDisplay.setColor(color);
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(scaleTo(0, 0, 0.8f));
-					addExplosion(move, 0.8f, color);
+					movetoDisplay.addAction(scaleTo(0, 0, 0.8f + delay));
+					addExplosion(move, 0.8f + delay, color);
+					anyMoveExecuted = true;
 				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
 				}
@@ -363,6 +384,17 @@ public class BoardScreen implements ScreenFeedback {
 				if (showMove) {
 					boardTable.addActor(movetoDisplay);
 				}
+			}
+
+			if (anyMoveExecuted) {
+				delay += 0.8;
+				planetButton.addAction(delay(delay, run(new Runnable() {
+					@Override
+					public void run() {
+						planetButton.setShipCount(planetButton.planet.numberOfShips);
+					}
+				})));
+				delay += 0.5;
 			}
 		}
 
@@ -504,7 +536,6 @@ public class BoardScreen implements ScreenFeedback {
 			line.setY(yOffset * i);
 			line.setHeight(Gdx.graphics.getHeight() * 0.004f);
 			boardTable.addActor(line);
-			line.addListener(clearPlanetListener());
 
 		}
 
@@ -513,7 +544,6 @@ public class BoardScreen implements ScreenFeedback {
 			horizontalLine.setY(0);
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
-			horizontalLine.addListener(clearPlanetListener());
 			boardTable.addActor(horizontalLine);
 		}
 	}
