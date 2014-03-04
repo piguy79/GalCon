@@ -10,6 +10,7 @@ public class Fonts {
 
 	private static Fonts instance = null;
 
+	private BitmapFont xSmallFont;
 	private BitmapFont smallFont;
 	private BitmapFont mediumFont;
 	private BitmapFont largeFont;
@@ -19,9 +20,13 @@ public class Fonts {
 		float width = Gdx.graphics.getWidth();
 		float scaleFactor = width / 680.0f;
 
+		xSmallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
+		xSmallFont.getRegion().getTexture().setFilter(Linear, Linear);
+		xSmallFont.setScale(0.7f * scaleFactor);
+		
 		smallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		smallFont.getRegion().getTexture().setFilter(Linear, Linear);
-		smallFont.setScale(0.7f * scaleFactor);
+		smallFont.setScale(1.0f * scaleFactor);
 
 		mediumFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		mediumFont.getRegion().getTexture().setFilter(Linear, Linear);
@@ -43,7 +48,11 @@ public class Fonts {
 		return instance;
 	}
 
-	public BitmapFont smallFont() {
+	public BitmapFont xSmallFont() {
+		return xSmallFont;
+	}
+	
+	public BitmapFont smallFont(){
 		return smallFont;
 	}
 

@@ -73,7 +73,7 @@ public class BoardScreenPlayerHud extends Group {
 		firstPlayer.setAlignment(Align.center);
 		addActor(firstPlayer);
 
-		vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.SMALL_FONT);
+		vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT);
 		vs.setWidth(getWidth() * 0.5f);
 		vs.setX(secondSlash.getX() + getWidth() * 0.1f);
 		vs.setY((firstPlayer.getY() - vs.getTextBounds().height) - getHeight() * 0.1f);
@@ -83,7 +83,7 @@ public class BoardScreenPlayerHud extends Group {
 		secondPlayer = new ShaderLabel(resources.fontShader,
 				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : BoardScreen.Labels
 						.waitingLabel(gameBoard.social), resources.skin,
-				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.SMALL_FONT_RED);
+				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.X_SMALL_FONT_RED);
 		secondPlayer.setWidth(getWidth() * 0.5f);
 		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
@@ -92,9 +92,9 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private String findFontStyleForPlayer(int index) {
-		String playerFontStyle = Constants.UI.SMALL_FONT_GREEN;
+		String playerFontStyle = Constants.UI.X_SMALL_FONT_GREEN;
 		if (gameBoard.players.size() > index && !gameBoard.players.get(index).handle.equals(GameLoop.USER.handle)) {
-			playerFontStyle = Constants.UI.SMALL_FONT_RED;
+			playerFontStyle = Constants.UI.X_SMALL_FONT_RED;
 		}
 		return playerFontStyle;
 	}

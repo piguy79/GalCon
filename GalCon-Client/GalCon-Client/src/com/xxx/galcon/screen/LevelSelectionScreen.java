@@ -14,12 +14,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
@@ -31,6 +34,9 @@ import com.xxx.galcon.screen.event.GameStartListener;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
+import com.xxx.galcon.screen.widget.ActorBar.Align;
+import com.xxx.galcon.screen.widget.ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder;
+import com.xxx.galcon.screen.widget.ScrollPaneHighlightReel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
 
 public class LevelSelectionScreen implements PartialScreenFeedback, UIConnectionResultCallback<Maps> {
@@ -47,6 +53,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private Actor choiceActor;
 	private ImageButton backButton;
 	protected WaitImageButton waitImage;
+	private ScrollPaneHighlightReel highlightReel;
 
 	private Array<Actor> actors = new Array<Actor>();
 
@@ -132,6 +139,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
 						text = cell.getWidget().getMapTitle();
+						highlightReel.highlight(cell.getWidget().getMapKey());
 					}
 				}
 
@@ -152,6 +160,31 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		backButton.remove();
 		stage.addActor(backButton);
+		
+		createScrollhighlightReel();
+	}
+
+	
+	private void createScrollhighlightReel() {	
+		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
+									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, Gdx.graphics.getWidth() * 0.04f)
+									.actorPadding(Gdx.graphics.getWidth() * 0.1f);
+		
+		for(Map map : allMaps){
+			Image image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
+			image.setColor(Color.GRAY);
+			builder.addActorWithKey(map.key, image);
+		}
+		
+		highlightReel = builder.build();
+		
+		highlightReel.setX(Gdx.graphics.getWidth() * 0.35f);
+		highlightReel.setY(Gdx.graphics.getHeight() * 0.05f);
+		
+		highlightReel.highlight(allMaps.get(0).key);
+		actors.add(highlightReel);
+		stage.addActor(highlightReel);
+		
 	}
 
 	private void createGameStartDialog(int selectedMapKey) {
@@ -230,7 +263,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			width -= xOffset;
 			height -= yOffset;
 
-			BitmapFont smallFont = Fonts.getInstance(resources.assetManager).smallFont();
+			BitmapFont smallFont = Fonts.getInstance(resources.assetManager).xSmallFont();
 			BitmapFont mediumFont = Fonts.getInstance(resources.assetManager).mediumFont();
 
 			batch.draw(levelSelectionCard, x, y, width, height);

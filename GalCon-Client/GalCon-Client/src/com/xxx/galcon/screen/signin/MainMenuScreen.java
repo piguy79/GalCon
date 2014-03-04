@@ -31,7 +31,7 @@ import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
-import com.xxx.galcon.screen.widget.ButtonBar;
+import com.xxx.galcon.screen.widget.ActorBar;
 import com.xxx.galcon.screen.widget.CountLabel;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -165,9 +165,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
 		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
-		ButtonBar buttonBar = new ButtonBar.ButtonBarBuilder(Gdx.graphics.getHeight() * 0.1f,
-				Gdx.graphics.getWidth() * 0.6f).buttonSize(buttonHeight, buttonWidth).align(ButtonBar.Align.RIGHT)
-				.addButton(fbButton).addButton(gpButton).build();
+
+		ActorBar buttonBar = new ActorBar.ActorBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f)
+								.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f)
+								.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).build();
 		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
 		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
 

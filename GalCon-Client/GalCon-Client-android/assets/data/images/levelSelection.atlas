@@ -24,6 +24,13 @@ reg_play
   orig: 376, 350
   offset: 0, 0
   index: -1
+scroll_highlight
+  rotate: false
+  xy: 804, 978
+  size: 75, 28
+  orig: 75, 28
+  offset: 0, 0
+  index: -1
 social_play
   rotate: false
   xy: 541, 2
