@@ -33,6 +33,7 @@ import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Friend;
 import com.xxx.galcon.model.GameInviteRequest;
+import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
@@ -651,7 +652,9 @@ public class FriendScreen implements ScreenFeedback {
 					};
 
 					public void onConnectionError(String msg) {
-						showError("Failed to load friends.");
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, new ArrayList<MinifiedGame.MinifiedPlayer>());
+						loadedFriends = combinedFriends;
+						displayPeople(combinedFriends, time);
 					}
 
 				}, authIds, GameLoop.USER.handle, authProviderUsed);
