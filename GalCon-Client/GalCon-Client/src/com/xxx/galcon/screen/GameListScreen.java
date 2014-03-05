@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,7 +30,6 @@ import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
-import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -198,7 +196,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				}
 			}
 		}
-		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin, Constants.UI.X_SMALL_FONT);
+		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin,
+				Constants.UI.X_SMALL_FONT);
 		mapLabel.setAlignment(Align.left);
 		mapLabel.setWidth(width);
 		mapLabel.setY(rowHeight * 0.15f);
@@ -251,12 +250,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		waitImage.setY(height / 2 - buttonWidth / 2);
 		stage.addActor(waitImage);
 
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 		backButton = new ImageButton(resources.skin, "backButton");
+		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
-		backButton.setY(height - buttonHeight - 5);
-		backButton.setWidth(buttonHeight);
-		backButton.setHeight(buttonHeight);
+		backButton.setY(height - backButton.getHeight() - 5);
 		backButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

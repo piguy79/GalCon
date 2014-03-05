@@ -9,11 +9,10 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.xxx.galcon.screen.hud.HeaderHud;
 
 public class GraphicsUtils {
-	
-	public static float actionButtonSize = (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
+
+	public static float actionButtonSize = (Gdx.graphics.getHeight() * (0.1f * 0.88f));
 
 	public static void hideAnimated(final Array<Actor> actors, boolean back, final Runnable runAtEnd) {
 		if (actors.size == 0) {

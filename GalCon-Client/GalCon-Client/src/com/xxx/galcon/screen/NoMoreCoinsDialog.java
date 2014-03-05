@@ -27,7 +27,6 @@ import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Inventory;
 import com.xxx.galcon.model.InventoryItem;
 import com.xxx.galcon.model.Player;
-import com.xxx.galcon.screen.hud.HeaderHud;
 import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
@@ -60,12 +59,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private void createBackButton(final Stage stage, final float width, final float height) {
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 		ImageButton backButton = new ImageButton(resources.skin, "backButton");
+		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
-		backButton.setY(height - buttonHeight - 5);
-		backButton.setWidth(buttonHeight);
-		backButton.setHeight(buttonHeight);
+		backButton.setY(height - backButton.getHeight() - 5);
 
 		backButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -77,12 +74,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private void createHelpButton(final Stage stage, final float width, final float height) {
-		int buttonHeight = (int) (Gdx.graphics.getHeight() * (HeaderHud.HEADER_HEIGHT_RATIO * 0.88f));
 		ImageButton helpButton = new ImageButton(resources.skin, Constants.UI.QUESTION_MARK);
-		helpButton.setX(width - buttonHeight - 10);
-		helpButton.setY(height - buttonHeight - 5);
-		helpButton.setWidth(buttonHeight);
-		helpButton.setHeight(buttonHeight);
+		GraphicsUtils.setCommonButtonSize(helpButton);
+		helpButton.setX(width - helpButton.getWidth() - 10);
+		helpButton.setY(height - helpButton.getHeight() - 5);
 
 		helpButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
