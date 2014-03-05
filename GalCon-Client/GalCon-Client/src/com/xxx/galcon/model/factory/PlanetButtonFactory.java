@@ -21,9 +21,8 @@ public class PlanetButtonFactory {
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
 		float newPlanetSize = boardCalcs.getMinPlanetRadius() + ((boardCalcs.getMaxPlanetRadius() * 0.09f) * expand);
 
-		PlanetButton button = new PlanetButton(resources.assetManager, ""
-				+ planet.numberOfShipsToDisplay(gameBoard, roundAnimated), planet, resources.fontShader,
-				resources.skin, newPlanetSize, newPlanetSize);
+		PlanetButton button = new PlanetButton(resources, "" + planet.numberOfShipsToDisplay(gameBoard, roundAnimated),
+				planet, newPlanetSize, newPlanetSize);
 
 		Point point = boardCalcs.tileCoordsToPixels(button.planet.position);
 		boardCalcs.centerPoint(point, button);

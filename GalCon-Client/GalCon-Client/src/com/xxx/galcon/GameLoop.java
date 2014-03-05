@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.xxx.galcon.config.Configuration;
 import com.xxx.galcon.http.GameAction;
@@ -103,8 +102,6 @@ public class GameLoop extends Game {
 		assetManager.load("data/images/planets.atlas", TextureAtlas.class);
 		assetManager.load("data/images/social.atlas", TextureAtlas.class);
 
-		assetManager.load("data/fonts/planet_numbers.png", Texture.class);
-
 		assetManager.finishLoading();
 
 		skin.initialize(assetManager);
@@ -118,6 +115,7 @@ public class GameLoop extends Game {
 		resources.gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 		resources.menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		resources.levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
+		resources.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		boardScreen = new BoardScreen(resources);

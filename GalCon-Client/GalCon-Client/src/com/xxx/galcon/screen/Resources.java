@@ -12,5 +12,6 @@ public class Resources {
 	public TextureAtlas gameBoardAtlas;
 	public TextureAtlas menuAtlas;
 	public TextureAtlas levelSelectionAtlas;
+	public TextureAtlas planetAtlas;
 	public ShaderProgram fontShader;
 }

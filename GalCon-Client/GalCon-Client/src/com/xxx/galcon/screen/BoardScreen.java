@@ -166,8 +166,8 @@ public class BoardScreen implements ScreenFeedback {
 		}
 
 		private void updateTileCalcs() {
-			tileSize = new Size((int) (screenCalcs.getBoardBounds().size.width / boardTiles.width),
-					(int) (screenCalcs.getBoardBounds().size.height / boardTiles.height));
+			tileSize = new Size(screenCalcs.getBoardBounds().size.width / boardTiles.width,
+					screenCalcs.getBoardBounds().size.height / boardTiles.height);
 		}
 
 		private void updatePlanetCalcs() {
