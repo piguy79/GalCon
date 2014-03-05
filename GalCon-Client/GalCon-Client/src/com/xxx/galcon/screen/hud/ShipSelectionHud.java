@@ -75,9 +75,11 @@ public class ShipSelectionHud extends Group {
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				int oldShipsToMove = move.shipsToMove;
-				move.shipsToMove = shipsToSend;
-				fire(new MoveEvent(oldShipsToMove, move));
+				if(!okButton.isDisabled()){
+					int oldShipsToMove = move.shipsToMove;
+					move.shipsToMove = shipsToSend;
+					fire(new MoveEvent(oldShipsToMove, move));	
+				}
 			}
 		});
 

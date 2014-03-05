@@ -59,19 +59,19 @@ public class MoveHud extends Table {
 
 	private void addPerformMoveButton() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			ActionButton performMove = new ActionButton(resources.skin, "performMoveButton", new Point(getX()
+			final ActionButton performMove = new ActionButton(resources.skin, "performMoveButton", new Point(getX()
 					+ (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					List<Move> newMoves = new ArrayList<Move>();
-					for (Move move : gameBoard.movesInProgress) {
-						if (move.belongsToPlayer(GameLoop.USER)
-								&& move.startingRound == gameBoard.roundInformation.currentRound) {
-							newMoves.add(move);
+						List<Move> newMoves = new ArrayList<Move>();
+						for (Move move : gameBoard.movesInProgress) {
+							if (move.belongsToPlayer(GameLoop.USER)
+									&& move.startingRound == gameBoard.roundInformation.currentRound) {
+								newMoves.add(move);
+							}
 						}
-					}
-					fire(new SendMoveEvent(newMoves));
+						fire(new SendMoveEvent(newMoves));
 				}
 			});
 			addActor(performMove);
