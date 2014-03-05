@@ -25,7 +25,10 @@ exports.createUser = function(playerHandle, level, config) {
 		config = {};
 	}
 	return {
-		email: playerHandle + "@gmail.com",
+		auth: {
+			google : playerHandle + "@gmail.com",
+			facebook : playerHandle + "@facebook.com"
+		},
 		handle: playerHandle,
 		rankInfo: {
 			level : level,

@@ -301,22 +301,9 @@ exports.findById = function(gameId){
 	return GameModel.findById(gameId).populate('players').exec();
 };
 
-exports.findAvailableGames = function(player) {
-	var p = GameModel.find().where('players').size(1).populate('players').exec();
-	return p.then(function(games) {
-		var filteredGames = [];
-		games.forEach(function(game) {
-			if(game.players[0].handle != player) {
-				filteredGames.push(game);
-			}
-		});
-		
-		return filteredGames;	
-	});
-};
 
-exports.findCollectionOfGames = function(searchIds){
-	return GameModel.find({_id : {$in : searchIds}}, '_id players endGameInformation createdDate currentRound map social').populate('players').exec();
+exports.findCollectionOfGames = function(user){
+	return GameModel.find({players : {$in : [user._id]}}, '_id players endGameInformation createdDate currentRound map social').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {

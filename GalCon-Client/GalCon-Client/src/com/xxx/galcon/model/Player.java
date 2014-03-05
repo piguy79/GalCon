@@ -28,7 +28,6 @@ public class Player extends JsonConvertible {
 	public Auth auth;
 	public String handle;
 	public Integer xp;
-	public List<String> currentGames;
 	public Rank rank;
 	public Integer coins;
 	public Long usedCoins;
@@ -50,14 +49,6 @@ public class Player extends JsonConvertible {
 		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
 		this.rank = new Rank();
 		rank.consume(rankInfo);
-
-		this.currentGames = new ArrayList<String>();
-
-		JSONArray currentGamesJson = jsonObject.getJSONArray(Constants.CURRENT_GAMES);
-		for (int i = 0; i < currentGamesJson.length(); i++) {
-			String game = currentGamesJson.getString(i);
-			this.currentGames.add(game);
-		}
 
 		this.consumedOrders = new ArrayList<Order>();
 		JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
