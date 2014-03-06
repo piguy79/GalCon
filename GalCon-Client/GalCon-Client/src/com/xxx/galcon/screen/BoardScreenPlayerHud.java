@@ -110,8 +110,10 @@ public class BoardScreenPlayerHud extends Group {
 
 		playerHudBg = new Group();
 		playerHudBg.setWidth(getWidth() * 0.63f);
+		playerHudBg.setHeight(getHeight());
 		playerHudBg.setX(getWidth() * 0.5f - playerHudBg.getWidth() * 0.5f);
 		bg.setWidth(playerHudBg.getWidth());
+		bg.setHeight(playerHudBg.getHeight());
 		bg.setColor(new Color(0.2f, 0.2f, 0.3f, 1.0f));
 		playerHudBg.addActor(bg);
 		addActor(playerHudBg);
