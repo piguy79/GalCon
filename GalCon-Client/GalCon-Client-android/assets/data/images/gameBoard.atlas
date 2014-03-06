@@ -73,8 +73,15 @@ filter: Linear,Linear
 repeat: none
 bottom_bar
   rotate: false
-  xy: 2, 2
+  xy: 2, 119
   size: 997, 215
   orig: 997, 215
+  offset: 0, 0
+  index: -1
+player_hud_bg
+  rotate: false
+  xy: 2, 2
+  size: 452, 115
+  orig: 452, 115
   offset: 0, 0
   index: -1

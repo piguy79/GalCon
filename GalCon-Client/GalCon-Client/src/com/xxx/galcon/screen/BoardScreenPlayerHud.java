@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -31,8 +32,7 @@ public class BoardScreenPlayerHud extends Group {
 	private GameBoard gameBoard;
 
 	private ActionButton backButton;
-	private Image firstSlash;
-	private Image secondSlash;
+	private Group playerHudBg;
 	private ShaderLabel firstPlayer;
 	private ShaderLabel vs;
 	private ShaderLabel secondPlayer;
@@ -57,38 +57,33 @@ public class BoardScreenPlayerHud extends Group {
 
 	private void createLayout() {
 		createBackButton();
-		createFirstSlash();
-		createSecondSlash();
+		createPlayerHudBg();
 		createUserTable();
-		// createRefreshButton();
 		createOptionsButton();
 	}
 
 	private void createUserTable() {
 		firstPlayer = new ShaderLabel(resources.fontShader, playerInfo(gameBoard.players.get(0)), resources.skin,
 				findFontStyleForPlayer(0));
-		firstPlayer.setWidth(getWidth() * 0.5f);
-		firstPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
+		firstPlayer.setWidth(playerHudBg.getWidth());
 		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
 		firstPlayer.setAlignment(Align.center);
-		addActor(firstPlayer);
+		playerHudBg.addActor(firstPlayer);
 
 		vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT);
-		vs.setWidth(getWidth() * 0.5f);
-		vs.setX(secondSlash.getX() + getWidth() * 0.1f);
+		vs.setWidth(playerHudBg.getWidth());
 		vs.setY((firstPlayer.getY() - vs.getTextBounds().height) - getHeight() * 0.1f);
 		vs.setAlignment(Align.center);
-		addActor(vs);
+		playerHudBg.addActor(vs);
 
 		secondPlayer = new ShaderLabel(resources.fontShader,
 				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : BoardScreen.Labels
 						.waitingLabel(gameBoard.social), resources.skin,
 				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.X_SMALL_FONT_RED);
-		secondPlayer.setWidth(getWidth() * 0.5f);
-		secondPlayer.setX(secondSlash.getX() + getWidth() * 0.1f);
+		secondPlayer.setWidth(playerHudBg.getWidth());
 		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
 		secondPlayer.setAlignment(Align.center);
-		addActor(secondPlayer);
+		playerHudBg.addActor(secondPlayer);
 	}
 
 	private String findFontStyleForPlayer(int index) {
@@ -100,11 +95,7 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private String playerInfo(Player player) {
-
-		String playerInfo = player.handle + "[" + player.rank.level + "]";
-		if (!player.hasMoved(gameBoard)) {
-			playerInfo = "--" + playerInfo + "--";
-		}
+		String playerInfo = player.handle + " [" + player.rank.level + "]";
 		StringBuilder sb = new StringBuilder();
 		sb.append(playerInfo);
 		sb.append("  ");
@@ -113,25 +104,17 @@ public class BoardScreenPlayerHud extends Group {
 		return sb.toString();
 	}
 
-	private void createFirstSlash() {
-		firstSlash = createSlash();
-		firstSlash.setX(backButton.getX() + backButton.getWidth() + (firstSlash.getWidth() * 0.3f));
+	private void createPlayerHudBg() {
+		TextureRegionDrawable trd = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("player_hud_bg"));
+		Image bg = new Image(trd);
 
-		addActor(firstSlash);
-	}
-
-	private void createSecondSlash() {
-		secondSlash = createSlash();
-		secondSlash.setX(firstSlash.getX() + (firstSlash.getWidth() * 0.28f));
-
-		addActor(secondSlash);
-	}
-
-	private Image createSlash() {
-		TextureRegionDrawable trd = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("slash_line"));
-		Image slash = new Image(trd);
-		slash.setWidth(getWidth() * 0.1f);
-		return slash;
+		playerHudBg = new Group();
+		playerHudBg.setWidth(getWidth() * 0.63f);
+		playerHudBg.setX(getWidth() * 0.5f - playerHudBg.getWidth() * 0.5f);
+		bg.setWidth(playerHudBg.getWidth());
+		bg.setColor(new Color(0.2f, 0.2f, 0.3f, 1.0f));
+		playerHudBg.addActor(bg);
+		addActor(playerHudBg);
 	}
 
 	private void createBackButton() {
@@ -162,7 +145,7 @@ public class BoardScreenPlayerHud extends Group {
 		float height = getHeight() * 0.6f;
 		float width = height;
 		button.getImage().setScaling(Scaling.fillY);
-		button.setBounds(getWidth() - width - 0.07f * getWidth(), getHeight() * 0.2f, width, height);
+		button.setBounds(getWidth() - width - 0.045f * getWidth(), getHeight() * 0.2f, width, height);
 		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
