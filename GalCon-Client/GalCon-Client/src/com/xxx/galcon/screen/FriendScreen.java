@@ -339,6 +339,7 @@ public class FriendScreen implements ScreenFeedback {
 
 								@Override
 								public void onPostSucceeded() {
+									overlay.remove();
 								}
 
 								private void createResultDialog(final TextOverlay overlay, final String msg) {
