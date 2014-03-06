@@ -16,7 +16,6 @@ var userSchema = mongoose.Schema({
 		user : {type: mongoose.Schema.ObjectId, ref: 'User'},
 		played : "Number"
 	}],
-	currentGames : [{type: mongoose.Schema.ObjectId, ref: 'Game'}],
 	consumedOrders : [{
 		orderId : "String",
 		packageName : "String",
@@ -63,9 +62,6 @@ exports.findUserByHandle = function(handle){
 	return UserModel.findOne({"handle" : handle}).populate('friends.user').exec();
 }
 
-exports.findUserWithGames = function(handle){
-	return UserModel.findOne({"handle" : handle}).populate('currentGames').exec();
-}
 
 exports.findUserMatchingSearch = function(searchTerm, handle){
 	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}]}).limit(10).exec();
@@ -142,8 +138,7 @@ exports.updateUsedCoins = function(handle, usedCoins){
 exports.joinAGame = function(user, game){
 	return UserModel.findOneAndUpdate({$and : [{handle : user.handle}, {coins : {$gt : 0}}]}, 
 			{
-				$inc : {coins : -1},
-				$push : {currentGames : game}
+				$inc : {coins : -1}
 			}).exec();
 }
 
@@ -151,8 +146,7 @@ exports.removeAGame = function(user, gameId){
 	return UserModel.findOneAndUpdate({handle : user.handle},
 			{
 				$inc : {coins : 1},
-				$set : {usedCoins : -1},
-				$pull : {currentGames : gameId}
+				$set : {usedCoins : -1}
 			}).exec();
 }
 

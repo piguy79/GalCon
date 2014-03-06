@@ -33,6 +33,7 @@ import com.xxx.galcon.http.SocialAction;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Friend;
 import com.xxx.galcon.model.GameInviteRequest;
+import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.People;
 import com.xxx.galcon.model.Player;
 import com.xxx.galcon.model.Point;
@@ -70,6 +71,7 @@ public class FriendScreen implements ScreenFeedback {
 	private ScrollList<CombinedFriend> scrollList;
 	private List<CombinedFriend> loadedFriends = new ArrayList<CombinedFriend>();
 	private int screenState = 1;
+	private Long requestTime = -1L;
 	private String selectedAuthProvider;
 
 	private GameInviteRequest gameInviteRequest;
@@ -244,7 +246,7 @@ public class FriendScreen implements ScreenFeedback {
 			private void filterUser() {
 				searchBox.getOnscreenKeyboard().show(false);
 				if (searchBox.getText().isEmpty()) {
-					displayPeople(loadedFriends);
+					displayPeople(loadedFriends, requestTime);
 				} else {
 					List<CombinedFriend> filteredFriends = new ArrayList<CombinedFriend>();
 					for (CombinedFriend friend : loadedFriends) {
@@ -253,7 +255,7 @@ public class FriendScreen implements ScreenFeedback {
 						}
 					}
 
-					displayPeople(filteredFriends);
+					displayPeople(filteredFriends, requestTime);
 
 					ShaderLabel label = new ShaderLabel(resources.fontShader, "Filtered Friends: ", resources.skin,
 							Constants.UI.DEFAULT_FONT);
@@ -265,6 +267,8 @@ public class FriendScreen implements ScreenFeedback {
 			private void searchAllUsers() {
 				waitImage.setVisible(true);
 				scrollList.clearRows();
+				final Long time = System.currentTimeMillis();
+				requestTime = time;
 				UIConnectionWrapper.searchForPlayers(new UIConnectionResultCallback<People>() {
 
 					@Override
@@ -283,7 +287,7 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setVisible(false);
 						}
 
-						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people));
+						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
 						searchBox.getOnscreenKeyboard().show(false);
 					}
 
@@ -300,77 +304,72 @@ public class FriendScreen implements ScreenFeedback {
 
 	}
 
-	private void displayPeople(List<CombinedFriend> friends) {
-		waitImage.setVisible(false);
-		scrollList.clearRows();
-		
-		Collections.sort(friends, new Comparator<CombinedFriend>() {
-			public int compare(CombinedFriend o1, CombinedFriend o2) {
-				if(o1.hasGalconAccount() && o2.hasGalconAccount()){
-					return 0;
-				}else if(o1.hasGalconAccount() && !o2.hasGalconAccount()){
-					return -1;
-				}
-				return 1;
-			};
-		});
-		
-		for (final CombinedFriend friend : friends) {
-			scrollList.addRow(friend, new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					if (friend.hasGalconAccount()) {
-						gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, ((GalConFriend) friend).handle,
-								mapKey);
-						returnCode = Action.INVITE_PLAYER;
-
-					} else {
-						final TextOverlay overlay = createLoadingOverlay();
-						socialAction.postToFriends(new FriendPostListener() {
-
-							public void onPostCancelled() {
-								overlay.remove();
-							};
-
-							@Override
-							public void onPostSucceeded() {
-								createResultDialog(overlay, "Success! \nTap to dismiss");
-							}
-
-							private void createResultDialog(final TextOverlay overlay, final String msg) {
-								overlay.remove();
-								final TextOverlay successOverlay = new TextOverlay(msg, resources);
-								stage.addActor(successOverlay);
-								successOverlay.addListener(new ClickListener() {
-									public void clicked(InputEvent event, float x, float y) {
-										successOverlay.remove();
-									};
-								});
-							}
-
-							@Override
-							public void onPostFails(String msg) {
-								createResultDialog(overlay, msg);
-							}
-						}, selectedAuthProvider, friend.authId);
+	private void displayPeople(List<CombinedFriend> friends, Long time) {
+		if(requestTime == time){
+			waitImage.setVisible(false);
+			scrollList.clearRows();
+			
+			Collections.sort(friends, new Comparator<CombinedFriend>() {
+				public int compare(CombinedFriend o1, CombinedFriend o2) {
+					if(o1.hasGalconAccount() && o2.hasGalconAccount()){
+						return 0;
+					}else if(o1.hasGalconAccount() && !o2.hasGalconAccount()){
+						return -1;
 					}
-				}
-
-				private TextOverlay createLoadingOverlay() {
-					final TextOverlay overlay = new TextOverlay("Loading sharing dialog.", resources);
-					WaitImageButton overlayWait = new WaitImageButton(resources.skin);
-					float buttonWidth = .25f * (float) Gdx.graphics.getWidth();
-					overlayWait.setWidth(buttonWidth);
-					overlayWait.setHeight(buttonWidth);
-					overlayWait.setX(Gdx.graphics.getWidth() / 2 - buttonWidth / 2);
-					overlayWait.setY(Gdx.graphics.getHeight() / 2 + (buttonWidth));
-					overlay.addActor(overlayWait);
-
-					overlayWait.start();
-					stage.addActor(overlay);
-					return overlay;
-				}
+					return 1;
+				};
 			});
+			
+			for (final CombinedFriend friend : friends) {
+				scrollList.addRow(friend, new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						if (friend.hasGalconAccount()) {
+							gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, ((GalConFriend) friend).handle,
+									mapKey);
+							returnCode = Action.INVITE_PLAYER;
+
+						} else {
+							final TextOverlay overlay = createLoadingOverlay();
+							socialAction.postToFriends(new FriendPostListener() {
+
+								public void onPostCancelled() {
+									overlay.remove();
+								};
+
+								@Override
+								public void onPostSucceeded() {
+									overlay.remove();
+								}
+
+								private void createResultDialog(final TextOverlay overlay, final String msg) {
+									overlay.remove();
+								}
+
+								@Override
+								public void onPostFails(String msg) {
+									createResultDialog(overlay, msg);
+								}
+							}, selectedAuthProvider, friend.authId);
+						}
+					}
+
+					private TextOverlay createLoadingOverlay() {
+						final TextOverlay overlay = new TextOverlay("Loading sharing dialog.", resources);
+						WaitImageButton overlayWait = new WaitImageButton(resources.skin);
+						float buttonWidth = .25f * (float) Gdx.graphics.getWidth();
+						overlayWait.setWidth(buttonWidth);
+						overlayWait.setHeight(buttonWidth);
+						overlayWait.setX(Gdx.graphics.getWidth() / 2 - buttonWidth / 2);
+						overlayWait.setY(Gdx.graphics.getHeight() / 2 + (buttonWidth));
+						overlay.addActor(overlayWait);
+
+						overlayWait.start();
+						stage.addActor(overlay);
+						return overlay;
+					}
+				});
+			}	
 		}
 	}
 
@@ -413,6 +412,7 @@ public class FriendScreen implements ScreenFeedback {
 			}
 		});
 		stage.addActor(backButton);
+		
 	}
 
 	private void createWaitImage() {
@@ -530,12 +530,15 @@ public class FriendScreen implements ScreenFeedback {
 		ShaderLabel label = new ShaderLabel(resources.fontShader, "Recent Opponents: ", resources.skin,
 				Constants.UI.DEFAULT_FONT);
 		populateSearchLabelGroup(label);
+		
+		final Long time = System.currentTimeMillis();
+		requestTime = time;
 
 		UIConnectionWrapper.findFriends(new UIConnectionResultCallback<People>() {
 			@Override
 			public void onConnectionResult(People result) {
 				waitImage.setVisible(false);
-				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people));
+				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
 			}
 
 			@Override
@@ -543,10 +546,13 @@ public class FriendScreen implements ScreenFeedback {
 				showError("Cound not load recent opponents.");
 			}
 		}, GameLoop.USER.handle);
+		
 	}
 
 	private ClickListener allClickListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
+			Long time = System.currentTimeMillis();
+			requestTime = time;
 			clearActiveTab("Search by handle.", 1);
 			showFriends();
 		}
@@ -554,15 +560,19 @@ public class FriendScreen implements ScreenFeedback {
 
 	private ClickListener fbButtonListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
+			Long time = System.currentTimeMillis();
+			requestTime = time;
 			selectedAuthProvider = Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK;
-			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, time);
 		};
 	};
 
 	private ClickListener gpButtonListener = new ClickListener() {
 		public void clicked(InputEvent event, float x, float y) {
+			Long time = System.currentTimeMillis();
+			requestTime = time;
 			selectedAuthProvider = Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE;
-			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+			loadFriends(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, time);
 		};
 	};
 
@@ -575,7 +585,7 @@ public class FriendScreen implements ScreenFeedback {
 		scrollList.clearRows();
 	};
 
-	public void loadFriends(final String authProvider) {
+	public void loadFriends(final String authProvider, Long time) {
 		waitImage.setVisible(true);
 		clearActiveTab("Filter...", 2);
 		ShaderLabel label = new ShaderLabel(resources.fontShader, "Friends: ", resources.skin,
@@ -626,6 +636,8 @@ public class FriendScreen implements ScreenFeedback {
 	}
 
 	private void findFriendsByProvider(String authProvider) {
+		final Long time = System.currentTimeMillis();
+		requestTime = time;
 		socialAction.getFriends(new FriendsListener() {
 
 			@Override
@@ -637,11 +649,13 @@ public class FriendScreen implements ScreenFeedback {
 					public void onConnectionResult(People result) {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
 						loadedFriends = combinedFriends;
-						displayPeople(combinedFriends);
+						displayPeople(combinedFriends, time);
 					};
 
 					public void onConnectionError(String msg) {
-						showError("Failed to load friends.");
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, new ArrayList<MinifiedGame.MinifiedPlayer>());
+						loadedFriends = combinedFriends;
+						displayPeople(combinedFriends, time);
 					}
 
 				}, authIds, GameLoop.USER.handle, authProviderUsed);
@@ -652,6 +666,7 @@ public class FriendScreen implements ScreenFeedback {
 			public void onFriendsLoadedFail(String error) {
 				noResultsFound.setText("Unable to load friends.");
 				noResultsFound.setVisible(true);
+				waitImage.setVisible(false);
 			}
 		}, authProvider);
 	};

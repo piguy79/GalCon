@@ -174,18 +174,6 @@ public class AndroidGameAction implements GameAction {
 		this.socialAction = socialAction;
 	}
 
-	public void findAvailableGames(final UIConnectionResultCallback<AvailableGames> callback, String handle) {
-		final Map<String, String> args = new HashMap<String, String>();
-		args.put("handle", handle);
-
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				new GetJsonRequestTask<AvailableGames>(args, callback, FIND_AVAILABLE_GAMES, AvailableGames.class)
-						.execute("");
-			}
-		});
-	}
-
 	private MapsCache mapCache = new MapsCache();
 
 	@Override

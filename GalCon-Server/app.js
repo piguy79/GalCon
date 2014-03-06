@@ -50,7 +50,6 @@ app.get('/findAllMaps', routes.findAllMaps);
 app.get('/findGameById', routes.findGameById);
 app.get('/joinGame', routes.joinGame);
 app.post('/games/:id/resign', routes.resignGame);
-app.get('/findAvailableGames', routes.findAvailableGames);
 app.get('/findUserById', routes.findUserById);
 app.post('/requestHandleForId', routes.requestHandleForId);
 app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);

@@ -5,91 +5,98 @@ filter: Linear,Linear
 repeat: none
 arrow_left_small_black
   rotate: false
-  xy: 945, 558
+  xy: 948, 743
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 948, 405
+  xy: 948, 685
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_solid_line
   rotate: false
-  xy: 779, 19
+  xy: 779, 27
   size: 113, 30
   orig: 113, 30
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 804, 546
+  xy: 804, 192
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
+back_arrow_white
+  rotate: false
+  xy: 894, 38
+  size: 125, 152
+  orig: 125, 152
+  offset: 0, 0
+  index: -1
 bg
   rotate: false
-  xy: 2, 413
+  xy: 2, 59
   size: 800, 609
   orig: 800, 609
   offset: 0, 0
   index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 1006, 1008
+  xy: 779, 11
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 coin
   rotate: false
-  xy: 804, 688
+  xy: 804, 334
   size: 146, 149
   orig: 146, 149
   offset: 0, 0
   index: -1
 count_label
   rotate: false
-  xy: 906, 463
+  xy: 804, 109
   size: 81, 81
   orig: 81, 81
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 989, 840
+  xy: 952, 301
   size: 15, 182
   orig: 15, 182
   offset: 0, 0
   index: -1
 dialog_bg
   rotate: false
-  xy: 2, 59
+  xy: 2, 670
   size: 944, 352
   orig: 944, 352
   offset: 0, 0
   index: -1
 highlight_bar
   rotate: false
-  xy: 779, 51
+  xy: 795, 19
   size: 168, 6
   orig: 168, 6
   offset: 0, 0
   index: -1
 ok_button_disabled
   rotate: false
-  xy: 804, 839
+  xy: 804, 485
   size: 183, 183
   orig: 183, 183
   offset: 0, 0
   index: -1
 options
   rotate: false
-  xy: 952, 616
+  xy: 948, 801
   size: 47, 221
   orig: 47, 221
   offset: 0, 0
@@ -99,13 +106,6 @@ slider_bg
   xy: 2, 2
   size: 775, 55
   orig: 775, 55
-  offset: 0, 0
-  index: -1
-transparent_square
-  rotate: false
-  xy: 804, 444
-  size: 100, 100
-  orig: 100, 100
   offset: 0, 0
   index: -1
 
@@ -160,6 +160,13 @@ green_button
   xy: 377, 2
   size: 300, 100
   orig: 300, 100
+  offset: 0, 0
+  index: -1
+transparent_square
+  rotate: false
+  xy: 679, 2
+  size: 100, 100
+  orig: 100, 100
   offset: 0, 0
   index: -1
 wait

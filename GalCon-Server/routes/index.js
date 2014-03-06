@@ -54,15 +54,6 @@ exports.findGameById = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-exports.findAvailableGames = function(req, res) {
-	var handle = req.query['handle'];
-	var p = gameManager.findAvailableGames(handle);
-	p.then(function(games) {
-		var returnObj = {};
-		returnObj.items = games;
-		res.json(returnObj);
-	});
-}
 
 exports.findGamesWithPendingMove = function(req, res) {
 	var handle = req.query['handle'];
@@ -76,7 +67,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 	var p = userManager.findUserByHandle(handle);
 	return p.then(function(user) {
 		if(user) {
-			return gameManager.findCollectionOfGames(user.currentGames);
+			return gameManager.findCollectionOfGames(user);
 		}
 		return null;
 	}).then(function(games) {
@@ -134,10 +125,9 @@ var validateSession = function(session, authIdOrHandleMap) {
 		if(msg !== undefined) {
 			var obj = {};
 			obj[key] = value;
-			console.log(JSON.stringify(obj));
 			var invalidP = userManager.UserModel.findOneAndUpdate(obj, {$set : {session : {}}}).exec();
 			return invalidP.then(function(user) {
-				console.log("user: " + user);
+				console.log(msg);
 				throw new ErrorWithResponse(msg, { session : "expired" });
 			});
 		}
@@ -244,7 +234,7 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 			if(!user) {
 				throw new Error("Could not find user object for handle: " + handle);
 			}
-			return gameManager.findCollectionOfGames(user.currentGames);
+			return gameManager.findCollectionOfGames(user);
 		}).then(function(games) {
 			var minifiedGames = minfiyGameResponse(games, handle);
 			res.json({items : minifiedGames});
@@ -347,11 +337,11 @@ var updateWinnersAndLosers = function(game) {
 }
 
 var setTimeUntilFreeCoins = function(user, gameId){
-	var p = userManager.findUserWithGames(user.handle);
-	return p.then(function(foundUser){	
-		var gamesStillInProgress = _.filter(foundUser.currentGames, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
+	var p = gameManager.findCollectionOfGames(user);
+	return p.then(function(games){	
+		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
 		
-		if(foundUser.coins <= 0 && gamesStillInProgress.length === 0){
+		if(user.coins <= 0 && gamesStillInProgress.length === 0){
 			user.usedCoins = Date.now();
 		}
 		
@@ -369,15 +359,20 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function() {
-		var userPromise = userManager.findUserWithGames(handle);
+		var userPromise = userManager.findUserByHandle(handle);
+		var foundUser;
 		return userPromise.then(function(user){
-			var gamesStillInProgress = _.filter(user.currentGames, function(game) { return game.endGameInformation.winnerHandle === ''});
-		
-			if(user.usedCoins === -1 && gamesStillInProgress.length === 0 && user.coins === 0) {
-				user.usedCoins = Date.now();
+			foundUser = user;
+			return gameManager.findCollectionOfGames(user);
+			
+		}).then(function(games){
+			var gamesStillInProgress = _.filter(games, function(game) { return game.endGameInformation.winnerHandle === ''});
+			
+			if(foundUser.usedCoins === -1 && gamesStillInProgress.length === 0 && foundUser.coins === 0) {
+				foundUser.usedCoins = Date.now();
 			}
 		
-			return user.withPromise(user.save);
+			return foundUser.withPromise(foundUser.save);
 		}).then(function(user) {
 			res.json(user);
 		});
@@ -424,7 +419,6 @@ exports.joinGame = function(req, res) {
 			})
 		}
 		game = savedGame;
-		user.currentGames.push(game);
 		return user.withPromise(user.save);
 	}).then(function() {
 		res.json(processGameReturn(game));
@@ -831,7 +825,6 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	return gameManager.addUser(gameId, user).then(function(game) {
 		if (game !== null) {
 			return gameManager.findById(gameId).then(function(returnGame) {
-				user.currentGames.push(game);
 				user.coins--;
 				var p = user.withPromise(user.save);
 				return p.then(function() {
@@ -873,7 +866,6 @@ var generateGamePromise = function(user, time, mapToFind, social) {
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
 		}).then(function(game) {
-			user.currentGames.push(game);
 			user.coins--;
 			
 			var p = user.withPromise(user.save);

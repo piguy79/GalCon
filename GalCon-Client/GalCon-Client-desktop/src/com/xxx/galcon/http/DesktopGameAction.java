@@ -84,16 +84,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String playerHandle) {
-
-		Map<String, String> args = new HashMap<String, String>();
-		args.put("playerHandle", playerHandle);
-
-		callback.onConnectionResult((AvailableGames) callURL(new GetClientRequest(), FIND_AVAILABLE_GAMES, args,
-				new AvailableGames()));
-	}
-
-	@Override
 	public void findAllMaps(UIConnectionResultCallback<Maps> callback) {
 		Map<String, String> args = new HashMap<String, String>();
 		callback.onConnectionResult((Maps) callURL(new GetClientRequest(), FIND_ALL_MAPS, args, new Maps()));

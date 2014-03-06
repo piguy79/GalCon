@@ -64,7 +64,7 @@ exports.performMove = function(gameId, moves, playerHandle, time, harvest) {
 }
 
 exports.joinGame = function(gameId, playerToJoin) {
-	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&playerHandle=" + playerToJoin);
+	return needleWithPromise(needle.get, "/joinGame?id=" + gameId + "&handle=" + playerToJoin);
 }
 
 exports.findCurrentGamesByPlayerHandle = function(handle, session) {
@@ -75,8 +75,8 @@ exports.findGamesWithPendingMove = function(handle) {
 	return needleWithPromise(needle.get, "/findGamesWithPendingMove?handle=" + handle);
 }
 
-exports.findAvailableGames = function(playerHandle) {
-	return needleWithPromise(needle.get, "/findAvailableGames?playerHandle=" + playerHandle);
+exports.findAvailableGames = function(playerHandle, session) {
+	return needleWithPromise(needle.get, "/findCurrentGamesByPlayerHandle?handle=" + playerHandle + "&session=" + session);
 }
 
 exports.addFreeCoins = function(handle, session){
@@ -113,11 +113,12 @@ exports.exchangeToken = function(authProvider, token) {
 	return needleWithPromise(needle.post, '/sessions/exchangeToken', postData);
 }
 
-exports.requestHandleForEmail = function(session, email, handle) {
+exports.requestHandleForId = function(session, id, authProvider, handle) {
 	var postData = {
 		session : session,
-		email : email,
+		id : id,
+		authProvider : authProvider,
 		handle : handle
 	};
-	return needleWithPromise(needle.post, '/requestHandleForEmail', postData);
+	return needleWithPromise(needle.post, '/requestHandleForId', postData);
 }

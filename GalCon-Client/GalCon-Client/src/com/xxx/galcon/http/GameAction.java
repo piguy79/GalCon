@@ -39,8 +39,6 @@ public interface GameAction {
 
 	public void matchPlayerToGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapToFind);
 
-	public void findAvailableGames(UIConnectionResultCallback<AvailableGames> callback, String handle);
-
 	public void findAllMaps(UIConnectionResultCallback<Maps> callback);
 
 	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);

@@ -36,18 +36,6 @@ describe("Find Games associated with a user -", function() {
 		});
 	});
 
-	it("Should return a full game object when requesting user information.", function(done) {
-		var p =  apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
-		p.then(function(){
-			return userManager.findUserWithGames(PLAYER_1_HANDLE);
-		}).then(function(user){
-			expect(user.currentGames[0].map).toBe(MAP_KEY_1);
-			done();
-		}, function(err){
-			console.log(err);
-			done();
-		});
-	});
 
 	
 });

@@ -15,6 +15,7 @@ describe("Find available games -", function() {
 	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 5);
 	
 	var PLAYER_3_HANDLE = "TEST_PLAYER_3";
+	var PLAYER_3 = elementBuilder.createUser(PLAYER_3_HANDLE, 7);
 	
 	var MAP_KEY_1 = -100;
 	var MAP_KEY_2 = -200;
@@ -59,12 +60,12 @@ describe("Find available games -", function() {
 		}).then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_2, PLAYER_2.session.id);
 		}).then(function() {
-			return apiRunner.findAvailableGames(PLAYER_1_HANDLE);
+			return apiRunner.findAvailableGames(PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(games) {
 			var availableGames = games.items;
 			expect(availableGames.length).toBe(1);
 			expect(availableGames[0].players.length).toBe(1);
-			expect(availableGames[0].players[0].handle).toBe(PLAYER_2_HANDLE);
+			expect(availableGames[0].players[0].handle).toBe(PLAYER_1_HANDLE);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -79,10 +80,10 @@ describe("Find available games -", function() {
 		}).then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
 		}).then(function() {
-			return apiRunner.findAvailableGames(PLAYER_3_HANDLE);
+			return apiRunner.findAvailableGames(PLAYER_3_HANDLE, PLAYER_3.session.id);
 		}).then(function(games) {
 			var availableGames = games.items;
-			expect(availableGames.length).toBe(0);
+			expect(typeof availableGames).toBe('undefined');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
