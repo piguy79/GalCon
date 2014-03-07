@@ -589,7 +589,7 @@ public class BoardScreen implements ScreenFeedback {
 		moon.setY(relativeY);
 
 		moons.add(moon);
-		stage.addActor(moon);
+		boardTable.addActor(moon);
 	}
 
 	private void renderDialog() {
