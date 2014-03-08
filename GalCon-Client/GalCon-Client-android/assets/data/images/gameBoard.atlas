@@ -81,7 +81,7 @@ bottom_bar
 player_hud_bg
   rotate: false
   xy: 2, 2
-  size: 452, 115
-  orig: 452, 115
+  size: 432, 115
+  orig: 432, 115
   offset: 0, 0
   index: -1

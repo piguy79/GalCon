@@ -183,42 +183,49 @@ filter: Linear,Linear
 repeat: none
 cancel_button
   rotate: false
-  xy: 378, 255
+  xy: 2, 2
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 631, 255
+  xy: 378, 261
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
+pattern
+  rotate: false
+  xy: 378, 514
+  size: 451, 116
+  orig: 451, 116
+  offset: 0, 0
+  index: -1
 question_mark
   rotate: false
-  xy: 378, 2
+  xy: 255, 2
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 rect_button_blank
   rotate: false
-  xy: 2, 10
+  xy: 508, 140
   size: 338, 119
   orig: 338, 119
   offset: 0, 0
   index: -1
 refresh
   rotate: false
-  xy: 2, 131
+  xy: 2, 255
   size: 374, 375
   orig: 374, 375
   offset: 0, 0
   index: -1
 textFieldBg
   rotate: false
-  xy: 2, 508
+  xy: 2, 632
   size: 848, 155
   orig: 848, 155
   offset: 0, 0

@@ -837,7 +837,7 @@ public class BoardScreen implements ScreenFeedback {
 			if (social != null && !social.isEmpty()) {
 				return "[waiting for " + social + "]";
 			}
-			return "[waiting for an opponent]";
+			return "[waiting for opponent]";
 		}
 	}
 }

@@ -22,7 +22,7 @@ public class Fonts {
 
 		xSmallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		xSmallFont.getRegion().getTexture().setFilter(Linear, Linear);
-		xSmallFont.setScale(0.7f * scaleFactor);
+		xSmallFont.setScale(0.75f * scaleFactor);
 		
 		smallFont = new BitmapFont(Gdx.files.internal("data/fonts/copperplate_32.fnt"));
 		smallFont.getRegion().getTexture().setFilter(Linear, Linear);

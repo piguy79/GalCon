@@ -33,9 +33,6 @@ public class BoardScreenPlayerHud extends Group {
 
 	private ActionButton backButton;
 	private Group playerHudBg;
-	private ShaderLabel firstPlayer;
-	private ShaderLabel vs;
-	private ShaderLabel secondPlayer;
 
 	private final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
 		{
@@ -63,35 +60,78 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createUserTable() {
-		firstPlayer = new ShaderLabel(resources.fontShader, playerInfo(gameBoard.players.get(0)), resources.skin,
-				findFontStyleForPlayer(0));
-		firstPlayer.setWidth(playerHudBg.getWidth());
-		firstPlayer.setY((getHeight() - firstPlayer.getTextBounds().height) - (getHeight() * 0.2f));
-		firstPlayer.setAlignment(Align.center);
-		playerHudBg.addActor(firstPlayer);
+		Player enemy = getEnemy(gameBoard.players, gameBoard);
 
-		vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT);
+		float margin = playerHudBg.getWidth() * 0.01f;
+
+		ShaderLabel enemyLabel = new ShaderLabel(resources.fontShader, enemy.handle, resources.skin,
+				Constants.UI.X_SMALL_FONT);
+		enemyLabel.setColor(new Color(1.0f, 0.8f, 0.8f, 1.0f));
+		enemyLabel.setWidth(playerHudBg.getWidth() * 0.66f);
+		enemyLabel.setY(playerHudBg.getHeight() - enemyLabel.getTextBounds().height - playerHudBg.getHeight() * 0.07f);
+		enemyLabel.setAlignment(Align.left);
+		enemyLabel.setX(margin);
+		playerHudBg.addActor(enemyLabel);
+
+		if (enemy.rank != null) {
+			ShaderLabel enemyRank = new ShaderLabel(resources.fontShader, "" + enemy.rank.level, resources.skin,
+					Constants.UI.LARGE_FONT);
+			enemyRank.setColor(new Color(1.0f, 0.4f, 0.4f, 0.6f));
+			enemyRank.setWidth(playerHudBg.getWidth() * 0.5f);
+			enemyRank.setY(playerHudBg.getHeight() * 0.5f - enemyRank.getTextBounds().height * 0.8f);
+			enemyRank.setAlignment(Align.left);
+			enemyRank.setX(margin);
+			playerHudBg.addActor(enemyRank);
+		}
+
+		ShaderLabel vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT);
 		vs.setWidth(playerHudBg.getWidth());
-		vs.setY((firstPlayer.getY() - vs.getTextBounds().height) - getHeight() * 0.1f);
+		vs.setColor(new Color(1.0f, 1.0f, 1.0f, 0.7f));
+		vs.setY(playerHudBg.getHeight() * 0.5f - vs.getTextBounds().height * 0.6f);
 		vs.setAlignment(Align.center);
 		playerHudBg.addActor(vs);
 
-		secondPlayer = new ShaderLabel(resources.fontShader,
-				gameBoard.players.size() > 1 ? playerInfo(gameBoard.players.get(1)) : BoardScreen.Labels
-						.waitingLabel(gameBoard.social), resources.skin,
-				gameBoard.players.size() > 1 ? findFontStyleForPlayer(1) : Constants.UI.X_SMALL_FONT_RED);
-		secondPlayer.setWidth(playerHudBg.getWidth());
-		secondPlayer.setY((vs.getY() - secondPlayer.getTextBounds().height) - getHeight() * 0.1f);
-		secondPlayer.setAlignment(Align.center);
-		playerHudBg.addActor(secondPlayer);
+		Player user = getUser(gameBoard.players);
+		ShaderLabel userLabel = new ShaderLabel(resources.fontShader, user.handle, resources.skin,
+				Constants.UI.X_SMALL_FONT);
+		userLabel.setColor(new Color(0.8f, 1.0f, 0.8f, 1.0f));
+		userLabel.setWidth(playerHudBg.getWidth() * 0.66f);
+		userLabel.setY(0);
+		userLabel.setAlignment(Align.right);
+		userLabel.setX(playerHudBg.getWidth() - userLabel.getWidth() - margin);
+		playerHudBg.addActor(userLabel);
+
+		ShaderLabel userRank = new ShaderLabel(resources.fontShader, "" + user.rank.level, resources.skin,
+				Constants.UI.LARGE_FONT);
+		userRank.setColor(new Color(0.4f, 1.0f, 0.4f, 0.6f));
+		userRank.setWidth(playerHudBg.getWidth() * 0.5f);
+		userRank.setY(playerHudBg.getHeight() * 0.5f - userRank.getTextBounds().height * 0.8f);
+		userRank.setAlignment(Align.right);
+		userRank.setX(playerHudBg.getWidth() * 0.5f);
+		playerHudBg.addActor(userRank);
 	}
 
-	private String findFontStyleForPlayer(int index) {
-		String playerFontStyle = Constants.UI.X_SMALL_FONT_GREEN;
-		if (gameBoard.players.size() > index && !gameBoard.players.get(index).handle.equals(GameLoop.USER.handle)) {
-			playerFontStyle = Constants.UI.X_SMALL_FONT_RED;
+	private Player getEnemy(List<Player> players, GameBoard gameBoard) {
+		if (players.size() < 2) {
+			Player waitingForOpponent = new Player();
+			waitingForOpponent.rank = null;
+			waitingForOpponent.handle = BoardScreen.Labels.waitingLabel(gameBoard.social);
+			return waitingForOpponent;
 		}
-		return playerFontStyle;
+
+		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+			return players.get(1);
+		}
+
+		return players.get(0);
+	}
+
+	private Player getUser(List<Player> players) {
+		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+			return players.get(0);
+		}
+
+		return players.get(1);
 	}
 
 	private String playerInfo(Player player) {
@@ -105,18 +145,18 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createPlayerHudBg() {
-		TextureRegionDrawable trd = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("player_hud_bg"));
-		Image bg = new Image(trd);
-
 		playerHudBg = new Group();
 		playerHudBg.setWidth(getWidth() * 0.63f);
 		playerHudBg.setHeight(getHeight());
 		playerHudBg.setX(getWidth() * 0.5f - playerHudBg.getWidth() * 0.5f);
+		addActor(playerHudBg);
+
+		TextureRegionDrawable drawable = new TextureRegionDrawable(resources.gameBoardAtlas.findRegion("player_hud_bg"));
+		Image bg = new Image(drawable);
 		bg.setWidth(playerHudBg.getWidth());
 		bg.setHeight(playerHudBg.getHeight());
-		bg.setColor(new Color(0.2f, 0.2f, 0.3f, 1.0f));
+
 		playerHudBg.addActor(bg);
-		addActor(playerHudBg);
 	}
 
 	private void createBackButton() {
