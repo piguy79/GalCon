@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Constants {
 	public static final String APP_TITLE = "Solar Smash";
 
@@ -15,7 +17,7 @@ public class Constants {
 		public static final String X_SMALL_FONT = "xSmallFont";
 		public static final String X_SMALL_FONT_GREEN = "xSmallFontGreen";
 		public static final String X_SMALL_FONT_RED = "xSmallFontRed";
-		
+
 		public static final String SMALL_FONT = "smallFont";
 
 		public static final String DEFAULT_FONT = "defaultFont";
@@ -57,9 +59,11 @@ public class Constants {
 
 		public static final String HIGHLIGHT_BAR = "highlightBar";
 		public static final String BACK_ARROW_WHITE = "backArrowWhite";
+	}
 
-
-
+	public static class Colors {
+		public static Color USER_SHIP_FILL = Color.GREEN;
+		public static Color ENEMY_SHIP_FILL = Color.RED;
 	}
 
 	public static class Auth {

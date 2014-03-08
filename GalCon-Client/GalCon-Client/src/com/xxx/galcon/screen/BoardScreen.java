@@ -365,9 +365,9 @@ public class BoardScreen implements ScreenFeedback {
 					movetoDisplay.setPosition(newShipPosition.x, newShipPosition.y);
 				}
 
-				Color color = Color.GREEN;
+				Color color = Constants.Colors.USER_SHIP_FILL;
 				if (!move.belongsToPlayer(GameLoop.USER)) {
-					color = Color.RED;
+					color = Constants.Colors.ENEMY_SHIP_FILL;
 				}
 
 				movetoDisplay.setColor(color);
@@ -837,7 +837,7 @@ public class BoardScreen implements ScreenFeedback {
 			if (social != null && !social.isEmpty()) {
 				return "[waiting for " + social + "]";
 			}
-			return "[waiting for opponent]";
+			return "[Awaiting enemy]";
 		}
 	}
 }

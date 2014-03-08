@@ -1,5 +1,10 @@
 package com.xxx.galcon.screen;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +12,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -55,13 +61,55 @@ public class BoardScreenPlayerHud extends Group {
 	private void createLayout() {
 		createBackButton();
 		createPlayerHudBg();
-		createUserTable();
+
+		Player enemy = getEnemy(gameBoard);
+		Player user = getUser(gameBoard);
+
+		createUserLabels(enemy, user);
+		showWhoNeedsToMove(enemy, user);
+
 		createOptionsButton();
 	}
 
-	private void createUserTable() {
-		Player enemy = getEnemy(gameBoard.players, gameBoard);
+	private void showWhoNeedsToMove(Player enemy, Player user) {
+		float shipHeight = playerHudBg.getWidth() * 0.08f;
 
+		if (!enemy.hasMoved(gameBoard)) {
+			Image ship = new Image(resources.skin, "shipImage");
+			ship.setColor(Constants.Colors.ENEMY_SHIP_FILL);
+			ship.setX(playerHudBg.getWidth() * 0.53f);
+			ship.setY(playerHudBg.getHeight() * 0.7f);
+
+			Vector2 vec = Scaling.fillY.apply(ship.getWidth(), ship.getHeight(), 1, shipHeight);
+			ship.setSize(vec.x, vec.y);
+
+			ship.setOrigin(ship.getWidth() * 0.5f, ship.getHeight() * 0.5f);
+			ship.rotate(180);
+
+			addWhoNeedsToMoveAction(ship);
+			playerHudBg.addActor(ship);
+		}
+
+		if (!user.hasMoved(gameBoard)) {
+			Image ship = new Image(resources.skin, "shipImage");
+			ship.setColor(Constants.Colors.USER_SHIP_FILL);
+			ship.setX(playerHudBg.getWidth() * 0.37f);
+			ship.setY(playerHudBg.getHeight() * 0.0f);
+
+			Vector2 vec = Scaling.fillY.apply(ship.getWidth(), ship.getHeight(), 1, shipHeight);
+			ship.setSize(vec.x, vec.y);
+
+			addWhoNeedsToMoveAction(ship);
+			playerHudBg.addActor(ship);
+		}
+	}
+
+	private void addWhoNeedsToMoveAction(Image ship) {
+		Color originalColor = ship.getColor();
+		ship.addAction(forever(sequence(delay(1.0f), color(Color.WHITE, 0.8f), color(originalColor, 0.8f), delay(2.0f))));
+	}
+
+	private void createUserLabels(Player enemy, Player user) {
 		float margin = playerHudBg.getWidth() * 0.01f;
 
 		ShaderLabel enemyLabel = new ShaderLabel(resources.fontShader, enemy.handle, resources.skin,
@@ -91,7 +139,6 @@ public class BoardScreenPlayerHud extends Group {
 		vs.setAlignment(Align.center);
 		playerHudBg.addActor(vs);
 
-		Player user = getUser(gameBoard.players);
 		ShaderLabel userLabel = new ShaderLabel(resources.fontShader, user.handle, resources.skin,
 				Constants.UI.X_SMALL_FONT);
 		userLabel.setColor(new Color(0.8f, 1.0f, 0.8f, 1.0f));
@@ -111,7 +158,8 @@ public class BoardScreenPlayerHud extends Group {
 		playerHudBg.addActor(userRank);
 	}
 
-	private Player getEnemy(List<Player> players, GameBoard gameBoard) {
+	private Player getEnemy(GameBoard gameBoard) {
+		List<Player> players = gameBoard.players;
 		if (players.size() < 2) {
 			Player waitingForOpponent = new Player();
 			waitingForOpponent.rank = null;
@@ -126,7 +174,8 @@ public class BoardScreenPlayerHud extends Group {
 		return players.get(0);
 	}
 
-	private Player getUser(List<Player> players) {
+	private Player getUser(GameBoard gameBoard) {
+		List<Player> players = gameBoard.players;
 		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
 			return players.get(0);
 		}
