@@ -309,16 +309,16 @@ public class BoardScreen implements ScreenFeedback {
 						@Override
 						public boolean handle(Event event) {
 							if (event instanceof ResignEvent) {
-								overlay = new TextOverlay("Refreshing", resources);
+								overlay = new TextOverlay("Resigning Game", resources);
 								stage.addActor(overlay);
-								UIConnectionWrapper.resignGame(new UpdateBoardScreenResultHandler("Could not refresh"),
+								UIConnectionWrapper.resignGame(new UpdateBoardScreenResultHandler("Could not resign"),
 										gameBoard.id, GameLoop.USER.handle);
 								return true;
 							} else if (event instanceof RefreshEvent) {
 								overlay = new TextOverlay("Refreshing", resources);
 								stage.addActor(overlay);
 								UIConnectionWrapper.findGameById(
-										new UpdateBoardScreenResultHandler("Could not resign"), gameBoard.id,
+										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
 							}
@@ -809,8 +809,10 @@ public class BoardScreen implements ScreenFeedback {
 
 		@Override
 		public void onConnectionError(String msg) {
-			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(errorMessage, resources), null);
-			stage.addActor(ovrlay);
+			overlay.remove();
+
+			overlay = new DismissableOverlay(resources, new TextOverlay(errorMessage, resources), null);
+			stage.addActor(overlay);
 		}
 	}
 
