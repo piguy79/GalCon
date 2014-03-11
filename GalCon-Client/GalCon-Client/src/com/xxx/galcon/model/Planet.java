@@ -25,6 +25,7 @@ public class Planet extends JsonConvertible {
 	public Harvest harvest;
 	public String status;
 	public float population;
+	public boolean isHome;
 
 	public static final String ALIVE = "ALIVE";
 
@@ -53,6 +54,7 @@ public class Planet extends JsonConvertible {
 				this.harvest.consume(jsonObject.getJSONObject("harvest"));
 			}
 			this.status = jsonObject.getString("status");
+			this.isHome = jsonObject.optString("isHome", "N").equals("Y") ? true : false;
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -151,6 +153,8 @@ public class Planet extends JsonConvertible {
 		if (isOwnedBy(GameLoop.USER)) {
 			return OWNED_BY_ME_COLOR;
 		} else if (!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)) {
+			return OWNED_BY_OPPONENT_COLOR;
+		} else if (isHome) {
 			return OWNED_BY_OPPONENT_COLOR;
 		}
 
