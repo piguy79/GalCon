@@ -522,9 +522,9 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.6125"
      inkscape:cx="360"
-     inkscape:cy="640"
+     inkscape:cy="770.61224"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer10"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
@@ -551,7 +551,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -713,9 +713,12 @@
        style="fill:#1c1c1c;fill-opacity:1;stroke:none"
        id="rect3207"
        width="453.87756"
-       height="122.44898"
+       height="120.29265"
        x="137.14285"
-       y="2.2737368e-13" />
+       y="2.2336961e-13"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/gameBoard/player_hud_bg.png"
+       inkscape:export-xdpi="85.720001"
+       inkscape:export-ydpi="85.720001" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -871,67 +874,69 @@
        y="120" />
     <text
        sodipodi:linespacing="125%"
+       id="text4012"
+       y="98.760437"
+       x="386.72943"
+       style="font-size:129.53974915px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#31b836;fill-opacity:0.26666667;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       transform="scale(1.0805396,0.92546354)"><tspan
+         y="98.760437"
+         x="386.72943"
+         id="tspan4014"
+         sodipodi:role="line">15</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
        id="text4054"
-       y="128.61461"
-       x="337.97366"
+       y="138.60913"
+       x="330.17224"
        style="font-size:25.49923706px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
        xml:space="preserve"
        transform="scale(1.1557754,0.86522001)"><tspan
-         y="128.61461"
-         x="337.97366"
+         y="138.60913"
+         x="330.17224"
          id="tspan4056"
          sodipodi:role="line">PiGuyIsBackk</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text4012"
-       y="84.612251"
-       x="504.48981"
-       style="font-size:64px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#31b836;fill-opacity:0.5777778;stroke:none;font-family:Sans"
-       xml:space="preserve"><tspan
-         y="84.612251"
-         x="504.48981"
-         id="tspan4014"
-         sodipodi:role="line">15</tspan></text>
     <path
        style="fill:#274148;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       d="m 400.16895,9.1836728e-7 35.9943,0 L 324.97389,120.81633 l -35.99431,0 z"
+       d="m 402.16895,9.1836728e-7 35.9943,0 L 326.97389,120.81633 l -35.99431,0 z"
        id="rect4024"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
     <text
        sodipodi:linespacing="125%"
        id="text4016"
-       y="74.448982"
-       x="339.71429"
+       y="-13.349106"
+       x="341.85071"
        style="font-size:32px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:0.49803922;stroke:none;font-family:Sans"
        xml:space="preserve"><tspan
-         y="74.448982"
-         x="339.71429"
+         y="-13.349106"
+         x="341.85071"
          id="tspan4018"
          sodipodi:role="line">vs</tspan></text>
     <text
        transform="scale(1.1557754,0.86522001)"
        xml:space="preserve"
-       style="font-size:25.49923705999999868px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
-       x="126.01238"
-       y="25.679844"
+       style="font-size:25.49923706px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="167.89308"
+       y="65.848228"
        id="text4020"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4022"
-         x="126.01238"
-         y="25.679844">mull</tspan></text>
+         x="167.89308"
+         y="65.848228">mull</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:64px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#b83136;fill-opacity:0.5777778;stroke:none;font-family:Sans"
-       x="140.36736"
-       y="84.612251"
+       style="font-size:144.16374207px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#b83136;fill-opacity:0.31555559;stroke:none;font-family:Sans"
+       x="158.13408"
+       y="112.47147"
        id="text4098"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       transform="scale(1.1076015,0.9028518)"><tspan
          sodipodi:role="line"
          id="tspan4100"
-         x="140.36736"
-         y="84.612251">1</tspan></text>
+         x="158.13408"
+         y="112.47147">1</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1487,6 +1492,57 @@
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship.png"
        inkscape:export-xdpi="123.81687"
        inkscape:export-ydpi="123.81687" />
+    <path
+       inkscape:export-ydpi="123.81687"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship.png"
+       inkscape:transform-center-y="8.1104837"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4102"
+       d="m 381.67049,15.908494 0.0469,-2.487343 33.63168,-13.08757508 -11.65864,14.72192908 11.09636,15.126126 z"
+       style="fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.53016979;stroke-opacity:1;display:inline"
+       inkscape:transform-center-x="0.47847035" />
+    <path
+       inkscape:export-ydpi="123.81687"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-Client/GalCon-Client-android/assets/data/images/ship.png"
+       inkscape:transform-center-y="-7.7328509"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4104"
+       d="m 335.87228,104.92536 0.0821,2.61965 -34.65611,15.44769 11.47599,-16.07228 -12.461,-15.363461 z"
+       style="fill:#00ff00;fill-opacity:1;stroke:#000000;stroke-width:0.55820531;stroke-opacity:1;display:inline"
+       inkscape:transform-center-x="-1.8979592e-05" />
+    <path
+       style="fill:#dcdcdc;fill-opacity:0.76444445;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 436.76743,5.8796271 149.01653,0 0,26.8567299 -174.46998,0 z"
+       id="rect4118"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text4120"
+       y="29.224483"
+       x="482.2449"
+       style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         y="29.224483"
+         x="482.2449"
+         id="tspan4122"
+         sodipodi:role="line">+25%A</tspan></text>
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path4144"
+       d="m 409.97153,34.863761 176.48229,0 0,26.856733 -201.94375,0 z"
+       style="fill:#dcdcdc;fill-opacity:0.76444445;fill-rule:nonzero;stroke:none;display:inline" />
+    <path
+       style="fill:#dcdcdc;fill-opacity:0.76444445;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 381.55965,65.231108 204.52682,0 0,26.856733 -230.08738,0 z"
+       id="path4146"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
   </g>
   <g
      inkscape:groupmode="layer"

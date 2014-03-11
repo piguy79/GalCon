@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -44,7 +43,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private Stage stage;
 	private ShaderLabel messageLabel;
 	private ScrollList<MinifiedGame> scrollList;
-	private Table gamesTable;
 	private ImageButton backButton;
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;

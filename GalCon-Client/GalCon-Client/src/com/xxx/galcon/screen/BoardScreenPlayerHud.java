@@ -9,10 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -40,15 +45,6 @@ public class BoardScreenPlayerHud extends Group {
 	private ActionButton backButton;
 	private Group playerHudBg;
 
-	private final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
-		{
-			put(Constants.ABILITY_ATTACK_INCREASE, "A");
-			put(Constants.ABILITY_DEFENCE_INCREASE, "D");
-			put(Constants.ABILITY_SPEED, "S");
-			put(Constants.ABILITY_REGEN_BLOCK, "B");
-		}
-	};
-
 	public BoardScreenPlayerHud(Resources resources, Bounds bounds, GameBoard gameBoard) {
 		this.resources = resources;
 		this.gameBoard = gameBoard;
@@ -67,8 +63,110 @@ public class BoardScreenPlayerHud extends Group {
 
 		createUserLabels(enemy, user);
 		showWhoNeedsToMove(enemy, user);
+		createResourceBonusLabels(enemy, user);
 
 		createOptionsButton();
+	}
+
+	private void createResourceBonusLabels(Player enemy, Player user) {
+		Map<String, Integer> playerAbilities = Abilities.aggregate(gameBoard, enemy);
+
+		playerAbilities.put("A", 25);
+		playerAbilities.put("D", 50);
+		playerAbilities.put("B", 50);
+
+		createResourceBonusLabels(playerAbilities, false);
+
+		playerAbilities = Abilities.aggregate(gameBoard, user);
+		createResourceBonusLabels(playerAbilities, true);
+	}
+
+	private void createResourceBonusLabels(Map<String, Integer> playerAbilities, boolean invert) {
+		float startStripe = 0.313f;
+		float endStripe = 0.56f;
+
+		float margin = playerHudBg.getWidth() * 0.01f;
+		float height = playerHudBg.getHeight() * 0.25f - margin;
+		float y = margin;
+		float x = 0;
+
+		if (invert) {
+			x = playerHudBg.getWidth();
+		}
+
+		for (Map.Entry<String, Integer> abilities : playerAbilities.entrySet()) {
+			float bottomWidth = playerHudBg.getWidth()
+					* ((endStripe - startStripe) * (y / playerHudBg.getHeight()) + startStripe);
+			float topWidth = playerHudBg.getWidth()
+					* ((endStripe - startStripe) * ((y + height) / playerHudBg.getHeight()) + startStripe);
+
+			if (invert) {
+				bottomWidth *= -1;
+				topWidth *= -1;
+			}
+
+			Actor abilityActor = new AbilityBox(invert ? margin * -1 : margin, x, invert ? playerHudBg.getHeight() - y
+					: y, invert ? height * -1 : height, bottomWidth, topWidth);
+			playerHudBg.addActor(abilityActor);
+
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + abilities.getValue() + "%"
+					+ abilities.getKey(), resources.skin, Constants.UI.X_SMALL_FONT);
+			if (invert) {
+				label.setBounds(x + bottomWidth, playerHudBg.getHeight() - y - height + margin, bottomWidth * -1,
+						height);
+				label.setAlignment(Align.left, Align.left);
+			} else {
+				label.setBounds(x, y + margin, bottomWidth, height);
+				label.setAlignment(Align.right, Align.right);
+			}
+
+			playerHudBg.addActor(label);
+
+			y += (height + margin);
+		}
+	}
+
+	private static class AbilityBox extends Actor {
+		private float y;
+		private float x;
+		private float margin;
+		private float height;
+		private float bottomWidth;
+		private float topWidth;
+
+		public AbilityBox(float margin, float x, float y, float height, float bottomWidth, float topWidth) {
+			this.y = y;
+			this.x = x;
+			this.margin = margin;
+			this.height = height;
+			this.topWidth = topWidth;
+			this.bottomWidth = bottomWidth;
+		}
+
+		private ShapeRenderer renderer = new ShapeRenderer();
+
+		@Override
+		public void draw(SpriteBatch batch, float parentAlpha) {
+			batch.end();
+
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			renderer.setProjectionMatrix(batch.getProjectionMatrix());
+			renderer.setTransformMatrix(batch.getTransformMatrix());
+			renderer.translate(getX(), getY(), 0);
+
+			Color alphaWhite = new Color(1.0f, 1.0f, 1.0f, 0.3f);
+
+			renderer.setColor(alphaWhite);
+			renderer.begin(ShapeType.Filled);
+			renderer.rect(x + margin, y, bottomWidth, height, Color.CLEAR, alphaWhite, alphaWhite, Color.CLEAR);
+			renderer.triangle(x + margin + bottomWidth, y, x + margin + bottomWidth, y + height, x + margin + topWidth,
+					y + height);
+			renderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+
+			batch.begin();
+		}
 	}
 
 	private void showWhoNeedsToMove(Player enemy, Player user) {
@@ -124,7 +222,7 @@ public class BoardScreenPlayerHud extends Group {
 		if (enemy.rank != null) {
 			ShaderLabel enemyRank = new ShaderLabel(resources.fontShader, "" + enemy.rank.level, resources.skin,
 					Constants.UI.LARGE_FONT);
-			enemyRank.setColor(new Color(1.0f, 0.4f, 0.4f, 0.6f));
+			enemyRank.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
 			enemyRank.setWidth(playerHudBg.getWidth() * 0.5f);
 			enemyRank.setY(playerHudBg.getHeight() * 0.5f - enemyRank.getTextBounds().height * 0.8f);
 			enemyRank.setAlignment(Align.left);
@@ -150,7 +248,7 @@ public class BoardScreenPlayerHud extends Group {
 
 		ShaderLabel userRank = new ShaderLabel(resources.fontShader, "" + user.rank.level, resources.skin,
 				Constants.UI.LARGE_FONT);
-		userRank.setColor(new Color(0.4f, 1.0f, 0.4f, 0.6f));
+		userRank.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
 		userRank.setWidth(playerHudBg.getWidth() * 0.5f);
 		userRank.setY(playerHudBg.getHeight() * 0.5f - userRank.getTextBounds().height * 0.8f);
 		userRank.setAlignment(Align.right);
@@ -181,16 +279,6 @@ public class BoardScreenPlayerHud extends Group {
 		}
 
 		return players.get(1);
-	}
-
-	private String playerInfo(Player player) {
-		String playerInfo = player.handle + " [" + player.rank.level + "]";
-		StringBuilder sb = new StringBuilder();
-		sb.append(playerInfo);
-		sb.append("  ");
-		sb.append(abilitiesToString(gameBoard.ownedPlanetAbilities(player)));
-
-		return sb.toString();
 	}
 
 	private void createPlayerHudBg() {
@@ -255,33 +343,42 @@ public class BoardScreenPlayerHud extends Group {
 		addActor(backGround);
 	}
 
-	private Map<String, Integer> bonuses = new HashMap<String, Integer>();
-
-	private String abilitiesToString(List<String> planetAbilities) {
-		if (planetAbilities.isEmpty()) {
-			return "";
-		}
-		bonuses.clear();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < planetAbilities.size(); ++i) {
-			String ability = planetAbilities.get(i);
-			String abbrev = ABILITY_TO_ABBREVIATION.get(ability);
-			if (abbrev == null) {
-				throw new IllegalArgumentException("PlayerInfoHud does not understand: " + planetAbilities.get(i));
+	private static class Abilities {
+		private static final Map<String, String> ABILITY_TO_ABBREVIATION = new HashMap<String, String>() {
+			{
+				put(Constants.ABILITY_ATTACK_INCREASE, "A");
+				put(Constants.ABILITY_DEFENCE_INCREASE, "D");
+				put(Constants.ABILITY_SPEED, "S");
+				put(Constants.ABILITY_REGEN_BLOCK, "B");
 			}
-			Integer configBonus = Integer.valueOf(gameBoard.gameConfig.getValue(ability));
-			Integer bonus = 0;
-			if (bonuses.containsKey(abbrev)) {
-				bonus = bonuses.get(abbrev);
+		};
+
+		private static Map<String, Integer> bonuses = new HashMap<String, Integer>();
+
+		public static Map<String, Integer> aggregate(GameBoard gameBoard, Player player) {
+			List<String> abilites = gameBoard.ownedPlanetAbilities(player);
+
+			bonuses.clear();
+			if (abilites.isEmpty()) {
+				return bonuses;
 			}
-			bonus += configBonus;
-			bonuses.put(abbrev, bonus);
-		}
 
-		for (Map.Entry<String, Integer> values : bonuses.entrySet()) {
-			sb.append("+").append(values.getValue()).append("%").append(values.getKey()).append(" ");
-		}
+			for (int i = 0; i < abilites.size(); ++i) {
+				String ability = abilites.get(i);
+				String abbrev = ABILITY_TO_ABBREVIATION.get(ability);
+				if (abbrev == null) {
+					throw new IllegalArgumentException("BoardScreenPlayerHud does not understand: " + abilites.get(i));
+				}
+				Integer configBonus = Integer.valueOf(gameBoard.gameConfig.getValue(ability));
+				Integer bonus = 0;
+				if (bonuses.containsKey(abbrev)) {
+					bonus = bonuses.get(abbrev);
+				}
+				bonus += configBonus;
+				bonuses.put(abbrev, bonus);
+			}
 
-		return sb.toString();
+			return bonuses;
+		}
 	}
 }
