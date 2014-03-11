@@ -70,11 +70,6 @@ public class BoardScreenPlayerHud extends Group {
 
 	private void createResourceBonusLabels(Player enemy, Player user) {
 		Map<String, Integer> playerAbilities = Abilities.aggregate(gameBoard, enemy);
-
-		playerAbilities.put("A", 25);
-		playerAbilities.put("D", 50);
-		playerAbilities.put("B", 50);
-
 		createResourceBonusLabels(playerAbilities, false);
 
 		playerAbilities = Abilities.aggregate(gameBoard, user);
