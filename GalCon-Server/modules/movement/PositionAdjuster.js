@@ -1,9 +1,7 @@
 var galconMath = require("../math/galconMath");
 
 exports.adjustMovePositions = function(game) {
-
-	for(var i =0; i < game.moves.length; i++){
-
+	for(var i = 0; i < game.moves.length; i++){
 		var move = game.moves[i];
 		
 		move.previousPosition = move.currentPosition;
@@ -16,7 +14,5 @@ exports.adjustMovePositions = function(game) {
 		var currentY = move.startPosition.y + (move.endPosition.y - move.startPosition.y) * percentTraveled;
 		
 		move.currentPosition = {x : currentX, y : currentY};
-
 	}
-
 }

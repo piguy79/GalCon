@@ -28,6 +28,7 @@ exports.applyMovesToGame = function(game,multiplierMap){
 		var speedIncrease = speedIncreasePlanetsHeldByPlayer(game.config, move.playerHandle, game.planets, game);
 		move.duration = move.duration - speedIncrease;
 		if (move.duration <= 0) {
+			move.duration = 0;
 			game.applyMoveToPlanets(game, move, multiplierMap);
 			move.executed = true;
 		}

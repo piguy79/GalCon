@@ -37,6 +37,7 @@ exports.applyMovesToGame = function(game, multiplierMap){
 		var move = game.moves[i];
 		move.duration--;
 		if (move.duration <= 0) {
+			move.duration = 0;
 			game.applyMoveToPlanets(game, move, multiplierMap);
 
 			move.executed = true;
