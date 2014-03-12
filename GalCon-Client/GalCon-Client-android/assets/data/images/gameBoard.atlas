@@ -5,21 +5,28 @@ filter: Linear,Linear
 repeat: none
 bottom_bar_expand_button
   rotate: false
-  xy: 921, 492
+  xy: 625, 308
   size: 85, 151
   orig: 85, 151
   offset: 0, 0
   index: -1
 bottom_bar_ship_button
   rotate: false
-  xy: 754, 491
+  xy: 625, 154
   size: 165, 152
   orig: 165, 152
   offset: 0, 0
   index: -1
+crosshairs
+  rotate: false
+  xy: 754, 432
+  size: 216, 211
+  orig: 216, 211
+  offset: 0, 0
+  index: -1
 explosion_particle
   rotate: false
-  xy: 748, 341
+  xy: 754, 4
   size: 151, 148
   orig: 151, 148
   offset: 0, 0
@@ -40,7 +47,7 @@ player_hud
   index: -1
 ship
   rotate: false
-  xy: 921, 403
+  xy: 712, 343
   size: 97, 87
   orig: 97, 87
   offset: 0, 0

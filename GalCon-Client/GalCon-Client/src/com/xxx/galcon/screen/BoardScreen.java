@@ -15,8 +15,10 @@ import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -223,6 +225,9 @@ public class BoardScreen implements ScreenFeedback {
 			moveHud.removeMoves();
 		}
 
+		planetTargetIcons.clear();
+		planetTargetCount.clear();
+
 		createLayout();
 	}
 
@@ -246,6 +251,7 @@ public class BoardScreen implements ScreenFeedback {
 		createMoveHud();
 		createPlayerHud();
 		createPlanets();
+		createPlanetIcons();
 		createMoves();
 		createHarvest();
 
@@ -548,6 +554,50 @@ public class BoardScreen implements ScreenFeedback {
 		}
 	}
 
+	private void createPlanetIcons() {
+		Set<String> targettedPlanets = new HashSet<String>();
+		for (Move move : gameBoard.movesInProgress) {
+			if (move.belongsToPlayer(GameLoop.USER) && !move.executed) {
+				targettedPlanets.add(move.toPlanet);
+			}
+		}
+
+		for (String targettedPlanet : targettedPlanets) {
+			final PlanetButton planetButton = planetButtons.get(targettedPlanet);
+			createPlanetTarget(planetButton);
+		}
+	}
+
+	private Map<String, Integer> planetTargetCount = new HashMap<String, Integer>();
+	private Map<PlanetButton, Image> planetTargetIcons = new HashMap<PlanetButton, Image>();
+
+	private void createPlanetTarget(PlanetButton button) {
+		Integer count = planetTargetCount.get(button.planet.name);
+		if (count == null) {
+			count = Integer.valueOf(1);
+		} else {
+			count = count + 1;
+		}
+		planetTargetCount.put(button.planet.name, count);
+
+		if (count != 1) {
+			return;
+		}
+
+		Image targetImage = new Image(resources.skin, "crosshairs");
+		Point center = button.centerPoint();
+
+		Size tileSize = boardCalcs.getTileSize();
+		float size = tileSize.width * 0.2f;
+
+		targetImage.setBounds(center.x + tileSize.width * 0.5f - size, center.y + tileSize.height * 0.5f - size, size,
+				size);
+		targetImage.setColor(new Color(1.0f, 1.0f, 1.0f, 0.8f));
+
+		boardTable.addActor(targetImage);
+		planetTargetIcons.put(button, targetImage);
+	}
+
 	private void createPlanets() {
 		for (final Planet planet : gameBoard.planets) {
 			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButton(planet, gameBoard,
@@ -664,6 +714,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		if (!gameBoard.movesInProgress.contains(newMove)) {
 			gameBoard.movesInProgress.add(newMove);
+			createPlanetTarget(planetButtons.get(newMove.toPlanet));
 		}
 
 		PlanetButton button = planetButtons.get(newMove.fromPlanet);
@@ -686,6 +737,14 @@ public class BoardScreen implements ScreenFeedback {
 
 		clearMoveActions(move.fromPlanet(gameBoard.planets));
 		clearMoveActions(move.toPlanet(gameBoard.planets));
+
+		Integer count = planetTargetCount.get(move.toPlanet) - 1;
+		planetTargetCount.put(move.toPlanet, count);
+
+		if (count == 0) {
+			Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.toPlanet));
+			targetIcon.remove();
+		}
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
