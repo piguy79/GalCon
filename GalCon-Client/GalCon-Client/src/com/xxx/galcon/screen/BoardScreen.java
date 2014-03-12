@@ -380,7 +380,11 @@ public class BoardScreen implements ScreenFeedback {
 
 				if (move.executed && !roundHasAlreadyBeenAnimated()) {
 					movetoDisplay.addAction(scaleTo(0, 0, 0.8f + delay));
-					addExplosion(move, 0.8f + delay, color);
+					String fromPlanetOwner = planetButtons.get(move.fromPlanet).planet.owner;
+					String toPlanetOwner = planetButtons.get(move.toPlanet).planet.owner;
+					if (!fromPlanetOwner.equals(toPlanetOwner)) {
+						addExplosion(move, 0.8f + delay, color);
+					}
 					anyMoveExecuted = true;
 				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
 					showMove = false;
@@ -584,7 +588,12 @@ public class BoardScreen implements ScreenFeedback {
 			return;
 		}
 
-		Image targetImage = new Image(resources.skin, "crosshairs");
+		Image targetImage;
+		if (button.planet.isOwnedBy(GameLoop.USER)) {
+			targetImage = new Image(resources.skin, "transfer");
+		} else {
+			targetImage = new Image(resources.skin, "crosshairs");
+		}
 		Point center = button.centerPoint();
 
 		Size tileSize = boardCalcs.getTileSize();

@@ -73,6 +73,13 @@ slash_line
   orig: 121, 182
   offset: 0, 0
   index: -1
+transfer
+  rotate: false
+  xy: 811, 222
+  size: 146, 208
+  orig: 146, 208
+  offset: 0, 0
+  index: -1
 
 gameBoard2.png
 format: RGBA8888
