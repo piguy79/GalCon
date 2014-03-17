@@ -24,15 +24,32 @@ public class PlanetButton extends Group {
 		super.setWidth(width);
 		super.setHeight(height);
 
-		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet.isAlive() ? "planet4"
+		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet.isAlive() ? "planet-regen-3"
 				: "dead_planet")));
 		bg.setWidth(width);
 		bg.setHeight(height);
-		bg.setColor(planet.getColor());
+		addActor(bg);
+
+		if (planet.isOwned()) {
+			Image ownedByHighlightImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet
+					.isAlive() ? "planet-highlight" : "dead_planet")));
+			Color planetColor = planet.getColor();
+			planetColor.a = 0.6f;
+			ownedByHighlightImage.setColor(planetColor);
+			ownedByHighlightImage.setWidth(width);
+			ownedByHighlightImage.setHeight(height);
+			addActor(ownedByHighlightImage);
+
+			Image ownedByImage = new Image(new TextureRegionDrawable(
+					resources.planetAtlas.findRegion(planet.isAlive() ? "planet-owned" : "dead_planet")));
+			ownedByImage.setColor(planet.getColor());
+			ownedByImage.setWidth(width);
+			ownedByImage.setHeight(height);
+			addActor(ownedByImage);
+		}
+
 		label = new ShaderLabel(resources.fontShader, countToDisplay, resources.skin, Constants.UI.DEFAULT_FONT);
 		positionLabel();
-
-		addActor(bg);
 		addActor(label);
 	}
 

@@ -160,4 +160,8 @@ public class Planet extends JsonConvertible {
 
 		return color;
 	}
+
+	public boolean isOwned() {
+		return isHome || !owner.equals(OWNER_NO_ONE);
+	}
 }
