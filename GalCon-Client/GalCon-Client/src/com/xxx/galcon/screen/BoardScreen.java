@@ -747,12 +747,14 @@ public class BoardScreen implements ScreenFeedback {
 		clearMoveActions(move.fromPlanet(gameBoard.planets));
 		clearMoveActions(move.toPlanet(gameBoard.planets));
 
-		Integer count = planetTargetCount.get(move.toPlanet) - 1;
-		planetTargetCount.put(move.toPlanet, count);
+		if (planetTargetCount.containsKey(move.toPlanet)) {
+			Integer count = planetTargetCount.get(move.toPlanet) - 1;
+			planetTargetCount.put(move.toPlanet, count);
 
-		if (count == 0) {
-			Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.toPlanet));
-			targetIcon.remove();
+			if (count == 0) {
+				Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.toPlanet));
+				targetIcon.remove();
+			}
 		}
 	}
 
