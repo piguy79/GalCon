@@ -24,8 +24,14 @@ public class PlanetButton extends Group {
 		super.setWidth(width);
 		super.setHeight(height);
 
-		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet.isAlive() ? "planet-regen-3"
-				: "dead_planet")));
+		String planetTexture = "planet-regen-3";
+		if (!planet.isAlive()) {
+			planetTexture = "dead_planet";
+		} else {
+			planetTexture = "planet-regen-" + (int) planet.shipRegenRate;
+		}
+
+		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planetTexture)));
 		bg.setWidth(width);
 		bg.setHeight(height);
 		addActor(bg);
