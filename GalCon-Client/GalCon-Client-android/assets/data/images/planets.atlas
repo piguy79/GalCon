@@ -57,49 +57,49 @@ planets2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-planet-highlight
+moon
   rotate: false
   xy: 404, 687
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-owned
+planet-highlight
   rotate: false
   xy: 2, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-1
+planet-owned
   rotate: false
   xy: 706, 687
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-2
+planet-regen-1
   rotate: false
   xy: 404, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-3
+planet-regen-2
   rotate: false
   xy: 706, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-4
+planet-regen-3
   rotate: false
   xy: 304, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-5
+planet-regen-4
   rotate: false
   xy: 606, 83
   size: 300, 300
@@ -127,28 +127,35 @@ filter: Linear,Linear
 repeat: none
 base_planet
   rotate: false
-  xy: 2, 2
+  xy: 304, 239
   size: 281, 281
   orig: 281, 281
   offset: 0, 0
   index: -1
 harvest
   rotate: false
-  xy: 541, 49
+  xy: 587, 286
   size: 232, 234
   orig: 232, 234
   offset: 0, 0
   index: -1
+planet-regen-5
+  rotate: false
+  xy: 2, 220
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
 speedMoon
   rotate: false
-  xy: 285, 48
+  xy: 304, 2
   size: 254, 235
   orig: 254, 235
   offset: 0, 0
   index: -1
 sun
   rotate: false
-  xy: 775, 58
+  xy: 587, 59
   size: 225, 225
   orig: 225, 225
   offset: 0, 0

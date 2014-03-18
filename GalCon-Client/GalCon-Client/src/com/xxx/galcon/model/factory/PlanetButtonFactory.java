@@ -36,7 +36,7 @@ public class PlanetButtonFactory {
 	public static Moon createMoon(Resources resources, Planet planet, BoardCalculations boardCalcs) {
 		float width = boardCalcs.getTileSize().width * 0.4f;
 		float height = boardCalcs.getTileSize().height * 0.4f;
-		final Moon moon = new Moon(resources.assetManager, planet, height, width);
+		final Moon moon = new Moon(resources, planet, height, width);
 		moon.setHeight(height);
 		moon.setWidth(width);
 
