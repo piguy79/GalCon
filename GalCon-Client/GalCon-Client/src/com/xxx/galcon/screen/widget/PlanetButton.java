@@ -1,5 +1,9 @@
 package com.xxx.galcon.screen.widget;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -14,6 +18,8 @@ public class PlanetButton extends Group {
 	public Planet planet;
 	private ShaderLabel label;
 	private Image bg;
+	private Image glowImage;
+	private Resources resources;
 
 	private float centerXUsed;
 	private float centerYUsed;
@@ -23,6 +29,7 @@ public class PlanetButton extends Group {
 		this.planet = planet;
 		super.setWidth(width);
 		super.setHeight(height);
+		this.resources = resources;
 
 		String planetTexture = "planet-regen-3";
 		if (!planet.isAlive()) {
@@ -57,6 +64,25 @@ public class PlanetButton extends Group {
 		label = new ShaderLabel(resources.fontShader, countToDisplay, resources.skin, Constants.UI.DEFAULT_FONT);
 		positionLabel();
 		addActor(label);
+	}
+
+	public void addGlow() {
+		if (glowImage == null) {
+			glowImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion("planet-glow")));
+			glowImage.setWidth(getWidth());
+			glowImage.setHeight(getHeight());
+
+			glowImage.addAction(forever(sequence(color(Color.BLUE, 0.5f), color(Color.WHITE, 0.5f))));
+
+			addActorAt(0, glowImage);
+		}
+	}
+
+	public void removeGlow() {
+		if (glowImage != null) {
+			glowImage.remove();
+			glowImage = null;
+		}
 	}
 
 	private void positionLabel() {

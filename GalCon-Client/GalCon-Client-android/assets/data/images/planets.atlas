@@ -64,42 +64,42 @@ moon
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-highlight
+planet-glow
   rotate: false
   xy: 2, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-owned
+planet-highlight
   rotate: false
   xy: 706, 687
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-1
+planet-owned
   rotate: false
   xy: 404, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-2
+planet-regen-1
   rotate: false
   xy: 706, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-3
+planet-regen-2
   rotate: false
   xy: 304, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-4
+planet-regen-3
   rotate: false
   xy: 606, 83
   size: 300, 300
@@ -127,35 +127,42 @@ filter: Linear,Linear
 repeat: none
 base_planet
   rotate: false
-  xy: 304, 239
+  xy: 606, 258
   size: 281, 281
   orig: 281, 281
   offset: 0, 0
   index: -1
 harvest
   rotate: false
-  xy: 587, 286
+  xy: 258, 3
   size: 232, 234
   orig: 232, 234
   offset: 0, 0
   index: -1
+planet-regen-4
+  rotate: false
+  xy: 2, 239
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
 planet-regen-5
   rotate: false
-  xy: 2, 220
+  xy: 304, 239
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
 speedMoon
   rotate: false
-  xy: 304, 2
+  xy: 2, 2
   size: 254, 235
   orig: 254, 235
   offset: 0, 0
   index: -1
 sun
   rotate: false
-  xy: 587, 59
+  xy: 492, 12
   size: 225, 225
   orig: 225, 225
   offset: 0, 0

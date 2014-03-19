@@ -616,8 +616,7 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					planetButton.addAction(forever(sequence(color(new Color(0, 0, 0, 0.4f), 0.7f),
-							color(planet.getColor(), 0.5f))));
+					planetButton.addGlow();
 					if (touchedPlanets.size() < 2) {
 						touchedPlanets.add(planet);
 						renderDialog();
@@ -714,8 +713,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void clearMoveActions(Planet planet) {
-		planetButtons.get(planet.name).clearActions();
-		planetButtons.get(planet.name).addAction(Actions.color(planet.getColor(), 0.4f));
+		planetButtons.get(planet.name).removeGlow();
 	}
 
 	private void createNewMove(int oldShipsToSend, Move newMove) {
@@ -810,8 +808,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void clearTouchedPlanets() {
 		for (Planet planet : touchedPlanets) {
 			PlanetButton button = planetButtons.get(planet.name);
-			button.setColor(planet.getColor());
-			button.clearActions();
+			button.removeGlow();
 		}
 
 		touchedPlanets.clear();
