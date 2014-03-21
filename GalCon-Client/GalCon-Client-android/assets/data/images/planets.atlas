@@ -5,7 +5,7 @@ filter: Linear,Linear
 repeat: none
 attackMoon
   rotate: false
-  xy: 327, 21
+  xy: 798, 21
   size: 222, 192
   orig: 222, 192
   offset: 0, 0
@@ -19,9 +19,16 @@ dead_planet
   index: -1
 defenseMoon
   rotate: false
-  xy: 2, 2
+  xy: 473, 2
   size: 323, 211
   orig: 323, 211
+  offset: 0, 0
+  index: -1
+moon-harvest-beam
+  rotate: false
+  xy: 2, 134
+  size: 469, 79
+  orig: 469, 79
   offset: 0, 0
   index: -1
 planet2
@@ -59,47 +66,47 @@ filter: Linear,Linear
 repeat: none
 moon
   rotate: false
+  xy: 304, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+moon-harvest-1
+  rotate: false
   xy: 404, 687
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-glow
+moon-harvest-2
   rotate: false
   xy: 2, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-highlight
+moon-harvest-3
   rotate: false
   xy: 706, 687
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-owned
+moon-harvest-4
   rotate: false
   xy: 404, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-1
+moon-harvest-5
   rotate: false
   xy: 706, 385
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-2
-  rotate: false
-  xy: 304, 2
-  size: 300, 300
-  orig: 300, 300
-  offset: 0, 0
-  index: -1
-planet-regen-3
+planet-glow
   rotate: false
   xy: 606, 83
   size: 300, 300
@@ -127,43 +134,83 @@ filter: Linear,Linear
 repeat: none
 base_planet
   rotate: false
-  xy: 606, 258
+  xy: 719, 606
   size: 281, 281
   orig: 281, 281
   offset: 0, 0
   index: -1
 harvest
   rotate: false
-  xy: 258, 3
+  xy: 229, 653
   size: 232, 234
   orig: 232, 234
   offset: 0, 0
   index: -1
-planet-regen-4
+planet-highlight
   rotate: false
-  xy: 2, 239
+  xy: 2, 351
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-planet-regen-5
+planet-owned
   rotate: false
-  xy: 304, 239
+  xy: 304, 350
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+planet-regen-1
+  rotate: false
+  xy: 606, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+planet-regen-2
+  rotate: false
+  xy: 2, 49
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+planet-regen-3
+  rotate: false
+  xy: 304, 48
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+planet-regen-4
+  rotate: false
+  xy: 606, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
 speedMoon
   rotate: false
-  xy: 2, 2
+  xy: 463, 652
   size: 254, 235
   orig: 254, 235
   offset: 0, 0
   index: -1
 sun
   rotate: false
-  xy: 492, 12
+  xy: 2, 662
   size: 225, 225
   orig: 225, 225
+  offset: 0, 0
+  index: -1
+
+planets4.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+planet-regen-5
+  rotate: false
+  xy: 2, 2
+  size: 300, 300
+  orig: 300, 300
   offset: 0, 0
   index: -1

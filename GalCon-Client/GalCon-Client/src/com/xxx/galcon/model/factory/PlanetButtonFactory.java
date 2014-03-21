@@ -33,12 +33,10 @@ public class PlanetButtonFactory {
 		return button;
 	}
 
-	public static Moon createMoon(Resources resources, Planet planet, BoardCalculations boardCalcs) {
+	public static Moon createMoon(Resources resources, PlanetButton planetButton, BoardCalculations boardCalcs) {
 		float width = boardCalcs.getTileSize().width * 0.4f;
 		float height = boardCalcs.getTileSize().height * 0.4f;
-		final Moon moon = new Moon(resources, planet, height, width);
-		moon.setHeight(height);
-		moon.setWidth(width);
+		final Moon moon = new Moon(resources, planetButton, height, width);
 
 		return moon;
 	}

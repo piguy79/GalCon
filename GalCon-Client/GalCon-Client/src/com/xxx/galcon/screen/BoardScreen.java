@@ -3,7 +3,6 @@ package com.xxx.galcon.screen;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
@@ -28,6 +27,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -175,7 +174,7 @@ public class BoardScreen implements ScreenFeedback {
 		private void updatePlanetCalcs() {
 			float largest = Math.max(tileSize.width, tileSize.height);
 			maxPlanetRadius = largest;
-			minPlanetRadius = (int) (largest * 0.5f);
+			minPlanetRadius = (int) (largest * 0.6f);
 		}
 
 		/**
@@ -253,7 +252,6 @@ public class BoardScreen implements ScreenFeedback {
 		createPlanets();
 		createPlanetIcons();
 		createMoves();
-		createHarvest();
 
 		Gdx.input.setInputProcessor(stage);
 
@@ -278,20 +276,6 @@ public class BoardScreen implements ScreenFeedback {
 			});
 			stage.addActor(overlay);
 		}
-	}
-
-	private void createHarvest() {
-		for (Moon moon : moons) {
-			if (moon.associatedPlanet.isUnderHarvest() && moon.getActions().size == 0) {
-				addActionToMoon(moon);
-			}
-		}
-	}
-
-	private void addActionToMoon(Moon moon) {
-		float duration = 1.5f;
-		moon.addAction(Actions.forever(Actions.sequence(Actions.color(new Color(0, 0, 0, 1), duration),
-				Actions.color(new Color(0.9f, 0, 0, 1), duration))));
 	}
 
 	private void createPlayerHud() {
@@ -430,8 +414,8 @@ public class BoardScreen implements ScreenFeedback {
 		for (float currentAngle = 0; currentAngle < circleInRadians; currentAngle += radiansBetweenParticles) {
 			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
 
-			float yStartOffset = (float) Math.sin(currentAngle) * startRadius;
-			float xStartOffset = (float) Math.cos(currentAngle) * startRadius;
+			float yStartOffset = (float) MathUtils.sin(currentAngle) * startRadius;
+			float xStartOffset = (float) MathUtils.cos(currentAngle) * startRadius;
 
 			particle.setColor(Color.CLEAR);
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
@@ -631,17 +615,16 @@ public class BoardScreen implements ScreenFeedback {
 			planetButtons.put(planet.name, planetButton);
 
 			if (planet.hasAbility()) {
-				createMoon(planet);
+				createMoon(planetButton);
 			}
 		}
 	}
 
-	private void createMoon(Planet planet) {
-		final Moon moon = PlanetButtonFactory.createMoon(resources, planet, boardCalcs);
+	private void createMoon(PlanetButton planetButton) {
+		final Moon moon = PlanetButtonFactory.createMoon(resources, planetButton, boardCalcs);
 
-		PlanetButton associatedAbilityPlanet = planetButtons.get(planet.name);
-		float relativeX = associatedAbilityPlanet.centerPoint().x - (moon.getWidth() / 2);
-		float relativeY = associatedAbilityPlanet.centerPoint().y - (moon.getHeight() / 2);
+		float relativeX = planetButton.centerPoint().x - (moon.getWidth() / 2);
+		float relativeY = planetButton.centerPoint().y - (moon.getHeight() / 2);
 
 		moon.setX(relativeX - boardCalcs.getTileSize().width / 2);
 		moon.setY(relativeY);
@@ -783,14 +766,13 @@ public class BoardScreen implements ScreenFeedback {
 		for (Moon moon : moons) {
 			Point newPosition = findMoonPosition(moon);
 			if (newPosition != null) {
-				moon.setX(newPosition.x - (moon.getWidth() / 2));
-				moon.setY(newPosition.y - (moon.getHeight() / 2));
+				moon.updateLocation(boardTable, boardCalcs, newPosition);
 			}
 		}
 	}
 
 	private Point findMoonPosition(Moon moon) {
-		PlanetButton associatedPlanet = planetButtons.get(moon.associatedPlanet.name);
+		PlanetButton associatedPlanet = planetButtons.get(moon.associatedPlanetButton.planet.name);
 		Point movePoint = null;
 		if (associatedPlanet != null && gameBoard != null) {
 			if (moon.angle == 360) {
@@ -798,7 +780,7 @@ public class BoardScreen implements ScreenFeedback {
 			}
 
 			movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(),
-					boardCalcs.getTileSize().width * 0.6f, boardCalcs.getTileSize().height / 2, moon.angle);
+					boardCalcs.getTileSize().width * 0.7f, boardCalcs.getTileSize().height * 0.46f, moon.angle);
 			moon.angle = (float) (moon.angle + moon.rateOfOrbit);
 		}
 
