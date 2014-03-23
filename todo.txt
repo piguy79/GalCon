@@ -22,7 +22,7 @@ BoardScreen
 	X 0 Ship movements needs protection
 	X The number of ships available when opening the existing move dialog is wrong.
 	X Add a moon to the planet information dialog
-	- Create a new icon for the harvest button.
+	M Create a new icon for the harvest button.
 	X The Harvest button should only be enabled when you have an ability planet which is not currently under harvest.
 	X Should there be a way to cancel a harvest? I dont think so - NO
 	X Moons for ability planets
@@ -41,14 +41,21 @@ BoardScreen
 	X Change the button to be a group. Add the image and label seperatly.
 	X Do something about planet info when the planet is DEAD
 	X Moves which have been executed are still visible after you animate and then perform move.
-	- Moon textures need to be done.
+	M Moon textures need to be done.
 	- Speed ability is not displayed when showing a planet. I think this is actually regen which is not displayed
 	- Are we still going with block regen? - Possibly invert to act as a regen bonus. See if this is too unbalanced
 	X Ship slider is not the correct size on the move dialog
 	X End game scenario - Server side too. I now block any further moves if the game is over.
-	- Text on the current move select. Seems a little crap
-	- Handle moves which over shoot a planet
-	- Some better way to represent when a planet is clicked. Not very obvious right now.
+	X Text on the current move select. Seems a little crap
+	M Handle moves which over shoot a planet
+	M Some better way to represent when a planet is clicked. Not very obvious right now.
 	
 MoveButton
 	X The Labels still do not display correctly.
+	
+	
+Game Invites
+	- Change the invite method so that it creates a game with the two players with some property set. The db interaction should be create game/decrement coin.
+	- Change accept invite to modify the social piece of a game and then decrement the coin from the accepting user
+	- Change decline to first give a coin back to the requester and then update the end game scenario to show that the game was declined.
+	- Update the game list screen to make sure we are filtering out the invites. Also make sure we show people when a game was declined.

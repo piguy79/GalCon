@@ -15,7 +15,10 @@ var gameSchema = mongoose.Schema({
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
-	social: "String",
+	social: {
+		invitee : "String",
+		status : "String"
+	},
 	config : {
 		version : "Number",
 		values : {}
@@ -101,6 +104,9 @@ var gameSchema = mongoose.Schema({
 gameSchema.set('toObject', { getters: true });
 gameSchema.index({'players' : 1});
 gameSchema.index({'endGameInformation.winnerHandle': 1});
+gameSchema.index({'social.invitee': 1});
+
+
 
 var hasSameOwner = function(planet, move){
 	return planet.ownerHandle == move.playerHandle;
@@ -487,7 +493,7 @@ exports.findGameAtAMap = function(mapToFind, playerHandle){
 
 var filterOutPlayerAndSocial = function(games, playerHandle){
 	var filteredGames = _.filter(games, function(game){
-		return game.players[0].handle != playerHandle && !game.social;
+		return game.players[0].handle != playerHandle;
 	});
 	
 	return filteredGames;

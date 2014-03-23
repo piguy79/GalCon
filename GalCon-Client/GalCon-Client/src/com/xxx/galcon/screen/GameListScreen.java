@@ -29,6 +29,7 @@ import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -116,7 +117,11 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				if (!showGamesThatHaveBeenWon()
 						|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
 					iter.remove();
+					break;
 				}
+			}
+			if(gameInviteHasNotBeenAccepted(board,GameLoop.USER)){
+				iter.remove();
 			}
 		}
 
@@ -146,6 +151,13 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 	}
 
+	private boolean gameInviteHasNotBeenAccepted(MinifiedGame game, Player user) {
+		if(game.social != null && game.social.invitee.equals(user.handle) && !game.social.status.equals("ACCEPTED")){
+			return true;
+		}
+		return false;
+	}
+
 	private void createGameEntry(MinifiedGame game, Group group) {
 		float width = group.getWidth();
 		float rowHeight = group.getHeight();
@@ -153,7 +165,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		String opponent;
 		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
 		if (otherPlayers.size() == 0) {
-			opponent = BoardScreen.Labels.waitingLabel(game.social);
+			opponent = BoardScreen.Labels.waitingLabel(game.social.invitee);
 		} else {
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}

@@ -758,7 +758,7 @@ var findOrCreateGamePromise = function(user, time, mapToFind) {
 					if(game) {
 						return game;
 					} 
-					return generateGamePromise(user, time, mapToFind);
+					return generateGamePromise([user], time, mapToFind);
 				});
 			});
 		});
@@ -838,7 +838,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 
-var generateGamePromise = function(user, time, mapToFind, social) {
+var generateGamePromise = function(users, time, mapToFind, social) {
 	var p = mapManager.findMapByKey(mapToFind);
 	return p.then(function(map) {
 		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
@@ -850,12 +850,12 @@ var generateGamePromise = function(user, time, mapToFind, social) {
 		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
 
 		var gameAttributes = {
-			players : [ user ],
+			players : users,
 			width : widthToUse,
 			height : heightToUse,
 			numberOfPlanets : numPlanets,
 			createdTime : time,
-			rankOfInitialPlayer : user.rankInfo.level,
+			rankOfInitialPlayer : users[0].rankInfo.level,
 			map : map.key,
 			gameType : map.gameType[gameTypeIndex],
 			social : social
@@ -866,9 +866,10 @@ var generateGamePromise = function(user, time, mapToFind, social) {
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
 		}).then(function(game) {
-			user.coins--;
+			var currentUser = users[0];
+			currentUser.coins--;
 			
-			var p = user.withPromise(user.save);
+			var p = currentUser.withPromise(currentUser.save);
 			return p.then(function() {
 				return game;
 			});
@@ -903,6 +904,7 @@ exports.inviteUserToGame = function(req, res){
 		return;
 	}
 	var requestingUser;
+	var inviteeUser;
 	var currentGame;
 		
 	var p = validateSession(session, {"handle" : requesterHandle});
@@ -913,21 +915,14 @@ exports.inviteUserToGame = function(req, res){
 			throw new Error("Invalid Invite Request");
 		}else{
 			requestingUser = user;
-			return generateGamePromise(user, Date.now(), mapKey, inviteeHandle);
+			return userManager.findUserByHandle(inviteeHandle);
 		}
-	}).then(function(game){
-		currentGame = game;
-		var queueItem = {
-				requester : requestingUser,
-				invitee : inviteeHandle,
-				game : game,
-				creaatedtime : Date.now()
-		};
-		return gameQueueManager.GameQueueModel.withPromise(gameQueueManager.GameQueueModel.create, [queueItem]);
-	}).then(function(){
-		return userManager.findUserByHandle(inviteeHandle);
-	}).then(function(invitee){
-		return userManager.updateFriend(requestingUser, invitee);
+	}).then(function(inviteUser){
+		inviteeUser = inviteUser;
+		return generateGamePromise([requestingUser], Date.now(), mapKey, inviteeHandle);
+	}).then(function(generatedGame){
+		currentGame = generatedGame;
+		return userManager.updateFriend(requestingUser, inviteeUser);
 	}).then(function(savedUser){
 		res.json(currentGame);
 	}).then(null, logErrorAndSetResponse(req, res));

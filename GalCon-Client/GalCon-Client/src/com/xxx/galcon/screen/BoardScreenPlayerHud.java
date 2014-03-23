@@ -256,7 +256,7 @@ public class BoardScreenPlayerHud extends Group {
 		if (players.size() < 2) {
 			Player waitingForOpponent = new Player();
 			waitingForOpponent.rank = null;
-			waitingForOpponent.handle = BoardScreen.Labels.waitingLabel(gameBoard.social);
+			waitingForOpponent.handle = BoardScreen.Labels.waitingLabel(gameBoard.social.invitee);
 			return waitingForOpponent;
 		}
 

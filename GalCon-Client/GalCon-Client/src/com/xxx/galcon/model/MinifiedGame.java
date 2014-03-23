@@ -20,7 +20,7 @@ public class MinifiedGame extends JsonConvertible {
 	public String winner;
 	public Date winningDate = null;
 	public int mapKey;
-	public String social;
+	public Social social;
 
 	public static class MinifiedPlayer {
 		public Auth auth;
@@ -53,7 +53,10 @@ public class MinifiedGame extends JsonConvertible {
 		this.winner = jsonObject.optString("winner");
 		this.winningDate = formatDate(jsonObject, "winningDate");
 		this.mapKey = jsonObject.getInt("map");
-		this.social = jsonObject.optString("social");
+		if(jsonObject.has("social")){
+			this.social = new Social();
+			this.social.consume(jsonObject.getJSONObject("social"));
+		}
 	}
 
 	public boolean hasWinner() {

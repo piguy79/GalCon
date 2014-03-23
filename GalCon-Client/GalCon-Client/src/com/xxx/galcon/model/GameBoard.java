@@ -18,7 +18,7 @@ public class GameBoard extends JsonConvertible {
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
 	public Long createdTime;
-	public String social;
+	public Social social;
 	public Long map;
 	public Long rankOfInitialPlayer;
 	public List<Planet> planets = new ArrayList<Planet>();
@@ -50,7 +50,11 @@ public class GameBoard extends JsonConvertible {
 		}
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
-		this.social = jsonObject.optString(Constants.SOCIAL);
+		
+		if(jsonObject.has("social")){
+			this.social = new Social();
+			this.social.consume(jsonObject.getJSONObject(Constants.SOCIAL));
+		}		
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.rankOfInitialPlayer = jsonObject.getLong(Constants.RANK_OF_INITIAL_PLAYER);
 		this.map = jsonObject.getLong(Constants.MAP);
