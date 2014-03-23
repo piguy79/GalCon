@@ -4,17 +4,27 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+import static java.lang.Math.floor;
+import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -89,12 +99,12 @@ public abstract class HighlightOverlay extends Overlay {
 		return this;
 	}
 
-	public HighlightOverlay focus(RoundInformation roundInformation, List<Move> moves) {
+	public HighlightOverlay focus(RoundInformation roundInformation) {
 		// we want users to use the 'go' button instead
 		this.removeListener(defaultHideListener);
 
 		huds = new RoundInformationHuds();
-		huds.createTopHud(moves);
+		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
 
@@ -121,6 +131,7 @@ public abstract class HighlightOverlay extends Overlay {
 			lbl.addAction(delay(0.33f, color(Color.WHITE, 0.66f)));
 			addActor(lbl);
 		}
+
 		return this;
 	}
 
@@ -161,21 +172,78 @@ public abstract class HighlightOverlay extends Overlay {
 		Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
 		Planet toPlanet = gameBoard.getPlanet(move.toPlanet);
 
-		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
+		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard,
+				!move.executed, boardCalcs, resources);
+		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButton(toPlanet, gameBoard, !move.executed,
 				boardCalcs, resources);
-		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButton(toPlanet, gameBoard, true,
-				boardCalcs, resources);
-
-		final Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.currentPosition,
-				resources, boardCalcs);
 
 		addActor(fromPlanetButton);
 		addActor(toPlanetButton);
+
+		Point position = move.currentPosition;
+		if (move.executed) {
+			position = move.previousPosition;
+		} else {
+			highlightPath(fromPlanet, toPlanet);
+		}
+
+		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), position, resources, boardCalcs);
+
+		Color color = Constants.Colors.USER_SHIP_FILL;
+		if (!move.belongsToPlayer(GameLoop.USER)) {
+			color = Constants.Colors.ENEMY_SHIP_FILL;
+		}
+		moveToDisplay.setColor(color);
+
+		if (move.executed) {
+			Point newShipPosition = MoveFactory.getShipPosition(moveToDisplay, move.currentPosition, boardCalcs);
+			moveToDisplay.addAction(delay(0.25f, moveTo(newShipPosition.x, newShipPosition.y, 1.25f)));
+
+			moveToDisplay.addAction(delay(0.5f, scaleTo(0, 0, 1.0f)));
+			String toPlanetOwner = toPlanetButton.planet.owner;
+			if (!toPlanetButton.planet.previousRoundOwner(gameBoard).equals(toPlanetOwner)) {
+				addExplosion(move, 1.5f, color);
+			}
+		}
+
 		addActor(moveToDisplay);
 
-		highlightPath(fromPlanet, toPlanet);
-
 		return this;
+	}
+
+	private void addExplosion(Move move, float delay, Color color) {
+		int minNumberOfParticles = 6;
+		int maxNumberOfParticles = 15;
+		float ratio = ((float) move.shipsToMove) / 30.0f;
+		int numberOfParticles = min(maxNumberOfParticles, (int) floor(minNumberOfParticles
+				+ (maxNumberOfParticles - minNumberOfParticles) * ratio));
+
+		float tileWidth = boardCalcs.getTileSize().width;
+
+		float circleInRadians = (float) Math.PI * 2.0f;
+		float startRadius = tileWidth * 0.05f;
+		float particleSize = tileWidth * 0.2f;
+		float radiansBetweenParticles = circleInRadians / (float) numberOfParticles;
+
+		Point tileCenter = boardCalcs.tileCoordsToPixels(move.endPosition);
+
+		for (float currentAngle = 0; currentAngle < circleInRadians; currentAngle += radiansBetweenParticles) {
+			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
+
+			float yStartOffset = (float) MathUtils.sin(currentAngle) * startRadius;
+			float xStartOffset = (float) MathUtils.cos(currentAngle) * startRadius;
+
+			particle.setColor(Color.CLEAR);
+			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
+			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
+			particle.addAction(sequence(delay(delay), color(color)));
+			particle.addAction(sequence(delay(delay),
+					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
+			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
+			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
+
+			addActor(particle);
+		}
 	}
 
 	private void highlightPath(Planet fromPlanet, Planet toPlanet) {
@@ -268,6 +336,27 @@ public abstract class HighlightOverlay extends Overlay {
 		private RoundInformationBottomHud bottomHud;
 		private RoundInformationTopHud topHud;
 
+		private Map<String, List<Move>> planetToMoves;
+		private Iterator<String> planetIterator;
+
+		public RoundInformationHuds() {
+			planetToMoves = new HashMap<String, List<Move>>();
+			for (Move move : gameBoard.movesInProgress) {
+				if (move.executed) {
+					List<Move> planetMoves;
+					if (planetToMoves.containsKey(move.toPlanet)) {
+						planetMoves = planetToMoves.get(move.toPlanet);
+					} else {
+						planetMoves = new ArrayList<Move>();
+					}
+					planetMoves.add(move);
+					planetToMoves.put(move.toPlanet, planetMoves);
+				}
+			}
+
+			planetIterator = planetToMoves.keySet().iterator();
+		}
+
 		@Override
 		public void createTopHud(List<Move> object) {
 			Size size = screenCalcs.getTopHudBounds().size;
@@ -285,8 +374,18 @@ public abstract class HighlightOverlay extends Overlay {
 						return false;
 					}
 
-					hide();
-					remove();
+					if (planetIterator.hasNext()) {
+						HighlightOverlay.this.clear();
+						bottomHud.changeButtonText("Next >");
+						List<Move> moves = planetToMoves.get(planetIterator.next());
+						for (Move move : moves) {
+							HighlightOverlay.this.add(move);
+						}
+					} else {
+						hide();
+						remove();
+						onClose();
+					}
 
 					return true;
 				}

@@ -67,4 +67,8 @@ public class RoundInformationBottomHud extends Group {
 		backGround.setHeight(getHeight());
 		addActor(backGround);
 	}
+
+	public void changeButtonText(String text) {
+		nextText.setText(text);
+	}
 }

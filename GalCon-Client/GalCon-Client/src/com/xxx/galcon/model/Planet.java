@@ -77,7 +77,7 @@ public class Planet extends JsonConvertible {
 		List<Move> associatedMoves = new ArrayList<Move>();
 
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.toPlanet.equals(this.name) && move.belongsToPlayer(GameLoop.USER)) {
+			if (move.toPlanet.equals(this.name)) {
 				associatedMoves.add(move);
 			}
 		}

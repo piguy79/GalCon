@@ -1,16 +1,7 @@
 package com.xxx.galcon.screen;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-import static java.lang.Math.floor;
-import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +17,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -236,7 +225,7 @@ public class BoardScreen implements ScreenFeedback {
 				public void onClose() {
 					beginShipMovements();
 				}
-			}).focus(gameBoard.roundInformation, new ArrayList<Move>());
+			}).focus(gameBoard.roundInformation);
 		} else {
 			createMoves();
 		}
@@ -337,112 +326,32 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createMoves() {
-		Map<String, List<Move>> planetToMoves = new HashMap<String, List<Move>>();
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.belongsToPlayer(GameLoop.USER) || move.executed) {
-				List<Move> planetMoves;
-				if (planetToMoves.containsKey(move.toPlanet)) {
-					planetMoves = planetToMoves.get(move.toPlanet);
-				} else {
-					planetMoves = new ArrayList<Move>();
-				}
-				planetMoves.add(move);
-				planetToMoves.put(move.toPlanet, planetMoves);
+			if (move.executed || !move.belongsToPlayer(GameLoop.USER)) {
+				continue;
 			}
-		}
+			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.previousPosition,
+					resources, boardCalcs);
 
-		float delay = 0.0f;
-		for (Map.Entry<String, List<Move>> movesByPlanet : planetToMoves.entrySet()) {
-			final PlanetButton planetButton = planetButtons.get(movesByPlanet.getKey());
-
-			boolean anyMoveExecuted = false;
-			for (Move move : movesByPlanet.getValue()) {
-				Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.previousPosition,
-						resources, boardCalcs);
-
-				boolean showMove = true;
-
-				Point newShipPosition = MoveFactory.getShipPosition(movetoDisplay, move.currentPosition, boardCalcs);
-				if (!roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(delay(delay, moveTo(newShipPosition.x, newShipPosition.y, 1.2f)));
-					delay += 0.5f;
-				} else {
-					movetoDisplay.setPosition(newShipPosition.x, newShipPosition.y);
-				}
-
-				Color color = Constants.Colors.USER_SHIP_FILL;
-				if (!move.belongsToPlayer(GameLoop.USER)) {
-					color = Constants.Colors.ENEMY_SHIP_FILL;
-				}
-
-				movetoDisplay.setColor(color);
-
-				if (move.executed && !roundHasAlreadyBeenAnimated()) {
-					movetoDisplay.addAction(scaleTo(0, 0, 0.8f + delay));
-					String fromPlanetOwner = planetButtons.get(move.fromPlanet).planet.owner;
-					String toPlanetOwner = planetButtons.get(move.toPlanet).planet.owner;
-					if (!fromPlanetOwner.equals(toPlanetOwner)) {
-						addExplosion(move, 0.8f + delay, color);
-					}
-					anyMoveExecuted = true;
-				} else if (move.executed && roundHasAlreadyBeenAnimated()) {
-					showMove = false;
-				}
-				movetoDisplay.setTouchable(Touchable.disabled);
-
-				if (showMove) {
-					boardTable.addActor(movetoDisplay);
-				}
+			Point newShipPosition = MoveFactory.getShipPosition(movetoDisplay, move.currentPosition, boardCalcs);
+			if (!roundHasAlreadyBeenAnimated()) {
+				movetoDisplay.addAction(delay(0.0f, moveTo(newShipPosition.x, newShipPosition.y, 1.2f)));
+			} else {
+				movetoDisplay.setPosition(newShipPosition.x, newShipPosition.y);
 			}
 
-			if (anyMoveExecuted) {
-				delay += 0.8;
-				planetButton.addAction(delay(delay, run(new Runnable() {
-					@Override
-					public void run() {
-						planetButton.setShipCount(planetButton.planet.numberOfShips);
-					}
-				})));
-				delay += 0.5;
+			Color color = Constants.Colors.USER_SHIP_FILL;
+			if (!move.belongsToPlayer(GameLoop.USER)) {
+				color = Constants.Colors.ENEMY_SHIP_FILL;
 			}
+
+			movetoDisplay.setColor(color);
+			movetoDisplay.setTouchable(Touchable.disabled);
+
+			boardTable.addActor(movetoDisplay);
 		}
 
 		roundAnimated = gameBoard.roundInformation.currentRound;
-	}
-
-	private void addExplosion(Move move, float delay, Color color) {
-		int minNumberOfParticles = 6;
-		int maxNumberOfParticles = 15;
-		float ratio = ((float) move.shipsToMove) / 30.0f;
-		int numberOfParticles = min(maxNumberOfParticles, (int) floor(minNumberOfParticles
-				+ (maxNumberOfParticles - minNumberOfParticles) * ratio));
-
-		float tileWidth = boardCalcs.getTileSize().width;
-
-		float circleInRadians = (float) Math.PI * 2.0f;
-		float startRadius = tileWidth * 0.05f;
-		float particleSize = tileWidth * 0.2f;
-		float radiansBetweenParticles = circleInRadians / (float) numberOfParticles;
-
-		Point tileCenter = boardCalcs.tileCoordsToPixels(move.endPosition);
-
-		for (float currentAngle = 0; currentAngle < circleInRadians; currentAngle += radiansBetweenParticles) {
-			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
-
-			float yStartOffset = (float) MathUtils.sin(currentAngle) * startRadius;
-			float xStartOffset = (float) MathUtils.cos(currentAngle) * startRadius;
-
-			particle.setColor(Color.CLEAR);
-			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
-			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
-			particle.addAction(sequence(delay(delay), color(color)));
-			particle.addAction(sequence(delay(delay),
-					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
-			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
-			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
-
-			boardTable.addActor(particle);
-		}
 	}
 
 	private void createMoveHud() {

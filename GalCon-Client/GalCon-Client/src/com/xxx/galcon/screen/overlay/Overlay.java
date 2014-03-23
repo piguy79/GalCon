@@ -15,6 +15,15 @@ public class Overlay extends Group {
 	public Overlay(Resources resources) {
 		this.resources = resources;
 
+		addBackground();
+	}
+
+	public void clear() {
+		super.clear();
+		addBackground();
+	}
+
+	private void addBackground() {
 		TextureRegion blackBackground = resources.menuAtlas.findRegion("transparent_square");
 		backGround = new Image(new TextureRegionDrawable(blackBackground));
 		backGround.setColor(0, 0, 0, 0.8f);
