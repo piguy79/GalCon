@@ -228,6 +228,22 @@ public class BoardScreen implements ScreenFeedback {
 		planetTargetCount.clear();
 
 		createLayout();
+
+		if (!GameLoop.USER.hasMoved(gameBoard)) {
+			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+				@Override
+				public void onClose() {
+					beginShipMovements();
+				}
+			}).focus(gameBoard.roundInformation, new ArrayList<Move>());
+		} else {
+			createMoves();
+		}
+	}
+
+	private void beginShipMovements() {
+		createMoves();
 	}
 
 	private void createLayout() {
@@ -251,7 +267,6 @@ public class BoardScreen implements ScreenFeedback {
 		createPlayerHud();
 		createPlanets();
 		createPlanetIcons();
-		createMoves();
 
 		Gdx.input.setInputProcessor(stage);
 

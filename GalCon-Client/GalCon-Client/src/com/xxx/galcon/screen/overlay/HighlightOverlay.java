@@ -10,9 +10,14 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -26,6 +31,8 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.model.RoundInformation;
+import com.xxx.galcon.model.Size;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
 import com.xxx.galcon.screen.BoardScreen.BoardCalculations;
@@ -33,7 +40,10 @@ import com.xxx.galcon.screen.BoardScreen.ScreenCalculations;
 import com.xxx.galcon.screen.MoveHud;
 import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.MoveListener;
+import com.xxx.galcon.screen.event.RoundInformationEvent;
 import com.xxx.galcon.screen.hud.PlanetInfoHud;
+import com.xxx.galcon.screen.hud.RoundInformationBottomHud;
+import com.xxx.galcon.screen.hud.RoundInformationTopHud;
 import com.xxx.galcon.screen.hud.ShipSelectionHud;
 import com.xxx.galcon.screen.hud.SingleMoveInfoHud;
 import com.xxx.galcon.screen.widget.PlanetButton;
@@ -45,6 +55,13 @@ public abstract class HighlightOverlay extends Overlay {
 	private BoardCalculations boardCalcs;
 	private GameBoard gameBoard;
 	private MoveHud moveHud;
+
+	private ClickListener defaultHideListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			hide();
+		}
+	};
 
 	private Resources resources;
 
@@ -60,12 +77,7 @@ public abstract class HighlightOverlay extends Overlay {
 		screenCalcs.getBoardBounds().applyBounds(this);
 		stage.addActor(this);
 
-		addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				hide();
-			}
-		});
+		addListener(defaultHideListener);
 	}
 
 	public HighlightOverlay focus(Move move) {
@@ -74,6 +86,41 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createBottomHud();
 		huds.show();
 
+		return this;
+	}
+
+	public HighlightOverlay focus(RoundInformation roundInformation, List<Move> moves) {
+		// we want users to use the 'go' button instead
+		this.removeListener(defaultHideListener);
+
+		huds = new RoundInformationHuds();
+		huds.createTopHud(moves);
+		huds.createBottomHud();
+		huds.show();
+
+		{
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin, Constants.UI.LARGE_FONT);
+			lbl.setWidth(Gdx.graphics.getWidth());
+			lbl.setX(0);
+			lbl.setY(Gdx.graphics.getHeight() * 0.7f - lbl.getHeight() * 0.5f);
+			lbl.setAlignment(Align.center, Align.center);
+			lbl.setTouchable(Touchable.disabled);
+			lbl.setColor(Color.CLEAR);
+			lbl.addAction(color(Color.WHITE, 0.66f));
+			addActor(lbl);
+		}
+		{
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.currentRound + 1),
+					resources.skin, Constants.UI.LARGE_FONT);
+			lbl.setWidth(Gdx.graphics.getWidth());
+			lbl.setX(0);
+			lbl.setY(Gdx.graphics.getHeight() * 0.6f - lbl.getHeight() * 0.5f);
+			lbl.setAlignment(Align.center, Align.center);
+			lbl.setTouchable(Touchable.disabled);
+			lbl.setColor(Color.CLEAR);
+			lbl.addAction(delay(0.33f, color(Color.WHITE, 0.66f)));
+			addActor(lbl);
+		}
 		return this;
 	}
 
@@ -193,6 +240,79 @@ public abstract class HighlightOverlay extends Overlay {
 		public void hide();
 	}
 
+	private void hide(final Actor top, final Actor bottom) {
+		if (top != null) {
+			top.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
+					run(new Runnable() {
+						@Override
+						public void run() {
+							top.remove();
+						}
+					})));
+		}
+
+		if (bottom != null) {
+			bottom.addAction(sequence(
+					moveTo(0, -screenCalcs.getBottomHudBounds().size.height, 0.5f, Interpolation.circleOut),
+					run(new Runnable() {
+						@Override
+						public void run() {
+							bottom.remove();
+						}
+					})));
+		}
+	}
+
+	private class RoundInformationHuds implements Huds<List<Move>> {
+
+		private RoundInformationBottomHud bottomHud;
+		private RoundInformationTopHud topHud;
+
+		@Override
+		public void createTopHud(List<Move> object) {
+			Size size = screenCalcs.getTopHudBounds().size;
+			topHud = new RoundInformationTopHud(resources, size.width, size.height);
+		}
+
+		@Override
+		public void createBottomHud() {
+			Size size = screenCalcs.getBottomHudBounds().size;
+			bottomHud = new RoundInformationBottomHud(resources, size.width, size.height);
+			bottomHud.addListener(new EventListener() {
+				@Override
+				public boolean handle(Event event) {
+					if (!(event instanceof RoundInformationEvent)) {
+						return false;
+					}
+
+					hide();
+					remove();
+
+					return true;
+				}
+			});
+		}
+
+		@Override
+		public void show() {
+			Point topOrigin = screenCalcs.getTopHudBounds().origin;
+			Point bottomOrigin = screenCalcs.getBottomHudBounds().origin;
+
+			topHud.setX(topOrigin.x);
+			topHud.setY(topOrigin.y);
+			bottomHud.setX(bottomOrigin.x);
+			bottomHud.setY(bottomOrigin.y);
+
+			getStage().addActor(bottomHud);
+			getStage().addActor(topHud);
+		}
+
+		@Override
+		public void hide() {
+			HighlightOverlay.this.hide(topHud, bottomHud);
+		}
+	}
+
 	private class PlanetHuds implements Huds<Planet> {
 
 		private PlanetInfoHud topHud;
@@ -209,6 +329,7 @@ public abstract class HighlightOverlay extends Overlay {
 
 		@Override
 		public void createBottomHud() {
+
 		}
 
 		@Override
@@ -238,16 +359,7 @@ public abstract class HighlightOverlay extends Overlay {
 		public void hide() {
 			moveHud.restoreMoves();
 
-			if (topHud != null) {
-				topHud.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
-						run(new Runnable() {
-							@Override
-							public void run() {
-								topHud.remove();
-								topHud = null;
-							}
-						})));
-			}
+			HighlightOverlay.this.hide(topHud, null);
 		}
 	}
 
@@ -343,28 +455,7 @@ public abstract class HighlightOverlay extends Overlay {
 				moveShipCount = null;
 			}
 
-			if (moveInfoHud != null) {
-				moveInfoHud.addAction(sequence(moveTo(0, Gdx.graphics.getHeight(), 0.5f, Interpolation.circleOut),
-						run(new Runnable() {
-							@Override
-							public void run() {
-								moveInfoHud.remove();
-								moveInfoHud = null;
-							}
-						})));
-			}
-
-			if (shipSelectionHud != null) {
-				shipSelectionHud.addAction(sequence(
-						moveTo(0, 0 - Gdx.graphics.getHeight() * 0.1f, 0.5f, Interpolation.circleOut),
-						run(new Runnable() {
-							@Override
-							public void run() {
-								shipSelectionHud.remove();
-							}
-						})));
-			}
-
+			HighlightOverlay.this.hide(moveInfoHud, shipSelectionHud);
 		}
 	}
 }
