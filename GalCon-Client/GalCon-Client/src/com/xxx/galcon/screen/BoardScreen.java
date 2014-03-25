@@ -517,8 +517,8 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createPlanets() {
 		for (final Planet planet : gameBoard.planets) {
-			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButton(planet, gameBoard,
-					roundHasAlreadyBeenAnimated(), boardCalcs, resources);
+			final PlanetButton planetButton = PlanetButtonFactory.createPlanetButton(planet, gameBoard, true,
+					boardCalcs, resources);
 
 			planetButton.addListener(new ClickListener() {
 

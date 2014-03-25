@@ -14,15 +14,15 @@ public class PlanetButtonFactory {
 		super();
 	}
 
-	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean roundAnimated,
+	public static PlanetButton createPlanetButton(Planet planet, GameBoard gameBoard, boolean showCurrentState,
 			BoardCalculations boardCalcs, Resources resources) {
 		float maxExpand = 5;
 
 		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
 		float newPlanetSize = boardCalcs.getMinPlanetRadius() + ((boardCalcs.getMaxPlanetRadius() * 0.09f) * expand);
 
-		PlanetButton button = new PlanetButton(resources, "" + planet.numberOfShipsToDisplay(gameBoard, roundAnimated),
-				planet, newPlanetSize, newPlanetSize);
+		PlanetButton button = new PlanetButton(resources, gameBoard, showCurrentState, planet, newPlanetSize,
+				newPlanetSize);
 
 		Point point = boardCalcs.tileCoordsToPixels(button.planet.position);
 		boardCalcs.centerPoint(point, button);

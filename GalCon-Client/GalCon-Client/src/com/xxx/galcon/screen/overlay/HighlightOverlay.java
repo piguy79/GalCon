@@ -172,8 +172,8 @@ public abstract class HighlightOverlay extends Overlay {
 		Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
 		Planet toPlanet = gameBoard.getPlanet(move.toPlanet);
 
-		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard,
-				!move.executed, boardCalcs, resources);
+		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
+				boardCalcs, resources);
 		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButton(toPlanet, gameBoard, !move.executed,
 				boardCalcs, resources);
 
@@ -197,12 +197,14 @@ public abstract class HighlightOverlay extends Overlay {
 
 		if (move.executed) {
 			Point newShipPosition = MoveFactory.getShipPosition(moveToDisplay, move.currentPosition, boardCalcs);
-			moveToDisplay.addAction(delay(0.25f, moveTo(newShipPosition.x, newShipPosition.y, 1.25f)));
+			moveToDisplay.addAction(delay(0.0f, moveTo(newShipPosition.x, newShipPosition.y, 1.0f)));
 
-			moveToDisplay.addAction(delay(0.5f, scaleTo(0, 0, 1.0f)));
-			String toPlanetOwner = toPlanetButton.planet.owner;
-			if (!toPlanetButton.planet.previousRoundOwner(gameBoard).equals(toPlanetOwner)) {
-				addExplosion(move, 1.5f, color);
+			moveToDisplay.addAction(delay(0.25f, scaleTo(0, 0, 0.75f)));
+			String previousOwner = toPlanetButton.planet.previousRoundOwner(gameBoard);
+			toPlanetButton.showPlanetState(true, true);
+
+			if (!previousOwner.equals(toPlanetButton.planet.owner) || !fromPlanet.owner.equals(toPlanet.owner)) {
+				addExplosion(move, 1.0f, color);
 			}
 		}
 
