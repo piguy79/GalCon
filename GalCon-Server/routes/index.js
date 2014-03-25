@@ -2,7 +2,6 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	gameBuilder = require('../modules/gameBuilder'), 
 	gameManager = require('../modules/model/game'), 
 	userManager = require('../modules/model/user'), 
-	gameQueueManager = require('../modules/model/gameQueue'),
 	rankManager = require('../modules/model/rank'), 
 	mapManager = require('../modules/model/map'), 
 	configManager = require('../modules/model/config'), 
@@ -77,14 +76,14 @@ exports.findGamesWithPendingMove = function(req, res) {
 		var count = 0;
 		for(i in games) {
 			if (games[i].currentRound.playersWhoMoved.indexOf(handle) == -1
-					&& !games[i].endGameInformation.winnerHandle) {
+					&& !games[i].endGameInformation.winnerHandle && !games[i].endGameInformation.declined) {
 				count += 1;
 			}
 		}
 		return count;
 	}).then(function(count){
 		pendingMoveCount = count;
-		return gameQueueManager.findByInvitee(handle);
+		return gameManager.findByInvitee(handle);
 	}).then(function(invites){
 		if(invites === null){
 			return 0;
@@ -436,6 +435,7 @@ exports.acceptInvite = function(req, res){
 	
 	var currentUser;
 	var currentGame;
+	var requestingUser;
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
@@ -447,24 +447,17 @@ exports.acceptInvite = function(req, res){
 		}
 		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game){
-		if(game.social && game.social === handle){
-			return gameManager.addUser(gameId, currentUser);
-		}else{
-			throw new Error("User was not invited.");
-		}
+		requestingUser = game.players[0];
+		return gameManager.addSocialUser(gameId, currentUser);
 	}).then(function(savedGame){
+		currentGame = savedGame;
 		return userManager.joinAGame(currentUser, savedGame);
 	}).then(function(user){
 		if(!user){
 			throw new Error('Unable to join the game');
+		}else{
+			return userManager.updateFriend(currentUser, requestingUser);
 		}
-		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
-	}).then(function(gameQueueItem){
-		return userManager.findUserByHandle(gameQueueItem.requester.handle);
-	}).then(function(requestingUser){
-		return userManager.updateFriend(currentUser, requestingUser);
-	}).then(function(){
-		return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
 	}).then(function(){
 		res.json(processGameReturn(currentGame))
 	}).then(null, logErrorAndSetResponse(req, res));
@@ -484,18 +477,16 @@ exports.declineInvite = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return gameQueueManager.GameQueueModel.findOne({game : gameId}).populate('requester').exec();
-	}).then(function(gameQueueItem){
-		if(gameQueueItem.invitee === handle){
-			requester = gameQueueItem.requester;
-			return gameQueueManager.GameQueueModel.remove({game : gameId}).exec();
+		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
+	}).then(function(game){
+		if(game.social.invitee === handle){
+			requester = game.players[0];
+			return userManager.removeAGame(requester, gameId);
 		}else{
 			throw new Error("User" + handle +  " cannot decline game.");
 		}
 	}).then(function(){
-		return userManager.removeAGame(requester, gameId);
-	}).then(function(){
-		return gameManager.GameModel.remove({_id : gameId}).exec();
+		return gameManager.declineSocialGame(gameId, handle);
 	}).then(function(){
 		res.json({sucess : true});
 	}).then(null, logErrorAndSetResponse(req, res));

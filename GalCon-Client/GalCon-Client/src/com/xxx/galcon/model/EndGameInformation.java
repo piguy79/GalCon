@@ -18,6 +18,7 @@ public class EndGameInformation extends JsonConvertible {
 	public Date winningDate = null;
 	public int xpAwardToWinner;
 	public boolean draw;
+	public String decline;
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
@@ -25,6 +26,7 @@ public class EndGameInformation extends JsonConvertible {
 		this.winningDate = formatDate(jsonObject, Constants.WINNING_DATE);
 		this.draw = jsonObject.optBoolean(Constants.DRAW);
 		this.xpAwardToWinner = jsonObject.getInt(Constants.XP_AWARD_TO_WINNER);
+		this.decline = jsonObject.optString("decline");
 
 		this.loserHandles = new ArrayList<String>();
 		JSONArray losersJson = jsonObject.optJSONArray(Constants.LOSER_HANDLES);

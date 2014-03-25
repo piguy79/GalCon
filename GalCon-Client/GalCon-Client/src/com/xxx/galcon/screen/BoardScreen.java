@@ -271,16 +271,24 @@ public class BoardScreen implements ScreenFeedback {
 			} else {
 				endGameMessage = "Loser Text";
 			}
-			TextOverlay overlay = new TextOverlay(endGameMessage, resources);
-			overlay.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					stage.dispose();
-					returnCode = Action.BACK;
-				}
-			});
+			TextOverlay overlay = showEndDialog(endGameMessage);
+			stage.addActor(overlay);
+		}else if(gameBoard.social != null && gameBoard.social.status.equals("DECLINED")){
+			TextOverlay overlay = showEndDialog(gameBoard.social.invitee+ " has declined to play.\nYour coin has been returned.");
 			stage.addActor(overlay);
 		}
+	}
+
+	private TextOverlay showEndDialog(String endGameMessage) {
+		TextOverlay overlay = new TextOverlay(endGameMessage, resources);
+		overlay.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				stage.dispose();
+				returnCode = Action.BACK;
+			}
+		});
+		return overlay;
 	}
 
 	private void createPlayerHud() {

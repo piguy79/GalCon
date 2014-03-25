@@ -75,4 +75,8 @@ public class MinifiedGame extends JsonConvertible {
 		return otherPlayers;
 	}
 
+	public boolean hasBeenDeclined() {
+		return social != null && social.status.equals("DECLINED");
+	}
+
 }

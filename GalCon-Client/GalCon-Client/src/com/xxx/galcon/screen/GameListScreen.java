@@ -175,7 +175,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				statusText = "You Lost";
 				statusFont = Constants.UI.DEFAULT_FONT_RED;
 			}
-		} else if (game.moveAvailable) {
+		} else if(game.hasBeenDeclined()){
+			statusText = "-- Invite Declined --";
+			statusFont = Constants.UI.DEFAULT_FONT_RED;
+		}else if (game.moveAvailable) {
 			statusText = "--your move--";
 		}
 
