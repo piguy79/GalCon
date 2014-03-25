@@ -499,4 +499,8 @@ var filterOutPlayerAndSocial = function(games, playerHandle){
 	return filteredGames;
 }
 
+exports.findByInvitee = function(inviteeHandle){
+	return GameModel.find({'social.invitee' : inviteeHandle}).populate('players').exec();
+}
+
 exports.GameModel = GameModel;

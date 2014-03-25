@@ -940,20 +940,20 @@ exports.findPendingInvites = function(req, res){
 		return;
 	}
 	
-	var p = gameQueueManager.findByInvitee(handle);
+	var p = gameManager.findByInvitee(handle);
 	p.then(function(queue){
 		var returnList = _.map(queue, function(item){
 			return {
-				requester : minifyUser(item.requester),
-				inviteeHandle : handle,
+				requester : minifyUser(item.players[0]),
+				inviteeHandle : item.social.invitee,
 				minifiedGame : {
-					id : item.game._id,
-					createdDate : item.game.createdDate,
+					id : item._id,
+					createdDate : item.createdDate,
 					moveAvailable : true,
-					winner : item.game.endGameInformation.winnerHandle,
-					winningDate : item.game.endGameInformation.winningDate,
-					map : item.game.map,
-					social : item.game.social
+					winner : item.endGameInformation.winnerHandle,
+					winningDate : item.endGameInformation.winningDate,
+					map : item.map,
+					social : item.social
 				}
 			};
 		});
