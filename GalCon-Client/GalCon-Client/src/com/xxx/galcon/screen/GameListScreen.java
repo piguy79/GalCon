@@ -120,9 +120,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 					break;
 				}
 			}
-			if(gameInviteHasNotBeenAccepted(board,GameLoop.USER)){
-				iter.remove();
-			}
 		}
 
 		if (games.isEmpty()) {
@@ -151,13 +148,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 	}
 
-	private boolean gameInviteHasNotBeenAccepted(MinifiedGame game, Player user) {
-		if(game.social != null && game.social.invitee.equals(user.handle) && !game.social.status.equals("ACCEPTED")){
-			return true;
-		}
-		return false;
-	}
-
 	private void createGameEntry(MinifiedGame game, Group group) {
 		float width = group.getWidth();
 		float rowHeight = group.getHeight();
@@ -165,7 +155,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		String opponent;
 		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
 		if (otherPlayers.size() == 0) {
-			opponent = BoardScreen.Labels.waitingLabel(game.social.invitee);
+			opponent = BoardScreen.Labels.waitingLabel(game.social);
 		} else {
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}

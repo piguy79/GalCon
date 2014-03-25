@@ -911,15 +911,19 @@ exports.inviteUserToGame = function(req, res){
 	p.then(function(){
 		return userManager.findUserByHandle(requesterHandle);
 	}).then(function(user){
-		if(!inviteValidation.validate(user)){
+		if(!inviteValidation.validate(user, inviteeUser)){
 			throw new Error("Invalid Invite Request");
 		}else{
 			requestingUser = user;
 			return userManager.findUserByHandle(inviteeHandle);
 		}
 	}).then(function(inviteUser){
-		inviteeUser = inviteUser;
-		return generateGamePromise([requestingUser], Date.now(), mapKey, inviteeHandle);
+		if(!inviteUser){
+			throw new Error("Invalid Invite Request. Invitee does not exist.");
+		}else{
+			inviteeUser = inviteUser;
+			return generateGamePromise([requestingUser], Date.now(), mapKey, inviteeHandle);
+		}
 	}).then(function(generatedGame){
 		currentGame = generatedGame;
 		return userManager.updateFriend(requestingUser, inviteeUser);

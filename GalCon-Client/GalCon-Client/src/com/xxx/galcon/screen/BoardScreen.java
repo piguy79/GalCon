@@ -41,6 +41,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.Size;
+import com.xxx.galcon.model.Social;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
 import com.xxx.galcon.screen.event.MoveListener;
@@ -808,8 +809,8 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public static class Labels {
-		public static String waitingLabel(String social) {
-			if (social != null && !social.isEmpty()) {
+		public static String waitingLabel(Social social) {
+			if (social != null && !social.invitee.isEmpty()) {
 				return "[waiting for " + social + "]";
 			}
 			return "[Awaiting enemy]";
