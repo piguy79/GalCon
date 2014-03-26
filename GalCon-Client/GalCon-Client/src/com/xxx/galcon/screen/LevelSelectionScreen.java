@@ -128,7 +128,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		choiceActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				String text = "";
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardActor> cell = table.getCells().get(i);
@@ -138,16 +137,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 					float leftXBound = Math.max(0, adjustX);
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
-						text = cell.getWidget().getMapTitle();
 						highlightReel.highlight(cell.getWidget().getMapKey());
 					}
 				}
-
-				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
-				float halfFontWidth = font.getBounds(text).width / 2;
-				batch.setShader(resources.fontShader);
-				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .92f);
-				batch.setShader(null);
+				
 			};
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
