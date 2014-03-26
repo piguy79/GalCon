@@ -128,7 +128,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		choiceActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
-				String text = "";
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardActor> cell = table.getCells().get(i);
@@ -138,16 +137,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 					float leftXBound = Math.max(0, adjustX);
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
-						text = cell.getWidget().getMapTitle();
 						highlightReel.highlight(cell.getWidget().getMapKey());
 					}
 				}
-
-				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
-				float halfFontWidth = font.getBounds(text).width / 2;
-				batch.setShader(resources.fontShader);
-				font.draw(batch, text, (getX() + getWidth() / 2 - halfFontWidth), getHeight() * .92f);
-				batch.setShader(null);
+				
 			};
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
@@ -166,19 +159,30 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	
 	private void createScrollhighlightReel() {	
+		float actorPadding = Gdx.graphics.getWidth() * 0.1f;
+		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
+		
 		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
-									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, Gdx.graphics.getWidth() * 0.04f)
-									.actorPadding(Gdx.graphics.getWidth() * 0.1f);
+									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth)
+									.actorPadding(actorPadding);
+		
+		float totalWidth = 0f;
 		
 		for(Map map : allMaps){
 			Image image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
 			image.setColor(Color.GRAY);
 			builder.addActorWithKey(map.key, image);
+			totalWidth = totalWidth + actorPadding + actorWidth;
 		}
+		
+		// Account for the first one.
+		totalWidth = totalWidth - actorPadding;
 		
 		highlightReel = builder.build();
 		
-		highlightReel.setX(Gdx.graphics.getWidth() * 0.35f);
+		
+		
+		highlightReel.setX((Gdx.graphics.getWidth() - totalWidth) / 2);
 		highlightReel.setY(Gdx.graphics.getHeight() * 0.05f);
 		
 		highlightReel.highlight(allMaps.get(0).key);

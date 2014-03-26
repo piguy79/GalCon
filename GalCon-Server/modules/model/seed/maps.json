@@ -25,13 +25,35 @@
 				{
 					"key" : 3,
 					"availableFromLevel" : 3,
-					"title" : "Resources",
-					"description" : "Abilities abound",
+					"title" : "Speed",
+					"description" : "Don't drop below 50",
 					"width" : {
 						"min" : 6,
 						"max" : 8
 					},
-					"gameType" : ["attackIncrease", "defenceIncrease", "regenBlock"]
+					"gameType" : ["speedIncrease"]
+				},
+				{
+					"key" : 4,
+					"availableFromLevel" : 4,
+					"title" : "Protect",
+					"description" : "Shields online",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"gameType" : ["defenceIncrease"]
+				},
+				{
+					"key" : 5,
+					"availableFromLevel" : 5,
+					"title" : "Attack",
+					"description" : "Attack",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"gameType" : ["attackIncrease"]
 				}
 			]
 	
