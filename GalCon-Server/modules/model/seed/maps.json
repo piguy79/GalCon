@@ -31,7 +31,7 @@
 						"min" : 6,
 						"max" : 8
 					},
-					"gameType" : ["attackIncrease", "defenceIncrease", "regenBlock"]
+					"gameType" : ["attackIncrease", "defenceIncrease", "speedIncrease"]
 				}
 			]
 	
