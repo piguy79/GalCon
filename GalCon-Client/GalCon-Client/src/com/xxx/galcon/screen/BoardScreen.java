@@ -497,7 +497,7 @@ public class BoardScreen implements ScreenFeedback {
 		}
 
 		Image targetImage;
-		if (button.planet.isOwnedBy(GameLoop.USER)) {
+		if (button.planet.isOwnedBy(GameLoop.USER.handle)) {
 			targetImage = new Image(resources.skin, "transfer");
 		} else {
 			targetImage = new Image(resources.skin, "crosshairs");
@@ -581,7 +581,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private boolean userPlanetInSelection() {
 		for (Planet planet : touchedPlanets) {
-			if (planet.isOwnedBy(GameLoop.USER)) {
+			if (planet.isOwnedBy(GameLoop.USER.handle)) {
 				return true;
 			}
 		}

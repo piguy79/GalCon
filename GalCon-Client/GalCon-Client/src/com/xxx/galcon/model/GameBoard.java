@@ -96,7 +96,7 @@ public class GameBoard extends JsonConvertible {
 
 		for (int i = 0; i < planets.size(); ++i) {
 			Planet planet = planets.get(i);
-			if (planet.isOwnedBy(player) && planet.hasAbility()) {
+			if (planet.isOwnedBy(player.handle) && planet.hasAbility()) {
 				ownedPlanetAbilities.add(planet.ability);
 			}
 		}

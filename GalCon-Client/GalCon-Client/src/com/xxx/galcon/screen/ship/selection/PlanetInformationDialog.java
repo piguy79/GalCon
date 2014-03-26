@@ -13,10 +13,8 @@ import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.display.AbilityDisplay;
-import com.xxx.galcon.model.factory.PlanetButtonFactory;
 import com.xxx.galcon.screen.Resources;
 import com.xxx.galcon.screen.event.HarvestEvent;
-import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.OKCancelDialog;
 import com.xxx.galcon.screen.widget.PlanetButton;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -62,12 +60,15 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	}
 
 	private void createMoonImage() {
-//		float sizeBase = Math.max(getHeight(), getWidth());
-//		float size = sizeBase * 0.15f;
-//		Moon moon = PlanetButtonFactory.createMoon(resources, planet, size, size);
-//		moon.setX((planetImage.getX() + (planetImage.getWidth() * 1.1f)) - (size / 2));
-//		moon.setY((planetImage.getY() + (planetImage.getHeight() * 0.7f)) - (size / 2));
-//		addActor(moon);
+		// float sizeBase = Math.max(getHeight(), getWidth());
+		// float size = sizeBase * 0.15f;
+		// Moon moon = PlanetButtonFactory.createMoon(resources, planet, size,
+		// size);
+		// moon.setX((planetImage.getX() + (planetImage.getWidth() * 1.1f)) -
+		// (size / 2));
+		// moon.setY((planetImage.getY() + (planetImage.getHeight() * 0.7f)) -
+		// (size / 2));
+		// addActor(moon);
 	}
 
 	private void createLabels() {
@@ -142,18 +143,21 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	}
 
 	private void createPlanetImage() {
-//		float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
-//		planetImage = PlanetButtonFactory.createPlanetButton(planet, gameboard, animated, sizeBase * 0.4f,
-//				sizeBase * 0.4f, resources);
-//		planetImage.setX((getWidth() / 2) - (planetImage.getWidth() / 2));
-//		planetImage.setY(getHeight() - (planetImage.getHeight() + (planetImage.getHeight() * 0.2f)));
-//		planetImage.setText(new StringBuilder().append(planet.numberOfShips - offset).toString());
-//
-//		addActor(planetImage);
+		// float sizeBase = getWidth() < getHeight() ? getWidth() : getHeight();
+		// planetImage = PlanetButtonFactory.createPlanetButton(planet,
+		// gameboard, animated, sizeBase * 0.4f,
+		// sizeBase * 0.4f, resources);
+		// planetImage.setX((getWidth() / 2) - (planetImage.getWidth() / 2));
+		// planetImage.setY(getHeight() - (planetImage.getHeight() +
+		// (planetImage.getHeight() * 0.2f)));
+		// planetImage.setText(new StringBuilder().append(planet.numberOfShips -
+		// offset).toString());
+		//
+		// addActor(planetImage);
 	}
 
 	private boolean isHarvestAvailable() {
 		return !planet.isUnderHarvest() && planet.hasAbility() && planet.isAlive()
-				&& !GameLoop.USER.hasMoved(gameboard) && planet.isOwnedBy(GameLoop.USER);
+				&& !GameLoop.USER.hasMoved(gameboard) && planet.isOwnedBy(GameLoop.USER.handle);
 	}
 }

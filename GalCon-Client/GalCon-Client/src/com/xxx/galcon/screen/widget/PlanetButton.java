@@ -4,6 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
@@ -86,7 +87,7 @@ public class PlanetButton extends Group {
 		if (ownedByHighlightImage == null && (planet.isHome || !owner.equals(Constants.OWNER_NO_ONE))) {
 			ownedByHighlightImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet
 					.isAlive() ? "planet-highlight" : "dead_planet")));
-			Color planetColor = planet.getColor();
+			Color planetColor = planet.getColor(owner);
 			planetColor.a = 0.0f;
 			ownedByHighlightImage.setColor(planetColor);
 			ownedByHighlightImage.setWidth(getWidth());
@@ -104,8 +105,10 @@ public class PlanetButton extends Group {
 		if (ownedByHighlightImage != null) {
 			float startDelay = highlightActions.size == 0 && animate ? 1.0f : 0.0f;
 			float delay = animate ? 0.5f : 0.0f;
-			highlightActions.add(delay(startDelay, alpha(0.6f, delay)));
-			ownedActions.add(delay(startDelay, color(planet.getColor(), delay)));
+			Color planetColor = planet.getColor(owner);
+			planetColor.a = 0.0f;
+			highlightActions.add(sequence(delay(startDelay), parallel(color(planetColor, delay), alpha(0.6f, delay))));
+			ownedActions.add(delay(startDelay, color(planet.getColor(owner), delay)));
 		}
 
 		if (highlightActions.size > 0) {
@@ -144,25 +147,18 @@ public class PlanetButton extends Group {
 	}
 
 	private void positionLabel() {
-		Point center = centerPoint();
-		centerXUsed = center.x;
-		centerYUsed = center.y;
-		positionWithCachedValues();
-	}
-
-	private void positionWithCachedValues() {
-		label.setX(centerXUsed - (label.getTextBounds().width / 2));
-		label.setY(centerYUsed - (label.getTextBounds().height * 0.8f));
+		label.setX(getWidth() * 0.5f - (label.getTextBounds().width / 2));
+		label.setY(getHeight() * 0.5f - (label.getTextBounds().height * 0.8f));
 	}
 
 	public Point centerPoint() {
-		return new Point(getWidth() / 2, getHeight() / 2);
+		return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
 	}
 
 	public void setShipCount(int shipCount) {
 		planet.numberOfShips = shipCount;
 		label.setText("" + shipCount);
-		positionWithCachedValues();
+		positionLabel();
 	}
 
 	public int getShipCount() {

@@ -28,7 +28,7 @@ public class MoveFactory {
 
 		float startX = -1, startY = -1, endX = 1, endY = -1;
 		for (Planet planet : availablePlanets) {
-			if (planet.isOwnedBy(GameLoop.USER) && move.fromPlanet == null) {
+			if (planet.isOwnedBy(GameLoop.USER.handle) && move.fromPlanet == null) {
 				move.fromPlanet = planet.name;
 				move.shipsToMove = fleetToSend;
 				startX = planet.position.x;

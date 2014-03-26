@@ -61,8 +61,8 @@ public class Planet extends JsonConvertible {
 		}
 	}
 
-	public boolean isOwnedBy(Player player) {
-		return owner.equals(player.handle);
+	public boolean isOwnedBy(String handle) {
+		return owner.equals(handle);
 	}
 
 	public boolean hasAbility() {
@@ -143,16 +143,16 @@ public class Planet extends JsonConvertible {
 		return this.status.equals(ALIVE);
 	}
 
-	public Color getColor() {
+	public Color getColor(String handle) {
 		Color OWNED_BY_ME_COLOR = Color.valueOf("2F8705");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
 
 		Color color = DEFAULT_PLANET_COLOR;
 
-		if (isOwnedBy(GameLoop.USER)) {
+		if (!owner.equals(OWNER_NO_ONE) && handle.equals(GameLoop.USER.handle)) {
 			return OWNED_BY_ME_COLOR;
-		} else if (!owner.equals(OWNER_NO_ONE) && !isOwnedBy(GameLoop.USER)) {
+		} else if (!owner.equals(OWNER_NO_ONE) && !handle.equals(GameLoop.USER.handle)) {
 			return OWNED_BY_OPPONENT_COLOR;
 		} else if (isHome) {
 			return OWNED_BY_OPPONENT_COLOR;

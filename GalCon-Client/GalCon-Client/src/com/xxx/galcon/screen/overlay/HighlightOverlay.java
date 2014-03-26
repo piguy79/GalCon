@@ -172,12 +172,9 @@ public abstract class HighlightOverlay extends Overlay {
 		Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
 		Planet toPlanet = gameBoard.getPlanet(move.toPlanet);
 
-		final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
-				boardCalcs, resources);
 		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButton(toPlanet, gameBoard, !move.executed,
 				boardCalcs, resources);
 
-		addActor(fromPlanetButton);
 		addActor(toPlanetButton);
 
 		Point position = move.currentPosition;
@@ -185,6 +182,9 @@ public abstract class HighlightOverlay extends Overlay {
 			position = move.previousPosition;
 		} else {
 			highlightPath(fromPlanet, toPlanet);
+			final PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
+					boardCalcs, resources);
+			addActor(fromPlanetButton);
 		}
 
 		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), position, resources, boardCalcs);
