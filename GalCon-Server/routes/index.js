@@ -488,7 +488,7 @@ exports.declineInvite = function(req, res){
 	}).then(function(){
 		return gameManager.declineSocialGame(gameId, handle);
 	}).then(function(){
-		res.json({sucess : true});
+		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
