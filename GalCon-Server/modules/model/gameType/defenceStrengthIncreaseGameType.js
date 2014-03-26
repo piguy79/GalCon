@@ -18,7 +18,7 @@ exports.findCorrectDefenseForAPlanet = function(config, planets, player){
 		}
 	}
 	
-	return defMultiplier / 100.0;
+	return defMultiplier;
 	
 }
 

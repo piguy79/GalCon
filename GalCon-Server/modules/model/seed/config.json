@@ -4,8 +4,8 @@
 					"version" : 1,
 					"type" : "map",
 					"values" : { 
-						"attackModifier": "25",
-						"defenseModifier": "25",
+						"attackModifier": "0.25",
+						"defenseModifier": "0.25",
 					 	"speedModifier": "0.5",
 						"blockModifier": "0.2" ,
 						"harvestEnhancement" : "0.25",

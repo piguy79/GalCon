@@ -69,14 +69,14 @@ public class BoardScreenPlayerHud extends Group {
 	}
 
 	private void createResourceBonusLabels(Player enemy, Player user) {
-		Map<String, Integer> playerAbilities = Abilities.aggregate(gameBoard, enemy);
+		Map<String, Double> playerAbilities = Abilities.aggregate(gameBoard, enemy);
 		createResourceBonusLabels(playerAbilities, false);
 
 		playerAbilities = Abilities.aggregate(gameBoard, user);
 		createResourceBonusLabels(playerAbilities, true);
 	}
 
-	private void createResourceBonusLabels(Map<String, Integer> playerAbilities, boolean invert) {
+	private void createResourceBonusLabels(Map<String, Double> playerAbilities, boolean invert) {
 		float startStripe = 0.313f;
 		float endStripe = 0.56f;
 
@@ -89,7 +89,7 @@ public class BoardScreenPlayerHud extends Group {
 			x = playerHudBg.getWidth();
 		}
 
-		for (Map.Entry<String, Integer> abilities : playerAbilities.entrySet()) {
+		for (Map.Entry<String, Double> abilities : playerAbilities.entrySet()) {
 			float bottomWidth = playerHudBg.getWidth()
 					* ((endStripe - startStripe) * (y / playerHudBg.getHeight()) + startStripe);
 			float topWidth = playerHudBg.getWidth()
@@ -348,9 +348,9 @@ public class BoardScreenPlayerHud extends Group {
 			}
 		};
 
-		private static Map<String, Integer> bonuses = new HashMap<String, Integer>();
+		private static Map<String, Double> bonuses = new HashMap<String, Double>();
 
-		public static Map<String, Integer> aggregate(GameBoard gameBoard, Player player) {
+		public static Map<String, Double> aggregate(GameBoard gameBoard, Player player) {
 			List<String> abilites = gameBoard.ownedPlanetAbilities(player);
 
 			bonuses.clear();
@@ -364,8 +364,8 @@ public class BoardScreenPlayerHud extends Group {
 				if (abbrev == null) {
 					throw new IllegalArgumentException("BoardScreenPlayerHud does not understand: " + abilites.get(i));
 				}
-				Integer configBonus = Integer.valueOf(gameBoard.gameConfig.getValue(ability));
-				Integer bonus = 0;
+				Double configBonus = Double.parseDouble(gameBoard.gameConfig.getValue(ability));
+				Double bonus = 0d;
 				if (bonuses.containsKey(abbrev)) {
 					bonus = bonuses.get(abbrev);
 				}
