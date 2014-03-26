@@ -387,6 +387,10 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}
+	
+	game.moves = _.reject(game.moves, function(move){
+		return move.playerHandle !== playerWhoCalledTheUrl && move.executed === false;
+	});
 
 	return game;
 }
