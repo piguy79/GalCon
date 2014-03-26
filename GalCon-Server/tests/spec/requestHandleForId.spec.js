@@ -21,7 +21,7 @@ describe("Request Handle for ID", function() {
 	});
 	
 	afterEach(function(done) {
-		userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+		userManager.UserModel.remove().where("auth.google").in([PLAYER_1.auth.google, PLAYER_2.auth.google]).exec(function(err) {
 			if(err) { console.log(err); }
 			done();
 		});
@@ -49,13 +49,13 @@ describe("Request Handle for ID", function() {
 		}).then(function(response) {
 			expect(response.session).toBe("expired");
 		}).then(done, done);
-	})
+	});
 	
 	it("Request valid handle", function(done) {
-		var p = apiRunner.requestHandleForId(PLAYER_1.session.id, PLAYER_1.auth.google, 'google', "NEW_HANDLE");
+		var p = apiRunner.requestHandleForId(PLAYER_1.session.id, PLAYER_1.auth.google, 'google', PLAYER_1_HANDLE);
 		p.then(function(response) {
 			expect(response.created).toBe(true);
-			expect(response.player.handle).toBe("NEW_HANDLE");
+			expect(response.player.handle).toBe(PLAYER_1_HANDLE);
 		}).then(done, done);
 	});
 	

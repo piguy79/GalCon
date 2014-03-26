@@ -24,6 +24,8 @@ exports.createUser = function(playerHandle, level, config) {
 	if(!config){
 		config = {};
 	}
+	var expireDate = Date.now() + 4 * 60 * 60 * 1000;
+	
 	return {
 		auth: {
 			google : playerHandle + "@gmail.com",
@@ -37,7 +39,7 @@ exports.createUser = function(playerHandle, level, config) {
 		},
 		session :  {
 			id : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
-			expireDate : Date.now() + 4 * 60 * 60 * 1000
+			expireDate : expireDate
 		},
 		xp : config.xp || 0,
 		wins : config.wins || 0,
