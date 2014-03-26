@@ -41,6 +41,7 @@ import com.xxx.galcon.model.Move;
 import com.xxx.galcon.model.Planet;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.model.Size;
+import com.xxx.galcon.model.Social;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
 import com.xxx.galcon.screen.event.MoveListener;
@@ -270,16 +271,24 @@ public class BoardScreen implements ScreenFeedback {
 			} else {
 				endGameMessage = "Loser Text";
 			}
-			TextOverlay overlay = new TextOverlay(endGameMessage, resources);
-			overlay.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					stage.dispose();
-					returnCode = Action.BACK;
-				}
-			});
+			TextOverlay overlay = showEndDialog(endGameMessage);
+			stage.addActor(overlay);
+		}else if(gameBoard.social != null && gameBoard.social.status.equals("DECLINED")){
+			TextOverlay overlay = showEndDialog(gameBoard.social.invitee+ " has declined to play.\nYour coin has been returned.");
 			stage.addActor(overlay);
 		}
+	}
+
+	private TextOverlay showEndDialog(String endGameMessage) {
+		TextOverlay overlay = new TextOverlay(endGameMessage, resources);
+		overlay.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				stage.dispose();
+				returnCode = Action.BACK;
+			}
+		});
+		return overlay;
 	}
 
 	private void createPlayerHud() {
@@ -808,9 +817,9 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public static class Labels {
-		public static String waitingLabel(String social) {
-			if (social != null && !social.isEmpty()) {
-				return "[waiting for " + social + "]";
+		public static String waitingLabel(Social social) {
+			if (social != null && !social.invitee.isEmpty()) {
+				return "[waiting for " + social.invitee + "]";
 			}
 			return "[Awaiting enemy]";
 		}

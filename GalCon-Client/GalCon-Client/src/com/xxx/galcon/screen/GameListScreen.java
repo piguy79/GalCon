@@ -29,6 +29,7 @@ import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
+import com.xxx.galcon.model.Player;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -116,6 +117,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				if (!showGamesThatHaveBeenWon()
 						|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
 					iter.remove();
+					break;
 				}
 			}
 		}
@@ -173,7 +175,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				statusText = "You Lost";
 				statusFont = Constants.UI.DEFAULT_FONT_RED;
 			}
-		} else if (game.moveAvailable) {
+		} else if(game.hasBeenDeclined()){
+			statusText = "-- Invite Declined --";
+			statusFont = Constants.UI.DEFAULT_FONT_RED;
+		}else if (game.moveAvailable) {
 			statusText = "--your move--";
 		}
 

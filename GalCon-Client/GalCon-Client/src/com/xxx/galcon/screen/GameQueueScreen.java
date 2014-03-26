@@ -19,6 +19,7 @@ import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
+import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Point;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ScrollList;
@@ -37,6 +38,8 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	private ActionButton backButton;
 	protected WaitImageButton waitImage;
 	private ShaderLabel messageLabel;
+	private Maps allMaps;
+
 
 	private Array<Actor> actors = new Array<Actor>();
 
@@ -155,7 +158,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 		group.addActor(playerLabel);
 
-		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, "(Level " + item.requester.rank + ")",
+		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, " Map: " + allMaps.getMap(item.game.mapKey).title,
 				resources.skin, Constants.UI.DEFAULT_FONT);
 		levelLabel.setAlignment(Align.center);
 		levelLabel.setWidth(width);
@@ -223,26 +226,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	private void showQueueItems() {
 		waitImage.start();
 		scrollList.clearRows();
-		UIConnectionWrapper.findPendingInvites(new UIConnectionResultCallback<GameQueue>() {
-
-			@Override
-			public void onConnectionResult(GameQueue result) {
-				waitImage.stop();
-				if (result == null || result.gameQueueItems.isEmpty()) {
-					messageLabel.setText("No invites found.");
-				} else {
-					messageLabel.setText("");
-					displayQueue(result);
-				}
-			}
-
-			@Override
-			public void onConnectionError(String msg) {
-				waitImage.stop();
-				messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
-
-			}
-		}, GameLoop.USER.handle);
+		UIConnectionWrapper.findAllMaps(mapResultCallback);
 	}
 
 	@Override
@@ -274,5 +258,39 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 		return true;
 	}
+	
+	private UIConnectionResultCallback<Maps> mapResultCallback = new UIConnectionResultCallback<Maps>() {
+
+		@Override
+		public void onConnectionResult(Maps result) {
+			allMaps = result;
+			UIConnectionWrapper.findPendingInvites(new UIConnectionResultCallback<GameQueue>() {
+
+				@Override
+				public void onConnectionResult(GameQueue result) {
+					waitImage.stop();
+					if (result == null || result.gameQueueItems.isEmpty()) {
+						messageLabel.setText("No invites found.");
+					} else {
+						messageLabel.setText("");
+						displayQueue(result);
+					}
+				}
+
+				@Override
+				public void onConnectionError(String msg) {
+					waitImage.stop();
+					messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
+
+				}
+			}, GameLoop.USER.handle);
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			waitImage.stop();
+			messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
+		}
+	};
 
 }

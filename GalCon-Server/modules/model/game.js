@@ -15,7 +15,10 @@ var gameSchema = mongoose.Schema({
 	players : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 	width: "Number",
 	height: "Number",
-	social: "String",
+	social: {
+		invitee : "String",
+		status : "String"
+	},
 	config : {
 		version : "Number",
 		values : {}
@@ -26,7 +29,8 @@ var gameSchema = mongoose.Schema({
 		leaderboardScoreAmount : "Number",
 		winningDate : "Date",
 		loserHandles : [String],
-		draw : "Boolean"
+		draw : "Boolean",
+		declined : "String"
 	},
 	createdDate : "Date",
 	createdTime : "Number",
@@ -101,6 +105,9 @@ var gameSchema = mongoose.Schema({
 gameSchema.set('toObject', { getters: true });
 gameSchema.index({'players' : 1});
 gameSchema.index({'endGameInformation.winnerHandle': 1});
+gameSchema.index({'social.invitee': 1});
+
+
 
 var hasSameOwner = function(planet, move){
 	return planet.ownerHandle == move.playerHandle;
@@ -471,6 +478,46 @@ exports.addUser = function(gameId, player){
 	});
 }
 
+exports.addSocialUser = function(gameId, player){
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
+	return p.then(function(game) {
+		if(!game) {
+			return null;
+		} else {
+			for(var i in game.planets) {
+				var planet = game.planets[i];
+				if(!planet.ownerHandle && planet.isHome == "Y") {
+					planet.ownerHandle = player.handle;
+					break;
+				}
+			}
+			
+			return game.withPromise(game.save);
+		}
+	});
+}
+
+exports.declineSocialGame = function(gameId, invitee){
+	var endResult = {
+			xpAwardToWinner : 0,
+			leaderboardScoreAmount : 0,
+			winningDate : Date.now(),
+			draw : false,
+			declined : invitee
+		};
+
+	return GameModel.findOneAndUpdate({_id : gameId}, 
+									{
+										$set : {
+												   'social.status' : 'DECLINED'
+												   ,'endGameInformation.xpAwardToWinner' : 0
+												   ,'endGameInformation.leaderboardScoreAmount' : 0
+												   ,'endGameInformation.winningDate' : 0
+												   ,'endGameInformation.draw' : 0
+												   ,'endGameInformation.declined' : invitee
+											   }}).populate('players').exec();
+}
+
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
 	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
@@ -487,10 +534,14 @@ exports.findGameAtAMap = function(mapToFind, playerHandle){
 
 var filterOutPlayerAndSocial = function(games, playerHandle){
 	var filteredGames = _.filter(games, function(game){
-		return game.players[0].handle != playerHandle && !game.social;
+		return game.players[0].handle != playerHandle;
 	});
 	
 	return filteredGames;
+}
+
+exports.findByInvitee = function(inviteeHandle){
+	return GameModel.find({'social.invitee' : inviteeHandle, 'social.status' : 'CREATED'}).populate('players').exec();
 }
 
 exports.GameModel = GameModel;

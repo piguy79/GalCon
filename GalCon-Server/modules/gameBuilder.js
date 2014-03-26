@@ -16,7 +16,14 @@ function GameBuilder(gameAttributes) {
 	this.createdTime = gameAttributes.createdTime;
 	this.rankOfInitialPlayer = gameAttributes.rankOfInitialPlayer;
 	this.map = gameAttributes.map;
-	this.social = gameAttributes.social;
+	
+	if(gameAttributes.social){
+		this.social = {
+			invitee : gameAttributes.social,
+			status : "CREATED"
+		};
+	}
+	
 	this.currentRound = {
 		roundNumber : 0,
 		playersWhoMoved : []

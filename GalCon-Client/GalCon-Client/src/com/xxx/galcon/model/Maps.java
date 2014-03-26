@@ -26,4 +26,14 @@ public class Maps extends JsonConvertible {
 			}
 		}
 	}
+	
+	public Map getMap(int mapKey){
+		for(Map map : allMaps){
+			if(map.key == mapKey){
+				return map;
+			}
+		}
+		
+		return null;
+	}
 }
