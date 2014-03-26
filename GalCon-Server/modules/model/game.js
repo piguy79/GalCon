@@ -187,7 +187,7 @@ var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 }
 
 var reverseEffectOfMultiplier = function(battleResult, multiplierValue){
-	return battleResult * (1 / (1 + multiplierValue));
+	return parseInt(battleResult * (1 / (1 + multiplierValue)), 10);
 }
 
 gameSchema.methods.allPlayersHaveTakenAMove = function(){
