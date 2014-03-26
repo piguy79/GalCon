@@ -12,8 +12,8 @@ public class Social extends JsonConvertible {
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		invitee = jsonObject.getString("invitee");
-		status = jsonObject.getString("status");
+		invitee = jsonObject.optString("invitee");
+		status = jsonObject.optString("status");
 	}
 
 }
