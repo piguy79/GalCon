@@ -64,7 +64,7 @@
 						"min" : 6,
 						"max" : 8
 					},
-					"gameType" : ["attackIncrease"]
+					"gameType" : ["mixedAbility"]
 				}
 			]
 	
