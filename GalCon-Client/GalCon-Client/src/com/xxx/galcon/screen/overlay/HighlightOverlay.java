@@ -445,7 +445,7 @@ public abstract class HighlightOverlay extends Overlay {
 			moveHud.removeMoves();
 
 			for (Move move : gameBoard.movesInProgress) {
-				if (move.belongsToPlayer(GameLoop.USER) && move.toPlanet.equals(planet.name)) {
+				if (move.belongsToPlayer(GameLoop.USER) && move.toPlanet.equals(planet.name) && !move.executed) {
 					Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
 					PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
 							boardCalcs, resources);
