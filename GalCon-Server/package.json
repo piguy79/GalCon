@@ -15,7 +15,7 @@
     , "mongoose" : "3.6.17"
     , "needle" : "0.6.0"
     , "nodetime" : "0.8.14"
-    , "underscore" : "1.5.2"
+    , "underscore" : "1.6.0"
     , "googleapis" : "0.6.1"
     , "facebook-api" : "0.1.2"
     , "validator" : "3.2.0"
