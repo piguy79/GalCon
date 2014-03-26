@@ -3,7 +3,8 @@ countdownGameType = require('./countdownGameType'),
 speedIncreaseGameType = require('./speedIncreaseGameType'),
 attackStrengthIncreaseGameType = require('./attackStrengthIncreaseGameType'),
 defenceStrengthIncreaseGameType = require('./defenceStrengthIncreaseGameType'),
-regenBlockGameType = require('./regenBlockGameType');
+regenBlockGameType = require('./regenBlockGameType'),
+mixedAbilityGameType = require('./regenBlockGameType');
 
 exports.gameTypes = {
 	standardGame : {
@@ -11,11 +12,13 @@ exports.gameTypes = {
 		roundProcesser : standardGameType.processRoundInformation,
 		processMoves : standardGameType.applyMovesToGame
 	},
-	countdownGame : {
-		endGameScenario : countdownGameType.processPossibleEndGame,
-		roundProcesser : countdownGameType.processRoundInformation,
-		constructGameBoard : countdownGameType.create,
-		processMoves : standardGameType.applyMovesToGame
+	mixedAbility : {
+		endGameScenario : standardGameType.processPossibleEndGame,
+		roundProcesser : standardGameType.processRoundInformation,
+		processMoves : speedIncreaseGameType.applyMovesToGame,
+		addPlanetAbilities : mixedAbilityGameType.addPlanetAbilities,
+		findCorrectDefenseForAPlanet : defenceStrengthIncreaseGameType.findCorrectDefenseForAPlanet,
+		findCorrectFleetToAttackEnemyPlanet : attackStrengthIncreaseGameType.findCorrectFleetToAttackEnemyPlanet
 	},
 	speedIncrease : {
 		endGameScenario : standardGameType.processPossibleEndGame,

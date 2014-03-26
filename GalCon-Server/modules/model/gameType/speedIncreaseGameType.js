@@ -1,14 +1,14 @@
 var abilityBasedGameType = require('./abilityBasedGameType');
 
-var SPEED_ABILITY = 'speedModifier';
+
 
 var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, game){
 	var count = 1;
 		
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if((planet.ability && planet.ability == SPEED_ABILITY) && planet.ownerHandle == playerHandle){
-			var speedIncrease = parseFloat(config.values[SPEED_ABILITY]) + abilityBasedGameType.harvestEnhancement(playerHandle, game);
+		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.ownerHandle == playerHandle){
+			var speedIncrease = parseFloat(config.values[abilityBasedGameType.SPEED_ABILITY]) + abilityBasedGameType.harvestEnhancement(playerHandle, game);
 			count = count + speedIncrease;
 		}
 	}
@@ -18,7 +18,7 @@ var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, g
 
 
 exports.addPlanetAbilities = function(planetsFarFromHomes){
-	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,SPEED_ABILITY);
+	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,[abilityBasedGameType.SPEED_ABILITY]);
 }
 
 exports.applyMovesToGame = function(game,multiplierMap){

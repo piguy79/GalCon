@@ -54,6 +54,17 @@
 						"max" : 8
 					},
 					"gameType" : ["attackIncrease"]
+				},
+				{
+					"key" : 6,
+					"availableFromLevel" : 6,
+					"title" : "Harvest",
+					"description" : "Harvest And Hold",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"gameType" : ["attackIncrease"]
 				}
 			]
 	

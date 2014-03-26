@@ -27,6 +27,42 @@ levels3.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+4
+  rotate: false
+  xy: 2, 2
+  size: 648, 518
+  orig: 648, 518
+  offset: 0, 0
+  index: -1
+
+levels4.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+5
+  rotate: false
+  xy: 2, 2
+  size: 648, 518
+  orig: 648, 518
+  offset: 0, 0
+  index: -1
+
+levels5.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+6
+  rotate: false
+  xy: 2, 2
+  size: 579, 579
+  orig: 579, 579
+  offset: 0, 0
+  index: -1
+
+levels6.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
 3
   rotate: false
   xy: 2, 2

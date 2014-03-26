@@ -159,8 +159,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	
 	private void createScrollhighlightReel() {	
-		float actorPadding = Gdx.graphics.getWidth() * 0.1f;
 		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
+		float actorPadding = calculateActorPadding(actorWidth);
 		
 		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
 									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth)
@@ -189,6 +189,19 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		actors.add(highlightReel);
 		stage.addActor(highlightReel);
 		
+	}
+
+	private float calculateActorPadding(float actorWidth) {
+		float initialPadding = Gdx.graphics.getWidth() * 0.1f;
+		float totalSize = 0f;
+		for(Map map : allMaps){
+			totalSize = totalSize + initialPadding + actorWidth;
+		}
+		
+		if(totalSize > (Gdx.graphics.getWidth() * 0.9f)){
+			return initialPadding * 0.6f;
+		}
+		return initialPadding;
 	}
 
 	private void createGameStartDialog(int selectedMapKey) {
