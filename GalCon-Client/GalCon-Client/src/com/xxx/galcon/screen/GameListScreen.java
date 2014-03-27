@@ -30,6 +30,7 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.screen.overlay.LoadingOverlay;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -47,6 +48,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private ImageButton backButton;
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;
+	private LoadingOverlay loadingOverlay;
 
 	public GameListScreen(Resources resources) {
 		this.resources = resources;
@@ -75,6 +77,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	public void takeActionOnGameboard(MinifiedGame toTakeActionOn, String playerHandle) {
+		loadingOverlay = new LoadingOverlay(resources);
+		stage.addActor(loadingOverlay);
 		UIConnectionWrapper.findGameById(new SelectGameResultHander(), toTakeActionOn.id, GameLoop.USER.handle);
 	}
 
@@ -222,11 +226,13 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
+			loadingOverlay.remove();
 			startHideSequence(result);
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
+			loadingOverlay.remove();
 			messageLabel.setText(CONNECTION_ERROR_MESSAGE);
 		}
 	}
