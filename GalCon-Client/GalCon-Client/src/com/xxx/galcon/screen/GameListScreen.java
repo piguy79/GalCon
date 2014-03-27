@@ -30,7 +30,10 @@ import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.MinifiedGame;
 import com.xxx.galcon.model.MinifiedGame.MinifiedPlayer;
 import com.xxx.galcon.model.Player;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
 import com.xxx.galcon.screen.overlay.LoadingOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
@@ -219,7 +222,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		allGames = null;
 
 		waitImage.stop();
-		messageLabel.setText(CONNECTION_ERROR_MESSAGE);
+		final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+		stage.addActor(overlay);
 	}
 
 	protected class SelectGameResultHander implements UIConnectionResultCallback<GameBoard> {
@@ -233,7 +237,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		@Override
 		public void onConnectionError(String msg) {
 			loadingOverlay.remove();
-			messageLabel.setText(CONNECTION_ERROR_MESSAGE);
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+			stage.addActor(overlay);
 		}
 	}
 
