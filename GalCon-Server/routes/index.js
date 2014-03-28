@@ -99,7 +99,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 var validate = function(propMap, res) {
 	for(key in propMap) {
 		if(!VALIDATE_MAP[key].call(this, propMap[key])) {
-			console.log("Invalid " + key + " detected: " + propMap[key]);
+			console.log("Invalid " + key + " detected: %j", propMap[key]);
 			res.json({ valid : false, reason : "Invalid " + key });
 			return false;
 		}	

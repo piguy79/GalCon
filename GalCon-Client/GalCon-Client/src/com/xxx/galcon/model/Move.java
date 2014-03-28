@@ -81,7 +81,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 
 		this.battleStats = new BattleStats();
 
-		battleStats.consume(jsonObject.optJSONObject("battlestats"));
+		battleStats.consume(jsonObject.optJSONObject("bs"));
 
 		currentAnimation = previousPosition;
 

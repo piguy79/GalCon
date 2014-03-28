@@ -29,7 +29,7 @@ describe("Harvest an ability planet -", function() {
 	
 	var PLAYER_1_HOME_PLANET = "HOME_PLANET_1";
 	var PLAYER_2_HOME_PLANET = "PLAYER_2_HOME_PLANET";
-	var ABILITY_PLANET = "ABILITY_PLANET"
+	var ABILITY_PLANET = "ABILITY_PLANET";
 	var PLANETS = [ elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
                     elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 3, 20, { x : 3, y : 5}),
                     elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "SPEED")];
@@ -61,7 +61,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should setup the planet for Harvest", function(done){
 		var currentGameId;
-		var timeOfMove = 34728;
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
@@ -100,7 +99,7 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
-			expect(game.moves[0].battlestats.attackStrength).toBe(12);
+			expect(game.moves[0].bs.attackStrength).toBe(12);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -113,7 +112,6 @@ describe("Harvest an ability planet -", function() {
 
 	it("Should kill the planet once the number of rounds for enhancement have completed", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ATTACK_MAP_KEY);
 		p.then(function(game){
@@ -176,7 +174,6 @@ describe("Harvest an ability planet -", function() {
 	// Note that currently we have a regen by default of 1 for planets
 	it("Should further boost my defense during harvest", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
 	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 9, { x : 3, y : 5}),
 	                    elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_2_HANDLE, 2, 10, { x : 5, y : 2}, "defenseModifier")];
@@ -194,7 +191,7 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var defendedPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(defendedPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
-			expect(game.moves[0].battlestats.defenceStrength).toBe(15);
+			expect(game.moves[0].bs.defenceStrength).toBe(15);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -206,7 +203,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should give me a further speed boost during harvest", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
 	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 9, { x : 3, y : 5}),
 	                    elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "speedModifier")];
@@ -234,7 +230,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should remove the harvest status if a saved planet is recaptured", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 20, 1) ];
 		var reCaptureHarvestPlanet = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, ABILITY_PLANET, 30, 1) ];
 		
@@ -270,7 +265,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should boost my ability by a percentage for each harvest planet I hold.", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		var ABILITY_PLANET_2 = "ABILITY_PLANET_2"
 		var planets = [elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 30, { x : 3, y : 4}), 
 	                    elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 0, 10, { x : 3, y : 5}),
@@ -291,7 +285,7 @@ describe("Harvest an ability planet -", function() {
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
 			// This will be 16 as I hold 2 attack planets which will give a 50% increase, plus 50% for harvesting both planets.
-			expect(game.moves[0].battlestats.attackStrength).toBe(16);
+			expect(game.moves[0].bs.attackStrength).toBe(16);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -303,7 +297,6 @@ describe("Harvest an ability planet -", function() {
 	
 	it("Should decrease a planets population while under harvest", function(done){
 		var currentGameId;
-		var timeOfMove = 271625;
 		
 		var abilityPlanet = elementBuilder.createPlanet(ABILITY_PLANET, PLAYER_1_HANDLE, 2, 10, { x : 5, y : 2}, "speedModifier");
 		abilityPlanet.population = 6000000;

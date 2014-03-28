@@ -119,12 +119,10 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.battlestats.conquer).toBe(true);
-			expect(move.battlestats.attackStrength).toBe(30);
-			expect(move.battlestats.defenceStrength).toBe(20);
-			expect(move.battlestats.newPlanetOwner).toBe(PLAYER_1_HANDLE);
-			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
-			expect(move.battlestats.previousPlanetOwner).toBe('');
+			expect(move.bs.attackStrength).toBe(30);
+			expect(move.bs.defenceStrength).toBe(20);
+			expect(move.bs.previousShipsOnPlanet).toBe(20);
+			expect(move.bs.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -149,12 +147,10 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.battlestats.conquer).toBe(false);
-			expect(move.battlestats.attackStrength).toBe(19);
-			expect(move.battlestats.defenceStrength).toBe(20);
-			expect(move.battlestats.newPlanetOwner).toBe('');
-			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
-			expect(move.battlestats.previousPlanetOwner).toBe('');
+			expect(move.bs.attackStrength).toBe(19);
+			expect(move.bs.defenceStrength).toBe(20);
+			expect(move.bs.previousShipsOnPlanet).toBe(20);
+			expect(move.bs.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -205,8 +201,8 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.battlestats.previousShipsOnPlanet).toBe(20);
-			expect(move.battlestats.previousPlanetOwner).toBe(PLAYER_1_HANDLE);
+			expect(move.bs.previousShipsOnPlanet).toBe(20);
+			expect(move.bs.previousPlanetOwner).toBe(PLAYER_1_HANDLE);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);

@@ -88,18 +88,17 @@ var gameSchema = mongoose.Schema({
 				x : "Number",
 				y : "Number"
 			},
-			battlestats : {
+			bs : {
 				previousShipsOnPlanet : "Number",
 				previousPlanetOwner : "String",
-				newPlanetOwner : "String",
 				defenceStrength : "Number",
 				attackStrength : "Number",
 				defenceMultiplier : "Number",
-				conquer : "Boolean"
+				diaa : "Boolean",
+				startFleet : "Number"
 			}
 		}
 	]
-	
 });
 
 gameSchema.set('toObject', { getters: true });
@@ -129,12 +128,11 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 	}
 }
 
-
 gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	this.planets.forEach(function(planet){
 		if(isADefensiveMoveToThisPlanet(planet, move)) {	
-			move.battlestats.previousPlanetOwner = planet.ownerHandle;
-			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
+			move.bs.previousPlanetOwner = planet.ownerHandle;
+			move.bs.previousShipsOnPlanet = planet.numberOfShips;
 			planet.numberOfShips = planet.numberOfShips + move.fleet;
 		} else if (isSamePlanet(planet, move.toPlanet)) {
 			var defenceMultiplier = 0;
@@ -148,31 +146,26 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 				attackMultiplier = multiplierMap[move.playerHandle].attackMultiplier;
 			}
 		
-			move.battlestats.previousPlanetOwner = planet.ownerHandle;		
-			var defenceStrength = calculateDefenceStrengthForPlanet(planet, game,defenceMultiplier);
-			var attackStrength = calculateAttackStrengthForMove(move, game, attackMultiplier);
+			move.bs.previousPlanetOwner = planet.ownerHandle;		
+			var defenceStrength = calculateDefenceStrengthForPlanet(planet, defenceMultiplier);
+			var attackStrength = game.calculateAttackStrengthForMove(move, attackMultiplier);
 			var battleResult = defenceStrength - attackStrength;	
 			
-			move.battlestats.previousShipsOnPlanet = planet.numberOfShips;
-			move.battlestats.newPlanetOwner = "";
-			move.battlestats.conquer = false;
+			move.bs.previousShipsOnPlanet = planet.numberOfShips;
 						
 			if(battleResult <= 0) {
-				move.battlestats.conquer = true;
-				move.battlestats.newPlanetOwner = move.playerHandle;
 				planet.ownerHandle = move.playerHandle;
-				planet.numberOfShips = reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
+				planet.numberOfShips = game.reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
 				checkHarvestStatus(planet,game.currentRound.roundNumber, parseFloat(game.config.values["harvestSavior"]));
 			} else {
-				move.battlestats.defenceMultiplier = defenceMultiplier;
-				planet.numberOfShips = reverseEffectOfMultiplier(battleResult,defenceMultiplier);
+				move.bs.defenceMultiplier = defenceMultiplier;
+				planet.numberOfShips = game.reverseEffectOfMultiplier(battleResult,defenceMultiplier);
 			}
 			
-			move.battlestats.defenceStrength = defenceStrength;
-			move.battlestats.attackStrength = attackStrength;
+			move.bs.defenceStrength = defenceStrength;
+			move.bs.attackStrength = attackStrength;
 		}
-		
 	});
 }
 
@@ -186,7 +179,7 @@ var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 	}
 }
 
-var reverseEffectOfMultiplier = function(battleResult, multiplierValue){
+gameSchema.methods.reverseEffectOfMultiplier = function(battleResult, multiplierValue){
 	return parseInt(battleResult * (1 / (1 + multiplierValue)), 10);
 }
 
@@ -220,11 +213,11 @@ var getAttackMultipler = function(player, game){
 
 
 
-var calculateAttackStrengthForMove = function(move, game, attackMultiplier){
+gameSchema.methods.calculateAttackStrengthForMove = function(move, attackMultiplier) {
 	return move.fleet + (move.fleet * attackMultiplier);
 }
 
-var calculateDefenceStrengthForPlanet = function(planet, game, defenceMultiplier){
+var calculateDefenceStrengthForPlanet = function(planet, defenceMultiplier){
 	return planet.numberOfShips + (planet.numberOfShips * defenceMultiplier);
 }
 

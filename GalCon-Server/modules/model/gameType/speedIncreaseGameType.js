@@ -1,6 +1,5 @@
-var abilityBasedGameType = require('./abilityBasedGameType');
-
-
+var abilityBasedGameType = require('./abilityBasedGameType'),
+	standardGameType = require('./standardGameType');
 
 var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, game){
 	var count = 1;
@@ -17,20 +16,12 @@ var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, g
 }
 
 
-exports.addPlanetAbilities = function(planetsFarFromHomes){
+exports.addPlanetAbilities = function(planetsFarFromHomes) {
 	abilityBasedGameType.addPlanetAbilities(planetsFarFromHomes,[abilityBasedGameType.SPEED_ABILITY]);
 }
 
-exports.applyMovesToGame = function(game,multiplierMap){
-	var i = game.moves.length;
-	while (i--) {
-		var move = game.moves[i];
-		var speedIncrease = speedIncreasePlanetsHeldByPlayer(game.config, move.playerHandle, game.planets, game);
-		move.duration = move.duration - speedIncrease;
-		if (move.duration <= 0) {
-			move.duration = 0;
-			game.applyMoveToPlanets(game, move, multiplierMap);
-			move.executed = true;
-		}
-	}
+exports.applyMovesToGame = function(game, multiplierMap) {
+	standardGameType.applyMovesToGame(game, multiplierMap, function(move) {
+		return move.duration - speedIncreasePlanetsHeldByPlayer(game.config, move.playerHandle, game.planets, game);
+	});
 }
