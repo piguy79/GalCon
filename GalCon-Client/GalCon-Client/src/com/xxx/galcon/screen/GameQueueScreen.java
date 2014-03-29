@@ -1,5 +1,7 @@
 package com.xxx.galcon.screen;
 
+import static com.xxx.galcon.Constants.CONNECTION_ERROR_MESSAGE;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
@@ -21,6 +23,10 @@ import com.xxx.galcon.model.GameQueue;
 import com.xxx.galcon.model.GameQueueItem;
 import com.xxx.galcon.model.Maps;
 import com.xxx.galcon.model.Point;
+import com.xxx.galcon.screen.overlay.DismissableOverlay;
+import com.xxx.galcon.screen.overlay.LoadingOverlay;
+import com.xxx.galcon.screen.overlay.Overlay;
+import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.widget.ActionButton;
 import com.xxx.galcon.screen.widget.ScrollList;
 import com.xxx.galcon.screen.widget.ShaderLabel;
@@ -39,6 +45,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	protected WaitImageButton waitImage;
 	private ShaderLabel messageLabel;
 	private Maps allMaps;
+	private LoadingOverlay loadingOverlay;
 
 
 	private Array<Actor> actors = new Array<Actor>();
@@ -172,15 +179,20 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		cancelButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
 				UIConnectionWrapper.declineInvite(new UIConnectionResultCallback<BaseResult>() {
 					@Override
 					public void onConnectionResult(BaseResult result) {
+						loadingOverlay.remove();
 						showQueueItems();
 					}
 
 					@Override
 					public void onConnectionError(String msg) {
-						messageLabel.setText("Unable to decline invite.");
+						loadingOverlay.remove();
+						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources));
+						stage.addActor(overlay);
 					}
 				}, item.game.id, GameLoop.USER.handle);
 			}
@@ -192,6 +204,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				loadingOverlay = new LoadingOverlay(resources);
 				UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
 			}
 		});
@@ -214,12 +227,15 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 		@Override
 		public void onConnectionResult(GameBoard result) {
+			loadingOverlay.remove();
 			returnCode = result;
 		}
 
 		@Override
 		public void onConnectionError(String msg) {
-			messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
+			loadingOverlay.remove();
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources));
+			stage.addActor(overlay);
 		}
 	}
 
@@ -280,7 +296,8 @@ public class GameQueueScreen implements PartialScreenFeedback {
 				@Override
 				public void onConnectionError(String msg) {
 					waitImage.stop();
-					messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
+					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+					stage.addActor(overlay);
 
 				}
 			}, GameLoop.USER.handle);
@@ -289,7 +306,8 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionError(String msg) {
 			waitImage.stop();
-			messageLabel.setText(Constants.CONNECTION_ERROR_MESSAGE);
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+			stage.addActor(overlay);
 		}
 	};
 

@@ -6,9 +6,12 @@ exports.ATTACK_INC_ABILITY = 'attackModifier';
 exports.SPEED_ABILITY = 'speedModifier';
 
 
-exports.addPlanetAbilities = function(planetsFarFromHomes, abilityToAdd){
+exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 
 	var abilitiesToAdd = planetsFarFromHomes.length * 0.2;
+	
+	console.log("ABILITIES ARRAY **** " + abilitiesArray);
+	console.log(abilitiesArray[1]);
 	
 	if(abilitiesToAdd < 1){
 		abilitiesToAdd = 1;
@@ -22,8 +25,8 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilityToAdd){
 			planetToAddTo.shipRegenRate = SHIP_REGEN_RATE;
 			planetToAddTo.numberOfShips = SHIP_NUMBER;
 			
-			var abilityIndex = Math.floor(Math.random() * (abilityToAdd.length));
-			planetToAddTo.ability = abilityToAdd[abilityIndex];
+			var abilityIndex = Math.floor(Math.random() * (abilitiesArray.length));
+			planetToAddTo.ability = abilitiesArray[abilityIndex];
 			addedAbilities++;
 			
 			if(addedAbilities >= abilitiesToAdd){

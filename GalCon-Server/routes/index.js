@@ -387,6 +387,10 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}
+	
+	game.moves = _.reject(game.moves, function(move){
+		return move.playerHandle !== playerWhoCalledTheUrl && move.executed === false;
+	});
 
 	return game;
 }
@@ -488,7 +492,7 @@ exports.declineInvite = function(req, res){
 	}).then(function(){
 		return gameManager.declineSocialGame(gameId, handle);
 	}).then(function(){
-		res.json({sucess : true});
+		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 

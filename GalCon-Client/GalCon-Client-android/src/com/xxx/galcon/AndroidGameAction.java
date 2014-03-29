@@ -10,6 +10,7 @@ import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
+import static com.xxx.galcon.http.UrlConstants.DECLINE_INVITE;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -642,7 +643,7 @@ public class AndroidGameAction implements GameAction {
 
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<BaseResult>(args, callback, ACCEPT_INVITE, BaseResult.class).execute("");
+				new GetJsonRequestTask<BaseResult>(args, callback, DECLINE_INVITE, BaseResult.class).execute("");
 			}
 		});
 

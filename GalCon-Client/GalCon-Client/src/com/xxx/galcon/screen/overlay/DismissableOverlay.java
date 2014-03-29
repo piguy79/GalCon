@@ -23,6 +23,10 @@ public class DismissableOverlay extends Overlay {
 			this.addListener(clickListener);
 		}
 	}
+	
+	public DismissableOverlay(Resources resources, Overlay delegate) {
+		this(resources, delegate, null);
+	}
 
 	public DismissableOverlay(Resources resources, ClickListener clickListener) {
 		this(resources, null, clickListener);

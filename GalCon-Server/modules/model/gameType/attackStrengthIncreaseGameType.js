@@ -20,7 +20,7 @@ exports.findCorrectFleetToAttackEnemyPlanet = function(config, planets, player){
 		}
 	}
 	
-	return attackMultiplier / 100.0;
+	return attackMultiplier;
 	
 }
 
