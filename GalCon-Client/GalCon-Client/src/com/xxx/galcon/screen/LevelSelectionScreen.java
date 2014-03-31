@@ -270,7 +270,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			if(mapAvailable){
 				return map.title;
 			}
-			return "????";
+			return "?";
 		}
 		
 		public String getMapDescription(){
