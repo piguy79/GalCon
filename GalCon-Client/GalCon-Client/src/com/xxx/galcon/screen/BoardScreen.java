@@ -228,7 +228,7 @@ public class BoardScreen implements ScreenFeedback {
 				}
 			}).focus(gameBoard.roundInformation);
 		} else {
-			createMoves();
+			beginShipMovements();
 		}
 	}
 

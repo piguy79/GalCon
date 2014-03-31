@@ -204,7 +204,7 @@ public abstract class HighlightOverlay extends Overlay {
 			toPlanetButton.showPlanetState(true, true);
 
 			if (!previousOwner.equals(toPlanetButton.planet.owner) || !fromPlanet.owner.equals(toPlanet.owner)) {
-				addExplosion(move, 1.0f, color);
+				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 		}
 
@@ -213,10 +213,10 @@ public abstract class HighlightOverlay extends Overlay {
 		return this;
 	}
 
-	private void addExplosion(Move move, float delay, Color color) {
+	private void addExplosion(boolean smallExplosion, int shipsToMove, Point position, float delay, Color color) {
 		int minNumberOfParticles = 6;
 		int maxNumberOfParticles = 15;
-		float ratio = ((float) move.shipsToMove) / 30.0f;
+		float ratio = ((float) shipsToMove) / 30.0f;
 		int numberOfParticles = min(maxNumberOfParticles, (int) floor(minNumberOfParticles
 				+ (maxNumberOfParticles - minNumberOfParticles) * ratio));
 
@@ -227,7 +227,11 @@ public abstract class HighlightOverlay extends Overlay {
 		float particleSize = tileWidth * 0.2f;
 		float radiansBetweenParticles = circleInRadians / (float) numberOfParticles;
 
-		Point tileCenter = boardCalcs.tileCoordsToPixels(move.endPosition);
+		if (smallExplosion) {
+			particleSize *= 0.75f;
+		}
+
+		Point tileCenter = boardCalcs.tileCoordsToPixels(position);
 
 		for (float currentAngle = 0; currentAngle < circleInRadians; currentAngle += radiansBetweenParticles) {
 			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
@@ -380,8 +384,64 @@ public abstract class HighlightOverlay extends Overlay {
 						HighlightOverlay.this.clear();
 						bottomHud.changeButtonText("Next >");
 						List<Move> moves = planetToMoves.get(planetIterator.next());
+
+						boolean airAttackOccured = false;
 						for (Move move : moves) {
-							HighlightOverlay.this.add(move);
+							if (move.battleStats.diedInAirAttack) {
+								airAttackOccured = true;
+								break;
+							}
+						}
+
+						if (airAttackOccured) {
+							List<Move> player1Positions = new ArrayList<Move>();
+							List<Move> player2Positions = new ArrayList<Move>();
+							String player1 = null;
+							for (final Move move : moves) {
+								final Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(),
+										move.previousPosition, resources, boardCalcs);
+
+								Color color = Constants.Colors.USER_SHIP_FILL;
+								if (!move.belongsToPlayer(GameLoop.USER)) {
+									color = Constants.Colors.ENEMY_SHIP_FILL;
+								}
+								moveToDisplay.setColor(color);
+								addActor(moveToDisplay);
+
+								if (player1 == null || player1.equals(move.playerHandle)) {
+									player1 = move.playerHandle;
+									player1Positions.add(move);
+								} else {
+									player2Positions.add(move);
+								}
+
+								if (move.battleStats.diedInAirAttack) {
+									addExplosion(true, move.shipsToMove, move.previousPosition, 0.5f, color);
+									moveToDisplay.addAction(delay(0.5f, alpha(0.0f, 0.25f)));
+								} else {
+									addAction(delay(1.0f, run(new Runnable() {
+										@Override
+										public void run() {
+											moveToDisplay.remove();
+											HighlightOverlay.this.add(move);
+										}
+									})));
+								}
+							}
+
+							for (Move move1 : player1Positions) {
+								for (Move move2 : player2Positions) {
+									Point pixelPoint1 = boardCalcs.tileCoordsToPixels(move1.previousPosition);
+									Point pixelPoint2 = boardCalcs.tileCoordsToPixels(move2.previousPosition);
+
+									shootAtShip(pixelPoint1, pixelPoint2, move1);
+									shootAtShip(pixelPoint2, pixelPoint1, move2);
+								}
+							}
+						} else {
+							for (Move move : moves) {
+								HighlightOverlay.this.add(move);
+							}
 						}
 					} else {
 						hide();
@@ -392,6 +452,21 @@ public abstract class HighlightOverlay extends Overlay {
 					return true;
 				}
 			});
+		}
+
+		private void shootAtShip(Point pixelPoint1, Point pixelPoint2, Move move) {
+			float tileWidth = boardCalcs.getTileSize().width;
+			float particleSize = tileWidth * 0.15f;
+
+			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
+			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
+			particle.setBounds(pixelPoint1.x, pixelPoint1.y, particleSize, particleSize);
+			particle.setColor(gameBoard.getPlanet(move.fromPlanet).getColor(move.playerHandle));
+
+			boardCalcs.centerPoint(pixelPoint2, particle);
+			particle.addAction(sequence(moveTo(pixelPoint2.x, pixelPoint2.y, 0.5f), alpha(0.0f)));
+
+			addActor(particle);
 		}
 
 		@Override
