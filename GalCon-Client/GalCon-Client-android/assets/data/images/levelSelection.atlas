@@ -62,3 +62,15 @@ level_card_black
   orig: 550, 750
   offset: 0, 0
   index: -1
+
+levelSelection4.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+lock_card_background
+  rotate: false
+  xy: 2, 2
+  size: 768, 516
+  orig: 768, 516
+  offset: 0, 0
+  index: -1

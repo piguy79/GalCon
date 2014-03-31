@@ -3,32 +3,77 @@
 				{
 					"level" : 1,
 					"startFrom" : 0,
-					"endAt" : 20 
+					"endAt" : 100 
 				},
 				{
 					"level" : 2,
-					"startFrom" : 20,
-					"endAt" : 50 
-				},
-				{
-					"level" : 3,
-					"startFrom" : 50,
-					"endAt" : 80 
-				},
-				{
-					"level" : 4,
-					"startFrom" : 80,
-					"endAt" : 140 
-				},
-				{
-					"level" : 5,
-					"startFrom" : 140,
+					"startFrom" : 100,
 					"endAt" : 200 
 				},
 				{
-					"level" : 6,
+					"level" : 3,
 					"startFrom" : 200,
+					"endAt" : 350 
+				},
+				{
+					"level" : 4,
+					"startFrom" : 350,
+					"endAt" : 500 
+				},
+				{
+					"level" : 5,
+					"startFrom" : 500,
+					"endAt" : 650 
+				},
+				{
+					"level" : 6,
+					"startFrom" : 650,
+					"endAt" : 800 
+				},
+				{
+					"level" : 7,
+					"startFrom" : 800,
+					"endAt" : 1000 
+				},
+				{
+					"level" : 8,
+					"startFrom" : 1000,
+					"endAt" : 1250 
+				},
+				{
+					"level" : 9,
+					"startFrom" : 1250,
+					"endAt" : 1500 
+				},
+				{
+					"level" : 10,
+					"startFrom" : 1500,
+					"endAt" : 1750 
+				},
+				{
+					"level" : 11,
+					"startFrom" : 1750,
 					"endAt" : 2000 
+				},
+				{
+					"level" : 12,
+					"startFrom" : 2000,
+					"endAt" : 2500 
+				},
+				{
+					"level" : 13,
+					"startFrom" : 2500,
+					"endAt" : 3000 
+				},
+				{
+					"level" : 14,
+					"startFrom" : 3000,
+					"endAt" : 3600 
+				},
+				{
+					"level" : 15,
+					"startFrom" : 3600,
+					"endAt" : 4500 
 				}
 				
 			]

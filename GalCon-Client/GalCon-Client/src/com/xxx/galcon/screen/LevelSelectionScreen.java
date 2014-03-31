@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 import com.xxx.galcon.Constants;
 import com.xxx.galcon.Fonts;
+import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
@@ -116,13 +117,16 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			final Map map = allMaps.get(i);
 
 			CardActor card = new CardActor(map, resources);
-			card.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					createGameStartDialog(map.key);
-				}
+			if(card.mapAvailable){
+				card.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						createGameStartDialog(map.key);
+					}
 
-			});
+				});
+			}
+			
 			table.add(card).expandX().fillX();
 		}
 
@@ -249,14 +253,31 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		private Map map;
 		private TextureRegion mapTex;
+		public boolean mapAvailable;
 
 		public CardActor(Map map, Resources resources) {
 			this.map = map;
-			this.mapTex = resources.levelAtlas.findRegion("" + map.key);
+			if(GameLoop.USER.rank.level >= map.availableFromLevel){
+				mapAvailable = true;
+				this.mapTex = resources.levelAtlas.findRegion("" + map.key);
+			}else{
+				mapAvailable = false;
+				this.mapTex = resources.levelSelectionAtlas.findRegion("lock_card_background");
+			}
 		}
 
 		public String getMapTitle() {
-			return map.title;
+			if(mapAvailable){
+				return map.title;
+			}
+			return "?";
+		}
+		
+		public String getMapDescription(){
+			if(mapAvailable){
+				return map.description;
+			}
+			return "Reach level " + map.availableFromLevel + " to unlock.";
 		}
 
 		public int getMapKey() {
@@ -289,13 +310,13 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			int mapWidth = (int) (getWidth() * .9f);
 			batch.draw(mapTex, x + width / 2 - mapWidth / 2, y + height / 2 - mapHeight / 2, mapWidth, mapHeight);
 
-			String text = map.title;
+			String text = getMapTitle();
 			mediumFont.setColor(Color.BLACK);
 			float halfFontWidth = mediumFont.getBounds(text).width / 2;
 			batch.setShader(resources.fontShader);
 			mediumFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .88f);
 
-			text = map.description;
+			text = getMapDescription();
 			smallFont.setColor(Color.BLACK);
 			halfFontWidth = smallFont.getBounds(text).width / 2;
 			smallFont.draw(batch, text, x + width / 2 - halfFontWidth, y + height * .15f);
