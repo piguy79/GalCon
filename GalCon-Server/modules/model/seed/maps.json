@@ -24,7 +24,7 @@
 				},
 				{
 					"key" : 3,
-					"availableFromLevel" : 3,
+					"availableFromLevel" : 5,
 					"title" : "Speed",
 					"description" : "Don't drop below 50",
 					"width" : {
@@ -35,7 +35,7 @@
 				},
 				{
 					"key" : 4,
-					"availableFromLevel" : 4,
+					"availableFromLevel" : 7,
 					"title" : "Protect",
 					"description" : "Shields online",
 					"width" : {
@@ -46,7 +46,7 @@
 				},
 				{
 					"key" : 5,
-					"availableFromLevel" : 5,
+					"availableFromLevel" : 10,
 					"title" : "Attack",
 					"description" : "Attack",
 					"width" : {
@@ -57,7 +57,7 @@
 				},
 				{
 					"key" : 6,
-					"availableFromLevel" : 6,
+					"availableFromLevel" : 15,
 					"title" : "Harvest",
 					"description" : "Harvest And Hold",
 					"width" : {

@@ -313,6 +313,9 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		return p;
 	}
 	
+	var roundExecuted = false;
+	var finalGameForReturn;
+	
 	var p = exports.findById(gameId);
 	return p.then(function(game) {
 		game.addMoves(moves);
@@ -331,6 +334,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
+			roundExecuted = true;
 		} 
 
 		var existingVersion = game.version;
@@ -346,8 +350,40 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			} else {
 				return savedGame.withPromise(savedGame.populate, 'players');
 			}
+		}).then(function(finalGame){
+			finalGameForReturn = finalGame;
+			return updatePlayerXpForPlanetCapture(finalGame, roundExecuted);
+		}).then(function(){
+			var returnP = new mongoose.Promise();
+			returnP.complete(finalGameForReturn);
+			return returnP;
 		});
-	})
+	});
+}
+
+var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
+	var promise = new mongoose.Promise();
+	promise.complete();
+	var lastPromise = promise;	
+	
+	
+	game.players.forEach(function(player){
+		lastPromise = lastPromise.then(function(){
+			if(roundExecuted){
+				var conqueredPlanets = _.filter(game.moves, function(move){
+					return move.executed && move.playerHandle === player.handle && move.bs.previousPlanetOwner !== player.handle; 
+				});
+				
+				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
+				player.xp += xpForPlayer;
+			}
+			
+			return player.withPromise(player.save);
+		});
+	});
+	
+	
+	return lastPromise;
 }
 
 var planetShouldBeDestroyed = function(game, planet){

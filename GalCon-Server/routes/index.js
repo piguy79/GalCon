@@ -264,6 +264,8 @@ exports.performMoves = function(req, res) {
 	var harvest = req.body.harvest;
 	var session = req.body.session;
 	
+	var finalGameToReturn;
+	
 	if(!validate({move : {moves : moves, handle : playerHandle}, session : session, handle : playerHandle}, res)) {
 		return;
 	}
@@ -290,9 +292,7 @@ exports.performMoves = function(req, res) {
 				if (game.endGameInformation.winnerHandle) {
 					return updateWinnersAndLosers(game);
 				}
-				return game;
-			}).then(function(gameToReturn) {
-				res.json(processGameReturn(gameToReturn, playerHandle));
+				res.json(processGameReturn(game, playerHandle));
 			});
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
