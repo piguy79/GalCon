@@ -708,6 +708,7 @@ exports.findRankInformation = function(req, res) {
 }
 
 exports.findAllMaps = function(req, res) {
+	
 	mapManager.findAllMaps(function(maps) {
 		var returnObj = {};
 		returnObj.items = maps;
