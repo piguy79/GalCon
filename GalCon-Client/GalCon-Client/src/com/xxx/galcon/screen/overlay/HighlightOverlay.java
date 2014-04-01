@@ -203,7 +203,7 @@ public abstract class HighlightOverlay extends Overlay {
 			String previousOwner = toPlanetButton.planet.previousRoundOwner(gameBoard);
 			toPlanetButton.showPlanetState(true, true);
 
-			if (!previousOwner.equals(toPlanetButton.planet.owner) || !fromPlanet.owner.equals(toPlanet.owner)) {
+			if (!previousOwner.equals(move.playerHandle)) {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 		}

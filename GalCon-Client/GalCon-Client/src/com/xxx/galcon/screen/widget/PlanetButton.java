@@ -45,8 +45,6 @@ public class PlanetButton extends Group {
 		super.setWidth(width);
 		super.setHeight(height);
 
-		String countToDisplay = "" + planet.numberOfShipsToDisplay(gameBoard, showCurrentState);
-
 		String planetTexture = "";
 		if (!planet.isAlive()) {
 			planetTexture = "dead_planet";
@@ -61,7 +59,7 @@ public class PlanetButton extends Group {
 
 		showPlanetState(showCurrentState, false);
 
-		label = new ShaderLabel(resources.fontShader, countToDisplay, resources.skin, Constants.UI.DEFAULT_FONT);
+		label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.DEFAULT_FONT);
 		label.setText("" + planet.numberOfShipsToDisplay(gameBoard, showCurrentState));
 		positionLabel();
 		addActor(label);
