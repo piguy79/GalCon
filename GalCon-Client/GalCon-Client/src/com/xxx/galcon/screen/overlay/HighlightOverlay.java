@@ -366,7 +366,7 @@ public abstract class HighlightOverlay extends Overlay {
 		@Override
 		public void createTopHud(List<Move> object) {
 			Size size = screenCalcs.getTopHudBounds().size;
-			topHud = new RoundInformationTopHud(resources, size.width, size.height);
+			topHud = new RoundInformationTopHud(gameBoard, resources, size.width, size.height);
 		}
 
 		@Override
@@ -439,6 +439,7 @@ public abstract class HighlightOverlay extends Overlay {
 								}
 							}
 						} else {
+							topHud.createAttackLabels(moves);
 							for (Move move : moves) {
 								HighlightOverlay.this.add(move);
 							}

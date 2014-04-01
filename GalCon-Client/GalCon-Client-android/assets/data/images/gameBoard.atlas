@@ -3,79 +3,79 @@ gameBoard.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+bottom_bar
+  rotate: false
+  xy: 2, 434
+  size: 997, 215
+  orig: 997, 215
+  offset: 0, 0
+  index: -1
 bottom_bar_expand_button
   rotate: false
-  xy: 625, 308
+  xy: 874, 68
   size: 85, 151
   orig: 85, 151
   offset: 0, 0
   index: -1
 bottom_bar_ship_button
   rotate: false
-  xy: 625, 154
+  xy: 436, 32
   size: 165, 152
   orig: 165, 152
   offset: 0, 0
   index: -1
 crosshairs
   rotate: false
-  xy: 754, 432
+  xy: 754, 221
   size: 216, 211
   orig: 216, 211
   offset: 0, 0
   index: -1
-explosion_particle
-  rotate: false
-  xy: 754, 4
-  size: 151, 148
-  orig: 151, 148
-  offset: 0, 0
-  index: -1
 line
   rotate: false
-  xy: 2, 2
+  xy: 2, 51
   size: 220, 16
   orig: 220, 16
   offset: 0, 0
   index: -1
 player_hud
   rotate: false
-  xy: 2, 20
+  xy: 2, 302
   size: 750, 130
   orig: 750, 130
   offset: 0, 0
   index: -1
-ship
+player_hud_attack
   rotate: false
-  xy: 712, 343
-  size: 97, 87
-  orig: 97, 87
+  xy: 2, 186
+  size: 686, 114
+  orig: 686, 114
   offset: 0, 0
   index: -1
-ship_selection_dialog
+player_hud_bg
   rotate: false
-  xy: 2, 152
-  size: 621, 491
-  orig: 621, 491
+  xy: 2, 69
+  size: 432, 115
+  orig: 432, 115
   offset: 0, 0
   index: -1
 ship_selection_dialog_bg
   rotate: false
-  xy: 2, 645
+  xy: 2, 651
   size: 944, 352
   orig: 944, 352
   offset: 0, 0
   index: -1
 slash_line
   rotate: false
-  xy: 625, 461
+  xy: 603, 2
   size: 121, 182
   orig: 121, 182
   offset: 0, 0
   index: -1
 transfer
   rotate: false
-  xy: 811, 222
+  xy: 726, 11
   size: 146, 208
   orig: 146, 208
   offset: 0, 0
@@ -85,17 +85,24 @@ gameBoard2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-bottom_bar
+explosion_particle
   rotate: false
-  xy: 2, 119
-  size: 997, 215
-  orig: 997, 215
+  xy: 625, 345
+  size: 151, 148
+  orig: 151, 148
   offset: 0, 0
   index: -1
-player_hud_bg
+ship
+  rotate: false
+  xy: 625, 256
+  size: 97, 87
+  orig: 97, 87
+  offset: 0, 0
+  index: -1
+ship_selection_dialog
   rotate: false
   xy: 2, 2
-  size: 432, 115
-  orig: 432, 115
+  size: 621, 491
+  orig: 621, 491
   offset: 0, 0
   index: -1
