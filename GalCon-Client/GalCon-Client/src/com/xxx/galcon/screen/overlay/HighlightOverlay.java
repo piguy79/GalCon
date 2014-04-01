@@ -261,6 +261,10 @@ public abstract class HighlightOverlay extends Overlay {
 		
 		Point tileCenter = boardCalcs.tileCoordsToPixels(position);
 		float yIncrease = boardCalcs.getTileSize().height * 0.65f;
+				
+		if(position.y >= gameBoard.heightInTiles - 1.5){
+			yIncrease = yIncrease * -1f;
+		}
 		
 		String fontColorToUse = Constants.UI.DEFAULT_FONT_RED;
 		if(planetOwner.equals(GameLoop.USER.handle)){
