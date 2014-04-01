@@ -153,7 +153,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void findGameById(UIConnectionResultCallback<GameBoard> callback, String id, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
-		args.put("playerHandle", playerHandle);
+		args.put("handle", playerHandle);
 		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), FIND_GAME_BY_ID, args, new GameBoard()));
 	}
 

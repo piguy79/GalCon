@@ -424,7 +424,7 @@ exports.joinGame = function(req, res) {
 		game = savedGame;
 		return user.withPromise(user.save);
 	}).then(function() {
-		res.json(processGameReturn(game));
+		res.json(processGameReturn(game, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -463,7 +463,7 @@ exports.acceptInvite = function(req, res){
 			return userManager.updateFriend(currentUser, requestingUser);
 		}
 	}).then(function(){
-		res.json(processGameReturn(currentGame))
+		res.json(processGameReturn(currentGame, handle))
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -734,7 +734,7 @@ exports.matchPlayerToGame = function(req, res) {
 			}
 			return findOrCreateGamePromise(user, Date.now(), mapToFind);
 		}).then(function(game) { 
-			res.json(game);
+			res.json(processGameReturn(game, handle));
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
