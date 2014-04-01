@@ -137,6 +137,7 @@ public class Constants {
 	public static final String USED_COINS = "usedCoins";
 	public static final String POPULATION = "population";
 	public static final String SOCIAL = "social";
+	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 
@@ -157,5 +158,6 @@ public class Constants {
 			add("regenBlock");
 		}
 	};
+	
 
 }

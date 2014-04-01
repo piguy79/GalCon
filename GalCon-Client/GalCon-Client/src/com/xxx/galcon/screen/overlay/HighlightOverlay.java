@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -206,6 +207,10 @@ public abstract class HighlightOverlay extends Overlay {
 			if (!previousOwner.equals(move.playerHandle)) {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
+			
+			if(!previousOwner.equals(move.playerHandle) && !toPlanetButton.planet.isOwnedBy(previousOwner)){
+				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
+			}
 		}
 
 		addActor(moveToDisplay);
@@ -250,6 +255,30 @@ public abstract class HighlightOverlay extends Overlay {
 
 			addActor(particle);
 		}
+	}
+	
+	private void addXpGainLabel(Point position, String planetOwner) {
+		
+		Point tileCenter = boardCalcs.tileCoordsToPixels(position);
+		float yIncrease = boardCalcs.getTileSize().height * 0.65f;
+		
+		String fontColorToUse = Constants.UI.DEFAULT_FONT_RED;
+		if(planetOwner.equals(GameLoop.USER.handle)){
+			fontColorToUse = Constants.UI.DEFAULT_FONT_GREEN;
+		}
+		
+		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
+		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+3", resources.skin, fontColorToUse);
+		label.setX(tileCenter.x);
+		label.setY(tileCenter.y);
+		addActor(label);
+		
+		label.addAction(Actions.sequence(Actions.delay(0.2f), Actions.moveBy(0, yIncrease, 1.2f), Actions.fadeOut(0.6f), Actions.run(new Runnable() {
+			@Override
+			public void run() {
+				label.remove();
+			}
+		})));
 	}
 
 	private void highlightPath(Planet fromPlanet, Planet toPlanet) {
