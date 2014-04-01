@@ -208,7 +208,7 @@ public abstract class HighlightOverlay extends Overlay {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 			
-			if(!previousOwner.equals(move.playerHandle) && !toPlanetButton.planet.isOwnedBy(previousOwner)){
+			if(move.executed && !move.battleStats.previousPlanetOwner.equals(move.playerHandle) && toPlanetButton.planet.isOwnedBy(move.playerHandle)){
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
 			}
 		}
