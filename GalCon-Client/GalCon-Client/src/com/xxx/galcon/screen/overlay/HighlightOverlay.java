@@ -268,12 +268,14 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 		
 		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
-		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+3", resources.skin, fontColorToUse);
+		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+"+ labelText, resources.skin, fontColorToUse);
 		label.setX(tileCenter.x);
 		label.setY(tileCenter.y);
 		addActor(label);
 		
-		label.addAction(Actions.sequence(Actions.delay(0.2f), Actions.moveBy(0, yIncrease, 1.2f), Actions.fadeOut(0.6f), Actions.run(new Runnable() {
+		
+		label.addAction(Actions.sequence(Actions.fadeOut(0.0f), Actions.delay(0.9f), Actions.fadeIn(0),  Actions.moveBy(0, yIncrease, 1.2f),
+				Actions.fadeOut(0.6f), Actions.run(new Runnable() {
 			@Override
 			public void run() {
 				label.remove();
