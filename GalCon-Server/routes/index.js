@@ -292,7 +292,9 @@ exports.performMoves = function(req, res) {
 				if (game.endGame.winnerHandle) {
 					return updateWinnersAndLosers(game);
 				}
-				res.json(processGameReturn(game, playerHandle));
+				return game;
+			}).then(function(gameToReturn){
+				res.json(processGameReturn(gameToReturn, playerHandle));
 			});
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
@@ -309,7 +311,7 @@ var updateWinnersAndLosers = function(game) {
 			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
-				player.xp += 10;
+				player.xp += 50;
 				game.endGame.xpAwardToWinner = 10;
 			} else {
 				player.losses += 1;

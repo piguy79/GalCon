@@ -58,7 +58,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("executed", "false");
 
 		if (previousPosition != null) {
-			jsonObject.put("previousPosition", previousPosition.asJson());
+			jsonObject.put("prevPos", previousPosition.asJson());
 
 		}
 
