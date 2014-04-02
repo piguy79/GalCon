@@ -52,7 +52,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 		var p = new mongoose.Promise;
 		p.then(function() {
 			return game.GameModel.update({"map" : mapKey1}, 
-					{$set : {"endGameInformation.leaderboardScoreAmount" : 20, "endGameInformation.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
+					{$set : {"endGame.leaderboardScoreAmount" : 20, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
 			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, averagePlayer2], averagePlayer1.handle);
 		}).then(function() {
@@ -71,7 +71,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 		var p = new mongoose.Promise;
 		p.then(function() {
 			return game.GameModel.update({"map" : mapKey1}, 
-					{$set : {"endGameInformation.leaderboardScoreAmount" : 20, "endGameInformation.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
+					{$set : {"endGame.leaderboardScoreAmount" : 20, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
 			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], newPlayer.handle);
 		}).then(function() {
@@ -90,13 +90,13 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 		var p = new mongoose.Promise;
 		p.then(function() {
 			return game.GameModel.update({"map" : mapKey1, "version" : 1}, 
-					{$set : {"endGameInformation.leaderboardScoreAmount" : 5, "endGameInformation.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
+					{$set : {"endGame.leaderboardScoreAmount" : 5, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
 			return game.GameModel.update({"map" : mapKey1, "version" : 2}, 
-					{$set : {"endGameInformation.leaderboardScoreAmount" : 10, "endGameInformation.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
+					{$set : {"endGame.leaderboardScoreAmount" : 10, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
 			return game.GameModel.update({"map" : mapKey1, "version" : 3}, 
-					{$set : {"endGameInformation.leaderboardScoreAmount" : 12, "endGameInformation.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
+					{$set : {"endGame.leaderboardScoreAmount" : 12, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
 			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], averagePlayer1.handle);
 		}).then(function() {

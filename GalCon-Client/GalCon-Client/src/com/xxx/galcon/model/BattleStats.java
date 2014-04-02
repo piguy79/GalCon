@@ -9,8 +9,7 @@ public class BattleStats extends JsonConvertible {
 
 	public int previousShipsOnPlanet;
 	public String previousPlanetOwner;
-	public double defenceStrength;
-	public double attackStrength;
+	public double attackMultiplier;
 	public double defenceMultiplier;
 	public Boolean diedInAirAttack;
 
@@ -19,9 +18,8 @@ public class BattleStats extends JsonConvertible {
 		if (jsonObject != null) {
 			this.previousShipsOnPlanet = jsonObject.optInt("previousShipsOnPlanet");
 			this.previousPlanetOwner = jsonObject.optString("previousPlanetOwner");
-			this.defenceStrength = jsonObject.optDouble("defenceStrength");
-			this.attackStrength = jsonObject.optDouble("attackStrength");
-			this.defenceMultiplier = jsonObject.optDouble("defenceMultiplier");
+			this.attackMultiplier = jsonObject.optDouble("atckMult");
+			this.defenceMultiplier = jsonObject.optDouble("defMult");
 			this.diedInAirAttack = jsonObject.optBoolean("diaa");
 		}
 	}

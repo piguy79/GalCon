@@ -101,7 +101,7 @@ public class Constants {
 	public static final String X = "x";
 	public static final String Y = "y";
 	public static final String WIDTH = "width";
-	public static final String END_GAME_INFO = "endGameInformation";
+	public static final String END_GAME_INFO = "endGame";
 	public static final String DRAW = "draw";
 	public static final String LOSER_HANDLES = "loserHandles";
 	public static final String HEIGHT = "height";

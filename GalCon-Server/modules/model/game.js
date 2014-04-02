@@ -23,7 +23,7 @@ var gameSchema = mongoose.Schema({
 		version : "Number",
 		values : {}
 	},
-	endGameInformation : {
+	endGame : {
 		winnerHandle : "String",
 		xpAwardToWinner : "Number",
 		leaderboardScoreAmount : "Number",
@@ -72,28 +72,27 @@ var gameSchema = mongoose.Schema({
 			duration : "Number",
 			startingRound : "Number",
 			executed : "Boolean",
-			previousPosition : {
+			prevPos : {
 				x : "Number",
 				y : "Number"
 			},
-			currentPosition : {
+			curPos : {
 				x : "Number",
 				y : "Number"
 			},
-			startPosition : {
+			startPos : {
 				x : "Number",
 				y : "Number"
 			},
-			endPosition : {
+			endPos : {
 				x : "Number",
 				y : "Number"
 			},
 			bs : {
 				previousShipsOnPlanet : "Number",
 				previousPlanetOwner : "String",
-				defenceStrength : "Number",
-				attackStrength : "Number",
-				defenceMultiplier : "Number",
+				atckMult : "Number",
+				defMult : "Number",
 				diaa : "Boolean",
 				startFleet : "Number"
 			}
@@ -103,7 +102,7 @@ var gameSchema = mongoose.Schema({
 
 gameSchema.set('toObject', { getters: true });
 gameSchema.index({'players' : 1});
-gameSchema.index({'endGameInformation.winnerHandle': 1});
+gameSchema.index({'endGame.winnerHandle': 1});
 gameSchema.index({'social.invitee': 1});
 
 
@@ -159,12 +158,11 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 				planet.conquered = true;
 				checkHarvestStatus(planet,game.currentRound.roundNumber, parseFloat(game.config.values["harvestSavior"]));
 			} else {
-				move.bs.defenceMultiplier = defenceMultiplier;
 				planet.numberOfShips = game.reverseEffectOfMultiplier(battleResult,defenceMultiplier);
 			}
 			
-			move.bs.defenceStrength = defenceStrength;
-			move.bs.attackStrength = attackStrength;
+			move.bs.defMult = defenceMultiplier;
+			move.bs.atckMult = attackMultiplier;
 		}
 	});
 }
@@ -303,7 +301,7 @@ exports.findById = function(gameId){
 
 
 exports.findCollectionOfGames = function(user){
-	return GameModel.find({players : {$in : [user._id]}}, '_id players endGameInformation createdDate currentRound map social').populate('players').exec();
+	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate currentRound map social').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
@@ -539,11 +537,11 @@ exports.declineSocialGame = function(gameId, invitee){
 									{
 										$set : {
 												   'social.status' : 'DECLINED'
-												   ,'endGameInformation.xpAwardToWinner' : 0
-												   ,'endGameInformation.leaderboardScoreAmount' : 0
-												   ,'endGameInformation.winningDate' : 0
-												   ,'endGameInformation.draw' : 0
-												   ,'endGameInformation.declined' : invitee
+												   ,'endGame.xpAwardToWinner' : 0
+												   ,'endGame.leaderboardScoreAmount' : 0
+												   ,'endGame.winningDate' : 0
+												   ,'endGame.draw' : 0
+												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
 }
 

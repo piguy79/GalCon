@@ -28,7 +28,7 @@ function GameBuilder(gameAttributes) {
 		roundNumber : 0,
 		playersWhoMoved : []
 	};
-	this.endGameInformation = {
+	this.endGame = {
 		winnerHandle : "",
 		losers : [],
 		draw : false,

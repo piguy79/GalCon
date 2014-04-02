@@ -52,9 +52,9 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("toPlanet", toPlanet);
 		jsonObject.put("fleet", shipsToMove);
 		jsonObject.put("duration", duration);
-		jsonObject.put("startPosition", startPosition.asJson());
-		jsonObject.put("endPosition", endPosition.asJson());
-		jsonObject.put("currentPosition", currentPosition.asJson());
+		jsonObject.put("startPos", startPosition.asJson());
+		jsonObject.put("endPos", endPosition.asJson());
+		jsonObject.put("curPos", currentPosition.asJson());
 		jsonObject.put("executed", "false");
 
 		if (previousPosition != null) {
@@ -72,10 +72,10 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		shipsToMove = jsonObject.getInt("fleet");
 		duration = Float.parseFloat(jsonObject.getString("duration"));
 		playerHandle = jsonObject.getString("playerHandle");
-		this.currentPosition.consume(jsonObject.getJSONObject("currentPosition"));
-		this.previousPosition.consume(jsonObject.getJSONObject("previousPosition"));
-		this.startPosition.consume(jsonObject.getJSONObject("startPosition"));
-		this.endPosition.consume(jsonObject.getJSONObject("endPosition"));
+		this.currentPosition.consume(jsonObject.getJSONObject("curPos"));
+		this.previousPosition.consume(jsonObject.getJSONObject("prevPos"));
+		this.startPosition.consume(jsonObject.getJSONObject("startPos"));
+		this.endPosition.consume(jsonObject.getJSONObject("endPos"));
 		startingRound = jsonObject.getInt("startingRound");
 		this.executed = jsonObject.getBoolean("executed");
 

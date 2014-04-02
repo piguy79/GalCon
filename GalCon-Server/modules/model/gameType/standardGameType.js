@@ -21,8 +21,8 @@ exports.processPossibleEndGame = function(game){
 		if(playersWhoOwnAPlanet.length == 1) {
 			if(playersWhoHaveAMove.length == 0 || 
 					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) == 0)) {
-				game.endGameInformation.winnerHandle = playersWhoOwnAPlanet[0];
-				game.endGameInformation.winningDate = Date.now();
+				game.endGame.winnerHandle = playersWhoOwnAPlanet[0];
+				game.endGame.winningDate = Date.now();
 			}
 		}
 	}
@@ -100,8 +100,8 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 					var attackStrength2 = game.calculateAttackStrengthForMove(move2, attackMultiplier2);
 					var battleResult = attackStrength1 - attackStrength2;
 					
-					move1.bs.attackStrength = attackStrength1;
-					move2.bs.attackStrength = attackStrength2;
+					move1.bs.atckMult = attackMultiplier1;
+					move2.bs.atckMult = attackMultiplier2;
 					
 					if(battleResult == 0) {
 						move1.fleet = 0;

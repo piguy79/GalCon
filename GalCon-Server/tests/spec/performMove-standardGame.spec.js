@@ -119,8 +119,6 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.bs.attackStrength).toBe(30);
-			expect(move.bs.defenceStrength).toBe(20);
 			expect(move.bs.previousShipsOnPlanet).toBe(20);
 			expect(move.bs.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {
@@ -147,8 +145,6 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.bs.attackStrength).toBe(19);
-			expect(move.bs.defenceStrength).toBe(20);
 			expect(move.bs.previousShipsOnPlanet).toBe(20);
 			expect(move.bs.previousPlanetOwner).toBe('');
 		}).then(null, function(err) {

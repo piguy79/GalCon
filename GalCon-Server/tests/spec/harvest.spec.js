@@ -99,7 +99,6 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
-			expect(game.moves[0].bs.attackStrength).toBe(12);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -191,7 +190,6 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var defendedPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(defendedPlanet.ownerHandle).toBe(PLAYER_2_HANDLE);
-			expect(game.moves[0].bs.defenceStrength).toBe(15);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -284,8 +282,6 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var conqueredPlanet = _.find(game.planets, function(planet){ return planet.name === PLAYER_2_HOME_PLANET});
 			expect(conqueredPlanet.ownerHandle).toBe(PLAYER_1_HANDLE);
-			// This will be 16 as I hold 2 attack planets which will give a 50% increase, plus 50% for harvesting both planets.
-			expect(game.moves[0].bs.attackStrength).toBe(16);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);

@@ -4,15 +4,15 @@ exports.adjustMovePositions = function(game) {
 	for(var i = 0; i < game.moves.length; i++){
 		var move = game.moves[i];
 		
-		move.previousPosition = move.currentPosition;
+		move.prevPos = move.curPos;
 		
-		var totalDuration = galconMath.distance(move.startPosition, move.endPosition);
+		var totalDuration = galconMath.distance(move.startPos, move.endPos);
 		
 		var percentTraveled = 1 - (move.duration / totalDuration);
 		
-		var currentX = move.startPosition.x + (move.endPosition.x - move.startPosition.x) * percentTraveled;
-		var currentY = move.startPosition.y + (move.endPosition.y - move.startPosition.y) * percentTraveled;
+		var currentX = move.startPos.x + (move.endPos.x - move.startPos.x) * percentTraveled;
+		var currentY = move.startPos.y + (move.endPos.y - move.startPos.y) * percentTraveled;
 		
-		move.currentPosition = {x : currentX, y : currentY};
+		move.curPos = {x : currentX, y : currentY};
 	}
 }

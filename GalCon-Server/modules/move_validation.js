@@ -77,7 +77,7 @@ var playerHasNotMovedThisRound = function(game, handle){
 }
 
 var gameIsNotOver = function(game){
-	if(game.endGameInformation.winnerHandle){
+	if(game.endGame.winnerHandle){
 		return false;
 	};
 	

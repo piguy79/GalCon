@@ -76,7 +76,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 		var count = 0;
 		for(i in games) {
 			if (games[i].currentRound.playersWhoMoved.indexOf(handle) == -1
-					&& !games[i].endGameInformation.winnerHandle && !games[i].endGameInformation.declined) {
+					&& !games[i].endGame.winnerHandle && !games[i].endGame.declined) {
 				count += 1;
 			}
 		}
@@ -249,8 +249,8 @@ var minfiyGameResponse = function(games, handle){
 			players : _.map(game.players, minifyUser),
 			createdDate : game.createdDate,
 			moveAvailable : iHaveAMove,
-			winner : game.endGameInformation.winnerHandle,
-			winningDate : game.endGameInformation.winningDate,
+			winner : game.endGame.winnerHandle,
+			winningDate : game.endGame.winningDate,
 			map : game.map,
 			social : game.social
 		};
@@ -289,7 +289,7 @@ exports.performMoves = function(req, res) {
 			p.complete();
 			
 			return p.then(function() {
-				if (game.endGameInformation.winnerHandle) {
+				if (game.endGame.winnerHandle) {
 					return updateWinnersAndLosers(game);
 				}
 				res.json(processGameReturn(game, playerHandle));
@@ -306,11 +306,11 @@ var updateWinnersAndLosers = function(game) {
 	
 	game.players.forEach(function(player) {
 		p = p.then(function() {
-			if(player.handle === game.endGameInformation.winnerHandle) {
+			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
 				player.xp += 10;
-				game.endGameInformation.xpAwardToWinner = 10;
+				game.endGame.xpAwardToWinner = 10;
 			} else {
 				player.losses += 1;
 			}
@@ -338,7 +338,7 @@ var updateWinnersAndLosers = function(game) {
 var setTimeUntilFreeCoins = function(user, gameId){
 	var p = gameManager.findCollectionOfGames(user);
 	return p.then(function(games){	
-		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
+		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGame.winnerHandle === ''});
 		
 		if(user.coins <= 0 && gamesStillInProgress.length === 0){
 			user.usedCoins = Date.now();
@@ -365,7 +365,7 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
 			return gameManager.findCollectionOfGames(user);
 			
 		}).then(function(games){
-			var gamesStillInProgress = _.filter(games, function(game) { return game.endGameInformation.winnerHandle === ''});
+			var gamesStillInProgress = _.filter(games, function(game) { return game.endGame.winnerHandle === ''});
 			
 			if(foundUser.usedCoins === -1 && gamesStillInProgress.length === 0 && foundUser.coins === 0) {
 				foundUser.usedCoins = Date.now();
@@ -516,7 +516,7 @@ exports.resignGame = function(req, res) {
 			var foundHandle = false;
 			game.players.forEach(function(player) {
 				if(player.handle !== handle) {
-					game.endGameInformation.winnerHandle = player.handle;
+					game.endGame.winnerHandle = player.handle;
 				} else {
 					foundHandle = true;
 				}
@@ -524,7 +524,7 @@ exports.resignGame = function(req, res) {
 			if(!foundHandle) {
 				throw new Error("Invalid game");
 			}
-			game.endGameInformation.winningDate = Date.now();
+			game.endGame.winningDate = Date.now();
 			
 			return updateWinnersAndLosers(game);
 		});
@@ -946,8 +946,8 @@ exports.findPendingInvites = function(req, res){
 					id : item._id,
 					createdDate : item.createdDate,
 					moveAvailable : true,
-					winner : item.endGameInformation.winnerHandle,
-					winningDate : item.endGameInformation.winningDate,
+					winner : item.endGame.winnerHandle,
+					winningDate : item.endGame.winningDate,
 					map : item.map,
 					social : item.social
 				}
