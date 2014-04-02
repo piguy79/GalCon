@@ -28,14 +28,14 @@ public class MoveFactory {
 
 		float startX = -1, startY = -1, endX = 1, endY = -1;
 		for (Planet planet : availablePlanets) {
-			if (planet.isOwnedBy(GameLoop.USER.handle) && move.fromPlanet == null) {
-				move.fromPlanet = planet.name;
+			if (planet.isOwnedBy(GameLoop.USER.handle) && move.from == null) {
+				move.from = planet.name;
 				move.shipsToMove = fleetToSend;
 				startX = planet.position.x;
 				startY = planet.position.y;
 				move.startingRound = round;
 			} else {
-				move.toPlanet = planet.name;
+				move.to = planet.name;
 				endX = planet.position.x;
 				endY = planet.position.y;
 			}
@@ -70,7 +70,7 @@ public class MoveFactory {
 			move.currentPosition = pos;
 			move.startPosition = pos;
 			move.duration = GalConMath.distance(startX, startY, endX, endY);
-			move.playerHandle = GameLoop.USER.handle;
+			move.handle = GameLoop.USER.handle;
 
 			return move;
 		}

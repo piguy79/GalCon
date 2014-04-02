@@ -32,7 +32,7 @@ var runPlayerValidate = function(game, handle){
 }
 
 var playerOwnsFromPlanets = function(game, handle, moves){
-	var moveFromPlanets = _.pluck(moves, 'fromPlanet');
+	var moveFromPlanets = _.pluck(moves, 'from');
 	var ownedPlanets = _.filter(game.planets, function(planet){
 		return planet.ownerHandle === handle;
 	});
@@ -41,7 +41,7 @@ var playerOwnsFromPlanets = function(game, handle, moves){
 }
 
 var fleetsCannotExceedTheshipsOnAPlanet = function(planets , moves){
-	var moveFromPlanets = _.groupBy(moves, 'fromPlanet');
+	var moveFromPlanets = _.groupBy(moves, 'from');
 	var planetsInvolvedInMove = _.filter(planets, function(planet){
 		return moveFromPlanets[planet.name];
 	});
@@ -63,7 +63,7 @@ var mustBeValidFromAndToPlanets = function(planets, moves){
 	var result = true;
 	
 	_.each(moves, function(move){
-		if(!_.contains(planetNames, move.fromPlanet) || !_.contains(planetNames, move.toPlanet)){
+		if(!_.contains(planetNames, move.from) || !_.contains(planetNames, move.to)){
 			result = false;
 		}
 	});

@@ -88,7 +88,7 @@ exports.isValidMoves = function(arg){
 	}
 		
 	return !_.some(moves, function(move){
-		return move.fromPlanet === move.toPlanet || move.playerHandle !== handle || !validator.isInt(move.fleet) || move.fleet <= 0;
+		return move.from === move.to || move.handle !== handle || !validator.isInt(move.fleet) || move.fleet <= 0;
 	});
 	
 }

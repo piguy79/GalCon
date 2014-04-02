@@ -160,11 +160,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(4);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], true, 9, 0);
@@ -192,11 +192,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(2);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 9, 6);
@@ -223,11 +223,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(3);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 9, 6);
@@ -255,11 +255,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(2);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 16, 13);

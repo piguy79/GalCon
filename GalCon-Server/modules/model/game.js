@@ -65,9 +65,9 @@ var gameSchema = mongoose.Schema({
 	],
 	moves : [
 		{
-			playerHandle : "String",
-			fromPlanet : "String",
-			toPlanet : "String",
+			handle : "String",
+			from : "String",
+			to : "String",
 			fleet : "Number",
 			duration : "Number",
 			startingRound : "Number",
@@ -108,7 +108,7 @@ gameSchema.index({'social.invitee': 1});
 
 
 var hasSameOwner = function(planet, move){
-	return planet.ownerHandle == move.playerHandle;
+	return planet.ownerHandle == move.handle;
 }
 
 var isSamePlanet = function(planet, planetName){
@@ -133,7 +133,7 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 			move.bs.previousPlanetOwner = planet.ownerHandle;
 			move.bs.previousShipsOnPlanet = planet.ships;
 			planet.ships = planet.ships + move.fleet;
-		} else if (isSamePlanet(planet, move.toPlanet)) {
+		} else if (isSamePlanet(planet, move.to)) {
 			var defenceMultiplier = 0;
 			var attackMultiplier = 0;
 			
@@ -141,8 +141,8 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 				defenceMultiplier = multiplierMap[planet.ownerHandle].defenceMultiplier;
 			}
 			
-			if (multiplierMap[move.playerHandle]) {
-				attackMultiplier = multiplierMap[move.playerHandle].attackMultiplier;
+			if (multiplierMap[move.handle]) {
+				attackMultiplier = multiplierMap[move.handle].attackMultiplier;
 			}
 		
 			move.bs.previousPlanetOwner = planet.ownerHandle;		
@@ -153,7 +153,7 @@ gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 			move.bs.previousShipsOnPlanet = planet.ships;
 						
 			if(battleResult <= 0) {
-				planet.ownerHandle = move.playerHandle;
+				planet.ownerHandle = move.handle;
 				planet.ships = game.reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
 				checkHarvestStatus(planet,game.round.num, parseFloat(game.config.values["harvestSavior"]));
@@ -220,7 +220,7 @@ var calculateDefenceStrengthForPlanet = function(planet, defenceMultiplier){
 }
 
 var isADefensiveMoveToThisPlanet = function(planet, move){
-	return hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet);
+	return hasSameOwner(planet, move) && isSamePlanet(planet, move.to);
 }
 
 
@@ -369,7 +369,7 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 		lastPromise = lastPromise.then(function(){
 			if(roundExecuted){
 				var conqueredPlanets = _.filter(game.moves, function(move){
-					return move.executed && move.playerHandle === player.handle && move.bs.previousPlanetOwner !== player.handle; 
+					return move.executed && move.handle === player.handle && move.bs.previousPlanetOwner !== player.handle; 
 				});
 				
 				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
@@ -430,7 +430,7 @@ var decrementCurrentShipCountOnFromPlanets = function(game){
 			var move = game.moves[i];
 			
 			if(move.startingRound == game.round.num){
-				var fromPlanet = findFromPlanet(game.planets, game.moves[i].fromPlanet);
+				var fromPlanet = findFromPlanet(game.planets, game.moves[i].from);
 				fromPlanet.ships = fromPlanet.ships - game.moves[i].fleet;
 			}			
 		}

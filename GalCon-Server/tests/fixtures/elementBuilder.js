@@ -10,11 +10,11 @@ exports.createPlanet = function(name, owner, regen, ships, position, ability) {
 	};
 }
 
-exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duration) {
+exports.createMove = function(handle, from, to, fleet, duration) {
 	return {
-		playerHandle : playerHandle,
-		fromPlanet : fromPlanet,
-		toPlanet : toPlanet,
+		handle : handle,
+		from : from,
+		to : to,
 		fleet : fleet,
 		duration : duration
 	};

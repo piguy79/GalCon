@@ -13,8 +13,8 @@ exports.processPossibleEndGame = function(game){
 		var playersWhoHaveAMove = [];
 		for(var i = 0; i < game.moves.length; i++){
 			var move = game.moves[i];
-			if(playersWhoHaveAMove.indexOf(move.playerHandle) < 0){
-				playersWhoHaveAMove.push(move.playerHandle);
+			if(playersWhoHaveAMove.indexOf(move.handle) < 0){
+				playersWhoHaveAMove.push(move.handle);
 			}
 		}
 		
@@ -42,12 +42,12 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 	
 	var movesByPlanet = {};
 	_.each(game.moves, function(move) {
-		var moves = movesByPlanet[move.toPlanet];
+		var moves = movesByPlanet[move.to];
 		if(moves === undefined) {
 			moves = [];
 		}
 		moves.push(move);
-		movesByPlanet[move.toPlanet] = moves;
+		movesByPlanet[move.to] = moves;
 	});
 	
 	_.each(_.values(movesByPlanet), function(movesArray) {
@@ -60,12 +60,12 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 				move.executed = true;
 				move.bs.startFleet = move.fleet;
 				
-				var executedMoves = executedMovesByPlayer[move.playerHandle];
+				var executedMoves = executedMovesByPlayer[move.handle];
 				if(executedMoves === undefined) {
 					executedMoves = [];
 				}
 				executedMoves.push(move);
-				executedMovesByPlayer[move.playerHandle] = executedMoves;
+				executedMovesByPlayer[move.handle] = executedMoves;
 			}
 		}
 		
@@ -89,11 +89,11 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 					
 					var attackMultiplier1 = 0;
 					var attackMultiplier2 = 0;
-					if (multiplierMap[move1.playerHandle]) {
-						attackMultiplier1 = multiplierMap[move1.playerHandle].attackMultiplier;
+					if (multiplierMap[move1.handle]) {
+						attackMultiplier1 = multiplierMap[move1.handle].attackMultiplier;
 					}
-					if (multiplierMap[move2.playerHandle]) {
-						attackMultiplier2 = multiplierMap[move2.playerHandle].attackMultiplier;
+					if (multiplierMap[move2.handle]) {
+						attackMultiplier2 = multiplierMap[move2.handle].attackMultiplier;
 					}
 					
 					var attackStrength1 = game.calculateAttackStrengthForMove(move1, attackMultiplier1);

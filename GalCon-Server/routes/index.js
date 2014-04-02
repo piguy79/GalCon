@@ -385,13 +385,13 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for ( var i = 0; i < game.moves.length; i++) {
 		var move = game.moves[i];
 
-		if ((move.playerHandle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
+		if ((move.handle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}
 	
 	game.moves = _.reject(game.moves, function(move){
-		return move.playerHandle !== playerWhoCalledTheUrl && move.executed === false;
+		return move.handle !== playerWhoCalledTheUrl && move.executed === false;
 	});
 
 	return game;
@@ -400,7 +400,7 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 decrementPlanetShipNumber = function(game, move) {
 	for ( var i = 0; i < game.planets.length; i++) {
 		var planet = game.planets[i];
-		if (planet.name == move.fromPlanet) {
+		if (planet.name == move.from) {
 			planet.ships = planet.ships - move.fleet;
 		}
 	}

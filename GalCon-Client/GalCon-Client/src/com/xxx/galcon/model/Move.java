@@ -15,11 +15,11 @@ import com.xxx.galcon.model.tween.MoveTween;
 
 public class Move extends JsonConvertible implements JsonConstructable {
 
-	public String fromPlanet;
-	public String toPlanet;
+	public String from;
+	public String to;
 	public int shipsToMove = 0;
 	public float duration = 0;
-	public String playerHandle;
+	public String handle;
 	public Point previousPosition = new Point();
 	public Point currentPosition = new Point();
 	public Point startPosition = new Point();
@@ -41,15 +41,15 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	}
 
 	public boolean belongsToPlayer(Player player) {
-		return this.playerHandle.equals(player.handle);
+		return this.handle.equals(player.handle);
 	}
 
 	@Override
 	public JSONObject asJson() throws JSONException {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("playerHandle", GameLoop.USER.handle);
-		jsonObject.put("fromPlanet", fromPlanet);
-		jsonObject.put("toPlanet", toPlanet);
+		jsonObject.put("handle", GameLoop.USER.handle);
+		jsonObject.put("from", from);
+		jsonObject.put("to", to);
 		jsonObject.put("fleet", shipsToMove);
 		jsonObject.put("duration", duration);
 		jsonObject.put("startPos", startPosition.asJson());
@@ -67,11 +67,11 @@ public class Move extends JsonConvertible implements JsonConstructable {
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		fromPlanet = jsonObject.getString("fromPlanet");
-		toPlanet = jsonObject.getString("toPlanet");
+		from = jsonObject.getString("from");
+		to = jsonObject.getString("to");
 		shipsToMove = jsonObject.getInt("fleet");
 		duration = Float.parseFloat(jsonObject.getString("duration"));
-		playerHandle = jsonObject.getString("playerHandle");
+		handle = jsonObject.getString("handle");
 		this.currentPosition.consume(jsonObject.getJSONObject("curPos"));
 		this.previousPosition.consume(jsonObject.getJSONObject("prevPos"));
 		this.startPosition.consume(jsonObject.getJSONObject("startPos"));
@@ -93,11 +93,11 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	}
 
 	public Planet fromPlanet(List<Planet> planets) {
-		return findPlanetForMove(planets, fromPlanet);
+		return findPlanetForMove(planets, from);
 	}
 
 	public Planet toPlanet(List<Planet> planets) {
-		return findPlanetForMove(planets, toPlanet);
+		return findPlanetForMove(planets, to);
 	}
 
 	private Planet findPlanetForMove(List<Planet> planets, String searchPlanet) {

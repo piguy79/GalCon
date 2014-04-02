@@ -22,6 +22,6 @@ exports.addPlanetAbilities = function(planetsFarFromHomes) {
 
 exports.applyMovesToGame = function(game, multiplierMap) {
 	standardGameType.applyMovesToGame(game, multiplierMap, function(move) {
-		return move.duration - speedIncreasePlanetsHeldByPlayer(game.config, move.playerHandle, game.planets, game);
+		return move.duration - speedIncreasePlanetsHeldByPlayer(game.config, move.handle, game.planets, game);
 	});
 }
