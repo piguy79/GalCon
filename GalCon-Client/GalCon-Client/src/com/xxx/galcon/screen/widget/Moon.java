@@ -53,7 +53,7 @@ public class Moon extends Group {
 			rateOfOrbit = 0.5;
 		}
 
-		if (associatedPlanetButton.planet.shipRegenRate <= 3) {
+		if (associatedPlanetButton.planet.regen <= 3) {
 			angle = 360;
 			rateOfOrbit = rateOfOrbit * -1;
 		}

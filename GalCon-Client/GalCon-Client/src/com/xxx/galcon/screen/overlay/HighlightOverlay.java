@@ -534,7 +534,7 @@ public abstract class HighlightOverlay extends Overlay {
 		public void createTopHud(Planet planet) {
 			topHud = new PlanetInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
 					screenCalcs.getTopHudBounds().size.height);
-			topHud.updateRegen((int) planet.shipRegenRate);
+			topHud.updateRegen((int) planet.regen);
 
 			this.planet = planet;
 		}
@@ -617,7 +617,7 @@ public abstract class HighlightOverlay extends Overlay {
 				return;
 			}
 
-			shipSelectionHud = new ShipSelectionHud(move, gameBoard.getPlanet(move.fromPlanet).numberOfShips, resources);
+			shipSelectionHud = new ShipSelectionHud(move, gameBoard.getPlanet(move.fromPlanet).ships, resources);
 			shipSelectionHud.addListener(new MoveListener() {
 
 				@Override

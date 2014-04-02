@@ -15,8 +15,8 @@ import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Planet extends JsonConvertible {
 	public String owner = Constants.OWNER_NO_ONE;
-	public float shipRegenRate = 1.0f;
-	public int numberOfShips;
+	public float regen = 1.0f;
+	public int ships;
 	public String name;
 	public String id;
 	public Point position;
@@ -37,8 +37,8 @@ public class Planet extends JsonConvertible {
 	protected void doConsume(JSONObject jsonObject) {
 		try {
 			this.name = jsonObject.getString(Constants.NAME);
-			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
-			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
+			this.regen = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
+			this.ships = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
 			this.ability = jsonObject.getString(Constants.ABILITY);
 			if (jsonObject.has(Constants.OWNER_HANDLE)) {
 				this.owner = jsonObject.getString(Constants.OWNER_HANDLE);
@@ -110,7 +110,7 @@ public class Planet extends JsonConvertible {
 
 	public int numberOfShipsToDisplay(GameBoard gameBoard, boolean overrideAnimation) {
 		if (overrideAnimation) {
-			return numberOfShips;
+			return ships;
 		}
 
 		int lowestFromExecutedMoves = 10000000;
@@ -128,7 +128,7 @@ public class Planet extends JsonConvertible {
 		if (executedMovesFound) {
 			return lowestFromExecutedMoves;
 		}
-		return numberOfShips;
+		return ships;
 	}
 
 	public boolean isUnderHarvest() {

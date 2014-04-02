@@ -126,13 +126,13 @@ describe("Harvest an ability planet -", function() {
 			return gameRunner.performTurns(6, currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.shipRegenRate).toBe(0);
+			expect(abilityPlanet.regen).toBe(0);
 			expect(abilityPlanet.status).toBe("DEAD");
-			expect(abilityPlanet.numberOfShips).toBe(22);
+			expect(abilityPlanet.ships).toBe(22);
 			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.numberOfShips).toBe(22);
+			expect(abilityPlanet.ships).toBe(22);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -161,7 +161,7 @@ describe("Harvest an ability planet -", function() {
 			expect(abilityPlanet.harvest.saveRound).toBe(1);
 			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 30 - 12 = 18.
 			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 23
-			expect(abilityPlanet.numberOfShips).toBe(13);
+			expect(abilityPlanet.ships).toBe(13);
 			done();
 		}).then(null, function(err){
 			console.log(err);
@@ -247,7 +247,7 @@ describe("Harvest an ability planet -", function() {
 			expect(abilityPlanet.harvest.saveRound).toBe(1);
 			// Sending 30 ships. Ability planet had 10 ships with 2 regen. One round later the num ships would be 12. 20 - 12 = 8.
 			// 18 plus the bonus of 5 for capturing the planet which was about to die due to harvest makes it 13
-			expect(abilityPlanet.numberOfShips).toBe(13);
+			expect(abilityPlanet.ships).toBe(13);
 			return gameRunner.performTurn(currentGameId, {moves : reCaptureHarvestPlanet, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});

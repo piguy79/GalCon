@@ -22,8 +22,8 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 		var planetToAddTo = planetsFarFromHomes[i];
 		
 		if(!planetToAddTo.ability){
-			planetToAddTo.shipRegenRate = SHIP_REGEN_RATE;
-			planetToAddTo.numberOfShips = SHIP_NUMBER;
+			planetToAddTo.regen = SHIP_REGEN_RATE;
+			planetToAddTo.ships = SHIP_NUMBER;
 			
 			var abilityIndex = Math.floor(Math.random() * (abilitiesArray.length));
 			planetToAddTo.ability = abilitiesArray[abilityIndex];

@@ -48,7 +48,7 @@ describe("Perform Move - Air Attacks -", function() {
 				return this.actual.ownerHandle == expected;
 			},
 			toHaveShipNumber : function(expected) {
-				return this.actual.numberOfShips == expected;
+				return this.actual.ships == expected;
 			},
 			toContainMove : function(expected) {
 				var gameMoves = this.actual;

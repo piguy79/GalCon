@@ -92,9 +92,9 @@ public class Constants {
 	public static final String CREATED = "created";
 	public static final String REASON = "reason";
 	public static final String HANDLE = "handle";
-	public static final String SHIP_REGEN_RATE = "shipRegenRate";
+	public static final String SHIP_REGEN_RATE = "regen";
 	public static final float SHIP_REGEN_RATE_MAX = 5.0f;
-	public static final String NUMBER_OF_SHIPS = "numberOfShips";
+	public static final String NUMBER_OF_SHIPS = "ships";
 	public static final String ABILITY = "ability";
 	public static final String OWNER_HANDLE = "ownerHandle";
 	public static final String POSITION = "position";

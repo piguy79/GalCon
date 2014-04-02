@@ -1,9 +1,9 @@
-exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position, ability) {
+exports.createPlanet = function(name, owner, regen, ships, position, ability) {
 	return {
 		name : name,
 		ownerHandle : owner,
-		shipRegenRate : shipRegenRate,
-		numberOfShips : numberOfShips,
+		regen : regen,
+		ships : ships,
 		position : position,
 		ability : ability || '',
 		status : 'ALIVE'

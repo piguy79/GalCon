@@ -399,7 +399,7 @@ decrementPlanetShipNumber = function(game, move) {
 	for ( var i = 0; i < game.planets.length; i++) {
 		var planet = game.planets[i];
 		if (planet.name == move.fromPlanet) {
-			planet.numberOfShips = planet.numberOfShips - move.fleet;
+			planet.ships = planet.ships - move.fleet;
 		}
 	}
 }

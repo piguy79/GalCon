@@ -112,7 +112,7 @@ public class PlanetInformationDialog extends OKCancelDialog {
 	}
 
 	private String findRegenRate() {
-		return Math.round(planet.shipRegenRate) + "";
+		return Math.round(planet.regen) + "";
 	}
 
 	private String calculatePopulation() {
