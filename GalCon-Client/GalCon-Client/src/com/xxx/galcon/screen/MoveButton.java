@@ -40,7 +40,7 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	}
 
 	public boolean isActive() {
-		return move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard);
+		return move.startingRound == gameBoard.roundInformation.round && !GameLoop.USER.hasMoved(gameBoard);
 	}
 
 	private void addLabels() {

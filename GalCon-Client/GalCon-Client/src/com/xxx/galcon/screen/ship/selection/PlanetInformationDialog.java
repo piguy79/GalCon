@@ -130,7 +130,7 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		if (planet.isUnderHarvest()) {
 			String harvestRounds = gameboard.gameConfig.getValue("harvestRounds");
 			int roundNumber = Integer.parseInt(harvestRounds);
-			return "" + (roundNumber - (gameboard.roundInformation.currentRound - planet.harvest.startingRound));
+			return "" + (roundNumber - (gameboard.roundInformation.round - planet.harvest.startingRound));
 		}
 
 		return "";

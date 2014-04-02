@@ -360,7 +360,7 @@ public class BoardScreen implements ScreenFeedback {
 			boardTable.addActor(movetoDisplay);
 		}
 
-		roundAnimated = gameBoard.roundInformation.currentRound;
+		roundAnimated = gameBoard.roundInformation.round;
 	}
 
 	private void createMoveHud() {
@@ -422,7 +422,7 @@ public class BoardScreen implements ScreenFeedback {
 		List<Planet> planets = new ArrayList<Planet>();
 		planets.add(fromPlanet);
 		planets.add(toPlanet);
-		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.currentRound);
+		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.round);
 
 		highlight(fakeMove);
 	}
@@ -673,7 +673,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return roundAnimated == gameBoard.roundInformation.currentRound;
+		return roundAnimated == gameBoard.roundInformation.round;
 	}
 
 	@Override

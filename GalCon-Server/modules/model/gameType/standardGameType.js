@@ -29,7 +29,7 @@ exports.processPossibleEndGame = function(game){
 }
 
 exports.processRoundInformation = function(game) {
-	game.currentRound.roundNumber++;
+	game.round.num++;
     game.updateRegenRates();
 }
 

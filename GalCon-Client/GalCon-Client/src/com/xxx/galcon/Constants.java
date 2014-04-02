@@ -78,8 +78,8 @@ public class Constants {
 	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
 	public static final String PLANETS = "planets";
-	public static final String CURRENT_ROUND = "currentRound";
-	public static final String ROUND_NUMBER = "roundNumber";
+	public static final String CURRENT_ROUND = "round";
+	public static final String ROUND_NUMBER = "num";
 	public static final String CREATED_DATE = "createdDate";
 	public static final String WINNING_DATE = "winningDate";
 	public static final String PLAYER = "player";
@@ -120,7 +120,7 @@ public class Constants {
 	public static final String ABILITY_DEFENCE_INCREASE = "defenseModifier";
 	public static final String ABILITY_REGEN_BLOCK = "blockModifier";
 	public static final String XP_AWARD_TO_WINNER = "xpAwardToWinner";
-	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
+	public static final String PLAYERS_WHO_MOVED = "moved";
 	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
 	public static final String MAP = "map";
 	public static final String CREATED_TIME = "createdTime";

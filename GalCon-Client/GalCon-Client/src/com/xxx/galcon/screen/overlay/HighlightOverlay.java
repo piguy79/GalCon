@@ -121,7 +121,7 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.currentRound + 1),
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1),
 					resources.skin, Constants.UI.LARGE_FONT);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
@@ -613,7 +613,7 @@ public abstract class HighlightOverlay extends Overlay {
 
 		@Override
 		public void createBottomHud() {
-			if (move.startingRound != gameBoard.roundInformation.currentRound || GameLoop.USER.hasMoved(gameBoard)) {
+			if (move.startingRound != gameBoard.roundInformation.round || GameLoop.USER.hasMoved(gameBoard)) {
 				return;
 			}
 

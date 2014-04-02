@@ -24,9 +24,9 @@ function GameBuilder(gameAttributes) {
 		};
 	}
 	
-	this.currentRound = {
-		roundNumber : 0,
-		playersWhoMoved : []
+	this.round = {
+		num : 0,
+		moved : []
 	};
 	this.endGame = {
 		winnerHandle : "",

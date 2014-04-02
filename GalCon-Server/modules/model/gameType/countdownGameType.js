@@ -1,5 +1,5 @@
 exports.processPossibleEndGame = function(game){
-	if(game.currentRound.roundNumber == 0){
+	if(game.round.num == 0){
 	
 		var playersToPlanetTheyOwn = {};
 		for(var i = 0; i < game.planets.length; i++){
@@ -40,14 +40,14 @@ exports.processPossibleEndGame = function(game){
 }
 
 exports.processRoundInformation = function(game) {
-	game.currentRound.roundNumber--;
+	game.round.num--;
     game.updateRegenRates();
 }
 
 
 exports.create = function(game, players, width, height, numberOfPlanets){
-	game.currentRound = {
-		roundNumber : 10,
+	game.round = {
+		num : 10,
 		playerHandle : players[0].handle
 	};
 }

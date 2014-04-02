@@ -75,7 +75,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 		}
 		var count = 0;
 		for(i in games) {
-			if (games[i].currentRound.playersWhoMoved.indexOf(handle) == -1
+			if (games[i].round.moved.indexOf(handle) == -1
 					&& !games[i].endGame.winnerHandle && !games[i].endGame.declined) {
 				count += 1;
 			}
@@ -243,7 +243,7 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 
 var minfiyGameResponse = function(games, handle){
 	return _.map(games, function(game){
-		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === handle}).length === 0;	
+		var iHaveAMove = _.filter(game.round.moved, function(player) { return player === handle}).length === 0;	
 		return {
 			id : game._id,
 			players : _.map(game.players, minifyUser),
@@ -383,7 +383,7 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for ( var i = 0; i < game.moves.length; i++) {
 		var move = game.moves[i];
 
-		if ((move.playerHandle == playerWhoCalledTheUrl) && move.startingRound == game.currentRound.roundNumber) {
+		if ((move.playerHandle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}

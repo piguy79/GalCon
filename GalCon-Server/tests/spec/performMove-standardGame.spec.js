@@ -80,12 +80,12 @@ describe("Perform Move - Standard -", function() {
 		}).then(function(game) {
 			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
 		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(0);
+			expect(game.round.num).toBe(0);
 			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
 		}).then(function() {
 			return apiRunner.performMove(currentGameId, [], PLAYER_2_HANDLE);
 		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(1);
+			expect(game.round.num).toBe(1);
 			return game;
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);

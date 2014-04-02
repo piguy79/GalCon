@@ -73,7 +73,7 @@ var mustBeValidFromAndToPlanets = function(planets, moves){
 }
 
 var playerHasNotMovedThisRound = function(game, handle){
-	return !_.contains(game.currentRound.playersWhoMoved, handle);
+	return !_.contains(game.round.moved, handle);
 }
 
 var gameIsNotOver = function(game){

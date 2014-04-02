@@ -31,8 +31,8 @@ The games current sate needs to be stored in something similar to the following 
 {
 	"id" : 1234,
 	"createdDate" : "08/27/2012 12:00:00",
-	"currentRound" : {
-		"roundNumber" : 5,
+	"round" : {
+		"num" : 5,
 		"player" : 0
 	},
 	"players" {
