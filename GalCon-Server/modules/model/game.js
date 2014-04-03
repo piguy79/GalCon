@@ -32,6 +32,7 @@ var gameSchema = mongoose.Schema({
 		draw : "Boolean",
 		declined : "String"
 	},
+	state : "String",
 	createdDate : "Date",
 	createdTime : "Number",
 	map : "Number",
@@ -486,7 +487,7 @@ var processMoves = function(player, game) {
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
 exports.addUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}, {state : {$ne : 'C'}}]}, {$push : {players : player}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
@@ -505,7 +506,7 @@ exports.addUser = function(gameId, player){
 }
 
 exports.addSocialUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
@@ -545,14 +546,14 @@ exports.declineSocialGame = function(gameId, invitee){
 }
 
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
-	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec();
+	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdTime : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});
 }
 
 exports.findGameAtAMap = function(mapToFind, playerHandle){
-	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
+	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});

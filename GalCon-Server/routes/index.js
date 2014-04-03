@@ -1059,7 +1059,7 @@ exports.cancelGame = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return gameManager.GameModel.findOne({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}).exec();
+		return gameManager.GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$set : {state : 'C'}}).exec();
 	}).then(function(game){
 		if(game === null){
 			throw new ErrorWithResponse('Another user has joined this game.', { success : false });
@@ -1067,16 +1067,7 @@ exports.cancelGame = function(req, res){
 			return userManager.addCoins(1, handle);
 		}
 	}).then(function(){
-		return userManager.findUserByHandle(handle);
-	}).then(function(user){
-		return gameManager.GameModel.findOneAndUpdate({_id : gameId}, {$pull : 
-																				{ players : ObjectId(user.id),
-																				  moves : {handle : handle},
-																				  'round.moved' : handle
-																				}
-																	}).exec();
-	}).then(function(){
-		return gameManager.GameModel.remove({ $and : [{_id : gameId}, { $where : "this.players.length == 0"}]}).exec();
+		return gameManager.GameModel.remove({ $and : [{_id : gameId}, {state :'C'}]}).exec();
 	}).then(function(){
 		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
