@@ -12,7 +12,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	validation = require('../modules/validation'),
 	moveValidation = require('../modules/move_validation'),
 	inviteValidation = require('../modules/invite_validation'),
-	googleapis = require('googleapis');
+	googleapis = require('googleapis')
+	,ObjectId = require('mongoose').Types.ObjectId;
 
 var VALIDATE_MAP = {
 	email : validation.isEmail,
@@ -312,7 +313,7 @@ var updateWinnersAndLosers = function(game) {
 				winner = player;
 				player.wins += 1;
 				player.xp += parseInt(game.config.values["xpForWinning"]);
-				game.endGameInformation.xpAwardToWinner = parseInt(game.config.values["xpForWinning"]);
+				game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
 			} else {
 				player.losses += 1;
 			}
@@ -811,7 +812,6 @@ var attemptToJoinGamePromise = function(games, user, time, rankOfUser) {
 	var gamesByRelativeRank = _.sortBy(games, function(game) {
 		return Math.abs(rankOfUser.level - game.rankOfInitialPlayer);
 	});
-
 	return addGameFromSegmentPromise(gamesByRelativeRank, 0, user, time);
 }
 
@@ -819,7 +819,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	if (index >= games.lengh) {
 		return null;
 	}
-
+	
 	var gameId = games[index]._id;
 
 	return gameManager.addUser(gameId, user).then(function(game) {
@@ -873,7 +873,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 		}).then(function(game) {
 			var currentUser = users[0];
 			currentUser.coins--;
-			
+						
 			var p = currentUser.withPromise(currentUser.save);
 			return p.then(function() {
 				return game;
@@ -1045,5 +1045,39 @@ exports.addProviderToUser = function(req, res){
 		return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
 	}).then(function(user){
 		res.json(user);
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+exports.cancelGame = function(req, res){
+	var session = req.body.session;
+	var handle = req.body.handle;
+	var gameId = req.body.gameId;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return gameManager.GameModel.findOne({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}).exec();
+	}).then(function(game){
+		if(game === null){
+			throw new ErrorWithResponse('Another user has joined this game.', { success : false });
+		}else{
+			return userManager.addCoins(1, handle);
+		}
+	}).then(function(){
+		return userManager.findUserByHandle(handle);
+	}).then(function(user){
+		return gameManager.GameModel.findOneAndUpdate({_id : gameId}, {$pull : 
+																				{ players : ObjectId(user.id),
+																				  moves : {handle : handle},
+																				  'round.moved' : handle
+																				}
+																	}).exec();
+	}).then(function(){
+		return gameManager.GameModel.remove({ $and : [{_id : gameId}, { $where : "this.players.length == 0"}]}).exec();
+	}).then(function(){
+		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
