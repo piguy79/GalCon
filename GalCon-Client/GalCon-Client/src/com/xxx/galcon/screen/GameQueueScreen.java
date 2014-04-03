@@ -191,7 +191,13 @@ public class GameQueueScreen implements PartialScreenFeedback {
 					@Override
 					public void onConnectionError(String msg) {
 						loadingOverlay.remove();
-						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources));
+						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources), new ClickListener(){
+							@Override
+							public void clicked(InputEvent event, float x,
+									float y) {
+								UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+							}
+						});
 						stage.addActor(overlay);
 					}
 				}, item.game.id, GameLoop.USER.handle);
@@ -234,7 +240,12 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionError(String msg) {
 			loadingOverlay.remove();
-			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources));
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources), new ClickListener(){
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+				}
+			});
 			stage.addActor(overlay);
 		}
 	}
@@ -259,6 +270,29 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	public void resetState() {
 		returnCode = null;
 	}
+	
+	private UIConnectionResultCallback<GameQueue> gamequeueCallback = new UIConnectionResultCallback<GameQueue>() {
+
+				@Override
+				public void onConnectionResult(GameQueue result) {
+					waitImage.stop();	
+					scrollList.clearRows();
+					if (result == null || result.gameQueueItems.isEmpty()) {
+						messageLabel.setText("No invites found.");
+					} else {
+						messageLabel.setText("");
+						displayQueue(result);
+					}
+				}
+
+				@Override
+				public void onConnectionError(String msg) {
+					waitImage.stop();
+					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+					stage.addActor(overlay);
+
+				}
+			};
 
 	@Override
 	public void show(Stage stage, float width, float height) {
@@ -280,27 +314,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionResult(Maps result) {
 			allMaps = result;
-			UIConnectionWrapper.findPendingInvites(new UIConnectionResultCallback<GameQueue>() {
-
-				@Override
-				public void onConnectionResult(GameQueue result) {
-					waitImage.stop();
-					if (result == null || result.gameQueueItems.isEmpty()) {
-						messageLabel.setText("No invites found.");
-					} else {
-						messageLabel.setText("");
-						displayQueue(result);
-					}
-				}
-
-				@Override
-				public void onConnectionError(String msg) {
-					waitImage.stop();
-					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
-					stage.addActor(overlay);
-
-				}
-			}, GameLoop.USER.handle);
+			UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
 		}
 
 		@Override

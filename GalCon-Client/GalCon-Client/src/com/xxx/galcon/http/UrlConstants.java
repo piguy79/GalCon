@@ -54,6 +54,8 @@ public class UrlConstants {
 	public static final String FIND_MATCHING_FRIENDS = "/friends/match";
 	
 	public static final String ADD_PROVIDER_TO_USER = "/user/addProvider";
+	
+	public static final String CANCEL_GAME = "/game/cancel";
 
 	public static final String FIND_PENDING_INVITE = "/gamequeue/pending";
 	

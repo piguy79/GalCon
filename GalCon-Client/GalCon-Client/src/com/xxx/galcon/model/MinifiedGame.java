@@ -51,7 +51,7 @@ public class MinifiedGame extends JsonConvertible {
 
 		this.moveAvailable = jsonObject.getBoolean("moveAvailable");
 		this.winner = jsonObject.optString("winner");
-		this.winningDate = formatDate(jsonObject, "winningDate");
+		this.winningDate = formatDate(jsonObject, "date");
 		this.mapKey = jsonObject.getInt("map");
 		if(jsonObject.has("social")){
 			this.social = new Social();

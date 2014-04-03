@@ -10,6 +10,7 @@ import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_COINS_FOR_AN_ORDER;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
+import static com.xxx.galcon.http.UrlConstants.CANCEL_GAME;
 import static com.xxx.galcon.http.UrlConstants.DECLINE_INVITE;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
@@ -681,6 +682,23 @@ public class AndroidGameAction implements GameAction {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 
+	}
+
+	@Override
+	public void cancelGame(final UIConnectionResultCallback<BaseResult> callback,
+			String handle, String gameId) {
+		try {
+			final JSONObject top = JsonConstructor.cancelGame(handle, gameId, session);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top
+							.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+		
 	}
 
 }

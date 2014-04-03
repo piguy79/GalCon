@@ -448,6 +448,9 @@ exports.acceptInvite = function(req, res){
 		}
 		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game){
+		if(game === null){
+			throw new Error("This game does not exist.");
+		}
 		requestingUser = game.players[0];
 		return gameManager.addSocialUser(gameId, currentUser);
 	}).then(function(savedGame){
