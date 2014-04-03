@@ -332,6 +332,7 @@ public class BoardScreen implements ScreenFeedback {
 								UIConnectionWrapper.cancelGame(new UIConnectionResultCallback<BaseResult>() {
 									public void onConnectionResult(BaseResult result) {
 										if(result.success){
+											stage.dispose();
 											returnCode = Action.BACK;
 										}else{
 											overlay = new DismissableOverlay(resources, new TextOverlay("Unable to cancel game", resources), new ClickListener(){
