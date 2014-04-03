@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -42,6 +43,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 	private ScrollList<GameQueueItem> scrollList;
 	private ActionButton backButton;
+	private ActionButton refreshButton;
 	protected WaitImageButton waitImage;
 	private ShaderLabel messageLabel;
 	private Maps allMaps;
@@ -66,6 +68,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		createWaitImage();
 		createMessageLabel();
 		createBackButton();
+		createRefreshButton();
 		createScrollList();
 		showQueueItems();
 
@@ -114,6 +117,23 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		});
 		actors.add(backButton);
 		stage.addActor(backButton);
+	}
+	
+	private void createRefreshButton() {
+		Point position = new Point(10, 0);
+		refreshButton = new ActionButton(resources.skin, "refreshButton", position);
+		GraphicsUtils.setCommonButtonSize(refreshButton);
+		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
+		refreshButton.setY(Gdx.graphics.getHeight() - refreshButton.getHeight() - 5);
+		refreshButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				loadingOverlay = new LoadingOverlay(resources);
+				UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+			}
+		});
+		actors.add(refreshButton);
+		stage.addActor(refreshButton);
 	}
 
 	private void createScrollList() {
@@ -277,6 +297,9 @@ public class GameQueueScreen implements PartialScreenFeedback {
 				public void onConnectionResult(GameQueue result) {
 					waitImage.stop();	
 					scrollList.clearRows();
+					if(loadingOverlay != null){
+						loadingOverlay.remove();
+					}
 					if (result == null || result.gameQueueItems.isEmpty()) {
 						messageLabel.setText("No invites found.");
 					} else {
