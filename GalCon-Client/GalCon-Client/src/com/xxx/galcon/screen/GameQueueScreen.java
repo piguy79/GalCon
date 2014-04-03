@@ -129,6 +129,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
 				UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
 			}
 		});
@@ -231,6 +232,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
 				UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
 			}
 		});

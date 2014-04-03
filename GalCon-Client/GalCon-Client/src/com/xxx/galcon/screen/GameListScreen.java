@@ -335,7 +335,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		stage.addActor(backButton);
 	}
 	
-	private void createRefreshButton(Stage stage, float height) {
+	private void createRefreshButton(final Stage stage, float height) {
 		refreshButton = new ImageButton(resources.skin, "refreshButton");
 		GraphicsUtils.setCommonButtonSize(refreshButton);
 		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
@@ -344,6 +344,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
 				UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.USER.handle);
 			}
 		});
