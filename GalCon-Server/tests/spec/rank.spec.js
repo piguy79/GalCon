@@ -89,8 +89,8 @@ describe("Perform Move - Standard -", function() {
 			var player1 = _.filter(game.players, function(player){
 				return player.handle === PLAYER_1_HANDLE;
 			});
-			expect(player1[0].rankInfo.level).toBe(2);
-			expect(player1[0].xp).toBe(148);
+			var expectedResult = 95 + parseInt(game.config.values["xpForWinning"]) + parseInt(game.config.values["xpForPlanetCapture"]);
+			expect(player1[0].xp).toBe(expectedResult);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -99,6 +99,33 @@ describe("Perform Move - Standard -", function() {
 		});
 
 	});
+	
+	it("Should update xp for planet capture", function(done) {
+		var currentGameId;
+		var timeOfMove = 34728;
+		
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		p.then(function(game){
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
+		}).then(function(game){
+			var player1CaptureMove = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 50, 1) ];
+			return gameRunner.performTurn(currentGameId, {moves : player1CaptureMove, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
+		}).then(function(game){
+			var player1 = _.filter(game.players, function(player){
+				return player.handle === PLAYER_1_HANDLE;
+			});
+			var expectedResult = 95 + parseInt(game.config.values["xpForPlanetCapture"]);
+			expect(player1[0].xp).toBe(expectedResult);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+
+	});
+	
 	
 	
 });

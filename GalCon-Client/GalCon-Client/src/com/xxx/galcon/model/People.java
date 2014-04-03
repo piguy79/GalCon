@@ -26,7 +26,7 @@ public class People extends JsonConvertible {
 				person.auth = new Auth();
 				person.auth.consume(personJson.getJSONObject("auth"));
 				person.handle = personJson.getString("handle");
-				person.rank = personJson.getInt("rank");
+				person.xp = personJson.getInt("xp");
 				people.add(person);
 			}
 		}

@@ -25,7 +25,7 @@ public class MinifiedGame extends JsonConvertible {
 	public static class MinifiedPlayer {
 		public Auth auth;
 		public String handle;
-		public int rank;
+		public int xp;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class MinifiedGame extends JsonConvertible {
 				minifiedPlayer.auth = new Auth();
 				minifiedPlayer.auth.consume(authJson);
 				minifiedPlayer.handle = player.getString("handle");
-				minifiedPlayer.rank = player.getInt("rank");
+				minifiedPlayer.xp = player.getInt("xp");
 				this.players.add(minifiedPlayer);
 			}
 		}

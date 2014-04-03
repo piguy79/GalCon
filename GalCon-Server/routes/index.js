@@ -311,8 +311,8 @@ var updateWinnersAndLosers = function(game) {
 			if(player.handle === game.endGameInformation.winnerHandle) {
 				winner = player;
 				player.wins += 1;
-				player.xp += 50;
-				game.endGameInformation.xpAwardToWinner = 10;
+				player.xp += parseInt(game.config.values["xpForWinning"]);
+				game.endGameInformation.xpAwardToWinner = parseInt(game.config.values["xpForWinning"]);
 			} else {
 				player.losses += 1;
 			}
@@ -327,13 +327,7 @@ var updateWinnersAndLosers = function(game) {
 	return p.then(function() {
 		return game.withPromise(game.save);
 	}).then(function(updatedGame) {
-		game = updatedGame;
-		return rankManager.findRankForXp(winner.xp);
-	}).then(function(rank) {
-		winner.rankInfo = rank;
-		winner.withPromise(winner.save);
-	}).then(function() {
-		return game;
+		return updatedGame;
 	});
 }
 
@@ -695,10 +689,15 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 
 exports.findConfigByType = function(req, res) {
 	var type = req.query['type'];
+	
+	var configReturn;
 
 	var p = configManager.findLatestConfig(type);
 	p.then(function(config) {
-		res.json(config);
+		configReturn = config;
+		return rankManager.findAllRanks();
+	}).then(function(ranks){
+		res.json({config : configReturn, ranks : ranks});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -770,8 +769,11 @@ var joinGamePromise = function(games, user, time) {
 		return p;
 	}
 	
-	var joinP = attemptToJoinGamePromise(games, user, time);	
-	return joinP.then(function(game) {
+	var joinP = rankManager.findAllRanks();
+	return joinP.then(function(ranks){
+		var rankOfUser = rankManager.findRankForAnXp(ranks, user.xp);
+		return 	attemptToJoinGamePromise(games, user, time, rankOfUser);	
+	}).then(function(game) {
 		return game;
 	});
 }
@@ -805,9 +807,9 @@ var logErrorAndSetResponse = function(req, res) {
 	}
 }
 
-var attemptToJoinGamePromise = function(games, user, time) {
+var attemptToJoinGamePromise = function(games, user, time, rankOfUser) {
 	var gamesByRelativeRank = _.sortBy(games, function(game) {
-		return Math.abs(user.rankInfo.level - game.rankOfInitialPlayer);
+		return Math.abs(rankOfUser.level - game.rankOfInitialPlayer);
 	});
 
 	return addGameFromSegmentPromise(gamesByRelativeRank, 0, user, time);
@@ -837,8 +839,12 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 
 
 var generateGamePromise = function(users, time, mapToFind, social) {
+	var map;
 	var p = mapManager.findMapByKey(mapToFind);
-	return p.then(function(map) {
+	return p.then(function(mapFromKey) {
+		map = mapFromKey;
+		return rankManager.findAllRanks();
+	}).then(function(ranks){
 		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
 		var heightToUse = Math.ceil(widthToUse * 1.33);
 
@@ -846,6 +852,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 		numPlanets = Math.max(12, numPlanets);
 
 		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
+		var rankOfInitialUser = rankManager.findRankForAnXp(ranks, users[0].xp);
 
 		var gameAttributes = {
 			players : users,
@@ -853,7 +860,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 			height : heightToUse,
 			numberOfPlanets : numPlanets,
 			createdTime : time,
-			rankOfInitialPlayer : users[0].rankInfo.level,
+			rankOfInitialPlayer : rankOfInitialUser.level,
 			map : map.key,
 			gameType : map.gameType[gameTypeIndex],
 			social : social
@@ -985,7 +992,7 @@ var minifyUser = function(user){
 	return {
 		auth : user.auth,
 		handle : user.handle,
-		rank : user.rankInfo.level
+		xp : user.xp
 	};
 }
 

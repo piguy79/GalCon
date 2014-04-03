@@ -22,6 +22,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
@@ -74,7 +75,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private String playerInfoText(List<MinifiedPlayer> otherPlayers) {
 		String playerDescription = "";
 		for (MinifiedPlayer player : otherPlayers) {
-			playerDescription = player.handle + " (Level " + player.rank + ")";
+			playerDescription = player.handle + " [" + ConfigResolver.getRankForXp(player.xp).level + "]";
 		}
 		return playerDescription;
 	}
