@@ -67,6 +67,8 @@ public class RoundInformationTopHud extends Group {
 
 		int baseAttack = 0;
 		int baseDefense = 0;
+		int attackMultiplier = 0;
+		int defenseMultiplier = 0;
 		String currentOwner = "";
 		String previousOwner = "";
 		String moveOwner = "";
@@ -78,6 +80,8 @@ public class RoundInformationTopHud extends Group {
 			baseDefense = move.battleStats.previousShipsOnPlanet;
 			currentOwner = gameBoard.getPlanet(move.to).owner;
 			previousOwner = move.battleStats.previousPlanetOwner;
+			attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
+			defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
 			moveOwner = move.handle;
 		}
 		if (previousOwner.equals("")) {
@@ -106,9 +110,9 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Attack:", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.05f);
+			label.setX(getWidth() * 0.01f);
 			label.setY(getHeight() * 0.64f - bounds.height * 0.5f);
 			label.setWidth(getWidth() * 0.25f);
 			label.setAlignment(Align.left, Align.left);
@@ -116,21 +120,24 @@ public class RoundInformationTopHud extends Group {
 		}
 
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseAttack, resources.skin,
-					Constants.UI.DEFAULT_FONT);
+			String text = "" + baseAttack;
+			if (attackMultiplier > 0) {
+				text += " +" + attackMultiplier + "%";
+			}
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.25f);
 			label.setY(getHeight() * 0.64f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.15f);
+			label.setWidth(getWidth() * 0.19f);
 			label.setAlignment(Align.right, Align.right);
 			addActor(label);
 		}
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Defense:", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.05f);
+			label.setX(getWidth() * 0.01f);
 			label.setY(getHeight() * 0.25f - bounds.height * 0.5f);
 			label.setWidth(getWidth() * 0.25f);
 			label.setAlignment(Align.left, Align.left);
@@ -138,12 +145,15 @@ public class RoundInformationTopHud extends Group {
 		}
 
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseDefense, resources.skin,
-					Constants.UI.DEFAULT_FONT);
+			String text = "" + baseDefense;
+			if (defenseMultiplier > 0) {
+				text += " +" + defenseMultiplier + "%";
+			}
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.25f);
 			label.setY(getHeight() * 0.25f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.15f);
+			label.setWidth(getWidth() * 0.19f);
 			label.setAlignment(Align.right, Align.right);
 			addActor(label);
 		}
