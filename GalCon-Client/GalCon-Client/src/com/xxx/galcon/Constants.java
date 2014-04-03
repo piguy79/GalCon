@@ -78,10 +78,10 @@ public class Constants {
 	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
 	public static final String PLANETS = "planets";
-	public static final String CURRENT_ROUND = "currentRound";
-	public static final String ROUND_NUMBER = "roundNumber";
+	public static final String CURRENT_ROUND = "round";
+	public static final String ROUND_NUMBER = "num";
 	public static final String CREATED_DATE = "createdDate";
-	public static final String WINNING_DATE = "winningDate";
+	public static final String DATE = "date";
 	public static final String PLAYER = "player";
 	public static final String PLAYER_HANDLE = "playerHandle";
 	public static final String PLAYERS = "players";
@@ -92,16 +92,16 @@ public class Constants {
 	public static final String CREATED = "created";
 	public static final String REASON = "reason";
 	public static final String HANDLE = "handle";
-	public static final String SHIP_REGEN_RATE = "shipRegenRate";
+	public static final String SHIP_REGEN_RATE = "regen";
 	public static final float SHIP_REGEN_RATE_MAX = 5.0f;
-	public static final String NUMBER_OF_SHIPS = "numberOfShips";
+	public static final String NUMBER_OF_SHIPS = "ships";
 	public static final String ABILITY = "ability";
-	public static final String OWNER_HANDLE = "ownerHandle";
-	public static final String POSITION = "position";
+	public static final String OWNER_HANDLE = "handle";
+	public static final String POSITION = "pos";
 	public static final String X = "x";
 	public static final String Y = "y";
 	public static final String WIDTH = "width";
-	public static final String END_GAME_INFO = "endGameInformation";
+	public static final String END_GAME_INFO = "endGame";
 	public static final String DRAW = "draw";
 	public static final String LOSER_HANDLES = "loserHandles";
 	public static final String HEIGHT = "height";
@@ -120,8 +120,7 @@ public class Constants {
 	public static final String ABILITY_ATTACK_INCREASE = "attackModifier";
 	public static final String ABILITY_DEFENCE_INCREASE = "defenseModifier";
 	public static final String ABILITY_REGEN_BLOCK = "blockModifier";
-	public static final String XP_AWARD_TO_WINNER = "xpAwardToWinner";
-	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
+	public static final String PLAYERS_WHO_MOVED = "moved";
 	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
 	public static final String MAP = "map";
 	public static final String CREATED_TIME = "createdTime";
@@ -161,6 +160,5 @@ public class Constants {
 			add("regenBlock");
 		}
 	};
-	
 
 }

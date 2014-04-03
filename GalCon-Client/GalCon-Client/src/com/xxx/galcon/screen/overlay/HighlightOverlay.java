@@ -121,7 +121,7 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.currentRound + 1),
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1),
 					resources.skin, Constants.UI.LARGE_FONT);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
@@ -170,8 +170,8 @@ public abstract class HighlightOverlay extends Overlay {
 	}
 
 	public HighlightOverlay add(Move move) {
-		Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
-		Planet toPlanet = gameBoard.getPlanet(move.toPlanet);
+		Planet fromPlanet = gameBoard.getPlanet(move.from);
+		Planet toPlanet = gameBoard.getPlanet(move.to);
 
 		final PlanetButton toPlanetButton = PlanetButtonFactory.createPlanetButton(toPlanet, gameBoard, !move.executed,
 				boardCalcs, resources);
@@ -204,11 +204,11 @@ public abstract class HighlightOverlay extends Overlay {
 			String previousOwner = toPlanetButton.planet.previousRoundOwner(gameBoard);
 			toPlanetButton.showPlanetState(true, true);
 
-			if (!previousOwner.equals(move.playerHandle)) {
+			if (!previousOwner.equals(move.handle)) {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 			
-			if(move.executed && !move.battleStats.previousPlanetOwner.equals(move.playerHandle) && toPlanetButton.planet.isOwnedBy(move.playerHandle)){
+			if(move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle) && toPlanetButton.planet.isOwnedBy(move.handle)){
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
 			}
 		}
@@ -385,13 +385,13 @@ public abstract class HighlightOverlay extends Overlay {
 			for (Move move : gameBoard.movesInProgress) {
 				if (move.executed) {
 					List<Move> planetMoves;
-					if (planetToMoves.containsKey(move.toPlanet)) {
-						planetMoves = planetToMoves.get(move.toPlanet);
+					if (planetToMoves.containsKey(move.to)) {
+						planetMoves = planetToMoves.get(move.to);
 					} else {
 						planetMoves = new ArrayList<Move>();
 					}
 					planetMoves.add(move);
-					planetToMoves.put(move.toPlanet, planetMoves);
+					planetToMoves.put(move.to, planetMoves);
 				}
 			}
 
@@ -443,8 +443,8 @@ public abstract class HighlightOverlay extends Overlay {
 								moveToDisplay.setColor(color);
 								addActor(moveToDisplay);
 
-								if (player1 == null || player1.equals(move.playerHandle)) {
-									player1 = move.playerHandle;
+								if (player1 == null || player1.equals(move.handle)) {
+									player1 = move.handle;
 									player1Positions.add(move);
 								} else {
 									player2Positions.add(move);
@@ -497,7 +497,7 @@ public abstract class HighlightOverlay extends Overlay {
 			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
 			particle.setBounds(pixelPoint1.x, pixelPoint1.y, particleSize, particleSize);
-			particle.setColor(gameBoard.getPlanet(move.fromPlanet).getColor(move.playerHandle));
+			particle.setColor(gameBoard.getPlanet(move.from).getColor(move.handle));
 
 			boardCalcs.centerPoint(pixelPoint2, particle);
 			particle.addAction(sequence(moveTo(pixelPoint2.x, pixelPoint2.y, 0.5f), alpha(0.0f)));
@@ -534,7 +534,7 @@ public abstract class HighlightOverlay extends Overlay {
 		public void createTopHud(Planet planet) {
 			topHud = new PlanetInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
 					screenCalcs.getTopHudBounds().size.height);
-			topHud.updateRegen((int) planet.shipRegenRate);
+			topHud.updateRegen((int) planet.regen);
 
 			this.planet = planet;
 		}
@@ -556,8 +556,8 @@ public abstract class HighlightOverlay extends Overlay {
 			moveHud.removeMoves();
 
 			for (Move move : gameBoard.movesInProgress) {
-				if (move.belongsToPlayer(GameLoop.USER) && move.toPlanet.equals(planet.name) && !move.executed) {
-					Planet fromPlanet = gameBoard.getPlanet(move.fromPlanet);
+				if (move.belongsToPlayer(GameLoop.USER) && move.to.equals(planet.name) && !move.executed) {
+					Planet fromPlanet = gameBoard.getPlanet(move.from);
 					PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
 							boardCalcs, resources);
 					addActor(fromPlanetButton);
@@ -613,11 +613,11 @@ public abstract class HighlightOverlay extends Overlay {
 
 		@Override
 		public void createBottomHud() {
-			if (move.startingRound != gameBoard.roundInformation.currentRound || GameLoop.USER.hasMoved(gameBoard)) {
+			if (move.startingRound != gameBoard.roundInformation.round || GameLoop.USER.hasMoved(gameBoard)) {
 				return;
 			}
 
-			shipSelectionHud = new ShipSelectionHud(move, gameBoard.getPlanet(move.fromPlanet).numberOfShips, resources);
+			shipSelectionHud = new ShipSelectionHud(move, gameBoard.getPlanet(move.from).ships, resources);
 			shipSelectionHud.addListener(new MoveListener() {
 
 				@Override

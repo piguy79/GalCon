@@ -49,7 +49,7 @@ public class PlanetButton extends Group {
 		if (!planet.isAlive()) {
 			planetTexture = "dead_planet";
 		} else {
-			planetTexture = "planet-regen-" + (int) planet.shipRegenRate;
+			planetTexture = "planet-regen-" + (int) planet.regen;
 		}
 
 		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planetTexture)));
@@ -154,12 +154,12 @@ public class PlanetButton extends Group {
 	}
 
 	public void setShipCount(int shipCount) {
-		planet.numberOfShips = shipCount;
+		planet.ships = shipCount;
 		label.setText("" + shipCount);
 		positionLabel();
 	}
 
 	public int getShipCount() {
-		return planet.numberOfShips;
+		return planet.ships;
 	}
 }

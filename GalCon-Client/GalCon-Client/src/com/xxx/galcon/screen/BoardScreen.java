@@ -360,7 +360,7 @@ public class BoardScreen implements ScreenFeedback {
 			boardTable.addActor(movetoDisplay);
 		}
 
-		roundAnimated = gameBoard.roundInformation.currentRound;
+		roundAnimated = gameBoard.roundInformation.round;
 	}
 
 	private void createMoveHud() {
@@ -422,7 +422,7 @@ public class BoardScreen implements ScreenFeedback {
 		List<Planet> planets = new ArrayList<Planet>();
 		planets.add(fromPlanet);
 		planets.add(toPlanet);
-		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.currentRound);
+		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.round);
 
 		highlight(fakeMove);
 	}
@@ -479,7 +479,7 @@ public class BoardScreen implements ScreenFeedback {
 		Set<String> targettedPlanets = new HashSet<String>();
 		for (Move move : gameBoard.movesInProgress) {
 			if (move.belongsToPlayer(GameLoop.USER) && !move.executed) {
-				targettedPlanets.add(move.toPlanet);
+				targettedPlanets.add(move.to);
 			}
 		}
 
@@ -637,10 +637,10 @@ public class BoardScreen implements ScreenFeedback {
 
 		if (!gameBoard.movesInProgress.contains(newMove)) {
 			gameBoard.movesInProgress.add(newMove);
-			createPlanetTarget(planetButtons.get(newMove.toPlanet));
+			createPlanetTarget(planetButtons.get(newMove.to));
 		}
 
-		PlanetButton button = planetButtons.get(newMove.fromPlanet);
+		PlanetButton button = planetButtons.get(newMove.from);
 		button.setShipCount(button.getShipCount() - newMove.shipsToMove + oldShipsToSend);
 
 		moveHud.addMove(newMove);
@@ -652,7 +652,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void deleteMove(Move move) {
 		clearTouchedPlanets();
 
-		PlanetButton button = planetButtons.get(move.fromPlanet);
+		PlanetButton button = planetButtons.get(move.from);
 		button.setShipCount(button.getShipCount() + move.shipsToMove);
 
 		gameBoard.movesInProgress.remove(move);
@@ -661,19 +661,19 @@ public class BoardScreen implements ScreenFeedback {
 		clearMoveActions(move.fromPlanet(gameBoard.planets));
 		clearMoveActions(move.toPlanet(gameBoard.planets));
 
-		if (planetTargetCount.containsKey(move.toPlanet)) {
-			Integer count = planetTargetCount.get(move.toPlanet) - 1;
-			planetTargetCount.put(move.toPlanet, count);
+		if (planetTargetCount.containsKey(move.to)) {
+			Integer count = planetTargetCount.get(move.to) - 1;
+			planetTargetCount.put(move.to, count);
 
 			if (count == 0) {
-				Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.toPlanet));
+				Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.to));
 				targetIcon.remove();
 			}
 		}
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return roundAnimated == gameBoard.roundInformation.currentRound;
+		return roundAnimated == gameBoard.roundInformation.round;
 	}
 
 	@Override

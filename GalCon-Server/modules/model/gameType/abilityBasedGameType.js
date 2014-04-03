@@ -22,8 +22,8 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 		var planetToAddTo = planetsFarFromHomes[i];
 		
 		if(!planetToAddTo.ability){
-			planetToAddTo.shipRegenRate = SHIP_REGEN_RATE;
-			planetToAddTo.numberOfShips = SHIP_NUMBER;
+			planetToAddTo.regen = SHIP_REGEN_RATE;
+			planetToAddTo.ships = SHIP_NUMBER;
 			
 			var abilityIndex = Math.floor(Math.random() * (abilitiesArray.length));
 			planetToAddTo.ability = abilitiesArray[abilityIndex];
@@ -41,7 +41,7 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 exports.harvestEnhancement = function(player, game){
 	
 	var harvestEnhance = 0;	
-	var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.ownerHandle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
+	var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.handle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
 	
 	if(harvestCapablePlanets.length > 0){
 		harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;

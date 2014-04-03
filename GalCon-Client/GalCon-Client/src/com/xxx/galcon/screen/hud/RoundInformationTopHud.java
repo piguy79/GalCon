@@ -71,14 +71,14 @@ public class RoundInformationTopHud extends Group {
 		String previousOwner = "";
 		String moveOwner = "";
 
-		Planet planet = gameBoard.getPlanet(moves.get(0).toPlanet);
+		Planet planet = gameBoard.getPlanet(moves.get(0).to);
 
 		for (Move move : moves) {
 			baseAttack += move.shipsToMove;
 			baseDefense = move.battleStats.previousShipsOnPlanet;
-			currentOwner = gameBoard.getPlanet(move.toPlanet).owner;
+			currentOwner = gameBoard.getPlanet(move.to).owner;
 			previousOwner = move.battleStats.previousPlanetOwner;
-			moveOwner = move.playerHandle;
+			moveOwner = move.handle;
 		}
 		if (previousOwner.equals("")) {
 			previousOwner = Constants.OWNER_NO_ONE;

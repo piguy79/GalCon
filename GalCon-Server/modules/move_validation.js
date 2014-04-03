@@ -23,7 +23,7 @@ exports.validate = function(gameId, handle, moves){
 }
 
 var runValidate = function(game, handle, moves){
-	return playerOwnsFromPlanets(game, handle, moves) && fleetsCannotExceedTheNumberOfShipsOnAPlanet(game.planets, moves) 
+	return playerOwnsFromPlanets(game, handle, moves) && fleetsCannotExceedTheshipsOnAPlanet(game.planets, moves) 
 	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game) && playerIsPartOfThisGame(game, handle);
 }
 
@@ -32,16 +32,16 @@ var runPlayerValidate = function(game, handle){
 }
 
 var playerOwnsFromPlanets = function(game, handle, moves){
-	var moveFromPlanets = _.pluck(moves, 'fromPlanet');
+	var moveFromPlanets = _.pluck(moves, 'from');
 	var ownedPlanets = _.filter(game.planets, function(planet){
-		return planet.ownerHandle === handle;
+		return planet.handle === handle;
 	});
 	
 	return _.difference(moveFromPlanets, _.pluck(ownedPlanets, 'name')).length === 0;
 }
 
-var fleetsCannotExceedTheNumberOfShipsOnAPlanet = function(planets , moves){
-	var moveFromPlanets = _.groupBy(moves, 'fromPlanet');
+var fleetsCannotExceedTheshipsOnAPlanet = function(planets , moves){
+	var moveFromPlanets = _.groupBy(moves, 'from');
 	var planetsInvolvedInMove = _.filter(planets, function(planet){
 		return moveFromPlanets[planet.name];
 	});
@@ -50,7 +50,7 @@ var fleetsCannotExceedTheNumberOfShipsOnAPlanet = function(planets , moves){
 	
 	_.each(planetsInvolvedInMove, function(planet){
 		var fleetMovesForThisPlanet = _.reduce(moveFromPlanets[planet.name], function(memo, move){ return parseInt(memo) + parseInt(move.fleet);}, 0);
-		if(planet.numberOfShips < fleetMovesForThisPlanet){
+		if(planet.ships < fleetMovesForThisPlanet){
 			result = false;
 		}
 	});
@@ -63,7 +63,7 @@ var mustBeValidFromAndToPlanets = function(planets, moves){
 	var result = true;
 	
 	_.each(moves, function(move){
-		if(!_.contains(planetNames, move.fromPlanet) || !_.contains(planetNames, move.toPlanet)){
+		if(!_.contains(planetNames, move.from) || !_.contains(planetNames, move.to)){
 			result = false;
 		}
 	});
@@ -73,11 +73,11 @@ var mustBeValidFromAndToPlanets = function(planets, moves){
 }
 
 var playerHasNotMovedThisRound = function(game, handle){
-	return !_.contains(game.currentRound.playersWhoMoved, handle);
+	return !_.contains(game.round.moved, handle);
 }
 
 var gameIsNotOver = function(game){
-	if(game.endGameInformation.winnerHandle){
+	if(game.endGame.winnerHandle){
 		return false;
 	};
 	

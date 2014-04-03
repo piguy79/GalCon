@@ -75,8 +75,8 @@ exports.findGamesWithPendingMove = function(req, res) {
 		}
 		var count = 0;
 		for(i in games) {
-			if (games[i].currentRound.playersWhoMoved.indexOf(handle) == -1
-					&& !games[i].endGameInformation.winnerHandle && !games[i].endGameInformation.declined) {
+			if (games[i].round.moved.indexOf(handle) == -1
+					&& !games[i].endGame.winnerHandle && !games[i].endGame.declined) {
 				count += 1;
 			}
 		}
@@ -243,14 +243,14 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 
 var minfiyGameResponse = function(games, handle){
 	return _.map(games, function(game){
-		var iHaveAMove = _.filter(game.currentRound.playersWhoMoved, function(player) { return player === handle}).length === 0;	
+		var iHaveAMove = _.filter(game.round.moved, function(player) { return player === handle}).length === 0;	
 		return {
 			id : game._id,
 			players : _.map(game.players, minifyUser),
 			createdDate : game.createdDate,
 			moveAvailable : iHaveAMove,
-			winner : game.endGameInformation.winnerHandle,
-			winningDate : game.endGameInformation.winningDate,
+			winner : game.endGame.winnerHandle,
+			date : game.endGame.date,
 			map : game.map,
 			social : game.social
 		};
@@ -289,7 +289,7 @@ exports.performMoves = function(req, res) {
 			p.complete();
 			
 			return p.then(function() {
-				if (game.endGameInformation.winnerHandle) {
+				if (game.endGame.winnerHandle) {
 					return updateWinnersAndLosers(game);
 				}
 				return game;
@@ -308,7 +308,7 @@ var updateWinnersAndLosers = function(game) {
 	
 	game.players.forEach(function(player) {
 		p = p.then(function() {
-			if(player.handle === game.endGameInformation.winnerHandle) {
+			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
 				player.xp += parseInt(game.config.values["xpForWinning"]);
@@ -334,7 +334,7 @@ var updateWinnersAndLosers = function(game) {
 var setTimeUntilFreeCoins = function(user, gameId){
 	var p = gameManager.findCollectionOfGames(user);
 	return p.then(function(games){	
-		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGameInformation.winnerHandle === ''});
+		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGame.winnerHandle === ''});
 		
 		if(user.coins <= 0 && gamesStillInProgress.length === 0){
 			user.usedCoins = Date.now();
@@ -361,7 +361,7 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
 			return gameManager.findCollectionOfGames(user);
 			
 		}).then(function(games){
-			var gamesStillInProgress = _.filter(games, function(game) { return game.endGameInformation.winnerHandle === ''});
+			var gamesStillInProgress = _.filter(games, function(game) { return game.endGame.winnerHandle === ''});
 			
 			if(foundUser.usedCoins === -1 && gamesStillInProgress.length === 0 && foundUser.coins === 0) {
 				foundUser.usedCoins = Date.now();
@@ -379,13 +379,13 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for ( var i = 0; i < game.moves.length; i++) {
 		var move = game.moves[i];
 
-		if ((move.playerHandle == playerWhoCalledTheUrl) && move.startingRound == game.currentRound.roundNumber) {
+		if ((move.handle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}
 	
 	game.moves = _.reject(game.moves, function(move){
-		return move.playerHandle !== playerWhoCalledTheUrl && move.executed === false;
+		return move.handle !== playerWhoCalledTheUrl && move.executed === false;
 	});
 
 	return game;
@@ -394,8 +394,8 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 decrementPlanetShipNumber = function(game, move) {
 	for ( var i = 0; i < game.planets.length; i++) {
 		var planet = game.planets[i];
-		if (planet.name == move.fromPlanet) {
-			planet.numberOfShips = planet.numberOfShips - move.fleet;
+		if (planet.name == move.from) {
+			planet.ships = planet.ships - move.fleet;
 		}
 	}
 }
@@ -512,7 +512,7 @@ exports.resignGame = function(req, res) {
 			var foundHandle = false;
 			game.players.forEach(function(player) {
 				if(player.handle !== handle) {
-					game.endGameInformation.winnerHandle = player.handle;
+					game.endGame.winnerHandle = player.handle;
 				} else {
 					foundHandle = true;
 				}
@@ -520,7 +520,7 @@ exports.resignGame = function(req, res) {
 			if(!foundHandle) {
 				throw new Error("Invalid game");
 			}
-			game.endGameInformation.winningDate = Date.now();
+			game.endGame.date = Date.now();
 			
 			return updateWinnersAndLosers(game);
 		});
@@ -955,8 +955,8 @@ exports.findPendingInvites = function(req, res){
 					id : item._id,
 					createdDate : item.createdDate,
 					moveAvailable : true,
-					winner : item.endGameInformation.winnerHandle,
-					winningDate : item.endGameInformation.winningDate,
+					winner : item.endGame.winnerHandle,
+					date : item.endGame.date,
 					map : item.map,
 					social : item.social
 				}

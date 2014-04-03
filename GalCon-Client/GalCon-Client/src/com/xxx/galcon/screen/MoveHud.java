@@ -67,7 +67,7 @@ public class MoveHud extends Table {
 						List<Move> newMoves = new ArrayList<Move>();
 						for (Move move : gameBoard.movesInProgress) {
 							if (move.belongsToPlayer(GameLoop.USER)
-									&& move.startingRound == gameBoard.roundInformation.currentRound) {
+									&& move.startingRound == gameBoard.roundInformation.round) {
 								newMoves.add(move);
 							}
 						}
@@ -116,7 +116,7 @@ public class MoveHud extends Table {
 	}
 
 	public void addMove(Move move) {
-		if (move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0) {
+		if (move.handle.equals(GameLoop.USER.handle) && move.duration > 0) {
 			addMoveToMap(move);
 			renderMoves();
 		}

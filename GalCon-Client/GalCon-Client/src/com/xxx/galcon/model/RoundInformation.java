@@ -14,22 +14,20 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.model.base.JsonConvertible;
 
 /**
- * Information regarding the current round being played. Such as which players turn it is
- * and the round number.
+ * Information regarding the current round being played. Such as which players
+ * turn it is and the round number.
  * 
  * @author conormullen
- *
  */
 public class RoundInformation extends JsonConvertible {
-	
-	public int currentRound;
+
+	public int round;
 	public List<String> players = new ArrayList<String>();
-	
-	
+
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
-		this.currentRound = jsonObject.getInt(Constants.ROUND_NUMBER);
-				
+		this.round = jsonObject.getInt(Constants.ROUND_NUMBER);
+
 		players = new ArrayList<String>();
 		JSONArray playersJson = jsonObject.optJSONArray(Constants.PLAYERS_WHO_MOVED);
 		if (playersJson != null) {
@@ -38,7 +36,5 @@ public class RoundInformation extends JsonConvertible {
 				this.players.add(player);
 			}
 		}
-		
 	}
-
 }

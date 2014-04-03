@@ -24,12 +24,12 @@ planets [
 	{
 		id : 1
 		owner : "p1"
-		numberOfships : 20
+		ships : 20
 	}
 	{
 		id : 2
 		owner : "p2"
-		numberOfships : 30
+		ships : 30
 	}
 ]
 moves : []
@@ -41,12 +41,12 @@ planets [
 	{
 		id : 1
 		owner : "p1"
-		numberOfships : 20
+		ships : 20
 	}
 	{
 		id : 2
 		owner : "p2"
-		numberOfships : 30
+		ships : 30
 	}
 ]
 moves : [
@@ -76,12 +76,12 @@ planets [
 	{
 		id : 1
 		owner : "p1"
-		numberOfships : 20
+		ships : 20
 	}
 	{
 		id : 2
 		owner : "p2"
-		numberOfships : 30
+		ships : 30
 	}
 ]
 moves : [
@@ -130,12 +130,12 @@ planets [
 	{
 		id : 1
 		owner : "p1"
-		numberOfships : 10
+		ships : 10
 	}
 	{
 		id : 2
 		owner : "p2"
-		numberOfships : 25
+		ships : 25
 	}
 ]
 moves : [
@@ -168,12 +168,12 @@ planets [
 	{
 		id : 1
 		owner : "p1"
-		numberOfships : 10
+		ships : 10
 	}
 	{
 		id : 2
 		owner : "p2"
-		numberOfships : 25
+		ships : 25
 	}
 ]
 moves : [

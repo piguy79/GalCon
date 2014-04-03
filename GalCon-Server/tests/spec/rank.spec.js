@@ -41,7 +41,7 @@ describe("Perform Move - Standard -", function() {
 		
 		this.addMatchers({
 			toBeOwnedBy : function(expected) {
-				return this.actual.ownerHandle == expected;
+				return this.actual.handle == expected;
 			},
 			toHaveShipNumber : function(expected) {
 				return this.actual.numberOfShips == expected;
@@ -85,7 +85,7 @@ describe("Perform Move - Standard -", function() {
 			var player1WinningMove = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 50, 1) ];
 			return gameRunner.performTurn(currentGameId, {moves : player1WinningMove, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
-			expect(game.endGameInformation.winnerHandle).toBe(PLAYER_1_HANDLE);
+			expect(game.endGame.winnerHandle).toBe(PLAYER_1_HANDLE);
 			var player1 = _.filter(game.players, function(player){
 				return player.handle === PLAYER_1_HANDLE;
 			});

@@ -1,20 +1,20 @@
-exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position, ability) {
+exports.createPlanet = function(name, owner, regen, ships, position, ability) {
 	return {
 		name : name,
-		ownerHandle : owner,
-		shipRegenRate : shipRegenRate,
-		numberOfShips : numberOfShips,
-		position : position,
+		handle : owner,
+		regen : regen,
+		ships : ships,
+		pos : position,
 		ability : ability || '',
 		status : 'ALIVE'
 	};
 }
 
-exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duration) {
+exports.createMove = function(handle, from, to, fleet, duration) {
 	return {
-		playerHandle : playerHandle,
-		fromPlanet : fromPlanet,
-		toPlanet : toPlanet,
+		handle : handle,
+		from : from,
+		to : to,
 		fleet : fleet,
 		duration : duration
 	};

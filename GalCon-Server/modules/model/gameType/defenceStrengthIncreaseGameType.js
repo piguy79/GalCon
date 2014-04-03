@@ -27,7 +27,7 @@ var hasTheDefenceAbility = function(planet){
 }
 
 var hasTheSameOwner = function(planet, player){
-	return player === planet.ownerHandle;
+	return player === planet.handle;
 }
 
 

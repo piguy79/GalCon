@@ -18,7 +18,7 @@ public class PlanetButtonFactory {
 			BoardCalculations boardCalcs, Resources resources) {
 		float maxExpand = 5;
 
-		float expand = planet.shipRegenRate > maxExpand ? maxExpand : planet.shipRegenRate;
+		float expand = planet.regen > maxExpand ? maxExpand : planet.regen;
 		float newPlanetSize = boardCalcs.getMinPlanetRadius() + ((boardCalcs.getMaxPlanetRadius() * 0.09f) * expand);
 
 		PlanetButton button = new PlanetButton(resources, gameBoard, showCurrentState, planet, newPlanetSize,
