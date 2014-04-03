@@ -6,7 +6,7 @@ var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, g
 		
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.ownerHandle == playerHandle){
+		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.handle == playerHandle){
 			var speedIncrease = parseFloat(config.values[abilityBasedGameType.SPEED_ABILITY]) + abilityBasedGameType.harvestEnhancement(playerHandle, game);
 			count = count + speedIncrease;
 		}

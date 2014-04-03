@@ -5,8 +5,8 @@ exports.processPossibleEndGame = function(game){
 		var playersWhoOwnAPlanet = [];
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.ownerHandle && playersWhoOwnAPlanet.indexOf(planet.ownerHandle) < 0){
-				playersWhoOwnAPlanet.push(planet.ownerHandle);
+			if(planet.handle && playersWhoOwnAPlanet.indexOf(planet.handle) < 0){
+				playersWhoOwnAPlanet.push(planet.handle);
 			}
 		}
 		
@@ -22,7 +22,7 @@ exports.processPossibleEndGame = function(game){
 			if(playersWhoHaveAMove.length == 0 || 
 					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) == 0)) {
 				game.endGame.winnerHandle = playersWhoOwnAPlanet[0];
-				game.endGame.winningDate = Date.now();
+				game.endGame.date = Date.now();
 			}
 		}
 	}

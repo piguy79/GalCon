@@ -24,7 +24,6 @@ public class Planet extends JsonConvertible {
 	public String ability;
 	public Harvest harvest;
 	public String status;
-	public float population;
 	public boolean isHome;
 
 	public static final String ALIVE = "ALIVE";
@@ -47,7 +46,6 @@ public class Planet extends JsonConvertible {
 			Point position = new Point();
 			position.consume(positionJson);
 			this.position = position;
-			this.population = jsonObject.getInt(Constants.POPULATION);
 			this.id = jsonObject.getString(Constants.ID);
 			if (jsonObject.has("harvest")) {
 				this.harvest = new Harvest();
@@ -118,7 +116,8 @@ public class Planet extends JsonConvertible {
 
 		if (isBeingAttacked(gameBoard)) {
 			for (Move move : associatedTargetMoves(gameBoard)) {
-				if (move.executed && !move.battleStats.diedInAirAttack && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
+				if (move.executed && !move.battleStats.diedInAirAttack
+						&& move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
 					executedMovesFound = true;
 					lowestFromExecutedMoves = move.battleStats.previousShipsOnPlanet;
 				}

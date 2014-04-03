@@ -4,10 +4,10 @@ exports.processPossibleEndGame = function(game){
 		var playersToPlanetTheyOwn = {};
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.ownerHandle && !playersToPlanetTheyOwn[planet.ownerHandle]){
-				playersToPlanetTheyOwn[planet.ownerHandle] = 1;
+			if(planet.handle && !playersToPlanetTheyOwn[planet.handle]){
+				playersToPlanetTheyOwn[planet.handle] = 1;
 			}else{
-				playersToPlanetTheyOwn[planet.ownerHandle]++;
+				playersToPlanetTheyOwn[planet.handle]++;
 			}
 		}
 		console.log(playersToPlanetTheyOwn);
@@ -28,12 +28,12 @@ exports.processPossibleEndGame = function(game){
 			
 		if(draw){
 			game.endGame.winnerHandle = "";
-			game.endGame.winningDate = Date.now();
+			game.endGame.date = Date.now();
 			game.endGame.draw = true;
 			
 		}else{
 			game.endGame.winnerHandle = playerWithTheMostPlanets.name;
-			game.endGame.winningDate = Date.now();
+			game.endGame.date = Date.now();
 		}
 	
 	}

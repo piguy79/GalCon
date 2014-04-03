@@ -38,7 +38,7 @@ describe("Perform Move - Standard -", function() {
 		
 		this.addMatchers({
 			toBeOwnedBy : function(expected) {
-				return this.actual.ownerHandle == expected;
+				return this.actual.handle == expected;
 			},
 			toHaveShipNumber : function(expected) {
 				return this.actual.ships == expected;
@@ -119,8 +119,8 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.bs.previousShipsOnPlanet).toBe(20);
-			expect(move.bs.previousPlanetOwner).toBe('');
+			expect(move.bs.prevShipsOnPlanet).toBe(20);
+			expect(move.bs.prevPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -145,8 +145,8 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.bs.previousShipsOnPlanet).toBe(20);
-			expect(move.bs.previousPlanetOwner).toBe('');
+			expect(move.bs.prevShipsOnPlanet).toBe(20);
+			expect(move.bs.prevPlanetOwner).toBe('');
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);
@@ -197,8 +197,8 @@ describe("Perform Move - Standard -", function() {
 			
 			var move = game.moves[0];
 			expect(move.executed).toBe(true);
-			expect(move.bs.previousShipsOnPlanet).toBe(20);
-			expect(move.bs.previousPlanetOwner).toBe(PLAYER_1_HANDLE);
+			expect(move.bs.prevShipsOnPlanet).toBe(20);
+			expect(move.bs.prevPlanetOwner).toBe(PLAYER_1_HANDLE);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);

@@ -34,7 +34,7 @@ var runPlayerValidate = function(game, handle){
 var playerOwnsFromPlanets = function(game, handle, moves){
 	var moveFromPlanets = _.pluck(moves, 'from');
 	var ownedPlanets = _.filter(game.planets, function(planet){
-		return planet.ownerHandle === handle;
+		return planet.handle === handle;
 	});
 	
 	return _.difference(moveFromPlanets, _.pluck(ownedPlanets, 'name')).length === 0;

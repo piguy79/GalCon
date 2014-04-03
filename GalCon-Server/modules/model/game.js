@@ -25,9 +25,9 @@ var gameSchema = mongoose.Schema({
 	},
 	endGame : {
 		winnerHandle : "String",
-		xpAwardToWinner : "Number",
+		xp : "Number",
 		leaderboardScoreAmount : "Number",
-		winningDate : "Date",
+		date : "Date",
 		loserHandles : [String],
 		draw : "Boolean",
 		declined : "String"
@@ -45,15 +45,14 @@ var gameSchema = mongoose.Schema({
 	planets : [
 		{
 			name : "String",
-			ownerHandle : "String",
+			handle : "String",
 			isHome : "String",
-			position : {
+			pos : {
 				x : "Number",
 				y : "Number"
 			},
 			regen : "Number",
 			ships : "Number",
-			population : "Number",
 			ability : "String",
 			harvest : {
 				status : "String",
@@ -89,8 +88,8 @@ var gameSchema = mongoose.Schema({
 				y : "Number"
 			},
 			bs : {
-				previousShipsOnPlanet : "Number",
-				previousPlanetOwner : "String",
+				prevShipsOnPlanet : "Number",
+				prevPlanetOwner : "String",
 				atckMult : "Number",
 				defMult : "Number",
 				diaa : "Boolean",
@@ -108,7 +107,7 @@ gameSchema.index({'social.invitee': 1});
 
 
 var hasSameOwner = function(planet, move){
-	return planet.ownerHandle == move.handle;
+	return planet.handle == move.handle;
 }
 
 var isSamePlanet = function(planet, planetName){
@@ -130,30 +129,30 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	this.planets.forEach(function(planet){
 		if(isADefensiveMoveToThisPlanet(planet, move)) {	
-			move.bs.previousPlanetOwner = planet.ownerHandle;
-			move.bs.previousShipsOnPlanet = planet.ships;
+			move.bs.prevPlanetOwner = planet.handle;
+			move.bs.prevShipsOnPlanet = planet.ships;
 			planet.ships = planet.ships + move.fleet;
 		} else if (isSamePlanet(planet, move.to)) {
 			var defenceMultiplier = 0;
 			var attackMultiplier = 0;
 			
-			if (multiplierMap[planet.ownerHandle]) {
-				defenceMultiplier = multiplierMap[planet.ownerHandle].defenceMultiplier;
+			if (multiplierMap[planet.handle]) {
+				defenceMultiplier = multiplierMap[planet.handle].defenceMultiplier;
 			}
 			
 			if (multiplierMap[move.handle]) {
 				attackMultiplier = multiplierMap[move.handle].attackMultiplier;
 			}
 		
-			move.bs.previousPlanetOwner = planet.ownerHandle;		
+			move.bs.prevPlanetOwner = planet.handle;		
 			var defenceStrength = calculateDefenceStrengthForPlanet(planet, defenceMultiplier);
 			var attackStrength = game.calculateAttackStrengthForMove(move, attackMultiplier);
 			var battleResult = defenceStrength - attackStrength;	
 			
-			move.bs.previousShipsOnPlanet = planet.ships;
+			move.bs.prevShipsOnPlanet = planet.ships;
 						
 			if(battleResult <= 0) {
-				planet.ownerHandle = move.handle;
+				planet.handle = move.handle;
 				planet.ships = game.reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
 				checkHarvestStatus(planet,game.round.num, parseFloat(game.config.values["harvestSavior"]));
@@ -228,15 +227,15 @@ gameSchema.methods.updateRegenRates = function(){
 
 	var currentGame = this;
 	this.planets.forEach(function(planet){
-		if(planet.ownerHandle && !planet.conquered && planet.status === 'ALIVE') {
+		if(planet.handle && !planet.conquered && planet.status === 'ALIVE') {
 		
 			var regenBy = planet.regen;
 		
 			if(gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock){
-				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
+				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.handle);	
 				
 				if(blockRegen){
-					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.ownerHandle), currentGame);
+					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.handle), currentGame);
 					regenBy =  planet.regen - (planet.regen * blockModifier);
 				}
 			}
@@ -369,7 +368,7 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 		lastPromise = lastPromise.then(function(){
 			if(roundExecuted){
 				var conqueredPlanets = _.filter(game.moves, function(move){
-					return move.executed && move.handle === player.handle && move.bs.previousPlanetOwner !== player.handle; 
+					return move.executed && move.handle === player.handle && move.bs.prevPlanetOwner !== player.handle; 
 				});
 				
 				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
@@ -494,8 +493,8 @@ exports.addUser = function(gameId, player){
 		} else {
 			for(var i in game.planets) {
 				var planet = game.planets[i];
-				if(!planet.ownerHandle && planet.isHome == "Y") {
-					planet.ownerHandle = player.handle;
+				if(!planet.handle && planet.isHome == "Y") {
+					planet.handle = player.handle;
 					break;
 				}
 			}
@@ -513,8 +512,8 @@ exports.addSocialUser = function(gameId, player){
 		} else {
 			for(var i in game.planets) {
 				var planet = game.planets[i];
-				if(!planet.ownerHandle && planet.isHome == "Y") {
-					planet.ownerHandle = player.handle;
+				if(!planet.handle && planet.isHome == "Y") {
+					planet.handle = player.handle;
 					break;
 				}
 			}
@@ -526,9 +525,9 @@ exports.addSocialUser = function(gameId, player){
 
 exports.declineSocialGame = function(gameId, invitee){
 	var endResult = {
-			xpAwardToWinner : 0,
+			xp : 0,
 			leaderboardScoreAmount : 0,
-			winningDate : Date.now(),
+			date : Date.now(),
 			draw : false,
 			declined : invitee
 		};
@@ -537,9 +536,9 @@ exports.declineSocialGame = function(gameId, invitee){
 									{
 										$set : {
 												   'social.status' : 'DECLINED'
-												   ,'endGame.xpAwardToWinner' : 0
+												   ,'endGame.xp' : 0
 												   ,'endGame.leaderboardScoreAmount' : 0
-												   ,'endGame.winningDate' : 0
+												   ,'endGame.date' : 0
 												   ,'endGame.draw' : 0
 												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();

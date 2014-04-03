@@ -75,8 +75,8 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		ShaderLabel regenName = new ShaderLabel(fontShader, "Regen Rate: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel regenRate = new ShaderLabel(fontShader, findRegenRate(), skin, Constants.UI.DEFAULT_FONT);
 		ShaderLabel populationName = new ShaderLabel(fontShader, "Population: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
-		ShaderLabel populationValue = new ShaderLabel(fontShader, calculatePopulation(), skin,
-				Constants.UI.DEFAULT_FONT);
+//		ShaderLabel populationValue = new ShaderLabel(fontShader, calculatePopulation(), skin,
+//				Constants.UI.DEFAULT_FONT);
 		ShaderLabel abilityName = new ShaderLabel(fontShader, "Ability: ", skin, Constants.UI.DEFAULT_FONT_BLACK);
 		ShaderLabel abilityValue = new ShaderLabel(fontShader, AbilityDisplay.abilityDisplayNames.get(planet.ability),
 				skin, Constants.UI.DEFAULT_FONT);
@@ -94,8 +94,8 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		positionAndPlaceActor(regenRate, new Point(regenName.getX() + regenName.getTextBounds().width + padNameToValue,
 				regenName.getY()));
 		positionAndPlaceActor(populationName, new Point(initialPadX, regenName.getY() - yPad));
-		positionAndPlaceActor(populationValue, new Point(populationName.getX() + populationName.getTextBounds().width
-				+ padNameToValue, populationName.getY()));
+//		positionAndPlaceActor(populationValue, new Point(populationName.getX() + populationName.getTextBounds().width
+//				+ padNameToValue, populationName.getY()));
 
 		if (planet.hasAbility()) {
 			positionAndPlaceActor(abilityName, new Point(initialPadX, populationName.getY() - yPad));
@@ -115,11 +115,11 @@ public class PlanetInformationDialog extends OKCancelDialog {
 		return Math.round(planet.regen) + "";
 	}
 
-	private String calculatePopulation() {
-		NumberFormat format = NumberFormat.getInstance();
-
-		return "" + format.format(Math.round(planet.population));
-	}
+//	private String calculatePopulation() {
+//		NumberFormat format = NumberFormat.getInstance();
+//
+//		return "" + format.format(Math.round(planet.population));
+//	}
 
 	private String findRoundsRemainingInHarvest() {
 

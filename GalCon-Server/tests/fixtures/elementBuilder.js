@@ -1,10 +1,10 @@
 exports.createPlanet = function(name, owner, regen, ships, position, ability) {
 	return {
 		name : name,
-		ownerHandle : owner,
+		handle : owner,
 		regen : regen,
 		ships : ships,
-		position : position,
+		pos : position,
 		ability : ability || '',
 		status : 'ALIVE'
 	};

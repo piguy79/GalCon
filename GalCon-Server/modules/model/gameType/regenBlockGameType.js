@@ -13,7 +13,7 @@ exports.determineIfAnOpponentHasTheRegenBlock = function(game, playerHandle){
 
 	for(var  i = 0; i < game.planets.length; i++){
 		var planet = game.planets[i];
-		if(planet.ownerHandle && planet.ownerHandle != playerHandle && (planet.ability && planet.ability == REGEN_BLOCK_ABILITY)){
+		if(planet.handle && planet.handle != playerHandle && (planet.ability && planet.ability == REGEN_BLOCK_ABILITY)){
 			return true;
 		}
 	}

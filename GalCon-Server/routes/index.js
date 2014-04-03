@@ -250,7 +250,7 @@ var minfiyGameResponse = function(games, handle){
 			createdDate : game.createdDate,
 			moveAvailable : iHaveAMove,
 			winner : game.endGame.winnerHandle,
-			winningDate : game.endGame.winningDate,
+			date : game.endGame.date,
 			map : game.map,
 			social : game.social
 		};
@@ -312,7 +312,7 @@ var updateWinnersAndLosers = function(game) {
 				winner = player;
 				player.wins += 1;
 				player.xp += 50;
-				game.endGame.xpAwardToWinner = 10;
+				game.endGame.xp = 50;
 			} else {
 				player.losses += 1;
 			}
@@ -526,7 +526,7 @@ exports.resignGame = function(req, res) {
 			if(!foundHandle) {
 				throw new Error("Invalid game");
 			}
-			game.endGame.winningDate = Date.now();
+			game.endGame.date = Date.now();
 			
 			return updateWinnersAndLosers(game);
 		});
@@ -949,7 +949,7 @@ exports.findPendingInvites = function(req, res){
 					createdDate : item.createdDate,
 					moveAvailable : true,
 					winner : item.endGame.winnerHandle,
-					winningDate : item.endGame.winningDate,
+					date : item.endGame.date,
 					map : item.map,
 					social : item.social
 				}

@@ -41,7 +41,7 @@ describe("Perform Move - Standard -", function() {
 		
 		this.addMatchers({
 			toBeOwnedBy : function(expected) {
-				return this.actual.ownerHandle == expected;
+				return this.actual.handle == expected;
 			},
 			toHaveShipNumber : function(expected) {
 				return this.actual.numberOfShips == expected;

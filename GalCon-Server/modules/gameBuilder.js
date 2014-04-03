@@ -32,7 +32,7 @@ function GameBuilder(gameAttributes) {
 		winnerHandle : "",
 		losers : [],
 		draw : false,
-		xpAwardToWinner : 0
+		xp : 0
 	}
 	this.ability = "";
 	this.numberOfPlanets = gameAttributes.numberOfPlanets;
@@ -68,14 +68,14 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 		var newPosition = this.createRandomPosition();
 		var noGood = false;
 		for(i in homePlanets) {
-			if(this.distanceBetweenPositions(homePlanets[i].position, newPosition) <= tooCloseToHomeRadius) {
+			if(this.distanceBetweenPositions(homePlanets[i].pos, newPosition) <= tooCloseToHomeRadius) {
 				noGood = true;
 			}
 		}
 		
 		if(!noGood) {
 			for(i in this.planets) {
-				if(newPosition.x == this.planets[i].position.x && newPosition.y == this.planets[i].position.y) {
+				if(newPosition.x == this.planets[i].pos.x && newPosition.y == this.planets[i].pos.y) {
 					noGood = true;
 				}
 			}
@@ -120,8 +120,8 @@ GameBuilder.prototype.createHomePlanets = function() {
 		x = this.removeFromEdge(x, this.width-1);
 		y = this.removeFromEdge(y, this.height-1);
 
-		var xDist = x - homePlanets[0].position.x;
-		var yDist = y - homePlanets[0].position.y;
+		var xDist = x - homePlanets[0].pos.x;
+		var yDist = y - homePlanets[0].pos.y;
 
 		var distance = Math.sqrt(xDist * xDist + yDist * yDist);
 		if (distance <= minDistanceBetweenPlanets) {
@@ -202,10 +202,10 @@ GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNe
 	var i = 0;
 	while(position === undefined && i < 100) {
 		var testPosition = this.createRandomPosition();
-		var dist = this.distanceBetweenPositions(planet.position, testPosition);
+		var dist = this.distanceBetweenPositions(planet.pos, testPosition);
 		if(dist > 0 && dist <= radius) {
 			if(notNearPlanet) {
-				var awayDist = this.distanceBetweenPositions(notNearPlanet.position, testPosition);
+				var awayDist = this.distanceBetweenPositions(notNearPlanet.pos, testPosition);
 				if(awayDist <= radius) {
 					continue;
 				}
@@ -213,7 +213,7 @@ GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNe
 			
 			var isGoodPosition = true;
 			for(i in this.planets) {
-				if(testPosition.x == this.planets[i].position.x && testPosition.y == this.planets[i].position.y) {
+				if(testPosition.x == this.planets[i].pos.x && testPosition.y == this.planets[i].pos.y) {
 					isGoodPosition = false;
 				}
 			}
@@ -235,7 +235,7 @@ GameBuilder.prototype.sumValueAroundPlanet = function(planet, radius, field) {
 			continue;
 		}
 		
-		if (this.distanceBetweenPositions(planet.position, this.planets[i].position) <= radius) {
+		if (this.distanceBetweenPositions(planet.pos, this.planets[i].pos) <= radius) {
 			total += eval("this.planets[i]." + field);
 		}
 	}
@@ -266,7 +266,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	position.y = y;
 
 	planet.name = "Planet: " + this.currentPlanetNum++;
-	planet.position = position;
+	planet.pos = position;
 	planet.regen = 0;
 	planet.ships = 0;
 	planet.population = Math.floor((Math.random() * MAX_POPULATION) + 1);
@@ -289,8 +289,8 @@ function assignHomePlanets(builder) {
 	builder.players.forEach(function(player) {
 		for ( var i in builder.planets) {
 			var planet = builder.planets[i];
-			if (!planet.ownerHandle && planet.isHome == "Y") {
-				planet.ownerHandle = player.handle;
+			if (!planet.handle && planet.isHome == "Y") {
+				planet.handle = player.handle;
 				break;
 			}
 		}
