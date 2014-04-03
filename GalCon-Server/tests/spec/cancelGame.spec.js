@@ -56,16 +56,16 @@ describe("Perform Move - Standard -", function() {
 	});
 	
 	afterEach(function(done) {
-		//gameManager.GameModel.remove().where("map").in([MAP_KEY_1]).exec(function(err) {
-		//	if(err) { console.log(err); }
-		//	mapManager.MapModel.remove().where("key").in([MAP_KEY_1]).exec(function(err) {
-		//		if(err) { console.log(err); }
-		//		userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
-		//			if(err) { console.log(err); }
+		gameManager.GameModel.remove().where("map").in([MAP_KEY_1]).exec(function(err) {
+			if(err) { console.log(err); }
+			mapManager.MapModel.remove().where("key").in([MAP_KEY_1]).exec(function(err) {
+				if(err) { console.log(err); }
+				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+					if(err) { console.log(err); }
 					done();
-		//		});
-		//	});
-		//});
+				});
+			});
+		});
 	});
 
 	it("Should allow a user to cancel when they are the only player", function(done) {
