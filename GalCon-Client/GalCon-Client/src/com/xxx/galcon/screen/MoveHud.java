@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -99,6 +100,12 @@ public class MoveHud extends Table {
 	private void addMoveToMap(final Move move) {
 		if (moves.get(move) == null) {
 			float buttonWidth = Gdx.graphics.getWidth() * 0.09f;
+			float speedIncrease = 0.0f;
+			if(GameLoop.USER.hasSpeedIncrease(gameBoard)){
+				speedIncrease = new Float(gameBoard.gameConfig.getValue(Constants.ABILITY_SPEED));
+			}
+			
+			move.duration = move.duration - (move.duration * speedIncrease);
 			MoveButton button = new MoveButton(resources, gameBoard, move, buttonWidth, getHeight() * 0.85f);
 
 			button.addListener(new ClickListener() {

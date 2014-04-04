@@ -93,4 +93,13 @@ public class Player extends JsonConvertible {
 
 		return null;
 	}
+
+	public boolean hasSpeedIncrease(GameBoard gameBoard) {
+		for(Planet planet : gameBoard.planets){
+			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(Constants.ABILITY_SPEED)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
