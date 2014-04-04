@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,6 +23,7 @@ import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.AvailableGames;
 import com.xxx.galcon.model.GameBoard;
@@ -49,6 +51,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private ShaderLabel messageLabel;
 	private ScrollList<MinifiedGame> scrollList;
 	private ImageButton backButton;
+	private ImageButton refreshButton;
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;
 	private LoadingOverlay loadingOverlay;
@@ -74,7 +77,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private String playerInfoText(List<MinifiedPlayer> otherPlayers) {
 		String playerDescription = "";
 		for (MinifiedPlayer player : otherPlayers) {
-			playerDescription = player.handle + " (Level " + player.rank + ")";
+			playerDescription = player.handle + " [" + ConfigResolver.getRankForXp(player.xp).level + "]";
 		}
 		return playerDescription;
 	}
@@ -113,6 +116,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private void showGames() {
+		scrollList.clearRows();
+		if(loadingOverlay != null){
+			loadingOverlay.remove();
+		}
 		if (allGames == null) {
 			return;
 		}
@@ -264,23 +271,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		waitImage.setY(height / 2 - buttonWidth / 2);
 		stage.addActor(waitImage);
 
-		backButton = new ImageButton(resources.skin, "backButton");
-		GraphicsUtils.setCommonButtonSize(backButton);
-		backButton.setX(10);
-		backButton.setY(height - backButton.getHeight() - 5);
-		backButton.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				startHideSequence(Action.BACK);
-			}
-		});
-		actors.add(backButton);
-		stage.addActor(backButton);
+		createBackButton(stage, height);
+		createRefreshButton(stage, height);
+		
 
 		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		messageLabel.setAlignment(Align.center);
@@ -320,6 +313,43 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		waitImage.start();
 		UIConnectionWrapper.findAllMaps(mapResultCallback);
+	}
+
+	private void createBackButton(Stage stage, float height) {
+		backButton = new ImageButton(resources.skin, "backButton");
+		GraphicsUtils.setCommonButtonSize(backButton);
+		backButton.setX(10);
+		backButton.setY(height - backButton.getHeight() - 5);
+		backButton.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				startHideSequence(Action.BACK);
+			}
+		});
+		actors.add(backButton);
+		stage.addActor(backButton);
+	}
+	
+	private void createRefreshButton(final Stage stage, float height) {
+		refreshButton = new ImageButton(resources.skin, "refreshButton");
+		GraphicsUtils.setCommonButtonSize(refreshButton);
+		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
+		refreshButton.setY(height - refreshButton.getHeight() - 5);
+		refreshButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
+				UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.USER.handle);
+			}
+		});
+		actors.add(refreshButton);
+		stage.addActor(refreshButton);
 	}
 
 	@Override

@@ -33,12 +33,7 @@ var userSchema = mongoose.Schema({
 	},
 	coins : "Number",
 	usedCoins : "Number",
-	watchedAd : "Boolean",
-	rankInfo : {
-		level : "Number",
-		startFrom : "Number",
-		endAt : "Number"
-	}
+	watchedAd : "Boolean"
 });
 
 userSchema.set('toObject', { getters: true });

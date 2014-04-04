@@ -27,6 +27,7 @@ import com.xxx.galcon.Fonts;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.model.Map;
 import com.xxx.galcon.model.Maps;
@@ -96,7 +97,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		Collections.sort(this.allMaps, new Comparator<Map>() {
 			@Override
 			public int compare(Map o1, Map o2) {
-				return Integer.valueOf(o1.availableFromLevel).compareTo(Integer.valueOf(o2.availableFromLevel));
+				return Integer.valueOf(o1.availableFromXp).compareTo(Integer.valueOf(o2.availableFromXp));
 			}
 		});
 
@@ -257,7 +258,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		public CardActor(Map map, Resources resources) {
 			this.map = map;
-			if(GameLoop.USER.rank.level >= map.availableFromLevel){
+			if(GameLoop.USER.xp >= map.availableFromXp){
 				mapAvailable = true;
 				this.mapTex = resources.levelAtlas.findRegion("" + map.key);
 			}else{
@@ -277,7 +278,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			if(mapAvailable){
 				return map.description;
 			}
-			return "Reach level " + map.availableFromLevel + " to unlock.";
+			return "Reach level " + ConfigResolver.getRankForXp(map.availableFromXp).level + " to unlock.";
 		}
 
 		public int getMapKey() {

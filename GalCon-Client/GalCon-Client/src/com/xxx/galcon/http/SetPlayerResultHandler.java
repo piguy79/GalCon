@@ -13,7 +13,6 @@ public class SetPlayerResultHandler implements UIConnectionResultCallback<Player
 
 	@Override
 	public void onConnectionResult(Player result) {
-		this.player.rank = result.rank;
 		this.player.xp = result.xp;
 		this.player.handle = result.handle;
 		this.player.coins = result.coins;

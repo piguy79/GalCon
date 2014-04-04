@@ -12,7 +12,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	validation = require('../modules/validation'),
 	moveValidation = require('../modules/move_validation'),
 	inviteValidation = require('../modules/invite_validation'),
-	googleapis = require('googleapis');
+	googleapis = require('googleapis')
+	,ObjectId = require('mongoose').Types.ObjectId;
 
 var VALIDATE_MAP = {
 	email : validation.isEmail,
@@ -311,8 +312,8 @@ var updateWinnersAndLosers = function(game) {
 			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
-				player.xp += 50;
-				game.endGame.xp = 50;
+				player.xp += parseInt(game.config.values["xpForWinning"]);
+				game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
 			} else {
 				player.losses += 1;
 			}
@@ -327,13 +328,7 @@ var updateWinnersAndLosers = function(game) {
 	return p.then(function() {
 		return game.withPromise(game.save);
 	}).then(function(updatedGame) {
-		game = updatedGame;
-		return rankManager.findRankForXp(winner.xp);
-	}).then(function(rank) {
-		winner.rankInfo = rank;
-		winner.withPromise(winner.save);
-	}).then(function() {
-		return game;
+		return updatedGame;
 	});
 }
 
@@ -453,6 +448,9 @@ exports.acceptInvite = function(req, res){
 		}
 		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game){
+		if(game === null){
+			throw new Error("This game does not exist.");
+		}
 		requestingUser = game.players[0];
 		return gameManager.addSocialUser(gameId, currentUser);
 	}).then(function(savedGame){
@@ -695,10 +693,15 @@ exports.reduceTimeUntilNextGame = function(req, res) {
 
 exports.findConfigByType = function(req, res) {
 	var type = req.query['type'];
+	
+	var configReturn;
 
 	var p = configManager.findLatestConfig(type);
 	p.then(function(config) {
-		res.json(config);
+		configReturn = config;
+		return rankManager.findAllRanks();
+	}).then(function(ranks){
+		res.json({config : configReturn, ranks : ranks});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -770,8 +773,11 @@ var joinGamePromise = function(games, user, time) {
 		return p;
 	}
 	
-	var joinP = attemptToJoinGamePromise(games, user, time);	
-	return joinP.then(function(game) {
+	var joinP = rankManager.findAllRanks();
+	return joinP.then(function(ranks){
+		var rankOfUser = rankManager.findRankForAnXp(ranks, user.xp);
+		return 	attemptToJoinGamePromise(games, user, time, rankOfUser);	
+	}).then(function(game) {
 		return game;
 	});
 }
@@ -805,11 +811,10 @@ var logErrorAndSetResponse = function(req, res) {
 	}
 }
 
-var attemptToJoinGamePromise = function(games, user, time) {
+var attemptToJoinGamePromise = function(games, user, time, rankOfUser) {
 	var gamesByRelativeRank = _.sortBy(games, function(game) {
-		return Math.abs(user.rankInfo.level - game.rankOfInitialPlayer);
+		return Math.abs(rankOfUser.level - game.rankOfInitialPlayer);
 	});
-
 	return addGameFromSegmentPromise(gamesByRelativeRank, 0, user, time);
 }
 
@@ -817,7 +822,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 	if (index >= games.lengh) {
 		return null;
 	}
-
+	
 	var gameId = games[index]._id;
 
 	return gameManager.addUser(gameId, user).then(function(game) {
@@ -837,8 +842,12 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 
 
 var generateGamePromise = function(users, time, mapToFind, social) {
+	var map;
 	var p = mapManager.findMapByKey(mapToFind);
-	return p.then(function(map) {
+	return p.then(function(mapFromKey) {
+		map = mapFromKey;
+		return rankManager.findAllRanks();
+	}).then(function(ranks){
 		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
 		var heightToUse = Math.ceil(widthToUse * 1.33);
 
@@ -846,6 +855,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 		numPlanets = Math.max(12, numPlanets);
 
 		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
+		var rankOfInitialUser = rankManager.findRankForAnXp(ranks, users[0].xp);
 
 		var gameAttributes = {
 			players : users,
@@ -853,7 +863,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 			height : heightToUse,
 			numberOfPlanets : numPlanets,
 			createdTime : time,
-			rankOfInitialPlayer : users[0].rankInfo.level,
+			rankOfInitialPlayer : rankOfInitialUser.level,
 			map : map.key,
 			gameType : map.gameType[gameTypeIndex],
 			social : social
@@ -866,7 +876,7 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 		}).then(function(game) {
 			var currentUser = users[0];
 			currentUser.coins--;
-			
+						
 			var p = currentUser.withPromise(currentUser.save);
 			return p.then(function() {
 				return game;
@@ -985,7 +995,7 @@ var minifyUser = function(user){
 	return {
 		auth : user.auth,
 		handle : user.handle,
-		rank : user.rankInfo.level
+		xp : user.xp
 	};
 }
 
@@ -1038,5 +1048,30 @@ exports.addProviderToUser = function(req, res){
 		return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
 	}).then(function(user){
 		res.json(user);
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+exports.cancelGame = function(req, res){
+	var session = req.body.session;
+	var handle = req.body.handle;
+	var gameId = req.body.gameId;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return gameManager.GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$set : {state : 'C'}}).exec();
+	}).then(function(game){
+		if(game === null){
+			throw new ErrorWithResponse('Another user has joined this game.', { success : false });
+		}else{
+			return userManager.addCoins(1, handle);
+		}
+	}).then(function(){
+		return gameManager.GameModel.remove({ $and : [{_id : gameId}, {state :'C'}]}).exec();
+	}).then(function(){
+		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
 }

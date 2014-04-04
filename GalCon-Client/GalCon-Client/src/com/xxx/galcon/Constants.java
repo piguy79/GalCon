@@ -109,6 +109,7 @@ public class Constants {
 	public static final String JOIN = "Join";
 	public static final String LEADERBOARDS = "Leaderboards";
 	public static final String RANK = "rank";
+	public static final String RANKS = "ranks";
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
 	public static final String CURRENT_GAMES = "currentGames";
@@ -125,7 +126,7 @@ public class Constants {
 	public static final String MAP = "map";
 	public static final String CREATED_TIME = "createdTime";
 	public static final String KEY = "key";
-	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
+	public static final String AVAILABLE_FROM_XP = "availableFromXp";
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
 	public static final String VERSION = "version";
@@ -138,6 +139,8 @@ public class Constants {
 	public static final String POPULATION = "population";
 	public static final String SOCIAL = "social";
 	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
+	public static final String CONFIG = "config";
+
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

@@ -4,8 +4,8 @@ public class GalconSocialUser extends GalConFriend {
 	
 	private String socialDisplayName;
 
-	public GalconSocialUser(String authId, String url, String handle, int rank, String displayName) {
-		super(authId, url, handle, rank);
+	public GalconSocialUser(String authId, String url, String handle, int xp, String displayName) {
+		super(authId, url, handle, xp);
 		this.socialDisplayName = displayName;
 		
 	}

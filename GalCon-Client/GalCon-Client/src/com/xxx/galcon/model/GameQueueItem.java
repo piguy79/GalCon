@@ -17,7 +17,7 @@ public class GameQueueItem extends JsonConvertible {
 		JSONObject requesterJson = jsonObject.getJSONObject("requester");
 		requester = new MinifiedPlayer();
 		requester.handle = requesterJson.getString("handle");
-		requester.rank = requesterJson.getInt("rank");
+		requester.xp = requesterJson.getInt("xp");
 		
 		inviteeHandle = jsonObject.getString("inviteeHandle");
 		

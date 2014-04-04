@@ -19,6 +19,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -281,10 +282,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				returnValue = retVal;
 			}
 		});
-	}
-
-	private String currentUserText() {
-		return "Level " + GameLoop.USER.rank.level;
 	}
 
 	@Override

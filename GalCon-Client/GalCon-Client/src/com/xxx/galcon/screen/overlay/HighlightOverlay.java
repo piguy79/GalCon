@@ -273,7 +273,8 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 
 		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
-		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText, resources.skin, fontColorToUse);
+		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText + "xp", resources.skin,
+				fontColorToUse);
 		label.setX(tileCenter.x);
 		label.setY(tileCenter.y);
 		addActor(label);

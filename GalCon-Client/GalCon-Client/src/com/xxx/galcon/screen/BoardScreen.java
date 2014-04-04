@@ -34,6 +34,7 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.math.GalConMath;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.Bounds;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
@@ -44,6 +45,7 @@ import com.xxx.galcon.model.Size;
 import com.xxx.galcon.model.Social;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.event.CancelGameEvent;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.RefreshEvent;
 import com.xxx.galcon.screen.event.ResignEvent;
@@ -300,7 +302,7 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(resources,
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
 							Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
 					float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
@@ -324,6 +326,31 @@ public class BoardScreen implements ScreenFeedback {
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
+							} else if(event instanceof CancelGameEvent){
+								overlay = new TextOverlay("Cancelling Game", resources);
+								stage.addActor(overlay);
+								UIConnectionWrapper.cancelGame(new UIConnectionResultCallback<BaseResult>() {
+									public void onConnectionResult(BaseResult result) {
+										if(result.success){
+											stage.dispose();
+											returnCode = Action.BACK;
+										}else{
+											overlay = new DismissableOverlay(resources, new TextOverlay("Unable to cancel game", resources), new ClickListener(){
+												public void clicked(InputEvent event, float x, float y) {
+													UIConnectionWrapper.findGameById(
+															new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
+															GameLoop.USER.handle);
+													overlay.remove();
+												};
+											});
+											stage.addActor(overlay);
+										}
+									};
+									
+									public void onConnectionError(String msg) {
+										overlay.remove();
+									};
+								}, GameLoop.USER.handle, gameBoard.id);
 							}
 							return false;
 						}

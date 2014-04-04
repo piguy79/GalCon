@@ -12,20 +12,15 @@ var needle = require("needle"),
 describe("Perform Move - Standard -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
-	PLAYER_1.xp = 95;
+	PLAYER_1.coins = 5;
 	
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
 	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 1);
 	
 	var MAP_KEY_1 = -100;
 	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
+	
 
-	var PLAYER_1_HOME_PLANET = "HOME_PLANET_1";
-	var PLAYER_2_HOME_PLANET = "HOME_PLANET_2";
-	var UNOWNED_PLANET_1 = "UNOWNED_PLANET_1";
-	var PLANETS = [ elementBuilder.createPlanet(PLAYER_1_HOME_PLANET, PLAYER_1_HANDLE, 3, 50, { x : 3, y : 4}),
-	                elementBuilder.createPlanet(PLAYER_2_HOME_PLANET, PLAYER_2_HANDLE, 3, 30, { x : 3, y : 4}),
-	                              elementBuilder.createPlanet(UNOWNED_PLANET_1, "", 3, 20, { x : 3, y : 5}) ];
 	
 	beforeEach(function(done) {
 		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
@@ -73,59 +68,52 @@ describe("Perform Move - Standard -", function() {
 		});
 	});
 
-	it("Must update winners rank on winning move", function(done) {
+	it("Should allow a user to cancel when they are the only player", function(done) {
 		var currentGameId;
-		var timeOfMove = 34728;
-		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		var p =  apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		p.then(function(game){
 			currentGameId = game._id;
-			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
+			return userManager.findUserByHandle(PLAYER_1_HANDLE);
+		}).then(function(user){
+			expect(user.coins).toBe(4);
+			return apiRunner.cancelGame(PLAYER_1_HANDLE, currentGameId, PLAYER_1.session.id);
+		}).then(function(result){
+			expect(result.success).toBe(true);
+			return userManager.findUserByHandle(PLAYER_1_HANDLE);
+		}).then(function(user){
+			expect(user.coins).toBe(5);
+			return gameManager.GameModel.findOne({_id : currentGameId}).exec();
 		}).then(function(game){
-			var player1WinningMove = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 50, 1) ];
-			return gameRunner.performTurn(currentGameId, {moves : player1WinningMove, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
-		}).then(function(game){
-			expect(game.endGame.winnerHandle).toBe(PLAYER_1_HANDLE);
-			var player1 = _.filter(game.players, function(player){
-				return player.handle === PLAYER_1_HANDLE;
-			});
-			var expectedResult = 95 + parseInt(game.config.values["xpForWinning"]) + parseInt(game.config.values["xpForPlanetCapture"]);
-			expect(player1[0].xp).toBe(expectedResult);
+			expect(game).toBe(null);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
 			console.log(err);
 			done();
 		});
-
 	});
 	
-	it("Should update xp for planet capture", function(done) {
+	it("Should Not allow the user to cancel when more than one player is present", function(done) {
 		var currentGameId;
-		var timeOfMove = 34728;
-		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		var p =   gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		p.then(function(game){
 			currentGameId = game._id;
-			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
-		}).then(function(game){
-			var player1CaptureMove = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, UNOWNED_PLANET_1, 50, 1) ];
-			return gameRunner.performTurn(currentGameId, {moves : player1CaptureMove, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
-		}).then(function(game){
-			var player1 = _.filter(game.players, function(player){
-				return player.handle === PLAYER_1_HANDLE;
-			});
-			var expectedResult = 95 + parseInt(game.config.values["xpForPlanetCapture"]);
-			expect(player1[0].xp).toBe(expectedResult);
+			return userManager.findUserByHandle(PLAYER_1_HANDLE);
+		}).then(function(user){
+			expect(user.coins).toBe(4);
+			return apiRunner.cancelGame(PLAYER_1_HANDLE, currentGameId, PLAYER_1.session.id);
+		}).then(function(result){
+			expect(result.success).toBe(false);
+			return userManager.findUserByHandle(PLAYER_1_HANDLE);
+		}).then(function(user){
+			expect(user.coins).toBe(4);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
 			console.log(err);
 			done();
 		});
-
 	});
-	
 	
 	
 });
