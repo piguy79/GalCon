@@ -26,5 +26,9 @@ public class ConfigResolver {
 	public static Rank getRankForXp(Integer xp){
 		return GameLoop.CONFIG.getRankForXp(xp);
 	}
+	
+	public static Rank getNextRank(Integer xp){
+		return GameLoop.CONFIG.getNextRank(xp);
+	}
 
 }

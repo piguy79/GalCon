@@ -62,10 +62,29 @@ public class Configuration extends JsonConvertible {
 	
 	protected Rank getRankForXp(Integer xp){
 		for(Rank rank : ranks){
-			if(rank.startFrom <= xp && rank.endAt > xp){
+			if(isCurrentRank(xp, rank)){
 				return rank;
 			}
 		}
+		return null;
+	}
+
+	private boolean isCurrentRank(Integer xp, Rank rank) {
+		return rank.startFrom <= xp && rank.endAt > xp;
+	}
+	
+	protected Rank getNextRank(Integer xp){
+		for(int i = 0; i < ranks.size(); i++){
+			Rank rank = ranks.get(i);
+			if(isCurrentRank(xp, rank)){
+				if(i == (ranks.size() - 1)){
+					return null;
+				}else{
+					return ranks.get(i+1);
+				}
+			}
+		}
+		
 		return null;
 	}
 

@@ -24,6 +24,7 @@ public class Constants {
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
 		public static final String DEFAULT_FONT_GREEN = "defaultFontGreen";
 		public static final String DEFAULT_FONT_RED = "defaultFontRed";
+		public static final String DEFAULT_FONT_YELLOW = "defaultFontYellow";
 		public static final String LARGE_FONT = "largeFont";
 		public static final String X_LARGE_FONT = "xLargeFont";
 		public static final String LARGE_FONT_BLACK = "largeFontBlack";
@@ -59,6 +60,11 @@ public class Constants {
 
 		public static final String HIGHLIGHT_BAR = "highlightBar";
 		public static final String BACK_ARROW_WHITE = "backArrowWhite";
+
+		public static final String XP_BAR_COVER = "xpBarCover";
+		public static final String XP_BAR_MAIN = "xpBarMain";
+		public static final String XP_BAR_ARROW = "xpBarArrow";
+
 	}
 
 	public static class Colors {
