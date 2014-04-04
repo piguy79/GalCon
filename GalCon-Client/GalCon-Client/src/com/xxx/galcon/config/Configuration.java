@@ -77,7 +77,7 @@ public class Configuration extends JsonConvertible {
 		for(int i = 0; i < ranks.size(); i++){
 			Rank rank = ranks.get(i);
 			if(isCurrentRank(xp, rank)){
-				if(i == (ranks.size() + 1)){
+				if(i == (ranks.size() - 1)){
 					return null;
 				}else{
 					return ranks.get(i+1);

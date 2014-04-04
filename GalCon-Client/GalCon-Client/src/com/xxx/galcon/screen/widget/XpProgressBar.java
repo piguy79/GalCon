@@ -54,12 +54,17 @@ public class XpProgressBar extends Group {
 		coverXp = new Image(resources.skin, Constants.UI.XP_BAR_COVER);
 		
 		
-		float total = nextRank.startFrom - usersCurrentRank.startFrom;
-		float userInRange = GameLoop.USER.xp - usersCurrentRank.startFrom;
-		float percentage  = userInRange / total;
-		float percentageNotEarned = 100 - (percentage * 100);
+		if(reachedMaxRank()){
+			coverXp.setWidth(0);
+		}else{
+			float total = nextRank.startFrom - usersCurrentRank.startFrom;
+			float userInRange = GameLoop.USER.xp - usersCurrentRank.startFrom;
+			float percentage  = userInRange / total;
+			float percentageNotEarned = 100 - (percentage * 100);
+			
+			coverXp.setWidth((mainXp.getWidth() * percentageNotEarned) / 100f);
+		}
 		
-		coverXp.setWidth((mainXp.getWidth() * percentageNotEarned) / 100f);
 		
 		coverXp.setHeight(height);
 		coverXp.setX(mainXp.getX() + (mainXp.getWidth() - coverXp.getWidth()));
@@ -69,21 +74,29 @@ public class XpProgressBar extends Group {
 	}
 	
 	private void createXpNeededText() {
-		int xpNeeded = nextRank.startFrom - GameLoop.USER.xp;
-		ShaderLabel xpNeededLabel = new ShaderLabel(resources.fontShader, xpNeeded + "xp", resources.skin, Constants.UI.DEFAULT_FONT_YELLOW);
-		xpNeededLabel.setX(mainXp.getX() + 10);
-		addActor(xpNeededLabel);
+		if(reachedMaxRank()){
+			ShaderLabel neededText = new ShaderLabel(resources.fontShader, "Max Rank achieved!", resources.skin, Constants.UI.DEFAULT_FONT_YELLOW);
+			neededText.setX(mainXp.getX() + 10);
+			addActor(neededText);
+		}else{
+			int xpNeeded = nextRank.startFrom - GameLoop.USER.xp;
+			ShaderLabel xpNeededLabel = new ShaderLabel(resources.fontShader, xpNeeded + "xp", resources.skin, Constants.UI.DEFAULT_FONT_YELLOW);
+			xpNeededLabel.setX(mainXp.getX() + 10);
+			addActor(xpNeededLabel);
+			
+			ShaderLabel neededText = new ShaderLabel(resources.fontShader, "Needed", resources.skin, Constants.UI.DEFAULT_FONT);
+			neededText.setX(xpNeededLabel.getX() + (xpNeededLabel.getTextBounds().width * 1.05f));
+			addActor(neededText);
+		}
 		
-		ShaderLabel neededText = new ShaderLabel(resources.fontShader, "Needed", resources.skin, Constants.UI.DEFAULT_FONT);
-		neededText.setX(xpNeededLabel.getX() + (xpNeededLabel.getTextBounds().width * 1.05f));
-		addActor(neededText);
 	}
 	
 	private void createNextLevelCount() {
-		ShaderLabel nextLevel = new ShaderLabel(resources.fontShader, "" + nextRank.level, resources.skin, Constants.UI.DEFAULT_FONT);
-		nextLevel.setX(mainXp.getX() + mainXp.getWidth());
-		addActor(nextLevel);
-		
+		if(!reachedMaxRank()){
+			ShaderLabel nextLevel = new ShaderLabel(resources.fontShader, "" + nextRank.level, resources.skin, Constants.UI.DEFAULT_FONT);
+			nextLevel.setX(mainXp.getX() + mainXp.getWidth());
+			addActor(nextLevel);
+		}
 	}
 	
 	private void createXpArrow() {
@@ -103,5 +116,9 @@ public class XpProgressBar extends Group {
 		userWelcome.setY(mainXp.getHeight());
 		addActor(userWelcome);
 		
+	}
+	
+	private boolean reachedMaxRank(){
+		return nextRank == null;
 	}
 }
