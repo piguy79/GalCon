@@ -267,25 +267,24 @@ public abstract class HighlightOverlay extends Overlay {
 			yIncrease = yIncrease * -1f;
 		}
 
-		String fontColorToUse = Constants.UI.DEFAULT_FONT_RED;
 		if (planetOwner.equals(GameLoop.USER.handle)) {
-			fontColorToUse = Constants.UI.DEFAULT_FONT_GREEN;
+			String fontColorToUse = Constants.UI.DEFAULT_FONT_GREEN;
+			
+			String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
+			final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText + "xp", resources.skin,
+					fontColorToUse);
+			label.setX(tileCenter.x);
+			label.setY(tileCenter.y);
+			addActor(label);
+
+			label.addAction(Actions.sequence(Actions.fadeOut(0.0f), Actions.delay(0.9f), Actions.fadeIn(0),
+					Actions.moveBy(0, yIncrease, 1.2f), Actions.fadeOut(0.6f), Actions.run(new Runnable() {
+						@Override
+						public void run() {
+							label.remove();
+						}
+					})));
 		}
-
-		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
-		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText + "xp", resources.skin,
-				fontColorToUse);
-		label.setX(tileCenter.x);
-		label.setY(tileCenter.y);
-		addActor(label);
-
-		label.addAction(Actions.sequence(Actions.fadeOut(0.0f), Actions.delay(0.9f), Actions.fadeIn(0),
-				Actions.moveBy(0, yIncrease, 1.2f), Actions.fadeOut(0.6f), Actions.run(new Runnable() {
-					@Override
-					public void run() {
-						label.remove();
-					}
-				})));
 	}
 
 	private void highlightPath(Planet fromPlanet, Planet toPlanet) {
