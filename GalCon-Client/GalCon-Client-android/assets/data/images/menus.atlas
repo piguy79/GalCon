@@ -120,13 +120,6 @@ arrow_left
   orig: 600, 568
   offset: 0, 0
   index: -1
-black_grey_button
-  rotate: false
-  xy: 2, 22
-  size: 373, 80
-  orig: 373, 80
-  offset: 0, 0
-  index: -1
 button_yellow
   rotate: false
   xy: 604, 475
@@ -157,16 +150,9 @@ forward
   index: -1
 green_button
   rotate: false
-  xy: 377, 2
+  xy: 721, 2
   size: 300, 100
   orig: 300, 100
-  offset: 0, 0
-  index: -1
-transparent_square
-  rotate: false
-  xy: 679, 2
-  size: 100, 100
-  orig: 100, 100
   offset: 0, 0
   index: -1
 wait
@@ -176,57 +162,92 @@ wait
   orig: 400, 400
   offset: 0, 0
   index: -1
+xp_bar_arrow
+  rotate: false
+  xy: 817, 127
+  size: 112, 62
+  orig: 112, 62
+  offset: 0, 0
+  index: -1
+xp_bar_cover
+  rotate: false
+  xy: 2, 17
+  size: 717, 85
+  orig: 717, 85
+  offset: 0, 0
+  index: -1
 
 menus3.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+black_grey_button
+  rotate: false
+  xy: 455, 2
+  size: 373, 80
+  orig: 373, 80
+  offset: 0, 0
+  index: -1
 cancel_button
   rotate: false
-  xy: 2, 2
+  xy: 721, 337
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 378, 261
+  xy: 378, 216
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 pattern
   rotate: false
-  xy: 378, 514
+  xy: 2, 8
   size: 451, 116
   orig: 451, 116
   offset: 0, 0
   index: -1
 question_mark
   rotate: false
-  xy: 255, 2
+  xy: 721, 84
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 rect_button_blank
   rotate: false
-  xy: 508, 140
+  xy: 378, 469
   size: 338, 119
   orig: 338, 119
   offset: 0, 0
   index: -1
 refresh
   rotate: false
-  xy: 2, 255
+  xy: 2, 213
   size: 374, 375
   orig: 374, 375
   offset: 0, 0
   index: -1
 textFieldBg
   rotate: false
-  xy: 2, 632
+  xy: 2, 590
   size: 848, 155
   orig: 848, 155
+  offset: 0, 0
+  index: -1
+transparent_square
+  rotate: false
+  xy: 852, 645
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+xp_bar_main
+  rotate: false
+  xy: 2, 126
+  size: 717, 85
+  orig: 717, 85
   offset: 0, 0
   index: -1

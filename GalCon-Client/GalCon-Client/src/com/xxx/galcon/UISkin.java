@@ -34,6 +34,7 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
 		add(Constants.UI.DEFAULT_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.RED));
+		add(Constants.UI.DEFAULT_FONT_YELLOW, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.YELLOW));
 		add(Constants.UI.X_SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.WHITE));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
 		add(Constants.UI.X_SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), new Color(
@@ -122,6 +123,18 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("highlight_bar"));
 			add(Constants.UI.HIGHLIGHT_BAR, trd, Drawable.class);
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("xp_bar_cover"));
+			add(Constants.UI.XP_BAR_COVER, trd, Drawable.class);
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("xp_bar_main"));
+			add(Constants.UI.XP_BAR_MAIN, trd, Drawable.class);
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("xp_bar_arrow"));
+			add(Constants.UI.XP_BAR_ARROW, trd, Drawable.class);
+		}
 
 		/*
 		 * Image Buttons
@@ -180,6 +193,7 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("scroll_highlight"));
 			add(Constants.UI.SCROLL_HIGHLIGHT, trd, Drawable.class);
 		}
+		
 
 		TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("reg_play"));
 		add("regularPlay", new ImageButtonStyle(trd, trd, trd, trd, trd, trd));

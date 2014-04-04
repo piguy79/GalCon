@@ -40,7 +40,7 @@ exports.findRankByName = function(rankName){
 }
 
 exports.findAllRanks = function(){
-	return RankModel.find().exec();
+	return RankModel.find().sort({level : 1}).exec();
 }
 
 exports.findRankForAnXp = function(ranks, xp){
