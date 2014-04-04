@@ -121,8 +121,8 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1),
-					resources.skin, Constants.UI.LARGE_FONT);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1), resources.skin,
+					Constants.UI.LARGE_FONT);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
 			lbl.setY(Gdx.graphics.getHeight() * 0.6f - lbl.getHeight() * 0.5f);
@@ -207,8 +207,9 @@ public abstract class HighlightOverlay extends Overlay {
 			if (!previousOwner.equals(move.handle)) {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
-			
-			if(move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle) && toPlanetButton.planet.isOwnedBy(move.handle)){
+
+			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
+					&& toPlanetButton.planet.isOwnedBy(move.handle)) {
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
 			}
 		}
@@ -256,35 +257,34 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(particle);
 		}
 	}
-	
+
 	private void addXpGainLabel(Point position, String planetOwner) {
-		
+
 		Point tileCenter = boardCalcs.tileCoordsToPixels(position);
 		float yIncrease = boardCalcs.getTileSize().height * 0.65f;
-				
-		if(position.y >= gameBoard.heightInTiles - 1.5){
+
+		if (position.y >= gameBoard.heightInTiles - 1.5) {
 			yIncrease = yIncrease * -1f;
 		}
-		
+
 		String fontColorToUse = Constants.UI.DEFAULT_FONT_RED;
-		if(planetOwner.equals(GameLoop.USER.handle)){
+		if (planetOwner.equals(GameLoop.USER.handle)) {
 			fontColorToUse = Constants.UI.DEFAULT_FONT_GREEN;
 		}
-		
+
 		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
-		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+"+ labelText, resources.skin, fontColorToUse);
+		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText, resources.skin, fontColorToUse);
 		label.setX(tileCenter.x);
 		label.setY(tileCenter.y);
 		addActor(label);
-		
-		
-		label.addAction(Actions.sequence(Actions.fadeOut(0.0f), Actions.delay(0.9f), Actions.fadeIn(0),  Actions.moveBy(0, yIncrease, 1.2f),
-				Actions.fadeOut(0.6f), Actions.run(new Runnable() {
-			@Override
-			public void run() {
-				label.remove();
-			}
-		})));
+
+		label.addAction(Actions.sequence(Actions.fadeOut(0.0f), Actions.delay(0.9f), Actions.fadeIn(0),
+				Actions.moveBy(0, yIncrease, 1.2f), Actions.fadeOut(0.6f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						label.remove();
+					}
+				})));
 	}
 
 	private void highlightPath(Planet fromPlanet, Planet toPlanet) {
@@ -428,6 +428,8 @@ public abstract class HighlightOverlay extends Overlay {
 							}
 						}
 
+						topHud.createAttackLabels(moves);
+
 						if (airAttackOccured) {
 							List<Move> player1Positions = new ArrayList<Move>();
 							List<Move> player2Positions = new ArrayList<Move>();
@@ -474,7 +476,6 @@ public abstract class HighlightOverlay extends Overlay {
 								}
 							}
 						} else {
-							topHud.createAttackLabels(moves);
 							for (Move move : moves) {
 								HighlightOverlay.this.add(move);
 							}
@@ -497,7 +498,7 @@ public abstract class HighlightOverlay extends Overlay {
 			Image particle = new Image(resources.skin, Constants.UI.EXPLOSION_PARTICLE);
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
 			particle.setBounds(pixelPoint1.x, pixelPoint1.y, particleSize, particleSize);
-			particle.setColor(gameBoard.getPlanet(move.from).getColor(move.handle));
+			particle.setColor(gameBoard.getPlanet(move.from).getColor(move.handle, false));
 
 			boardCalcs.centerPoint(pixelPoint2, particle);
 			particle.addAction(sequence(moveTo(pixelPoint2.x, pixelPoint2.y, 0.5f), alpha(0.0f)));

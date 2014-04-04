@@ -142,10 +142,16 @@ public class Planet extends JsonConvertible {
 		return this.status.equals(ALIVE);
 	}
 
-	public Color getColor(String handle) {
+	public Color getColor(String handle, boolean bright) {
 		Color OWNED_BY_ME_COLOR = Color.valueOf("2F8705");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
+
+		if (bright) {
+			OWNED_BY_ME_COLOR = Constants.Colors.USER_SHIP_FILL;
+			OWNED_BY_OPPONENT_COLOR = Constants.Colors.ENEMY_SHIP_FILL;
+			DEFAULT_PLANET_COLOR = Constants.Colors.NEUTRAL;
+		}
 
 		Color color = DEFAULT_PLANET_COLOR;
 

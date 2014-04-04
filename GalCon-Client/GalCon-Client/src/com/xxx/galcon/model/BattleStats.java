@@ -12,6 +12,7 @@ public class BattleStats extends JsonConvertible {
 	public double attackMultiplier;
 	public double defenceMultiplier;
 	public Boolean diedInAirAttack;
+	public int startFleet;
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
@@ -21,6 +22,7 @@ public class BattleStats extends JsonConvertible {
 			this.attackMultiplier = jsonObject.optDouble("atckMult");
 			this.defenceMultiplier = jsonObject.optDouble("defMult");
 			this.diedInAirAttack = jsonObject.optBoolean("diaa");
+			this.startFleet = jsonObject.optInt("startFleet");
 		}
 	}
 }

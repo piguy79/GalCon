@@ -63,7 +63,8 @@ public class Constants {
 
 	public static class Colors {
 		public static Color USER_SHIP_FILL = Color.GREEN;
-		public static Color ENEMY_SHIP_FILL = Color.RED;
+		public static Color ENEMY_SHIP_FILL = new Color(1.0f, 0.2f, 0.2f, 1.0f);
+		public static Color NEUTRAL  = Color.valueOf("999B9C");
 	}
 
 	public static class Auth {

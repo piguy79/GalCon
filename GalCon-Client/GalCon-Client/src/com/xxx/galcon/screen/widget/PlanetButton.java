@@ -85,7 +85,7 @@ public class PlanetButton extends Group {
 		if (ownedByHighlightImage == null && (planet.isHome || !owner.equals(Constants.OWNER_NO_ONE))) {
 			ownedByHighlightImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet
 					.isAlive() ? "planet-highlight" : "dead_planet")));
-			Color planetColor = planet.getColor(owner);
+			Color planetColor = planet.getColor(owner, false);
 			planetColor.a = 0.0f;
 			ownedByHighlightImage.setColor(planetColor);
 			ownedByHighlightImage.setWidth(getWidth());
@@ -103,10 +103,10 @@ public class PlanetButton extends Group {
 		if (ownedByHighlightImage != null) {
 			float startDelay = highlightActions.size == 0 && animate ? 1.0f : 0.0f;
 			float delay = animate ? 0.5f : 0.0f;
-			Color planetColor = planet.getColor(owner);
+			Color planetColor = planet.getColor(owner, false);
 			planetColor.a = 0.0f;
 			highlightActions.add(sequence(delay(startDelay), parallel(color(planetColor, delay), alpha(0.6f, delay))));
-			ownedActions.add(delay(startDelay, color(planet.getColor(owner), delay)));
+			ownedActions.add(delay(startDelay, color(planet.getColor(owner, false), delay)));
 		}
 
 		if (highlightActions.size > 0) {

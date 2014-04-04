@@ -405,7 +405,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			if (user == null) {
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider, GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 0)
+						.append("xp", 2000)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
@@ -414,7 +414,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",
 										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))
-						.append("rankInfo", new BasicDBObject("level", 1).append("startFrom", 0).append("endAt", 50));
+						.append("rankInfo", new BasicDBObject("level", 15).append("startFrom", 0).append("endAt", 50));
 				usersCollection.insert(newUser);
 			} else {
 				user.put(

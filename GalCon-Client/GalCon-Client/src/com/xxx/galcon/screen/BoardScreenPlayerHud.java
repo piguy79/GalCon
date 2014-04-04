@@ -104,8 +104,9 @@ public class BoardScreenPlayerHud extends Group {
 					: y, invert ? height * -1 : height, bottomWidth, topWidth);
 			playerHudBg.addActor(abilityActor);
 
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + Double.toString(Math.floor(abilities.getValue() * 100))  + "%"
-					+ abilities.getKey(), resources.skin, Constants.UI.X_SMALL_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "+"
+					+ Integer.toString((int) Math.floor(abilities.getValue() * 100)) + "%" + abilities.getKey(),
+					resources.skin, Constants.UI.X_SMALL_FONT);
 			if (invert) {
 				label.setBounds(x + bottomWidth, playerHudBg.getHeight() - y - height + margin, bottomWidth * -1,
 						height);

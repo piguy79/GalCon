@@ -54,6 +54,16 @@ public class RoundInformationTopHud extends Group {
 		}
 	}
 
+	private Color getColor(String handle) {
+		if (handle.equals(GameLoop.USER.handle)) {
+			return Constants.Colors.USER_SHIP_FILL;
+		} else if (!handle.equals(Constants.OWNER_NO_ONE) && !handle.equals(GameLoop.USER.handle)) {
+			return Constants.Colors.ENEMY_SHIP_FILL;
+		}
+
+		return Constants.Colors.NEUTRAL;
+	}
+
 	public void createAttackLabels(List<Move> moves) {
 		clear();
 		createBackground(true);
@@ -75,14 +85,30 @@ public class RoundInformationTopHud extends Group {
 
 		Planet planet = gameBoard.getPlanet(moves.get(0).to);
 
+		int userMoveCount = 0;
+		int enemyMoveCount = 0;
+		int userAttackBonus = 0;
+		int enemyAttackBonus = 0;
+		boolean didAirAttackOccur = false;
 		for (Move move : moves) {
-			baseAttack += move.shipsToMove;
-			baseDefense = move.battleStats.previousShipsOnPlanet;
-			currentOwner = gameBoard.getPlanet(move.to).owner;
-			previousOwner = move.battleStats.previousPlanetOwner;
-			attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
-			defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
-			moveOwner = move.handle;
+			if (!move.battleStats.diedInAirAttack) {
+				baseAttack += move.shipsToMove;
+				baseDefense = move.battleStats.previousShipsOnPlanet;
+				currentOwner = gameBoard.getPlanet(move.to).owner;
+				previousOwner = move.battleStats.previousPlanetOwner;
+				attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
+				defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
+				moveOwner = move.handle;
+			} else {
+				didAirAttackOccur = true;
+			}
+			if (move.handle.equals(GameLoop.USER.handle)) {
+				userMoveCount += move.battleStats.startFleet;
+				userAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+			} else {
+				enemyMoveCount += move.battleStats.startFleet;
+				enemyAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+			}
 		}
 		if (previousOwner.equals("")) {
 			previousOwner = Constants.OWNER_NO_ONE;
@@ -90,82 +116,163 @@ public class RoundInformationTopHud extends Group {
 
 		String attackText = "";
 		Color color = Color.WHITE;
+		Color attackColor = Color.WHITE;
+		Color defenseColor = Color.WHITE;
 		if (previousOwner.equals(currentOwner) && moveOwner.equals(currentOwner)) {
 			attackText = "Transferred";
+			attackColor = getColor(currentOwner);
+			defenseColor = getColor(currentOwner);
 		} else if (previousOwner.equals(currentOwner) && !moveOwner.equals(currentOwner)) {
 			attackText = "Attack\nDefended";
-			color = planet.getColor(currentOwner);
+			color = planet.getColor(currentOwner, false);
+			attackColor = getColor(moveOwner);
+			defenseColor = getColor(currentOwner);
 		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.USER.handle)
 				&& previousOwner.equals(GameLoop.USER.handle)) {
 			attackText = "Planet\nLost";
-			color = planet.getColor(currentOwner);
+			color = planet.getColor(currentOwner, false);
+			attackColor = getColor(moveOwner);
+			defenseColor = getColor(previousOwner);
 		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.USER.handle)
 				&& !previousOwner.equals(GameLoop.USER.handle)) {
 			attackText = "Planet\nCaptured";
-			color = planet.getColor(currentOwner);
+			color = planet.getColor(currentOwner, false);
+			attackColor = getColor(moveOwner);
+			defenseColor = getColor(previousOwner);
 		} else if (!previousOwner.equals(currentOwner) && moveOwner.equals(GameLoop.USER.handle)) {
 			attackText = "Planet\nCaptured";
-			color = planet.getColor(moveOwner);
+			color = planet.getColor(moveOwner, false);
+			attackColor = getColor(moveOwner);
+			defenseColor = getColor(previousOwner);
+		}
+
+		float[] yPos;
+		if (didAirAttackOccur) {
+			yPos = new float[] { getHeight() * 0.59f, getHeight() * 0.25f, getHeight() * 0.00f };
+		} else {
+			yPos = new float[] { getHeight() * 0.52f, getHeight() * 0.12f };
+		}
+
+		int index = 0;
+		if (didAirAttackOccur) {
+			{
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "Battle:", resources.skin,
+						Constants.UI.SMALL_FONT);
+				label.setX(getWidth() * 0.01f);
+				label.setY(yPos[index]);
+				label.setWidth(getWidth() * 0.25f);
+				label.setAlignment(Align.left, Align.left);
+				addActor(label);
+			}
+
+			{
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "" + userMoveCount, resources.skin,
+						Constants.UI.SMALL_FONT);
+				label.setColor(Constants.Colors.USER_SHIP_FILL);
+				label.setX(getWidth() * 0.25f);
+				label.setY(yPos[index] + getHeight() * 0.08f);
+				label.setWidth(getWidth() * 0.05f);
+				label.setAlignment(Align.right, Align.right);
+				addActor(label);
+			}
+
+			if (userAttackBonus > 0) {
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + userAttackBonus + "%", resources.skin,
+						Constants.UI.SMALL_FONT);
+				label.setColor(Constants.Colors.USER_SHIP_FILL);
+				label.setX(getWidth() * 0.25f);
+				label.setY(yPos[index] + getHeight() * 0.08f);
+				label.setWidth(getWidth() * 0.19f);
+				label.setAlignment(Align.right, Align.right);
+				addActor(label);
+			}
+
+			{
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "" + enemyMoveCount, resources.skin,
+						Constants.UI.SMALL_FONT);
+				label.setColor(Constants.Colors.ENEMY_SHIP_FILL);
+				label.setX(getWidth() * 0.25f);
+				label.setY(yPos[index] - getHeight() * 0.13f);
+				label.setWidth(getWidth() * 0.05f);
+				label.setAlignment(Align.right, Align.right);
+				addActor(label);
+			}
+
+			if (enemyAttackBonus > 0) {
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + enemyAttackBonus + "%", resources.skin,
+						Constants.UI.SMALL_FONT);
+				label.setColor(Constants.Colors.ENEMY_SHIP_FILL);
+				label.setX(getWidth() * 0.25f);
+				label.setY(yPos[index] - getHeight() * 0.13f);
+				label.setWidth(getWidth() * 0.19f);
+				label.setAlignment(Align.right, Align.right);
+				addActor(label);
+			}
+
+			index++;
 		}
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Attack:", resources.skin,
 					Constants.UI.SMALL_FONT);
-			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.01f);
-			label.setY(getHeight() * 0.64f - bounds.height * 0.5f);
+			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.25f);
 			label.setAlignment(Align.left, Align.left);
 			addActor(label);
 		}
 
 		{
-			String text = "" + baseAttack;
-			if (attackMultiplier > 0) {
-				text += " +" + attackMultiplier + "%";
-			}
-			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT);
-			TextBounds bounds = label.getTextBounds();
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseAttack, resources.skin,
+					Constants.UI.SMALL_FONT);
 			label.setX(getWidth() * 0.25f);
-			label.setY(getHeight() * 0.64f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.19f);
+			label.setY(yPos[index]);
+			label.setWidth(getWidth() * 0.05f);
 			label.setAlignment(Align.right, Align.right);
+			label.setColor(attackColor);
 			addActor(label);
 		}
+		if (attackMultiplier > 0) {
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + attackMultiplier + "%", resources.skin,
+					Constants.UI.SMALL_FONT);
+			label.setX(getWidth() * 0.25f);
+			label.setY(yPos[index]);
+			label.setWidth(getWidth() * 0.19f);
+			label.setAlignment(Align.right, Align.right);
+			label.setColor(attackColor);
+			addActor(label);
+		}
+		index++;
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Defense:", resources.skin,
 					Constants.UI.SMALL_FONT);
-			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.01f);
-			label.setY(getHeight() * 0.25f - bounds.height * 0.5f);
+			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.25f);
 			label.setAlignment(Align.left, Align.left);
 			addActor(label);
 		}
 
 		{
-			String text = "" + baseDefense;
-			if (defenseMultiplier > 0) {
-				text += " +" + defenseMultiplier + "%";
-			}
-			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT);
-			TextBounds bounds = label.getTextBounds();
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseDefense, resources.skin,
+					Constants.UI.SMALL_FONT);
 			label.setX(getWidth() * 0.25f);
-			label.setY(getHeight() * 0.25f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.19f);
+			label.setY(yPos[index]);
+			label.setWidth(getWidth() * 0.05f);
 			label.setAlignment(Align.right, Align.right);
+			label.setColor(defenseColor);
 			addActor(label);
 		}
-
-		{
-			Group group = new Group();
-			group.setColor(Color.WHITE);
-			group.setX(getWidth() * 0.5f);
-			group.setY(0);
-			group.setWidth(getWidth() * 0.5f);
-			group.setHeight(getHeight());
-			addActor(group);
+		if (defenseMultiplier > 0) {
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + defenseMultiplier + "%", resources.skin,
+					Constants.UI.SMALL_FONT);
+			label.setX(getWidth() * 0.25f);
+			label.setY(yPos[index]);
+			label.setWidth(getWidth() * 0.19f);
+			label.setAlignment(Align.right, Align.right);
+			label.setColor(defenseColor);
+			addActor(label);
 		}
 
 		{
