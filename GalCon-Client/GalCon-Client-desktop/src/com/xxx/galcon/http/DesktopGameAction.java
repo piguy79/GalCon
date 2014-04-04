@@ -135,8 +135,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
-					new GameBoard()));
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
+					new GameBoard());
+			
+			if(result == null){
+				callback.onConnectionError("Unable to join game.");
+			}else{
+				callback.onConnectionResult(result);
+			}
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

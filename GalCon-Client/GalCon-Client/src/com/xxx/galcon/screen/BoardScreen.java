@@ -801,7 +801,13 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setConnectionError(String msg) {
-
+		overlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				returnCode = Action.BACK;
+			}
+		});
+		stage.addActor(overlay);
 	}
 
 	public class UpdateBoardScreenResultHandler implements UIConnectionResultCallback<GameBoard> {
