@@ -44,7 +44,7 @@ public class XpProgressBar extends Group {
 		mainXp = new Image(resources.skin, Constants.UI.XP_BAR_MAIN);
 		mainXp.setWidth(width * 0.8f);
 		mainXp.setHeight(height);
-		mainXp.setX(getX() + (width * 0.1f));
+		mainXp.setX(getX() + (width * 0.05f));
 		mainXp.setY(getY());
 		
 		addActor(mainXp);
@@ -68,7 +68,6 @@ public class XpProgressBar extends Group {
 		
 		coverXp.setHeight(height);
 		coverXp.setX(mainXp.getX() + (mainXp.getWidth() - coverXp.getWidth()));
-		coverXp.setY(getY());
 		
 		addActor(coverXp);
 	}
@@ -94,7 +93,7 @@ public class XpProgressBar extends Group {
 	private void createNextLevelCount() {
 		if(!reachedMaxRank()){
 			ShaderLabel nextLevel = new ShaderLabel(resources.fontShader, "" + nextRank.level, resources.skin, Constants.UI.DEFAULT_FONT);
-			nextLevel.setX(mainXp.getX() + mainXp.getWidth());
+			nextLevel.setX(mainXp.getX() + mainXp.getWidth() + 5);
 			addActor(nextLevel);
 		}
 	}
