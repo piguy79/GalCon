@@ -1,6 +1,6 @@
 package com.xxx.galcon.client;
 
-import com.xxx.galcon.GameLoop;
+import com.railwaygames.solarsmash.GameLoop;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;

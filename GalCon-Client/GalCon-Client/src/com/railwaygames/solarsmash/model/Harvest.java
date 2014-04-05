@@ -1,0 +1,26 @@
+package com.railwaygames.solarsmash.model;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.railwaygames.solarsmash.model.base.JsonConvertible;
+
+public class Harvest extends JsonConvertible {
+
+	public String status;
+	public int startingRound;
+	public int saveRound;
+	public static final String ACTIVE = "ACTIVE";
+
+	@Override
+	protected void doConsume(JSONObject jsonObject) throws JSONException {
+		this.status = jsonObject.optString("status");
+		this.startingRound = jsonObject.optInt("startingRound");
+		this.saveRound = jsonObject.optInt("saveRound");
+	}
+
+	public boolean isActive() {
+		return this.status != null && this.status.equals(ACTIVE);
+	}
+
+}
