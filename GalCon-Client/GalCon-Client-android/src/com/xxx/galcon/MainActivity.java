@@ -80,6 +80,13 @@ public class MainActivity extends AndroidApplication {
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+		hideMenuBars();
+
+		Intent intent = new Intent(this, PingService.class);
+		startService(intent);
+	}
+
+	private void hideMenuBars() {
 		int newUiOptions = 0;
 
 		// Navigation bar hiding: Backwards compatible to ICS.
@@ -98,8 +105,6 @@ public class MainActivity extends AndroidApplication {
 
 		getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
 
-		Intent intent = new Intent(this, PingService.class);
-		startService(intent);
 	}
 
 	@Override
@@ -155,6 +160,7 @@ public class MainActivity extends AndroidApplication {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		hideMenuBars();
 		AdColony.resume(this);
 	}
 
