@@ -37,7 +37,6 @@ public class MainActivity extends AndroidApplication {
 	public static final int FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE = 57030;
 	public static final int GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE = 57031;
 
-
 	protected String mDebugTag = "MainActivity";
 	protected boolean mDebugLog = true;
 
@@ -60,7 +59,7 @@ public class MainActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Crashlytics.start(this);
+		Crashlytics.start(this);
 
 		setupAdColony();
 
@@ -70,7 +69,8 @@ public class MainActivity extends AndroidApplication {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
 		socialAction = new AndroidSocialAction(this);
-		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
+		gameAction = new AndroidGameAction(this, socialAction,
+				connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
 		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
@@ -102,8 +102,12 @@ public class MainActivity extends AndroidApplication {
 				if (result.isSuccess()) {
 					callback.onSuccess("");
 				} else {
-					Crashlytics.log(Log.ERROR, LOG_NAME, "Could not setup in-app billing: [" + result.getResponse()
-							+ ", " + result.getMessage() + "]");
+					Crashlytics.log(
+							Log.ERROR,
+							LOG_NAME,
+							"Could not setup in-app billing: ["
+									+ result.getResponse() + ", "
+									+ result.getMessage() + "]");
 					if (result.getResponse() == IabHelper.IABHELPER_REMOTE_EXCEPTION) {
 						callback.onFailure("retry");
 					} else {
@@ -139,78 +143,90 @@ public class MainActivity extends AndroidApplication {
 		ad.show(adListener);
 	}
 
-	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
+	public void purchaseCoins(final InventoryItem inventoryItem,
+			final UIConnectionResultCallback<List<Order>> callback) {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001,
+				new IabHelper.OnIabPurchaseFinishedListener() {
 
-			@Override
-			public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-				if (result.isSuccess()) {
-					List<Order> orders = new ArrayList<Order>();
-					orders.add(purchaseToOrder(purchase));
-					callback.onConnectionResult(orders);
-				} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
-					callback.onConnectionResult(null);
-				} else {
-					callback.onConnectionError("Could not complete purchase");
-				}
-			}
-		});
-	}
-
-	public void loadStoreInventory(final Inventory inventoryResult, final UIConnectionResultCallback<Inventory> callback) {
-		mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
-
-			@Override
-			public void onQueryInventoryFinished(IabResult result, com.xxx.galcon.inappbilling.util.Inventory inv) {
-				if (result.isFailure()) {
-					callback.onConnectionError("Unable to load inventory from Play Store.");
-					return;
-				}
-
-				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
-
-				for (InventoryItem item : inventoryResult.inventory) {
-					SkuDetails detail = inv.getSkuDetails(item.sku);
-					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
-							.getTitle(), item.numCoins);
-
-					if (inv.hasPurchase(detail.getSku())) {
-						Purchase purchase = inv.getPurchase(detail.getSku());
-						combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+					@Override
+					public void onIabPurchaseFinished(IabResult result,
+							Purchase purchase) {
+						if (result.isSuccess()) {
+							List<Order> orders = new ArrayList<Order>();
+							orders.add(purchaseToOrder(purchase));
+							callback.onConnectionResult(orders);
+						} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
+							callback.onConnectionResult(null);
+						} else {
+							callback.onConnectionError("Could not complete purchase");
+						}
 					}
-
-					mappedInventoryItems.add(combinedItem);
-				}
-
-				Inventory inventory = new Inventory();
-				inventory.inventory = mappedInventoryItems;
-				callback.onConnectionResult(inventory);
-			}
-		});
+				});
 	}
 
-	public void consumeOrders(final List<Order> consumedOrders, final Callback callback) {
+	public void loadStoreInventory(final Inventory inventoryResult,
+			final UIConnectionResultCallback<Inventory> callback) {
+		mHelper.queryInventoryAsync(true, inventoryResult.skus(),
+				new QueryInventoryFinishedListener() {
+
+					@Override
+					public void onQueryInventoryFinished(IabResult result,
+							com.xxx.galcon.inappbilling.util.Inventory inv) {
+						if (result.isFailure()) {
+							callback.onConnectionError("Unable to load inventory from Play Store.");
+							return;
+						}
+
+						List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
+
+						for (InventoryItem item : inventoryResult.inventory) {
+							SkuDetails detail = inv.getSkuDetails(item.sku);
+							InventoryItem combinedItem = new InventoryItem(
+									detail.getSku(), detail.getPrice(), detail
+											.getTitle(), item.numCoins);
+
+							if (inv.hasPurchase(detail.getSku())) {
+								Purchase purchase = inv.getPurchase(detail
+										.getSku());
+								combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+							}
+
+							mappedInventoryItems.add(combinedItem);
+						}
+
+						Inventory inventory = new Inventory();
+						inventory.inventory = mappedInventoryItems;
+						callback.onConnectionResult(inventory);
+					}
+				});
+	}
+
+	public void consumeOrders(final List<Order> consumedOrders,
+			final Callback callback) {
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 
-		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
-			@Override
-			public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-				for (IabResult result : results) {
-					if (result.isFailure()) {
-						callback.onFailure(result.getMessage());
-						return;
+		mHelper.consumeAsync(purchaseOrders,
+				new IabHelper.OnConsumeMultiFinishedListener() {
+					@Override
+					public void onConsumeMultiFinished(
+							List<Purchase> purchases, List<IabResult> results) {
+						for (IabResult result : results) {
+							if (result.isFailure()) {
+								callback.onFailure(result.getMessage());
+								return;
+							}
+						}
+						callback.onSuccess("");
 					}
-				}
-				callback.onSuccess("");
-			}
-		});
+				});
 	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
 
 		List<Purchase> purchaseOrders = new ArrayList<Purchase>();
 		for (Order order : consumedOrders) {
-			Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order, "");
+			Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order,
+					"");
 			purchaseOrders.add(purchase);
 		}
 		return purchaseOrders;
@@ -232,12 +248,14 @@ public class MainActivity extends AndroidApplication {
 		if (request == GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(response);
 		} else if (request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE) {
-			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
+			Session.getActiveSession().onActivityResult(this,
+					MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
 					response, data);
 			socialAction.onActivityResult(response);
-		} else if(request == GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE){
+		} else if (request == GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(request);
-		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
+		} else if (mHelper != null
+				&& !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 		}
 	}
