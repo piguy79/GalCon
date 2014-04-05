@@ -62,10 +62,10 @@ exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
 
 			return lastScorePromise.then(function(leaderboardRow) {
 				return game.GameModel.find({
-					'endGameInformation.winnerHandle' : player.handle
+					'endGame.winnerHandle' : player.handle
 				}).exec();
 			}).then(function(gamesWonByUser) {
-				var scores = _.map(gamesWonByUser, function(game) {return game.endGameInformation ? game.endGameInformation.leaderboardScoreAmount : 0});
+				var scores = _.map(gamesWonByUser, function(game) {return game.endGame ? game.endGame.leaderboardScoreAmount : 0});
 				var currentScore = _.reduce(scores, function(memo, num) { return memo + num}, 0);
 
 				currentScore += gameResultPoints(handleOfPlayerWhoWon, player, players);

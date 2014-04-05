@@ -87,4 +87,8 @@ public class UIConnectionWrapper {
 	public static void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle) {
 		gameAction.recoverUsedCoinCount(callback, handle);
 	}
+	
+	public static void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId){
+		gameAction.cancelGame(callback, handle, gameId);
+	}
 }

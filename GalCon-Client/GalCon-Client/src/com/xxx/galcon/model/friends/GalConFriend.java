@@ -1,14 +1,16 @@
 package com.xxx.galcon.model.friends;
 
+import com.xxx.galcon.config.ConfigResolver;
+
 public class GalConFriend extends CombinedFriend{
 	
 	public String handle;
-	private int rank;
+	private int xp;
 
-	public GalConFriend(String authId, String url, String handle, int rank) {
+	public GalConFriend(String authId, String url, String handle, int xp) {
 		super(authId, url);
 		this.handle = handle;
-		this.rank = rank;
+		this.xp = xp;
 	}
 
 	@Override
@@ -18,7 +20,7 @@ public class GalConFriend extends CombinedFriend{
 
 	@Override
 	public String getDisplay() {
-		return handle + "[" + rank +  "]";
+		return handle + "[" + ConfigResolver.getRankForXp(xp).level +  "]";
 	}
 
 }

@@ -15,8 +15,8 @@ import com.xxx.galcon.model.base.JsonConvertible;
 
 public class Planet extends JsonConvertible {
 	public String owner = Constants.OWNER_NO_ONE;
-	public float shipRegenRate = 1.0f;
-	public int numberOfShips;
+	public float regen = 1.0f;
+	public int ships;
 	public String name;
 	public String id;
 	public Point position;
@@ -24,7 +24,6 @@ public class Planet extends JsonConvertible {
 	public String ability;
 	public Harvest harvest;
 	public String status;
-	public float population;
 	public boolean isHome;
 
 	public static final String ALIVE = "ALIVE";
@@ -37,8 +36,8 @@ public class Planet extends JsonConvertible {
 	protected void doConsume(JSONObject jsonObject) {
 		try {
 			this.name = jsonObject.getString(Constants.NAME);
-			this.shipRegenRate = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
-			this.numberOfShips = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
+			this.regen = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
+			this.ships = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
 			this.ability = jsonObject.getString(Constants.ABILITY);
 			if (jsonObject.has(Constants.OWNER_HANDLE)) {
 				this.owner = jsonObject.getString(Constants.OWNER_HANDLE);
@@ -47,7 +46,6 @@ public class Planet extends JsonConvertible {
 			Point position = new Point();
 			position.consume(positionJson);
 			this.position = position;
-			this.population = jsonObject.getInt(Constants.POPULATION);
 			this.id = jsonObject.getString(Constants.ID);
 			if (jsonObject.has("harvest")) {
 				this.harvest = new Harvest();
@@ -77,7 +75,7 @@ public class Planet extends JsonConvertible {
 		List<Move> associatedMoves = new ArrayList<Move>();
 
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.toPlanet.equals(this.name)) {
+			if (move.to.equals(this.name)) {
 				associatedMoves.add(move);
 			}
 		}
@@ -110,7 +108,7 @@ public class Planet extends JsonConvertible {
 
 	public int numberOfShipsToDisplay(GameBoard gameBoard, boolean overrideAnimation) {
 		if (overrideAnimation) {
-			return numberOfShips;
+			return ships;
 		}
 
 		int lowestFromExecutedMoves = 10000000;
@@ -118,7 +116,8 @@ public class Planet extends JsonConvertible {
 
 		if (isBeingAttacked(gameBoard)) {
 			for (Move move : associatedTargetMoves(gameBoard)) {
-				if (move.executed && !move.battleStats.diedInAirAttack && move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
+				if (move.executed && !move.battleStats.diedInAirAttack
+						&& move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
 					executedMovesFound = true;
 					lowestFromExecutedMoves = move.battleStats.previousShipsOnPlanet;
 				}
@@ -128,7 +127,7 @@ public class Planet extends JsonConvertible {
 		if (executedMovesFound) {
 			return lowestFromExecutedMoves;
 		}
-		return numberOfShips;
+		return ships;
 	}
 
 	public boolean isUnderHarvest() {
@@ -143,10 +142,16 @@ public class Planet extends JsonConvertible {
 		return this.status.equals(ALIVE);
 	}
 
-	public Color getColor(String handle) {
+	public Color getColor(String handle, boolean bright) {
 		Color OWNED_BY_ME_COLOR = Color.valueOf("2F8705");
 		Color OWNED_BY_OPPONENT_COLOR = Color.valueOf("971011");
 		Color DEFAULT_PLANET_COLOR = Color.valueOf("595B5C");
+
+		if (bright) {
+			OWNED_BY_ME_COLOR = Constants.Colors.USER_SHIP_FILL;
+			OWNED_BY_OPPONENT_COLOR = Constants.Colors.ENEMY_SHIP_FILL;
+			DEFAULT_PLANET_COLOR = Constants.Colors.NEUTRAL;
+		}
 
 		Color color = DEFAULT_PLANET_COLOR;
 

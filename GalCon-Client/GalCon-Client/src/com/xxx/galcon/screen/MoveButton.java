@@ -40,14 +40,19 @@ public class MoveButton extends Group implements Comparable<MoveButton> {
 	}
 
 	public boolean isActive() {
-		return move.startingRound == gameBoard.roundInformation.currentRound && !GameLoop.USER.hasMoved(gameBoard);
+		return move.startingRound == gameBoard.roundInformation.round && !GameLoop.USER.hasMoved(gameBoard);
 	}
 
 	private void addLabels() {
 		float padX = getWidth() * 0.1f;
 		float padY = getHeight() * 0.1f;
-
-		ShaderLabel duration = new ShaderLabel(resources.fontShader, "" + (int) Math.ceil(move.duration),
+		float speedIncrease = 0.0f;
+		if(GameLoop.USER.hasSpeedIncrease(gameBoard)){
+			speedIncrease = new Float(gameBoard.gameConfig.getValue(Constants.ABILITY_SPEED));
+		}
+		
+		
+		ShaderLabel duration = new ShaderLabel(resources.fontShader, "" + (int) Math.ceil(move.duration - (move.duration * speedIncrease)),
 				resources.skin, Constants.UI.DEFAULT_FONT_BLACK);
 		duration.setX(getWidth() - (duration.getTextBounds().width + padX));
 		duration.setY(getHeight() - (duration.getTextBounds().height + padY));

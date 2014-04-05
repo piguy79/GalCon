@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.xxx.galcon.Constants;
 import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.Move;
@@ -67,7 +68,7 @@ public class MoveHud extends Table {
 						List<Move> newMoves = new ArrayList<Move>();
 						for (Move move : gameBoard.movesInProgress) {
 							if (move.belongsToPlayer(GameLoop.USER)
-									&& move.startingRound == gameBoard.roundInformation.currentRound) {
+									&& move.startingRound == gameBoard.roundInformation.round) {
 								newMoves.add(move);
 							}
 						}
@@ -99,6 +100,9 @@ public class MoveHud extends Table {
 	private void addMoveToMap(final Move move) {
 		if (moves.get(move) == null) {
 			float buttonWidth = Gdx.graphics.getWidth() * 0.09f;
+			
+			
+			
 			MoveButton button = new MoveButton(resources, gameBoard, move, buttonWidth, getHeight() * 0.85f);
 
 			button.addListener(new ClickListener() {
@@ -116,7 +120,7 @@ public class MoveHud extends Table {
 	}
 
 	public void addMove(Move move) {
-		if (move.playerHandle.equals(GameLoop.USER.handle) && move.duration > 0) {
+		if (move.handle.equals(GameLoop.USER.handle) && move.duration > 0) {
 			addMoveToMap(move);
 			renderMoves();
 		}

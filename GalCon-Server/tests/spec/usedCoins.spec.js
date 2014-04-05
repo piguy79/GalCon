@@ -64,7 +64,7 @@ describe("Update Used Coins to track countdown to coin refresh -", function() {
 		}).then(function(game){
 			return gameRunner.performTurn(currentGameId, {moves : moves, handle : PLAYER_1_HANDLE, time : timeOfMove}, {moves : [], handle : PLAYER_2_HANDLE, time : timeOfMove});
 		}).then(function(game){
-			expect(game.endGameInformation.winnerHandle).toBe(PLAYER_1_HANDLE);
+			expect(game.endGame.winnerHandle).toBe(PLAYER_1_HANDLE);
 			return userManager.findUserByHandle(PLAYER_1_HANDLE);
 		}).then(function(user){
 			expect(user.usedCoins).toBe(timeOfMove);

@@ -34,6 +34,7 @@ import com.xxx.galcon.ScreenFeedback;
 import com.xxx.galcon.UIConnectionWrapper;
 import com.xxx.galcon.http.UIConnectionResultCallback;
 import com.xxx.galcon.math.GalConMath;
+import com.xxx.galcon.model.BaseResult;
 import com.xxx.galcon.model.Bounds;
 import com.xxx.galcon.model.GameBoard;
 import com.xxx.galcon.model.HarvestMove;
@@ -44,6 +45,7 @@ import com.xxx.galcon.model.Size;
 import com.xxx.galcon.model.Social;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.event.CancelGameEvent;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.RefreshEvent;
 import com.xxx.galcon.screen.event.ResignEvent;
@@ -300,7 +302,7 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(resources,
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
 							Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
 					float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
@@ -324,6 +326,31 @@ public class BoardScreen implements ScreenFeedback {
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
+							} else if(event instanceof CancelGameEvent){
+								overlay = new TextOverlay("Cancelling Game", resources);
+								stage.addActor(overlay);
+								UIConnectionWrapper.cancelGame(new UIConnectionResultCallback<BaseResult>() {
+									public void onConnectionResult(BaseResult result) {
+										if(result.success){
+											stage.dispose();
+											returnCode = Action.BACK;
+										}else{
+											overlay = new DismissableOverlay(resources, new TextOverlay("Unable to cancel game", resources), new ClickListener(){
+												public void clicked(InputEvent event, float x, float y) {
+													UIConnectionWrapper.findGameById(
+															new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
+															GameLoop.USER.handle);
+													overlay.remove();
+												};
+											});
+											stage.addActor(overlay);
+										}
+									};
+									
+									public void onConnectionError(String msg) {
+										overlay.remove();
+									};
+								}, GameLoop.USER.handle, gameBoard.id);
 							}
 							return false;
 						}
@@ -360,7 +387,7 @@ public class BoardScreen implements ScreenFeedback {
 			boardTable.addActor(movetoDisplay);
 		}
 
-		roundAnimated = gameBoard.roundInformation.currentRound;
+		roundAnimated = gameBoard.roundInformation.round;
 	}
 
 	private void createMoveHud() {
@@ -422,7 +449,7 @@ public class BoardScreen implements ScreenFeedback {
 		List<Planet> planets = new ArrayList<Planet>();
 		planets.add(fromPlanet);
 		planets.add(toPlanet);
-		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.currentRound);
+		Move fakeMove = MoveFactory.createMove(planets, 0, gameBoard.roundInformation.round);
 
 		highlight(fakeMove);
 	}
@@ -479,7 +506,7 @@ public class BoardScreen implements ScreenFeedback {
 		Set<String> targettedPlanets = new HashSet<String>();
 		for (Move move : gameBoard.movesInProgress) {
 			if (move.belongsToPlayer(GameLoop.USER) && !move.executed) {
-				targettedPlanets.add(move.toPlanet);
+				targettedPlanets.add(move.to);
 			}
 		}
 
@@ -637,10 +664,10 @@ public class BoardScreen implements ScreenFeedback {
 
 		if (!gameBoard.movesInProgress.contains(newMove)) {
 			gameBoard.movesInProgress.add(newMove);
-			createPlanetTarget(planetButtons.get(newMove.toPlanet));
+			createPlanetTarget(planetButtons.get(newMove.to));
 		}
 
-		PlanetButton button = planetButtons.get(newMove.fromPlanet);
+		PlanetButton button = planetButtons.get(newMove.from);
 		button.setShipCount(button.getShipCount() - newMove.shipsToMove + oldShipsToSend);
 
 		moveHud.addMove(newMove);
@@ -652,7 +679,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void deleteMove(Move move) {
 		clearTouchedPlanets();
 
-		PlanetButton button = planetButtons.get(move.fromPlanet);
+		PlanetButton button = planetButtons.get(move.from);
 		button.setShipCount(button.getShipCount() + move.shipsToMove);
 
 		gameBoard.movesInProgress.remove(move);
@@ -661,19 +688,19 @@ public class BoardScreen implements ScreenFeedback {
 		clearMoveActions(move.fromPlanet(gameBoard.planets));
 		clearMoveActions(move.toPlanet(gameBoard.planets));
 
-		if (planetTargetCount.containsKey(move.toPlanet)) {
-			Integer count = planetTargetCount.get(move.toPlanet) - 1;
-			planetTargetCount.put(move.toPlanet, count);
+		if (planetTargetCount.containsKey(move.to)) {
+			Integer count = planetTargetCount.get(move.to) - 1;
+			planetTargetCount.put(move.to, count);
 
 			if (count == 0) {
-				Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.toPlanet));
+				Image targetIcon = planetTargetIcons.remove(planetButtons.get(move.to));
 				targetIcon.remove();
 			}
 		}
 	}
 
 	private boolean roundHasAlreadyBeenAnimated() {
-		return roundAnimated == gameBoard.roundInformation.currentRound;
+		return roundAnimated == gameBoard.roundInformation.round;
 	}
 
 	@Override
@@ -774,7 +801,13 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setConnectionError(String msg) {
-
+		overlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				returnCode = Action.BACK;
+			}
+		});
+		stage.addActor(overlay);
 	}
 
 	public class UpdateBoardScreenResultHandler implements UIConnectionResultCallback<GameBoard> {
@@ -819,7 +852,7 @@ public class BoardScreen implements ScreenFeedback {
 	public static class Labels {
 		public static String waitingLabel(Social social) {
 			if (social != null && !social.invitee.isEmpty()) {
-				return "[waiting for " + social.invitee + "]";
+				return "[waiting for invitee]";
 			}
 			return "[Awaiting enemy]";
 		}

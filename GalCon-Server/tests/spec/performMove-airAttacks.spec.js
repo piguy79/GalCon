@@ -45,10 +45,10 @@ describe("Perform Move - Air Attacks -", function() {
 		
 		this.addMatchers({
 			toBeOwnedBy : function(expected) {
-				return this.actual.ownerHandle == expected;
+				return this.actual.handle == expected;
 			},
 			toHaveShipNumber : function(expected) {
-				return this.actual.numberOfShips == expected;
+				return this.actual.ships == expected;
 			},
 			toContainMove : function(expected) {
 				var gameMoves = this.actual;
@@ -93,12 +93,12 @@ describe("Perform Move - Air Attacks -", function() {
 		}).then(function(game) {
 			return apiRunner.performMove(currentGameId, player1Moves, PLAYER_1_HANDLE);
 		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(0);
+			expect(game.round.num).toBe(0);
 			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
 		}).then(function() {
 			return apiRunner.performMove(currentGameId, player2Moves, PLAYER_2_HANDLE);
 		}).then(function(game) {
-			expect(game.currentRound.roundNumber).toBe(1);
+			expect(game.round.num).toBe(1);
 			return game;
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
@@ -160,11 +160,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(4);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], true, 9, 0);
@@ -192,11 +192,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(2);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 9, 6);
@@ -223,11 +223,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(3);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 9, 6);
@@ -255,11 +255,11 @@ describe("Perform Move - Air Attacks -", function() {
 			expect(game.moves.length).toBe(2);
 			
 			var player1Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_1_HANDLE;
+				return move.handle === PLAYER_1_HANDLE;
 			});
 			
 			var player2Moves = _.filter(game.moves, function(move) {
-				return move.playerHandle === PLAYER_2_HANDLE;
+				return move.handle === PLAYER_2_HANDLE;
 			});
 			
 			validateAirAttack(player1Moves[0], false, 16, 13);

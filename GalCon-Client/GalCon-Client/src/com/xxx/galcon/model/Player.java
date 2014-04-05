@@ -28,7 +28,6 @@ public class Player extends JsonConvertible {
 	public Auth auth;
 	public String handle;
 	public Integer xp;
-	public Rank rank;
 	public Integer coins;
 	public Long usedCoins;
 	public boolean watchedAd;
@@ -45,10 +44,6 @@ public class Player extends JsonConvertible {
 		this.coins = jsonObject.getInt(Constants.COINS);
 		this.usedCoins = jsonObject.optLong(Constants.USED_COINS);
 		this.watchedAd = jsonObject.getBoolean(Constants.WATCHED_AD);
-
-		JSONObject rankInfo = jsonObject.getJSONObject(Constants.RANK_INFO);
-		this.rank = new Rank();
-		rank.consume(rankInfo);
 
 		this.consumedOrders = new ArrayList<Order>();
 		JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
@@ -97,5 +92,14 @@ public class Player extends JsonConvertible {
 		}
 
 		return null;
+	}
+
+	public boolean hasSpeedIncrease(GameBoard gameBoard) {
+		for(Planet planet : gameBoard.planets){
+			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(Constants.ABILITY_SPEED)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

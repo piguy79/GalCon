@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -42,6 +43,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 	private ScrollList<GameQueueItem> scrollList;
 	private ActionButton backButton;
+	private ActionButton refreshButton;
 	protected WaitImageButton waitImage;
 	private ShaderLabel messageLabel;
 	private Maps allMaps;
@@ -66,6 +68,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		createWaitImage();
 		createMessageLabel();
 		createBackButton();
+		createRefreshButton();
 		createScrollList();
 		showQueueItems();
 
@@ -114,6 +117,24 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		});
 		actors.add(backButton);
 		stage.addActor(backButton);
+	}
+	
+	private void createRefreshButton() {
+		Point position = new Point(10, 0);
+		refreshButton = new ActionButton(resources.skin, "refreshButton", position);
+		GraphicsUtils.setCommonButtonSize(refreshButton);
+		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
+		refreshButton.setY(Gdx.graphics.getHeight() - refreshButton.getHeight() - 5);
+		refreshButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
+				UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+			}
+		});
+		actors.add(refreshButton);
+		stage.addActor(refreshButton);
 	}
 
 	private void createScrollList() {
@@ -191,7 +212,13 @@ public class GameQueueScreen implements PartialScreenFeedback {
 					@Override
 					public void onConnectionError(String msg) {
 						loadingOverlay.remove();
-						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources));
+						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources), new ClickListener(){
+							@Override
+							public void clicked(InputEvent event, float x,
+									float y) {
+								UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+							}
+						});
 						stage.addActor(overlay);
 					}
 				}, item.game.id, GameLoop.USER.handle);
@@ -205,6 +232,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
+				stage.addActor(loadingOverlay);
 				UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
 			}
 		});
@@ -234,7 +262,12 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionError(String msg) {
 			loadingOverlay.remove();
-			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources));
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources), new ClickListener(){
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+				}
+			});
 			stage.addActor(overlay);
 		}
 	}
@@ -259,6 +292,32 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	public void resetState() {
 		returnCode = null;
 	}
+	
+	private UIConnectionResultCallback<GameQueue> gamequeueCallback = new UIConnectionResultCallback<GameQueue>() {
+
+				@Override
+				public void onConnectionResult(GameQueue result) {
+					waitImage.stop();	
+					scrollList.clearRows();
+					if(loadingOverlay != null){
+						loadingOverlay.remove();
+					}
+					if (result == null || result.gameQueueItems.isEmpty()) {
+						messageLabel.setText("No invites found.");
+					} else {
+						messageLabel.setText("");
+						displayQueue(result);
+					}
+				}
+
+				@Override
+				public void onConnectionError(String msg) {
+					waitImage.stop();
+					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+					stage.addActor(overlay);
+
+				}
+			};
 
 	@Override
 	public void show(Stage stage, float width, float height) {
@@ -280,27 +339,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionResult(Maps result) {
 			allMaps = result;
-			UIConnectionWrapper.findPendingInvites(new UIConnectionResultCallback<GameQueue>() {
-
-				@Override
-				public void onConnectionResult(GameQueue result) {
-					waitImage.stop();
-					if (result == null || result.gameQueueItems.isEmpty()) {
-						messageLabel.setText("No invites found.");
-					} else {
-						messageLabel.setText("");
-						displayQueue(result);
-					}
-				}
-
-				@Override
-				public void onConnectionError(String msg) {
-					waitImage.stop();
-					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
-					stage.addActor(overlay);
-
-				}
-			}, GameLoop.USER.handle);
+			UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
 		}
 
 		@Override

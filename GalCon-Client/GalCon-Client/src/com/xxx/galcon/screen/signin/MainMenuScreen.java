@@ -19,6 +19,7 @@ import com.xxx.galcon.GameLoop;
 import com.xxx.galcon.PartialScreenFeedback;
 import com.xxx.galcon.Strings;
 import com.xxx.galcon.UISkin;
+import com.xxx.galcon.config.ConfigResolver;
 import com.xxx.galcon.http.AuthenticationListener;
 import com.xxx.galcon.http.GameAction;
 import com.xxx.galcon.http.SocialAction;
@@ -35,6 +36,7 @@ import com.xxx.galcon.screen.widget.ActorBar;
 import com.xxx.galcon.screen.widget.CountLabel;
 import com.xxx.galcon.screen.widget.ShaderLabel;
 import com.xxx.galcon.screen.widget.WaitImageButton;
+import com.xxx.galcon.screen.widget.XpProgressBar;
 
 public class MainMenuScreen implements PartialScreenFeedback {
 	private String returnValue;
@@ -51,6 +53,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel inviteLabel;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
+	private XpProgressBar xpBar;
 	private ImageButton fbButton;
 	private ImageButton gpButton;
 
@@ -157,6 +160,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
+		addProgressBar();
+	}
+
+	private void addProgressBar() {
+		xpBar = new XpProgressBar(resources, Gdx.graphics.getHeight() * 0.05f, Gdx.graphics.getWidth());
+		xpBar.setY(Gdx.graphics.getHeight() * 0.05f);
+		stage.addActor(xpBar);
+		actors.add(xpBar);
 	}
 
 	private void addSocialButtonBar() {
@@ -281,10 +292,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				returnValue = retVal;
 			}
 		});
-	}
-
-	private String currentUserText() {
-		return "Level " + GameLoop.USER.rank.level;
 	}
 
 	@Override

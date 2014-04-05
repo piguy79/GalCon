@@ -13,7 +13,7 @@ var populateDefaultMaps = function(){
 
 var mapSchema = mongoose.Schema({
 	key : "Number",
-	availableFromLevel : "Number",
+	availableFromXp : "Number",
 	title : "String",
 	description : "String",
 	width : {
@@ -25,7 +25,7 @@ var mapSchema = mongoose.Schema({
 
 mapSchema.set('toObject', { getters: true });
 mapSchema.index({key : 1});
-mapSchema.index({availableFromLevel : 1});
+mapSchema.index({availableFromXp : 1});
 
 var MapModel = db.model('Map', mapSchema);
 

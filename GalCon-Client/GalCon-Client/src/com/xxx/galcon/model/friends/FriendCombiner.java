@@ -17,7 +17,7 @@ public class FriendCombiner {
 			boolean matchForFriend = false;
 			for(MinifiedPlayer player : players){
 				if(samePerson(friend, player)){
-					GalconSocialUser galConFriend = new GalconSocialUser(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), friend.image, player.handle, player.rank, friend.name);
+					GalconSocialUser galConFriend = new GalconSocialUser(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), friend.image, player.handle, player.xp, friend.name);
 					combinedFriends.add(galConFriend);
 					matchForFriend = true;
 					playersAlreadyMatchingASocialFriend.add(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
@@ -32,7 +32,7 @@ public class FriendCombiner {
 		
 		for(MinifiedPlayer player : players){
 			if(!playersAlreadyMatchingASocialFriend.contains(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE))){
-				GalConFriend galconFriend = new GalConFriend(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), "", player.handle, player.rank);
+				GalConFriend galconFriend = new GalConFriend(player.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE), "", player.handle, player.xp);
 				combinedFriends.add(galconFriend);
 			}
 		}

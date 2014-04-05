@@ -1,20 +1,20 @@
-exports.createPlanet = function(name, owner, shipRegenRate, numberOfShips, position, ability) {
+exports.createPlanet = function(name, owner, regen, ships, position, ability) {
 	return {
 		name : name,
-		ownerHandle : owner,
-		shipRegenRate : shipRegenRate,
-		numberOfShips : numberOfShips,
-		position : position,
+		handle : owner,
+		regen : regen,
+		ships : ships,
+		pos : position,
 		ability : ability || '',
 		status : 'ALIVE'
 	};
 }
 
-exports.createMove = function(playerHandle, fromPlanet, toPlanet, fleet, duration) {
+exports.createMove = function(handle, from, to, fleet, duration) {
 	return {
-		playerHandle : playerHandle,
-		fromPlanet : fromPlanet,
-		toPlanet : toPlanet,
+		handle : handle,
+		from : from,
+		to : to,
 		fleet : fleet,
 		duration : duration
 	};
@@ -35,7 +35,7 @@ exports.createUser = function(playerHandle, level, config) {
 		rankInfo: {
 			level : level,
 			startFrom : 0,
-			endAt : 50
+			endAt : 100
 		},
 		session :  {
 			id : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
@@ -50,10 +50,10 @@ exports.createUser = function(playerHandle, level, config) {
 	};
 }
 
-exports.createMap = function(key, widthMin, widthMax, gameType) {
+exports.createMap = function(key, widthMin, widthMax, gameType, availableFromXp) {
 	return {
 		"key" : key,
-		"availableFromLevel" : 1,
+		"availableFromXp" : availableFromXp || 1,
 		"title" : "TEST_MAP: " + key,
 		"description" : "Test map " + key,
 		"width" : {

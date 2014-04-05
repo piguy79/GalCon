@@ -39,4 +39,16 @@ exports.findRankByName = function(rankName){
 	return RankModel.findOne({level : rankName}).exec();
 }
 
+exports.findAllRanks = function(){
+	return RankModel.find().sort({level : 1}).exec();
+}
+
+exports.findRankForAnXp = function(ranks, xp){
+	var matchingRank = _.filter(ranks, function(rank){
+		return rank.startFrom <= xp && rank.endAt > xp;
+	})
+	
+	return matchingRank[0];
+}
+
 exports.RankModel = RankModel;

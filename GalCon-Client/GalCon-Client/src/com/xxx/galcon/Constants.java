@@ -24,6 +24,7 @@ public class Constants {
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
 		public static final String DEFAULT_FONT_GREEN = "defaultFontGreen";
 		public static final String DEFAULT_FONT_RED = "defaultFontRed";
+		public static final String DEFAULT_FONT_YELLOW = "defaultFontYellow";
 		public static final String LARGE_FONT = "largeFont";
 		public static final String X_LARGE_FONT = "xLargeFont";
 		public static final String LARGE_FONT_BLACK = "largeFontBlack";
@@ -59,11 +60,17 @@ public class Constants {
 
 		public static final String HIGHLIGHT_BAR = "highlightBar";
 		public static final String BACK_ARROW_WHITE = "backArrowWhite";
+
+		public static final String XP_BAR_COVER = "xpBarCover";
+		public static final String XP_BAR_MAIN = "xpBarMain";
+		public static final String XP_BAR_ARROW = "xpBarArrow";
+
 	}
 
 	public static class Colors {
 		public static Color USER_SHIP_FILL = Color.GREEN;
-		public static Color ENEMY_SHIP_FILL = Color.RED;
+		public static Color ENEMY_SHIP_FILL = new Color(1.0f, 0.2f, 0.2f, 1.0f);
+		public static Color NEUTRAL  = Color.valueOf("999B9C");
 	}
 
 	public static class Auth {
@@ -78,10 +85,10 @@ public class Constants {
 	public static final String GALCON_PREFS = "galConPrefs";
 	public static final String OWNER_NO_ONE = "NO_ONE";
 	public static final String PLANETS = "planets";
-	public static final String CURRENT_ROUND = "currentRound";
-	public static final String ROUND_NUMBER = "roundNumber";
+	public static final String CURRENT_ROUND = "round";
+	public static final String ROUND_NUMBER = "num";
 	public static final String CREATED_DATE = "createdDate";
-	public static final String WINNING_DATE = "winningDate";
+	public static final String DATE = "date";
 	public static final String PLAYER = "player";
 	public static final String PLAYER_HANDLE = "playerHandle";
 	public static final String PLAYERS = "players";
@@ -92,22 +99,23 @@ public class Constants {
 	public static final String CREATED = "created";
 	public static final String REASON = "reason";
 	public static final String HANDLE = "handle";
-	public static final String SHIP_REGEN_RATE = "shipRegenRate";
+	public static final String SHIP_REGEN_RATE = "regen";
 	public static final float SHIP_REGEN_RATE_MAX = 5.0f;
-	public static final String NUMBER_OF_SHIPS = "numberOfShips";
+	public static final String NUMBER_OF_SHIPS = "ships";
 	public static final String ABILITY = "ability";
-	public static final String OWNER_HANDLE = "ownerHandle";
-	public static final String POSITION = "position";
+	public static final String OWNER_HANDLE = "handle";
+	public static final String POSITION = "pos";
 	public static final String X = "x";
 	public static final String Y = "y";
 	public static final String WIDTH = "width";
-	public static final String END_GAME_INFO = "endGameInformation";
+	public static final String END_GAME_INFO = "endGame";
 	public static final String DRAW = "draw";
 	public static final String LOSER_HANDLES = "loserHandles";
 	public static final String HEIGHT = "height";
 	public static final String JOIN = "Join";
 	public static final String LEADERBOARDS = "Leaderboards";
 	public static final String RANK = "rank";
+	public static final String RANKS = "ranks";
 	public static final String LEVEL = "level";
 	public static final String XP = "xp";
 	public static final String CURRENT_GAMES = "currentGames";
@@ -119,13 +127,12 @@ public class Constants {
 	public static final String ABILITY_ATTACK_INCREASE = "attackModifier";
 	public static final String ABILITY_DEFENCE_INCREASE = "defenseModifier";
 	public static final String ABILITY_REGEN_BLOCK = "blockModifier";
-	public static final String XP_AWARD_TO_WINNER = "xpAwardToWinner";
-	public static final String PLAYERS_WHO_MOVED = "playersWhoMoved";
+	public static final String PLAYERS_WHO_MOVED = "moved";
 	public static final String RANK_OF_INITIAL_PLAYER = "rankOfInitialPlayer";
 	public static final String MAP = "map";
 	public static final String CREATED_TIME = "createdTime";
 	public static final String KEY = "key";
-	public static final String AVAILABLE_FROM_LEVEL = "availableFromLevel";
+	public static final String AVAILABLE_FROM_XP = "availableFromXp";
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
 	public static final String VERSION = "version";
@@ -138,6 +145,8 @@ public class Constants {
 	public static final String POPULATION = "population";
 	public static final String SOCIAL = "social";
 	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
+	public static final String CONFIG = "config";
+
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 
@@ -158,6 +167,5 @@ public class Constants {
 			add("regenBlock");
 		}
 	};
-	
 
 }

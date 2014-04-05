@@ -23,37 +23,37 @@ var gameSchema = mongoose.Schema({
 		version : "Number",
 		values : {}
 	},
-	endGameInformation : {
+	endGame : {
 		winnerHandle : "String",
-		xpAwardToWinner : "Number",
+		xp : "Number",
 		leaderboardScoreAmount : "Number",
-		winningDate : "Date",
+		date : "Date",
 		loserHandles : [String],
 		draw : "Boolean",
 		declined : "String"
 	},
+	state : "String",
 	createdDate : "Date",
 	createdTime : "Number",
 	map : "Number",
 	rankOfInitialPlayer : "Number",
 	gameType : "String",
-	currentRound : {
-		roundNumber : "Number",
-		playersWhoMoved : [String]
+	round : {
+		num : "Number",
+		moved : [String]
 	},
 	numberOfPlanets : "Number",
 	planets : [
 		{
 			name : "String",
-			ownerHandle : "String",
+			handle : "String",
 			isHome : "String",
-			position : {
+			pos : {
 				x : "Number",
 				y : "Number"
 			},
-			shipRegenRate : "Number",
-			numberOfShips : "Number",
-			population : "Number",
+			regen : "Number",
+			ships : "Number",
 			ability : "String",
 			harvest : {
 				status : "String",
@@ -65,35 +65,34 @@ var gameSchema = mongoose.Schema({
 	],
 	moves : [
 		{
-			playerHandle : "String",
-			fromPlanet : "String",
-			toPlanet : "String",
+			handle : "String",
+			from : "String",
+			to : "String",
 			fleet : "Number",
 			duration : "Number",
 			startingRound : "Number",
 			executed : "Boolean",
-			previousPosition : {
+			prevPos : {
 				x : "Number",
 				y : "Number"
 			},
-			currentPosition : {
+			curPos : {
 				x : "Number",
 				y : "Number"
 			},
-			startPosition : {
+			startPos : {
 				x : "Number",
 				y : "Number"
 			},
-			endPosition : {
+			endPos : {
 				x : "Number",
 				y : "Number"
 			},
 			bs : {
-				previousShipsOnPlanet : "Number",
-				previousPlanetOwner : "String",
-				defenceStrength : "Number",
-				attackStrength : "Number",
-				defenceMultiplier : "Number",
+				prevShipsOnPlanet : "Number",
+				prevPlanetOwner : "String",
+				atckMult : "Number",
+				defMult : "Number",
 				diaa : "Boolean",
 				startFleet : "Number"
 			}
@@ -103,13 +102,13 @@ var gameSchema = mongoose.Schema({
 
 gameSchema.set('toObject', { getters: true });
 gameSchema.index({'players' : 1});
-gameSchema.index({'endGameInformation.winnerHandle': 1});
+gameSchema.index({'endGame.winnerHandle': 1});
 gameSchema.index({'social.invitee': 1});
 
 
 
 var hasSameOwner = function(planet, move){
-	return planet.ownerHandle == move.playerHandle;
+	return planet.handle == move.handle;
 }
 
 var isSamePlanet = function(planet, planetName){
@@ -117,7 +116,7 @@ var isSamePlanet = function(planet, planetName){
 }
 
 var moveHasMoreOrTheSameShipsThenPlanet = function(fleet, planet){
-	return fleet >= planet.numberOfShips;
+	return fleet >= planet.ships;
 }
 
 var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
@@ -131,40 +130,39 @@ var findIndexOfPlayer = function(players, playerHandleToFindIndexOf){
 gameSchema.methods.applyMoveToPlanets = function(game, move, multiplierMap){
 	this.planets.forEach(function(planet){
 		if(isADefensiveMoveToThisPlanet(planet, move)) {	
-			move.bs.previousPlanetOwner = planet.ownerHandle;
-			move.bs.previousShipsOnPlanet = planet.numberOfShips;
-			planet.numberOfShips = planet.numberOfShips + move.fleet;
-		} else if (isSamePlanet(planet, move.toPlanet)) {
+			move.bs.prevPlanetOwner = planet.handle;
+			move.bs.prevShipsOnPlanet = planet.ships;
+			planet.ships = planet.ships + move.fleet;
+		} else if (isSamePlanet(planet, move.to)) {
 			var defenceMultiplier = 0;
 			var attackMultiplier = 0;
 			
-			if (multiplierMap[planet.ownerHandle]) {
-				defenceMultiplier = multiplierMap[planet.ownerHandle].defenceMultiplier;
+			if (multiplierMap[planet.handle]) {
+				defenceMultiplier = multiplierMap[planet.handle].defenceMultiplier;
 			}
 			
-			if (multiplierMap[move.playerHandle]) {
-				attackMultiplier = multiplierMap[move.playerHandle].attackMultiplier;
+			if (multiplierMap[move.handle]) {
+				attackMultiplier = multiplierMap[move.handle].attackMultiplier;
 			}
 		
-			move.bs.previousPlanetOwner = planet.ownerHandle;		
+			move.bs.prevPlanetOwner = planet.handle;		
 			var defenceStrength = calculateDefenceStrengthForPlanet(planet, defenceMultiplier);
 			var attackStrength = game.calculateAttackStrengthForMove(move, attackMultiplier);
 			var battleResult = defenceStrength - attackStrength;	
 			
-			move.bs.previousShipsOnPlanet = planet.numberOfShips;
+			move.bs.prevShipsOnPlanet = planet.ships;
 						
 			if(battleResult <= 0) {
-				planet.ownerHandle = move.playerHandle;
-				planet.numberOfShips = game.reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
+				planet.handle = move.handle;
+				planet.ships = game.reverseEffectOfMultiplier(Math.abs(battleResult), attackMultiplier); 
 				planet.conquered = true;
-				checkHarvestStatus(planet,game.currentRound.roundNumber, parseFloat(game.config.values["harvestSavior"]));
+				checkHarvestStatus(planet,game.round.num, parseFloat(game.config.values["harvestSavior"]));
 			} else {
-				move.bs.defenceMultiplier = defenceMultiplier;
-				planet.numberOfShips = game.reverseEffectOfMultiplier(battleResult,defenceMultiplier);
+				planet.ships = game.reverseEffectOfMultiplier(battleResult,defenceMultiplier);
 			}
 			
-			move.bs.defenceStrength = defenceStrength;
-			move.bs.attackStrength = attackStrength;
+			move.bs.defMult = defenceMultiplier;
+			move.bs.atckMult = attackMultiplier;
 		}
 	});
 }
@@ -173,7 +171,7 @@ var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 	if(planet.harvest && planet.harvest.status === "ACTIVE"){
 		planet.harvest.status = "INACTIVE";
 		planet.harvest.saveRound = roundNumber;
-		planet.numberOfShips += saviorBonus;
+		planet.ships += saviorBonus;
 	}else if(planet.harvest && planet.harvest.status === "INACTIVE"){
 		planet.harvest = null;
 	}
@@ -184,7 +182,7 @@ gameSchema.methods.reverseEffectOfMultiplier = function(battleResult, multiplier
 }
 
 gameSchema.methods.allPlayersHaveTakenAMove = function(){
-	return this.currentRound.playersWhoMoved.length == this.players.length;
+	return this.round.moved.length == this.players.length;
 }
 
 var getDefenceMutlipler = function(player, game){
@@ -218,11 +216,11 @@ gameSchema.methods.calculateAttackStrengthForMove = function(move, attackMultipl
 }
 
 var calculateDefenceStrengthForPlanet = function(planet, defenceMultiplier){
-	return planet.numberOfShips + (planet.numberOfShips * defenceMultiplier);
+	return planet.ships + (planet.ships * defenceMultiplier);
 }
 
 var isADefensiveMoveToThisPlanet = function(planet, move){
-	return hasSameOwner(planet, move) && isSamePlanet(planet, move.toPlanet);
+	return hasSameOwner(planet, move) && isSamePlanet(planet, move.to);
 }
 
 
@@ -230,16 +228,16 @@ gameSchema.methods.updateRegenRates = function(){
 
 	var currentGame = this;
 	this.planets.forEach(function(planet){
-		if(planet.ownerHandle && !planet.conquered && planet.status === 'ALIVE') {
+		if(planet.handle && !planet.conquered && planet.status === 'ALIVE') {
 		
-			var regenBy = planet.shipRegenRate;
+			var regenBy = planet.regen;
 		
 			if(gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock){
-				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.ownerHandle);	
+				blockRegen = gameTypeAssembler.gameTypes[currentGame.gameType].determineIfAnOpponentHasTheRegenBlock(currentGame, planet.handle);	
 				
 				if(blockRegen){
-					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.ownerHandle), currentGame);
-					regenBy =  planet.shipRegenRate - (planet.shipRegenRate * blockModifier);
+					var blockModifier = currentGame.config.values['blockAbility'] + abilityBasedGameType.harvestEnhancement(opponent(planet.handle), currentGame);
+					regenBy =  planet.regen - (planet.regen * blockModifier);
 				}
 			}
 			
@@ -247,7 +245,7 @@ gameSchema.methods.updateRegenRates = function(){
 				regenBy = 1;
 			}
 			
-			planet.numberOfShips += regenBy;
+			planet.ships += regenBy;
 			
 		} 
 	});
@@ -257,7 +255,7 @@ gameSchema.methods.addMoves = function(moves){
 	var game = this;
 	if(moves){
 		moves.forEach(function(move){
-			move.startingRound = game.currentRound.roundNumber;
+			move.startingRound = game.round.num;
 			game.moves.push(move);
 		});
 	}
@@ -268,7 +266,7 @@ gameSchema.methods.addHarvest = function(harvest){
 	if(harvest){
 		_.each(harvest, function(item){
 			var planet = _.find(game.planets, function(planet){return planet.name === item.planet});
-			planet.harvest = {status : "ACTIVE", startingRound : game.currentRound.roundNumber};
+			planet.harvest = {status : "ACTIVE", startingRound : game.round.num};
 		});
 	}
 }
@@ -303,7 +301,7 @@ exports.findById = function(gameId){
 
 
 exports.findCollectionOfGames = function(user){
-	return GameModel.find({players : {$in : [user._id]}}, '_id players endGameInformation createdDate currentRound map social').populate('players').exec();
+	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate round map social').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
@@ -320,7 +318,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 	return p.then(function(game) {
 		game.addMoves(moves);
 		game.addHarvest(harvest);
-		game.currentRound.playersWhoMoved.push(playerHandle);
+		game.round.moved.push(playerHandle);
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
 		
@@ -328,7 +326,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			decrementCurrentShipCountOnFromPlanets(game);
 			destroyAbilityPlanets(game);
 			decreasePopulationIfUnderHarvest(game);
-			game.currentRound.playersWhoMoved = [];
+			game.round.moved = [];
 			
 			processMoves(playerHandle, game);
 			
@@ -371,7 +369,7 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 		lastPromise = lastPromise.then(function(){
 			if(roundExecuted){
 				var conqueredPlanets = _.filter(game.moves, function(move){
-					return move.executed && move.playerHandle === player.handle && move.bs.previousPlanetOwner !== player.handle; 
+					return move.executed && move.handle === player.handle && move.bs.prevPlanetOwner !== player.handle; 
 				});
 				
 				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
@@ -387,14 +385,14 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 }
 
 var planetShouldBeDestroyed = function(game, planet){
-	var roundsPassedWithHarvest = game.currentRound.roundNumber - planet.harvest.startingRound;
+	var roundsPassedWithHarvest = game.round.num - planet.harvest.startingRound;
 	return roundsPassedWithHarvest >= game.config.values['harvestRounds'];
 }
 
 var destroyAbilityPlanets = function(game){
 	_.each(game.planets, function(planet){
 		if(planet.harvest && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
-			planet.shipRegenRate = 0;
+			planet.regen = 0;
 			planet.status = "DEAD";
 		}
 	})
@@ -405,7 +403,7 @@ var decreasePopulationIfUnderHarvest = function(game){
 		if(planet.population <= 0){
 			planet.population = 0;
 		}else if(planet.harvest && planet.harvest.status === 'ACTIVE'){
-			var roundsLeft = game.config.values['harvestRounds'] - (game.currentRound.roundNumber - planet.harvest.startingRound);
+			var roundsLeft = game.config.values['harvestRounds'] - (game.round.num - planet.harvest.startingRound);
 			if(roundsLeft <= 0){
 				planet.population = 0;
 			}else{
@@ -431,9 +429,9 @@ var decrementCurrentShipCountOnFromPlanets = function(game){
 		for(var i = 0; i < game.moves.length; i++){
 			var move = game.moves[i];
 			
-			if(move.startingRound == game.currentRound.roundNumber){
-				var fromPlanet = findFromPlanet(game.planets, game.moves[i].fromPlanet);
-				fromPlanet.numberOfShips = fromPlanet.numberOfShips - game.moves[i].fleet;
+			if(move.startingRound == game.round.num){
+				var fromPlanet = findFromPlanet(game.planets, game.moves[i].from);
+				fromPlanet.ships = fromPlanet.ships - game.moves[i].fleet;
 			}			
 		}
 	}
@@ -489,15 +487,15 @@ var processMoves = function(player, game) {
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
 exports.addUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$push : {players : player}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}, {state : {$ne : 'C'}}]}, {$push : {players : player}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
 		} else {
 			for(var i in game.planets) {
 				var planet = game.planets[i];
-				if(!planet.ownerHandle && planet.isHome == "Y") {
-					planet.ownerHandle = player.handle;
+				if(!planet.handle && planet.isHome == "Y") {
+					planet.handle = player.handle;
 					break;
 				}
 			}
@@ -508,15 +506,15 @@ exports.addUser = function(gameId, player){
 }
 
 exports.addSocialUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
 		} else {
 			for(var i in game.planets) {
 				var planet = game.planets[i];
-				if(!planet.ownerHandle && planet.isHome == "Y") {
-					planet.ownerHandle = player.handle;
+				if(!planet.handle && planet.isHome == "Y") {
+					planet.handle = player.handle;
 					break;
 				}
 			}
@@ -528,9 +526,9 @@ exports.addSocialUser = function(gameId, player){
 
 exports.declineSocialGame = function(gameId, invitee){
 	var endResult = {
-			xpAwardToWinner : 0,
+			xp : 0,
 			leaderboardScoreAmount : 0,
-			winningDate : Date.now(),
+			date : Date.now(),
 			draw : false,
 			declined : invitee
 		};
@@ -539,23 +537,23 @@ exports.declineSocialGame = function(gameId, invitee){
 									{
 										$set : {
 												   'social.status' : 'DECLINED'
-												   ,'endGameInformation.xpAwardToWinner' : 0
-												   ,'endGameInformation.leaderboardScoreAmount' : 0
-												   ,'endGameInformation.winningDate' : 0
-												   ,'endGameInformation.draw' : 0
-												   ,'endGameInformation.declined' : invitee
+												   ,'endGame.xp' : 0
+												   ,'endGame.leaderboardScoreAmount' : 0
+												   ,'endGame.date' : 0
+												   ,'endGame.draw' : 0
+												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
 }
 
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
-	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {createdTime : { $lt : time}}]}).populate('players').exec();
+	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdTime : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});
 }
 
 exports.findGameAtAMap = function(mapToFind, playerHandle){
-	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
+	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});

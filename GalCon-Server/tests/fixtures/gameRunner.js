@@ -22,6 +22,7 @@ exports.performTurn = function(currentGameId, player1, player2){
 	}).then(function(game){
 		p.complete(game);
 	}, function(err){
+		console.log(err);
 		p.reject(err);
 	});
 	return p;

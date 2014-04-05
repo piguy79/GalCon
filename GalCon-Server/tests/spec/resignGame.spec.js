@@ -89,7 +89,7 @@ describe("Find current games -", function() {
 		}).then(function(game) {
 			return apiRunner.resignGame(game._id, PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(response) {
-			expect(response.endGameInformation.winnerHandle).toBe(PLAYER_2_HANDLE);
+			expect(response.endGame.winnerHandle).toBe(PLAYER_2_HANDLE);
 			
 			response.players.forEach(function(player) {
 				if(player.handle === PLAYER_1_HANDLE) {

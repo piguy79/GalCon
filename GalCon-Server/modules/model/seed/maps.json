@@ -2,7 +2,7 @@
 	"maps" : [	
 				{
 					"key" : 1,
-					"availableFromLevel" : 1,
+					"availableFromXp" : 0,
 					"title" : "The Beginning",
 					"description" : "Tis a small world",
 					"width" : {
@@ -13,7 +13,7 @@
 				},
 				{
 					"key" : 2,
-					"availableFromLevel" : 2,
+					"availableFromXp" : 100,
 					"title" : "Moving on",
 					"description" : "Some breathing room",
 					"width" : {
@@ -24,7 +24,7 @@
 				},
 				{
 					"key" : 3,
-					"availableFromLevel" : 5,
+					"availableFromXp" : 500,
 					"title" : "Speed",
 					"description" : "Don't drop below 50",
 					"width" : {
@@ -35,7 +35,7 @@
 				},
 				{
 					"key" : 4,
-					"availableFromLevel" : 7,
+					"availableFromXp" : 800,
 					"title" : "Protect",
 					"description" : "Shields online",
 					"width" : {
@@ -46,7 +46,7 @@
 				},
 				{
 					"key" : 5,
-					"availableFromLevel" : 10,
+					"availableFromXp" : 1500,
 					"title" : "Attack",
 					"description" : "Attack",
 					"width" : {
@@ -57,7 +57,7 @@
 				},
 				{
 					"key" : 6,
-					"availableFromLevel" : 15,
+					"availableFromXp" : 3600,
 					"title" : "Harvest",
 					"description" : "Harvest And Hold",
 					"width" : {

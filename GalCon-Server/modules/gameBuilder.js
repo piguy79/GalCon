@@ -24,15 +24,15 @@ function GameBuilder(gameAttributes) {
 		};
 	}
 	
-	this.currentRound = {
-		roundNumber : 0,
-		playersWhoMoved : []
+	this.round = {
+		num : 0,
+		moved : []
 	};
-	this.endGameInformation = {
+	this.endGame = {
 		winnerHandle : "",
 		losers : [],
 		draw : false,
-		xpAwardToWinner : 0
+		xp : 0
 	}
 	this.ability = "";
 	this.numberOfPlanets = gameAttributes.numberOfPlanets;
@@ -68,14 +68,14 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 		var newPosition = this.createRandomPosition();
 		var noGood = false;
 		for(i in homePlanets) {
-			if(this.distanceBetweenPositions(homePlanets[i].position, newPosition) <= tooCloseToHomeRadius) {
+			if(this.distanceBetweenPositions(homePlanets[i].pos, newPosition) <= tooCloseToHomeRadius) {
 				noGood = true;
 			}
 		}
 		
 		if(!noGood) {
 			for(i in this.planets) {
-				if(newPosition.x == this.planets[i].position.x && newPosition.y == this.planets[i].position.y) {
+				if(newPosition.x == this.planets[i].pos.x && newPosition.y == this.planets[i].pos.y) {
 					noGood = true;
 				}
 			}
@@ -83,8 +83,8 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 		
 		if(!noGood) {
 			var planet = this.createPlanet(newPosition.x, newPosition.y);
-			planet.shipRegenRate = Math.floor((Math.random() * MAX_REGEN) + 1);
-			planet.numberOfShips = Math.floor(Math.random() * MAX_STARTING_SHIPS);
+			planet.regen = Math.floor((Math.random() * MAX_REGEN) + 1);
+			planet.ships = Math.floor(Math.random() * MAX_STARTING_SHIPS);
 			this.planets.push(planet);
 			extraPlanets.push(planet);
 		}
@@ -120,8 +120,8 @@ GameBuilder.prototype.createHomePlanets = function() {
 		x = this.removeFromEdge(x, this.width-1);
 		y = this.removeFromEdge(y, this.height-1);
 
-		var xDist = x - homePlanets[0].position.x;
-		var yDist = y - homePlanets[0].position.y;
+		var xDist = x - homePlanets[0].pos.x;
+		var yDist = y - homePlanets[0].pos.y;
 
 		var distance = Math.sqrt(xDist * xDist + yDist * yDist);
 		if (distance <= minDistanceBetweenPlanets) {
@@ -148,7 +148,7 @@ GameBuilder.prototype.removeFromEdge = function(value, max) {
 GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRegenAroundPlanet, shipsAroundPlanet, otherHomePlanet) {
 	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
 	
-	var existingRegenAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "shipRegenRate");
+	var existingRegenAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "regen");
 	totalRegenAroundPlanet -= existingRegenAroundPlanet;
 	
 	var newPlanets = [];
@@ -165,15 +165,15 @@ GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRege
 			// All positions are occupied.  Increment the count on existing planets instead
 			for (i in newPlanets) {
 				if (totalRegenAroundPlanet > 0) {
-					var oldRegen = newPlanets[i].shipRegenRate;
+					var oldRegen = newPlanets[i].regen;
 					var newRegen = Math.min(MAX_REGEN, oldRegen + 1);
-					newPlanets[i].shipRegenRate = newRegen;
+					newPlanets[i].regen = newRegen;
 					totalRegenAroundPlanet--;
 				}
 			}
 		} else {
 			var newPlanet = this.createPlanet(position.x, position.y);
-			newPlanet.shipRegenRate = newPlanetRegen;
+			newPlanet.regen = newPlanetRegen;
 			newPlanets.push(newPlanet);
 			this.planets.push(newPlanet);
 
@@ -181,15 +181,15 @@ GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRege
 		}
 	}
 	
-	var existingShipsAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "numberOfShips");
+	var existingShipsAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "ships");
 	shipsAroundPlanet -= existingShipsAroundPlanet;
 	
 	for(i in newPlanets) {
 		if(i == newPlanets.length - 1) {
-			newPlanets[i].numberOfShips = shipsAroundPlanet;
+			newPlanets[i].ships = shipsAroundPlanet;
 		} else {
 			var newPlanetShips = Math.floor(Math.random() * Math.min(MAX_STARTING_SHIPS, shipsAroundPlanet));
-			newPlanets[i].numberOfShips = newPlanetShips;
+			newPlanets[i].ships = newPlanetShips;
 		
 			shipsAroundPlanet -= newPlanetShips;
 		}
@@ -202,10 +202,10 @@ GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNe
 	var i = 0;
 	while(position === undefined && i < 100) {
 		var testPosition = this.createRandomPosition();
-		var dist = this.distanceBetweenPositions(planet.position, testPosition);
+		var dist = this.distanceBetweenPositions(planet.pos, testPosition);
 		if(dist > 0 && dist <= radius) {
 			if(notNearPlanet) {
-				var awayDist = this.distanceBetweenPositions(notNearPlanet.position, testPosition);
+				var awayDist = this.distanceBetweenPositions(notNearPlanet.pos, testPosition);
 				if(awayDist <= radius) {
 					continue;
 				}
@@ -213,7 +213,7 @@ GameBuilder.prototype.findNewPositionNearPlanet = function(planet, radius, notNe
 			
 			var isGoodPosition = true;
 			for(i in this.planets) {
-				if(testPosition.x == this.planets[i].position.x && testPosition.y == this.planets[i].position.y) {
+				if(testPosition.x == this.planets[i].pos.x && testPosition.y == this.planets[i].pos.y) {
 					isGoodPosition = false;
 				}
 			}
@@ -235,7 +235,7 @@ GameBuilder.prototype.sumValueAroundPlanet = function(planet, radius, field) {
 			continue;
 		}
 		
-		if (this.distanceBetweenPositions(planet.position, this.planets[i].position) <= radius) {
+		if (this.distanceBetweenPositions(planet.pos, this.planets[i].pos) <= radius) {
 			total += eval("this.planets[i]." + field);
 		}
 	}
@@ -252,8 +252,8 @@ GameBuilder.prototype.distanceBetweenPositions = function(position1, position2) 
 GameBuilder.prototype.createHomePlanet = function(x, y) {
 	var planet = this.createPlanet(x, y);
 	
-	planet.numberOfShips = 30;
-	planet.shipRegenRate = 5;
+	planet.ships = 30;
+	planet.regen = 5;
 	planet.isHome = "Y";
 
 	return planet;
@@ -266,9 +266,9 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	position.y = y;
 
 	planet.name = "Planet: " + this.currentPlanetNum++;
-	planet.position = position;
-	planet.shipRegenRate = 0;
-	planet.numberOfShips = 0;
+	planet.pos = position;
+	planet.regen = 0;
+	planet.ships = 0;
 	planet.population = Math.floor((Math.random() * MAX_POPULATION) + 1);
 	planet.ability = "";
 	planet.status = "ALIVE";
@@ -289,8 +289,8 @@ function assignHomePlanets(builder) {
 	builder.players.forEach(function(player) {
 		for ( var i in builder.planets) {
 			var planet = builder.planets[i];
-			if (!planet.ownerHandle && planet.isHome == "Y") {
-				planet.ownerHandle = player.handle;
+			if (!planet.handle && planet.isHome == "Y") {
+				planet.handle = player.handle;
 				break;
 			}
 		}

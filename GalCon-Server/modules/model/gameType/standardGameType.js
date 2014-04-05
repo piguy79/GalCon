@@ -5,31 +5,31 @@ exports.processPossibleEndGame = function(game){
 		var playersWhoOwnAPlanet = [];
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
-			if(planet.ownerHandle && playersWhoOwnAPlanet.indexOf(planet.ownerHandle) < 0){
-				playersWhoOwnAPlanet.push(planet.ownerHandle);
+			if(planet.handle && playersWhoOwnAPlanet.indexOf(planet.handle) < 0){
+				playersWhoOwnAPlanet.push(planet.handle);
 			}
 		}
 		
 		var playersWhoHaveAMove = [];
 		for(var i = 0; i < game.moves.length; i++){
 			var move = game.moves[i];
-			if(playersWhoHaveAMove.indexOf(move.playerHandle) < 0){
-				playersWhoHaveAMove.push(move.playerHandle);
+			if(playersWhoHaveAMove.indexOf(move.handle) < 0){
+				playersWhoHaveAMove.push(move.handle);
 			}
 		}
 		
 		if(playersWhoOwnAPlanet.length == 1) {
 			if(playersWhoHaveAMove.length == 0 || 
 					(playersWhoHaveAMove.length == 1 && playersWhoHaveAMove.indexOf(playersWhoOwnAPlanet[0]) == 0)) {
-				game.endGameInformation.winnerHandle = playersWhoOwnAPlanet[0];
-				game.endGameInformation.winningDate = Date.now();
+				game.endGame.winnerHandle = playersWhoOwnAPlanet[0];
+				game.endGame.date = Date.now();
 			}
 		}
 	}
 }
 
 exports.processRoundInformation = function(game) {
-	game.currentRound.roundNumber++;
+	game.round.num++;
     game.updateRegenRates();
 }
 
@@ -42,12 +42,12 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 	
 	var movesByPlanet = {};
 	_.each(game.moves, function(move) {
-		var moves = movesByPlanet[move.toPlanet];
+		var moves = movesByPlanet[move.to];
 		if(moves === undefined) {
 			moves = [];
 		}
 		moves.push(move);
-		movesByPlanet[move.toPlanet] = moves;
+		movesByPlanet[move.to] = moves;
 	});
 	
 	_.each(_.values(movesByPlanet), function(movesArray) {
@@ -60,12 +60,12 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 				move.executed = true;
 				move.bs.startFleet = move.fleet;
 				
-				var executedMoves = executedMovesByPlayer[move.playerHandle];
+				var executedMoves = executedMovesByPlayer[move.handle];
 				if(executedMoves === undefined) {
 					executedMoves = [];
 				}
 				executedMoves.push(move);
-				executedMovesByPlayer[move.playerHandle] = executedMoves;
+				executedMovesByPlayer[move.handle] = executedMoves;
 			}
 		}
 		
@@ -89,19 +89,19 @@ exports.applyMovesToGame = function(game, multiplierMap, durationModifier) {
 					
 					var attackMultiplier1 = 0;
 					var attackMultiplier2 = 0;
-					if (multiplierMap[move1.playerHandle]) {
-						attackMultiplier1 = multiplierMap[move1.playerHandle].attackMultiplier;
+					if (multiplierMap[move1.handle]) {
+						attackMultiplier1 = multiplierMap[move1.handle].attackMultiplier;
 					}
-					if (multiplierMap[move2.playerHandle]) {
-						attackMultiplier2 = multiplierMap[move2.playerHandle].attackMultiplier;
+					if (multiplierMap[move2.handle]) {
+						attackMultiplier2 = multiplierMap[move2.handle].attackMultiplier;
 					}
 					
 					var attackStrength1 = game.calculateAttackStrengthForMove(move1, attackMultiplier1);
 					var attackStrength2 = game.calculateAttackStrengthForMove(move2, attackMultiplier2);
 					var battleResult = attackStrength1 - attackStrength2;
 					
-					move1.bs.attackStrength = attackStrength1;
-					move2.bs.attackStrength = attackStrength2;
+					move1.bs.atckMult = attackMultiplier1;
+					move2.bs.atckMult = attackMultiplier2;
 					
 					if(battleResult == 0) {
 						move1.fleet = 0;

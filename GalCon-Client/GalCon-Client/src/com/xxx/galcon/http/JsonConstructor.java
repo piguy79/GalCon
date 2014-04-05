@@ -181,4 +181,15 @@ public class JsonConstructor {
 
 		return top;
 	}
+	
+	public static JSONObject cancelGame(String handle, String id, String session) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		top.put("gameId", id);
+
+		return top;
+
+	}
 }

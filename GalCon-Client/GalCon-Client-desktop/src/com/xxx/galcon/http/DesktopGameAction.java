@@ -6,6 +6,7 @@ package com.xxx.galcon.http;
 import static com.xxx.galcon.http.UrlConstants.ACCEPT_INVITE;
 import static com.xxx.galcon.http.UrlConstants.ADD_FREE_COINS;
 import static com.xxx.galcon.http.UrlConstants.ADD_PROVIDER_TO_USER;
+import static com.xxx.galcon.http.UrlConstants.CANCEL_GAME;
 import static com.xxx.galcon.http.UrlConstants.DECLINE_INVITE;
 import static com.xxx.galcon.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.xxx.galcon.http.UrlConstants.FIND_ALL_MAPS;
@@ -134,8 +135,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
-					new GameBoard()));
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
+					new GameBoard());
+			
+			if(result == null){
+				callback.onConnectionError("Unable to join game.");
+			}else{
+				callback.onConnectionResult(result);
+			}
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -405,7 +412,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			if (user == null) {
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider, GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 0)
+						.append("xp", 3600)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
@@ -414,7 +421,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("session",
 								new BasicDBObject("id", session.session).append("expireDate",
 										new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)))
-						.append("rankInfo", new BasicDBObject("level", 1).append("startFrom", 0).append("endAt", 50));
+						.append("rankInfo", new BasicDBObject("level", 15).append("startFrom", 0).append("endAt", 50));
 				usersCollection.insert(newUser);
 			} else {
 				user.put(
@@ -490,7 +497,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		args.put("handle", handle);
 		args.put("gameId", gameId);
 		args.put("session", getSession());
-		callback.onConnectionResult((GameBoard) callURL(new GetClientRequest(), ACCEPT_INVITE, args, new GameBoard()));
+		GameBoard gameBoard = (GameBoard) callURL(new GetClientRequest(), ACCEPT_INVITE, args, new GameBoard());
+		if(gameBoard != null){
+			callback.onConnectionResult(gameBoard);
+		}else{
+			callback.onConnectionError("Game does not exist");
+		}
 		
 	}
 
@@ -534,6 +546,23 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_PROVIDER_TO_USER, args,
 					new Player()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
+
+	@Override
+	public void cancelGame(UIConnectionResultCallback<BaseResult> callback,
+			String handle, String gameId) {
+		try {
+			JSONObject top = JsonConstructor.cancelGame(handle, gameId, getSession());
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((BaseResult) callURL(new PostClientRequest(), CANCEL_GAME, args,
+					new BaseResult()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

@@ -122,3 +122,13 @@ exports.requestHandleForId = function(session, id, authProvider, handle) {
 	};
 	return needleWithPromise(needle.post, '/requestHandleForId', postData);
 }
+
+exports.cancelGame = function(handle, gameId, session) {
+	var postData = {
+		gameId : gameId,
+		handle : handle,
+		session : session
+	};
+
+	return needleWithPromise(needle.post, "/game/cancel", postData);
+};
