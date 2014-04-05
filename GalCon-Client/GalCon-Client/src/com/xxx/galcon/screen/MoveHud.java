@@ -38,8 +38,7 @@ public class MoveHud extends Table {
 
 	private Resources resources;
 
-	public MoveHud(Resources resources, GameBoard gameBoard, float width,
-			float height) {
+	public MoveHud(Resources resources, GameBoard gameBoard, float width, float height) {
 		super();
 		this.moves = new HashMap<Move, MoveButton>();
 		this.resources = resources;
@@ -60,10 +59,8 @@ public class MoveHud extends Table {
 
 	private void addPerformMoveButton() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			final ActionButton performMove = new ActionButton(resources.skin,
-					"performMoveButton", new Point(getX()
-							+ (getWidth() * 0.83f), getY()
-							+ (getHeight() * 0.05f)));
+			final ActionButton performMove = new ActionButton(resources.skin, "performMoveButton", new Point(getX()
+					+ (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
@@ -88,15 +85,14 @@ public class MoveHud extends Table {
 
 		moveButtonHolder.pad(getWidth() * 0.05f);
 
-		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.4f)
-				.padBottom(getHeight() * 0.12f).defaults()
-				.padRight(getWidth() * 0.01f).width(getWidth() * 0.1f)
-				.height(getHeight() * 0.85f);
+		moveButtonHolder.left().bottom().padLeft(5).padRight(getWidth() * 0.4f).padBottom(getHeight() * 0.12f)
+				.defaults().padRight(getWidth() * 0.01f).width(getWidth() * 0.1f).height(moveButtonHolder.getHeight());
 
 		scrollPane = new ScrollPane(moveButtonHolder);
 		scrollPane.setScrollingDisabled(false, true);
 		scrollPane.setFadeScrollBars(false);
 		scrollPane.setWidth(moveButtonHolder.getWidth());
+		scrollPane.setHeight(moveButtonHolder.getHeight());
 
 		addActor(scrollPane);
 	}
@@ -105,8 +101,8 @@ public class MoveHud extends Table {
 		if (moves.get(move) == null) {
 			float buttonWidth = Gdx.graphics.getWidth() * 0.09f;
 
-			MoveButton button = new MoveButton(resources, gameBoard, move,
-					buttonWidth, getHeight() * 0.85f);
+			MoveButton button = new MoveButton(resources, gameBoard, move, buttonWidth,
+					moveButtonHolder.getHeight() * 0.85f);
 
 			button.addListener(new ClickListener() {
 				@Override
