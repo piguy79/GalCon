@@ -50,10 +50,10 @@ exports.createUser = function(playerHandle, level, config) {
 	};
 }
 
-exports.createMap = function(key, widthMin, widthMax, gameType) {
+exports.createMap = function(key, widthMin, widthMax, gameType, availableFromXp) {
 	return {
 		"key" : key,
-		"availableFromLevel" : 1,
+		"availableFromXp" : availableFromXp || 1,
 		"title" : "TEST_MAP: " + key,
 		"description" : "Test map " + key,
 		"width" : {

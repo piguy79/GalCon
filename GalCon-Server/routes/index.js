@@ -730,8 +730,18 @@ exports.matchPlayerToGame = function(req, res) {
 		return;
 	}
 	
+	var callingUser;
+	
 	var p = validateSession(session, {"handle" : handle});
-	p.then(function() {
+	p.then(function(){
+		return userManager.findUserByHandle(handle);
+	}).then(function(user){
+		callingUser = user;
+		return mapManager.findMapByKey(mapToFind);
+	}).then(function(map){
+		if(callingUser.xp < map.availableFromXp){
+			throw new Error(handle + " does not have access to this map.");
+		}
 		var p = userManager.findUserByHandle(handle);
 		return p.then(function(user) {
 			if(user.coins < 1) {
@@ -919,10 +929,15 @@ exports.inviteUserToGame = function(req, res){
 	p.then(function(){
 		return userManager.findUserByHandle(requesterHandle);
 	}).then(function(user){
-		if(!inviteValidation.validate(user, inviteeUser)){
+		requestingUser = user;
+		return mapManager.findMapByKey(mapKey);
+	}).then(function(map){
+		if(requestingUser.xp < map.availableFromXp){
+			throw new Error("User does not have enough xp to play this map.");
+		}else if(!inviteValidation.validate(requestingUser, inviteeUser)){
 			throw new Error("Invalid Invite Request");
 		}else{
-			requestingUser = user;
+			
 			return userManager.findUserByHandle(inviteeHandle);
 		}
 	}).then(function(inviteUser){

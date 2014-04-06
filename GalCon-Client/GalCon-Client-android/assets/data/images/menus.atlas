@@ -169,7 +169,7 @@ xp_bar_arrow
   orig: 112, 62
   offset: 0, 0
   index: -1
-xp_bar_cover
+xp_bar_main
   rotate: false
   xy: 2, 17
   size: 717, 85
@@ -183,71 +183,71 @@ filter: Linear,Linear
 repeat: none
 black_grey_button
   rotate: false
-  xy: 455, 2
+  xy: 378, 210
   size: 373, 80
   orig: 373, 80
   offset: 0, 0
   index: -1
 cancel_button
   rotate: false
-  xy: 721, 337
+  xy: 2, 33
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 ok_button
   rotate: false
-  xy: 378, 216
+  xy: 378, 292
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 pattern
   rotate: false
-  xy: 2, 8
+  xy: 378, 545
   size: 451, 116
   orig: 451, 116
   offset: 0, 0
   index: -1
 question_mark
   rotate: false
-  xy: 721, 84
+  xy: 631, 292
   size: 251, 251
   orig: 251, 251
   offset: 0, 0
   index: -1
 rect_button_blank
   rotate: false
-  xy: 378, 469
+  xy: 255, 2
   size: 338, 119
   orig: 338, 119
   offset: 0, 0
   index: -1
 refresh
   rotate: false
-  xy: 2, 213
+  xy: 2, 286
   size: 374, 375
   orig: 374, 375
   offset: 0, 0
   index: -1
 textFieldBg
   rotate: false
-  xy: 2, 590
+  xy: 2, 663
   size: 848, 155
   orig: 848, 155
   offset: 0, 0
   index: -1
 transparent_square
   rotate: false
-  xy: 852, 645
+  xy: 595, 21
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
-xp_bar_main
+xp_bar_cover
   rotate: false
-  xy: 2, 126
-  size: 717, 85
-  orig: 717, 85
+  xy: 255, 123
+  size: 663, 85
+  orig: 663, 85
   offset: 0, 0
   index: -1

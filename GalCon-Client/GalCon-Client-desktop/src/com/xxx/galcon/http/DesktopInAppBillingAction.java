@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.xxx.galcon.model.Inventory;
-import com.xxx.galcon.model.InventoryItem;
-import com.xxx.galcon.model.Order;
+import com.railwaygames.solarsmash.http.InAppBillingAction;
+import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.model.Inventory;
+import com.railwaygames.solarsmash.model.InventoryItem;
+import com.railwaygames.solarsmash.model.Order;
 
 public class DesktopInAppBillingAction implements InAppBillingAction {
 

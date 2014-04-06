@@ -189,8 +189,7 @@ var getDefenceMutlipler = function(player, game){
 	var enhancedDefence = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet){
-		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player);	
-		enhancedDefence +=  abilityBasedGameType.harvestEnhancement(player, game);
+		enhancedDefence = gameTypeAssembler.gameTypes[game.gameType].findCorrectDefenseForAPlanet(game.config, game.planets, player, game);	
 	}
 	
 	return enhancedDefence;
@@ -200,10 +199,7 @@ var getAttackMultipler = function(player, game){
 	var enhancedAttackFleet = 0;
 
 	if(gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet){
-		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player);
-
-		enhancedAttackFleet += abilityBasedGameType.harvestEnhancement(player, game);
-
+		enhancedAttackFleet = gameTypeAssembler.gameTypes[game.gameType].findCorrectFleetToAttackEnemyPlanet(game.config, game.planets, player, game);
 	}
 	
 	return enhancedAttackFleet;

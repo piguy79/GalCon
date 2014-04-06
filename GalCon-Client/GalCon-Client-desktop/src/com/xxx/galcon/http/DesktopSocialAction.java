@@ -6,9 +6,13 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.xxx.galcon.Constants;
-import com.xxx.galcon.GameLoop;
-import com.xxx.galcon.model.Friend;
+import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.GameLoop;
+import com.railwaygames.solarsmash.http.AuthenticationListener;
+import com.railwaygames.solarsmash.http.FriendPostListener;
+import com.railwaygames.solarsmash.http.FriendsListener;
+import com.railwaygames.solarsmash.http.SocialAction;
+import com.railwaygames.solarsmash.model.Friend;
 
 public class DesktopSocialAction implements SocialAction {
 

@@ -1,15 +1,21 @@
 var abilityBasedGameType = require('./abilityBasedGameType'),
 	standardGameType = require('./standardGameType');
 
-var speedIncreasePlanetsHeldByPlayer = function(config, playerHandle, planets, game){
+var speedIncreasePlanetsHeldByPlayer = function(config, handle, planets, game){
 	var count = 1;
+	var abilityDetected = false;
 		
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
-		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.handle == playerHandle){
-			var speedIncrease = parseFloat(config.values[abilityBasedGameType.SPEED_ABILITY]) + abilityBasedGameType.harvestEnhancement(playerHandle, game);
+		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.handle === handle){
+			var speedIncrease = parseFloat(config.values[abilityBasedGameType.SPEED_ABILITY]);
 			count = count + speedIncrease;
+			abilityDetected = true;
 		}
+	}
+	
+	if(abilityDetected){
+		count += abilityBasedGameType.harvestEnhancement(handle, game)
 	}
 	
 	return count;

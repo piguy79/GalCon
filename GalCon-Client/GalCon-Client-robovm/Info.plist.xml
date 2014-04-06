@@ -40,6 +40,8 @@
         <integer>1</integer>
         <integer>2</integer>
     </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <string>YES</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>
