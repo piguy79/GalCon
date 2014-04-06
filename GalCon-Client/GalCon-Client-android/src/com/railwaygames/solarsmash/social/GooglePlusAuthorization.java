@@ -37,8 +37,7 @@ import com.railwaygames.solarsmash.http.FriendPostListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
 import com.railwaygames.solarsmash.model.Friend;
 
-public class GooglePlusAuthorization implements Authorizer,
-		ConnectionCallbacks, OnConnectionFailedListener {
+public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks, OnConnectionFailedListener {
 	private GoogleApiClient client;
 	private String sScope = "https://www.googleapis.com/auth/plus.login";
 
@@ -54,10 +53,8 @@ public class GooglePlusAuthorization implements Authorizer,
 	public void signIn(AuthenticationListener listener) {
 		this.listener = listener;
 
-		client = new GoogleApiClient.Builder(activity).addApi(Plus.API)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
+		client = new GoogleApiClient.Builder(activity).addApi(Plus.API).addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this).addScope(Plus.SCOPE_PLUS_LOGIN).build();
 		client.connect();
 	}
 
@@ -65,13 +62,10 @@ public class GooglePlusAuthorization implements Authorizer,
 	public void getToken(AuthenticationListener listener) {
 		this.listener = listener;
 		if (client.isConnected()) {
-			new RetrieveTokenTask().execute(Plus.AccountApi
-					.getAccountName(client));
+			new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(client));
 		} else {
-			client = new GoogleApiClient.Builder(activity).addApi(Plus.API)
-					.addConnectionCallbacks(this)
-					.addOnConnectionFailedListener(this)
-					.addScope(Plus.SCOPE_PLUS_LOGIN).build();
+			client = new GoogleApiClient.Builder(activity).addApi(Plus.API).addConnectionCallbacks(this)
+					.addOnConnectionFailedListener(this).addScope(Plus.SCOPE_PLUS_LOGIN).build();
 			client.connect();
 		}
 	}
@@ -81,18 +75,15 @@ public class GooglePlusAuthorization implements Authorizer,
 		if (Plus.PeopleApi.getCurrentPerson(client) == null) {
 			listener.onSignInFailed("Unable to load ID.");
 		} else {
-			GameLoop.USER.addAuthProvider(
-					Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, Plus.PeopleApi
-							.getCurrentPerson(client).getId());
+			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
+					Plus.PeopleApi.getCurrentPerson(client).getId());
 
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-			prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE
-					+ Constants.ID, GameLoop.USER.auth
-					.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
+			prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE + Constants.ID,
+					GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 			prefs.flush();
 
-			new RetrieveTokenTask().execute(Plus.AccountApi
-					.getAccountName(client));
+			new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(client));
 		}
 	}
 
@@ -123,8 +114,7 @@ public class GooglePlusAuthorization implements Authorizer,
 	public void onConnectionFailed(ConnectionResult result) {
 		if (result.hasResolution()) {
 			try {
-				result.startResolutionForResult(activity,
-						MainActivity.GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE);
+				result.startResolutionForResult(activity, MainActivity.GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE);
 			} catch (SendIntentException e) {
 				Crashlytics.logException(e);
 				Gdx.app.postRunnable(new Runnable() {
@@ -147,8 +137,7 @@ public class GooglePlusAuthorization implements Authorizer,
 		protected String doInBackground(String... params) {
 			String token = "";
 			try {
-				token = GoogleAuthUtil.getToken(activity, params[0], "oauth2:"
-						+ sScope);
+				token = GoogleAuthUtil.getToken(activity, params[0], "oauth2:" + sScope);
 			} catch (UserRecoverableAuthException e) {
 				token = "ERROR";
 				Crashlytics.logException(e);
@@ -175,9 +164,7 @@ public class GooglePlusAuthorization implements Authorizer,
 			} else {
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
-						listener.onSignInSucceeded(
-								Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
-								result);
+						listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, result);
 					}
 				});
 			}
@@ -210,22 +197,19 @@ public class GooglePlusAuthorization implements Authorizer,
 	}
 
 	private void retrieveFriends(final FriendsListener listener) {
-		Plus.PeopleApi.loadVisible(client, null).setResultCallback(
-				new ResultCallback<People.LoadPeopleResult>() {
-					@Override
-					public void onResult(LoadPeopleResult result) {
-						List<Friend> friends = new ArrayList<Friend>();
-						for (int i = 0; i < result.getPersonBuffer().getCount(); i++) {
-							Person person = result.getPersonBuffer().get(i);
-							Friend friend = new Friend(person.getId(), person
-									.getDisplayName(), "");
-							friends.add(friend);
-						}
-						listener.onFriendsLoadedSuccess(friends,
-								Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+			@Override
+			public void onResult(LoadPeopleResult result) {
+				List<Friend> friends = new ArrayList<Friend>();
+				for (int i = 0; i < result.getPersonBuffer().getCount(); i++) {
+					Person person = result.getPersonBuffer().get(i);
+					Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
+					friends.add(friend);
+				}
+				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 
-					}
-				});
+			}
+		});
 	}
 
 	@Override
@@ -254,17 +238,16 @@ public class GooglePlusAuthorization implements Authorizer,
 	}
 
 	private void startFriendPost(final FriendPostListener listener, String id) {
-		Plus.PeopleApi.loadVisible(client, id).setResultCallback(
-				new ResultCallback<People.LoadPeopleResult>() {
-					@Override
-					public void onResult(LoadPeopleResult result) {
-						if (result.getStatus().isSuccess()) {
-							sendPost(result.getPersonBuffer());
-						} else {
-							listener.onPostFails("Error Posting to Google Plus.");
-						}
-					}
-				});
+		Plus.PeopleApi.loadVisible(client, id).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+			@Override
+			public void onResult(LoadPeopleResult result) {
+				if (result.getStatus().isSuccess()) {
+					sendPost(result.getPersonBuffer());
+				} else {
+					listener.onPostFails("Error Posting to Google Plus.");
+				}
+			}
+		});
 	}
 
 	private void sendPost(PersonBuffer personBuffer) {
@@ -276,13 +259,10 @@ public class GooglePlusAuthorization implements Authorizer,
 		}
 
 		Intent shareIntent = new PlusShare.Builder(activity)
-				.setText(
-						"Hi! Come join me playing Solar Smash. Invite me using the handle "
-								+ GameLoop.USER.handle).setType("text/plain")
-				.setRecipients(people).getIntent();
+				.setText("Hi! Come join me playing Solar Smash. Invite me using the handle " + GameLoop.USER.handle)
+				.setType("text/plain").setRecipients(people).getIntent();
 
-		activity.startActivityForResult(shareIntent,
-				MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
+		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
 
 	}
 
