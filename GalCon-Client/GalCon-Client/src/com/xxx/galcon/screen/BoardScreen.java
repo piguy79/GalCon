@@ -45,8 +45,11 @@ import com.xxx.galcon.model.Size;
 import com.xxx.galcon.model.Social;
 import com.xxx.galcon.model.factory.MoveFactory;
 import com.xxx.galcon.model.factory.PlanetButtonFactory;
+import com.xxx.galcon.screen.event.CancelDialogEvent;
 import com.xxx.galcon.screen.event.CancelGameEvent;
+import com.xxx.galcon.screen.event.HarvestEvent;
 import com.xxx.galcon.screen.event.MoveListener;
+import com.xxx.galcon.screen.event.OKDialogEvent;
 import com.xxx.galcon.screen.event.RefreshEvent;
 import com.xxx.galcon.screen.event.ResignEvent;
 import com.xxx.galcon.screen.event.TransitionEventListener;
@@ -55,6 +58,7 @@ import com.xxx.galcon.screen.overlay.HighlightOverlay;
 import com.xxx.galcon.screen.overlay.Overlay;
 import com.xxx.galcon.screen.overlay.TextOverlay;
 import com.xxx.galcon.screen.ship.selection.BoardScreenOptionsDialog;
+import com.xxx.galcon.screen.ship.selection.HarvestDialog;
 import com.xxx.galcon.screen.widget.Line;
 import com.xxx.galcon.screen.widget.Moon;
 import com.xxx.galcon.screen.widget.PlanetButton;
@@ -232,6 +236,7 @@ public class BoardScreen implements ScreenFeedback {
 		} else {
 			beginShipMovements();
 		}
+		stage.addListener(createHarvestListener());
 	}
 
 	private void beginShipMovements() {
@@ -275,8 +280,9 @@ public class BoardScreen implements ScreenFeedback {
 			}
 			TextOverlay overlay = showEndDialog(endGameMessage);
 			stage.addActor(overlay);
-		}else if(gameBoard.social != null && gameBoard.social.status.equals("DECLINED")){
-			TextOverlay overlay = showEndDialog(gameBoard.social.invitee+ " has declined to play.\nYour coin has been returned.");
+		} else if (gameBoard.social != null && gameBoard.social.status.equals("DECLINED")) {
+			TextOverlay overlay = showEndDialog(gameBoard.social.invitee
+					+ " has declined to play.\nYour coin has been returned.");
 			stage.addActor(overlay);
 		}
 	}
@@ -302,8 +308,8 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
-							Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, Gdx.graphics
+							.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
 					float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
@@ -326,27 +332,28 @@ public class BoardScreen implements ScreenFeedback {
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
-							} else if(event instanceof CancelGameEvent){
+							} else if (event instanceof CancelGameEvent) {
 								overlay = new TextOverlay("Cancelling Game", resources);
 								stage.addActor(overlay);
 								UIConnectionWrapper.cancelGame(new UIConnectionResultCallback<BaseResult>() {
 									public void onConnectionResult(BaseResult result) {
-										if(result.success){
+										if (result.success) {
 											stage.dispose();
 											returnCode = Action.BACK;
-										}else{
-											overlay = new DismissableOverlay(resources, new TextOverlay("Unable to cancel game", resources), new ClickListener(){
+										} else {
+											overlay = new DismissableOverlay(resources, new TextOverlay(
+													"Unable to cancel game", resources), new ClickListener() {
 												public void clicked(InputEvent event, float x, float y) {
 													UIConnectionWrapper.findGameById(
-															new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
-															GameLoop.USER.handle);
+															new UpdateBoardScreenResultHandler("Could not refresh"),
+															gameBoard.id, GameLoop.USER.handle);
 													overlay.remove();
 												};
 											});
 											stage.addActor(overlay);
 										}
 									};
-									
+
 									public void onConnectionError(String msg) {
 										overlay.remove();
 									};
@@ -445,6 +452,43 @@ public class BoardScreen implements ScreenFeedback {
 		}).add(move).focus(move);
 	}
 
+	private EventListener createHarvestListener() {
+		return new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if (!(event instanceof HarvestEvent)) {
+					return false;
+				}
+
+				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, Gdx.graphics.getWidth() * 0.8f,
+						Gdx.graphics.getHeight() * 0.3f, stage);
+				float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+				dialog.setX(-dialog.getWidth());
+				dialog.setY(dialogY);
+				stage.addActor(dialog);
+				dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY));
+
+				dialog.addListener(new EventListener() {
+					@Override
+					public boolean handle(Event event) {
+						if (event instanceof OKDialogEvent) {
+//							overlay = new TextOverlay("Resigning Game", resources);
+//							stage.addActor(overlay);
+//							UIConnectionWrapper.resignGame(new UpdateBoardScreenResultHandler("Could not resign"),
+//									gameBoard.id, GameLoop.USER.handle);
+//							return true;
+						} else if (event instanceof CancelDialogEvent) {
+
+						}
+						return false;
+					}
+				});
+
+				return true;
+			}
+		};
+	}
+
 	private void highlight(Planet fromPlanet, Planet toPlanet) {
 		List<Planet> planets = new ArrayList<Planet>();
 		planets.add(fromPlanet);
@@ -485,12 +529,14 @@ public class BoardScreen implements ScreenFeedback {
 		grey.a = 0.6f;
 		TextureRegion lineRegion = resources.gameBoardAtlas.findRegion("line");
 
+		Group grids = new Group();
+		grids.setBounds(0, 0, boardTable.getWidth(), boardTable.getHeight());
+
 		for (int i = 1; i < gameBoard.heightInTiles; i++) {
 			Line line = new Line(grey, Gdx.graphics.getWidth(), lineRegion);
 			line.setY(yOffset * i);
 			line.setHeight(Gdx.graphics.getHeight() * 0.004f);
-			boardTable.addActor(line);
-
+			grids.addActor(line);
 		}
 
 		for (int i = 1; i < gameBoard.widthInTiles; i++) {
@@ -498,8 +544,10 @@ public class BoardScreen implements ScreenFeedback {
 			horizontalLine.setY(0);
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
-			boardTable.addActor(horizontalLine);
+			grids.addActor(horizontalLine);
 		}
+
+		boardTable.addActor(grids);
 	}
 
 	private void createPlanetIcons() {

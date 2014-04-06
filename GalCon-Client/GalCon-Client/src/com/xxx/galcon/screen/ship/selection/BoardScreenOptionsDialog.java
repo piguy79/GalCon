@@ -45,9 +45,9 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 
 		addActor(confirmText);
 
-		if(gameBoard.players.size() == 1){
+		if (gameBoard.players.size() == 1) {
 			createCancelButton(resources.fontShader, resources.skin);
-		}else{
+		} else {
 			createResignButton(resources.fontShader, resources.skin);
 		}
 		createRefreshButton(resources.fontShader, resources.skin);
@@ -72,7 +72,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		resignButton.addListener(resignListener);
 		resignText.addListener(resignListener);
 	}
-	
+
 	private void createCancelButton(ShaderProgram fontShader, UISkin skin) {
 		cancelButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		cancelButton.setLayoutEnabled(false);
@@ -155,7 +155,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			fire(new RefreshEvent());
 		}
 	};
-	
+
 	private ClickListener cancelListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {

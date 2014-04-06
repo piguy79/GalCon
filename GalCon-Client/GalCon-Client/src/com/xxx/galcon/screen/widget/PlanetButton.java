@@ -29,9 +29,6 @@ public class PlanetButton extends Group {
 	private Resources resources;
 	private GameBoard gameBoard;
 
-	private float centerXUsed;
-	private float centerYUsed;
-
 	private Image ownedByHighlightImage;
 	private Image ownedByImage;
 

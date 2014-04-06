@@ -50,6 +50,7 @@ import com.xxx.galcon.screen.BoardScreen.BoardCalculations;
 import com.xxx.galcon.screen.BoardScreen.ScreenCalculations;
 import com.xxx.galcon.screen.MoveHud;
 import com.xxx.galcon.screen.Resources;
+import com.xxx.galcon.screen.event.HarvestEvent;
 import com.xxx.galcon.screen.event.MoveListener;
 import com.xxx.galcon.screen.event.RoundInformationEvent;
 import com.xxx.galcon.screen.hud.PlanetInfoHud;
@@ -534,9 +535,20 @@ public abstract class HighlightOverlay extends Overlay {
 
 		@Override
 		public void createTopHud(Planet planet) {
-			topHud = new PlanetInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
+			topHud = new PlanetInfoHud(planet, gameBoard, resources, screenCalcs.getTopHudBounds().size.width,
 					screenCalcs.getTopHudBounds().size.height);
-			topHud.updateRegen((int) planet.regen);
+			topHud.addListener(new EventListener() {
+				@Override
+				public boolean handle(Event event) {
+					if (event instanceof HarvestEvent) {
+						hide();
+						remove();
+						onClose();
+					}
+
+					return false;
+				}
+			});
 
 			this.planet = planet;
 		}
