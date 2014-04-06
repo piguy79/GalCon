@@ -321,7 +321,6 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		    removeMovesWhichHaveBeenExecuted(game);
 			decrementCurrentShipCountOnFromPlanets(game);
 			destroyAbilityPlanets(game);
-			decreasePopulationIfUnderHarvest(game);
 			game.round.moved = [];
 			
 			processMoves(playerHandle, game);
@@ -388,25 +387,9 @@ var planetShouldBeDestroyed = function(game, planet){
 var destroyAbilityPlanets = function(game){
 	_.each(game.planets, function(planet){
 		if(planet.harvest && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
-			planet.regen = 0;
 			planet.status = "DEAD";
 		}
 	})
-}
-
-var decreasePopulationIfUnderHarvest = function(game){
-	_.each(game.planets, function(planet){
-		if(planet.population <= 0){
-			planet.population = 0;
-		}else if(planet.harvest && planet.harvest.status === 'ACTIVE'){
-			var roundsLeft = game.config.values['harvestRounds'] - (game.round.num - planet.harvest.startingRound);
-			if(roundsLeft <= 0){
-				planet.population = 0;
-			}else{
-				planet.population = planet.population - (planet.population / roundsLeft);
-			}
-		}
-	});
 }
 
 var removeMovesWhichHaveBeenExecuted = function(game){
@@ -420,7 +403,6 @@ var removeMovesWhichHaveBeenExecuted = function(game){
 }
 
 var decrementCurrentShipCountOnFromPlanets = function(game){
-
 	if(game.moves){
 		for(var i = 0; i < game.moves.length; i++){
 			var move = game.moves[i];
@@ -431,7 +413,6 @@ var decrementCurrentShipCountOnFromPlanets = function(game){
 			}			
 		}
 	}
-	
 }
 
 var findFromPlanet = function(planets, fromPlanetName){
