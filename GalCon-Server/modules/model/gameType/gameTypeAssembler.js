@@ -17,7 +17,8 @@ exports.gameTypes = {
 		processMoves : speedIncreaseGameType.applyMovesToGame,
 		addPlanetAbilities : mixedAbilityGameType.addPlanetAbilities,
 		findCorrectDefenseForAPlanet : defenceStrengthIncreaseGameType.findCorrectDefenseForAPlanet,
-		findCorrectFleetToAttackEnemyPlanet : attackStrengthIncreaseGameType.findCorrectFleetToAttackEnemyPlanet
+		findCorrectFleetToAttackEnemyPlanet : attackStrengthIncreaseGameType.findCorrectFleetToAttackEnemyPlanet,
+		harvestAvailable : true
 	},
 	speedIncrease : {
 		endGameScenario : standardGameType.processPossibleEndGame,

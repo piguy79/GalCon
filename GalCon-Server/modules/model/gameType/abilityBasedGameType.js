@@ -10,9 +10,6 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 
 	var abilitiesToAdd = planetsFarFromHomes.length * 0.2;
 	
-	console.log("ABILITIES ARRAY **** " + abilitiesArray);
-	console.log(abilitiesArray[1]);
-	
 	if(abilitiesToAdd < 1){
 		abilitiesToAdd = 1;
 	}
@@ -40,14 +37,18 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 
 exports.harvestEnhancement = function(player, game){
 	
-	var harvestEnhance = 0;	
-	var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.handle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
-	
-	if(harvestCapablePlanets.length > 0){
-		harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;
+	if(gameTypeAssembler.gameTypes[game.gameType].harvestAvailable && gameTypeAssembler.gameTypes[game.gameType].harvestAvailable === true){
+		var harvestEnhance = 0;	
+		var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.handle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
+		
+		if(harvestCapablePlanets.length > 0){
+			harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;
+		}
+		
+		return harvestEnhance;	
 	}
 	
-	return harvestEnhance;	
+	return 0;
 }
 
 
