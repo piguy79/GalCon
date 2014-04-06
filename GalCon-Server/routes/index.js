@@ -377,13 +377,19 @@ exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
 
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
-	for ( var i = 0; i < game.moves.length; i++) {
+	for (var i = 0; i < game.moves.length; i++) {
 		var move = game.moves[i];
 
 		if ((move.handle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
 			decrementPlanetShipNumber(game, move);
 		}
 	}
+	
+	_.each(game.planets, function(planet) {
+		if(planet.harvest && planet.harvest.startingRound === game.round.num && planet.handle !== playerWhoCalledTheUrl) {
+			planet.harvest = undefined;
+		}
+	});
 	
 	game.moves = _.reject(game.moves, function(move){
 		return move.handle !== playerWhoCalledTheUrl && move.executed === false;
