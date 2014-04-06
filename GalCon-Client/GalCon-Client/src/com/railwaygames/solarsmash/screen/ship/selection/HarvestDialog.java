@@ -19,11 +19,12 @@ public class HarvestDialog extends OKCancelDialog {
 		String harvestRounds = gameBoard.gameConfig.getValue(ConfigConstants.HARVEST_ROUNDS);
 
 		confirmText = new ShaderLabel(resources.fontShader, "Harvest will take\n" + harvestRounds
-				+ " rounds\n\nContinue?", resources.skin, Constants.UI.BASIC_BUTTON_TEXT);
+				+ " rounds to complete\n\nContinue?", resources.skin, Constants.UI.DEFAULT_FONT);
 		confirmText.setAlignment(Align.center);
-		confirmText.setY(getHeight() * 0.6f);
+		confirmText.setY(getHeight() * 0.2f);
+		confirmText.setX(0);
 		confirmText.setWidth(getWidth());
-		confirmText.setColor(Color.CLEAR);
+		confirmText.setColor(Color.WHITE);
 
 		addActor(confirmText);
 	}
