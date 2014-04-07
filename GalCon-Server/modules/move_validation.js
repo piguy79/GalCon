@@ -3,14 +3,14 @@ var validator = require("validator"),
 	mongoose = require('./model/mongooseConnection').mongoose,
 	gameManager = require('./model/game');
 
-exports.validate = function(gameId, handle, moves){
+exports.validate = function(gameId, handle, moves, harvests){
 	
 	var promise = new mongoose.Promise();
 	var p = gameManager.findById(gameId);
 	p.then(function(game) {
 		var valid = false;
 		if(moves && moves.length > 0){
-			valid = runValidate(game, handle, moves);
+			valid = runValidate(game, handle, moves, harvests);
 		}else{
 			valid = runPlayerValidate(game, handle);
 		}
@@ -22,9 +22,10 @@ exports.validate = function(gameId, handle, moves){
 
 }
 
-var runValidate = function(game, handle, moves){
+var runValidate = function(game, handle, moves, harvests){
 	return playerOwnsFromPlanets(game, handle, moves) && fleetsCannotExceedTheshipsOnAPlanet(game.planets, moves) 
-	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game) && playerIsPartOfThisGame(game, handle);
+	&& mustBeValidFromAndToPlanets(game.planets, moves) && playerHasNotMovedThisRound(game, handle) && gameIsNotOver(game) && playerIsPartOfThisGame(game, handle)
+	&& harvestIsValid(game, harvests);
 }
 
 var runPlayerValidate = function(game, handle){
@@ -90,4 +91,29 @@ var playerIsPartOfThisGame = function(game, handle){
 	});
 		
 	return movePlayer && movePlayer !== "" ? true : false;
+}
+
+var harvestIsValid = function(game, handle, harvests){
+	if(harvests && harvests.length > 0){
+		return harvestIsAvailableForThisGameType(game) && playerOwnsHarvestPlanets(game.planets, handle, harvests);
+	}
+	
+	return true;
+}
+
+var harvestIsAvailableForThisGameType = function(game){
+	if(gameTypeAssembler.gameTypes[game.gameType].harvestAvailable && gameTypeAssembler.gameTypes[game.gameType].harvestAvailable === true){
+		return true;
+	}
+	
+	return false;
+}
+
+var playerOwnsHarvestPlanets = function(planets, handle, harvests){
+	var harvestPlanets = _.pluck(harvests, 'planet');
+	var ownedPlanets = _.filter(game.planets, function(planet){
+		return planet.handle === handle;
+	});
+	
+	return _.difference(harvestPlanets, _.pluck(ownedPlanets, 'name')).length === 0;
 }
