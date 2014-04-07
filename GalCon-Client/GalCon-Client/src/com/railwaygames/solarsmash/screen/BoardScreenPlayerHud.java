@@ -378,6 +378,23 @@ public class BoardScreenPlayerHud extends Group {
 				bonuses.put(abbrev, bonus);
 			}
 
+			abilites = gameBoard.ownedPlanetsUnderHarvest(player);
+
+			for (int i = 0; i < abilites.size(); ++i) {
+				String ability = abilites.get(i);
+				String abbrev = ABILITY_TO_ABBREVIATION.get(ability);
+				if (abbrev == null) {
+					throw new IllegalArgumentException("BoardScreenPlayerHud does not understand: " + abilites.get(i));
+				}
+				Double configBonus = Double.parseDouble(gameBoard.gameConfig.getValue("harvestEnhancement"));
+				Double bonus = 0d;
+				if (bonuses.containsKey(abbrev)) {
+					bonus = bonuses.get(abbrev);
+				}
+				bonus += configBonus;
+				bonuses.put(abbrev, bonus);
+			}
+
 			return bonuses;
 		}
 	}

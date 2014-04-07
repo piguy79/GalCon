@@ -50,11 +50,11 @@ public class GameBoard extends JsonConvertible {
 		}
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
-		
-		if(jsonObject.has("social")){
+
+		if (jsonObject.has("social")) {
 			this.social = new Social();
 			this.social.consume(jsonObject.getJSONObject(Constants.SOCIAL));
-		}		
+		}
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.rankOfInitialPlayer = jsonObject.getLong(Constants.RANK_OF_INITIAL_PLAYER);
 		this.map = jsonObject.getLong(Constants.MAP);
@@ -100,12 +100,27 @@ public class GameBoard extends JsonConvertible {
 
 		for (int i = 0; i < planets.size(); ++i) {
 			Planet planet = planets.get(i);
-			if (planet.isOwnedBy(player.handle) && planet.hasAbility()) {
+			if (planet.isOwnedBy(player.handle) && planet.hasAbility() && planet.isAlive()) {
 				ownedPlanetAbilities.add(planet.ability);
 			}
 		}
 
 		return ownedPlanetAbilities;
+	}
+
+	private List<String> ownedPlanetsUnderHarvest = new ArrayList<String>();
+
+	public List<String> ownedPlanetsUnderHarvest(Player player) {
+		ownedPlanetsUnderHarvest.clear();
+
+		for (int i = 0; i < planets.size(); ++i) {
+			Planet planet = planets.get(i);
+			if (planet.isOwnedBy(player.handle) && planet.hasAbility() && planet.isUnderHarvest()) {
+				ownedPlanetsUnderHarvest.add(planet.ability);
+			}
+		}
+
+		return ownedPlanetsUnderHarvest;
 	}
 
 	public Planet getPlanet(String name) {

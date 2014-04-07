@@ -388,6 +388,7 @@ var destroyAbilityPlanets = function(game){
 	_.each(game.planets, function(planet){
 		if(planet.harvest && planet.harvest.status === 'ACTIVE' && planetShouldBeDestroyed(game, planet)){
 			planet.status = "DEAD";
+			planet.harvest.status = "INACTIVE";
 		}
 	})
 }
