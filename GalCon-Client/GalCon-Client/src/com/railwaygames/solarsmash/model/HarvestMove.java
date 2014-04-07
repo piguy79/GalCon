@@ -5,11 +5,11 @@ import org.json.JSONObject;
 
 import com.railwaygames.solarsmash.model.base.JsonConstructable;
 
-public class HarvestMove implements JsonConstructable{
-	
+public class HarvestMove implements JsonConstructable {
+
 	public String planet;
-	
-	public HarvestMove(String planetName){
+
+	public HarvestMove(String planetName) {
 		this.planet = planetName;
 	}
 
@@ -19,5 +19,4 @@ public class HarvestMove implements JsonConstructable{
 		jsonObject.put("planet", planet);
 		return jsonObject;
 	}
-
 }

@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.config.ConfigConstants;
+import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.Planet;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.screen.BoardScreen.BoardCalculations;
@@ -25,19 +27,27 @@ public class Moon extends Group {
 	private Image moonHarvest;
 	private Image moonHighlight;
 	private Resources resources;
+	private GameBoard gameBoard;
+	private Image moonImage;
 
-	public Moon(Resources resources, PlanetButton associatedPlanetButton, float height, float width) {
+	public Moon(Resources resources, GameBoard gameBoard, PlanetButton associatedPlanetButton, float height, float width) {
 		this.resources = resources;
 		TextureRegionDrawable moon = new TextureRegionDrawable(resources.planetAtlas.findRegion("moon"));
 
 		moon.setMinHeight(height);
 		moon.setMinWidth(width);
-		addActor(new Image(moon));
+		moonImage = new Image(moon);
+		addActor(moonImage);
 		this.associatedPlanetButton = associatedPlanetButton;
+		this.gameBoard = gameBoard;
 		setupMovementSpeedAndDirection();
 
 		setWidth(width);
 		setHeight(height);
+
+		if (!associatedPlanetButton.planet.isAlive()) {
+			moonImage.setColor(Color.valueOf("333333"));
+		}
 	}
 
 	private void setupMovementSpeedAndDirection() {
@@ -79,11 +89,21 @@ public class Moon extends Group {
 
 					harvestBeamImage.addAction(action);
 				}
-				if (moonHarvest == null) {
-					moonHarvest = new Image(new TextureRegionDrawable(
-							resources.planetAtlas.findRegion("moon-harvest-1")));
+				if (moonHarvest == null && planet.isUnderHarvest()) {
+					int roundsUntilHarvestComplete = planet.roundsUntilHarvestIsComplete(gameBoard);
+
+					int harvestStage = Integer.parseInt(gameBoard.gameConfig.getValue(ConfigConstants.HARVEST_ROUNDS))
+							- roundsUntilHarvestComplete;
+					if (harvestStage < 1) {
+						harvestStage = 1;
+					} else if (harvestStage > 5) {
+						harvestStage = 5;
+					}
+
+					moonHarvest = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion("moon-harvest-"
+							+ harvestStage)));
 					moonHarvest.setBounds(0, 0, getWidth(), getHeight());
-					// addActor(moonHarvest);
+					addActor(moonHarvest);
 				}
 				if (moonHighlight == null) {
 					Action action;

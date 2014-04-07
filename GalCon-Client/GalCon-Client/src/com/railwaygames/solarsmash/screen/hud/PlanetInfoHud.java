@@ -45,6 +45,31 @@ public class PlanetInfoHud extends Group {
 
 		if (isHarvestAvailable()) {
 			createHarvestButton(resources.fontShader, resources.skin);
+		} else if (planet.isUnderHarvest()) {
+			createUnderHarvestLabel();
+		}
+	}
+
+	private void createUnderHarvestLabel() {
+		{
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds 'til harvest", resources.skin,
+					Constants.UI.SMALL_FONT);
+			TextBounds bounds = label.getTextBounds();
+			label.setX(getWidth() * 0.4f);
+			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
+			label.setWidth(getWidth() * 0.6f);
+			label.setAlignment(Align.center, Align.center);
+			addActor(label);
+		}
+		{
+			ShaderLabel label = new ShaderLabel(resources.fontShader, ""
+					+ planet.roundsUntilHarvestIsComplete(gameBoard), resources.skin, Constants.UI.LARGE_FONT);
+			TextBounds bounds = label.getTextBounds();
+			label.setX(getWidth() * 0.4f);
+			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
+			label.setWidth(getWidth() * 0.6f);
+			label.setAlignment(Align.center, Align.center);
+			addActor(label);
 		}
 	}
 

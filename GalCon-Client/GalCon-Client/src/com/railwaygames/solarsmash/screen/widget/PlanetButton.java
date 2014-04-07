@@ -42,12 +42,7 @@ public class PlanetButton extends Group {
 		super.setWidth(width);
 		super.setHeight(height);
 
-		String planetTexture = "";
-		if (!planet.isAlive()) {
-			planetTexture = "dead_planet";
-		} else {
-			planetTexture = "planet-regen-" + (int) planet.regen;
-		}
+		String planetTexture = "planet-regen-" + (int) planet.regen;
 
 		bg = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planetTexture)));
 		bg.setWidth(width);
@@ -80,8 +75,8 @@ public class PlanetButton extends Group {
 		}
 
 		if (ownedByHighlightImage == null && (planet.isHome || !owner.equals(Constants.OWNER_NO_ONE))) {
-			ownedByHighlightImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion(planet
-					.isAlive() ? "planet-highlight" : "dead_planet")));
+			ownedByHighlightImage = new Image(new TextureRegionDrawable(
+					resources.planetAtlas.findRegion("planet-highlight")));
 			Color planetColor = planet.getColor(owner, false);
 			planetColor.a = 0.0f;
 			ownedByHighlightImage.setColor(planetColor);
@@ -89,8 +84,7 @@ public class PlanetButton extends Group {
 			ownedByHighlightImage.setHeight(getHeight());
 			addActorAt(1, ownedByHighlightImage);
 
-			ownedByImage = new Image(new TextureRegionDrawable(
-					resources.planetAtlas.findRegion(planet.isAlive() ? "planet-owned" : "dead_planet")));
+			ownedByImage = new Image(new TextureRegionDrawable(resources.planetAtlas.findRegion("planet-owned")));
 			ownedByImage.setWidth(getWidth());
 			ownedByImage.setHeight(getHeight());
 			ownedByImage.setColor(Color.CLEAR);

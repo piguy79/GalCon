@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.badlogic.gdx.graphics.Color;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
+import com.railwaygames.solarsmash.config.ConfigConstants;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class Planet extends JsonConvertible {
@@ -136,6 +137,11 @@ public class Planet extends JsonConvertible {
 
 	public boolean isSavedFromHarvest() {
 		return harvest != null && !harvest.isActive();
+	}
+
+	public int roundsUntilHarvestIsComplete(GameBoard gameBoard) {
+		int harvestRounds = Integer.parseInt(gameBoard.gameConfig.getValue(ConfigConstants.HARVEST_ROUNDS));
+		return harvest.startingRound + 1 + harvestRounds - gameBoard.roundInformation.round;
 	}
 
 	public boolean isAlive() {

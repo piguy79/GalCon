@@ -122,7 +122,7 @@ describe("Harvest an ability planet -", function() {
 			return gameRunner.performTurns(6, currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.regen).toBe(0);
+			expect(abilityPlanet.regen).toBe(1);
 			expect(abilityPlanet.status).toBe("DEAD");
 			expect(abilityPlanet.ships).toBe(22);
 			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});

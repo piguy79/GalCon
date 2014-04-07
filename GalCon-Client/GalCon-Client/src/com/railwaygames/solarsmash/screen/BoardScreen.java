@@ -96,7 +96,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	/**
 	 * Stores and pre-calculates common sizes and ratios of elements on the
-	 * baord screen.
+	 * board screen.
 	 */
 	public static class ScreenCalculations {
 		private static float HUD_BOTTOM_HEIGHT_RATIO = 0.1f;
@@ -460,6 +460,8 @@ public class BoardScreen implements ScreenFeedback {
 					return false;
 				}
 
+				final HarvestEvent hEvent = (HarvestEvent) event;
+
 				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, Gdx.graphics.getWidth() * 0.8f,
 						Gdx.graphics.getHeight() * 0.3f, stage);
 				float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
@@ -472,13 +474,20 @@ public class BoardScreen implements ScreenFeedback {
 					@Override
 					public boolean handle(Event event) {
 						if (event instanceof OKDialogEvent) {
-							// overlay = new TextOverlay("Resigning Game",
-							// resources);
-							// stage.addActor(overlay);
-							// UIConnectionWrapper.resignGame(new
-							// UpdateBoardScreenResultHandler("Could not resign"),
-							// gameBoard.id, GameLoop.USER.handle);
-							// return true;
+							overlay = new DismissableOverlay(resources, new TextOverlay(
+									"Harvest will begin\nthe next round", resources), null);
+							stage.addActor(overlay);
+
+							boolean harvestExists = false;
+							for (HarvestMove harvestMove : inProgressHarvest) {
+								if (harvestMove.planet.equals(hEvent.getPlanetToHarvest())) {
+									harvestExists = true;
+								}
+							}
+							if (!harvestExists) {
+								inProgressHarvest.add(MoveFactory.createHarvestMove(hEvent.getPlanetToHarvest()));
+							}
+							return true;
 						} else if (event instanceof CancelDialogEvent) {
 
 						}
@@ -631,7 +640,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createMoon(PlanetButton planetButton) {
-		final Moon moon = PlanetButtonFactory.createMoon(resources, planetButton, boardCalcs);
+		final Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs);
 
 		float relativeX = planetButton.centerPoint().x - (moon.getWidth() / 2);
 		float relativeY = planetButton.centerPoint().y - (moon.getHeight() / 2);

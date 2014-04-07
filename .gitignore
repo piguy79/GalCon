@@ -11,6 +11,9 @@
 #Eclipse files
 .project
 
+#windows files
+Thumbs.db
+
 # generated files
 bin/
 gen/
