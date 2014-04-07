@@ -1,6 +1,7 @@
 var mongoose = require('./mongooseConnection').mongoose, 
 	db = require('./mongooseConnection').db, 
 	game = require('./game.js'),
+	rankManager = require('./rank.js'),
 	_ = require('underscore');
 
 var leaderboardSchema = mongoose.Schema({
@@ -51,10 +52,10 @@ exports.updateScore = function(boardId, playerHandle, newScore) {
  * Updates the overall and map leaderboards for each player list in 'players'.
  * Returns a promise but with no results.
  */
-exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
+exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon, ranks) {
 	var promise = new mongoose.Promise();
 	promise.complete();
-
+	
 	var lastPromise = promise;
 	players.forEach(function(player) {
 		lastPromise = lastPromise.then(function() {
@@ -68,23 +69,22 @@ exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon) {
 				var scores = _.map(gamesWonByUser, function(game) {return game.endGame ? game.endGame.leaderboardScoreAmount : 0});
 				var currentScore = _.reduce(scores, function(memo, num) { return memo + num}, 0);
 
-				currentScore += gameResultPoints(handleOfPlayerWhoWon, player, players);
+				currentScore += gameResultPoints(handleOfPlayerWhoWon, player, players, ranks );
 				currentScore += userRecordBonusPoints(player, currentScore);
-				
+
 				return exports.updateScore(mapKey, player.handle, currentScore);
 			}).then(null, function(err) {
 				throw new Error(err);
 			});
 		});
 	});
-
 	return lastPromise;
 }
 
 /**
  * Give the game winner a set number of points, plus a bonus for playing a higher level opponent.  Give the game loser 0 points for the game.
  */
-var gameResultPoints = function(handleOfPlayerWhoWon, player, players) {
+var gameResultPoints = function(handleOfPlayerWhoWon, player, players, ranks) {
 	if(handleOfPlayerWhoWon != player.handle) {
 		return 0;
 	}
@@ -92,7 +92,7 @@ var gameResultPoints = function(handleOfPlayerWhoWon, player, players) {
 	var levelDiff = 0;
 	players.forEach(function(p) {
 		if(p.handle != player.handle) {
-			levelDiff += p.rankInfo.level - player.rankInfo.level;
+			levelDiff += rankManager.findRankForAnXp(ranks, p.xp).level - rankManager.findRankForAnXp(ranks, player.xp).level;
 		}
 	});
 	

@@ -43,7 +43,7 @@ exports.findAllRanks = function(){
 	return RankModel.find().sort({level : 1}).exec();
 }
 
-exports.findRankForAnXp = function(ranks, xp){
+exports.findRankForAnXp = function(ranks, xp){	
 	var matchingRank = _.filter(ranks, function(rank){
 		return rank.startFrom <= xp && rank.endAt > xp;
 	})

@@ -110,7 +110,7 @@ describe("Player Matching", function() {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
 		}).then(function(game) {
 			expect(game.map).toEqual(MAP_KEY_1);
-			expect(game.rankOfInitialPlayer).toEqual(1);
+			expect(game.rankOfInitialPlayer).toEqual(15);
 			expect(game.players.length).toEqual(2);
 			expect(game.players[0].handle).toEqual(PLAYER_1_HANDLE);
 			expect(game.players[1].handle).toEqual(PLAYER_2_HANDLE);

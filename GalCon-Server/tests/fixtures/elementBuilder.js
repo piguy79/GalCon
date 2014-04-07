@@ -41,7 +41,7 @@ exports.createUser = function(playerHandle, level, config) {
 			id : "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 			expireDate : expireDate
 		},
-		xp : config.xp || 5000,
+		xp : config.xp || 4000,
 		wins : config.wins || 0,
 		losses : config.losses || 0,
 		coins : config.coins || 5,
