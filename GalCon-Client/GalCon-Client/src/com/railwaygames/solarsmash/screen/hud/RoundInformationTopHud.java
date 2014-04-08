@@ -84,7 +84,7 @@ public class RoundInformationTopHud extends Group {
 		createBackground(false);
 
 		int baseAttack = 0;
-		int baseDefense = 0;
+		int baseDefense = 10000;
 		int attackMultiplier = 0;
 		int defenseMultiplier = 0;
 		String currentOwner = "";
@@ -101,9 +101,25 @@ public class RoundInformationTopHud extends Group {
 		for (Move move : moves) {
 			if (!move.battleStats.diedInAirAttack) {
 				baseAttack += move.shipsToMove;
-				baseDefense = move.battleStats.previousShipsOnPlanet;
 				currentOwner = gameBoard.getPlanet(move.to).owner;
-				previousOwner = move.battleStats.previousPlanetOwner;
+
+				if (currentOwner.equals(move.battleStats.previousPlanetOwner)) {
+					if (previousOwner.isEmpty()) {
+						previousOwner = move.battleStats.previousPlanetOwner;
+					}
+				} else {
+					previousOwner = move.battleStats.previousPlanetOwner;
+					if (previousOwner.equals("")) {
+						previousOwner = Constants.OWNER_NO_ONE;
+					}
+				}
+
+				if (currentOwner.equals(previousOwner)) {
+					baseDefense = Math.min(baseDefense, move.battleStats.previousShipsOnPlanet);
+				} else {
+					baseDefense = move.battleStats.previousShipsOnPlanet;
+				}
+
 				attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
 				defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
 				moveOwner = move.handle;
@@ -118,8 +134,11 @@ public class RoundInformationTopHud extends Group {
 				enemyAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
 			}
 		}
-		if (previousOwner.equals("")) {
-			previousOwner = Constants.OWNER_NO_ONE;
+
+		if (baseAttack == 0) {
+			baseDefense = planet.numberOfShipsToDisplay(gameBoard, false);
+			previousOwner = planet.owner;
+			currentOwner = planet.owner;
 		}
 
 		String attackText = "";
@@ -127,6 +146,7 @@ public class RoundInformationTopHud extends Group {
 		Color attackColor = Color.WHITE;
 		Color defenseColor = Color.WHITE;
 		if (previousOwner.equals(currentOwner) && moveOwner.equals(currentOwner)) {
+			color = planet.getColor(currentOwner, false);
 			attackText = "Transferred";
 			attackColor = getColor(currentOwner);
 			defenseColor = getColor(currentOwner);
