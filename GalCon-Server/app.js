@@ -73,6 +73,7 @@ app.get('/gamequeue/decline', routes.declineInvite);
 app.post('/friends/match', routes.findMatchingFriends);
 app.post('/user/addProvider', routes.addProviderToUser);
 app.post('/game/cancel', routes.cancelGame);
+app.post('/game/claim', routes.claimGame);
 
 
 
