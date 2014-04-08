@@ -1,28 +1,33 @@
 var leaderboard = require('../../modules/model/leaderboard'),  
 	mongoose = require('mongoose'), 
 	game = require('../../modules/model/game'), 
-	user = require('../../modules/model/user');
+	user = require('../../modules/model/user')
+	rankManager = require('../../modules/model/rank');
 
 describe("Leaderboard Tests - Calculate and save:", function() {
 	var mapKey1 = "-100";
 	
 	var newPlayer = new user.UserModel();
 	newPlayer.handle = "newPlayer";
-	newPlayer.rankInfo.level = 3;
+	newPlayer.xp = 10;
 	newPlayer.wins = 0;
 	newPlayer.losses = 0;
 	
 	var averagePlayer1 = new user.UserModel();
 	averagePlayer1.handle = "averagePlayer1";
-	averagePlayer1.rankInfo.level = 3;
+	averagePlayer1.xp = 10;
 	averagePlayer1.wins = 10;
 	averagePlayer1.losses = 10;
 	
 	var averagePlayer2 = new user.UserModel();
 	averagePlayer2.handle = "averagePlayer2";
-	averagePlayer2.rankInfo.level = 3;
+	averagePlayer2.xp = 10;
 	averagePlayer2.wins = 10;
 	averagePlayer2.losses = 5;
+	
+	var ranks = [{level : 1, startFrom : 0, endAt : 100},
+	             {level : 2, startFrom : 100, endAt : 200},
+	             {level : 3, startFrom : 200, endAt : 300}]
 	
 	afterEach(function(done) {
 		leaderboard.LeaderboardModel.remove().where("playerHandle").in([newPlayer.handle, averagePlayer1.handle, averagePlayer2.handle]).exec(function(err) {
@@ -35,7 +40,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 	it("Won first game", function(done) {
 		var p = new mongoose.Promise;
 		p.then(function() {
-			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], averagePlayer1.handle);
+			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], averagePlayer1.handle, ranks);
 		}).then(function() {
 			return leaderboard.LeaderboardModel.findOne({"boardId" : mapKey1, "playerHandle" : averagePlayer1.handle}).exec();
 		}).then(function(leaderboardRow) {
@@ -54,7 +59,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 			return game.GameModel.update({"map" : mapKey1}, 
 					{$set : {"endGame.leaderboardScoreAmount" : 20, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
-			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, averagePlayer2], averagePlayer1.handle);
+			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, averagePlayer2], averagePlayer1.handle, ranks);
 		}).then(function() {
 			return leaderboard.LeaderboardModel.findOne({"boardId" : mapKey1, "playerHandle" : averagePlayer1.handle}).exec();
 		}).then(function(leaderboardRow) {
@@ -73,7 +78,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 			return game.GameModel.update({"map" : mapKey1}, 
 					{$set : {"endGame.leaderboardScoreAmount" : 20, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
-			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], newPlayer.handle);
+			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], newPlayer.handle, ranks);
 		}).then(function() {
 			return leaderboard.LeaderboardModel.findOne({"boardId" : mapKey1, "playerHandle" : averagePlayer1.handle}).exec();
 		}).then(function(leaderboardRow) {
@@ -98,7 +103,7 @@ describe("Leaderboard Tests - Calculate and save:", function() {
 			return game.GameModel.update({"map" : mapKey1, "version" : 3}, 
 					{$set : {"endGame.leaderboardScoreAmount" : 12, "endGame.winnerHandle" : averagePlayer1.handle}}, {"upsert" : true}).exec();
 		}).then(function() {
-			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], averagePlayer1.handle);
+			return leaderboard.calculateAndSave(mapKey1, [averagePlayer1, newPlayer], averagePlayer1.handle, ranks);
 		}).then(function() {
 			return leaderboard.LeaderboardModel.findOne({"boardId" : mapKey1, "playerHandle" : averagePlayer1.handle}).exec();
 		}).then(function(leaderboardRow) {

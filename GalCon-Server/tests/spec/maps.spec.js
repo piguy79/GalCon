@@ -10,9 +10,9 @@ var needle = require("needle"),
 	gameRunner = require('../fixtures/gameRunner'),
 	_ = require('underscore');
 
-describe("Harvest an ability planet -", function() {
+describe("Map xp testing -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
-	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
+	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1, {xp : 5});
 	
 	var ABILITY_MAP_KEY = -100;
 	var ABILITY_MAP = elementBuilder.createMap(ABILITY_MAP_KEY, 5, 6, ['attackIncrease'], 100);
