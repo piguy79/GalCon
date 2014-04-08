@@ -21,7 +21,6 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class PlanetInfoHud extends Group {
 	private Resources resources;
-	private ShaderLabel regenLabel;
 
 	private AtlasRegion bgRegion;
 	private Planet planet;
@@ -39,61 +38,59 @@ public class PlanetInfoHud extends Group {
 		setWidth(width);
 
 		createBackground();
-		createLabels();
-
-		regenLabel.setText("" + (int) planet.regen);
+		createRegenLabels(resources, (int) planet.regen, getWidth(), getHeight(), this);
 
 		if (isHarvestAvailable()) {
 			createHarvestButton(resources.fontShader, resources.skin);
 		} else if (planet.isUnderHarvest()) {
-			createUnderHarvestLabel();
+			createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(), this);
 		}
 	}
 
-	private void createUnderHarvestLabel() {
+	public static void createUnderHarvestLabel(Resources resources, GameBoard gameBoard, Planet planet, float width,
+			float height, Group parent) {
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds 'til harvest", resources.skin,
-					Constants.UI.SMALL_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds remaining with\nharvest bonus", resources.skin,
+					Constants.UI.X_SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.4f);
-			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.6f);
+			label.setX(width * 0.4f);
+			label.setY(height * 0.75f - bounds.height * 0.5f);
+			label.setWidth(width * 0.6f);
 			label.setAlignment(Align.center, Align.center);
-			addActor(label);
+			parent.addActor(label);
 		}
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, ""
 					+ planet.roundsUntilHarvestIsComplete(gameBoard), resources.skin, Constants.UI.LARGE_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getWidth() * 0.4f);
-			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.6f);
+			label.setX(width * 0.4f);
+			label.setY(height * 0.15f - bounds.height * 0.5f);
+			label.setWidth(width * 0.6f);
 			label.setAlignment(Align.center, Align.center);
-			addActor(label);
+			parent.addActor(label);
 		}
 	}
 
-	private void createLabels() {
+	public static void createRegenLabels(Resources resources, int regen, float width, float height, Group parent) {
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Regen rate", resources.skin,
 					Constants.UI.DEFAULT_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getX());
-			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.4f);
+			label.setX(0);
+			label.setY(height * 0.7f - bounds.height * 0.5f);
+			label.setWidth(width * 0.4f);
 			label.setAlignment(Align.center, Align.center);
-			addActor(label);
+			parent.addActor(label);
 		}
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + regen, resources.skin,
+					Constants.UI.LARGE_FONT);
 			TextBounds bounds = label.getTextBounds();
-			label.setX(getX());
-			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
-			label.setWidth(getWidth() * 0.4f);
+			label.setX(0);
+			label.setY(height * 0.15f - bounds.height * 0.5f);
+			label.setWidth(width * 0.4f);
 			label.setAlignment(Align.center, Align.center);
-			addActor(label);
-
-			regenLabel = label;
+			parent.addActor(label);
 		}
 	}
 

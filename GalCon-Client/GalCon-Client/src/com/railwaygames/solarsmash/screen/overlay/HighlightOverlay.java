@@ -58,6 +58,7 @@ import com.railwaygames.solarsmash.screen.hud.RoundInformationBottomHud;
 import com.railwaygames.solarsmash.screen.hud.RoundInformationTopHud;
 import com.railwaygames.solarsmash.screen.hud.ShipSelectionHud;
 import com.railwaygames.solarsmash.screen.hud.SingleMoveInfoHud;
+import com.railwaygames.solarsmash.screen.widget.Moon;
 import com.railwaygames.solarsmash.screen.widget.PlanetButton;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
@@ -335,8 +336,11 @@ public abstract class HighlightOverlay extends Overlay {
 	public HighlightOverlay add(Planet planet) {
 		final PlanetButton planetButton = PlanetButtonFactory.createPlanetButton(planet, gameBoard, true, boardCalcs,
 				resources);
-
 		addActor(planetButton);
+
+		Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs, null);
+		moon.updateLocation(this, boardCalcs, new Point(0, 0));
+		addActor(moon);
 
 		return this;
 	}
@@ -381,8 +385,11 @@ public abstract class HighlightOverlay extends Overlay {
 
 		private Map<String, List<Move>> planetToMoves;
 		private Iterator<String> planetIterator;
+		private Iterator<Planet> harvestIterator;
 
 		public RoundInformationHuds() {
+			harvestIterator = findPlanetsUnderHarvest().iterator();
+
 			planetToMoves = new HashMap<String, List<Move>>();
 			for (Move move : gameBoard.movesInProgress) {
 				if (move.executed) {
@@ -398,6 +405,16 @@ public abstract class HighlightOverlay extends Overlay {
 			}
 
 			planetIterator = planetToMoves.keySet().iterator();
+		}
+
+		private List<Planet> findPlanetsUnderHarvest() {
+			List<Planet> planetsUnderHarvest = new ArrayList<Planet>();
+			for (Planet planet : gameBoard.planets) {
+				if (planet.isUnderHarvest()) {
+					planetsUnderHarvest.add(planet);
+				}
+			}
+			return planetsUnderHarvest;
 		}
 
 		@Override
@@ -416,10 +433,19 @@ public abstract class HighlightOverlay extends Overlay {
 					if (!(event instanceof RoundInformationEvent)) {
 						return false;
 					}
+					
+					HighlightOverlay.this.clear();
+					bottomHud.changeButtonText("Next >");
+
+					if (harvestIterator.hasNext()) {
+						Planet planet = harvestIterator.next();
+						topHud.createPlanetUnderHarvestLabels(planet);
+						HighlightOverlay.this.add(planet);
+
+						return true;
+					}
 
 					if (planetIterator.hasNext()) {
-						HighlightOverlay.this.clear();
-						bottomHud.changeButtonText("Next >");
 						List<Move> moves = planetToMoves.get(planetIterator.next());
 
 						boolean airAttackOccured = false;

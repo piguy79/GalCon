@@ -64,6 +64,14 @@ public class RoundInformationTopHud extends Group {
 		return Constants.Colors.NEUTRAL;
 	}
 
+	public void createPlanetUnderHarvestLabels(Planet planet) {
+		clear();
+		createBackground(true);
+
+		PlanetInfoHud.createRegenLabels(resources, (int) planet.regen, getWidth(), getHeight(), this);
+		PlanetInfoHud.createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(), this);
+	}
+
 	public void createAttackLabels(List<Move> moves) {
 		clear();
 		createBackground(true);

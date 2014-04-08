@@ -29,6 +29,7 @@ public class Moon extends Group {
 	private Resources resources;
 	private GameBoard gameBoard;
 	private Image moonImage;
+	private Moon overlayMoon = null;
 
 	public Moon(Resources resources, GameBoard gameBoard, PlanetButton associatedPlanetButton, float height, float width) {
 		this.resources = resources;
@@ -46,7 +47,7 @@ public class Moon extends Group {
 		setHeight(height);
 
 		if (!associatedPlanetButton.planet.isAlive()) {
-			moonImage.setColor(Color.valueOf("333333"));
+			moonImage.setColor(Color.valueOf("444444"));
 		}
 	}
 
@@ -88,6 +89,8 @@ public class Moon extends Group {
 					boardTable.addActorAt(2, harvestBeamImage);
 
 					harvestBeamImage.addAction(action);
+					boardTable.addActor(associatedPlanetButton);
+					addActor(moonImage);
 				}
 				if (moonHarvest == null && planet.isUnderHarvest()) {
 					int roundsUntilHarvestComplete = planet.roundsUntilHarvestIsComplete(gameBoard);
@@ -127,5 +130,13 @@ public class Moon extends Group {
 				harvestBeamImage.setRotation(MathUtils.radiansToDegrees * trueAngle);
 			}
 		}
+
+		if (overlayMoon != null) {
+			overlayMoon.updateLocation(boardTable, boardCalcs, point);
+		}
+	}
+
+	public void setOverlayMoon(Moon overlayMoon) {
+		this.overlayMoon = overlayMoon;
 	}
 }

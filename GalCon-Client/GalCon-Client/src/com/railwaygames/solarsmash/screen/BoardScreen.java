@@ -33,7 +33,6 @@ import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.math.GalConMath;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
 import com.railwaygames.solarsmash.model.GameBoard;
@@ -210,6 +209,7 @@ public class BoardScreen implements ScreenFeedback {
 	public void setGameBoard(GameBoard gameBoard) {
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
+		moons.clear();
 
 		stage = new Stage();
 		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -640,7 +640,7 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void createMoon(PlanetButton planetButton) {
-		final Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs);
+		final Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs, moons);
 
 		float relativeX = planetButton.centerPoint().x - (moon.getWidth() / 2);
 		float relativeY = planetButton.centerPoint().y - (moon.getHeight() / 2);
@@ -771,8 +771,6 @@ public class BoardScreen implements ScreenFeedback {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		// renderHarvest();
-
 		if (gameBoard != null) {
 			renderMoons();
 		}
@@ -783,27 +781,11 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderMoons() {
 		for (Moon moon : moons) {
-			Point newPosition = findMoonPosition(moon);
+			Point newPosition = PlanetButtonFactory.findMoonPosition(moon, boardCalcs);
 			if (newPosition != null) {
 				moon.updateLocation(boardTable, boardCalcs, newPosition);
 			}
 		}
-	}
-
-	private Point findMoonPosition(Moon moon) {
-		PlanetButton associatedPlanet = planetButtons.get(moon.associatedPlanetButton.planet.name);
-		Point movePoint = null;
-		if (associatedPlanet != null && gameBoard != null) {
-			if (moon.angle == 360) {
-				moon.angle = 0;
-			}
-
-			movePoint = GalConMath.nextPointInEllipse(associatedPlanet.centerPoint(),
-					boardCalcs.getTileSize().width * 0.7f, boardCalcs.getTileSize().height * 0.46f, moon.angle);
-			moon.angle = (float) (moon.angle + moon.rateOfOrbit);
-		}
-
-		return movePoint;
 	}
 
 	private void clearTouchedPlanets() {
