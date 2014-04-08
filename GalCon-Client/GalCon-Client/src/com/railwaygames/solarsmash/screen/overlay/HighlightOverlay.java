@@ -406,6 +406,32 @@ public abstract class HighlightOverlay extends Overlay {
 				}
 			}
 
+			/*
+			 * if an enemy transfer is detected without any attacks, don't show
+			 * it
+			 */
+			List<String> keysToRemove = new ArrayList<String>();
+			for (Map.Entry<String, List<Move>> planetMoves : planetToMoves.entrySet()) {
+				boolean keepMove = true;
+				for (int i = 0; i < planetMoves.getValue().size(); ++i) {
+					Move move = planetMoves.getValue().get(i);
+					Planet planet = gameBoard.getPlanet(move.to);
+					if (!move.handle.equals(GameLoop.USER.handle)
+							&& move.battleStats.previousPlanetOwner.equals(planet.owner)) {
+						keepMove = false;
+					} else {
+						keepMove = true;
+					}
+				}
+
+				if (!keepMove) {
+					keysToRemove.add(planetMoves.getKey());
+				}
+			}
+			for (String key : keysToRemove) {
+				planetToMoves.remove(key);
+			}
+
 			planetIterator = planetToMoves.keySet().iterator();
 		}
 
