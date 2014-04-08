@@ -388,9 +388,12 @@ public abstract class HighlightOverlay extends Overlay {
 		private Map<String, List<Move>> planetToMoves;
 		private Iterator<String> planetIterator;
 		private Iterator<Planet> harvestIterator;
+		private List<Planet> savedFromHarvest;
+		private Planet savedPlanet;
 
 		public RoundInformationHuds() {
 			harvestIterator = findPlanetsUnderHarvest().iterator();
+			savedFromHarvest = findPlanetsSavedFromHarvest();
 
 			planetToMoves = new HashMap<String, List<Move>>();
 			for (Move move : gameBoard.movesInProgress) {
@@ -445,6 +448,16 @@ public abstract class HighlightOverlay extends Overlay {
 			return planetsUnderHarvest;
 		}
 
+		private List<Planet> findPlanetsSavedFromHarvest() {
+			List<Planet> planetsSavedFromHarvest = new ArrayList<Planet>();
+			for (Planet planet : gameBoard.planets) {
+				if (planet.isSavedFromHarvest(gameBoard)) {
+					planetsSavedFromHarvest.add(planet);
+				}
+			}
+			return planetsSavedFromHarvest;
+		}
+
 		@Override
 		public void createTopHud(List<Move> object) {
 			Size size = screenCalcs.getTopHudBounds().size;
@@ -465,6 +478,14 @@ public abstract class HighlightOverlay extends Overlay {
 					HighlightOverlay.this.clear();
 					bottomHud.changeButtonText("Next >");
 
+					if (savedPlanet != null) {
+						topHud.createPlanetSavedFromHarvestLabels(savedPlanet);
+						HighlightOverlay.this.add(savedPlanet);
+						savedPlanet = null;
+
+						return true;
+					}
+
 					if (harvestIterator.hasNext()) {
 						Planet planet = harvestIterator.next();
 						topHud.createPlanetUnderHarvestLabels(planet);
@@ -475,6 +496,11 @@ public abstract class HighlightOverlay extends Overlay {
 
 					if (planetIterator.hasNext()) {
 						List<Move> moves = planetToMoves.get(planetIterator.next());
+
+						Planet toPlanet = gameBoard.getPlanet(moves.get(0).to);
+						if (savedFromHarvest.contains(toPlanet)) {
+							savedPlanet = toPlanet;
+						}
 
 						boolean airAttackOccured = false;
 						for (Move move : moves) {

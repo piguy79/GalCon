@@ -18,8 +18,8 @@ public class HarvestDialog extends OKCancelDialog {
 
 		String harvestRounds = gameBoard.gameConfig.getValue(ConfigConstants.HARVEST_ROUNDS);
 
-		confirmText = new ShaderLabel(resources.fontShader, "Harvest will take\n" + harvestRounds
-				+ " rounds to complete\n\nContinue?", resources.skin, Constants.UI.DEFAULT_FONT);
+		confirmText = new ShaderLabel(resources.fontShader, "Harvest bonus will last\nfor " + harvestRounds
+				+ " rounds and result\nin the moon's destruction\n\nContinue?", resources.skin, Constants.UI.DEFAULT_FONT);
 		confirmText.setAlignment(Align.center);
 		confirmText.setY(getHeight() * 0.2f);
 		confirmText.setX(0);

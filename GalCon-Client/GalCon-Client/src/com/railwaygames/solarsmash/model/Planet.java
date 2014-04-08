@@ -135,8 +135,8 @@ public class Planet extends JsonConvertible {
 		return harvest != null && harvest.isActive();
 	}
 
-	public boolean isSavedFromHarvest() {
-		return harvest != null && !harvest.isActive();
+	public boolean isSavedFromHarvest(GameBoard gameBoard) {
+		return harvest != null && harvest.saveRound == gameBoard.roundInformation.round - 1;
 	}
 
 	public int roundsUntilHarvestIsComplete(GameBoard gameBoard) {

@@ -72,6 +72,41 @@ public class RoundInformationTopHud extends Group {
 		PlanetInfoHud.createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(), this);
 	}
 
+	public void createPlanetSavedFromHarvestLabels(Planet planet) {
+		clear();
+		createBackground(true);
+
+		String text = "Denizens rejoice and grant a " + gameBoard.gameConfig.getValue("harvestSavior")
+				+ " ship bonus for saving their moon from destruction";
+		if (!planet.owner.equals(GameLoop.USER.handle)) {
+			text = "Enemy has saved this moon from destruction and has been granted a "
+					+ gameBoard.gameConfig.getValue("harvestSavior") + " ship bonus";
+		}
+
+		{
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "Saved!", resources.skin,
+					Constants.UI.DEFAULT_FONT);
+			TextBounds bounds = label.getTextBounds();
+			label.setX(getWidth() * 0.02f);
+			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
+			label.setWidth(getWidth() * 0.5f);
+			label.setAlignment(Align.left, Align.left);
+			label.setColor(planet.getColor(planet.owner, true));
+			addActor(label);
+		}
+
+		{
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.X_SMALL_FONT);
+			TextBounds bounds = label.getTextBounds();
+			label.setX(getWidth() * 0.02f);
+			label.setY(getHeight() * 0.3f - bounds.height * 0.5f);
+			label.setWidth(getWidth() - getWidth() * 0.04f);
+			label.setWrap(true);
+			label.setAlignment(Align.left, Align.left);
+			addActor(label);
+		}
+	}
+
 	public void createAttackLabels(List<Move> moves) {
 		clear();
 		createBackground(true);
