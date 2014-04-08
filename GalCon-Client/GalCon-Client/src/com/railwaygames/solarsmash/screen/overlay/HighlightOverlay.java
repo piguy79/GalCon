@@ -338,9 +338,11 @@ public abstract class HighlightOverlay extends Overlay {
 				resources);
 		addActor(planetButton);
 
-		Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs, null);
-		moon.updateLocation(this, boardCalcs, new Point(0, 0));
-		addActor(moon);
+		if (planet.hasAbility()) {
+			Moon moon = PlanetButtonFactory.createMoon(resources, gameBoard, planetButton, boardCalcs, null);
+			moon.updateLocation(this, boardCalcs, new Point(0, 0));
+			addActor(moon);
+		}
 
 		return this;
 	}
@@ -433,7 +435,7 @@ public abstract class HighlightOverlay extends Overlay {
 					if (!(event instanceof RoundInformationEvent)) {
 						return false;
 					}
-					
+
 					HighlightOverlay.this.clear();
 					bottomHud.changeButtonText("Next >");
 
