@@ -15,7 +15,7 @@ var speedIncreasePlanetsHeldByPlayer = function(config, handle, planets, game){
 	}
 	
 	if(abilityDetected){
-		count += abilityBasedGameType.harvestEnhancement(handle, game)
+		count += abilityBasedGameType.harvestEnhancement(handle, game, abilityBasedGameType.SPEED_ABILITY)
 	}
 	
 	return count;

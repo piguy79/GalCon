@@ -23,7 +23,7 @@ exports.findCorrectFleetToAttackEnemyPlanet = function(config, planets, player, 
 	}
 	
 	if(abilityDetected){
-		attackMultiplier += abilityBasedGameType.harvestEnhancement(player, game)
+		attackMultiplier += abilityBasedGameType.harvestEnhancement(player, game, abilityBasedGameType.ATTACK_INC_ABILITY)
 	}
 	
 	return attackMultiplier;
