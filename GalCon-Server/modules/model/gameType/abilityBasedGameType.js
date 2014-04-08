@@ -35,11 +35,11 @@ exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
 	
 }
 
-exports.harvestEnhancement = function(player, game){
+exports.harvestEnhancement = function(player, game, ability){
 	
 	if(gameTypeAssembler.gameTypes[game.gameType].harvestAvailable && gameTypeAssembler.gameTypes[game.gameType].harvestAvailable === true){
 		var harvestEnhance = 0;	
-		var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.handle === player && planet.ability && planet.harvest && planet.harvest.status === "ACTIVE"});
+		var harvestCapablePlanets = _.filter(game.planets, function(planet){ return planet.handle === player && planet.ability && planet.ability === ability && planet.harvest && planet.harvest.status === "ACTIVE"});
 		
 		if(harvestCapablePlanets.length > 0){
 			harvestEnhance = parseFloat(game.config.values['harvestEnhancement']) * harvestCapablePlanets.length;

@@ -132,3 +132,13 @@ exports.cancelGame = function(handle, gameId, session) {
 
 	return needleWithPromise(needle.post, "/game/cancel", postData);
 };
+
+exports.claimVictory = function(handle, gameId, session) {
+	var postData = {
+		gameId : gameId,
+		handle : handle,
+		session : session
+	};
+
+	return needleWithPromise(needle.post, "/game/claim", postData);
+};

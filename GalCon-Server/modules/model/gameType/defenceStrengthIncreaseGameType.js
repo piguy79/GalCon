@@ -21,7 +21,7 @@ exports.findCorrectDefenseForAPlanet = function(config, planets, player, game){
 	}
 	
 	if(abilityDetected){
-		defMultiplier += abilityBasedGameType.harvestEnhancement(player, game)
+		defMultiplier += abilityBasedGameType.harvestEnhancement(player, game, abilityBasedGameType.DEF_INC_ABILITY)
 	}
 	
 	return defMultiplier;

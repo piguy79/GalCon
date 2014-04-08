@@ -12,6 +12,7 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	validation = require('../modules/validation'),
 	moveValidation = require('../modules/move_validation'),
 	inviteValidation = require('../modules/invite_validation'),
+	claimValidation = require('../modules/claim_validation'),
 	googleapis = require('googleapis')
 	,ObjectId = require('mongoose').Types.ObjectId;
 
@@ -1095,4 +1096,42 @@ exports.cancelGame = function(req, res){
 	}).then(function(){
 		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+exports.claimGame = function(req, res){
+	var session = req.body.session;
+	var handle = req.body.handle;
+	var gameId = req.body.gameId;
+	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
+	var currentUser;
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return userManager.findUserByHandle(handle);
+	}).then(function(user){
+		currentUser = user;
+		return claimValidation.validate(gameId, handle);
+	}).then(function(result){
+		if(!result.success){
+			throw new Error('Invalid claim.');
+		}
+		return gameManager.findById(gameId);
+	}).then(function(game){
+		var losers = _.filter(game.players, function(player){
+			return player.handle !== handle;
+		});
+		return gameManager.claimVictory(gameId, game.moveTime, currentUser, losers[0].handle);
+	}).then(function(game){
+		if(game === null){
+			throw new Error('Unable to claim victory.');
+		}
+		return updateWinnersAndLosers(game);
+	}).then(function(gameToReturn){
+		res.json(processGameReturn(gameToReturn, handle));
+	}).then(null, logErrorAndSetResponse(req, res));
+	
 }

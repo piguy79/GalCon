@@ -35,6 +35,7 @@ var gameSchema = mongoose.Schema({
 	state : "String",
 	createdDate : "Date",
 	createdTime : "Number",
+	moveTime : 'Number',
 	map : "Number",
 	rankOfInitialPlayer : "Number",
 	gameType : "String",
@@ -328,6 +329,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 			roundExecuted = true;
+			game.moveTime = Date.now();
 		} 
 
 		var existingVersion = game.version;
@@ -547,6 +549,17 @@ var filterOutPlayerAndSocial = function(games, playerHandle){
 
 exports.findByInvitee = function(inviteeHandle){
 	return GameModel.find({'social.invitee' : inviteeHandle, 'social.status' : 'CREATED'}).populate('players').exec();
+}
+
+exports.claimVictory = function(gameId, moveTime, currentUser, loserHandle){
+	return GameModel.findOneAndUpdate({_id : gameId, moveTime : moveTime}, {
+		$set : {
+			   'endGame.xp' : 50,
+			   'endGame.date' : Date.now(),
+			   'endGame.draw' : false,
+			   'endGame.winnerHandle' : currentUser.handle,
+			   'endGame.loserHandles' : [loserHandle]
+		   }}).populate('players').exec();
 }
 
 exports.GameModel = GameModel;
