@@ -54,7 +54,7 @@ public class PlanetButtonFactory {
 		float height = boardCalcs.getTileSize().height * 0.4f;
 		final Moon moon = new Moon(resources, gameBoard, planetButton, height, width);
 
-		if (existingMoons == null) {
+		if (existingMoons == null && allBoardScreenMoons != null) {
 			for (Moon boardScreenMoon : allBoardScreenMoons) {
 				if (boardScreenMoon.associatedPlanetButton.planet.name.equals(moon.associatedPlanetButton.planet.name)) {
 					boardScreenMoon.setOverlayMoon(moon);
