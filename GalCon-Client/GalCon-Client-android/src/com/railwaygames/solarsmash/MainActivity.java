@@ -262,7 +262,7 @@ public class MainActivity extends AndroidApplication {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
+		hideMenuBars();
 	}
 
 	@Override
