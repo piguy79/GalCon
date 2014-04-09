@@ -10,6 +10,11 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Constants {
 	public static final String APP_TITLE = "Solar Smash";
+	
+	public static class Config{
+		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
+
+	}
 
 	public static class UI {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
@@ -26,6 +31,8 @@ public class Constants {
 		public static final String DEFAULT_FONT_RED = "defaultFontRed";
 		public static final String DEFAULT_FONT_YELLOW = "defaultFontYellow";
 		public static final String LARGE_FONT = "largeFont";
+		public static final String LARGE_FONT_GREEN = "largeFontGreen";
+		public static final String LARGE_FONT_RED = "largeFontRed";
 		public static final String X_LARGE_FONT = "xLargeFont";
 		public static final String LARGE_FONT_BLACK = "largeFontBlack";
 

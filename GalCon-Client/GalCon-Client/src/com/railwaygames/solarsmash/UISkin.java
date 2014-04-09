@@ -30,6 +30,9 @@ public class UISkin extends Skin {
 		add(Constants.UI.X_LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).xLargeFont(), Color.WHITE));
 		add(Constants.UI.LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.WHITE));
 		add(Constants.UI.LARGE_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.BLACK));
+		add(Constants.UI.LARGE_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.GREEN));
+		add(Constants.UI.LARGE_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.RED));
+
 		add(Constants.UI.DEFAULT_FONT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.WHITE));
 		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
 		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));

@@ -55,9 +55,12 @@ import com.railwaygames.solarsmash.screen.event.ResignEvent;
 import com.railwaygames.solarsmash.screen.event.TransitionEventListener;
 import com.railwaygames.solarsmash.screen.overlay.ClaimOverlay;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
+import com.railwaygames.solarsmash.screen.overlay.EndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.HighlightOverlay;
+import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
+import com.railwaygames.solarsmash.screen.overlay.WinningEndGameOverlay;
 import com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog;
 import com.railwaygames.solarsmash.screen.ship.selection.HarvestDialog;
 import com.railwaygames.solarsmash.screen.widget.Line;
@@ -319,14 +322,20 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createEndGameOverlay() {
 		if (gameBoard.hasWinner()) {
-			String endGameMessage;
+			EndGameOverlay endGameOverlay;
 			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)) {
-				endGameMessage = "Winner Text";
+				endGameOverlay = new WinningEndGameOverlay(resources, gameBoard);
 			} else {
-				endGameMessage = "Loser Text";
+				endGameOverlay = new LoserEndGameOverlay(resources, gameBoard);
 			}
-			TextOverlay overlay = showEndDialog(endGameMessage);
-			stage.addActor(overlay);
+			endGameOverlay.addListener(new ClickListener(){
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					stage.dispose();
+					returnCode = Action.BACK;
+				}
+			});
+			stage.addActor(endGameOverlay);
 		} else if (gameBoard.social != null && gameBoard.social.status.equals("DECLINED")) {
 			TextOverlay overlay = showEndDialog(gameBoard.social.invitee
 					+ " has declined to play.\nYour coin has been returned.");
