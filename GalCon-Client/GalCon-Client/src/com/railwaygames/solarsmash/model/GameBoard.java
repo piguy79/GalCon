@@ -1,14 +1,17 @@
 package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class GameBoard extends JsonConvertible {
@@ -26,6 +29,7 @@ public class GameBoard extends JsonConvertible {
 	public EndGameInformation endGameInformation = new EndGameInformation();
 	public List<Move> movesInProgress = new ArrayList<Move>();
 	public GameConfig gameConfig = new GameConfig();
+	public Long moveTime;
 
 	public GameBoard() {
 
@@ -66,6 +70,7 @@ public class GameBoard extends JsonConvertible {
 		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		this.roundInformation.consume(jsonObject.getJSONObject(Constants.CURRENT_ROUND));
+		this.moveTime = jsonObject.optLong("moveTime");
 
 		JSONArray moves = jsonObject.optJSONArray("moves");
 		if (moves != null) {
@@ -149,5 +154,16 @@ public class GameBoard extends JsonConvertible {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isClaimAvailable(){
+		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
+				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw();
+	}
+	
+	private boolean moveTimeIsPastTimeout(){
+		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+		System.out.println(" **** " + currentTime);
+		return (currentTime - moveTime) >= Long.parseLong(gameConfig.getValue("claimTimeout"));
 	}
 }

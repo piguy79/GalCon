@@ -194,6 +194,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
 		}else if (game.moveAvailable) {
 			statusText = "--your move--";
+		} else if(game.claimAvailable){
+			statusText = "--claim available--";
+			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
 		}
 
 		if (!statusText.isEmpty()) {

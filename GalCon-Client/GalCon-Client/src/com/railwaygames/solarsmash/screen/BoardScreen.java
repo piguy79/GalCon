@@ -46,12 +46,14 @@ import com.railwaygames.solarsmash.model.factory.MoveFactory;
 import com.railwaygames.solarsmash.model.factory.PlanetButtonFactory;
 import com.railwaygames.solarsmash.screen.event.CancelDialogEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
+import com.railwaygames.solarsmash.screen.event.ClaimVictoryEventListener;
 import com.railwaygames.solarsmash.screen.event.HarvestEvent;
 import com.railwaygames.solarsmash.screen.event.MoveListener;
 import com.railwaygames.solarsmash.screen.event.OKDialogEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
 import com.railwaygames.solarsmash.screen.event.TransitionEventListener;
+import com.railwaygames.solarsmash.screen.overlay.ClaimOverlay;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.HighlightOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
@@ -82,6 +84,8 @@ public class BoardScreen implements ScreenFeedback {
 	private Group boardTable;
 	private MoveHud moveHud;
 	private BoardScreenPlayerHud playerHud;
+	
+	private boolean claimShown = false;
 
 	private List<Moon> moons = new ArrayList<Moon>();
 
@@ -230,13 +234,56 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void onClose() {
-					beginShipMovements();
+					beginEndRoundInfo();
 				}
 			}).focus(gameBoard.roundInformation);
 		} else {
-			beginShipMovements();
+			beginEndRoundInfo();
 		}
 		stage.addListener(createHarvestListener());
+	}
+	
+	private void beginEndRoundInfo(){
+		beginShipMovements();
+		if(!claimShown && gameBoard.isClaimAvailable()){
+			showClaimOverlay();
+		}else{
+			createEndGameOverlay();
+		}
+	}
+
+	private void showClaimOverlay() {
+		claimShown = true;
+		final ClaimOverlay claimOverlay = new ClaimOverlay(resources, gameBoard);
+		
+		claimOverlay.addListener(new ClaimVictoryEventListener(){
+			@Override
+			public void claimFailed() {
+				claimOverlay.remove();
+				final Overlay claimFailOverlay = new DismissableOverlay(resources, new TextOverlay("Unable to claim victory", resources), new ClickListener(){
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						overlay = new TextOverlay("Refreshing", resources);
+						stage.addActor(overlay);
+						UIConnectionWrapper.findGameById(
+								new UpdateBoardScreenResultHandler("Could not refresh"),
+								gameBoard.id, GameLoop.USER.handle);
+					}
+				});
+				stage.addActor(claimFailOverlay);
+			}
+			
+			@Override
+			public void claimSuccess() {
+				claimOverlay.remove();
+				overlay = new TextOverlay("Refreshing", resources);
+				stage.addActor(overlay);
+				UIConnectionWrapper.findGameById(
+						new UpdateBoardScreenResultHandler("Could not refresh"),
+						gameBoard.id, GameLoop.USER.handle);
+			}
+		});
+		stage.addActor(claimOverlay);
 	}
 
 	private void beginShipMovements() {
@@ -267,7 +314,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		Gdx.input.setInputProcessor(stage);
 
-		createEndGameOverlay();
+		
 	}
 
 	private void createEndGameOverlay() {
@@ -874,6 +921,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		gameBoard = null;
 		moveHud = null;
+		claimShown = false;
 	}
 
 	public MenuScreenContainer getPreviousScreen() {

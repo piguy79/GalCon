@@ -298,7 +298,7 @@ exports.findById = function(gameId){
 
 
 exports.findCollectionOfGames = function(user){
-	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate round map social').populate('players').exec();
+	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
@@ -316,6 +316,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		game.addMoves(moves);
 		game.addHarvest(harvest);
 		game.round.moved.push(playerHandle);
+		game.moveTime = Date.now();
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
 		
@@ -329,7 +330,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 			roundExecuted = true;
-			game.moveTime = Date.now();
+			
 		} 
 
 		var existingVersion = game.version;

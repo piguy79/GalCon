@@ -57,6 +57,8 @@ public class UrlConstants {
 	
 	public static final String CANCEL_GAME = "/game/cancel";
 
+	public static final String CLAIM_VICTORY = "/game/claim";
+
 	public static final String FIND_PENDING_INVITE = "/gamequeue/pending";
 	
 	public static final String ACCEPT_INVITE = "/gamequeue/accept";

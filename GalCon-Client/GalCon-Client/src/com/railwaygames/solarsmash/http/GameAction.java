@@ -91,6 +91,8 @@ public interface GameAction {
 	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id, String authProvider);
 	
 	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
+	
+	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId);
 
 
 }

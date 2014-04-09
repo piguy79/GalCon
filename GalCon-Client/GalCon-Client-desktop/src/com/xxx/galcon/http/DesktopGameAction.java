@@ -29,6 +29,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
+import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -101,9 +102,16 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
+			
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args,
+					new GameBoard());
+			
+			if(result == null){
+				callback.onConnectionError("Invalid Move");
+			}else{
+				callback.onConnectionResult(result);
+			}
 
-			callback.onConnectionResult((GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args,
-					new GameBoard()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
@@ -566,6 +574,31 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			callback.onConnectionResult((BaseResult) callURL(new PostClientRequest(), CANCEL_GAME, args,
 					new BaseResult()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
+	}
+
+	@Override
+	public void claimVictory(UIConnectionResultCallback<GameBoard> callback,
+			String handle, String gameId) {
+		try {
+			JSONObject top = JsonConstructor.claimGame(handle, gameId, getSession());
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+			
+			GameBoard gameBoard = (GameBoard) callURL(new PostClientRequest(), CLAIM_VICTORY, args,
+					new GameBoard());
+					
+						
+			if(gameBoard == null){
+				callback.onConnectionError("Invalid claim");
+			}else{
+				callback.onConnectionResult(gameBoard);
+			}
+
 		} catch (JSONException e) {
 			System.out.println(e);
 		}

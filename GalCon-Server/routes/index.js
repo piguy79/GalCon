@@ -246,6 +246,7 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 var minfiyGameResponse = function(games, handle){
 	return _.map(games, function(game){
 		var iHaveAMove = _.filter(game.round.moved, function(player) { return player === handle}).length === 0;	
+		var claimAvailable = claimValidation.validateClaim(game, handle);
 		return {
 			id : game._id,
 			players : _.map(game.players, minifyUser),
@@ -254,7 +255,8 @@ var minfiyGameResponse = function(games, handle){
 			winner : game.endGame.winnerHandle,
 			date : game.endGame.date,
 			map : game.map,
-			social : game.social
+			social : game.social,
+			claimAvailable : claimAvailable
 		};
 	});
 }
@@ -395,6 +397,7 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 	game.moves = _.reject(game.moves, function(move){
 		return move.handle !== playerWhoCalledTheUrl && move.executed === false;
 	});
+	
 
 	return game;
 }
@@ -983,7 +986,8 @@ exports.findPendingInvites = function(req, res){
 					winner : item.endGame.winnerHandle,
 					date : item.endGame.date,
 					map : item.map,
-					social : item.social
+					social : item.social,
+					claimavailable : false
 				}
 			};
 		});

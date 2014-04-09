@@ -91,4 +91,8 @@ public class UIConnectionWrapper {
 	public static void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId){
 		gameAction.cancelGame(callback, handle, gameId);
 	}
+	
+	public static void claimGame(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId){
+		gameAction.claimVictory(callback, handle, gameId);
+	}
 }

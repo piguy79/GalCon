@@ -60,7 +60,7 @@ describe("Perform Move - Standard -", function() {
 		p.then(function(game){
 			currentGameId = game._id;
 			var moveTimeOlderThenTimeout = game.moveTime - parseInt(game.config.values['claimTimeout']);
-			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {moveTime: moveTimeOlderThenTimeout}}).exec();
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {moveTime: moveTimeOlderThenTimeout}, $push : {'round.moved' : PLAYER_1.handle}}).exec();
 		}).then(function(){
 			return apiRunner.claimVictory(PLAYER_1.handle, currentGameId, PLAYER_1.session.id);
 		}).then(function(claimedGame){
