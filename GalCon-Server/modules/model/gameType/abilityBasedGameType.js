@@ -5,34 +5,18 @@ exports.DEF_INC_ABILITY = 'defenseModifier';
 exports.ATTACK_INC_ABILITY = 'attackModifier';
 exports.SPEED_ABILITY = 'speedModifier';
 
-
-exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray){
-
-	var abilitiesToAdd = planetsFarFromHomes.length * 0.2;
-	
-	if(abilitiesToAdd < 1){
-		abilitiesToAdd = 1;
-	}
-	var addedAbilities = 0;
-
-	for(var i=0; i < planetsFarFromHomes.length; i++){
+exports.addPlanetAbilities = function(planetsFarFromHomes, abilitiesArray) {
+	for (var i = 0; i < planetsFarFromHomes.length; i++) {
 		var planetToAddTo = planetsFarFromHomes[i];
-		
-		if(!planetToAddTo.ability){
+
+		if (!planetToAddTo.ability) {
 			planetToAddTo.regen = SHIP_REGEN_RATE;
 			planetToAddTo.ships = SHIP_NUMBER;
-			
+
 			var abilityIndex = Math.floor(Math.random() * (abilitiesArray.length));
 			planetToAddTo.ability = abilitiesArray[abilityIndex];
-			addedAbilities++;
-			
-			if(addedAbilities >= abilitiesToAdd){
-				break;
-			}
 		}
 	}
-	
-	
 }
 
 exports.harvestEnhancement = function(player, game, ability){

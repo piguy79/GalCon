@@ -1,5 +1,5 @@
-gameTypeAssembler = require('./model/gameType/gameTypeAssembler');
-
+var gameTypeAssembler = require('./model/gameType/gameTypeAssembler'),
+	galconMath = require('./math/galconMath');
 
 var MAX_REGEN = 5;
 var MAX_STARTING_SHIPS = 10;
@@ -92,7 +92,45 @@ GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
 	}
 	
 	if(gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities){
-		gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities(extraPlanets);
+		var abilitiesToAdd = extraPlanets.length * 0.2;
+		if (abilitiesToAdd < 1) {
+			abilitiesToAdd = 1;
+		}
+		
+		/*
+		 * Use random generation to attempt balance out locations of ability planets.
+		 */
+		var attempt = 0,
+			minDiff = 10000,
+			minDiffPlanets = [];
+		while(attempt < 3) {
+			var usedPlanets = [];
+			for(var i = 0; i < abilitiesToAdd; ++i) {
+				var index = Math.ceil((extraPlanets.length * Math.random())) - 1;
+				while(_.indexOf(usedPlanets, extraPlanets[index]) > -1) {
+					index = Math.ceil((extraPlanets.length * Math.random())) - 1;
+				}
+				
+				usedPlanets.push(extraPlanets[index]);
+			}
+			
+			var avgHome1Distance = 0.0;
+			var avgHome2Distance = 0.0;
+			for(var i = 0; i < usedPlanets.length; ++i) {
+				avgHome1Distance += galconMath.distance(homePlanets[0].pos, usedPlanets[i].pos);
+				avgHome2Distance += galconMath.distance(homePlanets[1].pos, usedPlanets[i].pos);
+			}
+			
+			var diff = Math.abs((avgHome1Distance / usedPlanets.length) - (avgHome2Distance/ usedPlanets.length));
+			if(diff < minDiff) {
+				minDiff = diff;
+				minDiffPlanets = usedPlanets;
+			}
+
+			attempt++;
+		}
+		
+		gameTypeAssembler.gameTypes[this.gameType].addPlanetAbilities(minDiffPlanets);
 	}
 }
 
