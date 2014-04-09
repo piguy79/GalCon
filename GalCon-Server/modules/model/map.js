@@ -20,6 +20,7 @@ var mapSchema = mongoose.Schema({
 		max : "Number",
 		min : "Number"
 	},
+	canHarvest : "Boolean",
 	gameType : ["String"]
 });
 

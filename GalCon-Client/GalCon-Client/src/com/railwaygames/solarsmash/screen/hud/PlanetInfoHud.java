@@ -12,8 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
+import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.UISkin;
+import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.GameBoard;
+import com.railwaygames.solarsmash.model.Map;
+import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Planet;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.HarvestEvent;
@@ -40,18 +44,14 @@ public class PlanetInfoHud extends Group {
 		createBackground();
 		createRegenLabels(resources, (int) planet.regen, getWidth(), getHeight(), this);
 
-		if (isHarvestAvailable()) {
-			createHarvestButton(resources.fontShader, resources.skin);
-		} else if (planet.isUnderHarvest()) {
-			createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(), this);
-		}
+		loadMaps();
 	}
 
 	public static void createUnderHarvestLabel(Resources resources, GameBoard gameBoard, Planet planet, float width,
 			float height, Group parent) {
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds remaining with\nharvest bonus", resources.skin,
-					Constants.UI.X_SMALL_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds remaining with\nharvest bonus",
+					resources.skin, Constants.UI.X_SMALL_FONT);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(width * 0.4f);
 			label.setY(height * 0.75f - bounds.height * 0.5f);
@@ -129,6 +129,33 @@ public class PlanetInfoHud extends Group {
 		backGround.setWidth(getWidth());
 		backGround.setHeight(getHeight());
 		addActor(backGround);
+	}
+
+	private void loadMaps() {
+		UIConnectionWrapper.findAllMaps(new UIConnectionResultCallback<Maps>() {
+
+			@Override
+			public void onConnectionResult(Maps result) {
+				Map gameMap = null;
+				for (Map map : result.allMaps) {
+					if (map.key == gameBoard.map) {
+						gameMap = map;
+					}
+				}
+
+				if (gameMap != null && gameMap.canHarvest && isHarvestAvailable()) {
+					createHarvestButton(resources.fontShader, resources.skin);
+				} else if (planet.isUnderHarvest()) {
+					PlanetInfoHud.createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(),
+							PlanetInfoHud.this);
+				}
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+
+			}
+		});
 	}
 
 	private boolean isHarvestAvailable() {

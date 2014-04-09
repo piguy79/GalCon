@@ -9,6 +9,7 @@
 						"min" : 5,
 						"max" : 6
 					},
+					"canHarvest" : false,
 					"gameType" : ["standardGame"]
 				},
 				{
@@ -20,6 +21,7 @@
 						"min" : 7,
 						"max" : 8
 					},
+					"canHarvest" : false,
 					"gameType" : ["standardGame"]
 				},
 				{
@@ -31,6 +33,7 @@
 						"min" : 6,
 						"max" : 8
 					},
+					"canHarvest" : false,
 					"gameType" : ["speedIncrease"]
 				},
 				{
@@ -42,17 +45,19 @@
 						"min" : 6,
 						"max" : 8
 					},
+					"canHarvest" : false,
 					"gameType" : ["defenceIncrease"]
 				},
 				{
 					"key" : 5,
 					"availableFromXp" : 1500,
 					"title" : "Attack",
-					"description" : "Attack",
+					"description" : "Attack!",
 					"width" : {
 						"min" : 6,
 						"max" : 8
 					},
+					"canHarvest" : false,
 					"gameType" : ["attackIncrease"]
 				},
 				{
@@ -64,6 +69,7 @@
 						"min" : 6,
 						"max" : 8
 					},
+					"canHarvest" : true,
 					"gameType" : ["mixedAbility"]
 				}
 			]
