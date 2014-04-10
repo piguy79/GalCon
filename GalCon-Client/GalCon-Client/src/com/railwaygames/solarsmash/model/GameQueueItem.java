@@ -26,5 +26,6 @@ public class GameQueueItem extends JsonConvertible {
 		game.consume(minfiedGameJson);
 		
 	}
+	
 
 }

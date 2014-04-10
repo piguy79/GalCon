@@ -13,7 +13,7 @@ public class LoserEndGameOverlay extends EndGameOverlay {
 
 	@Override
 	String getTextForResultLabel() {
-		return "Defeat";
+		return "Defeat.";
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class LoserEndGameOverlay extends EndGameOverlay {
 
 	@Override
 	String getTextForMessageLabel() {
-		return "We have been overrun by enemy forces.";
+		return "You have been overrun by enemy forces.";
 	}
 
 	@Override

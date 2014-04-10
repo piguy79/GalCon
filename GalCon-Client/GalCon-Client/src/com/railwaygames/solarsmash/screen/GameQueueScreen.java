@@ -24,11 +24,14 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.GameQueueItem;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Point;
+import com.railwaygames.solarsmash.model.Size;
+import com.railwaygames.solarsmash.screen.event.InviteEventListener;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoadingOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.ActionButton;
+import com.railwaygames.solarsmash.screen.widget.GameInviteGroup;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
@@ -169,74 +172,45 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	}
 
 	private void createGameQueueItemEntry(final GameQueueItem item, Group group) {
-		float width = Gdx.graphics.getWidth();
-
-		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, "vs ", resources.skin, Constants.UI.DEFAULT_FONT);
-		vsLabel.setAlignment(Align.center);
-		vsLabel.setWidth(width);
-		vsLabel.setY(group.getHeight() * 0.6f);
-
-		group.addActor(vsLabel);
-
-		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.requester.handle, resources.skin,
-				Constants.UI.DEFAULT_FONT);
-		playerLabel.setAlignment(Align.center);
-		playerLabel.setWidth(width);
-		playerLabel.setY(group.getHeight() * 0.35f);
-
-		group.addActor(playerLabel);
-
-		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, " Map: " + allMaps.getMap(item.game.mapKey).title,
-				resources.skin, Constants.UI.DEFAULT_FONT);
-		levelLabel.setAlignment(Align.center);
-		levelLabel.setWidth(width);
-		levelLabel.setY(group.getHeight() * 0.1f);
-
-		group.addActor(levelLabel);
-
-		float centerY = (group.getHeight() / 2) - (GraphicsUtils.actionButtonSize / 2);
-		ActionButton cancelButton = new ActionButton(resources.skin, "cancelButton", new Point(
-				GraphicsUtils.actionButtonSize / 2, centerY));
-		cancelButton.addListener(new ClickListener() {
+		
+		String mapTitle = allMaps.getMap(item.game.mapKey).title;
+		GameInviteGroup inviteGroup = new GameInviteGroup(resources, item, new Size(group.getWidth(), group.getHeight()), mapTitle);
+		
+		inviteGroup.addListener(new InviteEventListener(){
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				loadingOverlay = new LoadingOverlay(resources);
-				stage.addActor(loadingOverlay);
-				UIConnectionWrapper.declineInvite(new UIConnectionResultCallback<BaseResult>() {
+			public void inviteDeclineFail() {
+				final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources), new ClickListener(){
 					@Override
-					public void onConnectionResult(BaseResult result) {
-						loadingOverlay.remove();
-						showQueueItems();
+					public void clicked(InputEvent event, float x,
+							float y) {
+						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
 					}
-
+				});
+				stage.addActor(overlay);
+			}
+			
+			@Override
+			public void inviteDeclineSuccess() {
+				showQueueItems();
+			}
+			
+			@Override
+			public void inviteAcceptedFail(String errorMessage) {
+				final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to load game.", resources), new ClickListener(){
 					@Override
-					public void onConnectionError(String msg) {
-						loadingOverlay.remove();
-						final Overlay overlay = new DismissableOverlay(resources, new TextOverlay("Unable to decline invite.", resources), new ClickListener(){
-							@Override
-							public void clicked(InputEvent event, float x,
-									float y) {
-								UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
-							}
-						});
-						stage.addActor(overlay);
+					public void clicked(InputEvent event, float x, float y) {
+						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
 					}
-				}, item.game.id, GameLoop.USER.handle);
+				});
+				stage.addActor(overlay);
+			}
+			
+			@Override
+			public void inviteAcceptedSuccess(GameBoard gameBoard) {
+				returnCode = gameBoard;
 			}
 		});
-		group.addActor(cancelButton);
-
-		ActionButton okButton = new ActionButton(resources.skin, "okButton", new Point(group.getWidth()
-				- (GraphicsUtils.actionButtonSize * 1.5f), centerY));
-		okButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				loadingOverlay = new LoadingOverlay(resources);
-				stage.addActor(loadingOverlay);
-				UIConnectionWrapper.acceptInvite(new SelectGameResultHander(), item.game.id, GameLoop.USER.handle);
-			}
-		});
-		group.addActor(okButton);
+		group.addActor(inviteGroup);
 
 	}
 

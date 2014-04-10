@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -47,6 +48,7 @@ import com.railwaygames.solarsmash.model.factory.PlanetButtonFactory;
 import com.railwaygames.solarsmash.screen.event.CancelDialogEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
 import com.railwaygames.solarsmash.screen.event.ClaimVictoryEventListener;
+import com.railwaygames.solarsmash.screen.event.GameReturnEventListener;
 import com.railwaygames.solarsmash.screen.event.HarvestEvent;
 import com.railwaygames.solarsmash.screen.event.MoveListener;
 import com.railwaygames.solarsmash.screen.event.OKDialogEvent;
@@ -328,11 +330,20 @@ public class BoardScreen implements ScreenFeedback {
 			} else {
 				endGameOverlay = new LoserEndGameOverlay(resources, gameBoard);
 			}
-			endGameOverlay.addListener(new ClickListener(){
+
+			endGameOverlay.addListener(new TransitionEventListener(){
 				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					stage.dispose();
-					returnCode = Action.BACK;
+				public void transition(String action) {
+					returnCode = action;
+				}
+			});
+			
+			endGameOverlay.addListener(new GameReturnEventListener(){
+				@Override
+				public void gameFound(String gameId) {
+					UIConnectionWrapper.findGameById(
+							new UpdateBoardScreenResultHandler("Could not refresh"),
+							gameId, GameLoop.USER.handle);
 				}
 			});
 			stage.addActor(endGameOverlay);
@@ -944,7 +955,7 @@ public class BoardScreen implements ScreenFeedback {
 	public static class Labels {
 		public static String waitingLabel(Social social) {
 			if (social != null && !social.invitee.isEmpty()) {
-				return "[waiting for " + social.invitee + "]";
+				return "[Awaiting invitee]";
 			}
 			return "[Awaiting enemy]";
 		}

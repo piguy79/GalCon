@@ -163,7 +163,6 @@ public class GameBoard extends JsonConvertible {
 	
 	private boolean moveTimeIsPastTimeout(){
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
-		System.out.println(" **** " + currentTime);
 		return (currentTime - moveTime) >= Long.parseLong(gameConfig.getValue("claimTimeout"));
 	}
 }

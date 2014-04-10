@@ -991,7 +991,7 @@ exports.findPendingInvites = function(req, res){
 					date : item.endGame.date,
 					map : item.map,
 					social : item.social,
-					claimavailable : false
+					claimAvailable : false
 				}
 			};
 		});
