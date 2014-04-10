@@ -203,7 +203,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 					"Could not complete purchase.\n\nPlease try again.", resources), new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
+//					ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
 				}
 			});
 
