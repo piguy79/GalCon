@@ -614,7 +614,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 								newP.reject(err.message);
 							} else {
 								console.log("Android Publisher API - Result - %j", result);
-								if(result.purchaseState == 0 && result.consumptionState == 1) {
+								if(result.purchaseState == 0 && result.consumptionState == 0) {
 									newP.complete("credit");
 								} else {
 									newP.complete("noCredit");
