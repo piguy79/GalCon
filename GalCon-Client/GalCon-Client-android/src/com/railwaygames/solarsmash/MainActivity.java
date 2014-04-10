@@ -3,6 +3,8 @@ package com.railwaygames.solarsmash;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -19,15 +21,14 @@ import com.facebook.Session;
 import com.jirbo.adcolony.AdColony;
 import com.jirbo.adcolony.AdColonyVideoAd;
 import com.jirbo.adcolony.AdColonyVideoListener;
-import com.railwaygames.solarsmash.GameLoop;
+import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.inappbilling.util.IabHelper;
+import com.railwaygames.solarsmash.inappbilling.util.IabHelper.QueryInventoryFinishedListener;
 import com.railwaygames.solarsmash.inappbilling.util.IabResult;
 import com.railwaygames.solarsmash.inappbilling.util.Purchase;
 import com.railwaygames.solarsmash.inappbilling.util.SkuDetails;
-import com.railwaygames.solarsmash.inappbilling.util.IabHelper.QueryInventoryFinishedListener;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
@@ -72,8 +73,7 @@ public class MainActivity extends AndroidApplication {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
 		socialAction = new AndroidSocialAction(this);
-		gameAction = new AndroidGameAction(this, socialAction,
-				connectivityManager);
+		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
 		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
@@ -112,7 +112,10 @@ public class MainActivity extends AndroidApplication {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		mHelper.dispose();
+		if (mHelper != null) {
+			mHelper.dispose();
+		}
+		mHelper = null;
 	}
 
 	public void setupInAppBilling(final Callback callback) {
@@ -128,12 +131,8 @@ public class MainActivity extends AndroidApplication {
 				if (result.isSuccess()) {
 					callback.onSuccess("");
 				} else {
-					Crashlytics.log(
-							Log.ERROR,
-							LOG_NAME,
-							"Could not setup in-app billing: ["
-									+ result.getResponse() + ", "
-									+ result.getMessage() + "]");
+					Crashlytics.log(Log.ERROR, LOG_NAME, "Could not setup in-app billing: [" + result.getResponse()
+							+ ", " + result.getMessage() + "]");
 					if (result.getResponse() == IabHelper.IABHELPER_REMOTE_EXCEPTION) {
 						callback.onFailure("retry");
 					} else {
@@ -170,91 +169,83 @@ public class MainActivity extends AndroidApplication {
 		ad.show(adListener);
 	}
 
-	public void purchaseCoins(final InventoryItem inventoryItem,
-			final UIConnectionResultCallback<List<Order>> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001,
-				new IabHelper.OnIabPurchaseFinishedListener() {
+	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
+		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
 
-					@Override
-					public void onIabPurchaseFinished(IabResult result,
-							Purchase purchase) {
-						if (result.isSuccess()) {
-							List<Order> orders = new ArrayList<Order>();
-							orders.add(purchaseToOrder(purchase));
-							callback.onConnectionResult(orders);
-						} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
-							callback.onConnectionResult(null);
-						} else {
-							callback.onConnectionError("Could not complete purchase");
-						}
-					}
-				});
+			@Override
+			public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+				if (result.isSuccess()) {
+					List<Order> orders = new ArrayList<Order>();
+					orders.add(purchaseToOrder(purchase));
+					callback.onConnectionResult(orders);
+				} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
+					callback.onConnectionResult(null);
+				} else {
+					callback.onConnectionError("Could not complete purchase");
+				}
+			}
+		});
 	}
 
-	public void loadStoreInventory(final Inventory inventoryResult,
-			final UIConnectionResultCallback<Inventory> callback) {
-		mHelper.queryInventoryAsync(true, inventoryResult.skus(),
-				new QueryInventoryFinishedListener() {
+	public void loadStoreInventory(final Inventory inventoryResult, final UIConnectionResultCallback<Inventory> callback) {
+		mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
 
-					@Override
-					public void onQueryInventoryFinished(IabResult result,
-							com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
-						if (result.isFailure()) {
-							callback.onConnectionError("Unable to load inventory from Play Store.");
-							return;
-						}
+			@Override
+			public void onQueryInventoryFinished(IabResult result,
+					com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
+				if (result.isFailure()) {
+					callback.onConnectionError("Unable to load inventory from Play Store.");
+					return;
+				}
 
-						List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
+				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
-						for (InventoryItem item : inventoryResult.inventory) {
-							SkuDetails detail = inv.getSkuDetails(item.sku);
-							InventoryItem combinedItem = new InventoryItem(
-									detail.getSku(), detail.getPrice(), detail
-											.getTitle(), item.numCoins);
+				for (InventoryItem item : inventoryResult.inventory) {
+					SkuDetails detail = inv.getSkuDetails(item.sku);
+					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
+							.getTitle(), item.numCoins);
 
-							if (inv.hasPurchase(detail.getSku())) {
-								Purchase purchase = inv.getPurchase(detail
-										.getSku());
-								combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
-							}
-
-							mappedInventoryItems.add(combinedItem);
-						}
-
-						Inventory inventory = new Inventory();
-						inventory.inventory = mappedInventoryItems;
-						callback.onConnectionResult(inventory);
+					if (inv.hasPurchase(detail.getSku())) {
+						Purchase purchase = inv.getPurchase(detail.getSku());
+						combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
 					}
-				});
+
+					mappedInventoryItems.add(combinedItem);
+				}
+
+				Inventory inventory = new Inventory();
+				inventory.inventory = mappedInventoryItems;
+				callback.onConnectionResult(inventory);
+			}
+		});
 	}
 
-	public void consumeOrders(final List<Order> consumedOrders,
-			final Callback callback) {
+	public void consumeOrders(final List<Order> consumedOrders, final Callback callback) {
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 
-		mHelper.consumeAsync(purchaseOrders,
-				new IabHelper.OnConsumeMultiFinishedListener() {
-					@Override
-					public void onConsumeMultiFinished(
-							List<Purchase> purchases, List<IabResult> results) {
-						for (IabResult result : results) {
-							if (result.isFailure()) {
-								callback.onFailure(result.getMessage());
-								return;
-							}
-						}
-						callback.onSuccess("");
+		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
+			@Override
+			public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
+				for (IabResult result : results) {
+					if (result.isFailure()) {
+						callback.onFailure(result.getMessage());
+						return;
 					}
-				});
+				}
+				callback.onSuccess("");
+			}
+		});
 	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
-
 		List<Purchase> purchaseOrders = new ArrayList<Purchase>();
 		for (Order order : consumedOrders) {
-			Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order,
-					"");
-			purchaseOrders.add(purchase);
+			try {
+				Purchase purchase = new Purchase(IabHelper.ITEM_TYPE_INAPP, order.asJson().toString(), "");
+				purchaseOrders.add(purchase);
+			} catch (JSONException e) {
+				Crashlytics.log(Log.ERROR, LOG_NAME, "Could not convert order to purchase: " + e.getMessage());
+			}
 		}
 		return purchaseOrders;
 	}
@@ -275,14 +266,12 @@ public class MainActivity extends AndroidApplication {
 		if (request == GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(response);
 		} else if (request == FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE) {
-			Session.getActiveSession().onActivityResult(this,
-					MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
+			Session.getActiveSession().onActivityResult(this, MainActivity.FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE,
 					response, data);
 			socialAction.onActivityResult(response);
 		} else if (request == GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE) {
 			socialAction.onActivityResult(request);
-		} else if (mHelper != null
-				&& !mHelper.handleActivityResult(request, response, data)) {
+		} else if (mHelper != null && !mHelper.handleActivityResult(request, response, data)) {
 			super.onActivityResult(request, response, data);
 		}
 	}
