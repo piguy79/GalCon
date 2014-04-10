@@ -1,6 +1,7 @@
-var mongoose = require('./mongooseConnection').mongoose
-,db = require('./mongooseConnection').db
-,ObjectId = require('mongoose').Types.ObjectId;
+var mongoose = require('./mongooseConnection').mongoose,
+	db = require('./mongooseConnection').db,
+	ObjectId = require('mongoose').Types.ObjectId,
+	inventory = require('./inventory');
 
 var userSchema = mongoose.Schema({
 	handle : "String",
@@ -79,8 +80,13 @@ exports.addCoins = function(coinsToAdd, handle){
 										}).exec();
 }
 
-exports.addCoinsForAnOrder = function(handle, order){
-	return UserModel.findOneAndUpdate(
+exports.addCoinsForAnOrder = function(handle, order) {
+	var p = inventory.InventoryModel.findOne({'sku' : order.productId}).exec();
+	return p.then(function(inventoryItem) {
+		if(!inventoryItem) {
+			throw new Error("Could not find inventory item for: " + order.productId); 
+		}
+		return UserModel.findOneAndUpdate(
 										{ 
 											handle : handle, 
 											'consumedOrders.orderId' : 
@@ -91,7 +97,7 @@ exports.addCoinsForAnOrder = function(handle, order){
 										{
 											$inc : 
 													{
-														coins : order.associatedCoins
+														coins : inventoryItem.associatedCoins
 													}, 
 											$set : 
 													{
@@ -102,6 +108,7 @@ exports.addCoinsForAnOrder = function(handle, order){
 														consumedOrders : order
 													}
 										}).exec();
+	});
 }
 
 exports.deleteConsumedOrder = function(handle, order){
