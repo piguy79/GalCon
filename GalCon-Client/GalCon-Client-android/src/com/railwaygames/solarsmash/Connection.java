@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class Connection {
@@ -84,6 +85,7 @@ public class Connection {
 				converter.consume(new JSONObject(sb.toString()));
 			}
 		} catch (Exception e) {
+			Crashlytics.logException(e);
 			Log.wtf(LOG_NAME, "error", e);
 			converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 		} finally {
