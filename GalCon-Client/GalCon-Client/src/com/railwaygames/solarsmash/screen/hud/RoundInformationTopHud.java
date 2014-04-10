@@ -119,7 +119,7 @@ public class RoundInformationTopHud extends Group {
 		createBackground(false);
 
 		int baseAttack = 0;
-		int baseDefense = 10000;
+		int baseDefense = 0;
 		int attackMultiplier = 0;
 		int defenseMultiplier = 0;
 		String currentOwner = "";
@@ -141,18 +141,14 @@ public class RoundInformationTopHud extends Group {
 				if (currentOwner.equals(move.battleStats.previousPlanetOwner)) {
 					if (previousOwner.isEmpty()) {
 						previousOwner = move.battleStats.previousPlanetOwner;
+						baseDefense = move.battleStats.previousShipsOnPlanet;
 					}
 				} else {
 					previousOwner = move.battleStats.previousPlanetOwner;
+					baseDefense = Math.max(baseDefense, move.battleStats.previousShipsOnPlanet);
 					if (previousOwner.equals("")) {
 						previousOwner = Constants.OWNER_NO_ONE;
 					}
-				}
-
-				if (currentOwner.equals(previousOwner)) {
-					baseDefense = Math.min(baseDefense, move.battleStats.previousShipsOnPlanet);
-				} else {
-					baseDefense = move.battleStats.previousShipsOnPlanet;
 				}
 
 				attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);

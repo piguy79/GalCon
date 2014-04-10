@@ -415,16 +415,17 @@ public abstract class HighlightOverlay extends Overlay {
 			 */
 			List<String> keysToRemove = new ArrayList<String>();
 			for (Map.Entry<String, List<Move>> planetMoves : planetToMoves.entrySet()) {
-				boolean keepMove = true;
+				boolean keepMove = false;
 				for (int i = 0; i < planetMoves.getValue().size(); ++i) {
 					Move move = planetMoves.getValue().get(i);
 					Planet planet = gameBoard.getPlanet(move.to);
 					if (!move.handle.equals(GameLoop.USER.handle)
 							&& move.battleStats.previousPlanetOwner.equals(planet.owner)) {
-						keepMove = false;
-					} else {
-						keepMove = true;
+						continue;
 					}
+					
+					keepMove = true;
+					break;
 				}
 
 				if (!keepMove) {
