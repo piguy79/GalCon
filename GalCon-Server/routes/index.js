@@ -581,18 +581,20 @@ exports.addCoinsForAnOrder = function(req, res) {
 	p.then(function() {
 		if(orders && orders.length > 0) {
 			var gapiP = new mongoose.Promise();
+			var gapiClient;
 			googleapis
 				.discover('androidpublisher', 'v1.1')
 				.execute(function(err, client) {
 					if(err) {
 						gapiP.reject(err.message);
 					} else {
-						gapiP.complete(client);
+						gapiClient = client;
+						gapiP.complete();
 					}
 				});
 			var lastP = gapiP;
 			_.each(orders, function(order) {
-				lastP = lastP.then(function(client) {
+				lastP = lastP.then(function() {
 					var newP = new mongoose.Promise();
 					var clientId = "1066768766862-6nqm53i5ab34js3oo8jcv05bkookob87.apps.googleusercontent.com";
 					var clientSecret = "2R4_ZmTBwBEAmEo7_W8hIyZn";
@@ -601,7 +603,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 						refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
 						access_token: "ya29.1.AADtN_W_-u9YM-kof2kK1nnryrUIQuAgNR_iRwmP9JwNcYaRzcr4uvSQqgFdkg"
 					});
-					client.androidpublisher.inapppurchases
+					gapiClient.androidpublisher.inapppurchases
 						.get({
 							packageName: order.packageName,
 							productId: order.productId,
@@ -630,7 +632,9 @@ exports.addCoinsForAnOrder = function(req, res) {
 					}
 				});
 			});
-			return lastP.then(function(user) {
+			return lastP.then(function() {
+				return userManager.findUserByHandle(handle);
+			}).then(function(user) {
 				res.json(user);
 			}, logErrorAndSetResponse(req, res));
 		} else {
