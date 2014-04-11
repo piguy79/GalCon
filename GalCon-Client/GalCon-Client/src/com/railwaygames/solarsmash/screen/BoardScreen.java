@@ -955,7 +955,7 @@ public class BoardScreen implements ScreenFeedback {
 	public static class Labels {
 		public static String waitingLabel(Social social) {
 			if (social != null && !social.invitee.isEmpty()) {
-				return "[Awaiting invitee]";
+				return "[" + social.invitee + "]";
 			}
 			return "[Awaiting enemy]";
 		}

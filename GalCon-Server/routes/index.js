@@ -956,7 +956,7 @@ exports.inviteUserToGame = function(req, res){
 		return configManager.findLatestConfig('app');
 	}).then(function(configs){
 		openLimit = configs.values['maxNumberOfOpenGames'];
-		return userManager.findUserByHandle(handle); 
+		return userManager.findUserByHandle(requesterHandle); 
 	}).then(function(user){
 		requestingUser = user;
 		return gameManager.findCollectionOfGames(user);

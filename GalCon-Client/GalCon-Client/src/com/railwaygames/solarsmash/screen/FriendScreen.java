@@ -188,7 +188,7 @@ public class FriendScreen implements ScreenFeedback {
 				Constants.UI.SMALL_FONT);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWrap(true);
-		playerLabel.setWidth(group.getWidth() * 0.5f);
+		playerLabel.setWidth(group.getWidth() * 0.6f);
 		
 		float startingYPosition = group.getHeight() * 0.4f;
 		float yPosition = startingYPosition;
@@ -202,7 +202,7 @@ public class FriendScreen implements ScreenFeedback {
 			imageToUse = Constants.UI.PLAY_ARROW;
 		}
 		playerLabel.setY(yPosition);
-		playerLabel.setX(group.getWidth() * 0.1f);
+		playerLabel.setX(group.getWidth() * 0.05f);
 
 		group.addActor(playerLabel);
 		
