@@ -420,10 +420,11 @@ public abstract class HighlightOverlay extends Overlay {
 					Move move = planetMoves.getValue().get(i);
 					Planet planet = gameBoard.getPlanet(move.to);
 					if (!move.handle.equals(GameLoop.USER.handle)
-							&& move.battleStats.previousPlanetOwner.equals(planet.owner)) {
+							&& move.battleStats.previousPlanetOwner.equals(planet.owner)
+							&& !planet.owner.equals(GameLoop.USER.handle)) {
 						continue;
 					}
-					
+
 					keepMove = true;
 					break;
 				}
