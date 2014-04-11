@@ -1,5 +1,7 @@
 package com.railwaygames.solarsmash.screen.signin;
 
+import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
+
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
@@ -24,6 +26,7 @@ import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
@@ -63,9 +66,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		this.resources = resources;
 	}
 
-	private void addElementsToStage(GameCount gameCount) {
+	private void addElementsToStage(final GameCount gameCount) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
+		
+		final String noFreeSlots = "No game slots available. \nMax slots [" + ConfigResolver.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES) + "]"
+				+ "\nComplete games to open up slots.";
 
 		resources.assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		resources.assetManager.finishLoading();
@@ -83,8 +89,15 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				startHideSequence(Strings.NEW);
+				if(noFreeGameSlots(gameCount)){
+					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(noFreeSlots, resources));
+					stage.addActor(overlay);
+				}else{
+					startHideSequence(Strings.NEW);
+				}
 			}
+
+			
 		});
 		stage.addActor(newLabel);
 		actors.add(newLabel);
@@ -122,7 +135,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				startHideSequence(Strings.INVITES);
+				if(noFreeGameSlots(gameCount)){
+					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(noFreeSlots, resources));
+					stage.addActor(overlay);
+				}else{
+					startHideSequence(Strings.INVITES);
+				}
 			}
 		});
 		stage.addActor(inviteLabel);
@@ -161,6 +179,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
 		addProgressBar();
+	}
+	
+	private boolean noFreeGameSlots(final GameCount gameCount) {
+		return gameCount.currentGameCount >= Integer.parseInt(ConfigResolver.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES));
 	}
 
 	private void addProgressBar() {

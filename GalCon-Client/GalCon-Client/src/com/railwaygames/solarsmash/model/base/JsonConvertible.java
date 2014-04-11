@@ -35,6 +35,7 @@ public abstract class JsonConvertible {
 	public void consume(JSONObject jsonObject) throws JSONException {
 		if(jsonObject != null){
 			String session = jsonObject.optString("session", "");
+			errorMessage = jsonObject.optString("error");
 			if (session.equals("expired")) {
 				sessionExpired = true;
 			} else {

@@ -13,6 +13,7 @@ public class Constants {
 	
 	public static class Config{
 		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
+		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
 
 	}
 

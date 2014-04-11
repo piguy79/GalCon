@@ -83,7 +83,7 @@ describe("Find available games -", function() {
 			return apiRunner.findAvailableGames(PLAYER_3_HANDLE, PLAYER_3.session.id);
 		}).then(function(games) {
 			var availableGames = games.items;
-			expect(typeof availableGames).toBe('undefined');
+			expect(availableGames.length).toBe(0);
 		}).then(null, function(err) {
 			expect(err.toString()).toBe(null);
 		}).then(done);

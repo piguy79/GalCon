@@ -64,6 +64,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 	}
 	
 	var pendingMoveCount;
+	var currentGameCount = 0;
 	
 	var p = userManager.findUserByHandle(handle);
 	return p.then(function(user) {
@@ -75,6 +76,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 		if(games === null) {
 			return 0;
 		}
+		currentGameCount = games.length;
 		var count = 0;
 		for(i in games) {
 			if (games[i].round.moved.indexOf(handle) == -1
@@ -94,7 +96,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 		}
 	}).then(function(inviteCount) {
 		
-		res.json({c : pendingMoveCount, i : inviteCount}); 
+		res.json({c : pendingMoveCount, i : inviteCount, cg : currentGameCount}); 
 	}, logErrorAndSetResponse(req, res));
 }
 
@@ -745,12 +747,21 @@ exports.matchPlayerToGame = function(req, res) {
 	}
 	
 	var callingUser;
+	var openLimit;
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return userManager.findUserByHandle(handle);
+		return configManager.findLatestConfig('app');
+	}).then(function(configs){
+		openLimit = configs.values['maxNumberOfOpenGames'];
+		return userManager.findUserByHandle(handle); 
 	}).then(function(user){
 		callingUser = user;
+		return gameManager.findCollectionOfGames(user);
+	}).then(function(games){
+		if(games && games.length >= openLimit){
+			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
+		}
 		return mapManager.findMapByKey(mapToFind);
 	}).then(function(map){
 		if(callingUser.xp < map.availableFromXp){
@@ -938,12 +949,21 @@ exports.inviteUserToGame = function(req, res){
 	var requestingUser;
 	var inviteeUser;
 	var currentGame;
+	var openLimit;
 		
 	var p = validateSession(session, {"handle" : requesterHandle});
 	p.then(function(){
-		return userManager.findUserByHandle(requesterHandle);
+		return configManager.findLatestConfig('app');
+	}).then(function(configs){
+		openLimit = configs.values['maxNumberOfOpenGames'];
+		return userManager.findUserByHandle(handle); 
 	}).then(function(user){
 		requestingUser = user;
+		return gameManager.findCollectionOfGames(user);
+	}).then(function(games){
+		if(games && games.length >= openLimit){
+			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
+		}
 		return mapManager.findMapByKey(mapKey);
 	}).then(function(map){
 		if(requestingUser.xp < map.availableFromXp){

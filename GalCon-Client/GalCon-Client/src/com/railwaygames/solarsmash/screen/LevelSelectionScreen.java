@@ -29,6 +29,7 @@ import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.model.AvailableGames;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Point;
@@ -58,7 +59,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private ScrollPaneHighlightReel highlightReel;
 
 	private Array<Actor> actors = new Array<Actor>();
-
 	private Resources resources;
 
 	public LevelSelectionScreen(Resources resources) {
@@ -100,7 +100,46 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				return Integer.valueOf(o1.availableFromXp).compareTo(Integer.valueOf(o2.availableFromXp));
 			}
 		});
+		
+		createGameList();
+		
+	}
 
+	
+	private void createScrollhighlightReel() {	
+		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
+		float actorPadding = calculateActorPadding(actorWidth);
+		
+		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
+									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth)
+									.actorPadding(actorPadding);
+		
+		float totalWidth = 0f;
+		
+		for(Map map : allMaps){
+			Image image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
+			image.setColor(Color.GRAY);
+			builder.addActorWithKey(map.key, image);
+			totalWidth = totalWidth + actorPadding + actorWidth;
+		}
+		
+		// Account for the first one.
+		totalWidth = totalWidth - actorPadding;
+		
+		highlightReel = builder.build();
+		
+		
+		
+		highlightReel.setX((Gdx.graphics.getWidth() - totalWidth) / 2);
+		highlightReel.setY(Gdx.graphics.getHeight() * 0.05f);
+		
+		highlightReel.highlight(allMaps.get(0).key);
+		actors.add(highlightReel);
+		stage.addActor(highlightReel);
+		
+	}
+	
+	private void createGameList(){
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -160,40 +199,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		stage.addActor(backButton);
 		
 		createScrollhighlightReel();
-	}
-
-	
-	private void createScrollhighlightReel() {	
-		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
-		float actorPadding = calculateActorPadding(actorWidth);
-		
-		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
-									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth)
-									.actorPadding(actorPadding);
-		
-		float totalWidth = 0f;
-		
-		for(Map map : allMaps){
-			Image image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
-			image.setColor(Color.GRAY);
-			builder.addActorWithKey(map.key, image);
-			totalWidth = totalWidth + actorPadding + actorWidth;
-		}
-		
-		// Account for the first one.
-		totalWidth = totalWidth - actorPadding;
-		
-		highlightReel = builder.build();
-		
-		
-		
-		highlightReel.setX((Gdx.graphics.getWidth() - totalWidth) / 2);
-		highlightReel.setY(Gdx.graphics.getHeight() * 0.05f);
-		
-		highlightReel.highlight(allMaps.get(0).key);
-		actors.add(highlightReel);
-		stage.addActor(highlightReel);
-		
 	}
 
 	private float calculateActorPadding(float actorWidth) {
