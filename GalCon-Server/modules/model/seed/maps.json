@@ -38,7 +38,7 @@
 				},
 				{
 					"key" : 4,
-					"availableFromXp" : 800,
+					"availableFromXp" : 1200,
 					"title" : "Protect",
 					"description" : "Shields online",
 					"width" : {
@@ -50,7 +50,7 @@
 				},
 				{
 					"key" : 5,
-					"availableFromXp" : 1500,
+					"availableFromXp" : 2500,
 					"title" : "Attack",
 					"description" : "Attack!",
 					"width" : {
@@ -62,7 +62,7 @@
 				},
 				{
 					"key" : 6,
-					"availableFromXp" : 3600,
+					"availableFromXp" : 5500,
 					"title" : "Harvest",
 					"description" : "Harvest And Hold",
 					"width" : {
