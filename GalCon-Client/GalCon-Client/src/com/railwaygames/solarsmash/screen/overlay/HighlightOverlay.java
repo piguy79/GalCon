@@ -212,7 +212,7 @@ public abstract class HighlightOverlay extends Overlay {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 
-			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
+			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle) && toPlanetButton.planet.isOwnedBy(GameLoop.USER.handle)
 					&& toPlanetButton.planet.isOwnedBy(move.handle) && !planetsConquered.contains(toPlanetButton.planet.name)) {
 				planetsConquered.add(toPlanetButton.planet.name);
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
