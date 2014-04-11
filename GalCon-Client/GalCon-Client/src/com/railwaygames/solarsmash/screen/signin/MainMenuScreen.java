@@ -1,7 +1,5 @@
 package com.railwaygames.solarsmash.screen.signin;
 
-import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
-
 import org.joda.time.DateTime;
 
 import com.badlogic.gdx.Gdx;
@@ -12,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -26,7 +25,6 @@ import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
@@ -146,7 +144,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(inviteLabel);
 		actors.add(inviteLabel);
 
-		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
+		Button coinImage = new Button(resources.skin, Constants.UI.COIN);
 		GraphicsUtils.setCommonButtonSize(coinImage);
 		coinImage.setX(10);
 		coinImage.setY(height * 0.99f - coinImage.getHeight());

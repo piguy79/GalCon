@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -29,7 +28,6 @@ import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.model.AvailableGames;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Point;
@@ -37,10 +35,10 @@ import com.railwaygames.solarsmash.screen.event.GameStartListener;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
-import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel;
-import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 import com.railwaygames.solarsmash.screen.widget.ActorBar.Align;
+import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder;
+import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
 public class LevelSelectionScreen implements PartialScreenFeedback, UIConnectionResultCallback<Maps> {
 
@@ -54,7 +52,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private Stage stage;
 	private Table cardTable;
 	private Actor choiceActor;
-	private ImageButton backButton;
+	private Button backButton;
 	protected WaitImageButton waitImage;
 	private ScrollPaneHighlightReel highlightReel;
 
@@ -354,7 +352,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		cardTable.setWidth(width);
 		cardTable.setHeight(tableHeight);
 
-		backButton = new ImageButton(resources.skin, "backButton");
+		backButton = new Button(resources.skin, "backButton");
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
 		backButton.setY(height - backButton.getHeight() - 5);

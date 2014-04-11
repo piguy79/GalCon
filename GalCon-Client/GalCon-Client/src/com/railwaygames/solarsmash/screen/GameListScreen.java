@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -30,7 +30,6 @@ import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.MinifiedGame;
-import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.MinifiedGame.MinifiedPlayer;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoadingOverlay;
@@ -50,8 +49,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	private Stage stage;
 	private ShaderLabel messageLabel;
 	private ScrollList<MinifiedGame> scrollList;
-	private ImageButton backButton;
-	private ImageButton refreshButton;
+	private Button backButton;
+	private Button refreshButton;
 	private Array<Actor> actors = new Array<Actor>();
 	protected WaitImageButton waitImage;
 	private LoadingOverlay loadingOverlay;
@@ -117,7 +116,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	private void showGames() {
 		scrollList.clearRows();
-		if(loadingOverlay != null){
+		if (loadingOverlay != null) {
 			loadingOverlay.remove();
 		}
 		if (allGames == null) {
@@ -189,12 +188,12 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				statusText = "You Lost";
 				statusFont = Constants.UI.DEFAULT_FONT_RED;
 			}
-		} else if(game.hasBeenDeclined()){
+		} else if (game.hasBeenDeclined()) {
 			statusText = "-- Invite Declined --";
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
-		}else if (game.moveAvailable) {
+		} else if (game.moveAvailable) {
 			statusText = "--your move--";
-		} else if(game.claimAvailable){
+		} else if (game.claimAvailable) {
 			statusText = "--claim available--";
 			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
 		}
@@ -247,7 +246,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		@Override
 		public void onConnectionError(String msg) {
 			loadingOverlay.remove();
-			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE, resources));
+			final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(CONNECTION_ERROR_MESSAGE,
+					resources));
 			stage.addActor(overlay);
 		}
 	}
@@ -276,7 +276,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		createBackButton(stage, height);
 		createRefreshButton(stage, height);
-		
 
 		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		messageLabel.setAlignment(Align.center);
@@ -319,7 +318,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	private void createBackButton(Stage stage, float height) {
-		backButton = new ImageButton(resources.skin, "backButton");
+		backButton = new Button(resources.skin, "backButton");
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
 		backButton.setY(height - backButton.getHeight() - 5);
@@ -337,13 +336,13 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		actors.add(backButton);
 		stage.addActor(backButton);
 	}
-	
+
 	private void createRefreshButton(final Stage stage, float height) {
-		refreshButton = new ImageButton(resources.skin, "refreshButton");
+		refreshButton = new Button(resources.skin, "refreshButton");
 		GraphicsUtils.setCommonButtonSize(refreshButton);
 		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
 		refreshButton.setY(height - refreshButton.getHeight() - 5);
-		refreshButton.addListener(new ClickListener(){
+		refreshButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);

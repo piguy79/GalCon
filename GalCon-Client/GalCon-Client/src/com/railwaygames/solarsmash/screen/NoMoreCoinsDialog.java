@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,9 +22,9 @@ import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
+import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.SetPlayerResultHandler;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Player;
@@ -59,7 +60,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private void createBackButton(final Stage stage, final float width, final float height) {
-		ImageButton backButton = new ImageButton(resources.skin, "backButton");
+		Button backButton = new Button(resources.skin, "backButton");
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
 		backButton.setY(height - backButton.getHeight() - 5);
@@ -203,7 +204,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 					"Could not complete purchase.\n\nPlease try again.", resources), new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-//					ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem, coinsCallback);
+					// ExternalActionWrapper.purchaseCoins(lastPurchaseAttemptItem,
+					// coinsCallback);
 				}
 			});
 
@@ -214,9 +216,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private void addCoinImageGroup(Group group) {
 		final float width = Gdx.graphics.getWidth();
 
-		ImageButton coinImage = new ImageButton(resources.skin, Constants.UI.COIN);
+		Button coinImage = new Button(resources.skin, Constants.UI.COIN);
 		float coinSize = group.getHeight() * 0.95f;
-		coinImage.setLayoutEnabled(false);
 		coinImage.setWidth(coinSize);
 		coinImage.setHeight(coinSize);
 		coinImage.setY((group.getHeight() - coinSize) / 2);

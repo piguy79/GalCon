@@ -76,13 +76,13 @@ public abstract class OKCancelDialog extends Dialog {
 	}
 
 	protected void showButton(ActionButton button, float duration) {
-		button.addAction(sequence(delay(duration), color(new Color(0, 0, 0, 1), 0.4f)));
+		button.addAction(sequence(delay(duration), color(new Color(1, 1, 1, 1), 0.3f)));
 	}
 
 	public void hide() {
-		cancelButton.addAction(Actions.fadeOut(0.4f));
+		cancelButton.addAction(Actions.fadeOut(0.3f));
 		if (okButton != null) {
-			okButton.addAction(Actions.fadeOut(0.4f));
+			okButton.addAction(Actions.fadeOut(0.3f));
 		}
 		super.hide(0.3f);
 	}
