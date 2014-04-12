@@ -68,6 +68,7 @@ public abstract class HighlightOverlay extends Overlay {
 	private BoardCalculations boardCalcs;
 	private GameBoard gameBoard;
 	private MoveHud moveHud;
+	private List<String> planetsConquered;
 
 	private ClickListener defaultHideListener = new ClickListener() {
 		@Override
@@ -86,6 +87,7 @@ public abstract class HighlightOverlay extends Overlay {
 		this.gameBoard = gameBoard;
 		this.moveHud = moveHud;
 		this.resources = resources;
+		this.planetsConquered = new ArrayList<String>();
 
 		screenCalcs.getBoardBounds().applyBounds(this);
 		stage.addActor(this);
@@ -210,8 +212,9 @@ public abstract class HighlightOverlay extends Overlay {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 
-			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
-					&& toPlanetButton.planet.isOwnedBy(move.handle)) {
+			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle) && toPlanetButton.planet.isOwnedBy(GameLoop.USER.handle)
+					&& toPlanetButton.planet.isOwnedBy(move.handle) && !planetsConquered.contains(toPlanetButton.planet.name)) {
+				planetsConquered.add(toPlanetButton.planet.name);
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
 			}
 		}
@@ -388,6 +391,7 @@ public abstract class HighlightOverlay extends Overlay {
 		private Map<String, List<Move>> planetToMoves;
 		private Iterator<String> planetIterator;
 		private Iterator<Planet> harvestIterator;
+		private List<String> planetConquersShown;
 		private List<Planet> savedFromHarvest;
 		private Planet savedPlanet;
 
@@ -437,6 +441,7 @@ public abstract class HighlightOverlay extends Overlay {
 				planetToMoves.remove(key);
 			}
 
+			planetConquersShown = new ArrayList<String>();
 			planetIterator = planetToMoves.keySet().iterator();
 		}
 
