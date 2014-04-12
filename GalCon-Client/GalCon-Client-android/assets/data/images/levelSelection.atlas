@@ -5,37 +5,23 @@ filter: Linear,Linear
 repeat: none
 level_select_bg_bottom
   rotate: false
-  xy: 2, 706
+  xy: 79, 520
   size: 800, 300
   orig: 800, 300
   offset: 0, 0
   index: -1
-level_select_card_shadow
+lock_card_background
   rotate: false
-  xy: 2, 4
-  size: 537, 700
-  orig: 537, 700
-  offset: 0, 0
-  index: -1
-reg_play
-  rotate: false
-  xy: 541, 354
-  size: 376, 350
-  orig: 376, 350
+  xy: 2, 2
+  size: 768, 516
+  orig: 768, 516
   offset: 0, 0
   index: -1
 scroll_highlight
   rotate: false
-  xy: 804, 978
+  xy: 2, 792
   size: 75, 28
   orig: 75, 28
-  offset: 0, 0
-  index: -1
-social_play
-  rotate: false
-  xy: 541, 2
-  size: 376, 350
-  orig: 376, 350
   offset: 0, 0
   index: -1
 
@@ -67,10 +53,10 @@ levelSelection4.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-lock_card_background
+level_select_card_shadow
   rotate: false
   xy: 2, 2
-  size: 768, 516
-  orig: 768, 516
+  size: 537, 700
+  orig: 537, 700
   offset: 0, 0
   index: -1

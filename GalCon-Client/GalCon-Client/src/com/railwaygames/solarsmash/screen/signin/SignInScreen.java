@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
@@ -98,10 +97,11 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addGooglePlusButton(float width, float height) {
-		googlePlusButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		googlePlusButton.setWidth(0.7f * width);
+		googlePlusButton = new Button(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		googlePlusButton.setWidth(0.3f * width);
 		googlePlusButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
-		googlePlusButton.setY(0.3f * height);
+		googlePlusButton.setY(0.35f * height);
+		googlePlusButton.setHeight(0.07f * height);
 		stage.addActor(googlePlusButton);
 
 		googlePlusButton.addListener(new InputListener() {
@@ -125,10 +125,11 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addFacebookButton(float width, float height) {
-		facebookButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-		facebookButton.setWidth(0.7f * width);
+		facebookButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		facebookButton.setWidth(0.3f * width);
 		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
-		facebookButton.setY(0.2f * height);
+		facebookButton.setY(0.23f * height);
+		facebookButton.setHeight(0.07f * height);
 		stage.addActor(facebookButton);
 
 		facebookButton.addListener(new InputListener() {

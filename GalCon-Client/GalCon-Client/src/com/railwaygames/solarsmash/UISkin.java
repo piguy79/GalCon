@@ -170,6 +170,19 @@ public class UISkin extends Skin {
 			add("refreshButton", new ButtonStyle(trd, trd, trd));
 		}
 
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("facebook_normal"));
+			add(Constants.UI.FACEBOOK_SIGN_IN_BUTTON, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("google_plus_custom_normal"));
+			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("galcon_search_custom_normal"));
+			add(Constants.UI.GALCON_SEARCH_IMAGE, new ButtonStyle(trd, trd, trd));
+		}
+
 		/*
 		 * Image Buttons
 		 */
@@ -204,18 +217,6 @@ public class UISkin extends Skin {
 			add(Constants.UI.BASIC_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
 		}
 		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("facebook_normal"));
-			add(Constants.UI.FACEBOOK_SIGN_IN_BUTTON, new ImageButtonStyle(null, null, null, trd, trd, trd));
-		}
-		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("google_plus_custom_normal"));
-			add(Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL, new ImageButtonStyle(null, null, null, trd, trd, trd));
-		}
-		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("galcon_search_custom_normal"));
-			add(Constants.UI.GALCON_SEARCH_IMAGE, new ImageButtonStyle(null, null, null, trd, trd, trd));
-		}
-		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("count_label"));
 			add(Constants.UI.COUNT_LABEL, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
@@ -226,9 +227,6 @@ public class UISkin extends Skin {
 
 		TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("back_arrow_white"));
 		add(Constants.UI.BACK_ARROW_WHITE, new ImageButtonStyle(null, null, null, trd, trd, trd));
-
-		trd = new TextureRegionDrawable(socialAtlas.findRegion("Google+_chiclet_Red"));
-		add("googlePlusButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
 
 		trd = new TextureRegionDrawable(gameBoardAtlas.findRegion("ship"));
 		add("shipButton", new ImageButtonStyle(null, null, null, trd, trd, trd));

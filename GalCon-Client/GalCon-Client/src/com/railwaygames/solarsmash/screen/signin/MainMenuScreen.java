@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -55,8 +54,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private XpProgressBar xpBar;
-	private ImageButton fbButton;
-	private ImageButton gpButton;
+	private Button fbButton;
+	private Button gpButton;
 
 	public MainMenuScreen(Resources resources, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
@@ -67,8 +66,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private void addElementsToStage(final GameCount gameCount) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-		
-		final String noFreeSlots = "No game slots available. \nMax slots [" + ConfigResolver.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES) + "]"
+
+		final String noFreeSlots = "No game slots available. \nMax slots ["
+				+ ConfigResolver.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES) + "]"
 				+ "\nComplete games to open up slots.";
 
 		resources.assetManager.load("data/images/loading.pack", TextureAtlas.class);
@@ -87,15 +87,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if(noFreeGameSlots(gameCount)){
+				if (noFreeGameSlots(gameCount)) {
 					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(noFreeSlots, resources));
 					stage.addActor(overlay);
-				}else{
+				} else {
 					startHideSequence(Strings.NEW);
 				}
 			}
 
-			
 		});
 		stage.addActor(newLabel);
 		actors.add(newLabel);
@@ -133,10 +132,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if(noFreeGameSlots(gameCount)){
+				if (noFreeGameSlots(gameCount)) {
 					final Overlay overlay = new DismissableOverlay(resources, new TextOverlay(noFreeSlots, resources));
 					stage.addActor(overlay);
-				}else{
+				} else {
 					startHideSequence(Strings.INVITES);
 				}
 			}
@@ -178,9 +177,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		addInviteCount(gameCount);
 		addProgressBar();
 	}
-	
+
 	private boolean noFreeGameSlots(final GameCount gameCount) {
-		return gameCount.currentGameCount >= Integer.parseInt(ConfigResolver.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES));
+		return gameCount.currentGameCount >= Integer.parseInt(ConfigResolver
+				.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES));
 	}
 
 	private void addProgressBar() {
@@ -195,13 +195,13 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		createGpButton();
 
 		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
-		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
+		float buttonHeight = Gdx.graphics.getHeight() * 0.05f;
 
-		ActorBar buttonBar = new ActorBar.ActorBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f)
-								.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f)
-								.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).build();
+		ActorBar buttonBar = new ActorBar.ActorBarBuilder(Gdx.graphics.getHeight() * 0.1f,
+				Gdx.graphics.getWidth() * 0.6f).actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f)
+				.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).build();
 		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
-		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 1.1f));
+		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 0.8f));
 
 		stage.addActor(buttonBar);
 		actors.add(buttonBar);
@@ -233,7 +233,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void createGpButton() {
-		gpButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		gpButton = new Button(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		gpButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -243,7 +243,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void createFbButton() {
-		fbButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		fbButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 
 		fbButton.addListener(new ClickListener() {
 			@Override

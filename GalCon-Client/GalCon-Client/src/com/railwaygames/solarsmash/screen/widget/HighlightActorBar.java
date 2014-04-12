@@ -36,7 +36,7 @@ public class HighlightActorBar extends ActorBar {
 		
 		final float actorOffset = actorWidth * 0.15f;
 		highlightBar.setX(lastActor.getX() + actorOffset);
-		highlightBar.setY(getHeight() * 0.2f);
+		highlightBar.setY(0);
 		
 		for(Iterator<Actor> iter = actors.iterator(); iter.hasNext();){
 			final Actor actor = iter.next();
@@ -49,7 +49,6 @@ public class HighlightActorBar extends ActorBar {
 		}
 		
 		addActor(highlightBar);
-		
 	}
 
 

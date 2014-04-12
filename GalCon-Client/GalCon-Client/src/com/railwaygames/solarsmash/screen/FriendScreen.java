@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -63,9 +63,9 @@ public class FriendScreen implements ScreenFeedback {
 	private ShaderTextField searchBox;
 	private ShaderLabel noResultsFound;
 	private ActionButton searchButton;
-	private ImageButton galButton;
-	private ImageButton fbButton;
-	private ImageButton gpButton;
+	private Button galButton;
+	private Button fbButton;
+	private Button gpButton;
 
 	private Group searchLabelGroup;
 	private ScrollList<CombinedFriend> scrollList;
@@ -108,30 +108,31 @@ public class FriendScreen implements ScreenFeedback {
 		createGpButton();
 
 		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
-		float buttonHeight = Gdx.graphics.getHeight() * 0.15f;
+		float buttonHeight = Gdx.graphics.getHeight() * 0.05f;
 
-		HighlightActorBar actorBar = new HighlightActorBar.HighlightActorBarBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f, resources.skin)
-								.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f).actorToHighlight(2)
-								.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).addActor(galButton).build();
+		HighlightActorBar actorBar = new HighlightActorBar.HighlightActorBarBuilder(Gdx.graphics.getHeight() * 0.1f,
+				Gdx.graphics.getWidth() * 0.6f, resources.skin).actorSize(buttonHeight, buttonWidth)
+				.actorPadding(buttonWidth * 0.1f).actorToHighlight(2).align(ActorBar.Align.RIGHT).addActor(fbButton)
+				.addActor(gpButton).addActor(galButton).build();
 		actorBar.setX(Gdx.graphics.getWidth() * 0.4f);
-		actorBar.setY(Gdx.graphics.getHeight() - (actorBar.getHeight() * 1.1f));
+		actorBar.setY(Gdx.graphics.getHeight() - (actorBar.getHeight() * 0.8f));
 
 		stage.addActor(actorBar);
 
 	}
 
 	private void createGalconButton() {
-		galButton = new ImageButton(resources.skin, Constants.UI.GALCON_SEARCH_IMAGE);
+		galButton = new Button(resources.skin, Constants.UI.GALCON_SEARCH_IMAGE);
 		galButton.addListener(allClickListener);
 	}
 
 	private void createGpButton() {
-		gpButton = new ImageButton(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+		gpButton = new Button(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
 		gpButton.addListener(gpButtonListener);
 	}
 
 	private void createFbButton() {
-		fbButton = new ImageButton(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+		fbButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		fbButton.addListener(fbButtonListener);
 	}
 
@@ -143,7 +144,6 @@ public class FriendScreen implements ScreenFeedback {
 		searchLabelGroup.setY(searchBox.getY() - (height * 0.05f));
 
 		stage.addActor(searchLabelGroup);
-
 	}
 
 	private void createNoResultsFound() {
@@ -178,25 +178,22 @@ public class FriendScreen implements ScreenFeedback {
 		scrollList.setHeight(tableHeight);
 
 		stage.addActor(scrollList);
-
 	}
 
 	private void createPlayerEntry(CombinedFriend item, Group group) {
-		float width = Gdx.graphics.getWidth();
-
 		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.getDisplay(), resources.skin,
 				Constants.UI.SMALL_FONT);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWrap(true);
 		playerLabel.setWidth(group.getWidth() * 0.6f);
-		
+
 		float startingYPosition = group.getHeight() * 0.4f;
 		float yPosition = startingYPosition;
 		String actionText = "Share";
-		
+
 		String imageToUse = Constants.UI.SHARE_ICON;
-		
-		if(item.hasGalconAccount()){
+
+		if (item.hasGalconAccount()) {
 			yPosition = group.getHeight() * 0.3f;
 			actionText = "Play";
 			imageToUse = Constants.UI.PLAY_ARROW;
@@ -205,31 +202,27 @@ public class FriendScreen implements ScreenFeedback {
 		playerLabel.setX(group.getWidth() * 0.05f);
 
 		group.addActor(playerLabel);
-		
+
 		Image actionImage = new Image(resources.skin.getDrawable(imageToUse));
 		actionImage.setX(group.getWidth() * 0.7f);
 		actionImage.setWidth(group.getWidth() * 0.08f);
 		actionImage.setHeight(group.getHeight() * 0.4f);
 		actionImage.setY(startingYPosition - (actionImage.getHeight() * 0.2f));
 		group.addActor(actionImage);
-		
-		
-		ShaderLabel actionLabel = new ShaderLabel(resources.fontShader, actionText, resources.skin, Constants.UI.SMALL_FONT);
+
+		ShaderLabel actionLabel = new ShaderLabel(resources.fontShader, actionText, resources.skin,
+				Constants.UI.SMALL_FONT);
 		actionLabel.setX(group.getWidth() * 0.8f);
 		actionLabel.setY(startingYPosition);
 		actionLabel.setWidth(group.getWidth() * 0.4f);
 		actionLabel.setAlignment(Align.left);
 		group.addActor(actionLabel);
-		
-		
-
 	}
 
 	private void createSearchButton() {
 		Point position = new Point(searchBox.getX() + searchBox.getWidth() + (GraphicsUtils.actionButtonSize * 0.25f),
 				searchBox.getY());
 		searchButton = new ActionButton(resources.skin, "okButton", position);
-		// searchButton.setDisabled(true);
 
 		searchButton.addListener(new ClickListener() {
 			@Override
@@ -305,28 +298,28 @@ public class FriendScreen implements ScreenFeedback {
 	}
 
 	private void displayPeople(List<CombinedFriend> friends, Long time) {
-		if(requestTime == time){
+		if (requestTime == time) {
 			waitImage.setVisible(false);
 			scrollList.clearRows();
-			
+
 			Collections.sort(friends, new Comparator<CombinedFriend>() {
 				public int compare(CombinedFriend o1, CombinedFriend o2) {
-					if(o1.hasGalconAccount() && o2.hasGalconAccount()){
+					if (o1.hasGalconAccount() && o2.hasGalconAccount()) {
 						return 0;
-					}else if(o1.hasGalconAccount() && !o2.hasGalconAccount()){
+					} else if (o1.hasGalconAccount() && !o2.hasGalconAccount()) {
 						return -1;
 					}
 					return 1;
 				};
 			});
-			
+
 			for (final CombinedFriend friend : friends) {
 				scrollList.addRow(friend, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						if (friend.hasGalconAccount()) {
-							gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle, ((GalConFriend) friend).handle,
-									mapKey);
+							gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle,
+									((GalConFriend) friend).handle, mapKey);
 							returnCode = Action.INVITE_PLAYER;
 
 						} else {
@@ -369,7 +362,7 @@ public class FriendScreen implements ScreenFeedback {
 						return overlay;
 					}
 				});
-			}	
+			}
 		}
 	}
 
@@ -412,7 +405,7 @@ public class FriendScreen implements ScreenFeedback {
 			}
 		});
 		stage.addActor(backButton);
-		
+
 	}
 
 	private void createWaitImage() {
@@ -530,7 +523,7 @@ public class FriendScreen implements ScreenFeedback {
 		ShaderLabel label = new ShaderLabel(resources.fontShader, "Recent Opponents: ", resources.skin,
 				Constants.UI.DEFAULT_FONT);
 		populateSearchLabelGroup(label);
-		
+
 		final Long time = System.currentTimeMillis();
 		requestTime = time;
 
@@ -546,7 +539,7 @@ public class FriendScreen implements ScreenFeedback {
 				showError("Cound not load recent opponents.");
 			}
 		}, GameLoop.USER.handle);
-		
+
 	}
 
 	private ClickListener allClickListener = new ClickListener() {
@@ -653,7 +646,8 @@ public class FriendScreen implements ScreenFeedback {
 					};
 
 					public void onConnectionError(String msg) {
-						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, new ArrayList<MinifiedGame.MinifiedPlayer>());
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends,
+								new ArrayList<MinifiedGame.MinifiedPlayer>());
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					}
