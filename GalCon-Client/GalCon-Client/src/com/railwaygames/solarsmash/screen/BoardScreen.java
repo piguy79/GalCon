@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -77,10 +78,6 @@ public class BoardScreen implements ScreenFeedback {
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
 	List<HarvestMove> inProgressHarvest = new ArrayList<HarvestMove>();
 
-	boolean intro = true;
-	float introTimeBegin = 0.0f;
-	float introElapsedTime = 2.8f;
-
 	private String returnCode = null;
 
 	private Stage stage;
@@ -88,7 +85,7 @@ public class BoardScreen implements ScreenFeedback {
 	private Group boardTable;
 	private MoveHud moveHud;
 	private BoardScreenPlayerHud playerHud;
-	
+
 	private boolean claimShown = false;
 
 	private List<Moon> moons = new ArrayList<Moon>();
@@ -233,6 +230,25 @@ public class BoardScreen implements ScreenFeedback {
 
 		createLayout();
 
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
+			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+				@Override
+				public void onClose() {
+					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
+					prefs.flush();
+					beginOverlay();
+				}
+			}).focus(Constants.Tutorial.OVERVIEW);
+		} else {
+			beginOverlay();
+		}
+
+		stage.addListener(createHarvestListener());
+	}
+
+	private void beginOverlay() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
 			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
@@ -244,14 +260,13 @@ public class BoardScreen implements ScreenFeedback {
 		} else {
 			beginEndRoundInfo();
 		}
-		stage.addListener(createHarvestListener());
 	}
-	
-	private void beginEndRoundInfo(){
+
+	private void beginEndRoundInfo() {
 		beginShipMovements();
-		if(!claimShown && gameBoard.isClaimAvailable()){
+		if (!claimShown && gameBoard.isClaimAvailable()) {
 			showClaimOverlay();
-		}else{
+		} else {
 			createEndGameOverlay();
 		}
 	}
@@ -259,32 +274,31 @@ public class BoardScreen implements ScreenFeedback {
 	private void showClaimOverlay() {
 		claimShown = true;
 		final ClaimOverlay claimOverlay = new ClaimOverlay(resources, gameBoard);
-		
-		claimOverlay.addListener(new ClaimVictoryEventListener(){
+
+		claimOverlay.addListener(new ClaimVictoryEventListener() {
 			@Override
 			public void claimFailed() {
 				claimOverlay.remove();
-				final Overlay claimFailOverlay = new DismissableOverlay(resources, new TextOverlay("Unable to claim victory", resources), new ClickListener(){
+				final Overlay claimFailOverlay = new DismissableOverlay(resources, new TextOverlay(
+						"Unable to claim victory", resources), new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						overlay = new TextOverlay("Refreshing", resources);
 						stage.addActor(overlay);
-						UIConnectionWrapper.findGameById(
-								new UpdateBoardScreenResultHandler("Could not refresh"),
+						UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"),
 								gameBoard.id, GameLoop.USER.handle);
 					}
 				});
 				stage.addActor(claimFailOverlay);
 			}
-			
+
 			@Override
 			public void claimSuccess() {
 				claimOverlay.remove();
 				overlay = new TextOverlay("Refreshing", resources);
 				stage.addActor(overlay);
-				UIConnectionWrapper.findGameById(
-						new UpdateBoardScreenResultHandler("Could not refresh"),
-						gameBoard.id, GameLoop.USER.handle);
+				UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
+						GameLoop.USER.handle);
 			}
 		});
 		stage.addActor(claimOverlay);
@@ -318,7 +332,6 @@ public class BoardScreen implements ScreenFeedback {
 
 		Gdx.input.setInputProcessor(stage);
 
-		
 	}
 
 	private void createEndGameOverlay() {
@@ -330,19 +343,18 @@ public class BoardScreen implements ScreenFeedback {
 				endGameOverlay = new LoserEndGameOverlay(resources, gameBoard);
 			}
 
-			endGameOverlay.addListener(new TransitionEventListener(){
+			endGameOverlay.addListener(new TransitionEventListener() {
 				@Override
 				public void transition(String action) {
 					returnCode = action;
 				}
 			});
-			
-			endGameOverlay.addListener(new GameReturnEventListener(){
+
+			endGameOverlay.addListener(new GameReturnEventListener() {
 				@Override
 				public void gameFound(String gameId) {
-					UIConnectionWrapper.findGameById(
-							new UpdateBoardScreenResultHandler("Could not refresh"),
-							gameId, GameLoop.USER.handle);
+					UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"), gameId,
+							GameLoop.USER.handle);
 				}
 			});
 			stage.addActor(endGameOverlay);

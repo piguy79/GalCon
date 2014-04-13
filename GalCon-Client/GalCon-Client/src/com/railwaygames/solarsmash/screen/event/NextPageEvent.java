@@ -2,6 +2,6 @@ package com.railwaygames.solarsmash.screen.event;
 
 import com.badlogic.gdx.scenes.scene2d.Event;
 
-public class RoundInformationEvent extends Event {
+public class NextPageEvent extends Event {
 
 }

@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Constants {
 	public static final String APP_TITLE = "Solar Smash";
-	
-	public static class Config{
+
+	public static class Config {
 		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
 		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
 
@@ -78,7 +78,7 @@ public class Constants {
 	public static class Colors {
 		public static Color USER_SHIP_FILL = Color.GREEN;
 		public static Color ENEMY_SHIP_FILL = new Color(1.0f, 0.2f, 0.2f, 1.0f);
-		public static Color NEUTRAL  = Color.valueOf("999B9C");
+		public static Color NEUTRAL = Color.valueOf("999B9C");
 	}
 
 	public static class Auth {
@@ -87,6 +87,10 @@ public class Constants {
 		public static final String SOCIAL_AUTH_PROVIDER_FACEBOOK = "facebook";
 		public static final String LAST_SESSION_ID = "lastSessionId";
 		public static final String EMAIL = "email";
+	}
+
+	public static class Tutorial {
+		public static final String OVERVIEW = "tutorial_overview";
 	}
 
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect.\n\nTouch the screen\nto try again.";
@@ -154,7 +158,6 @@ public class Constants {
 	public static final String SOCIAL = "social";
 	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
 	public static final String CONFIG = "config";
-
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

@@ -12,17 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.screen.Resources;
-import com.railwaygames.solarsmash.screen.event.RoundInformationEvent;
+import com.railwaygames.solarsmash.screen.event.NextPageEvent;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
-public class RoundInformationBottomHud extends Group {
+public class MultiPageBottomHud extends Group {
 	private Resources resources;
 	private ImageButton nextButton;
 	private ShaderLabel nextText;
 
 	private AtlasRegion bgRegion;
 
-	public RoundInformationBottomHud(Resources resources, float width, float height) {
+	public MultiPageBottomHud(Resources resources, float width, float height) {
 		this.resources = resources;
 
 		setHeight(height);
@@ -56,7 +56,7 @@ public class RoundInformationBottomHud extends Group {
 	private class NextListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			fire(new RoundInformationEvent());
+			fire(new NextPageEvent());
 		}
 	}
 

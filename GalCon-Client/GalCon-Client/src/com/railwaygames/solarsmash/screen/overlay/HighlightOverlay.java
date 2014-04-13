@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -52,12 +53,15 @@ import com.railwaygames.solarsmash.screen.MoveHud;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.HarvestEvent;
 import com.railwaygames.solarsmash.screen.event.MoveListener;
-import com.railwaygames.solarsmash.screen.event.RoundInformationEvent;
+import com.railwaygames.solarsmash.screen.event.NextPageEvent;
+import com.railwaygames.solarsmash.screen.hud.BlankHud;
+import com.railwaygames.solarsmash.screen.hud.MultiPageBottomHud;
 import com.railwaygames.solarsmash.screen.hud.PlanetInfoHud;
-import com.railwaygames.solarsmash.screen.hud.RoundInformationBottomHud;
 import com.railwaygames.solarsmash.screen.hud.RoundInformationTopHud;
 import com.railwaygames.solarsmash.screen.hud.ShipSelectionHud;
 import com.railwaygames.solarsmash.screen.hud.SingleMoveInfoHud;
+import com.railwaygames.solarsmash.screen.tutorial.Overview;
+import com.railwaygames.solarsmash.screen.tutorial.Tutorial;
 import com.railwaygames.solarsmash.screen.widget.Moon;
 import com.railwaygames.solarsmash.screen.widget.PlanetButton;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
@@ -140,6 +144,18 @@ public abstract class HighlightOverlay extends Overlay {
 		return this;
 	}
 
+	public HighlightOverlay focus(String tutorial) {
+		// we want users to use the 'go' button instead
+		this.removeListener(defaultHideListener);
+
+		huds = new TutorialHuds(tutorial);
+		huds.createTopHud(null);
+		huds.createBottomHud();
+		huds.show();
+
+		return this;
+	}
+
 	public void hide() {
 		huds.hide();
 		remove();
@@ -212,8 +228,10 @@ public abstract class HighlightOverlay extends Overlay {
 				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
 			}
 
-			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle) && toPlanetButton.planet.isOwnedBy(GameLoop.USER.handle)
-					&& toPlanetButton.planet.isOwnedBy(move.handle) && !planetsConquered.contains(toPlanetButton.planet.name)) {
+			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
+					&& toPlanetButton.planet.isOwnedBy(GameLoop.USER.handle)
+					&& toPlanetButton.planet.isOwnedBy(move.handle)
+					&& !planetsConquered.contains(toPlanetButton.planet.name)) {
 				planetsConquered.add(toPlanetButton.planet.name);
 				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
 			}
@@ -383,15 +401,84 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 	}
 
+	private class TutorialHuds implements Huds<String> {
+
+		private Tutorial tutorial;
+		private Group topHud;
+		private MultiPageBottomHud bottomHud;
+		private int currentPage = 1;
+
+		public TutorialHuds(String tutorialString) {
+			if (tutorialString.equals(Constants.Tutorial.OVERVIEW)) {
+				this.tutorial = new Overview(resources, HighlightOverlay.this);
+			}
+
+			this.tutorial.showPage(1);
+		}
+
+		@Override
+		public void createTopHud(String object) {
+			Size size = screenCalcs.getTopHudBounds().size;
+			topHud = new BlankHud(resources, size.width, size.height);
+		}
+
+		@Override
+		public void createBottomHud() {
+			Size size = screenCalcs.getBottomHudBounds().size;
+			bottomHud = new MultiPageBottomHud(resources, size.width, size.height);
+			bottomHud.addListener(new EventListener() {
+				@Override
+				public boolean handle(Event event) {
+					if (!(event instanceof NextPageEvent)) {
+						return false;
+					}
+
+					HighlightOverlay.this.clear();
+					bottomHud.changeButtonText("Next >");
+
+					currentPage += 1;
+					if (currentPage <= tutorial.getPageCount()) {
+						tutorial.showPage(currentPage);
+					} else {
+						hide();
+						remove();
+						onClose();
+					}
+
+					return true;
+				}
+			});
+
+		}
+
+		@Override
+		public void show() {
+			Point topOrigin = screenCalcs.getTopHudBounds().origin;
+			Point bottomOrigin = screenCalcs.getBottomHudBounds().origin;
+
+			topHud.setX(topOrigin.x);
+			topHud.setY(topOrigin.y);
+			bottomHud.setX(bottomOrigin.x);
+			bottomHud.setY(bottomOrigin.y);
+
+			getStage().addActor(bottomHud);
+			getStage().addActor(topHud);
+		}
+
+		@Override
+		public void hide() {
+			HighlightOverlay.this.hide(topHud, bottomHud);
+		}
+	}
+
 	private class RoundInformationHuds implements Huds<List<Move>> {
 
-		private RoundInformationBottomHud bottomHud;
+		private MultiPageBottomHud bottomHud;
 		private RoundInformationTopHud topHud;
 
 		private Map<String, List<Move>> planetToMoves;
 		private Iterator<String> planetIterator;
 		private Iterator<Planet> harvestIterator;
-		private List<String> planetConquersShown;
 		private List<Planet> savedFromHarvest;
 		private Planet savedPlanet;
 
@@ -441,7 +528,6 @@ public abstract class HighlightOverlay extends Overlay {
 				planetToMoves.remove(key);
 			}
 
-			planetConquersShown = new ArrayList<String>();
 			planetIterator = planetToMoves.keySet().iterator();
 		}
 
@@ -474,11 +560,11 @@ public abstract class HighlightOverlay extends Overlay {
 		@Override
 		public void createBottomHud() {
 			Size size = screenCalcs.getBottomHudBounds().size;
-			bottomHud = new RoundInformationBottomHud(resources, size.width, size.height);
+			bottomHud = new MultiPageBottomHud(resources, size.width, size.height);
 			bottomHud.addListener(new EventListener() {
 				@Override
 				public boolean handle(Event event) {
-					if (!(event instanceof RoundInformationEvent)) {
+					if (!(event instanceof NextPageEvent)) {
 						return false;
 					}
 
