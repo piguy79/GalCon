@@ -76,12 +76,12 @@ public class MainActivity extends AndroidApplication {
 		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
+		hideMenuBars();
+		
 		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
 				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-		hideMenuBars();
 
 		Intent intent = new Intent(this, PingService.class);
 		startService(intent);
@@ -105,7 +105,6 @@ public class MainActivity extends AndroidApplication {
 		}
 
 		getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-
 	}
 
 	@Override

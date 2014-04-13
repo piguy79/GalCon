@@ -238,7 +238,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	}
 
 	private void startFriendPost(final FriendPostListener listener, String id) {
-		Plus.PeopleApi.loadVisible(client, id).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
 				if (result.getStatus().isSuccess()) {
@@ -263,7 +263,6 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				.setType("text/plain").setRecipients(people).getIntent();
 
 		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
-
 	}
 
 	@Override
