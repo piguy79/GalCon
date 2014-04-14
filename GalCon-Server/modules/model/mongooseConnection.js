@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-, mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/galcon'
+, mongoUrl = process.env.MONGOHQ_URL || 'mongodb://localhost:27017/galcon'
 , db = mongoose.connect(mongoUrl);
 
 var withPromise = function(func) {
