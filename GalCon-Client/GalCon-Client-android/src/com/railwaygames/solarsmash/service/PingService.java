@@ -70,10 +70,9 @@ public class PingService extends Service {
 
 		private void pingForPendingMove() {
 			SharedPreferences prefs = PingService.this.getSharedPreferences(Constants.GALCON_PREFS, MODE_PRIVATE);
-			String session = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
 			String handle = prefs.getString(Constants.HANDLE, "");
 
-			if (session.isEmpty() || handle.isEmpty()) {
+			if (handle.isEmpty()) {
 				return;
 			}
 

@@ -24,8 +24,8 @@ import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
-import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
+import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
 public class ChooseHandleScreen implements PartialScreenFeedback {
 	private Stage stage;
@@ -185,6 +185,10 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			} else {
 				if (player.handle != null && !player.handle.isEmpty()) {
 					GameLoop.USER = player;
+					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+					prefs.putString(Constants.HANDLE, player.handle);
+					prefs.flush();
+
 					startHideSequence();
 				} else {
 					addHandleFields();
