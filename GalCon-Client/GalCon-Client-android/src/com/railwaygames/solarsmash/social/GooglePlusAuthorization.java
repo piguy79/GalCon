@@ -238,7 +238,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	}
 
 	private void startFriendPost(final FriendPostListener listener, String id) {
-		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+		Plus.PeopleApi.load(client, id).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
 				if (result.getStatus().isSuccess()) {
