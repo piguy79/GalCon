@@ -24,10 +24,10 @@ public class GameStartDialog extends OKCancelDialog {
 	}
 
 	private void create() {
-		CommonTextButton randomPlay = new CommonTextButton(resources.skin, "Play a random opponent", height * 0.3f,
+		CommonTextButton randomPlay = new CommonTextButton(resources.skin, "Play a random opponent", height * 0.27f,
 				width * 0.8f, resources.fontShader);
 		randomPlay.setX((getWidth() / 2) - (randomPlay.getWidth() / 2));
-		randomPlay.setY(getHeight() * 0.5f);
+		randomPlay.setY(getHeight() * 0.55f);
 
 		randomPlay.addListener(new ClickListener() {
 			@Override
@@ -38,10 +38,10 @@ public class GameStartDialog extends OKCancelDialog {
 
 		addActor(randomPlay);
 
-		CommonTextButton socialPlay = new CommonTextButton(resources.skin, "Play with a friend", height * 0.3f,
+		CommonTextButton socialPlay = new CommonTextButton(resources.skin, "Play with a friend", height * 0.27f,
 				width * 0.8f, resources.fontShader);
 		socialPlay.setX((getWidth() / 2) - (socialPlay.getWidth() / 2));
-		socialPlay.setY(getHeight() * 0.15f);
+		socialPlay.setY(getHeight() * 0.18f);
 
 		socialPlay.addListener(new ClickListener() {
 			@Override
@@ -51,7 +51,5 @@ public class GameStartDialog extends OKCancelDialog {
 		});
 
 		addActor(socialPlay);
-
 	}
-
 }

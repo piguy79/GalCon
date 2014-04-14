@@ -38,7 +38,7 @@ public class CommonTextButton extends Group {
 		label.setAlignment(Align.center);
 		label.setWrap(true);
 		label.setX(0);
-		label.setY((getHeight() / 2) - (label.getTextBounds().height / 2));
+		label.setY((getHeight() / 2) - (label.getTextBounds().height / 1.25f));
 		label.setWidth(getWidth());
 		
 		bg = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
