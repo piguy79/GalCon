@@ -539,7 +539,6 @@ public class FriendScreen implements ScreenFeedback {
 				showError("Cound not load recent opponents.");
 			}
 		}, GameLoop.USER.handle);
-
 	}
 
 	private ClickListener allClickListener = new ClickListener() {
@@ -586,7 +585,7 @@ public class FriendScreen implements ScreenFeedback {
 		populateSearchLabelGroup(label);
 
 		if (GameLoop.USER.auth.getID(authProvider) == null) {
-			socialAction.addAuthDetails(new AuthenticationListener() {
+			socialAction.signIn(new AuthenticationListener() {
 
 				@Override
 				public void onSignOut() {
@@ -599,7 +598,6 @@ public class FriendScreen implements ScreenFeedback {
 					prefs.flush();
 
 					addProvider(authProvider, id);
-
 				}
 
 				private void addProvider(final String authProvider, String id) {
@@ -625,7 +623,6 @@ public class FriendScreen implements ScreenFeedback {
 		} else {
 			findFriendsByProvider(authProvider);
 		}
-
 	}
 
 	private void findFriendsByProvider(String authProvider) {
@@ -679,5 +676,4 @@ public class FriendScreen implements ScreenFeedback {
 		}
 		return authIds;
 	}
-
 }

@@ -2,7 +2,6 @@ package com.railwaygames.solarsmash;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.FriendPostListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
@@ -21,31 +20,6 @@ public class AndroidSocialAction implements SocialAction {
 
 	public AndroidSocialAction(MainActivity activity) {
 		this.activity = activity;
-	}
-
-	@Override
-	public void signIn(final String authProvider) {
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
-					authorizer = new GooglePlusAuthorization(activity);
-				}else if(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)){
-					authorizer = new FacebookAuthorization(activity);
-				}
-
-				authorizer.signIn(authListener);
-			}
-		});
-	}
-
-	@Override
-	public void registerSignInListener(final AuthenticationListener authListener) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				AndroidSocialAction.this.authListener = authListener;
-			}
-		});
 	}
 
 	@Override
@@ -72,11 +46,11 @@ public class AndroidSocialAction implements SocialAction {
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER, "");
 		setupAuthorizer(authProvider);
 	}
-	
-	private void setupAuthorizer(String authProvider){
+
+	private void setupAuthorizer(String authProvider) {
 		if (Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE.equals(authProvider)) {
 			authorizer = new GooglePlusAuthorization(activity);
-		} else if(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)){
+		} else if (Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)) {
 			authorizer = new FacebookAuthorization(activity);
 		}
 	}
@@ -89,17 +63,16 @@ public class AndroidSocialAction implements SocialAction {
 				authorizer.getFriends(listener);
 			}
 		});
-		
 	}
 
 	@Override
-	public void addAuthDetails(final AuthenticationListener listener, final String authProvider) {
+	public void signIn(final AuthenticationListener listener, final String authProvider) {
 		setupAuthorizer(authProvider);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				authorizer.signIn(listener);
 			}
-		});		
+		});
 	}
 
 	@Override
@@ -109,7 +82,6 @@ public class AndroidSocialAction implements SocialAction {
 			public void run() {
 				authorizer.postToFriend(listener, id);
 			}
-		});	
+		});
 	}
-
 }

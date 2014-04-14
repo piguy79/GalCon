@@ -46,7 +46,6 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		this.socialAction = socialAction;
 		this.gameAction = gameAction;
 		this.resources = resources;
-		socialAction.registerSignInListener(this);
 	}
 
 	@Override
@@ -81,7 +80,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			String lastSessionId = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
 			if (lastSessionId.isEmpty() || id.isEmpty()) {
 				waitImage.start();
-				socialAction.signIn(socialAuthProvider);
+				socialAction.signIn(this, socialAuthProvider);
 			} else {
 				gameAction.setSession(lastSessionId);
 				returnValue = "done";
@@ -114,7 +113,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				signInLabel.setText("");
 				waitImage.start();
-				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+				socialAction.signIn(SignInScreen.this, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		});
 
@@ -142,7 +141,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				signInLabel.setText("");
 				waitImage.start();
-				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+				socialAction.signIn(SignInScreen.this, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 			}
 		});
 
