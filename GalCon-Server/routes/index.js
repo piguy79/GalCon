@@ -321,14 +321,13 @@ var updateWinnersAndLosers = function(game) {
 			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
+				game.endGame.xp = 0;
 				var potentialNewXp = player.xp + parseInt(game.config.values["xpForWinning"]);
 				if(potentialNewXp <= maxRank.endAt){
 					player.xp = potentialNewXp;
 					game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
 				}
 				
-				game.endGame.xp = 0;
-
 			} else {
 				player.losses += 1;
 			}
