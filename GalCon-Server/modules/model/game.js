@@ -411,8 +411,6 @@ exports.updatePlayerXp = function(handle, game, xpToAdd, attemptNumber){
 		}else{
 			return userManager.findUserByHandle(handle);
 		}
-	}).then(function(user){
-		return userManager.findUserByHandle(handle);
 	});
 }
 
