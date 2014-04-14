@@ -317,21 +317,31 @@ var updateWinnersAndLosers = function(game) {
 			return rankManager.findAllRanks();
 		}).then(function(ranks) {
 			var maxRank = _.last(ranks);
+			var xpToAdd = 0;
+			var winToAdd = 0;
+			var lossToAdd = 0;
 			
 			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
-				player.wins += 1;
+				winToAdd = 1;
 				game.endGame.xp = 0;
 				var potentialNewXp = player.xp + parseInt(game.config.values["xpForWinning"]);
 				if(potentialNewXp <= maxRank.endAt){
+					xpToAdd = parseInt(game.config.values["xpForWinning"]);
 					player.xp = potentialNewXp;
 					game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
 				}
 				
 			} else {
-				player.losses += 1;
+				lossToAdd = 1;
 			}
-			var coinPromise = setTimeUntilFreeCoins(player, game._id);
+			
+			console.log('USersxp ' + player.xp + " xpToAdd " + xpToAdd);
+			return updatePlayerXpOnWin(player.handle, xpToAdd, winToAdd, lossToAdd, 0);
+			
+		}).then(function(savedPlayer){
+			console.log('SAVEDPLAYER ' + savedPlayer);
+			var coinPromise = setTimeUntilFreeCoins(savedPlayer, game._id);
 			return coinPromise.then(function(user){
 				player.usedCoins = user.usedCoins;
 				return player.withPromise(player.save);
@@ -343,6 +353,26 @@ var updateWinnersAndLosers = function(game) {
 		return game.withPromise(game.save);
 	}).then(function(updatedGame) {
 		return updatedGame;
+	});
+}
+
+var updatePlayerXpOnWin = function(handle, xpToAdd, winToAdd, lossToAdd, attemptNumber){
+	if(attemptNumber > 5) {
+		var p = new mongoose.Promise();
+		p.reject("Too many attempts to update player xp");
+		return p;
+	}
+	
+	var p = userManager.findUserByHandle(handle);
+	return p.then(function(user){
+		return userManager.UserModel.findOneAndUpdate({handle : handle, xp : user.xp}, {$inc : {xp : xpToAdd, wins : winToAdd, losses : lossToAdd}}).exec();
+	}).then(function(savedUser){
+		console.log('Saved USer with: ' + savedUser.xp);
+		if(!savedUser){
+			return updatePlayerXpOnWin(handle, xpToAdd, winToAdd, lossToAdd, attemptNumber + 1);
+		}else{
+			return userManager.findUserByHandle(handle); 
+		}
 	});
 }
 
