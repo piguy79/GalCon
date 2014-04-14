@@ -51,4 +51,5 @@ exports.findRankForAnXp = function(ranks, xp){
 	return matchingRank[0];
 }
 
+
 exports.RankModel = RankModel;

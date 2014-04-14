@@ -4,6 +4,7 @@ var mongoose = require('./mongooseConnection').mongoose
 gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
+userManager = require('./user'),
 configManager = require('./config'),
 positionAdjuster = require('../movement/PositionAdjuster'),
 _ = require('underscore'),
@@ -350,8 +351,10 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 			finalGameForReturn = finalGame;
 			return updatePlayerXpForPlanetCapture(finalGame, roundExecuted);
 		}).then(function(){
+			return exports.findById(gameId);
+		}).then(function(gameToReturn){
 			var returnP = new mongoose.Promise();
-			returnP.complete(finalGameForReturn);
+			returnP.complete(gameToReturn);
 			return returnP;
 		});
 	});
@@ -365,21 +368,52 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 	
 	game.players.forEach(function(player){
 		lastPromise = lastPromise.then(function(){
+			var xpToUpdate = 0;
 			if(roundExecuted){
-				var conqueredPlanets = _.filter(game.moves, function(move){
+				var conqueredPlanets = _.chain(game.moves).filter(function(move){
 					return move.executed && move.handle === player.handle && move.bs.prevPlanetOwner !== player.handle; 
-				});
+				}).map(function(move) { return move.to; }).uniq().value();
 				
 				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
-				player.xp += xpForPlayer;
+				xpToUpdate = xpForPlayer;
 			}
 			
-			return player.withPromise(player.save);
+			return exports.updatePlayerXp(player.handle, game, xpToUpdate, 0);
 		});
 	});
 	
 	
 	return lastPromise;
+}
+
+exports.updatePlayerXp = function(handle, game, xpToAdd, attemptNumber){
+	if(attemptNumber > 5) {
+		var p = new mongoose.Promise();
+		p.reject("Too many attempts to update player xp");
+		return p;
+	}
+	
+	var currentUser;
+	var p = userManager.findUserByHandle(handle);
+	return p.then(function(user){
+		currentUser = user;
+		return rank.findAllRanks();
+	}).then(function(ranks){
+		var maxRank= _.last(ranks);
+		var potentialNewXp = currentUser.xp + parseInt(game.config.values["xpForWinning"]);
+		if(potentialNewXp >= maxRank.endAt){
+			xpToAdd = 0;
+		}
+		return userManager.UserModel.findOneAndUpdate({handle : handle, xp : currentUser.xp}, {$inc : {xp : xpToAdd}}).exec();
+	}).then(function(user){
+		if(!user){
+			return exports.updatePlayerXp(handle, existingXp, xpToAdd, attemptNumber + 1);
+		}else{
+			return userManager.findUserByHandle(handle);
+		}
+	}).then(function(user){
+		return userManager.findUserByHandle(handle);
+	});
 }
 
 var planetShouldBeDestroyed = function(game, planet){

@@ -313,12 +313,22 @@ var updateWinnersAndLosers = function(game) {
 	p.complete();
 	
 	game.players.forEach(function(player) {
-		p = p.then(function() {
+		p = p.then(function(){
+			return rankManager.findAllRanks();
+		}).then(function(ranks) {
+			var maxRank = _.last(ranks);
+			
 			if(player.handle === game.endGame.winnerHandle) {
 				winner = player;
 				player.wins += 1;
-				player.xp += parseInt(game.config.values["xpForWinning"]);
-				game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
+				var potentialNewXp = player.xp + parseInt(game.config.values["xpForWinning"]);
+				if(potentialNewXp <= maxRank.endAt){
+					player.xp = potentialNewXp;
+					game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
+				}
+				
+				game.endGame.xp = 0;
+
 			} else {
 				player.losses += 1;
 			}
