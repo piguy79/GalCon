@@ -141,7 +141,13 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			Collections.sort(games, new Comparator<MinifiedGame>() {
 				@Override
 				public int compare(MinifiedGame o1, MinifiedGame o2) {
-					if (o1.moveAvailable && o2.moveAvailable) {
+				    if(o1.hasWinner() && !o2.hasWinner()){
+				    	return 1;
+				    }else if(!o1.hasWinner() && o2.hasWinner()){
+				    	return 1;
+				    }else if (o1.moveAvailable && o2.moveAvailable) {
+
+
 						return 0;
 					} else if (o1.moveAvailable && !o2.moveAvailable) {
 						return -1;
@@ -193,6 +199,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
 		} else if (game.moveAvailable) {
 			statusText = "--your move--";
+			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
 		} else if (game.claimAvailable) {
 			statusText = "--claim available--";
 			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;

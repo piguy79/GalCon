@@ -249,6 +249,9 @@ var minfiyGameResponse = function(games, handle){
 	return _.map(games, function(game){
 		var iHaveAMove = _.filter(game.round.moved, function(player) { return player === handle}).length === 0;	
 		var claimAvailable = claimValidation.validateClaim(game, handle);
+		if(game.endGame && game.endGame.winnerHandle){
+			iHaveAMove = false;
+		}
 		return {
 			id : game._id,
 			players : _.map(game.players, minifyUser),
