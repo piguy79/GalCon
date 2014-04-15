@@ -61,8 +61,13 @@ GameBuilder.prototype.createBoard = function() {
 	assignHomePlanets(this);
 }
 
+GameBuilder.prototype.radiusAroundHome = function() {
+	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	return Math.max(acceptableRadius, 2);
+}
+
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
-	var tooCloseToHomeRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	var tooCloseToHomeRadius = this.radiusAroundHome();
 	
 	var extraPlanets = [];
 	while(this.planets.length < this.numberOfPlanets) {
@@ -185,7 +190,7 @@ GameBuilder.prototype.removeFromEdge = function(value, max) {
 }
 
 GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRegenAroundPlanet, shipsAroundPlanet, otherHomePlanet) {
-	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	var acceptableRadius = this.radiusAroundHome();
 	
 	var existingRegenAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "regen");
 	totalRegenAroundPlanet -= existingRegenAroundPlanet;
