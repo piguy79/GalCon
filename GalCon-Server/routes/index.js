@@ -95,7 +95,6 @@ exports.findGamesWithPendingMove = function(req, res) {
 			return invites.length;
 		}
 	}).then(function(inviteCount) {
-		
 		res.json({c : pendingMoveCount, i : inviteCount, cg : currentGameCount}); 
 	}, logErrorAndSetResponse(req, res));
 }
@@ -237,7 +236,8 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 			if(!user) {
 				throw new Error("Could not find user object for handle: " + handle);
 			}
-			return gameManager.findCollectionOfGames(user);
+			var yday = Date.now() - 1000 * 60 * 60 * 24;
+			return gameManager.findCollectionOfGames(user, {$or : [{'endGame.date' : {$exists : false}}, {'endGame.date' : {$gt : yday}}]});
 		}).then(function(games) {
 			var minifiedGames = minfiyGameResponse(games, handle);
 			res.json({items : minifiedGames});

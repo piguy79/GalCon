@@ -298,8 +298,13 @@ exports.findById = function(gameId){
 };
 
 
-exports.findCollectionOfGames = function(user){
-	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
+exports.findCollectionOfGames = function(user, filters){
+	var query = {players : {$in : [user._id]}};
+	if(filters) {
+		query = _.extend(query, filters);
+	}
+	console.log(query);
+	return GameModel.find(query, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
