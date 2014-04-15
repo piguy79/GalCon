@@ -200,14 +200,19 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
-				List<Friend> friends = new ArrayList<Friend>();
-				for (int i = 0; i < result.getPersonBuffer().getCount(); i++) {
-					Person person = result.getPersonBuffer().get(i);
-					Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
-					friends.add(friend);
+				PersonBuffer personBuffer = result.getPersonBuffer();
+				try{
+					List<Friend> friends = new ArrayList<Friend>();
+					int count = personBuffer.getCount();
+					for (int i = 0; i < count; i++) {
+						Person person = personBuffer.get(i);
+						Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
+						friends.add(friend);
+					}
+					listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+				}finally{
+					personBuffer.close();
 				}
-				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
-
 			}
 		});
 	}

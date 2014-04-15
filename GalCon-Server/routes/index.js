@@ -1116,6 +1116,7 @@ exports.addProviderToUser = function(req, res){
 	var authProvider = req.body.authProvider;
 	var id = req.body.id;
 	var handle = req.body.handle;
+	console.log('CALLED!!');
 	
 	if(!validate({session : session, handle : handle}, res)) {
 		return;
@@ -1128,13 +1129,16 @@ exports.addProviderToUser = function(req, res){
 		searchObj[searchKey] = id;
 		return userManager.UserModel.findOne(searchObj).exec();
 	}).then(function(user){
+		console.log('USER exists with auth Provider ' + authProvider);
 		if(user && user.handle !== handle){
-			throw new Error("A user already exists with this " + authProvider + " linked.");
+			//"A user already exists with this authProvider linked.
+			return userManager.findUserByHandle(handle);
+		}else{
+			var setObj = {};
+			var setKey = "auth." + authProvider;
+			setObj[setKey] = id;
+			return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
 		}
-		var setObj = {};
-		var setKey = "auth." + authProvider;
-		setObj[setKey] = id;
-		return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
 	}).then(function(user){
 		res.json(user);
 	}).then(null, logErrorAndSetResponse(req, res));
