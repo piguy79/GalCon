@@ -22,7 +22,8 @@ import com.crashlytics.android.Crashlytics;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class Connection {
-	public static final int CONNECTION_TIMEOUT = 10000;
+	private static final int CONNECTION_TIMEOUT = 10000;
+	private static final int READ_TIMEOUT = 20000;
 
 	public static HttpURLConnection establishGetConnection(String protocol, String host, String port, String path,
 			Map<String, String> args) throws IOException {
@@ -35,6 +36,7 @@ public class Connection {
 		URL url = new URL(protocol + "://" + host + ":" + port + path + sb.toString());
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		connection.setReadTimeout(READ_TIMEOUT);
 		connection.setRequestMethod("GET");
 		connection.connect();
 
@@ -46,6 +48,7 @@ public class Connection {
 		URL url = new URL(protocol + "://" + host + ":" + port + path);
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		connection.setReadTimeout(READ_TIMEOUT);
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setRequestProperty("Accept", "application/json");

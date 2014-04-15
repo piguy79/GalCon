@@ -11,6 +11,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.ADD_COINS_FOR_AN_ORD
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_FREE_COINS;
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.railwaygames.solarsmash.http.UrlConstants.CANCEL_GAME;
+import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
 import static com.railwaygames.solarsmash.http.UrlConstants.DECLINE_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.railwaygames.solarsmash.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
@@ -33,8 +34,6 @@ import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
-import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
-
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -345,8 +344,8 @@ public class AndroidGameAction implements GameAction {
 		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<GameCount>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
-						GameCount.class).execute("");
+				new GetJsonRequestTask<GameCount>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE, GameCount.class)
+						.execute("");
 			}
 		});
 	}
@@ -686,14 +685,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void cancelGame(final UIConnectionResultCallback<BaseResult> callback,
-			String handle, String gameId) {
+	public void cancelGame(final UIConnectionResultCallback<BaseResult> callback, String handle, String gameId) {
 		try {
 			final JSONObject top = JsonConstructor.cancelGame(handle, gameId, session);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top
-							.toString());
+					new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {
@@ -702,14 +699,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void claimVictory(final UIConnectionResultCallback<GameBoard> callback,
-			String handle, String gameId) {
+	public void claimVictory(final UIConnectionResultCallback<GameBoard> callback, String handle, String gameId) {
 		try {
 			final JSONObject top = JsonConstructor.claimGame(handle, gameId, session);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback,CLAIM_VICTORY , GameBoard.class).execute(top
-							.toString());
+					new PostJsonRequestTask<GameBoard>(callback, CLAIM_VICTORY, GameBoard.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {
