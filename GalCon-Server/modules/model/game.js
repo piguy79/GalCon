@@ -310,7 +310,6 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 	}
 	
 	var roundExecuted = false;
-	var finalGameForReturn;
 	
 	var p = exports.findById(gameId);
 	return p.then(function(game) {
@@ -320,18 +319,15 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		game.moveTime = Date.now();
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
-		
 		    removeMovesWhichHaveBeenExecuted(game);
 			decrementCurrentShipCountOnFromPlanets(game);
 			destroyAbilityPlanets(game);
-			game.round.moved = [];
 			
 			processMoves(playerHandle, game);
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 			roundExecuted = true;
-			
 		} 
 
 		var existingVersion = game.version;
@@ -339,8 +335,12 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		
 		// Need to update the entire document.  Remove the _id b/c Mongo won't accept _id as a field to update.
 		var updatedGame = game;
+		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
+			updatedGame.round.moved = [];
+		}
+		
 		delete updatedGame._doc._id
-		var updatePromise = GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc).exec();
+		var updatePromise = GameModel.findOneAndUpdate({_id: gameId, version: existingVersion, 'round.moved' : {$nin : [playerHandle]}}, updatedGame._doc).exec();
 		return updatePromise.then(function(savedGame) {
 			if(!savedGame) {
 				return exports.performMoves(gameId, moves, playerHandle, attemptNumber + 1);
@@ -348,14 +348,9 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 				return savedGame.withPromise(savedGame.populate, 'players');
 			}
 		}).then(function(finalGame){
-			finalGameForReturn = finalGame;
 			return updatePlayerXpForPlanetCapture(finalGame, roundExecuted);
 		}).then(function(){
 			return exports.findById(gameId);
-		}).then(function(gameToReturn){
-			var returnP = new mongoose.Promise();
-			returnP.complete(gameToReturn);
-			return returnP;
 		});
 	});
 }
@@ -364,7 +359,6 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 	var promise = new mongoose.Promise();
 	promise.complete();
 	var lastPromise = promise;	
-	
 	
 	game.players.forEach(function(player){
 		lastPromise = lastPromise.then(function(){
@@ -381,7 +375,6 @@ var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 			return exports.updatePlayerXp(player.handle, game, xpToUpdate, 0);
 		});
 	});
-	
 	
 	return lastPromise;
 }
