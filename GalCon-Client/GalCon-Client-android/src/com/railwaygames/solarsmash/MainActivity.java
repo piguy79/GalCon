@@ -107,6 +107,15 @@ public class MainActivity extends AndroidApplication {
 	}
 
 	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+
+		if (hasFocus) {
+			hideMenuBars();
+		}
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
