@@ -44,7 +44,7 @@ public class PingService extends Service {
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private static final int SLEEP_TIME = 4 * 60 * 1000;
-	private static final int LONG_SLEEP_TIME = 60 * 60 * 1000;
+	private static final int LONG_SLEEP_TIME = 4 * 60 * 60 * 1000;
 	private static final String DELETE_KEY = "DELETE";
 	private Config config = new AndroidConfig();
 
