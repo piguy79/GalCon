@@ -6,7 +6,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -296,6 +298,7 @@ public class FriendScreen implements ScreenFeedback {
 		stage.addActor(searchButton);
 
 	}
+	
 
 	private void displayPeople(List<CombinedFriend> friends, Long time) {
 		if (requestTime == time) {
@@ -304,12 +307,11 @@ public class FriendScreen implements ScreenFeedback {
 
 			Collections.sort(friends, new Comparator<CombinedFriend>() {
 				public int compare(CombinedFriend o1, CombinedFriend o2) {
-					if (o1.hasGalconAccount() && o2.hasGalconAccount()) {
+					if(o1.equals(o2)){
 						return 0;
-					} else if (o1.hasGalconAccount() && !o2.hasGalconAccount()) {
-						return -1;
 					}
-					return 1;
+					
+					return Boolean.valueOf(o1.hasGalconAccount()).compareTo(Boolean.valueOf(o2.hasGalconAccount())) * -1;
 				};
 			});
 

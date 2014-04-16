@@ -1,7 +1,9 @@
 package com.railwaygames.solarsmash.model.friends;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.model.Friend;

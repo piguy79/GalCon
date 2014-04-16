@@ -14,5 +14,10 @@ public class GalconSocialUser extends GalConFriend {
 	public String getDisplay(){
 		return socialDisplayName + "\n" + super.getDisplay();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 
 }

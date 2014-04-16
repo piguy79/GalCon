@@ -18,5 +18,10 @@ public class SocialOnlyFriend extends CombinedFriend{
 	public String getDisplay() {
 		return displayName;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 
 }
