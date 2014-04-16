@@ -23,19 +23,12 @@ describe("Find available games -", function() {
 	var MAP_2 = elementBuilder.createMap(MAP_KEY_2, 5, 6);
 
 	beforeEach(function(done) {
-		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
-			if(err) { console.log(err); }
-			(new userManager.UserModel(PLAYER_2)).save(function(err, user) {
-				if(err) { console.log(err); }
-				(new mapManager.MapModel(MAP_1)).save(function(err, map) {
-					if(err) { console.log(err); }
-					(new mapManager.MapModel(MAP_2)).save(function(err, map) {
-						if(err) { console.log(err); }
-						done();
-					});
-				});
-			});
-		});
+		var p = userManager.UserModel.withPromise(userManager.UserModel.create, [PLAYER_1, PLAYER_2, PLAYER_3]);
+		p.then(function(){
+			return mapManager.MapModel.withPromise(mapManager.MapModel.create, [MAP_1, MAP_2]);
+		}).then(function(){
+			done();
+		});		
 	});
 	
 	afterEach(function(done) {
