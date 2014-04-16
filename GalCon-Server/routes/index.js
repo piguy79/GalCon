@@ -339,11 +339,9 @@ var updateWinnersAndLosers = function(game) {
 				lossToAdd = 1;
 			}
 			
-			console.log('USersxp ' + player.xp + " xpToAdd " + xpToAdd);
 			return updatePlayerXpOnWin(player.handle, xpToAdd, winToAdd, lossToAdd, 0);
 			
 		}).then(function(savedPlayer){
-			console.log('SAVEDPLAYER ' + savedPlayer);
 			var coinPromise = setTimeUntilFreeCoins(savedPlayer, game._id);
 			return coinPromise.then(function(user) {
 				player.usedCoins = user.usedCoins;
@@ -354,6 +352,8 @@ var updateWinnersAndLosers = function(game) {
 	
 	return p.then(function() {
 		return game.withPromise(game.save);
+	}).then(function(){
+		return gameManager.findById(game._id);
 	});
 }
 
@@ -368,7 +368,6 @@ var updatePlayerXpOnWin = function(handle, xpToAdd, winToAdd, lossToAdd, attempt
 	return p.then(function(user){
 		return userManager.UserModel.findOneAndUpdate({handle : handle, xp : user.xp}, {$inc : {xp : xpToAdd, wins : winToAdd, losses : lossToAdd}}).exec();
 	}).then(function(savedUser){
-		console.log('Saved USer with: ' + savedUser.xp);
 		if(!savedUser){
 			return updatePlayerXpOnWin(handle, xpToAdd, winToAdd, lossToAdd, attemptNumber + 1);
 		}else{
