@@ -23,6 +23,12 @@
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
   </libs>
+  <forceLinkClasses>
+    <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
+  </forceLinkClasses>
+  <frameworkPaths>
+      <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
+  </frameworkPaths>
   <frameworks>
     <framework>GoogleOpenSource</framework>
 	<framework>GooglePlayGames</framework>
