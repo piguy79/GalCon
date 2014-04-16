@@ -345,7 +345,7 @@ var updateWinnersAndLosers = function(game) {
 		}).then(function(savedPlayer){
 			console.log('SAVEDPLAYER ' + savedPlayer);
 			var coinPromise = setTimeUntilFreeCoins(savedPlayer, game._id);
-			return coinPromise.then(function(user){
+			return coinPromise.then(function(user) {
 				player.usedCoins = user.usedCoins;
 				return player.withPromise(player.save);
 			});
@@ -354,8 +354,6 @@ var updateWinnersAndLosers = function(game) {
 	
 	return p.then(function() {
 		return game.withPromise(game.save);
-	}).then(function(updatedGame) {
-		return updatedGame;
 	});
 }
 
