@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -284,7 +285,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		}
 
 		@Override
-		public void draw(SpriteBatch batch, float parentAlpha) {
+		public void draw(Batch batch, float parentAlpha) {
 			int height = (int) getHeight();
 			int width = (int) getWidth();
 

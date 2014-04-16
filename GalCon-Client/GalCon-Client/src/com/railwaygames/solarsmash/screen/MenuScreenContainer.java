@@ -12,9 +12,10 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.InGameInputProcessor;
@@ -79,7 +80,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);
 		stage.draw();
@@ -89,7 +90,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		int height = Gdx.graphics.getHeight();
 
 		stage.clear();
-		stage.setViewport(width, height, true);
+		stage.setViewport(new ExtendViewport(width, height));
 
 		Image bgImage = new Image(resources.menuAtlas.findRegion("bg"));
 		bgImage.setX(-2 * width);

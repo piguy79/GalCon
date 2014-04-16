@@ -16,8 +16,6 @@ public class AndroidSocialAction implements SocialAction {
 
 	private Authorizer authorizer;
 
-	private AuthenticationListener authListener;
-
 	public AndroidSocialAction(MainActivity activity) {
 		this.activity = activity;
 	}

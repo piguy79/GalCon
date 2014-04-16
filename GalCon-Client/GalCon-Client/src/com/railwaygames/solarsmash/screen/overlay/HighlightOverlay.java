@@ -4,9 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
@@ -273,8 +271,8 @@ public abstract class HighlightOverlay extends Overlay {
 			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
 			particle.addAction(sequence(delay(delay), color(color)));
 			particle.addAction(sequence(delay(delay),
-					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
-			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
+					Actions.moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
+			particle.addAction(sequence(delay(delay + 0.1f), Actions.rotateBy(1000, 2.0f)));
 			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
 
 			addActor(particle);
@@ -345,7 +343,7 @@ public abstract class HighlightOverlay extends Overlay {
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
 			particle.setBounds(startPointInWorld.x + xStartOffset - particleSize * 0.5f, startPointInWorld.y
 					+ yStartOffset - particleSize * 0.5f, particleSize, particleSize);
-			particle.rotate((float) Math.toDegrees(angle));
+			particle.rotateBy((float) Math.toDegrees(angle));
 			particle.addAction(sequence(delay(startDelay),
 					forever(sequence(color(Color.BLACK, 0.5f), color(Color.YELLOW, 0.5f)))));
 			startDelay += 0.1f;

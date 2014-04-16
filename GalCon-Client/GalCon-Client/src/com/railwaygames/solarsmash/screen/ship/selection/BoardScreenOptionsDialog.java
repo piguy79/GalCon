@@ -2,7 +2,6 @@ package com.railwaygames.solarsmash.screen.ship.selection;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
@@ -10,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -135,7 +135,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 					refreshText = null;
 				};
 			})));
-			resignText.addAction(moveBy(0, getHeight() * 0.2f, 0.3f));
+			resignText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
 			confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
 			addOkButton();
@@ -178,7 +178,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 					refreshText = null;
 				};
 			})));
-			cancelText.addAction(moveBy(0, getHeight() * 0.2f, 0.3f));
+			cancelText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
 			confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
 			addOkButton();

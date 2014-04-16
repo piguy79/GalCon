@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -475,7 +475,7 @@ public class ShaderTextField extends Widget implements Disableable {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(Batch batch, float parentAlpha) {
 
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
@@ -520,7 +520,7 @@ public class ShaderTextField extends Widget implements Disableable {
 					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
 							style.messageFontColor.a * parentAlpha);
 				} else
-				font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
+					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				batch.setShader(fontShader);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);

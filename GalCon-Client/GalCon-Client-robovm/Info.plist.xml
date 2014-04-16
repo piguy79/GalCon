@@ -31,7 +31,7 @@
             <string>SolarSmashIOS</string>
             <key>CFBundleURLSchemes</key>
             <array>
-           		<string>com.xxx.galcon.SolarSmashIOS</string>
+           		<string>com.railwaygames.solarsmash.SolarSmashIOS</string>
            	</array>
         </dict>
     </array>

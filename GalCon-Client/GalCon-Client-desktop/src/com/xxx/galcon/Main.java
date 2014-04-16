@@ -12,7 +12,6 @@ public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "GalCon-Client";
-		cfg.useGL20 = true;
 		cfg.width = 480;
 		cfg.height = 800;
 

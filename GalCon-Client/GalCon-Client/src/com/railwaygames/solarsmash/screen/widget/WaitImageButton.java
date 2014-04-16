@@ -1,6 +1,6 @@
 package com.railwaygames.solarsmash.screen.widget;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.railwaygames.solarsmash.Constants;
@@ -26,7 +26,7 @@ public class WaitImageButton extends ImageButton {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(Batch batch, float parentAlpha) {
 		float elapsedSeconds = (float) (System.currentTimeMillis() - startTime) / 1000.0f;
 
 		float alpha = elapsedSeconds % 2;

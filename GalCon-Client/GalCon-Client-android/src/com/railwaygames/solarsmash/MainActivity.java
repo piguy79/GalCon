@@ -68,7 +68,6 @@ public class MainActivity extends AndroidApplication {
 		setupAdColony();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-		cfg.useGL20 = true;
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
@@ -77,7 +76,7 @@ public class MainActivity extends AndroidApplication {
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
 		hideMenuBars();
-		
+
 		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
 				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
 
