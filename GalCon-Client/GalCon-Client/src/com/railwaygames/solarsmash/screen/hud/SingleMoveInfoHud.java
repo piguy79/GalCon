@@ -84,9 +84,6 @@ public class SingleMoveInfoHud extends Group {
 		shipsLabel.setText("" + shipsToMove);
 	}
 
-	public void updateDuration(int duration) {
-		durationLabel.setText("" + duration);
-	}
 
 	public void updateDuration(float duration) {
 		durationLabel.setText("" + (int) (Math.ceil(duration)));

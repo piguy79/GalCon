@@ -775,7 +775,8 @@ public abstract class HighlightOverlay extends Overlay {
 				moveInfoHud = new SingleMoveInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
 						screenCalcs.getTopHudBounds().size.height);
 			}
-			moveInfoHud.updateDuration(move.duration);
+			float speedIncrease = GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
+			moveInfoHud.updateDuration(move.duration * speedIncrease);
 			moveInfoHud.updateShips(move.shipsToMove);
 		}
 
