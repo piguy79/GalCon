@@ -342,6 +342,7 @@ public class BoardScreen implements ScreenFeedback {
 			endGameOverlay.addListener(new TransitionEventListener() {
 				@Override
 				public void transition(String action) {
+					stage.dispose();
 					returnCode = action;
 				}
 			});
