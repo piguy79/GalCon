@@ -70,7 +70,6 @@ import com.railwaygames.solarsmash.screen.widget.PlanetButton;
 public class BoardScreen implements ScreenFeedback {
 
 	private int roundAnimated = -2;
-	private Camera camera;
 	private GameBoard gameBoard;
 
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
@@ -206,16 +205,16 @@ public class BoardScreen implements ScreenFeedback {
 
 	public BoardScreen(Resources resources) {
 		this.resources = resources;
-		stage = new Stage();
-		stage.setViewport(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {
+		stage = new Stage();
+		stage.setViewport(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
 		moons.clear();
 
-		stage.clear();
 		this.gameBoard = gameBoard;
 
 		planetButtons.clear();
@@ -853,8 +852,10 @@ public class BoardScreen implements ScreenFeedback {
 			renderMoons();
 		}
 
-		stage.act(delta);
-		stage.draw();
+		if (stage != null) {
+			stage.act(delta);
+			stage.draw();
+		}
 	}
 
 	private void renderMoons() {
