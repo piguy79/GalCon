@@ -22,5 +22,10 @@ public class GalConFriend extends CombinedFriend{
 	public String getDisplay() {
 		return handle + "[" + ConfigResolver.getRankForXp(xp).level +  "]";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 
 }

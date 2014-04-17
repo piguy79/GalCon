@@ -517,7 +517,7 @@ exports.addUser = function(gameId, player){
 }
 
 exports.addSocialUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"} , {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;

@@ -14,5 +14,20 @@ public abstract class CombinedFriend {
 	public abstract boolean hasGalconAccount();
 	
 	public abstract String getDisplay();
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof CombinedFriend){
+			if(authId == ((CombinedFriend)obj).authId && hasGalconAccount() == ((CombinedFriend)obj).hasGalconAccount()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 
 }

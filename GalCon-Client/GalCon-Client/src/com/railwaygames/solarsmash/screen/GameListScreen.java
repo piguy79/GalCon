@@ -144,10 +144,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				    if(o1.hasWinner() && !o2.hasWinner()){
 				    	return 1;
 				    }else if(!o1.hasWinner() && o2.hasWinner()){
-				    	return 1;
+				    	return -1;
 				    }else if (o1.moveAvailable && o2.moveAvailable) {
-
-
 						return 0;
 					} else if (o1.moveAvailable && !o2.moveAvailable) {
 						return -1;
