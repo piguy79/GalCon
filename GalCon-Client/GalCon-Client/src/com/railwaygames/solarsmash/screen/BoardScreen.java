@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
@@ -209,7 +207,6 @@ public class BoardScreen implements ScreenFeedback {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		stage = new Stage();
-		stage.setViewport(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
