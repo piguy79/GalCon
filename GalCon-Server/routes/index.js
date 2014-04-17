@@ -459,7 +459,7 @@ exports.joinGame = function(req, res) {
 	var user;
 	var game;
 	var p = userManager.findUserByHandle(handle);
-	p.then(function(foundUser) {
+	p.then(function(foundUser){
 		user = foundUser;
 		return gameManager.addUser(gameId, user);
 	}).then(function(savedGame) {
@@ -930,18 +930,17 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 
 		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
 		var rankOfInitialUser = rankManager.findRankForAnXp(ranks, users[0].xp);
-
 		var gameAttributes = {
-			players : users,
-			width : widthToUse,
-			height : heightToUse,
-			numberOfPlanets : numPlanets,
-			createdTime : time,
-			rankOfInitialPlayer : rankOfInitialUser.level,
-			map : map.key,
-			gameType : map.gameType[gameTypeIndex],
-			social : social
-		};
+					players : users,
+					width : widthToUse,
+					height : heightToUse,
+					numberOfPlanets : numPlanets,
+					createdTime : time,
+					rankOfInitialPlayer : rankOfInitialUser.level,
+					map : map.key,
+					gameType : map.gameType[gameTypeIndex],
+					social : social
+				};
 		
 		
 
@@ -1116,7 +1115,6 @@ exports.addProviderToUser = function(req, res){
 	var authProvider = req.body.authProvider;
 	var id = req.body.id;
 	var handle = req.body.handle;
-	console.log('CALLED!!');
 	
 	if(!validate({session : session, handle : handle}, res)) {
 		return;
