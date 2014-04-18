@@ -110,7 +110,7 @@ public class PingService extends Service {
 			}
 
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(PingService.this)
-					.setSmallIcon(R.drawable.ic_launcher).setContentTitle(Constants.APP_TITLE).setContentText(text)
+					.setSmallIcon(R.drawable.notification).setContentTitle(Constants.APP_TITLE).setContentText(text)
 					.setAutoCancel(true).setDefaults(Notification.DEFAULT_ALL).setOnlyAlertOnce(true);
 
 			Intent resultIntent = new Intent(PingService.this, MainActivity.class);
