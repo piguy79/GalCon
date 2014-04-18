@@ -108,18 +108,30 @@ public class Player extends JsonConvertible {
 		}
 		return false;
 	}
-	
+		
 	public float abilityIncreaseToApply(String ability, GameBoard gameBoard){
-		float toApply = 0.0f;
+		float abilityIncreaseToApply = 0.0f;
+		float harvestIncreaseToApply = 0.0f;
 		
 		if(hasAbility(ability, gameBoard)){
-			toApply = new Float(gameBoard.gameConfig.getValue(Constants.ABILITY_SPEED)) * abilityPlanetsOwned(ability, gameBoard);
+			harvestIncreaseToApply = findHarvestIncrease(ability, gameBoard);
+			abilityIncreaseToApply = new Float(gameBoard.gameConfig.getValue(Constants.ABILITY_SPEED)) * abilityPlanetsOwned(ability, gameBoard);
 		}
 		
-		return toApply;
+		return abilityIncreaseToApply + harvestIncreaseToApply;
 		
 	}
 	
+	private float findHarvestIncrease(String ability, GameBoard gameBoard) {
+		float harvestEnhance = 0.0f;
+		for(Planet planet : gameBoard.planets){
+			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(ability) && planet.isUnderHarvest()){
+				harvestEnhance += new Float(gameBoard.gameConfig.getValue(Constants.HARVEST_ENHANCMENT));
+			}
+		}
+		return harvestEnhance;
+	}
+
 	private int abilityPlanetsOwned(String ability, GameBoard gameBoard){
 		int count = 0;
 		for(Planet planet : gameBoard.planets){

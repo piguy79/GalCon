@@ -158,6 +158,7 @@ public class Constants {
 	public static final String SOCIAL = "social";
 	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
 	public static final String CONFIG = "config";
+	public static final String HARVEST_ENHANCMENT = "harvestEnhancement";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 
