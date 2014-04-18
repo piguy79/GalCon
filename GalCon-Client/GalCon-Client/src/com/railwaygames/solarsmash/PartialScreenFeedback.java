@@ -21,6 +21,8 @@ public interface PartialScreenFeedback {
 	 * resetState will be called to clean up any old stuff.
 	 */
 	public void resetState();
-	
+
 	public boolean hideTitleArea();
+
+	public boolean canRefresh();
 }

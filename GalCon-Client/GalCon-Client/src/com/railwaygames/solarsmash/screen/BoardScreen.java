@@ -961,4 +961,9 @@ public class BoardScreen implements ScreenFeedback {
 		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), null);
 		stage.addActor(overlay);
 	}
+
+	@Override
+	public void refresh() {
+
+	}
 }

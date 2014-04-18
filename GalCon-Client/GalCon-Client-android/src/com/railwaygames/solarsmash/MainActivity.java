@@ -52,6 +52,7 @@ public class MainActivity extends AndroidApplication {
 	private AndroidGameAction gameAction;
 	private SocialAction socialAction;
 	private AndroidInAppBillingAction inAppBillingAction;
+	private GameLoop gameLoop;
 
 	private IabHelper mHelper;
 
@@ -77,8 +78,9 @@ public class MainActivity extends AndroidApplication {
 
 		hideMenuBars();
 
-		initialize(new GameLoop(gameAction, socialAction, inAppBillingAction,
-				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
+		gameLoop = new GameLoop(gameAction, socialAction, inAppBillingAction,
+				new ShaderTextField.DefaultOnscreenKeyboard());
+		initialize(gameLoop, cfg);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -113,6 +115,12 @@ public class MainActivity extends AndroidApplication {
 		if (hasFocus) {
 			hideMenuBars();
 		}
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		gameLoop.refresh();
 	}
 
 	@Override

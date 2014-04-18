@@ -90,6 +90,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	@Override
 	public void hide() {
 		this.stage = null;
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	@Override
@@ -141,11 +144,11 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			Collections.sort(games, new Comparator<MinifiedGame>() {
 				@Override
 				public int compare(MinifiedGame o1, MinifiedGame o2) {
-				    if(o1.hasWinner() && !o2.hasWinner()){
-				    	return 1;
-				    }else if(!o1.hasWinner() && o2.hasWinner()){
-				    	return -1;
-				    }else if (o1.moveAvailable && o2.moveAvailable) {
+					if (o1.hasWinner() && !o2.hasWinner()) {
+						return 1;
+					} else if (!o1.hasWinner() && o2.hasWinner()) {
+						return -1;
+					} else if (o1.moveAvailable && o2.moveAvailable) {
 						return 0;
 					} else if (o1.moveAvailable && !o2.moveAvailable) {
 						return -1;
@@ -377,4 +380,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			GameListScreen.this.onConnectionError(msg);
 		}
 	};
+
+	@Override
+	public boolean canRefresh() {
+		return true;
+	}
 }

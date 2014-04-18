@@ -242,4 +242,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	public boolean hideTitleArea() {
 		return false;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return false;
+	}
 }

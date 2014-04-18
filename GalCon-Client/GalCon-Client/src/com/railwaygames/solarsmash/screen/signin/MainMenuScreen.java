@@ -289,7 +289,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void hide() {
-
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	@Override
@@ -305,5 +307,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	@Override
 	public boolean hideTitleArea() {
 		return false;
+	}
+
+	@Override
+	public boolean canRefresh() {
+		return true;
 	}
 }

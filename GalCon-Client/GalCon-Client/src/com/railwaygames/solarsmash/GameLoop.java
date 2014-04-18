@@ -10,6 +10,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -77,6 +78,13 @@ public class GameLoop extends Game {
 	@Override
 	public void resume() {
 		super.resume();
+	}
+
+	public void refresh() {
+		Screen screen = getScreen();
+		if (screen instanceof ScreenFeedback) {
+			((ScreenFeedback) screen).refresh();
+		}
 	}
 
 	@Override

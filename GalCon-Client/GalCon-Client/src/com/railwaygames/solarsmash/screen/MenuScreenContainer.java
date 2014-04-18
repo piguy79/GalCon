@@ -131,7 +131,6 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void hide() {
-		currentScreen.hide();
 		Gdx.input.setInputProcessor(new InGameInputProcessor());
 	}
 
@@ -143,8 +142,14 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void refresh() {
+		if (currentScreen.canRefresh()) {
+			showNextScreen(currentScreen);
+		}
 	}
 
 	@Override
@@ -168,16 +173,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 				}
 
 				if (nextScreen instanceof PartialScreenFeedback) {
-					currentScreen.hide();
-					currentScreen = (PartialScreenFeedback) nextScreen;
-					currentScreen.resetState();
-					currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-					if (currentScreen.hideTitleArea()) {
-						titleText.remove();
-					} else {
-						stage.addActor(titleText);
-					}
+					showNextScreen(nextScreen);
 					return null;
 				} else {
 					return nextScreen;
@@ -186,6 +182,19 @@ public class MenuScreenContainer implements ScreenFeedback {
 		}
 
 		return value;
+	}
+
+	private void showNextScreen(PartialScreenFeedback nextScreen) {
+		currentScreen.hide();
+		currentScreen = (PartialScreenFeedback) nextScreen;
+		currentScreen.resetState();
+		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		if (currentScreen.hideTitleArea()) {
+			titleText.remove();
+		} else {
+			stage.addActor(titleText);
+		}
 	}
 
 	@Override

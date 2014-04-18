@@ -66,7 +66,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	@Override
 	public void hide() {
-
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	private void startHideSequence(final String retVal) {
@@ -402,6 +404,11 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	@Override
 	public boolean hideTitleArea() {
+		return true;
+	}
+
+	@Override
+	public boolean canRefresh() {
 		return true;
 	}
 }

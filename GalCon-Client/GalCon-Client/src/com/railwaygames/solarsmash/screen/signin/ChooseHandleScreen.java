@@ -230,4 +230,9 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	public boolean hideTitleArea() {
 		return false;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return false;
+	}
 }
