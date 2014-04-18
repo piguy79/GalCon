@@ -94,12 +94,34 @@ public class Player extends JsonConvertible {
 		return null;
 	}
 
-	public boolean hasSpeedIncrease(GameBoard gameBoard) {
+	private boolean hasAbility(String ability, GameBoard gameBoard) {
 		for(Planet planet : gameBoard.planets){
-			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(Constants.ABILITY_SPEED)){
+			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(ability)){
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public float abilityIncreaseToApply(String ability, GameBoard gameBoard){
+		float toApply = 0.0f;
+		
+		if(hasAbility(ability, gameBoard)){
+			toApply = new Float(gameBoard.gameConfig.getValue(Constants.ABILITY_SPEED)) * abilityPlanetsOwned(ability, gameBoard);
+		}
+		
+		return toApply;
+		
+	}
+	
+	private int abilityPlanetsOwned(String ability, GameBoard gameBoard){
+		int count = 0;
+		for(Planet planet : gameBoard.planets){
+			if(planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(ability)){
+				count++;
+			}
+		}
+		
+		return count;
 	}
 }

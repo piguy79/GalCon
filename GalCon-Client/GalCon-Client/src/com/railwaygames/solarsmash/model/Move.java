@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.math.Vector2;
+import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConstructable;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
@@ -108,5 +109,15 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		}
 
 		return null;
+	}
+	
+	public int durationWithAbilityApplied(GameBoard gameBoard){
+		float speedIncrease = GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
+		int rounds = (int)Math.ceil(duration - (duration * speedIncrease));
+		if(rounds <= 0){
+			rounds = 1;
+		}
+		
+		return rounds;
 	}
 }
