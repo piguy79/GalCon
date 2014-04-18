@@ -167,7 +167,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		}
 
 		choiceActor = new Actor() {
-			public void draw(SpriteBatch batch, float parentAlpha) {
+			public void draw(Batch batch, float parentAlpha) {
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardActor> cell = table.getCells().get(i);
