@@ -3,7 +3,6 @@ package com.railwaygames.solarsmash.screen;
 import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -35,8 +34,6 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
 public class GameQueueScreen implements PartialScreenFeedback {
-	private InputProcessor oldInputProcessor;
-
 	private Stage stage;
 	private Resources resources;
 
@@ -254,7 +251,6 @@ public class GameQueueScreen implements PartialScreenFeedback {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(oldInputProcessor);
 		for (Actor actor : actors) {
 			actor.remove();
 		}
@@ -302,7 +298,6 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		actors.clear();
 		this.stage = stage;
 		initialize();
-		oldInputProcessor = Gdx.input.getInputProcessor();
 		Gdx.input.setInputProcessor(stage);
 	}
 

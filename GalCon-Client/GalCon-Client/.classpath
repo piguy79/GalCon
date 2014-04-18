@@ -8,5 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/org.json-2.0-NEXUS-3758.jar"/>
 	<classpathentry kind="lib" path="libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar" sourcepath="libs/tween-engine-api-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/joda-convert-1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

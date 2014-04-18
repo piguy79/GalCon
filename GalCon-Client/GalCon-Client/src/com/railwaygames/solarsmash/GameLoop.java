@@ -34,8 +34,6 @@ public class GameLoop extends Game {
 	public static Player USER;
 	public static Configuration CONFIG;
 
-	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
-
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
 	public UISkin skin = new UISkin();
@@ -100,8 +98,6 @@ public class GameLoop extends Game {
 		gl.glEnable(GL20.GL_DEPTH_BUFFER_BIT);
 
 		Gdx.input.setCatchBackKey(true);
-
-		Gdx.input.setInputProcessor(inputProcessor);
 
 		assetManager.load("data/images/gameBoard.atlas", TextureAtlas.class);
 		assetManager.load("data/images/levels.atlas", TextureAtlas.class);

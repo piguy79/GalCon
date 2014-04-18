@@ -457,13 +457,11 @@ public class FriendScreen implements ScreenFeedback {
 	public void show() {
 		stage = new Stage();
 		initialize();
-		oldInputProcessor = Gdx.input.getInputProcessor();
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(oldInputProcessor);
 	}
 
 	@Override

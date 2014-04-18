@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
-import com.railwaygames.solarsmash.InGameInputProcessor;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.Strings;
@@ -140,7 +139,6 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(new InGameInputProcessor());
 	}
 
 	@Override
