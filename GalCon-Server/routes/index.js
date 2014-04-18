@@ -429,6 +429,14 @@ processGameReturn = function(game, playerWhoCalledTheUrl) {
 		}
 	}
 	
+	_.each(game.players, function(player){
+		player.session = undefined;
+		player.friends = undefined;
+		player.auth = undefined;
+		player.consumedOrders = undefined;
+		player._id = undefined;
+	});
+	
 	_.each(game.planets, function(planet) {
 		if(planet.harvest && planet.harvest.startingRound === game.round.num && planet.handle !== playerWhoCalledTheUrl) {
 			planet.harvest = undefined;

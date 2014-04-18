@@ -36,23 +36,29 @@ public class Player extends JsonConvertible {
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
 
-		JSONObject authObject = jsonObject.getJSONObject("auth");
-		this.auth = new Auth();
-		auth.consume(authObject);
+		if(jsonObject.has("auth")){
+			JSONObject authObject = jsonObject.getJSONObject("auth");
+			this.auth = new Auth();
+			auth.consume(authObject);
+		}
+		
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp = jsonObject.getInt(Constants.XP);
-		this.coins = jsonObject.getInt(Constants.COINS);
+		this.coins = jsonObject.optInt(Constants.COINS);
 		this.usedCoins = jsonObject.optLong(Constants.USED_COINS);
-		this.watchedAd = jsonObject.getBoolean(Constants.WATCHED_AD);
+		this.watchedAd = jsonObject.optBoolean(Constants.WATCHED_AD);
 
-		this.consumedOrders = new ArrayList<Order>();
-		JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
-		for (int i = 0; i < consumedOrders.length(); i++) {
-			JSONObject orderObject = consumedOrders.getJSONObject(i);
-			Order order = new Order();
-			order.consume(orderObject);
-			this.consumedOrders.add(order);
+		if(jsonObject.has("consumedOrders")){
+			this.consumedOrders = new ArrayList<Order>();
+			JSONArray consumedOrders = jsonObject.getJSONArray("consumedOrders");
+			for (int i = 0; i < consumedOrders.length(); i++) {
+				JSONObject orderObject = consumedOrders.getJSONObject(i);
+				Order order = new Order();
+				order.consume(orderObject);
+				this.consumedOrders.add(order);
+			}
 		}
+		
 	}
 
 	public boolean hasCoinInformation() {
