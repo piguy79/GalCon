@@ -54,7 +54,7 @@ public class MainActivity extends AndroidApplication {
 	private AndroidInAppBillingAction inAppBillingAction;
 	private GameLoop gameLoop;
 
-	private IabHelper mHelper;
+	private IabHelper mHelper = null;
 
 	public MainActivity() {
 		super();
@@ -138,8 +138,10 @@ public class MainActivity extends AndroidApplication {
 
 		// Create the helper, passing it our context and the public key to
 		// verify signatures with
-		mHelper = new IabHelper(this, base64EncodedPublicKey);
-		mHelper.enableDebugLogging(false);
+		if (mHelper == null) {
+			mHelper = new IabHelper(this, base64EncodedPublicKey);
+			mHelper.enableDebugLogging(false);
+		}
 
 		mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 			public void onIabSetupFinished(IabResult result) {
@@ -185,71 +187,116 @@ public class MainActivity extends AndroidApplication {
 	}
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
-		mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
+		if (!mHelper.isSetupDone()) {
+			inAppBillingAction.setup(new Callback() {
 
-			@Override
-			public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-				if (result.isSuccess()) {
-					List<Order> orders = new ArrayList<Order>();
-					orders.add(purchaseToOrder(purchase));
-					callback.onConnectionResult(orders);
-				} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
-					callback.onConnectionResult(null);
-				} else {
-					callback.onConnectionError("Could not complete purchase");
+				@Override
+				public void onSuccess(String msg) {
+					purchaseCoins(inventoryItem, callback);
 				}
-			}
-		});
+
+				@Override
+				public void onFailure(String msg) {
+					callback.onConnectionError(msg);
+				}
+			});
+		} else {
+			mHelper.launchPurchaseFlow(this, inventoryItem.sku, 1001, new IabHelper.OnIabPurchaseFinishedListener() {
+
+				@Override
+				public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+					if (result.isSuccess()) {
+						List<Order> orders = new ArrayList<Order>();
+						orders.add(purchaseToOrder(purchase));
+						callback.onConnectionResult(orders);
+					} else if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
+						callback.onConnectionResult(null);
+					} else {
+						callback.onConnectionError("Could not complete purchase");
+					}
+				}
+			});
+		}
 	}
 
 	public void loadStoreInventory(final Inventory inventoryResult, final UIConnectionResultCallback<Inventory> callback) {
-		mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
+		if (!mHelper.isSetupDone()) {
+			inAppBillingAction.setup(new Callback() {
 
-			@Override
-			public void onQueryInventoryFinished(IabResult result,
-					com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
-				if (result.isFailure()) {
-					callback.onConnectionError("Unable to load inventory from Play Store.");
-					return;
+				@Override
+				public void onSuccess(String msg) {
+					loadStoreInventory(inventoryResult, callback);
 				}
 
-				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
+				@Override
+				public void onFailure(String msg) {
+					callback.onConnectionError(msg);
+				}
+			});
+		} else {
+			mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
 
-				for (InventoryItem item : inventoryResult.inventory) {
-					SkuDetails detail = inv.getSkuDetails(item.sku);
-					InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
-							.getTitle(), item.numCoins);
-
-					if (inv.hasPurchase(detail.getSku())) {
-						Purchase purchase = inv.getPurchase(detail.getSku());
-						combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+				@Override
+				public void onQueryInventoryFinished(IabResult result,
+						com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
+					if (result.isFailure()) {
+						callback.onConnectionError("Unable to load inventory from Play Store.");
+						return;
 					}
 
-					mappedInventoryItems.add(combinedItem);
-				}
+					List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
-				Inventory inventory = new Inventory();
-				inventory.inventory = mappedInventoryItems;
-				callback.onConnectionResult(inventory);
-			}
-		});
+					for (InventoryItem item : inventoryResult.inventory) {
+						SkuDetails detail = inv.getSkuDetails(item.sku);
+						InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
+								.getTitle(), item.numCoins);
+
+						if (inv.hasPurchase(detail.getSku())) {
+							Purchase purchase = inv.getPurchase(detail.getSku());
+							combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+						}
+
+						mappedInventoryItems.add(combinedItem);
+					}
+
+					Inventory inventory = new Inventory();
+					inventory.inventory = mappedInventoryItems;
+					callback.onConnectionResult(inventory);
+				}
+			});
+		}
 	}
 
 	public void consumeOrders(final List<Order> consumedOrders, final Callback callback) {
 		List<Purchase> purchaseOrders = convertOrdersToPurchase(consumedOrders);
 
-		mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
-			@Override
-			public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-				for (IabResult result : results) {
-					if (result.isFailure()) {
-						callback.onFailure(result.getMessage());
-						return;
-					}
+		if (!mHelper.isSetupDone()) {
+			inAppBillingAction.setup(new Callback() {
+
+				@Override
+				public void onSuccess(String msg) {
+					consumeOrders(consumedOrders, callback);
 				}
-				callback.onSuccess("");
-			}
-		});
+
+				@Override
+				public void onFailure(String msg) {
+					callback.onFailure(msg);
+				}
+			});
+		} else {
+			mHelper.consumeAsync(purchaseOrders, new IabHelper.OnConsumeMultiFinishedListener() {
+				@Override
+				public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
+					for (IabResult result : results) {
+						if (result.isFailure()) {
+							callback.onFailure(result.getMessage());
+							return;
+						}
+					}
+					callback.onSuccess("");
+				}
+			});
+		}
 	}
 
 	private List<Purchase> convertOrdersToPurchase(List<Order> consumedOrders) {
