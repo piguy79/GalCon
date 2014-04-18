@@ -84,6 +84,14 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 		stage.act(delta);
 		stage.draw();
+		
+		if(titleText != null){
+			if(currentScreen.hideTitleArea()){
+				titleText.remove();
+			}else{
+				stage.addActor(titleText);
+			}
+		}
 
 		currentScreen.render(delta);
 	}
@@ -121,12 +129,13 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 		Gdx.input.setInputProcessor(stage);
 
-		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		if (currentScreen.hideTitleArea()) {
 			titleText.remove();
 		} else {
 			stage.addActor(titleText);
 		}
+		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
 	}
 
 	@Override
@@ -188,13 +197,12 @@ public class MenuScreenContainer implements ScreenFeedback {
 		currentScreen.hide();
 		currentScreen = (PartialScreenFeedback) nextScreen;
 		currentScreen.resetState();
-		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
 		if (currentScreen.hideTitleArea()) {
 			titleText.remove();
 		} else {
 			stage.addActor(titleText);
 		}
+		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override

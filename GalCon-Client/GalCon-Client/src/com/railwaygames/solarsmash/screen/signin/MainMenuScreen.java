@@ -26,7 +26,9 @@ import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
+import com.railwaygames.solarsmash.screen.level.LevelManager;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
+import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.CountLabel;
@@ -50,7 +52,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private XpProgressBar xpBar;
-
+	
+	public boolean hideTitleArea = false;
+	
 	public MainMenuScreen(Resources resources, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
@@ -256,8 +260,30 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		gameAction.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
 
 			@Override
-			public void onConnectionResult(Player result) {
+			public void onConnectionResult(final Player result) {
 				GameLoop.USER = result;
+				
+				if(LevelManager.shouldShowLevelUp(result)){
+					hideTitleArea = true;
+					final LevelUpOverlay levelUp = new LevelUpOverlay(resources, result);
+					levelUp.addListener(new ClickListener(){
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							hideTitleArea = false;
+							LevelManager.storeLevel(result);
+							levelUp.remove();
+							finishLoadingUser();
+						}
+					});
+					stage.addActor(levelUp);
+					
+				}else{
+					finishLoadingUser();
+				}
+			}
+
+			private void finishLoadingUser() {
+				
 				gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
 					public void onConnectionResult(GameCount result) {
 						addElementsToStage(result);
@@ -270,7 +296,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						waitImage.stop();
 					}
 				}, GameLoop.USER.handle);
-
 			}
 
 			@Override
@@ -306,7 +331,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public boolean hideTitleArea() {
-		return false;
+		return hideTitleArea;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.railwaygames.solarsmash.screen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -29,6 +31,7 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
+import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
@@ -36,7 +39,9 @@ import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
+import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
+import com.railwaygames.solarsmash.model.Rank;
 import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.model.Social;
 import com.railwaygames.solarsmash.model.factory.MoveFactory;
@@ -51,10 +56,12 @@ import com.railwaygames.solarsmash.screen.event.OKDialogEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
 import com.railwaygames.solarsmash.screen.event.TransitionEventListener;
+import com.railwaygames.solarsmash.screen.level.LevelManager;
 import com.railwaygames.solarsmash.screen.overlay.ClaimOverlay;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.EndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.HighlightOverlay;
+import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
@@ -246,16 +253,46 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void beginOverlay() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
-
-				@Override
-				public void onClose() {
-					beginEndRoundInfo();
-				}
-			}).focus(gameBoard.roundInformation);
+			
+			
+			if(LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))){
+				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.USER.handle));
+				levelUp.addListener(new ClickListener(){
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						LevelManager.storeLevel(findPlayer(GameLoop.USER.handle));
+						levelUp.remove();
+						showRoundInfo();
+					}
+				});
+				
+				stage.addActor(levelUp);
+			}else{
+				showRoundInfo();
+			}
 		} else {
 			beginEndRoundInfo();
 		}
+	}
+	
+	private Player findPlayer(String handle){
+		for(Player player : gameBoard.players){
+			if(player.handle.equals(handle)){
+				return player;
+			}
+		}
+		
+		return null;
+	}
+	
+	private void showRoundInfo(){
+		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+			@Override
+			public void onClose() {
+				beginEndRoundInfo();
+			}
+		}).focus(gameBoard.roundInformation);
 	}
 
 	private void beginEndRoundInfo() {
