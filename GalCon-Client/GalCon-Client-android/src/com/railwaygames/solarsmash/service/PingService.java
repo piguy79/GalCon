@@ -4,7 +4,6 @@ import static com.railwaygames.solarsmash.Config.HOST;
 import static com.railwaygames.solarsmash.Config.PORT;
 import static com.railwaygames.solarsmash.Config.PROTOCOL;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
@@ -59,19 +58,19 @@ public class PingService extends Service {
 				pingForPendingMove();
 			}
 
-			synchronized (this) {
-				PingService.this.mServiceHandler.post(new Runnable() {
-					public void run() {
-						PingService.this.post(SLEEP_TIME);
-					}
-				});
-			}
+			post(new Runnable() {
+				@Override
+				public void run() {
+					PingService.this.post(SLEEP_TIME);
+				}
+			});
 		}
 
 		private void pingForPendingMove() {
 			SharedPreferences prefs = PingService.this.getSharedPreferences(Constants.GALCON_PREFS, MODE_PRIVATE);
 			String handle = prefs.getString(Constants.HANDLE, "");
 
+			Log.i("PINGSERVICE", "Handle: " + handle);
 			if (handle.isEmpty()) {
 				return;
 			}
@@ -87,8 +86,8 @@ public class PingService extends Service {
 								config.getValue(PORT), UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE, args);
 				GameCount result = (GameCount) Connection.doRequest(connectivityManager, connection, new GameCount());
 				parseResult(result);
-			} catch (IOException e) {
-				Log.w("CONNECTION", e.getMessage());
+			} catch (Exception e) {
+				Log.w("PINGSERVICE", e.getMessage());
 			}
 		}
 
@@ -168,6 +167,7 @@ public class PingService extends Service {
 	}
 
 	protected void post(int sleepTime) {
+		Log.i("PINGSERVICE", "Post with sleepTime: " + sleepTime);
 		Message msg = mServiceHandler.obtainMessage();
 		msg.what = 1;
 
