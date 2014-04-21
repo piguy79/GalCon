@@ -35,7 +35,6 @@ var gameSchema = mongoose.Schema({
 	},
 	state : "String",
 	createdDate : "Date",
-	createdTime : "Number",
 	moveTime : 'Number',
 	map : "Number",
 	rankOfInitialPlayer : "Number",
@@ -557,7 +556,7 @@ exports.declineSocialGame = function(gameId, invitee){
 }
 
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
-	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {$or : [{social : {$exists : false}}, {'social.status' : null}]}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdTime : { $lt : time}}]}).populate('players').exec();
+	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {$or : [{social : {$exists : false}}, {'social.status' : null}]}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdDate : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});

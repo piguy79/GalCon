@@ -12,9 +12,8 @@ function GameBuilder(gameAttributes) {
 	this.players = gameAttributes.players;
 	this.width = gameAttributes.width;
 	this.height = gameAttributes.height;
-	this.createdDate = new Date(gameAttributes.createdTime);
-	this.createdTime = gameAttributes.createdTime;
-	this.moveTime = this.createdTime;
+	this.createdDate = Date.now();
+	this.moveTime = this.createdDate;
 	this.rankOfInitialPlayer = gameAttributes.rankOfInitialPlayer;
 	this.map = gameAttributes.map;
 	

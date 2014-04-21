@@ -1,5 +1,4 @@
 var mongoose = require('../modules/model/mongooseConnection').mongoose,
-	gameBuilder = require('../modules/gameBuilder'), 
 	gameManager = require('../modules/model/game'), 
 	userManager = require('../modules/model/user'), 
 	rankManager = require('../modules/model/rank'), 
@@ -841,7 +840,7 @@ var findOrCreateGamePromise = function(user, time, mapToFind) {
 					if(game) {
 						return game;
 					} 
-					return generateGamePromise([user], time, mapToFind);
+					return generateGamePromise([user], mapToFind);
 				});
 			});
 		});
@@ -923,7 +922,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 
-var generateGamePromise = function(users, time, mapToFind, social) {
+var generateGamePromise = function(users, mapToFind, social) {
 	var map;
 	var p = mapManager.findMapByKey(mapToFind);
 	return p.then(function(mapFromKey) {
@@ -943,14 +942,11 @@ var generateGamePromise = function(users, time, mapToFind, social) {
 					width : widthToUse,
 					height : heightToUse,
 					numberOfPlanets : numPlanets,
-					createdTime : time,
 					rankOfInitialPlayer : rankOfInitialUser.level,
 					map : map.key,
 					gameType : map.gameType[gameTypeIndex],
 					social : social
 				};
-		
-		
 
 		return gameManager.createGame(gameAttributes).then(function(game) {
 			return game.withPromise(game.save);
@@ -1025,7 +1021,7 @@ exports.inviteUserToGame = function(req, res){
 			throw new Error("Invalid Invite Request. Invitee does not exist.");
 		}else{
 			inviteeUser = inviteUser;
-			return generateGamePromise([requestingUser], Date.now(), mapKey, inviteeHandle);
+			return generateGamePromise([requestingUser], mapKey, inviteeHandle);
 		}
 	}).then(function(generatedGame){
 		currentGame = generatedGame;
