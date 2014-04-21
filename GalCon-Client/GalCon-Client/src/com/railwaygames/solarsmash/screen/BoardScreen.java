@@ -2,7 +2,6 @@ package com.railwaygames.solarsmash.screen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -31,7 +29,6 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
-import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
@@ -41,7 +38,6 @@ import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
-import com.railwaygames.solarsmash.model.Rank;
 import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.model.Social;
 import com.railwaygames.solarsmash.model.factory.MoveFactory;
@@ -253,11 +249,10 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void beginOverlay() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			
-			
-			if(LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))){
+
+			if (LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))) {
 				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.USER.handle));
-				levelUp.addListener(new ClickListener(){
+				levelUp.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						LevelManager.storeLevel(findPlayer(GameLoop.USER.handle));
@@ -265,27 +260,27 @@ public class BoardScreen implements ScreenFeedback {
 						showRoundInfo();
 					}
 				});
-				
+
 				stage.addActor(levelUp);
-			}else{
+			} else {
 				showRoundInfo();
 			}
 		} else {
 			beginEndRoundInfo();
 		}
 	}
-	
-	private Player findPlayer(String handle){
-		for(Player player : gameBoard.players){
-			if(player.handle.equals(handle)){
+
+	private Player findPlayer(String handle) {
+		for (Player player : gameBoard.players) {
+			if (player.handle.equals(handle)) {
 				return player;
 			}
 		}
-		
+
 		return null;
 	}
-	
-	private void showRoundInfo(){
+
+	private void showRoundInfo() {
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
 			@Override
@@ -920,8 +915,8 @@ public class BoardScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-		if(stage != null){
-			stage.getViewport().update(width, height, true);
+		if (stage != null) {
+			stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		}
 	}
 

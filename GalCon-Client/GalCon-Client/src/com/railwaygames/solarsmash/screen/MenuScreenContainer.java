@@ -83,11 +83,11 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 		stage.act(delta);
 		stage.draw();
-		
-		if(titleText != null){
-			if(currentScreen.hideTitleArea()){
+
+		if (titleText != null) {
+			if (currentScreen.hideTitleArea()) {
 				titleText.remove();
-			}else{
+			} else {
 				stage.addActor(titleText);
 			}
 		}
@@ -97,7 +97,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
+		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 			stage.addActor(titleText);
 		}
 		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
+
 	}
 
 	@Override

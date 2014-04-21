@@ -78,6 +78,14 @@ public class MainActivity extends AndroidApplication {
 
 		hideMenuBars();
 
+		View decorView = getWindow().getDecorView();
+		decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+			@Override
+			public void onSystemUiVisibilityChange(int visibility) {
+				hideMenuBars();
+			}
+		});
+
 		gameLoop = new GameLoop(gameAction, socialAction, inAppBillingAction,
 				new ShaderTextField.DefaultOnscreenKeyboard());
 		initialize(gameLoop, cfg);
@@ -91,7 +99,12 @@ public class MainActivity extends AndroidApplication {
 	private void hideMenuBars() {
 		int newUiOptions = 0;
 
-		// Navigation bar hiding: Backwards compatible to ICS.
+		if (Build.VERSION.SDK_INT < 16) {
+			getWindow()
+					.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+
+		// navigation
 		if (Build.VERSION.SDK_INT >= 14) {
 			newUiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 		}
@@ -106,15 +119,6 @@ public class MainActivity extends AndroidApplication {
 		}
 
 		getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-
-		if (hasFocus) {
-			hideMenuBars();
-		}
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -52,7 +51,6 @@ import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 public class FriendScreen implements ScreenFeedback {
 
 	private MenuScreenContainer previousScreen;
-	private InputProcessor oldInputProcessor;
 
 	private Resources resources;
 
@@ -314,6 +312,13 @@ public class FriendScreen implements ScreenFeedback {
 			});
 
 			for (final CombinedFriend friend : friends) {
+				if (friend.hasGalconAccount()) {
+					GalConFriend gFriend = (GalConFriend) friend;
+					if (gFriend.handle.trim().isEmpty()) {
+						continue;
+					}
+				}
+
 				scrollList.addRow(friend, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
