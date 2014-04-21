@@ -61,6 +61,7 @@ public class GameBoard extends JsonConvertible {
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.rankOfInitialPlayer = jsonObject.getLong(Constants.RANK_OF_INITIAL_PLAYER);
 		this.map = jsonObject.getLong(Constants.MAP);
+		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		JSONObject endGame = jsonObject.getJSONObject(Constants.END_GAME_INFO);
 
