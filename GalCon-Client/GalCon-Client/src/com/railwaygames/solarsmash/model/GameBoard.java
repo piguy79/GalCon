@@ -20,7 +20,6 @@ public class GameBoard extends JsonConvertible {
 	public List<Player> players;
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
-	public Long createdTime;
 	public Social social;
 	public Long map;
 	public Long rankOfInitialPlayer;
@@ -62,12 +61,10 @@ public class GameBoard extends JsonConvertible {
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.rankOfInitialPlayer = jsonObject.getLong(Constants.RANK_OF_INITIAL_PLAYER);
 		this.map = jsonObject.getLong(Constants.MAP);
-		this.createdTime = jsonObject.getLong(Constants.CREATED_TIME);
 
 		JSONObject endGame = jsonObject.getJSONObject(Constants.END_GAME_INFO);
 
 		this.endGameInformation.consume(endGame);
-		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		this.roundInformation.consume(jsonObject.getJSONObject(Constants.CURRENT_ROUND));
 		this.moveTime = jsonObject.optLong("moveTime");
@@ -155,13 +152,13 @@ public class GameBoard extends JsonConvertible {
 		}
 		return null;
 	}
-	
-	public boolean isClaimAvailable(){
+
+	public boolean isClaimAvailable() {
 		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
 				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw();
 	}
-	
-	private boolean moveTimeIsPastTimeout(){
+
+	private boolean moveTimeIsPastTimeout() {
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 		return (currentTime - moveTime) >= Long.parseLong(gameConfig.getValue("claimTimeout"));
 	}
