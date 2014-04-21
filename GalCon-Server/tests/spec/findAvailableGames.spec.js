@@ -36,7 +36,7 @@ describe("Find available games -", function() {
 			if(err) { console.log(err); }
 			mapManager.MapModel.remove().where("key").in([MAP_KEY_1, MAP_KEY_2]).exec(function(err) {
 				if(err) { console.log(err); }
-				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE, PLAYER_3_HANDLE]).exec(function(err) {
 					if(err) { console.log(err); }
 					done();
 				});
