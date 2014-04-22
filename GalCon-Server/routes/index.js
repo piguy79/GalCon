@@ -1156,7 +1156,12 @@ exports.cancelGame = function(req, res){
 	}
 	
 	var p = validateSession(session, {"handle" : handle});
-	p.then(function(){
+	p.then(function() {
+		return gameManager.GameModel.findOne({_id : gameId}).exec();
+	}).then(function(game) {
+		if(game.createdDate.getTime() + 60 * 60 * 1000 > Date.now()) {
+			throw new Error("User tried to cancel game before time allowance");
+		}
 		return gameManager.GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$set : {state : 'C'}}).exec();
 	}).then(function(game){
 		if(game === null){
