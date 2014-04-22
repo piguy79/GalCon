@@ -2,6 +2,9 @@ package com.railwaygames.solarsmash.screen.overlay;
 
 import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -117,13 +120,20 @@ public abstract class EndGameOverlay extends Overlay {
 		@Override
 		public void onConnectionResult(GameQueue result) {
 			waitImage.stop();
-			if(result.gameQueueItems.isEmpty() && GameLoop.USER.coins > 0){
+			List<GameQueueItem> invites = new ArrayList<GameQueueItem>();
+			
+			for(GameQueueItem item : result.gameQueueItems){
+				if(item.requester.handle.equals(opponent().handle)){
+					invites.add(item);
+				}
+			}
+			if(invites.isEmpty() && GameLoop.USER.coins > 0){
 				if(scrollList != null){
 					scrollList.remove();
 				}
 				createRematchButton();
 			}else{
-				createInviteScrollList(result);
+				createInviteScrollList(invites);
 			}
 			
 		}
@@ -140,7 +150,7 @@ public abstract class EndGameOverlay extends Overlay {
 		UIConnectionWrapper.findPendingInvites(gameQueueCallback, GameLoop.USER.handle);
 	}
 	
-	private void createInviteScrollList(GameQueue result) {
+	private void createInviteScrollList(List<GameQueueItem> invites) {
 		scrollList = new ScrollList<GameQueueItem>(resources.skin) {
 			@Override
 			public void buildCell(GameQueueItem item, Group group) {
@@ -154,15 +164,12 @@ public abstract class EndGameOverlay extends Overlay {
 
 		addActor(scrollList);
 		
-		String opponentHandle = opponent().handle;
-		for(GameQueueItem item : result.gameQueueItems){
-			if(item.requester.handle.equals(opponentHandle)){
+		for(GameQueueItem item : invites){
 				scrollList.addRow(item, new ClickListener(){
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 					}
 				});
-			}
 		}
 	}
 	
