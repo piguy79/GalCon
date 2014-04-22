@@ -1,27 +1,24 @@
 package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.railwaygames.solarsmash.Constants;
-import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class MinifiedGame extends JsonConvertible {
 
 	public String id;
-	public Date createdDate;
+	public DateTime createdDate;
 	public List<MinifiedPlayer> players;
 	public boolean moveAvailable;
 	public String winner;
-	public Date winningDate = null;
+	public DateTime winningDate = null;
 	public int mapKey;
 	public Social social;
 	public boolean claimAvailable;

@@ -5,6 +5,8 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import org.joda.time.DateTime;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -32,9 +34,11 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ShaderLabel confirmText;
 	private ImageButton refreshButton;
 	private ShaderLabel refreshText;
+	private GameBoard gameBoard;
 
 	public BoardScreenOptionsDialog(GameBoard gameBoard, Resources resources, float width, float height, Stage stage) {
 		super(resources, width, height, stage, OKCancelDialog.Type.CANCEL);
+		this.gameBoard = gameBoard;
 
 		confirmText = new ShaderLabel(resources.fontShader, "Are you sure you want to", resources.skin,
 				Constants.UI.BASIC_BUTTON_TEXT);
@@ -159,35 +163,65 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ClickListener cancelListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			cancelButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-				public void run() {
-					cancelButton.remove();
-					cancelButton = null;
-					cancelText.removeListener(cancelListener);
-				};
-			})));
-			refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-				public void run() {
-					refreshButton.remove();
-					refreshButton = null;
-				};
-			})));
-			refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-				public void run() {
-					refreshText.remove();
-					refreshText = null;
-				};
-			})));
-			cancelText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
-			confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
+			DateTime now = new DateTime();
+			long timeLeft = (gameBoard.createdDate.getMillis() + 60 * 60 * 1000) - now.getMillis();
+			if (timeLeft > 0) {
+				cancelButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						cancelButton.remove();
+						cancelButton = null;
+						cancelText.removeListener(cancelListener);
+					};
+				})));
+				refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						refreshButton.remove();
+						refreshButton = null;
+					};
+				})));
+				refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						refreshText.remove();
+						refreshText = null;
+					};
+				})));
 
-			addOkButton();
-			showButton(okButton, 0.3f);
-			okButton.addListener(new ClickListener() {
-				public void clicked(InputEvent event, float x, float y) {
-					fire(new CancelGameEvent());
-				};
-			});
+				int minsLeft = (int) (timeLeft / 1000.0f / 60.0f);
+				cancelText.setY(getHeight() * 0.5f);
+				cancelText.setWrap(true);
+				cancelText.setText("You will be able to cancel this game in " + minsLeft
+						+ " minutes if no one has joined.");
+			} else {
+				cancelButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						cancelButton.remove();
+						cancelButton = null;
+						cancelText.removeListener(cancelListener);
+					};
+				})));
+				refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						refreshButton.remove();
+						refreshButton = null;
+					};
+				})));
+				refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+					public void run() {
+						refreshText.remove();
+						refreshText = null;
+					};
+				})));
+				cancelText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
+				confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
+
+				addOkButton();
+				showButton(okButton, 0.3f);
+				okButton.addListener(new ClickListener() {
+					public void clicked(InputEvent event, float x, float y) {
+						fire(new CancelGameEvent());
+					};
+				});
+			}
 		}
 	};
 }

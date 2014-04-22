@@ -2,10 +2,10 @@ package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +16,7 @@ import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class GameBoard extends JsonConvertible {
 	public String id;
-	public Date createdDate;
+	public DateTime createdDate;
 	public List<Player> players;
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;

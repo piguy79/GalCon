@@ -1,9 +1,9 @@
 package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ public class EndGameInformation extends JsonConvertible {
 
 	public String winnerHandle;
 	public List<String> loserHandles = new ArrayList<String>();
-	public Date date = null;
+	public DateTime date = null;
 	public int xp;
 	public boolean draw;
 	public String decline;

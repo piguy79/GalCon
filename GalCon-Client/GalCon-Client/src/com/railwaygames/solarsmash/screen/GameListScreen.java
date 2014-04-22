@@ -5,9 +5,7 @@ import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -127,16 +125,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 
 		List<MinifiedGame> games = new ArrayList<MinifiedGame>(allGames.getAllGames());
-		for (ListIterator<MinifiedGame> iter = games.listIterator(); iter.hasNext();) {
-			MinifiedGame board = iter.next();
-			if (board.hasWinner()) {
-				if (!showGamesThatHaveBeenWon()
-						|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
-					iter.remove();
-					break;
-				}
-			}
-		}
 
 		if (games.isEmpty()) {
 			messageLabel.setText("No games available");
