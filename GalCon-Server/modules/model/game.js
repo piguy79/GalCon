@@ -551,6 +551,7 @@ exports.declineSocialGame = function(gameId, invitee){
 												   ,'endGame.leaderboardScoreAmount' : 0
 												   ,'endGame.date' : 0
 												   ,'endGame.draw' : 0
+												   , 'endGame.winnerHandle' : 'GAME_DECLINE'
 												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
 }

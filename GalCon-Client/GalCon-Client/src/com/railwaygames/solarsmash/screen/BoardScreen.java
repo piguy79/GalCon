@@ -993,7 +993,15 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setConnectionError(String error) {
-		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), null);
+		if(stage == null){
+			stage = new Stage();
+		}
+		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				returnCode = Action.BACK;
+			}
+		});
 		stage.addActor(overlay);
 	}
 

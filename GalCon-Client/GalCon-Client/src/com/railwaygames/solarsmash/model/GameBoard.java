@@ -138,7 +138,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty();
+		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty() && !endGameInformation.winnerHandle.equals("GAME_DECLINE");
 	}
 
 	public boolean wasADraw() {
