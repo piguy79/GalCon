@@ -278,7 +278,7 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setVisible(false);
 						}
 
-						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
+						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people, ""), time);
 						searchBox.getOnscreenKeyboard().show(false);
 					}
 
@@ -534,7 +534,7 @@ public class FriendScreen implements ScreenFeedback {
 			@Override
 			public void onConnectionResult(People result) {
 				waitImage.setVisible(false);
-				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
+				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people, ""), time);
 			}
 
 			@Override
@@ -628,7 +628,7 @@ public class FriendScreen implements ScreenFeedback {
 		}
 	}
 
-	private void findFriendsByProvider(String authProvider) {
+	private void findFriendsByProvider(final String authProvider) {
 		final Long time = System.currentTimeMillis();
 		requestTime = time;
 		socialAction.getFriends(new FriendsListener() {
@@ -640,14 +640,14 @@ public class FriendScreen implements ScreenFeedback {
 
 				gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
 					public void onConnectionResult(People result) {
-						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people, authProvider);
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					};
 
 					public void onConnectionError(String msg) {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends,
-								new ArrayList<MinifiedGame.MinifiedPlayer>());
+								new ArrayList<MinifiedGame.MinifiedPlayer>(), authProvider);
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					}
