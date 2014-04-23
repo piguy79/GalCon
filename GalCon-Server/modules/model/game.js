@@ -31,7 +31,8 @@ var gameSchema = mongoose.Schema({
 		date : "Date",
 		loserHandles : [String],
 		draw : "Boolean",
-		declined : "String"
+		declined : "String",
+		viewedBy : [String]
 	},
 	state : "String",
 	createdDate : "Date",
@@ -296,6 +297,9 @@ exports.findById = function(gameId){
 	return GameModel.findById(gameId).populate('players').exec();
 };
 
+exports.findByIdAndAddViewed = function(gameId, handle) {
+	return GameModel.findOneAndUpdate({_id: gameId}, {$push : {'endGame.viewedBy' : handle}}).populate('players').exec();
+};
 
 exports.findCollectionOfGames = function(user, filters){
 	var query = {players : {$in : [user._id]}};

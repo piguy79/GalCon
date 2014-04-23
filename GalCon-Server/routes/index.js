@@ -52,10 +52,14 @@ exports.findGameById = function(req, res) {
 	
 	var p = gameManager.findById(searchId);
 	p.then(function(game) {
+		if(game.endGame.date && _.indexOf(game.endGame.viewedBy, handle) === -1) {
+			return gameManager.findByIdAndAddViewed(searchId, handle);
+		}
+		return game;
+	}).then(function(game) {
 		res.json(processGameReturn(game, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 }
-
 
 exports.findGamesWithPendingMove = function(req, res) {
 	var handle = req.query['handle'];
@@ -261,7 +265,8 @@ var minfiyGameResponse = function(games, handle){
 			date : game.endGame.date,
 			map : game.map,
 			social : game.social,
-			claimAvailable : claimAvailable
+			claimAvailable : claimAvailable,
+			endViewedBy : game.endGame.viewedBy
 		};
 	});
 }
@@ -269,24 +274,24 @@ var minfiyGameResponse = function(games, handle){
 exports.performMoves = function(req, res) {
 	var gameId = req.body.id;
 	var moves = req.body.moves;
-	var playerHandle = req.body.playerHandle;
+	var handle = req.body.playerHandle;
 	var harvest = req.body.harvest;
 	var session = req.body.session;
 	
 	var finalGameToReturn;
 	
-	if(!validate({move : {moves : moves, handle : playerHandle}, session : session, handle : playerHandle}, res)) {
+	if(!validate({move : {moves : moves, handle : handle}, session : session, handle : handle}, res)) {
 		return;
 	}
 	
-	var p = validateSession(session, {"handle" : playerHandle});
+	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return moveValidation.validate(gameId, playerHandle, moves);
+		return moveValidation.validate(gameId, handle, moves);
 	}).then(function(result){
 		if(!result.success){
 			res.json({ valid : false, reason : "Invalid move" });
 		}else{
-			return gameManager.performMoves(gameId, moves, playerHandle, 0, harvest);
+			return gameManager.performMoves(gameId, moves, handle, 0, harvest);
 		}
 	}).then(function(game) {
 		if (!game) {
@@ -299,17 +304,17 @@ exports.performMoves = function(req, res) {
 			
 			return p.then(function() {
 				if (game.endGame.winnerHandle) {
-					return updateWinnersAndLosers(game);
+					return updateWinnersAndLosers(game, handle);
 				}
 				return game;
 			}).then(function(gameToReturn){
-				res.json(processGameReturn(gameToReturn, playerHandle));
+				res.json(processGameReturn(gameToReturn, handle));
 			});
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var updateWinnersAndLosers = function(game) {
+var updateWinnersAndLosers = function(game, handle) {
 	var winner;
 	
 	var p = new mongoose.Promise();
@@ -346,7 +351,7 @@ var updateWinnersAndLosers = function(game) {
 	return p.then(function() {
 		return game.withPromise(game.save);
 	}).then(function(){
-		return gameManager.findById(game._id);
+		return gameManager.findByIdAndAddViewed(game._id, handle);
 	});
 }
 
@@ -534,7 +539,7 @@ exports.resignGame = function(req, res) {
 			}
 			game.endGame.date = Date.now();
 			
-			return updateWinnersAndLosers(game);
+			return updateWinnersAndLosers(game, handle);
 		});
 	}).then(function(game) {res.json(game);}, logErrorAndSetResponse(req, res));
 }
@@ -1150,7 +1155,7 @@ exports.claimGame = function(req, res){
 		if(game === null){
 			throw new Error('Unable to claim victory.');
 		}
-		return updateWinnersAndLosers(game);
+		return updateWinnersAndLosers(game, handle);
 	}).then(function(gameToReturn){
 		res.json(processGameReturn(gameToReturn, handle));
 	}).then(null, logErrorAndSetResponse(req, res));

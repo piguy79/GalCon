@@ -135,9 +135,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			Collections.sort(games, new Comparator<MinifiedGame>() {
 				@Override
 				public int compare(MinifiedGame o1, MinifiedGame o2) {
-					if (o1.hasWinner() && !o2.hasWinner()) {
+					if (o1.hasWinner(true) && !o2.hasWinner(true)) {
 						return 1;
-					} else if (!o1.hasWinner() && o2.hasWinner()) {
+					} else if (!o1.hasWinner(true) && o2.hasWinner(true)) {
 						return -1;
 					} else if (o1.moveAvailable && o2.moveAvailable) {
 						return 0;
@@ -182,12 +182,17 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		if (game.hasBeenDeclined()) {
 			statusText = "-- Invite Declined --";
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
-		} else if (game.hasWinner()) {
-			if (game.winner.equals(GameLoop.USER.handle)) {
-				statusText = "You Won";
+		} else if (game.hasWinner(false)) {
+			if (game.hasWinner(true)) {
+				if (game.winner.equals(GameLoop.USER.handle)) {
+					statusText = "You Won";
+				} else {
+					statusText = "You Lost";
+					statusFont = Constants.UI.DEFAULT_FONT_RED;
+				}
 			} else {
-				statusText = "You Lost";
-				statusFont = Constants.UI.DEFAULT_FONT_RED;
+				statusText = "--view winner--";
+				statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
 			}
 		} else if (game.moveAvailable) {
 			statusText = "--your move--";
