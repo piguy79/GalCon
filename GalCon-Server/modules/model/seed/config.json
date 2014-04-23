@@ -22,7 +22,8 @@
 					"type" : "app",
 					"values" : {
 						"freeCoins" : 3,
-						"maxNumberOfOpenGames" : 20
+						"maxNumberOfOpenGames" : 20,
+						"adTimeout" : 43200000
 					}
 				}
 	]

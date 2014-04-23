@@ -14,6 +14,7 @@ public class Constants {
 	public static class Config {
 		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
 		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
+		public static final String AD_TIMEOUT = "adTimeout";
 
 	}
 
@@ -166,6 +167,7 @@ public class Constants {
 	public static final String CONFIG = "config";
 	public static final String HARVEST_ENHANCMENT = "harvestEnhancement";
 	public static final String CURRENT_RANK = "currentRank";
+	public static final String LAST_AD_SHOWN = "lastAdShown";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

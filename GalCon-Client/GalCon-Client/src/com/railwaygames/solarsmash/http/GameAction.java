@@ -2,7 +2,6 @@ package com.railwaygames.solarsmash.http;
 
 import java.util.List;
 
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.model.AvailableGames;
@@ -68,7 +67,7 @@ public interface GameAction {
 
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String handle, List<Order> orders);
 
-	public void showAd(AdColonyVideoListener listener);
+	public void showAd();
 
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 

@@ -42,7 +42,6 @@ import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -330,8 +329,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void showAd(AdColonyVideoListener listener) {
-		listener.onAdColonyVideoFinished();
+	public void showAd() {
 	}
 
 	@Override
