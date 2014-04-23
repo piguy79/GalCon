@@ -11,8 +11,8 @@
 						"harvestEnhancement" : "0.25",
 						"harvestRounds" : "6",
 						"harvestSavior" : "5",
-						"xpForPlanetCapture" : "3",
-						"xpForWinning" : "50",
+						"xpForPlanetCapture" : "2",
+						"xpForWinning" : "100",
 						"claimTimeout" : "604800000"
 					}
 					
