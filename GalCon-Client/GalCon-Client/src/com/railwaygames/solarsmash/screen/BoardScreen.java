@@ -288,7 +288,7 @@ public class BoardScreen implements ScreenFeedback {
 		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 		
-		if(lastAdShownTime == null){
+		if(lastAdShownTime == null || lastAdShownTime.isEmpty()){
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
 			prefs.flush();
 		}else if(adTimeoutIsPassed(lastAdShownTime, currentTime)){
