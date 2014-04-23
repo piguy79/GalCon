@@ -210,6 +210,10 @@ public class BoardScreen implements ScreenFeedback {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		stage = new Stage();
+		if (maxWidth == 0) {
+			maxWidth = Gdx.graphics.getWidth();
+			maxHeight = Gdx.graphics.getHeight();
+		}
 
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
@@ -339,7 +343,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void createLayout() {
 		AtlasRegion bg = resources.levelAtlas.findRegion("" + gameBoard.map);
 
-		screenCalcs = new ScreenCalculations(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screenCalcs = new ScreenCalculations(maxWidth, maxHeight);
 		boardCalcs = new BoardCalculations(screenCalcs, gameBoard.widthInTiles, gameBoard.heightInTiles);
 
 		boardTable = new Group();
@@ -359,7 +363,6 @@ public class BoardScreen implements ScreenFeedback {
 		createPlanetIcons();
 
 		Gdx.input.setInputProcessor(stage);
-
 	}
 
 	private void createEndGameOverlay() {
@@ -416,12 +419,12 @@ public class BoardScreen implements ScreenFeedback {
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
 					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, Gdx.graphics
-							.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
-					float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+							.getWidth() * 0.8f, maxHeight * 0.3f, stage);
+					float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
 					stage.addActor(dialog);
-					dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY));
+					dialog.show(new Point(maxWidth * 0.1f, dialogY));
 
 					dialog.addListener(new EventListener() {
 						@Override
@@ -569,13 +572,12 @@ public class BoardScreen implements ScreenFeedback {
 
 				final HarvestEvent hEvent = (HarvestEvent) event;
 
-				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, Gdx.graphics.getWidth() * 0.8f,
-						Gdx.graphics.getHeight() * 0.3f, stage);
-				float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, maxWidth * 0.8f, maxHeight * 0.3f, stage);
+				float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 				dialog.setX(-dialog.getWidth());
 				dialog.setY(dialogY);
 				stage.addActor(dialog);
-				dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY));
+				dialog.show(new Point(maxWidth * 0.1f, dialogY));
 
 				dialog.addListener(new EventListener() {
 					@Override
@@ -651,14 +653,14 @@ public class BoardScreen implements ScreenFeedback {
 		grids.setBounds(0, 0, boardTable.getWidth(), boardTable.getHeight());
 
 		for (int i = 1; i < gameBoard.heightInTiles; i++) {
-			Line line = new Line(grey, Gdx.graphics.getWidth(), lineRegion);
+			Line line = new Line(grey, maxWidth, lineRegion);
 			line.setY(yOffset * i);
-			line.setHeight(Gdx.graphics.getHeight() * 0.004f);
+			line.setHeight(maxHeight * 0.004f);
 			grids.addActor(line);
 		}
 
 		for (int i = 1; i < gameBoard.widthInTiles; i++) {
-			Line horizontalLine = new Line(grey, Gdx.graphics.getWidth() * 0.006f, lineRegion);
+			Line horizontalLine = new Line(grey, maxWidth * 0.006f, lineRegion);
 			horizontalLine.setY(0);
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
@@ -913,10 +915,19 @@ public class BoardScreen implements ScreenFeedback {
 		}
 	}
 
+	private int maxWidth = 0;
+	private int maxHeight = 0;
+
 	@Override
 	public void resize(int width, int height) {
 		if (stage != null) {
-			stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+			stage.getViewport().update(maxWidth, maxHeight, true);
 		}
 	}
 
@@ -993,10 +1004,10 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	public void setConnectionError(String error) {
-		if(stage == null){
+		if (stage == null) {
 			stage = new Stage();
 		}
-		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), new ClickListener(){
+		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				returnCode = Action.BACK;

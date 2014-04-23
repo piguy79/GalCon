@@ -95,9 +95,18 @@ public class MenuScreenContainer implements ScreenFeedback {
 		currentScreen.render(delta);
 	}
 
+	private int maxHeight = 0;
+	private int maxWidth = 0;
+
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		if (height > maxHeight) {
+			maxHeight = height;
+		}
+		if (width > maxWidth) {
+			maxWidth = width;
+		}
+		stage.getViewport().update(maxWidth, maxHeight, true);
 	}
 
 	@Override
@@ -133,8 +142,14 @@ public class MenuScreenContainer implements ScreenFeedback {
 		} else {
 			stage.addActor(titleText);
 		}
-		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+		if (height > maxHeight) {
+			maxHeight = height;
+		}
+		if (width > maxWidth) {
+			maxWidth = width;
+		}
+		currentScreen.show(stage, maxWidth, maxHeight);
 	}
 
 	@Override
@@ -200,7 +215,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		} else {
 			stage.addActor(titleText);
 		}
-		currentScreen.show(stage, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		currentScreen.show(stage, maxWidth, maxHeight);
 	}
 
 	@Override

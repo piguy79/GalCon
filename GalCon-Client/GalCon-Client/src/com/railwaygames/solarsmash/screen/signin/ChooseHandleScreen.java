@@ -51,9 +51,14 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		this.keyboard = keyboard;
 	}
 
+	private float width;
+	private float height;
+
 	@Override
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
+		this.width = width;
+		this.height = height;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
@@ -77,9 +82,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	}
 
 	private void addHandleFields() {
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-
 		chooseHandleLabel = new ShaderLabel(resources.fontShader, "Galactic explorer,\nchoose a username",
 				resources.skin, Constants.UI.DEFAULT_FONT);
 		chooseHandleLabel.setAlignment(Align.center);

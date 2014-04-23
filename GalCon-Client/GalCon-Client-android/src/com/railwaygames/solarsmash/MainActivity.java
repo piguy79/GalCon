@@ -82,7 +82,9 @@ public class MainActivity extends AndroidApplication {
 		decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
 			@Override
 			public void onSystemUiVisibilityChange(int visibility) {
-				hideMenuBars();
+				if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) > 0) {
+					hideMenuBars();
+				}
 			}
 		});
 

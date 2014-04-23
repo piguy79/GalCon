@@ -88,6 +88,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	@Override
 	public void hide() {
 		this.stage = null;
+		if (waitImage != null) {
+			waitImage.stop();
+		}
 		for (Actor actor : actors) {
 			actor.remove();
 		}
@@ -176,10 +179,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		String statusText = "";
 		String statusFont = Constants.UI.DEFAULT_FONT_GREEN;
-		if(game.hasBeenDeclined()){
+		if (game.hasBeenDeclined()) {
 			statusText = "-- Invite Declined --";
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
-		}else if (game.hasWinner()) {
+		} else if (game.hasWinner()) {
 			if (game.winner.equals(GameLoop.USER.handle)) {
 				statusText = "You Won";
 			} else {

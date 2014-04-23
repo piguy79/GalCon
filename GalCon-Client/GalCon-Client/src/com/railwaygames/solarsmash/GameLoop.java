@@ -75,9 +75,13 @@ public class GameLoop extends Game {
 	}
 
 	public void refresh() {
-		Screen screen = getScreen();
+		final Screen screen = getScreen();
 		if (screen instanceof ScreenFeedback) {
-			((ScreenFeedback) screen).refresh();
+			Gdx.app.postRunnable(new Runnable() {
+				public void run() {
+					((ScreenFeedback) screen).refresh();
+				};
+			});
 		}
 	}
 
