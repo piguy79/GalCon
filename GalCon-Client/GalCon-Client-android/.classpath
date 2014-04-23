@@ -10,6 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/gdx.jar" sourcepath="/GalCon-Client/libs/gdx-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/joda-time-2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/tween-engine-api.jar"/>
-	<classpathentry kind="lib" path="/GalCon-Client/libs/adcolony.jar"/>
+	<classpathentry exported="true" kind="lib" path="/GalCon-Client/libs/adcolony.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
