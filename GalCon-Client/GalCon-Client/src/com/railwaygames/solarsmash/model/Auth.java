@@ -12,6 +12,7 @@ import com.railwaygames.solarsmash.model.base.JsonConvertible;
 public class Auth extends JsonConvertible {
 	
 	public Map<String, String> auth;
+	public String defaultAuth;
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
@@ -24,12 +25,20 @@ public class Auth extends JsonConvertible {
 	private void putSocialProvider(JSONObject jsonObject, String authProvider) throws JSONException {
 		if(jsonObject.has(authProvider)){
 			auth.put(authProvider, jsonObject.getString(authProvider));
+			
+			if(defaultAuth == null){
+				defaultAuth = authProvider;
+			}
 		}
 	}
 	
 	
 	public String getID(String authProvider){
-		return auth.get(authProvider);
+		String authId = auth.get(authProvider);
+		if(authId == null){
+			return auth.get(defaultAuth);
+		}
+		return authId;
 	}
 
 }
