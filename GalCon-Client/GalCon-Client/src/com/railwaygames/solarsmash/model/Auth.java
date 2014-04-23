@@ -26,7 +26,7 @@ public class Auth extends JsonConvertible {
 		if(jsonObject.has(authProvider)){
 			auth.put(authProvider, jsonObject.getString(authProvider));
 			
-			if(defaultAuth.equals(null)){
+			if(defaultAuth == null){
 				defaultAuth = authProvider;
 			}
 		}
