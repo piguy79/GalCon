@@ -173,7 +173,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private boolean noFreeGameSlots(final GameCount gameCount) {
-		return gameCount.pendingGameCount >= Integer.parseInt(ConfigResolver
+		return gameCount.currentGameCount >= Integer.parseInt(ConfigResolver
 				.getByConfigKey(Constants.Config.MAX_NUM_OF_OPEN_GAMES));
 	}
 

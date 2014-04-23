@@ -176,16 +176,16 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		String statusText = "";
 		String statusFont = Constants.UI.DEFAULT_FONT_GREEN;
-		if (game.hasWinner()) {
+		if(game.hasBeenDeclined()){
+			statusText = "-- Invite Declined --";
+			statusFont = Constants.UI.DEFAULT_FONT_RED;
+		}else if (game.hasWinner()) {
 			if (game.winner.equals(GameLoop.USER.handle)) {
 				statusText = "You Won";
 			} else {
 				statusText = "You Lost";
 				statusFont = Constants.UI.DEFAULT_FONT_RED;
 			}
-		} else if (game.hasBeenDeclined()) {
-			statusText = "-- Invite Declined --";
-			statusFont = Constants.UI.DEFAULT_FONT_RED;
 		} else if (game.moveAvailable) {
 			statusText = "--your move--";
 			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;

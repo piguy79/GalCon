@@ -25,6 +25,8 @@ var VALIDATE_MAP = {
 	gameId : validation.isGameId
 };
 
+var activeGameQuery = {$or : [{'endGame.winnerHandle' : ''}, {'endGame.winnerHandle' : null}]};
+
 exports.index = function(req, res) {
 	res.render('index.html')
 };
@@ -68,7 +70,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 	var p = userManager.findUserByHandle(handle);
 	return p.then(function(user) {
 		if(user) {
-			return gameManager.findCollectionOfGames(user);
+			return gameManager.findCollectionOfGames(user, activeGameQuery);
 		}
 		return null;
 	}).then(function(games) {
@@ -78,8 +80,7 @@ exports.findGamesWithPendingMove = function(req, res) {
 		currentGameCount = games.length;
 		var count = 0;
 		for(i in games) {
-			if (games[i].round.moved.indexOf(handle) == -1
-					&& !games[i].endGame.winnerHandle && !games[i].endGame.declined) {
+			if (games[i].round.moved.indexOf(handle) == -1) {
 				count += 1;
 			}
 		}
@@ -745,7 +746,7 @@ exports.matchPlayerToGame = function(req, res) {
 		return userManager.findUserByHandle(handle); 
 	}).then(function(user){
 		callingUser = user;
-		return gameManager.findCollectionOfGames(user);
+		return gameManager.findCollectionOfGames(user, activeGameQuery);
 	}).then(function(games){
 		if(games && games.length >= openLimit){
 			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
@@ -943,10 +944,10 @@ exports.inviteUserToGame = function(req, res){
 		return userManager.findUserByHandle(requesterHandle); 
 	}).then(function(user){
 		requestingUser = user;
-		return gameManager.findCollectionOfGames(user);
+		return gameManager.findCollectionOfGames(user,activeGameQuery);
 	}).then(function(games){
 		if(games && games.length >= openLimit){
-			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
+			throw new Error(requesterHandle + " has max number of games in progress[" + openLimit + "]");
 		}
 		return mapManager.findMapByKey(mapKey);
 	}).then(function(map){
