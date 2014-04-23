@@ -96,6 +96,15 @@ public class MainActivity extends AndroidApplication {
 		startService(intent);
 	}
 
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+
+		if (hasFocus) {
+			hideMenuBars();
+		}
+	}
+
 	private void hideMenuBars() {
 		int newUiOptions = 0;
 
