@@ -52,10 +52,6 @@ public class UIConnectionWrapper {
 		gameAction.joinGame(callback, id, playerHandle);
 	}
 
-	public static void reduceTimeUntilCoins(UIConnectionResultCallback<Player> callback, String playerHandle) {
-		gameAction.reduceTimeUntilNextGame(callback, playerHandle);
-	}
-
 	public static void findconfigByType(UIConnectionResultCallback<Configuration> callback, String type) {
 		gameAction.findConfigByType(callback, type);
 	}
@@ -63,36 +59,37 @@ public class UIConnectionWrapper {
 	public static void searchForPlayers(UIConnectionResultCallback<People> callback, String searchTerm) {
 		gameAction.searchForPlayers(callback, searchTerm);
 	}
-	
-	public static void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey){
+
+	public static void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
+			String inviteeHandle, Long mapKey) {
 		gameAction.invitePlayerForGame(callback, requesterHandle, inviteeHandle, mapKey);
 	}
-	
-	public static void findFriends(UIConnectionResultCallback<People> callback, String handle){
+
+	public static void findFriends(UIConnectionResultCallback<People> callback, String handle) {
 		gameAction.findFriends(callback, handle);
 	}
-	
-	public static void findPendingInvites(UIConnectionResultCallback<GameQueue> callback, String handle){
+
+	public static void findPendingInvites(UIConnectionResultCallback<GameQueue> callback, String handle) {
 		gameAction.findPendingIvites(callback, handle);
 	}
-	
-	public static void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle){
+
+	public static void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle) {
 		gameAction.acceptInvite(callback, gameId, handle);
 	}
-	
-	public static void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle){
+
+	public static void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle) {
 		gameAction.declineInvite(callback, gameId, handle);
 	}
 
-	public static void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle) {
-		gameAction.recoverUsedCoinCount(callback, handle);
+	public static void addFreeCoins(UIConnectionResultCallback<Player> callback, String handle) {
+		gameAction.addFreeCoins(callback, handle);
 	}
-	
-	public static void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId){
+
+	public static void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId) {
 		gameAction.cancelGame(callback, handle, gameId);
 	}
-	
-	public static void claimGame(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId){
+
+	public static void claimGame(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId) {
 		gameAction.claimVictory(callback, handle, gameId);
 	}
 }

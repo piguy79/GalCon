@@ -10,7 +10,6 @@ import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.model.GameQueue;
-import com.railwaygames.solarsmash.model.GameQueueItem;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Inventory;
@@ -58,7 +57,8 @@ public interface GameAction {
 
 	public void findConfigByType(UIConnectionResultCallback<Configuration> callback, String type);
 
-	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle, String authProvider);
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle,
+			String authProvider);
 
 	public void findGamesWithPendingMove(UIConnectionResultCallback<GameCount> callback, String handle);
 
@@ -68,31 +68,29 @@ public interface GameAction {
 
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String handle, List<Order> orders);
 
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String handle);
-
 	public void showAd(AdColonyVideoListener listener);
 
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback);
 
-	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle);
-	
-	public void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle, String inviteeHandle, Long mapKey);
-	
-	public void findFriends(UIConnectionResultCallback<People> callback, String handle);
-	
-	public void findPendingIvites(UIConnectionResultCallback<GameQueue> callback, String handle);
-	
-	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
-	
-	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle);
-	
-	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle, String authProvider);
-	
-	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id, String authProvider);
-	
-	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
-	
-	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId);
+	public void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
+			String inviteeHandle, Long mapKey);
 
+	public void findFriends(UIConnectionResultCallback<People> callback, String handle);
+
+	public void findPendingIvites(UIConnectionResultCallback<GameQueue> callback, String handle);
+
+	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle);
+
+	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle);
+
+	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle,
+			String authProvider);
+
+	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+			String authProvider);
+
+	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
+
+	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId);
 
 }

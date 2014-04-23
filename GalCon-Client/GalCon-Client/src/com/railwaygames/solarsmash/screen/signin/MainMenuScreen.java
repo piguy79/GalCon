@@ -1,7 +1,5 @@
 package com.railwaygames.solarsmash.screen.signin;
 
-import org.joda.time.DateTime;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -52,9 +50,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private XpProgressBar xpBar;
-	
+
 	public boolean hideTitleArea = false;
-	
+
 	public MainMenuScreen(Resources resources, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
 		this.socialAction = socialAction;
@@ -226,17 +224,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private String createCoinDisplay() {
-		String coinsText = "";
-
-		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-		if (timeRemaining != null) {
-			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
-		} else {
-			coinsText += GameLoop.USER.coins;
-		}
-
-		return coinsText;
+		return "" + GameLoop.USER.coins;
 	}
 
 	@Override
@@ -257,16 +245,16 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private void loadUser() {
 		waitImage.start();
-		gameAction.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
+		gameAction.addFreeCoins(new UIConnectionResultCallback<Player>() {
 
 			@Override
 			public void onConnectionResult(final Player result) {
 				GameLoop.USER = result;
-				
-				if(LevelManager.shouldShowLevelUp(result)){
+
+				if (LevelManager.shouldShowLevelUp(result)) {
 					hideTitleArea = true;
 					final LevelUpOverlay levelUp = new LevelUpOverlay(resources, result);
-					levelUp.addListener(new ClickListener(){
+					levelUp.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							hideTitleArea = false;
@@ -276,14 +264,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						}
 					});
 					stage.addActor(levelUp);
-					
-				}else{
+
+				} else {
 					finishLoadingUser();
 				}
 			}
 
 			private void finishLoadingUser() {
-				
+
 				gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
 					public void onConnectionResult(GameCount result) {
 						addElementsToStage(result);

@@ -32,9 +32,7 @@ var userSchema = mongoose.Schema({
 		twitter : "String",
 		facebook : "String"
 	},
-	coins : "Number",
-	usedCoins : "Number",
-	watchedAd : "Boolean"
+	coins : "Number"
 });
 
 userSchema.set('toObject', { getters: true });
@@ -63,21 +61,8 @@ exports.findUserMatchingSearch = function(searchTerm, handle){
 	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}]}).limit(10).exec();
 }
 
-exports.addCoins = function(coinsToAdd, handle){
-	return UserModel.findOneAndUpdate({ 
-										handle : handle
-										},
-										{
-											$inc : 
-													{
-														coins : coinsToAdd
-													}, 
-	                                          $set : 
-	                                          		{
-	                                        	  		usedCoins : -1,
-	                                        	  		watchedAd : false
-	                                        	  	}
-										}).exec();
+exports.addCoins = function(coins, handle) {
+	return UserModel.findOneAndUpdate({handle : handle}, {$inc : {coins : coins}}).exec();
 }
 
 exports.addCoinsForAnOrder = function(handle, order) {
@@ -98,12 +83,7 @@ exports.addCoinsForAnOrder = function(handle, order) {
 											$inc : 
 													{
 														coins : inventoryItem.associatedCoins
-													}, 
-											$set : 
-													{
-														usedCoins : -1,
-														watchedAd : false
-													}, 
+													},  
 											$push : {
 														consumedOrders : order
 													}
@@ -113,28 +93,6 @@ exports.addCoinsForAnOrder = function(handle, order) {
 
 exports.deleteConsumedOrder = function(handle, order){
 	return UserModel.findOneAndUpdate({handle : handle}, {$pull : {consumedOrders : {'orderId' : order.orderId}}}).exec();
-}
-
-exports.reduceTimeForWatchingAd = function(handle, config){
-	var p = exports.findUserByHandle(handle);
-	return p.then(function(user) {
-		var timeReduction = config.values['timeReduction'];
-		var timeLapseForNewCoins = config.values['timeLapseForNewCoins'];
-		var timeRemaining = user.usedCoins + timeLapseForNewCoins - Date.now();
-		var reducedTime = Math.floor(timeRemaining * timeReduction);
-		var updatedUsedCoins;
-		if(reducedTime < 0) {
-			updatedUsedCoins = -1;
-		} else {
-			updatedUsedCoins = user.usedCoins + reducedTime;
-		}
-		
-		return UserModel.findOneAndUpdate({$and : [{handle : handle}, {watchedAd : false}]}, {$set : {usedCoins : updatedUsedCoins, watchedAd : true}}).exec();
-	});
-}
-
-exports.updateUsedCoins = function(handle, usedCoins){
-	return UserModel.findOneAndUpdate({handle : handle}, {$set : {usedCoins : usedCoins}}).exec();
 }
 
 exports.joinAGame = function(user, game){
@@ -147,8 +105,7 @@ exports.joinAGame = function(user, game){
 exports.removeAGame = function(user, gameId){
 	return UserModel.findOneAndUpdate({handle : user.handle},
 			{
-				$inc : {coins : 1},
-				$set : {usedCoins : -1}
+				$inc : {coins : 1}
 			}).exec();
 }
 

@@ -29,8 +29,6 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
-import static com.railwaygames.solarsmash.http.UrlConstants.RECOVER_USED_COINS_COUNT;
-import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
@@ -286,20 +284,6 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(final UIConnectionResultCallback<Player> callback, final String handle) {
-		try {
-			final JSONObject top = JsonConstructor.reduceCall(handle, getSession());
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
-				}
-			});
-		} catch (JSONException e) {
-			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
-	}
-
-	@Override
 	public void invitePlayerForGame(final UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
 			String inviteeHandle, Long mapKey) {
 		try {
@@ -545,21 +529,6 @@ public class AndroidGameAction implements GameAction {
 				((MainActivity) activity).displayAd(listener);
 			}
 		});
-	}
-
-	@Override
-	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String handle) {
-		try {
-			final JSONObject top = JsonConstructor.user(handle, getSession());
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
-							.toString());
-				}
-			});
-		} catch (JSONException e) {
-			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
 	}
 
 	@Override

@@ -1,9 +1,6 @@
 package com.railwaygames.solarsmash;
 
 import static com.railwaygames.solarsmash.Util.createShader;
-
-import org.joda.time.DateTime;
-
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -17,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
-import com.railwaygames.solarsmash.http.SetPlayerResultHandler;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameInviteRequest;
@@ -137,7 +133,6 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
-		checkCoinStats();
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
@@ -191,22 +186,5 @@ public class GameLoop extends Game {
 	private void openBoardScreen() {
 		boardScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 		setScreen(boardScreen);
-	}
-
-	private void checkCoinStats() {
-		if (GameLoop.USER != null && GameLoop.USER.coins != null && GameLoop.CONFIG != null) {
-			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-			if (timeRemaining != null) {
-				loadingNewCoins = false;
-			} else if (timeRemaining == null && GameLoop.USER.coins == 0 && GameLoop.USER.usedCoins != -1) {
-				if (!loadingNewCoins) {
-					loadingNewCoins = true;
-					gameAction.addFreeCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle);
-				}
-			} else {
-				loadingNewCoins = false;
-			}
-		}
 	}
 }

@@ -339,13 +339,6 @@ var updateWinnersAndLosers = function(game) {
 			}
 			
 			return updatePlayerXpOnWin(player.handle, xpToAdd, winToAdd, lossToAdd, 0);
-			
-		}).then(function(savedPlayer){
-			var coinPromise = setTimeUntilFreeCoins(savedPlayer, game._id);
-			return coinPromise.then(function(user) {
-				player.usedCoins = user.usedCoins;
-				return player.withPromise(player.save);
-			});
 		});
 	});
 	
@@ -374,50 +367,6 @@ var updatePlayerXpOnWin = function(handle, xpToAdd, winToAdd, lossToAdd, attempt
 		}
 	});
 }
-
-var setTimeUntilFreeCoins = function(user, gameId){
-	var p = gameManager.findCollectionOfGames(user);
-	return p.then(function(games){	
-		var gamesStillInProgress = _.filter(games, function(game){ return game._id !== gameId && game.endGame.winnerHandle === ''});
-		
-		if(user.coins <= 0 && gamesStillInProgress.length === 0){
-			user.usedCoins = Date.now();
-		}
-		
-		return user;
-	});
-}
-
-exports.adjustUsedCoinsIfAllUserGamesAreComplete = function(req, res) {
-	var handle = req.body.handle;
-	var session = req.body.session;
-	
-	if(!validate({session : session, handle : handle}, res)) {
-		return;
-	}
-	
-	var p = validateSession(session, {"handle" : handle});
-	p.then(function() {
-		var userPromise = userManager.findUserByHandle(handle);
-		var foundUser;
-		return userPromise.then(function(user){
-			foundUser = user;
-			return gameManager.findCollectionOfGames(user);
-			
-		}).then(function(games){
-			var gamesStillInProgress = _.filter(games, function(game) { return game.endGame.winnerHandle === ''});
-			
-			if(foundUser.usedCoins === -1 && gamesStillInProgress.length === 0 && foundUser.coins === 0) {
-				foundUser.usedCoins = Date.now();
-			}
-		
-			return foundUser.withPromise(foundUser.save);
-		}).then(function(user) {
-			res.json(user);
-		});
-	}, logErrorAndSetResponse(req, res));
-}
-
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
 	for (var i = 0; i < game.moves.length; i++) {
@@ -601,17 +550,28 @@ exports.addFreeCoins = function(req, res) {
 	p.then(function() {
 		var p = userManager.findUserByHandle(handle);
 		return p.then(function(user) {
-			var innerp = configManager.findLatestConfig('app');
-			return innerp.then(function(config) {
-				var delay = config.values['timeLapseForNewCoins'];
-				if(user.coins === 0 && user.usedCoins !== -1 && user.usedCoins + delay < Date.now()) {
-					return userManager.addCoins(config.values['freeCoins'], handle);
-				} else {
-					return user;
-				}
-			}).then(function(user) {
+			if(user.coins > 0) {
 				res.json(user);
-			})
+			} else {
+				var innerp = gameManager.findCollectionOfGames(user);
+				return innerp.then(function(games) {
+					var gamesStillInProgress = _.filter(games, function(game) { return game.endGame.winnerHandle === ''});
+					
+					if(gamesStillInProgress.length > 0) {
+						return null;
+					} else {
+						return configManager.findLatestConfig('app');
+					}
+				}).then(function(config) {
+					if(config) {
+						user.coins += config.values['freeCoins'];
+						return user.withPromise(user.save);
+					}
+					return user;
+				});
+			}
+		}).then(function(user) {
+			res.json(user);
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
@@ -733,24 +693,6 @@ var handleUserUpdate = function(req, res, handle){
 			res.json(user);
 		}
 	}
-}
-
-
-exports.reduceTimeUntilNextGame = function(req, res) {
-	var handle = req.body.handle;
-	var session = req.body.session;
-	
-	if(!validate({session : session, handle : handle}, res)) {
-		return;
-	}
-	
-	var p = validateSession(session, {"handle" : handle});
-	p.then(function() {
-		var innerp = configManager.findLatestConfig('app');
-		return innerp.then(function(config){
-			return userManager.reduceTimeForWatchingAd(handle, config);
-		}).then(handleUserUpdate(req, res, handle));
-	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findConfigByType = function(req, res) {

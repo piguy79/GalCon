@@ -22,8 +22,6 @@
 					"type" : "app",
 					"values" : {
 						"freeCoins" : 3,
-						"timeLapseForNewCoins" : 3600000,
-						"timeReduction" : "0.5",
 						"maxNumberOfOpenGames" : 20
 					}
 				}

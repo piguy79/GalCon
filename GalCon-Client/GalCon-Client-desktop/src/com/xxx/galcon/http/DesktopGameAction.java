@@ -7,10 +7,10 @@ import static com.railwaygames.solarsmash.http.UrlConstants.ACCEPT_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_FREE_COINS;
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.railwaygames.solarsmash.http.UrlConstants.CANCEL_GAME;
+import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
 import static com.railwaygames.solarsmash.http.UrlConstants.DECLINE_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_ALL_MAPS;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_AVAILABLE_GAMES;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CONFIG_BY_TYPE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
@@ -24,12 +24,9 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
-import static com.railwaygames.solarsmash.http.UrlConstants.RECOVER_USED_COINS_COUNT;
-import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
-import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -102,13 +99,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
-			
-			GameBoard result = (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args,
-					new GameBoard());
-			
-			if(result == null){
+
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), PERFORM_MOVES, args, new GameBoard());
+
+			if (result == null) {
 				callback.onConnectionError("Invalid Move");
-			}else{
+			} else {
 				callback.onConnectionResult(result);
 			}
 
@@ -117,7 +113,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 	}
 
-	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle, String authProvider) {
+	public void requestHandleForId(UIConnectionResultCallback<HandleResponse> callback, String id, String handle,
+			String authProvider) {
 		try {
 			JSONObject top = JsonConstructor.requestHandle(id, handle, getSession(), authProvider);
 
@@ -146,12 +143,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			GameBoard result = (GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args,
-					new GameBoard());
-			
-			if(result == null){
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), MATCH_PLAYER_TO_GAME, args, new GameBoard());
+
+			if (result == null) {
 				callback.onConnectionError("Unable to join game.");
-			}else{
+			} else {
 				callback.onConnectionResult(result);
 			}
 		} catch (JSONException e) {
@@ -188,8 +184,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void findGamesWithPendingMove(UIConnectionResultCallback<GameCount> callback, String playerHandle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", playerHandle);
-		callback.onConnectionResult((GameCount) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE,
-				args, new GameCount()));
+		callback.onConnectionResult((GameCount) callURL(new GetClientRequest(), FIND_GAMES_WITH_A_PENDING_MOVE, args,
+				new GameCount()));
 	}
 
 	@Override
@@ -294,11 +290,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			MongoClient client = new MongoClient("localhost");
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
-			
+
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 			String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)));
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
+					.getID(authProvider)));
 
 			for (Order order : orders) {
 				GameLoop.USER.coins = GameLoop.USER.coins
@@ -306,12 +303,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 				user.put("coins", GameLoop.USER.coins);
 				user.put("usedCoins", -1);
 				user.put("watchedAd", false);
-				usersCollection.update(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
+				usersCollection.update(
+						new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
 			}
 			client.close();
-
-			GameLoop.USER.watchedAd = false;
-			GameLoop.USER.usedCoins = -1L;
 			callback.onConnectionResult(GameLoop.USER);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -340,57 +335,24 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String playerHandle) {
-		try {
-			JSONObject top = JsonConstructor.reduceCall(playerHandle, getSession());
-
-			Map<String, String> args = new HashMap<String, String>();
-			args.put("json", top.toString());
-
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), REDUCE_TIME, args, new Player()));
-		} catch (JSONException e) {
-			System.out.println(e);
-		}
-
-	}
-
-	@Override
-	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String playerHandle) {
-		try {
-			JSONObject top = JsonConstructor.user(playerHandle, getSession());
-
-			Map<String, String> args = new HashMap<String, String>();
-			args.put("json", top.toString());
-
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), RECOVER_USED_COINS_COUNT, args,
-					new Player()));
-		} catch (JSONException e) {
-			System.out.println(e);
-		}
-	}
-	
-
-	@Override
-	public void invitePlayerForGame(
-			UIConnectionResultCallback<GameBoard> callback,
-			String requesterHandle, String inviteeHandle, Long mapKey) {
+	public void invitePlayerForGame(UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
+			String inviteeHandle, Long mapKey) {
 		try {
 			JSONObject top = JsonConstructor.invite(requesterHandle, inviteeHandle, getSession(), mapKey);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			GameBoard result = (GameBoard) callURL(new PostClientRequest(), INVITE_USER_TO_PLAY, args,
-					new GameBoard());
-			if(result == null){
+			GameBoard result = (GameBoard) callURL(new PostClientRequest(), INVITE_USER_TO_PLAY, args, new GameBoard());
+			if (result == null) {
 				callback.onConnectionError("Unable to create game.");
-			}else{
+			} else {
 				callback.onConnectionResult(result);
 			}
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 
 	private String session;
@@ -421,13 +383,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			MongoClient client = new MongoClient("localhost");
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
-			
-		
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)));
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
+					.getID(authProvider)));
 			if (user == null) {
 
-				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider, GameLoop.USER.auth.getID(authProvider)))
+				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
+						GameLoop.USER.auth.getID(authProvider)))
 						.append("xp", 99)
 						.append("wins", 0)
 						.append("losses", 0)
@@ -444,7 +406,8 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						"session",
 						new BasicDBObject("id", session.session).append("expireDate",
 								new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)));
-				usersCollection.update(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
+				usersCollection.update(
+						new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
 			}
 			client.close();
 
@@ -474,12 +437,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		}
 
 	}
-	
 
 	@Override
-	public void findFriends(UIConnectionResultCallback<People> callback,
-			String handle) {
-		
+	public void findFriends(UIConnectionResultCallback<People> callback, String handle) {
+
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("session", getSession());
 		args.put("handle", handle);
@@ -492,8 +453,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void findPendingIvites(
-			UIConnectionResultCallback<GameQueue> callback, String handle) {
+	public void findPendingIvites(UIConnectionResultCallback<GameQueue> callback, String handle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("session", getSession());
 		args.put("handle", handle);
@@ -503,40 +463,37 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} else {
 			callback.onConnectionError(queue.reason);
 		}
-		
+
 	}
 
 	@Override
-	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback,
-			String gameId, String handle) {
+	public void acceptInvite(UIConnectionResultCallback<GameBoard> callback, String gameId, String handle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", handle);
 		args.put("gameId", gameId);
 		args.put("session", getSession());
 		GameBoard gameBoard = (GameBoard) callURL(new GetClientRequest(), ACCEPT_INVITE, args, new GameBoard());
-		if(gameBoard != null){
+		if (gameBoard != null) {
 			callback.onConnectionResult(gameBoard);
-		}else{
+		} else {
 			callback.onConnectionError("Game does not exist");
 		}
-		
+
 	}
 
 	@Override
-	public void declineInvite(UIConnectionResultCallback<BaseResult> callback,
-			String gameId, String handle) {
+	public void declineInvite(UIConnectionResultCallback<BaseResult> callback, String gameId, String handle) {
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("handle", handle);
 		args.put("gameId", gameId);
 		args.put("session", getSession());
 		callback.onConnectionResult((BaseResult) callURL(new GetClientRequest(), DECLINE_INVITE, args, new BaseResult()));
-		
+
 	}
 
 	@Override
-	public void findMatchingFriends(
-			UIConnectionResultCallback<People> callback, List<String> authIds,
-			String handle, String authProvider) {
+	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle,
+			String authProvider) {
 		try {
 			JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 
@@ -548,14 +505,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 
 	@Override
-	public void addProviderToUser(UIConnectionResultCallback<Player> callback,
-			String handle, String id, String authProvider) {
+	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+			String authProvider) {
 		try {
-			JSONObject top = JsonConstructor.addProvider(handle, id, getSession(),  authProvider);
+			JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -565,12 +522,11 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 
 	@Override
-	public void cancelGame(UIConnectionResultCallback<BaseResult> callback,
-			String handle, String gameId) {
+	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId) {
 		try {
 			JSONObject top = JsonConstructor.cancelGame(handle, gameId, getSession());
 
@@ -582,33 +538,29 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
+
 	}
 
 	@Override
-	public void claimVictory(UIConnectionResultCallback<GameBoard> callback,
-			String handle, String gameId) {
+	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId) {
 		try {
 			JSONObject top = JsonConstructor.claimGame(handle, gameId, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
-			
-			GameBoard gameBoard = (GameBoard) callURL(new PostClientRequest(), CLAIM_VICTORY, args,
-					new GameBoard());
-					
-						
-			if(gameBoard == null){
+
+			GameBoard gameBoard = (GameBoard) callURL(new PostClientRequest(), CLAIM_VICTORY, args, new GameBoard());
+
+			if (gameBoard == null) {
 				callback.onConnectionError("Invalid claim");
-			}else{
+			} else {
 				callback.onConnectionResult(gameBoard);
 			}
 
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-		
-	}
 
+	}
 
 }
