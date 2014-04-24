@@ -55,7 +55,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	private SocialAction socialAction;
 	private AndroidInAppBillingAction inAppBillingAction;
 	private GameLoop gameLoop;
-	
 
 	private IabHelper mHelper = null;
 
@@ -105,9 +104,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 
-		if (hasFocus) {
-			hideMenuBars();
-		}
+		hideMenuBars();
 	}
 
 	private void hideMenuBars() {
@@ -381,18 +378,18 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	@Override
 	public void onAdColonyAdAvailabilityChange(boolean arg0, String arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onAdColonyAdAttemptFinished(AdColonyAd arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onAdColonyAdStarted(AdColonyAd arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
