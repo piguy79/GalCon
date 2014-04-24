@@ -26,7 +26,7 @@ var isValid = function(authProvider, token) {
 
 exports.exchangeToken = function(authProvider, token) {
 	var p = new mongoose.Promise();
-	p.complete();
+	p.fulfill();
 	
 	var authId;
 	

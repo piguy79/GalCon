@@ -9,7 +9,7 @@ var withPromise = function(func) {
 		if(err) {
 			p.reject(err);
 		} else {
-			p.complete(result);
+			p.fulfill(result);
 		}
 	});
 	func.apply(this, array);

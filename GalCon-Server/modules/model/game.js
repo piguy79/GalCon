@@ -287,7 +287,7 @@ exports.createGame = function(gameAttributes) {
 		var innerp = new mongoose.Promise();
 		constructedGame.populate('players', function(err, gameWithPlayers) {
 			if(err) { innerp.reject(err); }
-			else { innerp.complete(gameWithPlayers); }
+			else { innerp.fulfill(gameWithPlayers); }
 		});
 		return innerp;
 	});
@@ -365,7 +365,7 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 
 var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 	var promise = new mongoose.Promise();
-	promise.complete();
+	promise.fulfill();
 	var lastPromise = promise;	
 	
 	game.players.forEach(function(player){

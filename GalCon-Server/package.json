@@ -2,22 +2,20 @@
     "name": "application-name"
   , "version": "0.0.1"
   , "engines" : {
-    "node":"0.10.25",
-    "npm" : "1.3.25"
+    "node":"0.10.26",
+    "npm" : "1.4.6"
   }
   , "private": true
   , "dependencies": {
-      "express": "3.3.5"
-     , "mongodb": "1.3.18"
-     , "mongojs" : "0.7.16"
-     , "ejs" : "0.8.4"
-    , "jade": ">= 0.0.1"
-    , "mongoose" : "3.6.17"
-    , "needle" : "0.6.0"
-    , "nodetime" : "0.8.14"
-    , "underscore" : "1.6.0"
-    , "googleapis" : "0.7.0"
-    , "facebook-api" : "0.1.2"
-    , "validator" : "3.2.0"
+	  "express": "3.5.1",
+	  "ejs" : "1.0.0",
+	  "jade": ">= 0.0.1",
+	  "mongoose" : "3.8.5",
+	  "needle" : "0.6.0",
+	  "nodetime" : "0.8.14",
+	  "underscore" : "1.6.0",
+	  "googleapis" : "0.7.0",
+	  "facebook-api" : "0.1.2",
+	  "validator" : "3.2.0"
   }
 }

@@ -54,7 +54,7 @@ exports.updateScore = function(boardId, playerHandle, newScore) {
  */
 exports.calculateAndSave = function(mapKey, players, handleOfPlayerWhoWon, ranks) {
 	var promise = new mongoose.Promise();
-	promise.complete();
+	promise.fulfill();
 	
 	var lastPromise = promise;
 	players.forEach(function(player) {

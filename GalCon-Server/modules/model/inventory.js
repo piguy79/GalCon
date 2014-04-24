@@ -13,7 +13,7 @@ exports.InventoryModel = InventoryModel;
 
 var populateDefaultInventory = function(){
 	var p = InventoryModel.withPromise(InventoryModel.create, require('./seed/inventory.json').inventory);
-	p.complete();
+	p.fulfill();
 }
 
 InventoryModel.remove(function(err, doc) {

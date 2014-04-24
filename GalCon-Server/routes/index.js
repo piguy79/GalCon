@@ -300,7 +300,7 @@ exports.performMoves = function(req, res) {
 			});
 		} else {
 			var p = new mongoose.Promise();
-			p.complete();
+			p.fulfill();
 			
 			return p.then(function() {
 				if (game.endGame.winnerHandle) {
@@ -318,7 +318,7 @@ var updateWinnersAndLosers = function(game, handle) {
 	var winner;
 	
 	var p = new mongoose.Promise();
-	p.complete();
+	p.fulfill();
 	
 	game.players.forEach(function(player) {
 		p = p.then(function(){
@@ -603,7 +603,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 						gapiP.reject(err.message);
 					} else {
 						gapiClient = client;
-						gapiP.complete();
+						gapiP.fulfill();
 					}
 				});
 			var lastP = gapiP;
@@ -631,9 +631,9 @@ exports.addCoinsForAnOrder = function(req, res) {
 							} else {
 								console.log("Android Publisher API - Result - %j", result);
 								if(result.purchaseState == 0 && result.consumptionState == 0) {
-									newP.complete("credit");
+									newP.fulfill("credit");
 								} else {
-									newP.complete("noCredit");
+									newP.fulfill("noCredit");
 								}
 							}
 						});
@@ -673,7 +673,7 @@ exports.deleteConsumedOrders = function(req, res){
 
 var performFunctionToOrders = function(func, objects){
 	var promise = new mongoose.Promise();
-	promise.complete();
+	promise.fulfill();
 	var lastPromise = promise;
 	var mainArgs = arguments;
 	
@@ -798,7 +798,7 @@ var findOrCreateGamePromise = function(user, time, mapToFind) {
 var joinGamePromise = function(games, user, time) {
 	if(games.length < 1) {
 		var p = new mongoose.Promise();
-		p.complete(null);
+		p.fulfill(null);
 		return p;
 	}
 	
