@@ -150,8 +150,9 @@ public class RoundInformationTopHud extends Group {
 						previousOwner = Constants.OWNER_NO_ONE;
 					}
 				}
-
-				attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
+				if (move.battleStats.attackMultiplier > 0) {
+					attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
+				}
 				defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
 				moveOwner = move.handle;
 			} else {
@@ -159,10 +160,14 @@ public class RoundInformationTopHud extends Group {
 			}
 			if (move.handle.equals(GameLoop.USER.handle)) {
 				userMoveCount += move.battleStats.startFleet;
-				userAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+				if (move.battleStats.attackMultiplier > 0) {
+					userAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+				}
 			} else {
 				enemyMoveCount += move.battleStats.startFleet;
-				enemyAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+				if (move.battleStats.attackMultiplier > 0) {
+					enemyAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
+				}
 			}
 		}
 
