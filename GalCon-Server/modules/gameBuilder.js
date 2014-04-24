@@ -31,7 +31,6 @@ function GameBuilder(gameAttributes) {
 	this.endGame = {
 		winnerHandle : "",
 		losers : [],
-		draw : false,
 		xp : 0
 	}
 	this.ability = "";

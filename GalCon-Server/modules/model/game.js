@@ -30,7 +30,6 @@ var gameSchema = mongoose.Schema({
 		leaderboardScoreAmount : "Number",
 		date : "Date",
 		loserHandles : [String],
-		draw : "Boolean",
 		declined : "String",
 		viewedBy : [String]
 	},
@@ -542,7 +541,6 @@ exports.declineSocialGame = function(gameId, invitee){
 			xp : 0,
 			leaderboardScoreAmount : 0,
 			date : Date.now(),
-			draw : false,
 			declined : invitee
 		};
 
@@ -553,7 +551,6 @@ exports.declineSocialGame = function(gameId, invitee){
 												   ,'endGame.xp' : 0
 												   ,'endGame.leaderboardScoreAmount' : 0
 												   ,'endGame.date' : 0
-												   ,'endGame.draw' : 0
 												   , 'endGame.winnerHandle' : 'GAME_DECLINE'
 												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
@@ -590,7 +587,6 @@ exports.claimVictory = function(gameId, moveTime, currentUser, loserHandle){
 		$set : {
 			   'endGame.xp' : 50,
 			   'endGame.date' : Date.now(),
-			   'endGame.draw' : false,
 			   'endGame.winnerHandle' : currentUser.handle,
 			   'endGame.loserHandles' : [loserHandle]
 		   }}).populate('players').exec();
