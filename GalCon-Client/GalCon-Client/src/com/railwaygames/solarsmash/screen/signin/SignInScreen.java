@@ -249,4 +249,5 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	public boolean canRefresh() {
 		return false;
 	}
+
 }

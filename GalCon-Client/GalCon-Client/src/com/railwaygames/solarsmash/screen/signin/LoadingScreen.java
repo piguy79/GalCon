@@ -219,4 +219,5 @@ public class LoadingScreen implements PartialScreenFeedback {
 	public boolean canRefresh() {
 		return false;
 	}
+
 }

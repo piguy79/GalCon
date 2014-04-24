@@ -381,4 +381,5 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	public boolean canRefresh() {
 		return true;
 	}
+
 }

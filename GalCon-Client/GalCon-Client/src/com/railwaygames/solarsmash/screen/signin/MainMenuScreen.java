@@ -326,4 +326,5 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	public boolean canRefresh() {
 		return true;
 	}
+
 }

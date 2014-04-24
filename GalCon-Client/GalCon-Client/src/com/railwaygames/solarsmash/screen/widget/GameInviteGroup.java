@@ -18,6 +18,7 @@ import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.AcceptInviteEvent;
 import com.railwaygames.solarsmash.screen.event.DeclineInviteEvent;
+import com.railwaygames.solarsmash.screen.event.InviteNoCoinsEvent;
 import com.railwaygames.solarsmash.screen.overlay.LoadingOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 
@@ -114,20 +115,24 @@ public class GameInviteGroup extends Group {
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				final Overlay loadingOverlay = new LoadingOverlay(resources);
-				getParent().getStage().addActor(loadingOverlay);
-				UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {
-					public void onConnectionResult(GameBoard result) {
-						loadingOverlay.remove();
-						fire(new AcceptInviteEvent(true, result));
-					};
+				if(GameLoop.USER.coins == 0){
+					fire(new InviteNoCoinsEvent());
+				}else{
+					final Overlay loadingOverlay = new LoadingOverlay(resources);
+					getParent().getStage().addActor(loadingOverlay);
+					UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {
+						public void onConnectionResult(GameBoard result) {
+							loadingOverlay.remove();
+							fire(new AcceptInviteEvent(true, result));
+						};
 
-					@Override
-					public void onConnectionError(String msg) {
-						loadingOverlay.remove();
-						fire(new AcceptInviteEvent(false, msg));
-					}
-				}, item.game.id, GameLoop.USER.handle);
+						@Override
+						public void onConnectionError(String msg) {
+							loadingOverlay.remove();
+							fire(new AcceptInviteEvent(false, msg));
+						}
+					}, item.game.id, GameLoop.USER.handle);
+				}
 			}
 		});
 		addActor(okButton);

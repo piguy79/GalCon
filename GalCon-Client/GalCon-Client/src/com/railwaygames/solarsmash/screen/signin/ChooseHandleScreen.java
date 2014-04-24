@@ -237,4 +237,5 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	public boolean canRefresh() {
 		return false;
 	}
+
 }
