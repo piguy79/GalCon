@@ -19,6 +19,7 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.screen.Resources;
+import com.railwaygames.solarsmash.screen.event.AboutEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
@@ -34,6 +35,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ShaderLabel confirmText;
 	private ImageButton refreshButton;
 	private ShaderLabel refreshText;
+	private ImageButton aboutButton;
+	private ShaderLabel aboutText;
 	private GameBoard gameBoard;
 
 	public BoardScreenOptionsDialog(GameBoard gameBoard, Resources resources, float width, float height, Stage stage) {
@@ -55,6 +58,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			createResignButton(resources.fontShader, resources.skin);
 		}
 		createRefreshButton(resources.fontShader, resources.skin);
+		createAboutButton(resources.fontShader, resources.skin);
 	}
 
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {
@@ -63,7 +67,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
 		resignButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.30f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.BASIC_BUTTON_TEXT);
 		resignText.setAlignment(Align.center);
@@ -83,7 +87,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
 		cancelButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.30f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.50f - bHeight * 0.5f, bWidth, bHeight);
 
 		cancelText = new ShaderLabel(fontShader, "Cancel Game", skin, Constants.UI.BASIC_BUTTON_TEXT);
 		cancelText.setAlignment(Align.center);
@@ -103,7 +107,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
 		refreshButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.7f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.8f - bHeight * 0.5f, bWidth, bHeight);
 
 		refreshText = new ShaderLabel(fontShader, "Refresh", skin, Constants.UI.BASIC_BUTTON_TEXT);
 		refreshText.setAlignment(Align.center);
@@ -115,6 +119,25 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 
 		refreshButton.addListener(refreshListener);
 		refreshText.addListener(refreshListener);
+	}
+
+	private void createAboutButton(ShaderProgram fontShader, UISkin skin) {
+		aboutButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
+		aboutButton.setLayoutEnabled(false);
+		float bWidth = getWidth() * 0.66f;
+		float bHeight = bWidth * 0.30f;
+		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.2f - bHeight * 0.5f, bWidth, bHeight);
+
+		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		aboutText.setAlignment(Align.center);
+		aboutText.setY(aboutButton.getY() + aboutButton.getHeight() / 2 - aboutText.getHeight() * 0.5f);
+		aboutText.setWidth(getWidth());
+
+		addActor(aboutButton);
+		addActor(aboutText);
+
+		aboutButton.addListener(aboutListener);
+		aboutText.addListener(aboutListener);
 	}
 
 	private ClickListener resignListener = new ClickListener() {
@@ -157,6 +180,14 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		public void clicked(InputEvent event, float x, float y) {
 			hide();
 			fire(new RefreshEvent());
+		}
+	};
+
+	private ClickListener aboutListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			hide();
+			fire(new AboutEvent());
 		}
 	};
 

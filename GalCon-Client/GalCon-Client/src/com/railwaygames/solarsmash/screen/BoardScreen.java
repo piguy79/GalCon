@@ -6,8 +6,6 @@ import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Currency;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +48,7 @@ import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.model.Social;
 import com.railwaygames.solarsmash.model.factory.MoveFactory;
 import com.railwaygames.solarsmash.model.factory.PlanetButtonFactory;
+import com.railwaygames.solarsmash.screen.event.AboutEvent;
 import com.railwaygames.solarsmash.screen.event.CancelDialogEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
 import com.railwaygames.solarsmash.screen.event.ClaimVictoryEventListener;
@@ -287,20 +286,21 @@ public class BoardScreen implements ScreenFeedback {
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
-		
-		if(lastAdShownTime == null || lastAdShownTime.isEmpty()){
+
+		if (lastAdShownTime == null || lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
 			prefs.flush();
-		}else if(adTimeoutIsPassed(lastAdShownTime, currentTime)){
+		} else if (adTimeoutIsPassed(lastAdShownTime, currentTime)) {
 			ExternalActionWrapper.showAd();
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
 			prefs.flush();
 		}
-		
+
 	}
 
 	private boolean adTimeoutIsPassed(String lastAdShownTime, Long currentTime) {
-		return (currentTime - Long.parseLong(lastAdShownTime)) > Long.parseLong(ConfigResolver.getByConfigKey(Constants.Config.AD_TIMEOUT));
+		return (currentTime - Long.parseLong(lastAdShownTime)) > Long.parseLong(ConfigResolver
+				.getByConfigKey(Constants.Config.AD_TIMEOUT));
 	}
 
 	private Player findPlayer(String handle) {
@@ -447,8 +447,8 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, Gdx.graphics
-							.getWidth() * 0.8f, maxHeight * 0.3f, stage);
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
+							maxWidth * 0.8f, maxHeight * 0.4f, stage);
 					float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
@@ -471,6 +471,16 @@ public class BoardScreen implements ScreenFeedback {
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
+							} else if (event instanceof AboutEvent) {
+								final Overlay ovrlay = new DismissableOverlay(
+										resources,
+										new TextOverlay(
+												"About\n\n"
+														+ "This project heavily utilizes libGDX and RoboVM.  Thanks to both amazing projects.\n\n"
+														+ "All space images are courtesy NASA/JPL-Caltech.", resources), null);
+								stage.addActor(ovrlay);
+								return true;
+
 							} else if (event instanceof CancelGameEvent) {
 								overlay = new TextOverlay("Cancelling Game", resources);
 								stage.addActor(overlay);
