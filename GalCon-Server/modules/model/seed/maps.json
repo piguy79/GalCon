@@ -55,8 +55,8 @@
 				{
 					"key" : 5,
 					"availableFromXp" : 3500,
-					"title" : "Attack",
-					"description" : "Attack!",
+					"title" : "Annihilation",
+					"description" : "Show of Strength",
 					"width" : {
 						"min" : 6,
 						"max" : 8
@@ -68,8 +68,8 @@
 				{
 					"key" : 6,
 					"availableFromXp" : 6300,
-					"title" : "Harvest",
-					"description" : "Harvest And Hold",
+					"title" : "Power",
+					"description" : "Harvest or Hold",
 					"width" : {
 						"min" : 6,
 						"max" : 8
