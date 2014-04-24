@@ -12,6 +12,8 @@ public class InviteEventListener implements EventListener {
 			handleAcceptInvite((AcceptInviteEvent) event);
 		}else if(event instanceof DeclineInviteEvent){
 			handleDeclineInvite((DeclineInviteEvent) event);
+		}else if(event instanceof InviteNoCoinsEvent){
+			noCoins();
 		}
 		return false;
 	}
@@ -46,7 +48,8 @@ public class InviteEventListener implements EventListener {
 	public void inviteAcceptedSuccess(GameBoard gameBoard) {		
 	}
 
-	
+	public void noCoins() {
+	}
 	
 
 }

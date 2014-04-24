@@ -49,6 +49,8 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	private LoadingOverlay loadingOverlay;
 
 	private Array<Actor> actors = new Array<Actor>();
+	
+	public PartialScreenFeedback previousScreen;
 
 	public GameQueueScreen(Resources resources) {
 		this.resources = resources;
@@ -205,6 +207,11 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			@Override
 			public void inviteAcceptedSuccess(GameBoard gameBoard) {
 				returnCode = gameBoard;
+			}
+			
+			@Override
+			public void noCoins() {
+				returnCode = Action.NO_MORE_COINS;
 			}
 		});
 		group.addActor(inviteGroup);

@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
+import com.railwaygames.solarsmash.ReturnablePartialScreenFeedback;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.Strings;
 import com.railwaygames.solarsmash.http.GameAction;
@@ -208,6 +209,9 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	private void showNextScreen(PartialScreenFeedback nextScreen) {
 		currentScreen.hide();
+		if(nextScreen instanceof ReturnablePartialScreenFeedback){
+			((ReturnablePartialScreenFeedback) nextScreen).setPreviousScreen(currentScreen);
+		}
 		currentScreen = (PartialScreenFeedback) nextScreen;
 		currentScreen.resetState();
 		if (currentScreen.hideTitleArea()) {
@@ -267,18 +271,12 @@ public class MenuScreenContainer implements ScreenFeedback {
 			String nextScreen = (String) value;
 
 			if (nextScreen.equals(Strings.NEW)) {
-				if (GameLoop.USER.coins == 0) {
-					return noMoreCoinsScreen;
-				}
 				return levelSelectionScreen;
 			} else if (nextScreen.equals(Strings.CONTINUE)) {
 				return currentGameScreen;
 			} else if (nextScreen.equals(Action.COINS)) {
 				return noMoreCoinsScreen;
 			} else if (nextScreen.equals(Strings.INVITES)) {
-				if (GameLoop.USER.coins == 0) {
-					return noMoreCoinsScreen;
-				}
 				return gameQueueScreen;
 			}
 
@@ -292,6 +290,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 			String action = (String) value;
 			if (action.equals(Action.BACK)) {
 				return mainMenuScreen;
+			}else if(action.equals(Action.NO_MORE_COINS)){
+				return noMoreCoinsScreen;
 			} else {
 				// clear back to main menu, then proceed to the gameboard
 				currentScreen.hide();
@@ -316,6 +316,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 				String action = (String) value;
 				if (action.equals(Action.BACK)) {
 					return mainMenuScreen;
+				}else if(action.equals(Action.NO_MORE_COINS)){
+					return noMoreCoinsScreen;
 				}
 			}
 
@@ -329,7 +331,12 @@ public class MenuScreenContainer implements ScreenFeedback {
 		public PartialScreenFeedback processValue(Object value) {
 			String action = (String) value;
 			if (action.equals(Action.BACK)) {
-				return mainMenuScreen;
+				PartialScreenFeedback previousScreen = ((ReturnablePartialScreenFeedback)currentScreen).getPreviousScreen();
+				if(previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0){
+					return mainMenuScreen;
+				}else{
+					return previousScreen;
+				}
 			}
 
 			return null;

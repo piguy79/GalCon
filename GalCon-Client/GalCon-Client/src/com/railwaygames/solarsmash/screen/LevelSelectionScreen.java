@@ -101,8 +101,13 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				return Integer.valueOf(o1.availableFromXp).compareTo(Integer.valueOf(o2.availableFromXp));
 			}
 		});
+		
+		if(GameLoop.USER.coins == 0){
+			returnValue = Action.NO_MORE_COINS;
+		}else{
+			createGameList();
+		}
 
-		createGameList();
 	}
 
 	private void createScrollhighlightReel() {
@@ -411,4 +416,5 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	public boolean canRefresh() {
 		return true;
 	}
+
 }

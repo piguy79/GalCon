@@ -25,4 +25,5 @@ public interface PartialScreenFeedback {
 	public boolean hideTitleArea();
 
 	public boolean canRefresh();
+	
 }
