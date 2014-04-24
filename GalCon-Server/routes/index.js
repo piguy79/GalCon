@@ -20,6 +20,7 @@ var VALIDATE_MAP = {
 	session : validation.isSession,
 	handle : validation.isHandle,
 	mapKey : validation.isMapKey,
+	mapVersion : validation.isMapVersion,
 	orders : validation.isOrders,
 	move : validation.isValidMoves,
 	gameId : validation.isGameId
@@ -723,8 +724,14 @@ exports.findRankInformation = function(req, res) {
 }
 
 exports.findAllMaps = function(req, res) {
+	var version = req.query['version'];
 	
-	mapManager.findAllMaps(function(maps) {
+	if(!validate({mapVersion : version}, res)) {
+		return;
+	}
+	
+	var p = mapManager.findAllMaps(version);
+	p.then(function(maps) {
 		var returnObj = {};
 		returnObj.items = maps;
 		res.json(returnObj);

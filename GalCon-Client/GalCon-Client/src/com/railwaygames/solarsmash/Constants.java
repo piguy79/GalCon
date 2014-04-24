@@ -168,6 +168,7 @@ public class Constants {
 	public static final String HARVEST_ENHANCMENT = "harvestEnhancement";
 	public static final String CURRENT_RANK = "currentRank";
 	public static final String LAST_AD_SHOWN = "lastAdShown";
+	public static final String MAP_VERSION_SUPPORTED = "10";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

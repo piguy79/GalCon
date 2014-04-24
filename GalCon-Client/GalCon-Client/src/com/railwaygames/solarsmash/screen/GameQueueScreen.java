@@ -19,6 +19,7 @@ import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.GameQueueItem;
+import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.Size;
@@ -166,10 +167,10 @@ public class GameQueueScreen implements PartialScreenFeedback {
 	}
 
 	private void createGameQueueItemEntry(final GameQueueItem item, Group group) {
+		Map map = allMaps.getMap(item.game.mapKey);
 
-		String mapTitle = allMaps.getMap(item.game.mapKey).title;
 		GameInviteGroup inviteGroup = new GameInviteGroup(resources, item,
-				new Size(group.getWidth(), group.getHeight()), mapTitle);
+				new Size(group.getWidth(), group.getHeight()), map);
 
 		inviteGroup.addListener(new InviteEventListener() {
 			@Override

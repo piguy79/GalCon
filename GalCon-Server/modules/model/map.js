@@ -21,7 +21,8 @@ var mapSchema = mongoose.Schema({
 		min : "Number"
 	},
 	canHarvest : "Boolean",
-	gameType : ["String"]
+	gameType : ["String"],
+	version : "Number"
 });
 
 mapSchema.set('toObject', { getters: true });
@@ -38,17 +39,9 @@ MapModel.remove(function(err, doc) {
 	}
 });
 
-exports.findAllMaps = function(callback) {
-	MapModel.find({}).exec(function(err, maps) {
-		if (err) {
-			console.log("Unable to find all maps:" + err);
-			callback();
-		} else {
-			callback(maps);
-		}
-	});
+exports.findAllMaps = function(version) {
+	return MapModel.find({version: {$lte : version}}).exec();
 };
-
 
 exports.findMapByKey = function(mapKey){
 	return MapModel.findOne({key : mapKey}).exec();

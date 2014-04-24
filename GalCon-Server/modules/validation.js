@@ -39,6 +39,17 @@ exports.isMapKey = function(mapKey) {
 	return true;
 }
 
+exports.isMapVersion = function(version) {
+	try {
+		validator.isLength(version, 1, 4);
+		validator.isInt(version);
+	} catch(e) {
+		return false;
+	}
+	
+	return true;
+}
+
 exports.isOrders = function(orders) {
 	
 	if(!_.isArray(orders)) {

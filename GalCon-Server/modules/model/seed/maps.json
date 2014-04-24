@@ -10,7 +10,8 @@
 						"max" : 6
 					},
 					"canHarvest" : false,
-					"gameType" : ["standardGame"]
+					"gameType" : ["standardGame"],
+					"version" : 1
 				},
 				{
 					"key" : 2,
@@ -22,7 +23,8 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["standardGame"]
+					"gameType" : ["standardGame"],
+					"version" : 1
 				},
 				{
 					"key" : 3,
@@ -34,7 +36,8 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["speedIncrease"]
+					"gameType" : ["speedIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 4,
@@ -46,7 +49,8 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["defenceIncrease"]
+					"gameType" : ["defenceIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 5,
@@ -58,7 +62,8 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["attackIncrease"]
+					"gameType" : ["attackIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 6,
@@ -70,7 +75,21 @@
 						"max" : 8
 					},
 					"canHarvest" : true,
-					"gameType" : ["mixedAbility"]
+					"gameType" : ["mixedAbility"],
+					"version" : 1
+				},
+				{
+					"key" : 7,
+					"availableFromXp" : 100000,
+					"title" : "Fake",
+					"description" : "Fake map",
+					"width" : {
+						"min" : 6,
+						"max" : 8
+					},
+					"canHarvest" : true,
+					"gameType" : ["mixedAbility"],
+					"version" : 10
 				}
 			]
 	

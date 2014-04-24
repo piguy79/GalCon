@@ -181,9 +181,11 @@ public class AndroidGameAction implements GameAction {
 			callback.onConnectionResult(mapCache.getCache());
 		} else {
 			mapCache.setDelegate(callback);
+			final Map<String, String> args = new HashMap<String, String>();
+			args.put("version", Constants.MAP_VERSION_SUPPORTED);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, Maps.class)
+					new GetJsonRequestTask<Maps>(args, mapCache, FIND_ALL_MAPS, Maps.class)
 							.execute("");
 				}
 			});

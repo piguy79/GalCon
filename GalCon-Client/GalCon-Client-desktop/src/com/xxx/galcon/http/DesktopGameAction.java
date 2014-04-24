@@ -87,6 +87,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void findAllMaps(UIConnectionResultCallback<Maps> callback) {
 		Map<String, String> args = new HashMap<String, String>();
+		args.put("version", Constants.MAP_VERSION_SUPPORTED);
 		callback.onConnectionResult((Maps) callURL(new GetClientRequest(), FIND_ALL_MAPS, args, new Maps()));
 	}
 
