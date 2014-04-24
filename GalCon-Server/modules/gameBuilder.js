@@ -307,7 +307,7 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	position.x = x;
 	position.y = y;
 
-	planet.name = "Planet: " + this.currentPlanetNum++;
+	planet.name = this.currentPlanetNum++;
 	planet.pos = position;
 	planet.regen = 0;
 	planet.ships = 0;
