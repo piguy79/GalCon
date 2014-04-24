@@ -123,7 +123,7 @@ public class PingService extends Service {
 			}
 
 			String text = pendingText;
-			if (text.length() > 0) {
+			if (text.length() > 0 && inviteText.length() > 0) {
 				text += " and ";
 			}
 			text += inviteText;
