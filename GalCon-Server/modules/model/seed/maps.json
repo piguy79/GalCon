@@ -77,19 +77,6 @@
 					"canHarvest" : true,
 					"gameType" : ["mixedAbility"],
 					"version" : 1
-				},
-				{
-					"key" : 7,
-					"availableFromXp" : 100000,
-					"title" : "Fake",
-					"description" : "Fake map",
-					"width" : {
-						"min" : 6,
-						"max" : 8
-					},
-					"canHarvest" : true,
-					"gameType" : ["mixedAbility"],
-					"version" : 10
 				}
 			]
 	
