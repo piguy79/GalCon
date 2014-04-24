@@ -92,7 +92,7 @@ public class PingService extends Service {
 		}
 
 		private void parseResult(GameCount result) {
-			if (result != null && result.pendingGameCount > 0) {
+			if (result != null && (result.pendingGameCount > 0 || result.inviteCount > 0)) {
 				sendNotification(result);
 			}
 		}
@@ -102,11 +102,31 @@ public class PingService extends Service {
 				return;
 			}
 
-			String text = "1 game is awaiting your move";
-			int numberOfGames = result.pendingGameCount;
-			if (numberOfGames > 1) {
-				text = numberOfGames + " games are awaiting your move";
+			String pendingText = "";
+			int pendingGamesCount = result.pendingGameCount;
+			if (pendingGamesCount > 0) {
+				if (pendingGamesCount == 1) {
+					pendingText = "1 game is awaiting your move";
+				} else {
+					pendingText = pendingGamesCount + " games are awaiting your move";
+				}
 			}
+
+			String inviteText = "";
+			int inviteCount = result.inviteCount;
+			if (inviteCount > 0) {
+				if (inviteCount == 1) {
+					inviteText = "1 pending invite";
+				} else {
+					inviteText = pendingGamesCount + " pending invites";
+				}
+			}
+
+			String text = pendingText;
+			if (text.length() > 0) {
+				text += " and ";
+			}
+			text += inviteText;
 
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(PingService.this)
 					.setSmallIcon(R.drawable.notification).setContentTitle(Constants.APP_TITLE).setContentText(text)
