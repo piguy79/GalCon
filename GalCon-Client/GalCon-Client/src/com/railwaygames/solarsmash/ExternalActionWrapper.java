@@ -3,7 +3,6 @@ package com.railwaygames.solarsmash;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -27,8 +26,8 @@ public class ExternalActionWrapper {
 		ExternalActionWrapper.inAppBillingAction = inAppBillingAction;
 	}
 
-	public static void showAd(AdColonyVideoListener listner) {
-		gameAction.showAd(listner);
+	public static void showAd() {
+		gameAction.showAd();
 	}
 
 	public static void purchaseCoins(final InventoryItem inventoryItem, final Callback callback) {

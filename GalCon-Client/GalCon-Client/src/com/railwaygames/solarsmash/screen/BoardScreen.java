@@ -2,15 +2,21 @@ package com.railwaygames.solarsmash.screen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Currency;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -26,9 +32,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
+import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
@@ -253,6 +261,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void beginOverlay() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
+			showAd();
 
 			if (LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))) {
 				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.USER.handle));
@@ -272,6 +281,26 @@ public class BoardScreen implements ScreenFeedback {
 		} else {
 			beginEndRoundInfo();
 		}
+	}
+
+	private void showAd() {
+		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
+		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+		
+		if(lastAdShownTime == null || lastAdShownTime.isEmpty()){
+			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
+			prefs.flush();
+		}else if(adTimeoutIsPassed(lastAdShownTime, currentTime)){
+			ExternalActionWrapper.showAd();
+			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
+			prefs.flush();
+		}
+		
+	}
+
+	private boolean adTimeoutIsPassed(String lastAdShownTime, Long currentTime) {
+		return (currentTime - Long.parseLong(lastAdShownTime)) > Long.parseLong(ConfigResolver.getByConfigKey(Constants.Config.AD_TIMEOUT));
 	}
 
 	private Player findPlayer(String handle) {

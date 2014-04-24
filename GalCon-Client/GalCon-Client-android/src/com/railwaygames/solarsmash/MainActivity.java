@@ -19,8 +19,10 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.Session;
 import com.jirbo.adcolony.AdColony;
+import com.jirbo.adcolony.AdColonyAd;
+import com.jirbo.adcolony.AdColonyAdAvailabilityListener;
+import com.jirbo.adcolony.AdColonyAdListener;
 import com.jirbo.adcolony.AdColonyVideoAd;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -35,7 +37,7 @@ import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
 import com.railwaygames.solarsmash.service.PingService;
 
-public class MainActivity extends AndroidApplication {
+public class MainActivity extends AndroidApplication implements AdColonyAdListener, AdColonyAdAvailabilityListener {
 	public static final String LOG_NAME = "GalCon";
 	public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE = 57029;
 	public static final int FACEBOOK_SIGN_IN_ACTIVITY_RESULT_CODE = 57030;
@@ -45,7 +47,7 @@ public class MainActivity extends AndroidApplication {
 	protected boolean mDebugLog = true;
 
 	final static String APP_ID = "appae5819628c4f43b5b7f9f9";
-	final static String ZONE_ID = "vz592240fd26724b2a955912";
+	final static String ZONE_ID = "vz510571feab514a8fa6";
 
 	final static String ENCODED_APPLICATION_ID = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk0bjlbWS+5lbngxfWgGR8Yh+ZKKvEWi2FEfWCxSNN+9ULjfOWL2O1qLcW07hL99l4a4u3eRwQejeaN63Dzcq1y5k9SSZCSVK6Qf+jpJEoduWyXa3m+GdxXRc9xuV+LjnzUMtQubtfYNbWK8oWFs3EOAl93FCEOOt+qz4If0cuMlX6Ew+HcU2lmCOmzS8F8bVyVQjGdMW52uCCVrwy6uLZNyl3NlHe1BGOlv6vyIiHUpPRhPrmQC9jPq+0HqOjQZHfQ0/ehdBTWhTfpSwRPfpJaSNciEx1feE9ChC+4qnu/GWCuQ70KTTcmVeImMx876VUurq/75eYTyO30Vr3H/JwQIDAQAB";
 
@@ -53,6 +55,7 @@ public class MainActivity extends AndroidApplication {
 	private SocialAction socialAction;
 	private AndroidInAppBillingAction inAppBillingAction;
 	private GameLoop gameLoop;
+	
 
 	private IabHelper mHelper = null;
 
@@ -176,7 +179,8 @@ public class MainActivity extends AndroidApplication {
 	}
 
 	private void setupAdColony() {
-		AdColony.configure(this, "version:1.0,store:google", APP_ID, ZONE_ID);
+		AdColony.configure(this, "version:0.9.8,store:google", APP_ID, ZONE_ID);
+		AdColony.addAdAvailabilityListener(this);
 
 		if (!AdColony.isTablet()) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -196,9 +200,9 @@ public class MainActivity extends AndroidApplication {
 		AdColony.resume(this);
 	}
 
-	public void displayAd(AdColonyVideoListener adListener) {
-		AdColonyVideoAd ad = new AdColonyVideoAd();
-		ad.show(adListener);
+	public void displayAd() {
+		AdColonyVideoAd ad = new AdColonyVideoAd(ZONE_ID).withListener(this);
+		ad.show();
 	}
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
@@ -372,5 +376,23 @@ public class MainActivity extends AndroidApplication {
 		order.productId = purchase.getSku();
 
 		return order;
+	}
+
+	@Override
+	public void onAdColonyAdAvailabilityChange(boolean arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAdColonyAdAttemptFinished(AdColonyAd arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAdColonyAdStarted(AdColonyAd arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

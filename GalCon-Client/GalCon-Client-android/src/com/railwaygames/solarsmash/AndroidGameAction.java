@@ -53,7 +53,6 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.crashlytics.android.Crashlytics;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
@@ -521,12 +520,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void showAd(final AdColonyVideoListener listener) {
+	public void showAd() {
 		activity.runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).displayAd(listener);
+				((MainActivity) activity).displayAd();
 			}
 		});
 	}
