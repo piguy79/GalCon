@@ -44,7 +44,6 @@ var gameSchema = mongoose.Schema({
 		num : "Number",
 		moved : [String]
 	},
-	numberOfPlanets : "Number",
 	planets : [
 		{
 			name : "String",
