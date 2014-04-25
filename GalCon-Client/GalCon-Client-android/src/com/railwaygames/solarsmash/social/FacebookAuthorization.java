@@ -211,8 +211,8 @@ public class FacebookAuthorization implements Authorizer {
 		Bundle params = new Bundle();
 	    params.putString("name", "Solar Smash invite");
 	    params.putString("caption", "Download Solar Smash now.");
-	    params.putString("description", "Hi! Come join me in playing Solar Smash. Invite me using the handle: " + GameLoop.USER.handle);
-	    params.putString("link", "https://developers.facebook.com/android");
+	    params.putString("description", "Hey, come play me in Solar Smash. Invite me using the handle \"" + GameLoop.USER.handle + "\"");
+	    params.putString("link", "http://www.railwaygames.mobi/");
 	    params.putString("to", id);
 	    params.putString("from", GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 	    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
