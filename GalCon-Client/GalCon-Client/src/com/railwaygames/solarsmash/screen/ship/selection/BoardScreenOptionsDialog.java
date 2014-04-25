@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -66,8 +67,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		resignButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		resignButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
+		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.BASIC_BUTTON_TEXT);
 		resignText.setAlignment(Align.center);
@@ -150,19 +150,11 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 					resignText.removeListener(resignListener);
 				};
 			})));
-			refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-				public void run() {
-					refreshButton.remove();
-					refreshButton = null;
-				};
-			})));
-			refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-				public void run() {
-					refreshText.remove();
-					refreshText = null;
-				};
-			})));
-			resignText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
+			hideAndRemove(refreshButton);
+			hideAndRemove(refreshText);
+			hideAndRemove(aboutButton);
+			hideAndRemove(aboutText);
+
 			confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
 			addOkButton();
@@ -191,29 +183,31 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		}
 	};
 
+	private void hideAndRemove(final Actor actor) {
+		actor.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
+			public void run() {
+				actor.remove();
+			};
+		})));
+	}
+
 	private ClickListener cancelListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			DateTime now = new DateTime();
 			long timeLeft = (gameBoard.createdDate.getMillis() + 60 * 60 * 1000) - now.getMillis();
+
+			hideAndRemove(refreshButton);
+			hideAndRemove(refreshText);
+			hideAndRemove(aboutButton);
+			hideAndRemove(aboutText);
+
 			if (timeLeft > 0) {
 				cancelButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
 					public void run() {
 						cancelButton.remove();
 						cancelButton = null;
 						cancelText.removeListener(cancelListener);
-					};
-				})));
-				refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-					public void run() {
-						refreshButton.remove();
-						refreshButton = null;
-					};
-				})));
-				refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-					public void run() {
-						refreshText.remove();
-						refreshText = null;
 					};
 				})));
 
@@ -230,18 +224,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 						cancelText.removeListener(cancelListener);
 					};
 				})));
-				refreshButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-					public void run() {
-						refreshButton.remove();
-						refreshButton = null;
-					};
-				})));
-				refreshText.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
-					public void run() {
-						refreshText.remove();
-						refreshText = null;
-					};
-				})));
+
 				cancelText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
 				confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
