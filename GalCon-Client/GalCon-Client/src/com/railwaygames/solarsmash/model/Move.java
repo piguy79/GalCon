@@ -106,8 +106,9 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	}
 
 	public int durationWithAbilityApplied(GameBoard gameBoard) {
-		float speedIncrease = GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
-		int rounds = (int) Math.ceil(duration - (duration * speedIncrease));
+		float speedIncrease = 1.0f + GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
+
+		int rounds = (int) Math.ceil(duration / speedIncrease);
 		if (rounds <= 0) {
 			rounds = 1;
 		}
