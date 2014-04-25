@@ -118,7 +118,7 @@ public class PingService extends Service {
 				if (inviteCount == 1) {
 					inviteText = "1 pending invite";
 				} else {
-					inviteText = pendingGamesCount + " pending invites";
+					inviteText = inviteCount  + " pending invites";
 				}
 			}
 
