@@ -312,8 +312,6 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	planet.regen = 0;
 	planet.ships = 0;
 	planet.population = Math.floor((Math.random() * MAX_POPULATION) + 1);
-	planet.ability = "";
-	planet.status = "ALIVE";
 
 	return planet;
 }
