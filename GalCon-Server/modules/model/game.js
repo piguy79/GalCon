@@ -165,7 +165,7 @@ var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 		planet.harvest.saveRound = roundNumber;
 		planet.ships += saviorBonus;
 	}else if(planet.harvest && planet.harvest.status === "INACTIVE"){
-		planet.harvest = null;
+		planet.harvest = undefined;
 	}
 }
 

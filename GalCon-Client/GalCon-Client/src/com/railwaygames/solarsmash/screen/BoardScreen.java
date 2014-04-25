@@ -387,8 +387,8 @@ public class BoardScreen implements ScreenFeedback {
 		stage.addActor(boardTable);
 		createGrid();
 		createMoveHud();
-		createPlayerHud();
 		createPlanets();
+		createPlayerHud();
 		createPlanetIcons();
 
 		Gdx.input.setInputProcessor(stage);
