@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -264,7 +265,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		}
 
 		Intent shareIntent = new PlusShare.Builder(activity)
-				.setText("Hi! Come join me playing Solar Smash. Invite me using the handle " + GameLoop.USER.handle)
+				.setText("Hey, come play me in Solar Smash. Invite me using the handle \"" +  GameLoop.USER.handle + "\". Download from http://www.railwaygames.mobi/ " )
 				.setType("text/plain").setRecipients(people).getIntent();
 
 		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
@@ -272,7 +273,6 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	@Override
 	public void onConnectionSuspended(int arg0) {
-		// TODO Auto-generated method stub
 
 	}
 }
