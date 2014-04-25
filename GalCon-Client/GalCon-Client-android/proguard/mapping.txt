@@ -20988,7 +20988,7 @@ com.railwaygames.solarsmash.model.Move -> com.railwaygames.solarsmash.e.w:
     91:91:com.railwaygames.solarsmash.model.Planet fromPlanet(java.util.List) -> a
     95:95:com.railwaygames.solarsmash.model.Planet toPlanet(java.util.List) -> b
     99:105:com.railwaygames.solarsmash.model.Planet findPlanetForMove(java.util.List,java.lang.String) -> a
-    109:115:int durationWithAbilityApplied(com.railwaygames.solarsmash.model.GameBoard) -> b
+    109:116:int durationWithAbilityApplied(com.railwaygames.solarsmash.model.GameBoard) -> b
 com.railwaygames.solarsmash.model.Order -> com.railwaygames.solarsmash.e.x:
     java.lang.String orderId -> a
     java.lang.String packageName -> b
