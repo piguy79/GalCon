@@ -216,7 +216,7 @@ gameSchema.methods.updateRegenRates = function(){
 
 	var currentGame = this;
 	this.planets.forEach(function(planet){
-		if(planet.handle && !planet.conquered && planet.status === 'ALIVE') {
+		if(planet.handle && !planet.conquered) {
 		
 			var regenBy = planet.regen;
 		

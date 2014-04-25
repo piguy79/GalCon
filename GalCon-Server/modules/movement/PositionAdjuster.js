@@ -8,12 +8,12 @@ exports.adjustMovePositions = function(game) {
 		
 		var startPos;
 		var endPos;
-		for(i in game.planets) {
-			if(game.planets[i].name === move.from) {
-				startPos = game.planets[i].pos;
+		for(j in game.planets) {
+			if(game.planets[j].name == move.from) {
+				startPos = game.planets[j].pos;
 			}
-			if(game.planets[i].name === move.to) {
-				endPos = game.planets[i].pos;
+			if(game.planets[j].name == move.to) {
+				endPos = game.planets[j].pos;
 			}
 		}
 		
