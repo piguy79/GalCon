@@ -477,7 +477,8 @@ public class BoardScreen implements ScreenFeedback {
 										new TextOverlay(
 												"About\n\n"
 														+ "This project heavily utilizes libGDX and RoboVM.  Thanks to both amazing projects.\n\n"
-														+ "All space images are courtesy NASA/JPL-Caltech.", resources), null);
+														+ "All space images are courtesy NASA/JPL-Caltech.", resources),
+										null);
 								stage.addActor(ovrlay);
 								return true;
 
@@ -522,8 +523,8 @@ public class BoardScreen implements ScreenFeedback {
 			if (move.executed || !move.belongsToPlayer(GameLoop.USER)) {
 				continue;
 			}
-			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.previousPosition,
-					resources, boardCalcs);
+			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(gameBoard),
+					move.previousPosition, resources, boardCalcs);
 
 			Point newShipPosition = MoveFactory.getShipPosition(movetoDisplay, move.currentPosition, boardCalcs);
 			if (!roundHasAlreadyBeenAnimated()) {

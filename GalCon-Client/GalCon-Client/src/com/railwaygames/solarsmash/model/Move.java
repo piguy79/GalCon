@@ -23,8 +23,6 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public String handle;
 	public Point previousPosition = new Point();
 	public Point currentPosition = new Point();
-	public Point startPosition = new Point();
-	public Point endPosition = new Point();
 	public int startingRound;
 	public boolean executed;
 	public BattleStats battleStats;
@@ -38,7 +36,6 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	public Move() {
 		super();
 		this.animation = Tween.to(this, MoveTween.POSITION_XY, 1.2f);
-
 	}
 
 	public boolean belongsToPlayer(Player player) {
@@ -53,8 +50,6 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("to", to);
 		jsonObject.put("fleet", shipsToMove);
 		jsonObject.put("duration", duration);
-		jsonObject.put("startPos", startPosition.asJson());
-		jsonObject.put("endPos", endPosition.asJson());
 		jsonObject.put("curPos", currentPosition.asJson());
 		jsonObject.put("executed", "false");
 
@@ -75,8 +70,6 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		handle = jsonObject.getString("handle");
 		this.currentPosition.consume(jsonObject.getJSONObject("curPos"));
 		this.previousPosition.consume(jsonObject.getJSONObject("prevPos"));
-		this.startPosition.consume(jsonObject.getJSONObject("startPos"));
-		this.endPosition.consume(jsonObject.getJSONObject("endPos"));
 		startingRound = jsonObject.getInt("startingRound");
 		this.executed = jsonObject.getBoolean("executed");
 
@@ -89,7 +82,8 @@ public class Move extends JsonConvertible implements JsonConstructable {
 		animation.target(currentPosition.x, currentPosition.y);
 	}
 
-	public float angleOfMovement() {
+	public float angleOfMovement(GameBoard gameBoard) {
+		Point endPosition = findPlanetForMove(gameBoard.planets, to).position;
 		return new Vector2(endPosition.x - previousPosition.x, endPosition.y - previousPosition.y).angle();
 	}
 
@@ -110,14 +104,14 @@ public class Move extends JsonConvertible implements JsonConstructable {
 
 		return null;
 	}
-	
-	public int durationWithAbilityApplied(GameBoard gameBoard){
+
+	public int durationWithAbilityApplied(GameBoard gameBoard) {
 		float speedIncrease = GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
-		int rounds = (int)Math.ceil(duration - (duration * speedIncrease));
-		if(rounds <= 0){
+		int rounds = (int) Math.ceil(duration - (duration * speedIncrease));
+		if (rounds <= 0) {
 			rounds = 1;
 		}
-		
+
 		return rounds;
 	}
 }

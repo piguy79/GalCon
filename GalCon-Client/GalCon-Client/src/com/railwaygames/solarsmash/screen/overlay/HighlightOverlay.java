@@ -206,7 +206,8 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(fromPlanetButton);
 		}
 
-		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), position, resources, boardCalcs);
+		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(gameBoard), position, resources,
+				boardCalcs);
 
 		Color color = Constants.Colors.USER_SHIP_FILL;
 		if (!move.belongsToPlayer(GameLoop.USER)) {
@@ -223,7 +224,7 @@ public abstract class HighlightOverlay extends Overlay {
 			toPlanetButton.showPlanetState(true, true);
 
 			if (!previousOwner.equals(move.handle)) {
-				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
+				addExplosion(false, move.shipsToMove, toPlanetButton.planet.position, 1.0f, color);
 			}
 
 			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
@@ -231,7 +232,7 @@ public abstract class HighlightOverlay extends Overlay {
 					&& toPlanetButton.planet.isOwnedBy(move.handle)
 					&& !planetsConquered.contains(toPlanetButton.planet.name)) {
 				planetsConquered.add(toPlanetButton.planet.name);
-				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
+				addXpGainLabel(toPlanetButton.planet.position, toPlanetButton.planet.owner);
 			}
 		}
 
@@ -608,8 +609,8 @@ public abstract class HighlightOverlay extends Overlay {
 							List<Move> player2Positions = new ArrayList<Move>();
 							String player1 = null;
 							for (final Move move : moves) {
-								final Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(),
-										move.previousPosition, resources, boardCalcs);
+								final Image moveToDisplay = MoveFactory.createShipForDisplay(
+										move.angleOfMovement(gameBoard), move.previousPosition, resources, boardCalcs);
 
 								Color color = Constants.Colors.USER_SHIP_FILL;
 								if (!move.belongsToPlayer(GameLoop.USER)) {
@@ -775,7 +776,7 @@ public abstract class HighlightOverlay extends Overlay {
 				moveInfoHud = new SingleMoveInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
 						screenCalcs.getTopHudBounds().size.height);
 			}
-			
+
 			moveInfoHud.updateDuration(move.durationWithAbilityApplied(gameBoard));
 			moveInfoHud.updateShips(move.shipsToMove);
 		}

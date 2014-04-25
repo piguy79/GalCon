@@ -80,14 +80,6 @@ var gameSchema = mongoose.Schema({
 				x : "Number",
 				y : "Number"
 			},
-			startPos : {
-				x : "Number",
-				y : "Number"
-			},
-			endPos : {
-				x : "Number",
-				y : "Number"
-			},
 			bs : {
 				prevShipsOnPlanet : "Number",
 				prevPlanetOwner : "String",
