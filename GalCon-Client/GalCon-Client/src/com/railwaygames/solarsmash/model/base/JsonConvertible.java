@@ -3,11 +3,10 @@
  */
 package com.railwaygames.solarsmash.model.base;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,35 +32,33 @@ public abstract class JsonConvertible {
 	 * @throws JSONException
 	 */
 	public void consume(JSONObject jsonObject) throws JSONException {
-		if(jsonObject != null){
+		if (jsonObject != null) {
 			String session = jsonObject.optString("session", "");
 			errorMessage = jsonObject.optString("error");
 			if (session.equals("expired")) {
 				sessionExpired = true;
 			} else {
-				if(jsonObject.has("reason")){
+				if (jsonObject.has("reason")) {
 					valid = false;
 				}
 				reason = jsonObject.optString("reason");
 				doConsume(jsonObject);
 			}
-			
+
 		}
 	}
 
 	abstract protected void doConsume(JSONObject jsonObject) throws JSONException;
 
-	protected Date formatDate(JSONObject jsonObject, String field) {
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmm'Z'");
-		try {
-			String date = jsonObject.optString(field);
-			if (date != null && date.length() > 0) {
-				return format.parse(date);
-			}
+	protected DateTime formatDate(JSONObject jsonObject, String field) {
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-		} catch (ParseException e) {
-			e.printStackTrace();
+		String sDate = jsonObject.optString(field);
+		if (sDate != null && sDate.length() > 0) {
+			DateTime date = formatter.parseDateTime(sDate);
+			return date;
 		}
+
 		return null;
 	}
 }

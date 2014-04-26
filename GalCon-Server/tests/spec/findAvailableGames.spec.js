@@ -23,19 +23,12 @@ describe("Find available games -", function() {
 	var MAP_2 = elementBuilder.createMap(MAP_KEY_2, 5, 6);
 
 	beforeEach(function(done) {
-		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
-			if(err) { console.log(err); }
-			(new userManager.UserModel(PLAYER_2)).save(function(err, user) {
-				if(err) { console.log(err); }
-				(new mapManager.MapModel(MAP_1)).save(function(err, map) {
-					if(err) { console.log(err); }
-					(new mapManager.MapModel(MAP_2)).save(function(err, map) {
-						if(err) { console.log(err); }
-						done();
-					});
-				});
-			});
-		});
+		var p = userManager.UserModel.withPromise(userManager.UserModel.create, [PLAYER_1, PLAYER_2, PLAYER_3]);
+		p.then(function(){
+			return mapManager.MapModel.withPromise(mapManager.MapModel.create, [MAP_1, MAP_2]);
+		}).then(function(){
+			done();
+		});		
 	});
 	
 	afterEach(function(done) {
@@ -43,7 +36,7 @@ describe("Find available games -", function() {
 			if(err) { console.log(err); }
 			mapManager.MapModel.remove().where("key").in([MAP_KEY_1, MAP_KEY_2]).exec(function(err) {
 				if(err) { console.log(err); }
-				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE, PLAYER_3_HANDLE]).exec(function(err) {
 					if(err) { console.log(err); }
 					done();
 				});

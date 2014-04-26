@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -16,14 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
+import com.railwaygames.solarsmash.ReturnablePartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
-import com.railwaygames.solarsmash.http.SetPlayerResultHandler;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
@@ -33,14 +30,12 @@ import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
-import com.railwaygames.solarsmash.screen.widget.ShaderTextButton;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
-public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionResultCallback<Player> {
+public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnablePartialScreenFeedback, UIConnectionResultCallback<Player> {
 	private Stage stage;
 	private Array<Actor> actors = new Array<Actor>();
 
-	private ShaderLabel timeRemainingText;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	protected Overlay purchaseOverlay;
@@ -53,6 +48,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	private Inventory inventoryResult;
 
 	private Resources resources;
+	
+	public PartialScreenFeedback previousScreen;
 
 	public NoMoreCoinsDialog(Resources resources) {
 		super();
@@ -82,11 +79,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 		helpButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				final Overlay ovrlay = new DismissableOverlay(
-						resources,
-						new TextOverlay(
-								"Free Coins\n\nFree coins are available after all games in progress have been completed. Upon completion, a cooldown period begins until the free coins are credited.\n\nWatch Ad\n\nWhen the cooldown timer is running, clicking on the watch ad button will reduce the cooldown by 50%.",
-								resources), null);
+				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+						"Free Coins\n\nFree coins are available after all games in progress have been completed.",
+						resources), null);
 				stage.addActor(ovrlay);
 			}
 		});
@@ -101,11 +96,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		coinGroup = new Group();
 		coinGroup.setBounds(0, height * 0.75f, width, height * 0.15f);
 
-		if (GameLoop.USER.usedCoins != -1) {
-			addTimeRemainingText(coinGroup);
-		} else {
-			addCoinImageGroup(coinGroup);
-		}
+		addCoinImageGroup(coinGroup);
 
 		actors.add(coinGroup);
 		stage.addActor(coinGroup);
@@ -189,7 +180,11 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 				coinGroup.clear();
 				addCoinImageGroup(coinGroup);
 				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
-						"Coin purchase succeeded!\n\nGo forth and conquer.", resources), null);
+						"Coin purchase succeeded!\n\nGo forth and conquer.", resources), new ClickListener(){
+					public void clicked(InputEvent event, float x, float y) {
+						startHideSequence(Action.BACK);
+					};
+				});
 
 				stage.addActor(ovrlay);
 			}
@@ -235,66 +230,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 		group.addActor(coinText);
 	}
 
-	private void addTimeRemainingText(Group group) {
-		timeRemainingText = new ShaderLabel(resources.fontShader, findTimeRemaining(), resources.skin,
-				Constants.UI.LARGE_FONT);
-		float yMidPoint = group.getHeight() * 0.5f;
-		float timeTextWidth = timeRemainingText.getWidth() * 1.5f;
-		timeRemainingText.setAlignment(Align.center, Align.center);
-		timeRemainingText.setBounds(group.getWidth() * 0.5f - timeTextWidth * 0.5f,
-				yMidPoint - timeRemainingText.getHeight() * 0.48f, timeTextWidth, timeRemainingText.getHeight());
-		group.addActor(timeRemainingText);
-
-		final ImageButton watchAd = new ImageButton(resources.skin, Constants.UI.GREEN_BUTTON);
-		float adWidth = group.getWidth() * 0.26f;
-		float adHeight = adWidth * 0.55f;
-		watchAd.setBounds(group.getWidth() * 0.73f, group.getHeight() * 0.5f - adHeight * 0.5f, adWidth, adHeight);
-
-		ShaderTextButton watchAdText = new ShaderTextButton(resources.fontShader, "Watch\nAd", resources.skin,
-				Constants.UI.GREEN_BUTTON_TEXT);
-		watchAdText.setY(watchAd.getHeight() / 2 - watchAdText.getHeight() * 0.5f);
-		watchAdText.setWidth(watchAd.getWidth());
-
-		watchAd.addActor(watchAdText);
-		group.addActor(watchAd);
-		watchAd.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (GameLoop.USER.usedCoins != -1 && !GameLoop.USER.watchedAd) {
-					ExternalActionWrapper.showAd(new AdColonyVideoListener() {
-
-						@Override
-						public void onAdColonyVideoStarted() {
-						}
-
-						@Override
-						public void onAdColonyVideoFinished() {
-							watchAd.remove();
-							GameLoop.USER.watchedAd = true;
-							UIConnectionWrapper.reduceTimeUntilCoins(new SetPlayerResultHandler(GameLoop.USER),
-									GameLoop.USER.handle);
-						}
-					});
-				}
-			}
-		});
-	}
-
-	private String findTimeRemaining() {
-		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-		if (timeRemaining == null) {
-			return GameLoop.USER.coins + " " + coinString(GameLoop.USER.coins) + " available!";
-		}
-		return Constants.timeRemainingFormat.format(timeRemaining.toDate());
-	}
-
 	@Override
 	public void render(float delta) {
-		if (timeRemainingText != null) {
-			timeRemainingText.setText(findTimeRemaining());
-		}
-
 		if (coinText != null) {
 			coinText.setText(GameLoop.USER.coins.toString());
 		}
@@ -302,7 +239,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 
 	@Override
 	public void hide() {
-
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	private void startHideSequence(final String retVal) {
@@ -337,7 +276,6 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	@Override
 	public void show(Stage stage, float width, float height) {
 		actors.clear();
-		timeRemainingText = null;
 		this.stage = stage;
 
 		waitImage = new WaitImageButton(resources.skin);
@@ -357,7 +295,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 	}
 
 	private void loadUser() {
-		UIConnectionWrapper.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
+		UIConnectionWrapper.addFreeCoins(new UIConnectionResultCallback<Player>() {
 
 			@Override
 			public void onConnectionResult(Player result) {
@@ -409,4 +347,19 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, UIConnectionRes
 			stage.addActor(ovrlay);
 		}
 	};
+
+	public boolean canRefresh() {
+		return true;
+	}
+
+	@Override
+	public PartialScreenFeedback getPreviousScreen() {
+		return previousScreen;
+	}
+
+	@Override
+	public void setPreviousScreen(PartialScreenFeedback previousScreen) {
+		this.previousScreen = previousScreen;
+		
+	}
 }

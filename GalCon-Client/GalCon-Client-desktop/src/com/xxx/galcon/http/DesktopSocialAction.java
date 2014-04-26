@@ -19,7 +19,8 @@ public class DesktopSocialAction implements SocialAction {
 	private AuthenticationListener listener;
 
 	@Override
-	public void signIn(final String provider) {
+	public void signIn(AuthenticationListener signInListener, final String provider) {
+		this.listener = signInListener;
 		(new Thread() {
 			@Override
 			public void run() {
@@ -35,7 +36,7 @@ public class DesktopSocialAction implements SocialAction {
 						int rand = (int) (Math.random() * 10000);
 						String id = "me" + rand + ":google";
 						GameLoop.USER.addAuthProvider(provider, id);
-						
+
 						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 						prefs.putString(provider + Constants.ID, GameLoop.USER.auth.getID(provider));
 						prefs.flush();
@@ -45,11 +46,6 @@ public class DesktopSocialAction implements SocialAction {
 				});
 			}
 		}).start();
-	}
-
-	@Override
-	public void registerSignInListener(AuthenticationListener signInListener) {
-		this.listener = signInListener;
 	}
 
 	@Override
@@ -71,18 +67,7 @@ public class DesktopSocialAction implements SocialAction {
 	}
 
 	@Override
-	public void addAuthDetails(AuthenticationListener listener,
-			String authProvider) {
-		signIn(authProvider);
-		
-	}
-
-	@Override
-	public void postToFriends(FriendPostListener listener, String authProvider,
-			String id) {
+	public void postToFriends(FriendPostListener listener, String authProvider, String id) {
 		listener.onPostSucceeded();
-		
 	}
-
-	
 }

@@ -11,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.railwaygames.solarsmash.Constants;
-import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Rank;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
@@ -27,7 +26,7 @@ public class Configuration extends JsonConvertible {
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
 		this.configValues = new HashMap<String, String>();
-		
+
 		JSONObject configJsonObject = jsonObject.getJSONObject(Constants.CONFIG);
 
 		this.version = configJsonObject.getLong(Constants.VERSION);
@@ -39,7 +38,7 @@ public class Configuration extends JsonConvertible {
 			ConfigValue conf = extractConfig((String) i.next(), configValues);
 			this.configValues.put(conf.name, conf.value);
 		}
-		
+
 		ranks = new ArrayList<Rank>();
 		JSONArray ranksJson = jsonObject.getJSONArray(Constants.RANKS);
 		for (int i = 0; i < ranksJson.length(); i++) {
@@ -59,32 +58,41 @@ public class Configuration extends JsonConvertible {
 		}
 		return conf;
 	}
-	
-	protected Rank getRankForXp(Integer xp){
-		for(Rank rank : ranks){
-			if(isCurrentRank(xp, rank)){
+
+	protected Rank getRankForXp(Integer xp) {
+		for (Rank rank : ranks) {
+			if (isCurrentRank(xp, rank)) {
 				return rank;
 			}
 		}
-		return null;
+
+		// find highest rank for when client doesn't have latest rank
+		// information
+		Rank highest = null;
+		for (Rank rank : ranks) {
+			if (highest == null || rank.endAt > highest.endAt) {
+				highest = rank;
+			}
+		}
+		return highest;
 	}
 
 	private boolean isCurrentRank(Integer xp, Rank rank) {
 		return rank.startFrom <= xp && rank.endAt > xp;
 	}
-	
-	protected Rank getNextRank(Integer xp){
-		for(int i = 0; i < ranks.size(); i++){
+
+	protected Rank getNextRank(Integer xp) {
+		for (int i = 0; i < ranks.size(); i++) {
 			Rank rank = ranks.get(i);
-			if(isCurrentRank(xp, rank)){
-				if(i == (ranks.size() - 1)){
+			if (isCurrentRank(xp, rank)) {
+				if (i == (ranks.size() - 1)) {
 					return null;
-				}else{
-					return ranks.get(i+1);
+				} else {
+					return ranks.get(i + 1);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

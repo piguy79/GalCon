@@ -13,14 +13,26 @@
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
+    <resource>
+		<directory>../../../robovm-ios-bindings2/google-play-game-services/resources</directory>
+		<skipPngCrush>true</skipPngCrush>
+	</resource>
   </resources>
   <libs>
+   	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings/google-play-game-services/libs/GoogleOpenSource-1.5.a</lib>
-    <lib>../../../robovm-ios-bindings/google-play-game-services/libs/GooglePlus-1.5.a</lib>
   </libs>
+  <forceLinkClasses>
+    <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
+  </forceLinkClasses>
+  <frameworkPaths>
+      <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
+  </frameworkPaths>
   <frameworks>
+    <framework>GoogleOpenSource</framework>
+	<framework>GooglePlayGames</framework>
+	<framework>GooglePlus</framework>
     <framework>AddressBook</framework>
     <framework>AssetsLibrary</framework>
     <framework>Foundation</framework>
@@ -34,8 +46,9 @@
     <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>
     <framework>CoreGraphics</framework>
+    <framework>CoreData</framework>
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
-  </frameworks>
+  </frameworks>  
 </config>

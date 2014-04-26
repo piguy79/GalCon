@@ -17,4 +17,5 @@ public final class Action {
 	public static final String SHIP_MOVE = "SHIP_MOVE";
 	public static final String HARVEST = "HARVEST";
 	public static final String SHARE = "SHARE";
+	public static final Object NO_MORE_COINS = "NO_MORE_COINS";
 }

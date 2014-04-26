@@ -9,9 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -52,7 +51,6 @@ import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 public class FriendScreen implements ScreenFeedback {
 
 	private MenuScreenContainer previousScreen;
-	private InputProcessor oldInputProcessor;
 
 	private Resources resources;
 
@@ -280,7 +278,7 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setVisible(false);
 						}
 
-						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
+						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people, ""), time);
 						searchBox.getOnscreenKeyboard().show(false);
 					}
 
@@ -304,16 +302,23 @@ public class FriendScreen implements ScreenFeedback {
 
 			Collections.sort(friends, new Comparator<CombinedFriend>() {
 				public int compare(CombinedFriend o1, CombinedFriend o2) {
-					if (o1.hasGalconAccount() && o2.hasGalconAccount()) {
+					if (o1.equals(o2)) {
 						return 0;
-					} else if (o1.hasGalconAccount() && !o2.hasGalconAccount()) {
-						return -1;
 					}
-					return 1;
+
+					return Boolean.valueOf(o1.hasGalconAccount()).compareTo(Boolean.valueOf(o2.hasGalconAccount()))
+							* -1;
 				};
 			});
 
 			for (final CombinedFriend friend : friends) {
+				if (friend.hasGalconAccount()) {
+					GalConFriend gFriend = (GalConFriend) friend;
+					if (gFriend.handle.trim().isEmpty()) {
+						continue;
+					}
+				}
+
 				scrollList.addRow(friend, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
@@ -442,7 +447,7 @@ public class FriendScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);
 		stage.draw();
@@ -450,20 +455,18 @@ public class FriendScreen implements ScreenFeedback {
 
 	@Override
 	public void resize(int width, int height) {
-
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
 	public void show() {
 		stage = new Stage();
 		initialize();
-		oldInputProcessor = Gdx.input.getInputProcessor();
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(oldInputProcessor);
 	}
 
 	@Override
@@ -531,7 +534,7 @@ public class FriendScreen implements ScreenFeedback {
 			@Override
 			public void onConnectionResult(People result) {
 				waitImage.setVisible(false);
-				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people), time);
+				displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people, ""), time);
 			}
 
 			@Override
@@ -539,7 +542,6 @@ public class FriendScreen implements ScreenFeedback {
 				showError("Cound not load recent opponents.");
 			}
 		}, GameLoop.USER.handle);
-
 	}
 
 	private ClickListener allClickListener = new ClickListener() {
@@ -586,7 +588,7 @@ public class FriendScreen implements ScreenFeedback {
 		populateSearchLabelGroup(label);
 
 		if (GameLoop.USER.auth.getID(authProvider) == null) {
-			socialAction.addAuthDetails(new AuthenticationListener() {
+			socialAction.signIn(new AuthenticationListener() {
 
 				@Override
 				public void onSignOut() {
@@ -599,7 +601,6 @@ public class FriendScreen implements ScreenFeedback {
 					prefs.flush();
 
 					addProvider(authProvider, id);
-
 				}
 
 				private void addProvider(final String authProvider, String id) {
@@ -625,10 +626,9 @@ public class FriendScreen implements ScreenFeedback {
 		} else {
 			findFriendsByProvider(authProvider);
 		}
-
 	}
 
-	private void findFriendsByProvider(String authProvider) {
+	private void findFriendsByProvider(final String authProvider) {
 		final Long time = System.currentTimeMillis();
 		requestTime = time;
 		socialAction.getFriends(new FriendsListener() {
@@ -640,14 +640,14 @@ public class FriendScreen implements ScreenFeedback {
 
 				gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
 					public void onConnectionResult(People result) {
-						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people);
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people, authProvider);
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					};
 
 					public void onConnectionError(String msg) {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends,
-								new ArrayList<MinifiedGame.MinifiedPlayer>());
+								new ArrayList<MinifiedGame.MinifiedPlayer>(), authProvider);
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					}
@@ -680,4 +680,8 @@ public class FriendScreen implements ScreenFeedback {
 		return authIds;
 	}
 
+	@Override
+	public void refresh() {
+
+	}
 }

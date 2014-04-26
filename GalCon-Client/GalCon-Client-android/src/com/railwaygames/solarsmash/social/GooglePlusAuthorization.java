@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -200,14 +201,19 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
-				List<Friend> friends = new ArrayList<Friend>();
-				for (int i = 0; i < result.getPersonBuffer().getCount(); i++) {
-					Person person = result.getPersonBuffer().get(i);
-					Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
-					friends.add(friend);
+				PersonBuffer personBuffer = result.getPersonBuffer();
+				try{
+					List<Friend> friends = new ArrayList<Friend>();
+					int count = personBuffer.getCount();
+					for (int i = 0; i < count; i++) {
+						Person person = personBuffer.get(i);
+						Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
+						friends.add(friend);
+					}
+					listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+				}finally{
+					personBuffer.close();
 				}
-				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
-
 			}
 		});
 	}
@@ -238,7 +244,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 	}
 
 	private void startFriendPost(final FriendPostListener listener, String id) {
-		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+		Plus.PeopleApi.load(client, id).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
 				if (result.getStatus().isSuccess()) {
@@ -259,7 +265,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		}
 
 		Intent shareIntent = new PlusShare.Builder(activity)
-				.setText("Hi! Come join me playing Solar Smash. Invite me using the handle " + GameLoop.USER.handle)
+				.setText("Hey, come play me in Solar Smash. Invite me using the handle \"" +  GameLoop.USER.handle + "\". Download from http://www.railwaygames.mobi/ " )
 				.setType("text/plain").setRecipients(people).getIntent();
 
 		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
@@ -267,7 +273,6 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	@Override
 	public void onConnectionSuspended(int arg0) {
-		// TODO Auto-generated method stub
 
 	}
 }

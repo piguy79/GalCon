@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.ConnectivityManager;
@@ -22,7 +23,8 @@ import com.crashlytics.android.Crashlytics;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class Connection {
-	public static final int CONNECTION_TIMEOUT = 10000;
+	private static final int CONNECTION_TIMEOUT = 10000;
+	private static final int READ_TIMEOUT = 30000;
 
 	public static HttpURLConnection establishGetConnection(String protocol, String host, String port, String path,
 			Map<String, String> args) throws IOException {
@@ -35,6 +37,7 @@ public class Connection {
 		URL url = new URL(protocol + "://" + host + ":" + port + path + sb.toString());
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		connection.setReadTimeout(READ_TIMEOUT);
 		connection.setRequestMethod("GET");
 		connection.connect();
 
@@ -46,6 +49,7 @@ public class Connection {
 		URL url = new URL(protocol + "://" + host + ":" + port + path);
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		connection.setReadTimeout(READ_TIMEOUT);
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setRequestProperty("Accept", "application/json");
@@ -84,9 +88,12 @@ public class Connection {
 			} else {
 				converter.consume(new JSONObject(sb.toString()));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
+			Log.w(LOG_NAME, "error", e);
+			converter.errorMessage = CONNECTION_ERROR_MESSAGE;
+		} catch (JSONException e) {
 			Crashlytics.logException(e);
-			Log.wtf(LOG_NAME, "error", e);
+			Log.wtf(LOG_NAME, "Error parsing JSON", e);
 			converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 		} finally {
 			if (connection != null) {

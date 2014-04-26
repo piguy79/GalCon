@@ -7,7 +7,7 @@ var needle = require("needle"),
 	mapManager = require('../../modules/model/map'),
 	mongoose = require('mongoose');
 
-describe("Find current games -", function() {
+describe("Resign game -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
 	

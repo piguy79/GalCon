@@ -12,7 +12,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -144,7 +144,7 @@ public class BoardScreenPlayerHud extends Group {
 		private ShapeRenderer renderer = new ShapeRenderer();
 
 		@Override
-		public void draw(SpriteBatch batch, float parentAlpha) {
+		public void draw(Batch batch, float parentAlpha) {
 			batch.end();
 
 			Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -180,7 +180,7 @@ public class BoardScreenPlayerHud extends Group {
 			ship.setSize(vec.x, vec.y);
 
 			ship.setOrigin(ship.getWidth() * 0.5f, ship.getHeight() * 0.5f);
-			ship.rotate(180);
+			ship.rotateBy(180);
 
 			addWhoNeedsToMoveAction(ship);
 			playerHudBg.addActor(ship);
@@ -316,7 +316,7 @@ public class BoardScreenPlayerHud extends Group {
 			}
 
 			@Override
-			public void draw(SpriteBatch batch, float parentAlpha) {
+			public void draw(Batch batch, float parentAlpha) {
 				super.draw(batch, parentAlpha);
 			}
 		};

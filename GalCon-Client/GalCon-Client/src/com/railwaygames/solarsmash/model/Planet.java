@@ -39,7 +39,7 @@ public class Planet extends JsonConvertible {
 			this.name = jsonObject.getString(Constants.NAME);
 			this.regen = (float) jsonObject.getDouble(Constants.SHIP_REGEN_RATE);
 			this.ships = jsonObject.getInt(Constants.NUMBER_OF_SHIPS);
-			this.ability = jsonObject.getString(Constants.ABILITY);
+			this.ability = jsonObject.optString(Constants.ABILITY, "");
 			if (jsonObject.has(Constants.OWNER_HANDLE)) {
 				this.owner = jsonObject.getString(Constants.OWNER_HANDLE);
 			}
@@ -52,7 +52,7 @@ public class Planet extends JsonConvertible {
 				this.harvest = new Harvest();
 				this.harvest.consume(jsonObject.getJSONObject("harvest"));
 			}
-			this.status = jsonObject.getString("status");
+			this.status = jsonObject.optString("status", "ALIVE");
 			this.isHome = jsonObject.optString("isHome", "N").equals("Y") ? true : false;
 
 		} catch (JSONException e) {
@@ -97,7 +97,10 @@ public class Planet extends JsonConvertible {
 	public String previousRoundOwner(GameBoard gameBoard) {
 		for (Move move : associatedTargetMoves(gameBoard)) {
 			if (move.executed) {
-				if (move.battleStats.previousPlanetOwner == null || move.battleStats.previousPlanetOwner.equals("")) {
+				if (move.battleStats.previousPlanetOwner == null) {
+					continue;
+				}
+				if (move.battleStats.previousPlanetOwner.equals("")) {
 					return Constants.OWNER_NO_ONE;
 				}
 				return move.battleStats.previousPlanetOwner;

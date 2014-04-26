@@ -14,6 +14,7 @@ public class Constants {
 	public static class Config {
 		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
 		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
+		public static final String AD_TIMEOUT = "adTimeout";
 
 	}
 
@@ -23,8 +24,11 @@ public class Constants {
 		public static final String X_SMALL_FONT = "xSmallFont";
 		public static final String X_SMALL_FONT_GREEN = "xSmallFontGreen";
 		public static final String X_SMALL_FONT_RED = "xSmallFontRed";
+		public static final String X_SMALL_FONT_BLACK = "xSmallFontBlack";
+
 
 		public static final String SMALL_FONT = "smallFont";
+		public static final String SMALL_FONT_BLACK = "smallFontBlack";
 
 		public static final String DEFAULT_FONT = "defaultFont";
 		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
@@ -32,6 +36,7 @@ public class Constants {
 		public static final String DEFAULT_FONT_RED = "defaultFontRed";
 		public static final String DEFAULT_FONT_YELLOW = "defaultFontYellow";
 		public static final String LARGE_FONT = "largeFont";
+		public static final String LARGE_FONT_YELLOW = "largeFontYellow";
 		public static final String LARGE_FONT_GREEN = "largeFontGreen";
 		public static final String LARGE_FONT_RED = "largeFontRed";
 		public static final String X_LARGE_FONT = "xLargeFont";
@@ -72,6 +77,8 @@ public class Constants {
 		public static final String XP_BAR_COVER = "xpBarCover";
 		public static final String XP_BAR_MAIN = "xpBarMain";
 		public static final String XP_BAR_ARROW = "xpBarArrow";
+
+		public static final String LEVEL_CARD_BG = "levelCardBg";
 
 	}
 
@@ -158,6 +165,10 @@ public class Constants {
 	public static final String SOCIAL = "social";
 	public static final String XP_FROM_PLANET_CAPTURE = "xpForPlanetCapture";
 	public static final String CONFIG = "config";
+	public static final String HARVEST_ENHANCMENT = "harvestEnhancement";
+	public static final String CURRENT_RANK = "currentRank";
+	public static final String LAST_AD_SHOWN = "lastAdShown";
+	public static final String MAP_VERSION_SUPPORTED = "10";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

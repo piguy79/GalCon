@@ -26,7 +26,7 @@ var isValid = function(authProvider, token) {
 
 exports.exchangeToken = function(authProvider, token) {
 	var p = new mongoose.Promise();
-	p.complete();
+	p.fulfill();
 	
 	var authId;
 	
@@ -52,9 +52,7 @@ exports.exchangeToken = function(authProvider, token) {
 					xp : 0,
 					wins : 0,
 					losses : 0,
-					coins : 10,
-					usedCoins : -1,
-					watchedAd : false
+					coins : 10
 			};
 			newUser[authKey] = authId;
 			user = new userManager.UserModel(newUser);

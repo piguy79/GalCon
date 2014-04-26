@@ -11,8 +11,8 @@ import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
-import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
+import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
@@ -214,4 +214,10 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 		stage.addActor(ovrlay);
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return false;
+	}
+
 }

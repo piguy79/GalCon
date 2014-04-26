@@ -10,7 +10,7 @@ exports.authIdFromGoogle = function(token){
 	var returnP = new mongoose.Promise();
 	
 	var gapiP = new mongoose.Promise();
-	gapiP.complete();
+	gapiP.fulfill();
 	gapiP.then(function(){
 		var discoverP = new mongoose.Promise();
 		googleapis
@@ -19,7 +19,7 @@ exports.authIdFromGoogle = function(token){
 			if(err) {
 				discoverP.reject(err.message);
 			} else {
-				discoverP.complete(client);
+				discoverP.fulfill(client);
 			}
 		});
 		
@@ -41,13 +41,13 @@ exports.authIdFromGoogle = function(token){
 					if(result.id === undefined){
 						authP.reject("Unable to load ID");
 					} else {
-						authP.complete(result.id);
+						authP.fulfill(result.id);
 					}
 				}
 			});
 		return authP;
 	}).then(function(authId){
-		returnP.complete(authId);
+		returnP.fulfill(authId);
 	}, function(err){
 		returnP.reject(err);
 	});
@@ -59,14 +59,14 @@ exports.authIdFromFacebook = function(token){
 	var returnP = new mongoose.Promise();
 	
 	var clientP = new mongoose.Promise();
-	clientP.complete();
+	clientP.fulfill();
 	clientP.then(function(){
 		var client = facebook.user(token);
 		client.me.info(function(err, data){
 			if(err){
 				returnP.reject("Unable to load ID");
 			}else{
-				returnP.complete(data.id);
+				returnP.fulfill(data.id);
 			}
 		});
 	});

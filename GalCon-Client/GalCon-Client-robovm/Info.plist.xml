@@ -31,7 +31,7 @@
             <string>SolarSmashIOS</string>
             <key>CFBundleURLSchemes</key>
             <array>
-           		<string>com.xxx.galcon.SolarSmashIOS</string>
+           		<string>com.railwaygames.solarsmash.SolarSmashIOS</string>
            	</array>
         </dict>
     </array>
@@ -45,6 +45,7 @@
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>
+        <string>opengles-2</string>
     </array>
     <key>UISupportedInterfaceOrientations</key>
     <array>

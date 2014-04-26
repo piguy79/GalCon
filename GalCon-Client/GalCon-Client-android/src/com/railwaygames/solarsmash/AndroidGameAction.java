@@ -11,6 +11,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.ADD_COINS_FOR_AN_ORD
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_FREE_COINS;
 import static com.railwaygames.solarsmash.http.UrlConstants.ADD_PROVIDER_TO_USER;
 import static com.railwaygames.solarsmash.http.UrlConstants.CANCEL_GAME;
+import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
 import static com.railwaygames.solarsmash.http.UrlConstants.DECLINE_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.DELETE_CONSUMED_ORDERS;
 import static com.railwaygames.solarsmash.http.UrlConstants.EXCHANGE_TOKEN_FOR_SESSION;
@@ -28,13 +29,9 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
-import static com.railwaygames.solarsmash.http.UrlConstants.RECOVER_USED_COINS_COUNT;
-import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
-import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
-
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -56,7 +53,6 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.crashlytics.android.Crashlytics;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
@@ -185,9 +181,11 @@ public class AndroidGameAction implements GameAction {
 			callback.onConnectionResult(mapCache.getCache());
 		} else {
 			mapCache.setDelegate(callback);
+			final Map<String, String> args = new HashMap<String, String>();
+			args.put("version", Constants.MAP_VERSION_SUPPORTED);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, Maps.class)
+					new GetJsonRequestTask<Maps>(args, mapCache, FIND_ALL_MAPS, Maps.class)
 							.execute("");
 				}
 			});
@@ -287,20 +285,6 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void reduceTimeUntilNextGame(final UIConnectionResultCallback<Player> callback, final String handle) {
-		try {
-			final JSONObject top = JsonConstructor.reduceCall(handle, getSession());
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
-				}
-			});
-		} catch (JSONException e) {
-			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
-	}
-
-	@Override
 	public void invitePlayerForGame(final UIConnectionResultCallback<GameBoard> callback, String requesterHandle,
 			String inviteeHandle, Long mapKey) {
 		try {
@@ -345,8 +329,8 @@ public class AndroidGameAction implements GameAction {
 		args.put("handle", handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				new GetJsonRequestTask<GameCount>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE,
-						GameCount.class).execute("");
+				new GetJsonRequestTask<GameCount>(args, callback, FIND_GAMES_WITH_A_PENDING_MOVE, GameCount.class)
+						.execute("");
 			}
 		});
 	}
@@ -538,29 +522,14 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void showAd(final AdColonyVideoListener listener) {
+	public void showAd() {
 		activity.runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).displayAd(listener);
+				((MainActivity) activity).displayAd();
 			}
 		});
-	}
-
-	@Override
-	public void recoverUsedCoinCount(final UIConnectionResultCallback<Player> callback, String handle) {
-		try {
-			final JSONObject top = JsonConstructor.user(handle, getSession());
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top
-							.toString());
-				}
-			});
-		} catch (JSONException e) {
-			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
 	}
 
 	@Override
@@ -686,14 +655,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void cancelGame(final UIConnectionResultCallback<BaseResult> callback,
-			String handle, String gameId) {
+	public void cancelGame(final UIConnectionResultCallback<BaseResult> callback, String handle, String gameId) {
 		try {
 			final JSONObject top = JsonConstructor.cancelGame(handle, gameId, session);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top
-							.toString());
+					new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {
@@ -702,14 +669,12 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void claimVictory(final UIConnectionResultCallback<GameBoard> callback,
-			String handle, String gameId) {
+	public void claimVictory(final UIConnectionResultCallback<GameBoard> callback, String handle, String gameId) {
 		try {
 			final JSONObject top = JsonConstructor.claimGame(handle, gameId, session);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback,CLAIM_VICTORY , GameBoard.class).execute(top
-							.toString());
+					new PostJsonRequestTask<GameBoard>(callback, CLAIM_VICTORY, GameBoard.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {

@@ -1,15 +1,11 @@
 package com.railwaygames.solarsmash.screen.signin;
 
-import org.joda.time.DateTime;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,7 +16,6 @@ import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.Strings;
 import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.config.ConfigResolver;
-import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -29,10 +24,11 @@ import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
+import com.railwaygames.solarsmash.screen.level.LevelManager;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
+import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
-import com.railwaygames.solarsmash.screen.widget.ActorBar;
 import com.railwaygames.solarsmash.screen.widget.CountLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
@@ -54,8 +50,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private XpProgressBar xpBar;
-	private Button fbButton;
-	private Button gpButton;
+
+	public boolean hideTitleArea = false;
 
 	public MainMenuScreen(Resources resources, GameAction gameAction, SocialAction socialAction) {
 		this.gameAction = gameAction;
@@ -171,8 +167,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(coinText);
 		actors.add(coinText);
 
-		addSocialButtonBar();
-
 		addContinueCount(gameCount);
 		addInviteCount(gameCount);
 		addProgressBar();
@@ -190,24 +184,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		actors.add(xpBar);
 	}
 
-	private void addSocialButtonBar() {
-		createFbButton();
-		createGpButton();
-
-		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
-		float buttonHeight = Gdx.graphics.getHeight() * 0.05f;
-
-		ActorBar buttonBar = new ActorBar.ActorBarBuilder(Gdx.graphics.getHeight() * 0.1f,
-				Gdx.graphics.getWidth() * 0.6f).actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f)
-				.align(ActorBar.Align.RIGHT).addActor(fbButton).addActor(gpButton).build();
-		buttonBar.setX(Gdx.graphics.getWidth() * 0.4f);
-		buttonBar.setY(Gdx.graphics.getHeight() - (buttonBar.getHeight() * 0.8f));
-
-		stage.addActor(buttonBar);
-		actors.add(buttonBar);
-
-	}
-
 	private void addContinueCount(GameCount gameCount) {
 		if (gameCount != null && gameCount.pendingGameCount > 0) {
 			CountLabel countLabel = new CountLabel(gameCount.pendingGameCount, resources.fontShader,
@@ -218,7 +194,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			stage.addActor(countLabel);
 			actors.add(countLabel);
 		}
-
 	}
 
 	private void addInviteCount(GameCount gameCount) {
@@ -230,79 +205,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			stage.addActor(countLabel);
 			actors.add(countLabel);
 		}
-	}
-
-	private void createGpButton() {
-		gpButton = new Button(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
-		gpButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
-			}
-		});
-	}
-
-	private void createFbButton() {
-		fbButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
-
-		fbButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				registerSocialProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
-			}
-
-		});
-	}
-
-	private void registerSocialProvider(String authProvider) {
-		final TextOverlay overlay = new TextOverlay("Adding " + authProvider + " access.", resources);
-		stage.addActor(overlay);
-		socialAction.addAuthDetails(new AuthenticationListener() {
-
-			@Override
-			public void onSignOut() {
-			}
-
-			@Override
-			public void onSignInSucceeded(String authProvider, String token) {
-				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
-
-					@Override
-					public void run() {
-						overlay.remove();
-
-					}
-				})));
-				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-				String id = prefs.getString(authProvider + Constants.ID);
-				prefs.flush();
-
-				gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
-					@Override
-					public void onConnectionResult(Player result) {
-						GameLoop.USER = result;
-					}
-
-					@Override
-					public void onConnectionError(String msg) {
-
-					}
-				}, GameLoop.USER.handle, id, authProvider);
-
-			}
-
-			@Override
-			public void onSignInFailed(String failureMessage) {
-				overlay.addAction(Actions.sequence(Actions.delay(0.4f), Actions.run(new Runnable() {
-
-					@Override
-					public void run() {
-						overlay.remove();
-
-					}
-				})));
-			}
-		}, authProvider);
 	}
 
 	private void startHideSequence(final String retVal) {
@@ -322,21 +224,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private String createCoinDisplay() {
-		String coinsText = "";
-
-		DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-		if (timeRemaining != null) {
-			coinsText += timeRemaining.getMinuteOfHour() + ":" + timeRemaining.getSecondOfMinute();
-		} else {
-			coinsText += GameLoop.USER.coins;
-		}
-
-		return coinsText;
-	}
-
-	private boolean hasAppConfigInformation() {
-		return GameLoop.CONFIG.configValues != null;
+		return "" + GameLoop.USER.coins;
 	}
 
 	@Override
@@ -357,11 +245,33 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private void loadUser() {
 		waitImage.start();
-		gameAction.recoverUsedCoinCount(new UIConnectionResultCallback<Player>() {
+		gameAction.addFreeCoins(new UIConnectionResultCallback<Player>() {
 
 			@Override
-			public void onConnectionResult(Player result) {
+			public void onConnectionResult(final Player result) {
 				GameLoop.USER = result;
+
+				if (LevelManager.shouldShowLevelUp(result)) {
+					hideTitleArea = true;
+					final LevelUpOverlay levelUp = new LevelUpOverlay(resources, result);
+					levelUp.addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							hideTitleArea = false;
+							LevelManager.storeLevel(result);
+							levelUp.remove();
+							finishLoadingUser();
+						}
+					});
+					stage.addActor(levelUp);
+
+				} else {
+					finishLoadingUser();
+				}
+			}
+
+			private void finishLoadingUser() {
+
 				gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
 					public void onConnectionResult(GameCount result) {
 						addElementsToStage(result);
@@ -374,7 +284,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						waitImage.stop();
 					}
 				}, GameLoop.USER.handle);
-
 			}
 
 			@Override
@@ -393,7 +302,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void hide() {
-
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	@Override
@@ -408,6 +319,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public boolean hideTitleArea() {
-		return false;
+		return hideTitleArea;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return true;
+	}
+
 }

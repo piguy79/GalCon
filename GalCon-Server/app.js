@@ -1,9 +1,5 @@
-if (process.env.NODETIME_ACCOUNT_KEY) {
-	require('nodetime').profile({
-		accountKey : process.env.NODETIME_ACCOUNT_KEY,
-		appName : 'Galcon Server',
-		debug : true
-	});
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+	require('newrelic');
 }
 
 var express = require('express'), routes = require('./routes'), http = require('http'), ejs = require('ejs');
@@ -55,11 +51,9 @@ app.post('/requestHandleForId', routes.requestHandleForId);
 app.get('/findGamesWithPendingMove', routes.findGamesWithPendingMove);
 app.post('/performMoves', routes.performMoves);
 app.get('/findCurrentGamesByPlayerHandle', routes.findCurrentGamesByPlayerHandle);
-app.post('/updateUsedCoinsRecover',routes.adjustUsedCoinsIfAllUserGamesAreComplete);
 app.post('/addFreeCoins', routes.addFreeCoins);
 app.post('/addCoinsForAnOrder', routes.addCoinsForAnOrder);
 app.post('/deleteConsumedOrders', routes.deleteConsumedOrders);
-app.post('/reduceTimeUntilNextGame', routes.reduceTimeUntilNextGame);
 app.get('/rank', routes.findRankInformation);
 app.get('/config', routes.findConfigByType);
 app.get('/inventory', routes.findAllInventory);

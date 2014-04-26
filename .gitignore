@@ -28,3 +28,6 @@ gen/
 node_modules
 npm-debug.log
 
+#Showing up on Conors Mac
+*.DS_Store
+

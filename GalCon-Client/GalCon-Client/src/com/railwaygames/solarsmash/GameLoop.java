@@ -1,22 +1,19 @@
 package com.railwaygames.solarsmash;
 
 import static com.railwaygames.solarsmash.Util.createShader;
-
-import org.joda.time.DateTime;
-
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
-import com.railwaygames.solarsmash.http.SetPlayerResultHandler;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameInviteRequest;
@@ -32,8 +29,6 @@ import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboar
 public class GameLoop extends Game {
 	public static Player USER;
 	public static Configuration CONFIG;
-
-	private InGameInputProcessor inputProcessor = new InGameInputProcessor();
 
 	private GL20 gl;
 	public AssetManager assetManager = new AssetManager();
@@ -79,6 +74,17 @@ public class GameLoop extends Game {
 		super.resume();
 	}
 
+	public void refresh() {
+		final Screen screen = getScreen();
+		if (screen instanceof ScreenFeedback) {
+			Gdx.app.postRunnable(new Runnable() {
+				public void run() {
+					((ScreenFeedback) screen).refresh();
+				};
+			});
+		}
+	}
+
 	@Override
 	public void create() {
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
@@ -92,8 +98,6 @@ public class GameLoop extends Game {
 		gl.glEnable(GL20.GL_DEPTH_BUFFER_BIT);
 
 		Gdx.input.setCatchBackKey(true);
-
-		Gdx.input.setInputProcessor(inputProcessor);
 
 		assetManager.load("data/images/gameBoard.atlas", TextureAtlas.class);
 		assetManager.load("data/images/levels.atlas", TextureAtlas.class);
@@ -117,7 +121,6 @@ public class GameLoop extends Game {
 		resources.menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		resources.levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		resources.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
-		resources.tutorialAtlas = assetManager.get("data/images/tutorial.atlas", TextureAtlas.class);
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		boardScreen = new BoardScreen(resources);
@@ -135,7 +138,6 @@ public class GameLoop extends Game {
 	@Override
 	public void render() {
 		super.render();
-		checkCoinStats();
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
 
@@ -189,22 +191,5 @@ public class GameLoop extends Game {
 	private void openBoardScreen() {
 		boardScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 		setScreen(boardScreen);
-	}
-
-	private void checkCoinStats() {
-		if (GameLoop.USER != null && GameLoop.USER.coins != null && GameLoop.CONFIG != null) {
-			DateTime timeRemaining = GameLoop.USER.timeRemainingUntilCoinsAvailable();
-
-			if (timeRemaining != null) {
-				loadingNewCoins = false;
-			} else if (timeRemaining == null && GameLoop.USER.coins == 0 && GameLoop.USER.usedCoins != -1) {
-				if (!loadingNewCoins) {
-					loadingNewCoins = true;
-					gameAction.addFreeCoins(new SetPlayerResultHandler(GameLoop.USER), GameLoop.USER.handle);
-				}
-			} else {
-				loadingNewCoins = false;
-			}
-		}
 	}
 }

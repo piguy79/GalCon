@@ -46,7 +46,6 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		this.socialAction = socialAction;
 		this.gameAction = gameAction;
 		this.resources = resources;
-		socialAction.registerSignInListener(this);
 	}
 
 	@Override
@@ -54,9 +53,14 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 	}
 
+	private float width;
+	private float height;
+
 	@Override
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
+		this.width = width;
+		this.height = height;
 
 		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
 		signInLabel.setAlignment(Align.center);
@@ -81,17 +85,17 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			String lastSessionId = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
 			if (lastSessionId.isEmpty() || id.isEmpty()) {
 				waitImage.start();
-				socialAction.signIn(socialAuthProvider);
+				socialAction.signIn(this, socialAuthProvider);
 			} else {
 				gameAction.setSession(lastSessionId);
 				returnValue = "done";
 			}
 		} else {
-			addAuthenticationMethodsToStage(width, height);
+			addAuthenticationMethodsToStage();
 		}
 	}
 
-	private void addAuthenticationMethodsToStage(float width, float height) {
+	private void addAuthenticationMethodsToStage() {
 		addGooglePlusButton(width, height);
 		addFacebookButton(width, height);
 	}
@@ -114,7 +118,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				signInLabel.setText("");
 				waitImage.start();
-				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+				socialAction.signIn(SignInScreen.this, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 			}
 		});
 
@@ -142,7 +146,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				signInLabel.setText("");
 				waitImage.start();
-				socialAction.signIn(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+				socialAction.signIn(SignInScreen.this, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 			}
 		});
 
@@ -159,22 +163,19 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 	private void startHideSequence() {
 		if (googlePlusButton != null) {
-			googlePlusButton.addAction(sequence(delay(0.25f),
-					moveTo(-Gdx.graphics.getWidth(), googlePlusButton.getY(), 0.9f, pow3)));
+			googlePlusButton.addAction(sequence(delay(0.25f), moveTo(-width, googlePlusButton.getY(), 0.9f, pow3)));
 		}
 
 		if (facebookButton != null) {
-			facebookButton.addAction(sequence(delay(0.25f),
-					moveTo(-Gdx.graphics.getWidth(), facebookButton.getY(), 0.9f, pow3)));
+			facebookButton.addAction(sequence(delay(0.25f), moveTo(-width, facebookButton.getY(), 0.9f, pow3)));
 		}
 
-		signInLabel.addAction(sequence(delay(0.5f), moveTo(-Gdx.graphics.getWidth(), signInLabel.getY(), 0.9f, pow3),
-				run(new Runnable() {
-					@Override
-					public void run() {
-						returnValue = "done";
-					}
-				})));
+		signInLabel.addAction(sequence(delay(0.5f), moveTo(-width, signInLabel.getY(), 0.9f, pow3), run(new Runnable() {
+			@Override
+			public void run() {
+				returnValue = "done";
+			}
+		})));
 	}
 
 	@Override
@@ -190,7 +191,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	@Override
 	public void onSignInFailed(final String failureMessage) {
 		if (googlePlusButton == null) {
-			addAuthenticationMethodsToStage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			addAuthenticationMethodsToStage();
 		}
 
 		waitImage.stop();
@@ -235,7 +236,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 		signInLabel.setText(Strings.AUTH_FAIL);
 		if (googlePlusButton == null) {
-			addAuthenticationMethodsToStage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			addAuthenticationMethodsToStage();
 		}
 	}
 
@@ -243,4 +244,10 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	public boolean hideTitleArea() {
 		return false;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return false;
+	}
+
 }

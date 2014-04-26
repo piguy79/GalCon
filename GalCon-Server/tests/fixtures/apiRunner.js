@@ -47,7 +47,7 @@ exports.resignGame = function(gameId, handle, session) {
 		session : session,
 		handle : handle
 	};
-
+	
 	return needleWithPromise(needle.post, "/games/" + gameId + "/resign", postData);
 };
 

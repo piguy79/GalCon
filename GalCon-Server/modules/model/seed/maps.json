@@ -10,11 +10,12 @@
 						"max" : 6
 					},
 					"canHarvest" : false,
-					"gameType" : ["standardGame"]
+					"gameType" : ["standardGame"],
+					"version" : 1
 				},
 				{
 					"key" : 2,
-					"availableFromXp" : 100,
+					"availableFromXp" : 200,
 					"title" : "Moving on",
 					"description" : "Some breathing room",
 					"width" : {
@@ -22,11 +23,12 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["standardGame"]
+					"gameType" : ["standardGame"],
+					"version" : 1
 				},
 				{
 					"key" : 3,
-					"availableFromXp" : 500,
+					"availableFromXp" : 800,
 					"title" : "Speed",
 					"description" : "Don't drop below 50",
 					"width" : {
@@ -34,11 +36,12 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["speedIncrease"]
+					"gameType" : ["speedIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 4,
-					"availableFromXp" : 1200,
+					"availableFromXp" : 2000,
 					"title" : "Protect",
 					"description" : "Shields online",
 					"width" : {
@@ -46,31 +49,34 @@
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["defenceIncrease"]
+					"gameType" : ["defenceIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 5,
-					"availableFromXp" : 2500,
-					"title" : "Attack",
-					"description" : "Attack!",
+					"availableFromXp" : 3500,
+					"title" : "Annihilation",
+					"description" : "Show of Strength",
 					"width" : {
 						"min" : 6,
 						"max" : 8
 					},
 					"canHarvest" : false,
-					"gameType" : ["attackIncrease"]
+					"gameType" : ["attackIncrease"],
+					"version" : 1
 				},
 				{
 					"key" : 6,
-					"availableFromXp" : 5500,
-					"title" : "Harvest",
-					"description" : "Harvest And Hold",
+					"availableFromXp" : 6300,
+					"title" : "Power",
+					"description" : "Harvest or Hold",
 					"width" : {
 						"min" : 6,
 						"max" : 8
 					},
 					"canHarvest" : true,
-					"gameType" : ["mixedAbility"]
+					"gameType" : ["mixedAbility"],
+					"version" : 1
 				}
 			]
 	

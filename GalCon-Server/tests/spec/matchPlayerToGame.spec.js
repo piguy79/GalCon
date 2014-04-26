@@ -105,12 +105,12 @@ describe("Player Matching", function() {
 		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		}).then(function(game) {
-			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfIntialPlayer: 15}).exec();
+			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfInitialPlayer: 15}).exec();
 		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
 		}).then(function(game) {
 			expect(game.map).toEqual(MAP_KEY_1);
-			expect(game.rankOfInitialPlayer).toEqual(15);
+			expect(game.rankOfInitialPlayer).toEqual(13);
 			expect(game.players.length).toEqual(2);
 			expect(game.players[0].handle).toEqual(PLAYER_1_HANDLE);
 			expect(game.players[1].handle).toEqual(PLAYER_2_HANDLE);
@@ -124,15 +124,15 @@ describe("Player Matching", function() {
 		p.then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		}).then(function(game) {
-			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfInitialPlayer: 15, createdTime: 100}).exec();
+			return gameManager.GameModel.findOneAndUpdate({"_id": game._id}, {rankOfInitialPlayer: 10, createdDate: 100}).exec();
 		}).then(function(game) {
 			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
 		}).then(function() {
 			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
 		}).then(function(game) {
 			expect(game.map).toEqual(MAP_KEY_1);
-			expect(game.rankOfInitialPlayer).toEqual(15);
-			expect(game.createdTime).toEqual(100);
+			expect(game.rankOfInitialPlayer).toEqual(10);
+			expect(new Date(game.createdDate).getTime()).toEqual(100);
 			expect(game.players.length).toEqual(2);
 			expect(game.players[0].handle).toEqual(PLAYER_1_HANDLE);
 			expect(game.players[1].handle).toEqual(PLAYER_2_HANDLE);

@@ -4,9 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
@@ -208,7 +206,8 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(fromPlanetButton);
 		}
 
-		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), position, resources, boardCalcs);
+		Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(gameBoard), position, resources,
+				boardCalcs);
 
 		Color color = Constants.Colors.USER_SHIP_FILL;
 		if (!move.belongsToPlayer(GameLoop.USER)) {
@@ -225,7 +224,7 @@ public abstract class HighlightOverlay extends Overlay {
 			toPlanetButton.showPlanetState(true, true);
 
 			if (!previousOwner.equals(move.handle)) {
-				addExplosion(false, move.shipsToMove, move.endPosition, 1.0f, color);
+				addExplosion(false, move.shipsToMove, toPlanetButton.planet.position, 1.0f, color);
 			}
 
 			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
@@ -233,7 +232,7 @@ public abstract class HighlightOverlay extends Overlay {
 					&& toPlanetButton.planet.isOwnedBy(move.handle)
 					&& !planetsConquered.contains(toPlanetButton.planet.name)) {
 				planetsConquered.add(toPlanetButton.planet.name);
-				addXpGainLabel(move.endPosition, toPlanetButton.planet.owner);
+				addXpGainLabel(toPlanetButton.planet.position, toPlanetButton.planet.owner);
 			}
 		}
 
@@ -273,8 +272,8 @@ public abstract class HighlightOverlay extends Overlay {
 			particle.setBounds(tileCenter.x + xStartOffset, tileCenter.y + yStartOffset, particleSize, particleSize);
 			particle.addAction(sequence(delay(delay), color(color)));
 			particle.addAction(sequence(delay(delay),
-					moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
-			particle.addAction(sequence(delay(delay + 0.1f), rotateBy(1000, 2.0f)));
+					Actions.moveBy(xStartOffset * 12, yStartOffset * 12, 1.5f, Interpolation.circleOut)));
+			particle.addAction(sequence(delay(delay + 0.1f), Actions.rotateBy(1000, 2.0f)));
 			particle.addAction(sequence(delay(delay + 1.0f), alpha(0.0f, 1.5f)));
 
 			addActor(particle);
@@ -345,7 +344,7 @@ public abstract class HighlightOverlay extends Overlay {
 			particle.setOrigin(particleSize * 0.5f, particleSize * 0.5f);
 			particle.setBounds(startPointInWorld.x + xStartOffset - particleSize * 0.5f, startPointInWorld.y
 					+ yStartOffset - particleSize * 0.5f, particleSize, particleSize);
-			particle.rotate((float) Math.toDegrees(angle));
+			particle.rotateBy((float) Math.toDegrees(angle));
 			particle.addAction(sequence(delay(startDelay),
 					forever(sequence(color(Color.BLACK, 0.5f), color(Color.YELLOW, 0.5f)))));
 			startDelay += 0.1f;
@@ -610,8 +609,8 @@ public abstract class HighlightOverlay extends Overlay {
 							List<Move> player2Positions = new ArrayList<Move>();
 							String player1 = null;
 							for (final Move move : moves) {
-								final Image moveToDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(),
-										move.previousPosition, resources, boardCalcs);
+								final Image moveToDisplay = MoveFactory.createShipForDisplay(
+										move.angleOfMovement(gameBoard), move.previousPosition, resources, boardCalcs);
 
 								Color color = Constants.Colors.USER_SHIP_FILL;
 								if (!move.belongsToPlayer(GameLoop.USER)) {
@@ -777,7 +776,8 @@ public abstract class HighlightOverlay extends Overlay {
 				moveInfoHud = new SingleMoveInfoHud(resources, screenCalcs.getTopHudBounds().size.width,
 						screenCalcs.getTopHudBounds().size.height);
 			}
-			moveInfoHud.updateDuration(move.duration);
+
+			moveInfoHud.updateDuration(move.durationWithAbilityApplied(gameBoard));
 			moveInfoHud.updateShips(move.shipsToMove);
 		}
 

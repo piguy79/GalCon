@@ -1,6 +1,6 @@
 package com.railwaygames.solarsmash.screen.widget;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,7 +15,7 @@ public class ShaderLabel extends Label {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(Batch batch, float parentAlpha) {
 		batch.setShader(shader);
 		super.draw(batch, parentAlpha);
 		batch.setShader(null);

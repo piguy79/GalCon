@@ -12,9 +12,8 @@ function GameBuilder(gameAttributes) {
 	this.players = gameAttributes.players;
 	this.width = gameAttributes.width;
 	this.height = gameAttributes.height;
-	this.createdDate = new Date(gameAttributes.createdTime);
-	this.createdTime = gameAttributes.createdTime;
-	this.moveTime = this.createdTime;
+	this.createdDate = Date.now();
+	this.moveTime = this.createdDate;
 	this.rankOfInitialPlayer = gameAttributes.rankOfInitialPlayer;
 	this.map = gameAttributes.map;
 	
@@ -32,7 +31,6 @@ function GameBuilder(gameAttributes) {
 	this.endGame = {
 		winnerHandle : "",
 		losers : [],
-		draw : false,
 		xp : 0
 	}
 	this.ability = "";
@@ -61,8 +59,13 @@ GameBuilder.prototype.createBoard = function() {
 	assignHomePlanets(this);
 }
 
+GameBuilder.prototype.radiusAroundHome = function() {
+	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	return Math.max(acceptableRadius, 2);
+}
+
 GameBuilder.prototype.createRemainingPlanets = function(homePlanets) {
-	var tooCloseToHomeRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	var tooCloseToHomeRadius = this.radiusAroundHome();
 	
 	var extraPlanets = [];
 	while(this.planets.length < this.numberOfPlanets) {
@@ -185,7 +188,7 @@ GameBuilder.prototype.removeFromEdge = function(value, max) {
 }
 
 GameBuilder.prototype.createPlanetsAroundHomePlanet = function(planet, totalRegenAroundPlanet, shipsAroundPlanet, otherHomePlanet) {
-	var acceptableRadius = Math.floor(this.width * HOME_RADIUS_RATIO);
+	var acceptableRadius = this.radiusAroundHome();
 	
 	var existingRegenAroundPlanet = this.sumValueAroundPlanet(planet, acceptableRadius, "regen");
 	totalRegenAroundPlanet -= existingRegenAroundPlanet;
@@ -304,13 +307,11 @@ GameBuilder.prototype.createPlanet = function(x, y) {
 	position.x = x;
 	position.y = y;
 
-	planet.name = "Planet: " + this.currentPlanetNum++;
+	planet.name = this.currentPlanetNum++;
 	planet.pos = position;
 	planet.regen = 0;
 	planet.ships = 0;
 	planet.population = Math.floor((Math.random() * MAX_POPULATION) + 1);
-	planet.ability = "";
-	planet.status = "ALIVE";
 
 	return planet;
 }

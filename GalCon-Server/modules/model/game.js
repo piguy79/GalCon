@@ -4,6 +4,7 @@ var mongoose = require('./mongooseConnection').mongoose
 gamebuilder = require('../gameBuilder'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
+userManager = require('./user'),
 configManager = require('./config'),
 positionAdjuster = require('../movement/PositionAdjuster'),
 _ = require('underscore'),
@@ -29,12 +30,11 @@ var gameSchema = mongoose.Schema({
 		leaderboardScoreAmount : "Number",
 		date : "Date",
 		loserHandles : [String],
-		draw : "Boolean",
-		declined : "String"
+		declined : "String",
+		viewedBy : [String]
 	},
 	state : "String",
 	createdDate : "Date",
-	createdTime : "Number",
 	moveTime : 'Number',
 	map : "Number",
 	rankOfInitialPlayer : "Number",
@@ -43,7 +43,6 @@ var gameSchema = mongoose.Schema({
 		num : "Number",
 		moved : [String]
 	},
-	numberOfPlanets : "Number",
 	planets : [
 		{
 			name : "String",
@@ -78,14 +77,6 @@ var gameSchema = mongoose.Schema({
 				y : "Number"
 			},
 			curPos : {
-				x : "Number",
-				y : "Number"
-			},
-			startPos : {
-				x : "Number",
-				y : "Number"
-			},
-			endPos : {
 				x : "Number",
 				y : "Number"
 			},
@@ -174,7 +165,7 @@ var checkHarvestStatus = function(planet, roundNumber, saviorBonus){
 		planet.harvest.saveRound = roundNumber;
 		planet.ships += saviorBonus;
 	}else if(planet.harvest && planet.harvest.status === "INACTIVE"){
-		planet.harvest = null;
+		planet.harvest = undefined;
 	}
 }
 
@@ -225,7 +216,7 @@ gameSchema.methods.updateRegenRates = function(){
 
 	var currentGame = this;
 	this.planets.forEach(function(planet){
-		if(planet.handle && !planet.conquered && planet.status === 'ALIVE') {
+		if(planet.handle && !planet.conquered) {
 		
 			var regenBy = planet.regen;
 		
@@ -286,7 +277,7 @@ exports.createGame = function(gameAttributes) {
 		var innerp = new mongoose.Promise();
 		constructedGame.populate('players', function(err, gameWithPlayers) {
 			if(err) { innerp.reject(err); }
-			else { innerp.complete(gameWithPlayers); }
+			else { innerp.fulfill(gameWithPlayers); }
 		});
 		return innerp;
 	});
@@ -296,9 +287,17 @@ exports.findById = function(gameId){
 	return GameModel.findById(gameId).populate('players').exec();
 };
 
+exports.findByIdAndAddViewed = function(gameId, handle) {
+	return GameModel.findOneAndUpdate({_id: gameId}, {$push : {'endGame.viewedBy' : handle}}).populate('players').exec();
+};
 
-exports.findCollectionOfGames = function(user){
-	return GameModel.find({players : {$in : [user._id]}}, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
+exports.findCollectionOfGames = function(user, filters){
+	var query = {players : {$in : [user._id]}};
+	if(filters) {
+		query = _.extend(query, filters);
+	}
+	console.log(query);
+	return GameModel.find(query, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
 }
 
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
@@ -309,7 +308,6 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 	}
 	
 	var roundExecuted = false;
-	var finalGameForReturn;
 	
 	var p = exports.findById(gameId);
 	return p.then(function(game) {
@@ -319,18 +317,15 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		game.moveTime = Date.now();
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
-		
 		    removeMovesWhichHaveBeenExecuted(game);
 			decrementCurrentShipCountOnFromPlanets(game);
 			destroyAbilityPlanets(game);
-			game.round.moved = [];
 			
 			processMoves(playerHandle, game);
 			
 			gameTypeAssembler.gameTypes[game.gameType].endGameScenario(game);
 			gameTypeAssembler.gameTypes[game.gameType].roundProcesser(game);
 			roundExecuted = true;
-			
 		} 
 
 		var existingVersion = game.version;
@@ -338,8 +333,12 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		
 		// Need to update the entire document.  Remove the _id b/c Mongo won't accept _id as a field to update.
 		var updatedGame = game;
+		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
+			updatedGame.round.moved = [];
+		}
+		
 		delete updatedGame._doc._id
-		var updatePromise = GameModel.findOneAndUpdate({_id: gameId, version: existingVersion}, updatedGame._doc).exec();
+		var updatePromise = GameModel.findOneAndUpdate({_id: gameId, version: existingVersion, 'round.moved' : {$nin : [playerHandle]}}, updatedGame._doc).exec();
 		return updatePromise.then(function(savedGame) {
 			if(!savedGame) {
 				return exports.performMoves(gameId, moves, playerHandle, attemptNumber + 1);
@@ -347,39 +346,63 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 				return savedGame.withPromise(savedGame.populate, 'players');
 			}
 		}).then(function(finalGame){
-			finalGameForReturn = finalGame;
 			return updatePlayerXpForPlanetCapture(finalGame, roundExecuted);
 		}).then(function(){
-			var returnP = new mongoose.Promise();
-			returnP.complete(finalGameForReturn);
-			return returnP;
+			return exports.findById(gameId);
 		});
 	});
 }
 
 var updatePlayerXpForPlanetCapture = function(game, roundExecuted){
 	var promise = new mongoose.Promise();
-	promise.complete();
+	promise.fulfill();
 	var lastPromise = promise;	
-	
 	
 	game.players.forEach(function(player){
 		lastPromise = lastPromise.then(function(){
+			var xpToUpdate = 0;
 			if(roundExecuted){
-				var conqueredPlanets = _.filter(game.moves, function(move){
+				var conqueredPlanets = _.chain(game.moves).filter(function(move){
 					return move.executed && move.handle === player.handle && move.bs.prevPlanetOwner !== player.handle; 
-				});
+				}).map(function(move) { return move.to; }).uniq().value();
 				
 				var xpForPlayer = game.config.values['xpForPlanetCapture'] * conqueredPlanets.length;
-				player.xp += xpForPlayer;
+				xpToUpdate = xpForPlayer;
 			}
 			
-			return player.withPromise(player.save);
+			return exports.updatePlayerXp(player.handle, game, xpToUpdate, 0);
 		});
 	});
 	
-	
 	return lastPromise;
+}
+
+exports.updatePlayerXp = function(handle, game, xpToAdd, attemptNumber){
+	if(attemptNumber > 5) {
+		var p = new mongoose.Promise();
+		p.reject("Too many attempts to update player xp");
+		return p;
+	}
+	
+	var currentUser;
+	var p = userManager.findUserByHandle(handle);
+	return p.then(function(user){
+		currentUser = user;
+		return rank.findAllRanks();
+	}).then(function(ranks){
+		var maxRank= _.last(ranks);
+		var potentialNewXp = currentUser.xp + parseInt(game.config.values["xpForWinning"]);
+		if(potentialNewXp >= maxRank.endAt){
+			xpToAdd = 0;
+		}
+		return userManager.UserModel.findOneAndUpdate({handle : handle, xp : currentUser.xp}, {$inc : {xp : xpToAdd}}).exec();
+	}).then(function(user){
+		if(!user){
+			return exports.updatePlayerXp(handle, existingXp, xpToAdd, attemptNumber + 1);
+		}else{
+			return userManager.findUserByHandle(handle);
+		}
+	});
 }
 
 var planetShouldBeDestroyed = function(game, planet){
@@ -468,7 +491,7 @@ var processMoves = function(player, game) {
 // Add User adds a user to a current Games players List also assigning a random
 // planet to that user.
 exports.addUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}, {state : {$ne : 'C'}}]}, {$push : {players : player}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {$or : [{social : {$exists : false}}, {'social.status' : null}]}, { $where : "this.players.length == 1"}, {state : {$ne : 'C'}}]}, {$push : {players : player}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
@@ -487,7 +510,7 @@ exports.addUser = function(gameId, player){
 }
 
 exports.addSocialUser = function(gameId, player){
-	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
+	var p = GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"} , {'social.invitee' : player.handle}, {'social.status' : 'CREATED'}, {state : {$ne : 'C'}}]}, {$push : {players : player}, $set : {'social.status' : 'ACCEPTED'}}).populate('players').exec();
 	return p.then(function(game) {
 		if(!game) {
 			return null;
@@ -510,7 +533,6 @@ exports.declineSocialGame = function(gameId, invitee){
 			xp : 0,
 			leaderboardScoreAmount : 0,
 			date : Date.now(),
-			draw : false,
 			declined : invitee
 		};
 
@@ -521,20 +543,20 @@ exports.declineSocialGame = function(gameId, invitee){
 												   ,'endGame.xp' : 0
 												   ,'endGame.leaderboardScoreAmount' : 0
 												   ,'endGame.date' : 0
-												   ,'endGame.draw' : 0
+												   , 'endGame.winnerHandle' : 'GAME_DECLINE'
 												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
 }
 
 exports.findGameForMapInTimeLimit = function(mapToFind, time, playerHandle){
-	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdTime : { $lt : time}}]}).populate('players').exec();
+	var p = GameModel.find({ $and  : [{ $where : "this.players.length == 1"}, {$or : [{social : {$exists : false}}, {'social.status' : null}]}, {map : mapToFind}, {state : {$ne : 'C'}}, {createdDate : { $lt : time}}]}).populate('players').exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});
 }
 
 exports.findGameAtAMap = function(mapToFind, playerHandle){
-	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"}, {map : mapToFind}, {state : {$ne : 'C'}}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
+	var p = GameModel.find({ $and : [{ $where : "this.players.length == 1"},{$or : [{social : {$exists : false}}, {'social.status' : null}]}, {map : mapToFind}, {state : {$ne : 'C'}}]}).populate('players').sort({rankOfInitialPlayer : 1}).exec();
 	return p.then(function(games) {
 		return filterOutPlayerAndSocial(games, playerHandle);
 	});
@@ -557,7 +579,6 @@ exports.claimVictory = function(gameId, moveTime, currentUser, loserHandle){
 		$set : {
 			   'endGame.xp' : 50,
 			   'endGame.date' : Date.now(),
-			   'endGame.draw' : false,
 			   'endGame.winnerHandle' : currentUser.handle,
 			   'endGame.loserHandles' : [loserHandle]
 		   }}).populate('players').exec();

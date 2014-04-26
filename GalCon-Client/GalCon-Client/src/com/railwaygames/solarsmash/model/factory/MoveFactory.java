@@ -1,8 +1,5 @@
 package com.railwaygames.solarsmash.model.factory;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -14,8 +11,8 @@ import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
 import com.railwaygames.solarsmash.model.Point;
-import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.BoardScreen.BoardCalculations;
+import com.railwaygames.solarsmash.screen.Resources;
 
 public class MoveFactory {
 
@@ -46,29 +43,9 @@ public class MoveFactory {
 		} else if (endX == -1 || endY == -1) {
 			throw new RuntimeException("Could not find end planet for move creation");
 		} else {
-			float xLength = endX - startX;
-			float yLength = endY - startY;
-
-			float dist = (float) sqrt(pow(xLength, 2) + pow(yLength, 2));
-
-			float offsetRadius = 0.08f;
-			float ratio = offsetRadius / dist;
-
-			float xOffset = xLength * ratio;
-			float yOffset = yLength * ratio;
-
-			startX += xOffset;
-			startY += yOffset;
-
-			endX -= xOffset;
-			endY -= yOffset;
-
-			move.endPosition = new Point(endX, endY);
-
 			Point pos = new Point(startX, startY);
 			move.previousPosition = pos;
 			move.currentPosition = pos;
-			move.startPosition = pos;
 			move.duration = GalConMath.distance(startX, startY, endX, endY);
 			move.handle = GameLoop.USER.handle;
 

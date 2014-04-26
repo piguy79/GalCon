@@ -2,10 +2,10 @@ package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,11 +16,10 @@ import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class GameBoard extends JsonConvertible {
 	public String id;
-	public Date createdDate;
+	public DateTime createdDate;
 	public List<Player> players;
 	public int widthInTiles = 0;
 	public int heightInTiles = 0;
-	public Long createdTime;
 	public Social social;
 	public Long map;
 	public Long rankOfInitialPlayer;
@@ -62,12 +61,11 @@ public class GameBoard extends JsonConvertible {
 		this.heightInTiles = jsonObject.getInt(Constants.HEIGHT);
 		this.rankOfInitialPlayer = jsonObject.getLong(Constants.RANK_OF_INITIAL_PLAYER);
 		this.map = jsonObject.getLong(Constants.MAP);
-		this.createdTime = jsonObject.getLong(Constants.CREATED_TIME);
+		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		JSONObject endGame = jsonObject.getJSONObject(Constants.END_GAME_INFO);
 
 		this.endGameInformation.consume(endGame);
-		this.createdDate = formatDate(jsonObject, Constants.CREATED_DATE);
 
 		this.roundInformation.consume(jsonObject.getJSONObject(Constants.CURRENT_ROUND));
 		this.moveTime = jsonObject.optLong("moveTime");
@@ -140,7 +138,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty();
+		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty() && !endGameInformation.winnerHandle.equals("GAME_DECLINE");
 	}
 
 	public boolean wasADraw() {
@@ -155,13 +153,13 @@ public class GameBoard extends JsonConvertible {
 		}
 		return null;
 	}
-	
-	public boolean isClaimAvailable(){
+
+	public boolean isClaimAvailable() {
 		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
 				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw();
 	}
-	
-	private boolean moveTimeIsPastTimeout(){
+
+	private boolean moveTimeIsPastTimeout() {
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 		return (currentTime - moveTime) >= Long.parseLong(gameConfig.getValue("claimTimeout"));
 	}

@@ -103,40 +103,6 @@ describe("Harvest an ability planet -", function() {
 		});
 	});
 	
-	
-
-	it("Should kill the planet once the number of rounds for enhancement have completed", function(done){
-		var currentGameId;
-		
-		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, ABILITY_MAP_KEY);
-		p.then(function(game){
-			currentGameId = game._id;
-			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
-		}).then(function(game){
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE, harvest : [{planet : ABILITY_PLANET}]}, {moves : [], handle : PLAYER_2_HANDLE});
-		}).then(function(game){
-			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.harvest.status).toBe("ACTIVE");
-			expect(abilityPlanet.harvest.startingRound).toBe(0);
-		}).then(function(game){
-			return gameRunner.performTurns(6, currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
-		}).then(function(game){
-			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.regen).toBe(2);
-			expect(abilityPlanet.status).toBe("DEAD");
-			expect(abilityPlanet.ships).toBe(22);
-			return gameRunner.performTurn(currentGameId, {moves : [], handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
-		}).then(function(game){
-			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
-			expect(abilityPlanet.ships).toBe(22);
-			done();
-		}).then(null, function(err){
-			expect(true).toBe(false);
-			console.log(err);
-			done();
-		});
-	})
-	
 	it("Should reset the harvest state on a planet when it is captured during harvest", function(done){
 		var currentGameId;
 		var captureHarvestPlanet = [ elementBuilder.createMove(PLAYER_2_HANDLE, PLAYER_2_HOME_PLANET, ABILITY_PLANET, 20, 1) ];

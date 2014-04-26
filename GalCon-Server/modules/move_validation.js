@@ -14,9 +14,9 @@ exports.validate = function(gameId, handle, moves, harvests){
 		}else{
 			valid = runPlayerValidate(game, handle);
 		}
-		promise.complete({success : valid});
+		promise.fulfill({success : valid});
 		
-	}).then(null, function(err){promise.complete({success : false});});
+	}).then(null, function(err){promise.fulfill({success : false});});
 	
 	return promise;
 

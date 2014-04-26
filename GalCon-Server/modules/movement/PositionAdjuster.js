@@ -6,12 +6,23 @@ exports.adjustMovePositions = function(game) {
 		
 		move.prevPos = move.curPos;
 		
-		var totalDuration = galconMath.distance(move.startPos, move.endPos);
+		var startPos;
+		var endPos;
+		for(j in game.planets) {
+			if(game.planets[j].name == move.from) {
+				startPos = game.planets[j].pos;
+			}
+			if(game.planets[j].name == move.to) {
+				endPos = game.planets[j].pos;
+			}
+		}
+		
+		var totalDuration = galconMath.distance(startPos, endPos);
 		
 		var percentTraveled = 1 - (move.duration / totalDuration);
 		
-		var currentX = move.startPos.x + (move.endPos.x - move.startPos.x) * percentTraveled;
-		var currentY = move.startPos.y + (move.endPos.y - move.startPos.y) * percentTraveled;
+		var currentX = startPos.x + (endPos.x - startPos.x) * percentTraveled;
+		var currentY = startPos.y + (endPos.y - startPos.y) * percentTraveled;
 		
 		move.curPos = {x : currentX, y : currentY};
 	}

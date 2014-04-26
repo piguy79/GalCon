@@ -5,9 +5,7 @@ import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -90,6 +88,12 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	@Override
 	public void hide() {
 		this.stage = null;
+		if (waitImage != null) {
+			waitImage.stop();
+		}
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	@Override
@@ -124,16 +128,6 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		}
 
 		List<MinifiedGame> games = new ArrayList<MinifiedGame>(allGames.getAllGames());
-		for (ListIterator<MinifiedGame> iter = games.listIterator(); iter.hasNext();) {
-			MinifiedGame board = iter.next();
-			if (board.hasWinner()) {
-				if (!showGamesThatHaveBeenWon()
-						|| board.winningDate.before(new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24))) {
-					iter.remove();
-					break;
-				}
-			}
-		}
 
 		if (games.isEmpty()) {
 			messageLabel.setText("No games available");
@@ -141,7 +135,11 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			Collections.sort(games, new Comparator<MinifiedGame>() {
 				@Override
 				public int compare(MinifiedGame o1, MinifiedGame o2) {
-					if (o1.moveAvailable && o2.moveAvailable) {
+					if (o1.hasWinner(true) && !o2.hasWinner(true)) {
+						return 1;
+					} else if (!o1.hasWinner(true) && o2.hasWinner(true)) {
+						return -1;
+					} else if (o1.moveAvailable && o2.moveAvailable) {
 						return 0;
 					} else if (o1.moveAvailable && !o2.moveAvailable) {
 						return -1;
@@ -181,18 +179,24 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 		String statusText = "";
 		String statusFont = Constants.UI.DEFAULT_FONT_GREEN;
-		if (game.hasWinner()) {
-			if (game.winner.equals(GameLoop.USER.handle)) {
-				statusText = "You Won";
-			} else {
-				statusText = "You Lost";
-				statusFont = Constants.UI.DEFAULT_FONT_RED;
-			}
-		} else if (game.hasBeenDeclined()) {
+		if (game.hasBeenDeclined()) {
 			statusText = "-- Invite Declined --";
 			statusFont = Constants.UI.DEFAULT_FONT_RED;
+		} else if (game.hasWinner(false)) {
+			if (game.hasWinner(true)) {
+				if (game.winner.equals(GameLoop.USER.handle)) {
+					statusText = "You Won";
+				} else {
+					statusText = "You Lost";
+					statusFont = Constants.UI.DEFAULT_FONT_RED;
+				}
+			} else {
+				statusText = "--view winner--";
+				statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
+			}
 		} else if (game.moveAvailable) {
 			statusText = "--your move--";
+			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
 		} else if (game.claimAvailable) {
 			statusText = "--claim available--";
 			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
@@ -372,4 +376,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			GameListScreen.this.onConnectionError(msg);
 		}
 	};
+
+	@Override
+	public boolean canRefresh() {
+		return true;
+	}
+
 }

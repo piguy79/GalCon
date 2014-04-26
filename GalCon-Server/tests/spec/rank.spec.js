@@ -9,7 +9,7 @@ var needle = require("needle"),
 	gameRunner = require('../fixtures/gameRunner'),
 	_ = require('underscore');
 
-describe("Perform Move - Standard -", function() {
+describe("Rank - Test correct rank assignment -", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1);
 	PLAYER_1.xp = 95;
@@ -28,36 +28,12 @@ describe("Perform Move - Standard -", function() {
 	                              elementBuilder.createPlanet(UNOWNED_PLANET_1, "", 3, 20, { x : 3, y : 5}) ];
 	
 	beforeEach(function(done) {
-		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
-			if(err) { console.log(err); }
-			(new userManager.UserModel(PLAYER_2)).save(function(err, user) {
-				if(err) { console.log(err); }
-				(new mapManager.MapModel(MAP_1)).save(function(err, map) {
-					if(err) { console.log(err); }
-					done();
-				});
-			});
-		});
-		
-		this.addMatchers({
-			toBeOwnedBy : function(expected) {
-				return this.actual.handle == expected;
-			},
-			toHaveShipNumber : function(expected) {
-				return this.actual.numberOfShips == expected;
-			},
-			toContainMove : function(expected) {
-				var gameMoves = this.actual;
-				var returnVal = false;
-				gameMoves.forEach(function(move) {
-					if (elementMatcher.moveEquals(move, expected)) {
-						returnVal = true;
-					}
-				});
-
-				return returnVal;
-			}
-		});
+		var p = userManager.UserModel.withPromise(userManager.UserModel.create, [PLAYER_1, PLAYER_2]);
+		p.then(function(){
+			return mapManager.MapModel.withPromise(mapManager.MapModel.create, [MAP_1]);
+		}).then(function(){
+			done();
+		});		
 	});
 	
 	afterEach(function(done) {
@@ -117,6 +93,34 @@ describe("Perform Move - Standard -", function() {
 			});
 			var expectedResult = 95 + parseInt(game.config.values["xpForPlanetCapture"]);
 			expect(player1[0].xp).toBe(expectedResult);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+
+	});
+	
+	it("Should not update xp past endat of the last rank", function(done) {
+		var currentGameId;
+		var timeOfMove = 34728;
+		
+		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
+		p.then(function(game){
+			currentGameId = game._id;
+			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: PLANETS}}).exec();
+		}).then(function(){
+			return userManager.UserModel.findOneAndUpdate({handle : PLAYER_1_HANDLE}, {$set : {xp : 7000}}).exec();
+		}).then(function(){
+			var player1WinningMove = [ elementBuilder.createMove(PLAYER_1_HANDLE, PLAYER_1_HOME_PLANET, PLAYER_2_HOME_PLANET, 50, 1) ];
+			return gameRunner.performTurn(currentGameId, {moves : player1WinningMove, handle : PLAYER_1_HANDLE}, {moves : [], handle : PLAYER_2_HANDLE});
+		}).then(function(game){
+			expect(game.endGame.winnerHandle).toBe(PLAYER_1_HANDLE);
+			var player1 = _.filter(game.players, function(player){
+				return player.handle === PLAYER_1_HANDLE;
+			});
+			expect(player1[0].xp).toBe(7000);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);

@@ -11,11 +11,17 @@ public class Overlay extends Group {
 
 	private Image backGround;
 	protected Resources resources;
+	private float alpha = 0.8f;
 
 	public Overlay(Resources resources) {
 		this.resources = resources;
 
 		addBackground();
+	}
+	
+	public Overlay(Resources resources,float alpha){
+		this(resources);
+		this.alpha = alpha;
 	}
 
 	public void clear() {
@@ -26,7 +32,7 @@ public class Overlay extends Group {
 	private void addBackground() {
 		TextureRegion blackBackground = resources.menuAtlas.findRegion("transparent_square");
 		backGround = new Image(new TextureRegionDrawable(blackBackground));
-		backGround.setColor(0, 0, 0, 0.8f);
+		backGround.setColor(0, 0, 0, this.alpha);
 		backGround.setWidth(Gdx.graphics.getWidth());
 		backGround.setHeight(Gdx.graphics.getHeight());
 

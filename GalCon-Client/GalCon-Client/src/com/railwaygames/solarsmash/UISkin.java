@@ -30,6 +30,7 @@ public class UISkin extends Skin {
 		add(Constants.UI.X_LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).xLargeFont(), Color.WHITE));
 		add(Constants.UI.LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.WHITE));
 		add(Constants.UI.LARGE_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.BLACK));
+		add(Constants.UI.LARGE_FONT_YELLOW, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.YELLOW));
 		add(Constants.UI.LARGE_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.GREEN));
 		add(Constants.UI.LARGE_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.RED));
 
@@ -40,7 +41,10 @@ public class UISkin extends Skin {
 		add(Constants.UI.DEFAULT_FONT_YELLOW,
 				new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.YELLOW));
 		add(Constants.UI.X_SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.WHITE));
+		add(Constants.UI.X_SMALL_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.BLACK));
 		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
+		add(Constants.UI.SMALL_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.BLACK));
+
 		add(Constants.UI.X_SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), new Color(
 				0.1f, 1.0f, 0.1f, 1)));
 		add(Constants.UI.X_SMALL_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), new Color(1.0f,
@@ -138,6 +142,10 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("xp_bar_arrow"));
 			add(Constants.UI.XP_BAR_ARROW, trd, Drawable.class);
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("level_card_gray"));
+			add(Constants.UI.LEVEL_CARD_BG, trd, Drawable.class);
 		}
 
 		/*

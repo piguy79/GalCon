@@ -2,23 +2,23 @@ package com.railwaygames.solarsmash.screen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -30,9 +30,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
+import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
@@ -40,11 +42,13 @@ import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
+import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.model.Social;
 import com.railwaygames.solarsmash.model.factory.MoveFactory;
 import com.railwaygames.solarsmash.model.factory.PlanetButtonFactory;
+import com.railwaygames.solarsmash.screen.event.AboutEvent;
 import com.railwaygames.solarsmash.screen.event.CancelDialogEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
 import com.railwaygames.solarsmash.screen.event.ClaimVictoryEventListener;
@@ -55,10 +59,12 @@ import com.railwaygames.solarsmash.screen.event.OKDialogEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
 import com.railwaygames.solarsmash.screen.event.TransitionEventListener;
+import com.railwaygames.solarsmash.screen.level.LevelManager;
 import com.railwaygames.solarsmash.screen.overlay.ClaimOverlay;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.EndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.HighlightOverlay;
+import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
@@ -72,7 +78,6 @@ import com.railwaygames.solarsmash.screen.widget.PlanetButton;
 public class BoardScreen implements ScreenFeedback {
 
 	private int roundAnimated = -2;
-	private Camera camera;
 	private GameBoard gameBoard;
 
 	public List<Planet> touchedPlanets = new ArrayList<Planet>(2);
@@ -208,16 +213,19 @@ public class BoardScreen implements ScreenFeedback {
 
 	public BoardScreen(Resources resources) {
 		this.resources = resources;
-		stage = new Stage();
 	}
 
 	public void setGameBoard(GameBoard gameBoard) {
+		stage = new Stage();
+		if (maxWidth == 0) {
+			maxWidth = Gdx.graphics.getWidth();
+			maxHeight = Gdx.graphics.getHeight();
+		}
+
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
 		moons.clear();
 
-		stage = new Stage();
-		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		this.gameBoard = gameBoard;
 
 		planetButtons.clear();
@@ -230,36 +238,89 @@ public class BoardScreen implements ScreenFeedback {
 
 		createLayout();
 
-		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
-			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
-
-				@Override
-				public void onClose() {
-//					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
-//					prefs.flush();
-					beginOverlay();
-				}
-			}).focus(Constants.Tutorial.OVERVIEW);
-		} else {
-			beginOverlay();
-		}
+		// final Preferences prefs =
+		// Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		// if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
+		// overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources,
+		// screenCalcs, boardCalcs) {
+		//
+		// @Override
+		// public void onClose() {
+		// prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
+		// prefs.flush();
+		// beginOverlay();
+		// }
+		// }).focus(Constants.Tutorial.OVERVIEW);
+		// } else {
+		beginOverlay();
+		// }
 
 		stage.addListener(createHarvestListener());
 	}
 
 	private void beginOverlay() {
 		if (!GameLoop.USER.hasMoved(gameBoard)) {
-			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+			showAd();
 
-				@Override
-				public void onClose() {
-					beginEndRoundInfo();
-				}
-			}).focus(gameBoard.roundInformation);
+			if (LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))) {
+				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.USER.handle));
+				levelUp.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						LevelManager.storeLevel(findPlayer(GameLoop.USER.handle));
+						levelUp.remove();
+						showRoundInfo();
+					}
+				});
+
+				stage.addActor(levelUp);
+			} else {
+				showRoundInfo();
+			}
 		} else {
 			beginEndRoundInfo();
 		}
+	}
+
+	private void showAd() {
+		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
+		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+
+		if (lastAdShownTime == null || lastAdShownTime.isEmpty()) {
+			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
+			prefs.flush();
+		} else if (adTimeoutIsPassed(lastAdShownTime, currentTime)) {
+			ExternalActionWrapper.showAd();
+			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
+			prefs.flush();
+		}
+
+	}
+
+	private boolean adTimeoutIsPassed(String lastAdShownTime, Long currentTime) {
+		return (currentTime - Long.parseLong(lastAdShownTime)) > Long.parseLong(ConfigResolver
+				.getByConfigKey(Constants.Config.AD_TIMEOUT));
+	}
+
+	private Player findPlayer(String handle) {
+		for (Player player : gameBoard.players) {
+			if (player.handle.equals(handle)) {
+				return player;
+			}
+		}
+
+		return null;
+	}
+
+	private void showRoundInfo() {
+		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+			@Override
+			public void onClose() {
+				beginEndRoundInfo();
+			}
+		}).focus(gameBoard.roundInformation);
 	}
 
 	private void beginEndRoundInfo() {
@@ -311,7 +372,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void createLayout() {
 		AtlasRegion bg = resources.levelAtlas.findRegion("" + gameBoard.map);
 
-		screenCalcs = new ScreenCalculations(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screenCalcs = new ScreenCalculations(maxWidth, maxHeight);
 		boardCalcs = new BoardCalculations(screenCalcs, gameBoard.widthInTiles, gameBoard.heightInTiles);
 
 		boardTable = new Group();
@@ -326,12 +387,11 @@ public class BoardScreen implements ScreenFeedback {
 		stage.addActor(boardTable);
 		createGrid();
 		createMoveHud();
-		createPlayerHud();
 		createPlanets();
+		createPlayerHud();
 		createPlanetIcons();
 
 		Gdx.input.setInputProcessor(stage);
-
 	}
 
 	private void createEndGameOverlay() {
@@ -346,6 +406,7 @@ public class BoardScreen implements ScreenFeedback {
 			endGameOverlay.addListener(new TransitionEventListener() {
 				@Override
 				public void transition(String action) {
+					stage.dispose();
 					returnCode = action;
 				}
 			});
@@ -386,13 +447,13 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, Gdx.graphics
-							.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.3f, stage);
-					float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
+							maxWidth * 0.8f, maxHeight * 0.4f, stage);
+					float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
 					stage.addActor(dialog);
-					dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY));
+					dialog.show(new Point(maxWidth * 0.1f, dialogY));
 
 					dialog.addListener(new EventListener() {
 						@Override
@@ -410,6 +471,17 @@ public class BoardScreen implements ScreenFeedback {
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
 										GameLoop.USER.handle);
 								return true;
+							} else if (event instanceof AboutEvent) {
+								final Overlay ovrlay = new DismissableOverlay(
+										resources,
+										new TextOverlay(
+												"About\n\n"
+														+ "This project heavily utilizes libGDX and RoboVM.  Thanks to both amazing projects.\n\n"
+														+ "All space images are courtesy NASA/JPL-Caltech.", resources),
+										null);
+								stage.addActor(ovrlay);
+								return true;
+
 							} else if (event instanceof CancelGameEvent) {
 								overlay = new TextOverlay("Cancelling Game", resources);
 								stage.addActor(overlay);
@@ -451,8 +523,8 @@ public class BoardScreen implements ScreenFeedback {
 			if (move.executed || !move.belongsToPlayer(GameLoop.USER)) {
 				continue;
 			}
-			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(), move.previousPosition,
-					resources, boardCalcs);
+			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(gameBoard),
+					move.previousPosition, resources, boardCalcs);
 
 			Point newShipPosition = MoveFactory.getShipPosition(movetoDisplay, move.currentPosition, boardCalcs);
 			if (!roundHasAlreadyBeenAnimated()) {
@@ -540,13 +612,12 @@ public class BoardScreen implements ScreenFeedback {
 
 				final HarvestEvent hEvent = (HarvestEvent) event;
 
-				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, Gdx.graphics.getWidth() * 0.8f,
-						Gdx.graphics.getHeight() * 0.3f, stage);
-				float dialogY = Gdx.graphics.getHeight() - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, maxWidth * 0.8f, maxHeight * 0.3f, stage);
+				float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 				dialog.setX(-dialog.getWidth());
 				dialog.setY(dialogY);
 				stage.addActor(dialog);
-				dialog.show(new Point(Gdx.graphics.getWidth() * 0.1f, dialogY));
+				dialog.show(new Point(maxWidth * 0.1f, dialogY));
 
 				dialog.addListener(new EventListener() {
 					@Override
@@ -615,21 +686,21 @@ public class BoardScreen implements ScreenFeedback {
 		float yOffset = boardTable.getHeight() / gameBoard.heightInTiles;
 		float xOffset = boardTable.getWidth() / gameBoard.widthInTiles;
 		Color grey = Color.GRAY;
-		grey.a = 0.6f;
+		grey.a = 1.0f;
 		TextureRegion lineRegion = resources.gameBoardAtlas.findRegion("line");
 
 		Group grids = new Group();
 		grids.setBounds(0, 0, boardTable.getWidth(), boardTable.getHeight());
 
 		for (int i = 1; i < gameBoard.heightInTiles; i++) {
-			Line line = new Line(grey, Gdx.graphics.getWidth(), lineRegion);
+			Line line = new Line(grey, maxWidth, lineRegion);
 			line.setY(yOffset * i);
-			line.setHeight(Gdx.graphics.getHeight() * 0.004f);
+			line.setHeight(maxHeight * 0.004f);
 			grids.addActor(line);
 		}
 
 		for (int i = 1; i < gameBoard.widthInTiles; i++) {
-			Line horizontalLine = new Line(grey, Gdx.graphics.getWidth() * 0.006f, lineRegion);
+			Line horizontalLine = new Line(grey, maxWidth * 0.006f, lineRegion);
 			horizontalLine.setY(0);
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
@@ -847,14 +918,16 @@ public class BoardScreen implements ScreenFeedback {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (gameBoard != null) {
 			renderMoons();
 		}
 
-		stage.act(delta);
-		stage.draw();
+		if (stage != null) {
+			stage.act(delta);
+			stage.draw();
+		}
 	}
 
 	private void renderMoons() {
@@ -882,18 +955,20 @@ public class BoardScreen implements ScreenFeedback {
 		}
 	}
 
+	private int maxWidth = 0;
+	private int maxHeight = 0;
+
 	@Override
 	public void resize(int width, int height) {
-		camera = new PerspectiveCamera(67f, width, height);
-		camera.near = 1.0f;
-		camera.far = 5000f;
-
-		camera.position.set(new Vector3(0, 0, 0));
-		camera.translate(0.0f, 0.0f, 10.0f);
-		camera.lookAt(0.0f, 0.0f, 0.0f);
-		camera.update();
-
-		Gdx.gl.glViewport(0, 0, width, height);
+		if (stage != null) {
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+			stage.getViewport().update(maxWidth, maxHeight, true);
+		}
 	}
 
 	@Override
@@ -917,10 +992,6 @@ public class BoardScreen implements ScreenFeedback {
 	@Override
 	public Object getRenderResult() {
 		return returnCode;
-	}
-
-	public void setConnectionError(String msg) {
-
 	}
 
 	public class UpdateBoardScreenResultHandler implements UIConnectionResultCallback<GameBoard> {
@@ -970,5 +1041,23 @@ public class BoardScreen implements ScreenFeedback {
 			}
 			return "[Awaiting enemy]";
 		}
+	}
+
+	public void setConnectionError(String error) {
+		if (stage == null) {
+			stage = new Stage();
+		}
+		overlay = new DismissableOverlay(resources, new TextOverlay(error, resources), new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				returnCode = Action.BACK;
+			}
+		});
+		stage.addActor(overlay);
+	}
+
+	@Override
+	public void refresh() {
+
 	}
 }

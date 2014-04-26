@@ -4,7 +4,6 @@ import static com.railwaygames.solarsmash.Config.HOST;
 import static com.railwaygames.solarsmash.Config.PORT;
 import static com.railwaygames.solarsmash.Config.PROTOCOL;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,7 @@ public class PingService extends Service {
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
 	private static final int SLEEP_TIME = 4 * 60 * 1000;
-	private static final int LONG_SLEEP_TIME = 60 * 60 * 1000;
+	private static final int LONG_SLEEP_TIME = 8 * 60 * 60 * 1000;
 	private static final String DELETE_KEY = "DELETE";
 	private Config config = new AndroidConfig();
 
@@ -59,21 +58,20 @@ public class PingService extends Service {
 				pingForPendingMove();
 			}
 
-			synchronized (this) {
-				PingService.this.mServiceHandler.post(new Runnable() {
-					public void run() {
-						PingService.this.post(SLEEP_TIME);
-					}
-				});
-			}
+			post(new Runnable() {
+				@Override
+				public void run() {
+					PingService.this.post(SLEEP_TIME);
+				}
+			});
 		}
 
 		private void pingForPendingMove() {
 			SharedPreferences prefs = PingService.this.getSharedPreferences(Constants.GALCON_PREFS, MODE_PRIVATE);
-			String session = prefs.getString(Constants.Auth.LAST_SESSION_ID, "");
 			String handle = prefs.getString(Constants.HANDLE, "");
 
-			if (session.isEmpty() || handle.isEmpty()) {
+			Log.i("PINGSERVICE", "Handle: " + handle);
+			if (handle.isEmpty()) {
 				return;
 			}
 
@@ -88,13 +86,13 @@ public class PingService extends Service {
 								config.getValue(PORT), UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE, args);
 				GameCount result = (GameCount) Connection.doRequest(connectivityManager, connection, new GameCount());
 				parseResult(result);
-			} catch (IOException e) {
-				Log.w("CONNECTION", e.getMessage());
+			} catch (Exception e) {
+				Log.w("PINGSERVICE", e.getMessage());
 			}
 		}
 
 		private void parseResult(GameCount result) {
-			if (result != null && result.pendingGameCount > 0) {
+			if (result != null && (result.pendingGameCount > 0 || result.inviteCount > 0)) {
 				sendNotification(result);
 			}
 		}
@@ -104,14 +102,34 @@ public class PingService extends Service {
 				return;
 			}
 
-			String text = "1 game is awaiting your move";
-			int numberOfGames = result.pendingGameCount;
-			if (numberOfGames > 1) {
-				text = numberOfGames + " games are awaiting your move";
+			String pendingText = "";
+			int pendingGamesCount = result.pendingGameCount;
+			if (pendingGamesCount > 0) {
+				if (pendingGamesCount == 1) {
+					pendingText = "1 game is awaiting your move";
+				} else {
+					pendingText = pendingGamesCount + " games are awaiting your move";
+				}
 			}
 
+			String inviteText = "";
+			int inviteCount = result.inviteCount;
+			if (inviteCount > 0) {
+				if (inviteCount == 1) {
+					inviteText = "1 pending invite";
+				} else {
+					inviteText = inviteCount  + " pending invites";
+				}
+			}
+
+			String text = pendingText;
+			if (text.length() > 0 && inviteText.length() > 0) {
+				text += " and ";
+			}
+			text += inviteText;
+
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(PingService.this)
-					.setSmallIcon(R.drawable.ic_launcher).setContentTitle("GalCon").setContentText(text)
+					.setSmallIcon(R.drawable.notification).setContentTitle(Constants.APP_TITLE).setContentText(text)
 					.setAutoCancel(true).setDefaults(Notification.DEFAULT_ALL).setOnlyAlertOnce(true);
 
 			Intent resultIntent = new Intent(PingService.this, MainActivity.class);
@@ -169,6 +187,7 @@ public class PingService extends Service {
 	}
 
 	protected void post(int sleepTime) {
+		Log.i("PINGSERVICE", "Post with sleepTime: " + sleepTime);
 		Message msg = mServiceHandler.obtainMessage();
 		msg.what = 1;
 

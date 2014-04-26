@@ -24,8 +24,8 @@ import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
-import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
+import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
 public class ChooseHandleScreen implements PartialScreenFeedback {
 	private Stage stage;
@@ -51,9 +51,14 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		this.keyboard = keyboard;
 	}
 
+	private float width;
+	private float height;
+
 	@Override
 	public void show(Stage stage, float width, float height) {
 		this.stage = stage;
+		this.width = width;
+		this.height = height;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
@@ -77,9 +82,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	}
 
 	private void addHandleFields() {
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-
 		chooseHandleLabel = new ShaderLabel(resources.fontShader, "Galactic explorer,\nchoose a username",
 				resources.skin, Constants.UI.DEFAULT_FONT);
 		chooseHandleLabel.setAlignment(Align.center);
@@ -185,6 +187,10 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			} else {
 				if (player.handle != null && !player.handle.isEmpty()) {
 					GameLoop.USER = player;
+					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+					prefs.putString(Constants.HANDLE, player.handle);
+					prefs.flush();
+
 					startHideSequence();
 				} else {
 					addHandleFields();
@@ -226,4 +232,10 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	public boolean hideTitleArea() {
 		return false;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return false;
+	}
+
 }

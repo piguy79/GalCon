@@ -1,6 +1,6 @@
 package com.railwaygames.solarsmash.screen.overlay;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.screen.Resources;
@@ -23,7 +23,7 @@ public class DismissableOverlay extends Overlay {
 			this.addListener(clickListener);
 		}
 	}
-	
+
 	public DismissableOverlay(Resources resources, Overlay delegate) {
 		this(resources, delegate, null);
 	}
@@ -33,7 +33,7 @@ public class DismissableOverlay extends Overlay {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 
 		if (delegate != null) {

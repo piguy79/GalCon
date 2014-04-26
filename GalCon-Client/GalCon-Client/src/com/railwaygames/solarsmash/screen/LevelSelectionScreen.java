@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -65,7 +66,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	@Override
 	public void hide() {
-
+		for (Actor actor : actors) {
+			actor.remove();
+		}
 	}
 
 	private void startHideSequence(final String retVal) {
@@ -99,45 +102,46 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 		
-		createGameList();
-		
+		if(GameLoop.USER.coins == 0){
+			returnValue = Action.NO_MORE_COINS;
+		}else{
+			createGameList();
+		}
+
 	}
 
-	
-	private void createScrollhighlightReel() {	
+	private void createScrollhighlightReel() {
 		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
 		float actorPadding = calculateActorPadding(actorWidth);
-		
-		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
-									.align(Align.LEFT).actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth)
-									.actorPadding(actorPadding);
-		
+
+		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(
+				Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f).align(Align.LEFT)
+				.actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth).actorPadding(actorPadding);
+
 		float totalWidth = 0f;
-		
-		for(Map map : allMaps){
+
+		for (Map map : allMaps) {
 			Image image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
 			image.setColor(Color.GRAY);
 			builder.addActorWithKey(map.key, image);
 			totalWidth = totalWidth + actorPadding + actorWidth;
 		}
-		
+
 		// Account for the first one.
 		totalWidth = totalWidth - actorPadding;
-		
+
 		highlightReel = builder.build();
-		
-		
-		
+
 		highlightReel.setX((Gdx.graphics.getWidth() - totalWidth) / 2);
 		highlightReel.setY(Gdx.graphics.getHeight() * 0.05f);
-		
+
 		highlightReel.highlight(allMaps.get(0).key);
 		actors.add(highlightReel);
 		stage.addActor(highlightReel);
-		
+
 	}
-	
-	private void createGameList(){
+
+	private void createGameList() {
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -155,21 +159,20 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			final Map map = allMaps.get(i);
 
 			CardActor card = new CardActor(map, resources);
-			if(card.mapAvailable){
+			if (card.mapAvailable) {
 				card.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						createGameStartDialog(map.key);
 					}
-
 				});
 			}
-			
+
 			table.add(card).expandX().fillX();
 		}
 
 		choiceActor = new Actor() {
-			public void draw(SpriteBatch batch, float parentAlpha) {
+			public void draw(Batch batch, float parentAlpha) {
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardActor> cell = table.getCells().get(i);
@@ -182,7 +185,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 						highlightReel.highlight(cell.getWidget().getMapKey());
 					}
 				}
-				
+
 			};
 		};
 		choiceActor.setWidth(Gdx.graphics.getWidth());
@@ -195,18 +198,18 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		backButton.remove();
 		stage.addActor(backButton);
-		
+
 		createScrollhighlightReel();
 	}
 
 	private float calculateActorPadding(float actorWidth) {
 		float initialPadding = Gdx.graphics.getWidth() * 0.1f;
 		float totalSize = 0f;
-		for(Map map : allMaps){
+		for (Map map : allMaps) {
 			totalSize = totalSize + initialPadding + actorWidth;
 		}
-		
-		if(totalSize > (Gdx.graphics.getWidth() * 0.9f)){
+
+		if (totalSize > (Gdx.graphics.getWidth() * 0.9f)) {
 			return initialPadding * 0.6f;
 		}
 		return initialPadding;
@@ -214,8 +217,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private void createGameStartDialog(int selectedMapKey) {
 		final GameStartDialog dialog = new GameStartDialog(resources, Gdx.graphics.getWidth() * 0.8f,
-				Gdx.graphics.getHeight() * 0.5f, stage, selectedMapKey);
-		float dialogY = Gdx.graphics.getHeight() * 0.3f;
+				Gdx.graphics.getHeight() * 0.32f, stage, selectedMapKey);
+		float dialogY = Gdx.graphics.getHeight() * 0.45f;
 
 		stage.addActor(dialog);
 		dialog.setX(-dialog.getWidth());
@@ -261,24 +264,24 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		public CardActor(Map map, Resources resources) {
 			this.map = map;
-			if(GameLoop.USER.xp >= map.availableFromXp){
+			if (GameLoop.USER.xp >= map.availableFromXp) {
 				mapAvailable = true;
 				this.mapTex = resources.levelAtlas.findRegion("" + map.key);
-			}else{
+			} else {
 				mapAvailable = false;
 				this.mapTex = resources.levelSelectionAtlas.findRegion("lock_card_background");
 			}
 		}
 
 		public String getMapTitle() {
-			if(mapAvailable){
+			if (mapAvailable) {
 				return map.title;
 			}
-			return "?";
+			return "";
 		}
-		
-		public String getMapDescription(){
-			if(mapAvailable){
+
+		public String getMapDescription() {
+			if (mapAvailable) {
 				return map.description;
 			}
 			return "Reach level " + ConfigResolver.getRankForXp(map.availableFromXp).level + " to unlock.";
@@ -289,7 +292,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		}
 
 		@Override
-		public void draw(SpriteBatch batch, float parentAlpha) {
+		public void draw(Batch batch, float parentAlpha) {
 			int height = (int) getHeight();
 			int width = (int) getWidth();
 
@@ -408,4 +411,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	public boolean hideTitleArea() {
 		return true;
 	}
+
+	@Override
+	public boolean canRefresh() {
+		return true;
+	}
+
 }
