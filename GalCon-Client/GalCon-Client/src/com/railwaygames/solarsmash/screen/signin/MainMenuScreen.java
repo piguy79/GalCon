@@ -280,8 +280,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 					@Override
 					public void onConnectionError(String msg) {
-						addElementsToStage(null);
-						waitImage.stop();
+						final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+								"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								loadUser();
+							}
+						});
+						stage.addActor(ovrlay);
 					}
 				}, GameLoop.USER.handle);
 			}
