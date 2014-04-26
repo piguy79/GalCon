@@ -8,11 +8,8 @@ import org.json.JSONException;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -71,6 +68,8 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 		setupAdColony();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+		cfg.hideStatusBar = true;
+		cfg.useImmersiveMode = true;
 
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
@@ -78,63 +77,18 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 		gameAction = new AndroidGameAction(this, socialAction, connectivityManager);
 		inAppBillingAction = new AndroidInAppBillingAction(this);
 
-		hideMenuBars();
-
-		View decorView = getWindow().getDecorView();
-		decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-			@Override
-			public void onSystemUiVisibilityChange(int visibility) {
-				if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) > 0) {
-					hideMenuBars();
-				}
-			}
-		});
-
 		gameLoop = new GameLoop(gameAction, socialAction, inAppBillingAction,
 				new ShaderTextField.DefaultOnscreenKeyboard());
 		initialize(gameLoop, cfg);
-
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		Intent intent = new Intent(this, PingService.class);
 		startService(intent);
 	}
 
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-
-		hideMenuBars();
-	}
-
-	private void hideMenuBars() {
-		int newUiOptions = 0;
-
-		if (Build.VERSION.SDK_INT < 16) {
-			getWindow()
-					.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
-
-		// navigation
-		if (Build.VERSION.SDK_INT >= 14) {
-			newUiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-		}
-
-		// Status bar hiding: Backwards compatible to Jellybean
-		if (Build.VERSION.SDK_INT >= 16) {
-			newUiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-		}
-
-		if (Build.VERSION.SDK_INT >= 18) {
-			newUiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-		}
-
-		getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-	}
-
-	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
+
 		gameLoop.refresh();
 	}
 
@@ -193,7 +147,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	@Override
 	protected void onResume() {
 		super.onResume();
-		hideMenuBars();
 		AdColony.resume(this);
 	}
 
@@ -331,7 +284,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		hideMenuBars();
 	}
 
 	@Override
@@ -383,7 +335,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 
 	@Override
 	public void onAdColonyAdAttemptFinished(AdColonyAd arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

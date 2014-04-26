@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
@@ -96,18 +96,15 @@ public class MenuScreenContainer implements ScreenFeedback {
 		currentScreen.render(delta);
 	}
 
-	private int maxHeight = 0;
-	private int maxWidth = 0;
+	private int height = 0;
+	private int width = 0;
 
 	@Override
 	public void resize(int width, int height) {
-		if (height > maxHeight) {
-			maxHeight = height;
-		}
-		if (width > maxWidth) {
-			maxWidth = width;
-		}
-		stage.getViewport().update(maxWidth, maxHeight, true);
+		this.height = height;
+		this.width = width;
+
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -119,7 +116,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		int height = Gdx.graphics.getHeight();
 
 		stage.clear();
-		stage.setViewport(new ExtendViewport(width, height));
+		stage.setViewport(new StretchViewport(width, height));
 
 		Image bgImage = new Image(resources.menuAtlas.findRegion("bg"));
 		bgImage.setX(-2 * width);
@@ -144,13 +141,13 @@ public class MenuScreenContainer implements ScreenFeedback {
 			stage.addActor(titleText);
 		}
 
-		if (height > maxHeight) {
-			maxHeight = height;
+		if (height > height) {
+			height = height;
 		}
-		if (width > maxWidth) {
-			maxWidth = width;
+		if (width > width) {
+			width = width;
 		}
-		currentScreen.show(stage, maxWidth, maxHeight);
+		currentScreen.show(stage, width, height);
 	}
 
 	@Override
@@ -209,7 +206,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	private void showNextScreen(PartialScreenFeedback nextScreen) {
 		currentScreen.hide();
-		if(nextScreen instanceof ReturnablePartialScreenFeedback){
+		if (nextScreen instanceof ReturnablePartialScreenFeedback) {
 			((ReturnablePartialScreenFeedback) nextScreen).setPreviousScreen(currentScreen);
 		}
 		currentScreen = (PartialScreenFeedback) nextScreen;
@@ -219,7 +216,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		} else {
 			stage.addActor(titleText);
 		}
-		currentScreen.show(stage, maxWidth, maxHeight);
+		currentScreen.show(stage, width, height);
 	}
 
 	@Override
@@ -290,7 +287,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 			String action = (String) value;
 			if (action.equals(Action.BACK)) {
 				return mainMenuScreen;
-			}else if(action.equals(Action.NO_MORE_COINS)){
+			} else if (action.equals(Action.NO_MORE_COINS)) {
 				return noMoreCoinsScreen;
 			} else {
 				// clear back to main menu, then proceed to the gameboard
@@ -316,7 +313,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 				String action = (String) value;
 				if (action.equals(Action.BACK)) {
 					return mainMenuScreen;
-				}else if(action.equals(Action.NO_MORE_COINS)){
+				} else if (action.equals(Action.NO_MORE_COINS)) {
 					return noMoreCoinsScreen;
 				}
 			}
@@ -331,10 +328,11 @@ public class MenuScreenContainer implements ScreenFeedback {
 		public PartialScreenFeedback processValue(Object value) {
 			String action = (String) value;
 			if (action.equals(Action.BACK)) {
-				PartialScreenFeedback previousScreen = ((ReturnablePartialScreenFeedback)currentScreen).getPreviousScreen();
-				if(previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0){
+				PartialScreenFeedback previousScreen = ((ReturnablePartialScreenFeedback) currentScreen)
+						.getPreviousScreen();
+				if (previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0) {
 					return mainMenuScreen;
-				}else{
+				} else {
 					return previousScreen;
 				}
 			}

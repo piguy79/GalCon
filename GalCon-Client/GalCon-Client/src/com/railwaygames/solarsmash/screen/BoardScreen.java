@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
@@ -217,10 +218,11 @@ public class BoardScreen implements ScreenFeedback {
 
 	public void setGameBoard(GameBoard gameBoard) {
 		stage = new Stage();
-		if (maxWidth == 0) {
-			maxWidth = Gdx.graphics.getWidth();
-			maxHeight = Gdx.graphics.getHeight();
+		if (width == 0) {
+			width = Gdx.graphics.getWidth();
+			height = Gdx.graphics.getHeight();
 		}
+		stage.setViewport(new StretchViewport(width, height));
 
 		clearTouchedPlanets();
 		inProgressHarvest.clear();
@@ -295,7 +297,6 @@ public class BoardScreen implements ScreenFeedback {
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
 			prefs.flush();
 		}
-
 	}
 
 	private boolean adTimeoutIsPassed(String lastAdShownTime, Long currentTime) {
@@ -372,7 +373,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void createLayout() {
 		AtlasRegion bg = resources.levelAtlas.findRegion("" + gameBoard.map);
 
-		screenCalcs = new ScreenCalculations(maxWidth, maxHeight);
+		screenCalcs = new ScreenCalculations(width, height);
 		boardCalcs = new BoardCalculations(screenCalcs, gameBoard.widthInTiles, gameBoard.heightInTiles);
 
 		boardTable = new Group();
@@ -447,13 +448,13 @@ public class BoardScreen implements ScreenFeedback {
 					stage.dispose();
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
-					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources,
-							maxWidth * 0.8f, maxHeight * 0.4f, stage);
-					float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, width * 0.8f,
+							height * 0.4f, stage);
+					float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
 					stage.addActor(dialog);
-					dialog.show(new Point(maxWidth * 0.1f, dialogY));
+					dialog.show(new Point(width * 0.1f, dialogY));
 
 					dialog.addListener(new EventListener() {
 						@Override
@@ -612,12 +613,12 @@ public class BoardScreen implements ScreenFeedback {
 
 				final HarvestEvent hEvent = (HarvestEvent) event;
 
-				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, maxWidth * 0.8f, maxHeight * 0.3f, stage);
-				float dialogY = maxHeight - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+				HarvestDialog dialog = new HarvestDialog(gameBoard, resources, width * 0.8f, height * 0.3f, stage);
+				float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
 				dialog.setX(-dialog.getWidth());
 				dialog.setY(dialogY);
 				stage.addActor(dialog);
-				dialog.show(new Point(maxWidth * 0.1f, dialogY));
+				dialog.show(new Point(width * 0.1f, dialogY));
 
 				dialog.addListener(new EventListener() {
 					@Override
@@ -693,14 +694,14 @@ public class BoardScreen implements ScreenFeedback {
 		grids.setBounds(0, 0, boardTable.getWidth(), boardTable.getHeight());
 
 		for (int i = 1; i < gameBoard.heightInTiles; i++) {
-			Line line = new Line(grey, maxWidth, lineRegion);
+			Line line = new Line(grey, width, lineRegion);
 			line.setY(yOffset * i);
-			line.setHeight(maxHeight * 0.004f);
+			line.setHeight(height * 0.004f);
 			grids.addActor(line);
 		}
 
 		for (int i = 1; i < gameBoard.widthInTiles; i++) {
-			Line horizontalLine = new Line(grey, maxWidth * 0.006f, lineRegion);
+			Line horizontalLine = new Line(grey, width * 0.006f, lineRegion);
 			horizontalLine.setY(0);
 			horizontalLine.setX(xOffset * i);
 			horizontalLine.setHeight(boardTable.getHeight());
@@ -955,19 +956,16 @@ public class BoardScreen implements ScreenFeedback {
 		}
 	}
 
-	private int maxWidth = 0;
-	private int maxHeight = 0;
+	private int width = 0;
+	private int height = 0;
 
 	@Override
 	public void resize(int width, int height) {
 		if (stage != null) {
-			if (height > maxHeight) {
-				maxHeight = height;
-			}
-			if (width > maxWidth) {
-				maxWidth = width;
-			}
-			stage.getViewport().update(maxWidth, maxHeight, true);
+			this.height = height;
+			this.width = width;
+
+			stage.getViewport().update(width, height, true);
 		}
 	}
 

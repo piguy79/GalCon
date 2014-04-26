@@ -43,8 +43,6 @@ public class GameLoop extends Game {
 	private SocialAction socialAction;
 	private InAppBillingAction inAppBillingAction;
 
-	private boolean loadingNewCoins = false;
-
 	private OnscreenKeyboard keyboard;
 
 	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction,
