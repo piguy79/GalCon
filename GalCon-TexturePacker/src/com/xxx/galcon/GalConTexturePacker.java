@@ -14,5 +14,6 @@ public class GalConTexturePacker {
 		TexturePacker2
 				.process("images/planets", "../GalCon-Client/GalCon-Client-android/assets/data/images", "planets");
 		TexturePacker2.process("images/social", "../GalCon-Client/GalCon-Client-android/assets/data/images", "social");
+		TexturePacker2.process("images/tutorial", "../GalCon-Client/GalCon-Client-android/assets/data/images", "tutorial");
 	}
 }

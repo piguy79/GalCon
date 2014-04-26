@@ -236,8 +236,8 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void onClose() {
-					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
-					prefs.flush();
+//					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
+//					prefs.flush();
 					beginOverlay();
 				}
 			}).focus(Constants.Tutorial.OVERVIEW);

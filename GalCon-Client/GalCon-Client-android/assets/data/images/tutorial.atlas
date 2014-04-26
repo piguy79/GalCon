@@ -1,0 +1,12 @@
+
+tutorial.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+overview1
+  rotate: false
+  xy: 2, 2
+  size: 481, 800
+  orig: 481, 800
+  offset: 0, 0
+  index: -1
