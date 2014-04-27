@@ -102,6 +102,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	}
 
 	private void addAuthenticationMethodsToStage() {
+		width = Gdx.graphics.getWidth();
+		height = Gdx.graphics.getHeight();
+
 		addGooglePlusButton(width, height);
 		addFacebookButton(width, height);
 	}

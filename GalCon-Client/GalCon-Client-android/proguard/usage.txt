@@ -9101,7 +9101,7 @@ com.railwaygames.solarsmash.screen.overlay.HighlightOverlay:
 com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds
 com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds$1
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
-    218:220:public void onSignOut()
+    221:223:public void onSignOut()
 com.railwaygames.solarsmash.screen.tutorial.Overview
 com.railwaygames.solarsmash.screen.tutorial.Tutorial
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:

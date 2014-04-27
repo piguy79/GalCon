@@ -22554,15 +22554,15 @@ com.railwaygames.solarsmash.screen.signin.SignInScreen -> com.railwaygames.solar
     54:54:void render(float) -> a
     61:73:void resize(int,int) -> a
     77:102:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
-    105:107:void addAuthenticationMethodsToStage() -> f
-    167:168:void hide() -> a
-    189:189:java.lang.Object getRenderResult() -> b
-    194:195:void resetState() -> c
-    199:205:void onSignInFailed(java.lang.String) -> b_
-    209:214:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
-    241:247:void onConnectionError(java.lang.String) -> a
-    251:251:boolean hideTitleArea() -> d
-    256:256:boolean canRefresh() -> e
+    105:110:void addAuthenticationMethodsToStage() -> f
+    170:171:void hide() -> a
+    192:192:java.lang.Object getRenderResult() -> b
+    197:198:void resetState() -> c
+    202:208:void onSignInFailed(java.lang.String) -> b_
+    212:217:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
+    244:250:void onConnectionError(java.lang.String) -> a
+    254:254:boolean hideTitleArea() -> d
+    259:259:boolean canRefresh() -> e
     1:1:void onConnectionResult(java.lang.Object) -> a
     36:36:com.railwaygames.solarsmash.screen.widget.ShaderLabel access$1(com.railwaygames.solarsmash.screen.signin.SignInScreen) -> a
     37:37:com.railwaygames.solarsmash.screen.widget.WaitImageButton access$2(com.railwaygames.solarsmash.screen.signin.SignInScreen) -> b
@@ -22570,15 +22570,15 @@ com.railwaygames.solarsmash.screen.signin.SignInScreen -> com.railwaygames.solar
     41:41:void access$4(com.railwaygames.solarsmash.screen.signin.SignInScreen,java.lang.String) -> a
 com.railwaygames.solarsmash.screen.signin.SignInScreen$1 -> com.railwaygames.solarsmash.f.f.ab:
     com.railwaygames.solarsmash.screen.signin.SignInScreen this$0 -> a
-    120:120:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    125:128:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    123:123:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    128:131:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.SignInScreen$2 -> com.railwaygames.solarsmash.f.f.ac:
     com.railwaygames.solarsmash.screen.signin.SignInScreen this$0 -> a
-    148:148:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    153:156:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    151:151:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    156:159:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.SignInScreen$3 -> com.railwaygames.solarsmash.f.f.ad:
     com.railwaygames.solarsmash.screen.signin.SignInScreen this$0 -> a
-    182:183:void run() -> run
+    185:186:void run() -> run
 com.railwaygames.solarsmash.screen.widget.ActionButton -> com.railwaygames.solarsmash.f.g.a:
 com.railwaygames.solarsmash.screen.widget.ActorBar -> com.railwaygames.solarsmash.f.g.b:
     java.util.Collection actors -> k
