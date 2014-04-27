@@ -1714,7 +1714,6 @@ com.badlogic.gdx.audio.Sound:
     public abstract void setPan(long,float,float)
     public abstract void setPriority(long,int)
 com.badlogic.gdx.files.FileHandleStream
-com.badlogic.gdx.files.package-info
 com.badlogic.gdx.graphics.Camera:
     public abstract void update(boolean)
     77:90:public void lookAt(float,float,float)
@@ -2994,9 +2993,6 @@ com.badlogic.gdx.graphics.g2d.ParticleEmitter$SpawnShapeValue:
     1305:1306:public void setSide(com.badlogic.gdx.graphics.g2d.ParticleEmitter$SpawnEllipseSide)
     1309:1316:public void save(java.io.Writer)
     1329:1333:public void load(com.badlogic.gdx.graphics.g2d.ParticleEmitter$SpawnShapeValue)
-com.badlogic.gdx.graphics.g2d.ParticleEmitterBox2D
-com.badlogic.gdx.graphics.g2d.ParticleEmitterBox2D$1
-com.badlogic.gdx.graphics.g2d.ParticleEmitterBox2D$ParticleBox2D
 com.badlogic.gdx.graphics.g2d.PixmapPacker
 com.badlogic.gdx.graphics.g2d.PixmapPacker$1
 com.badlogic.gdx.graphics.g2d.PixmapPacker$2
@@ -4102,59 +4098,6 @@ com.badlogic.gdx.net.Socket:
     public abstract java.lang.String getRemoteAddress()
 com.badlogic.gdx.net.SocketHints:
     23:62:public SocketHints()
-com.badlogic.gdx.physics.box2d.Body
-com.badlogic.gdx.physics.box2d.BodyDef
-com.badlogic.gdx.physics.box2d.BodyDef$BodyType
-com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
-com.badlogic.gdx.physics.box2d.ChainShape
-com.badlogic.gdx.physics.box2d.CircleShape
-com.badlogic.gdx.physics.box2d.Contact
-com.badlogic.gdx.physics.box2d.ContactFilter
-com.badlogic.gdx.physics.box2d.ContactImpulse
-com.badlogic.gdx.physics.box2d.ContactListener
-com.badlogic.gdx.physics.box2d.DestructionListener
-com.badlogic.gdx.physics.box2d.EdgeShape
-com.badlogic.gdx.physics.box2d.Filter
-com.badlogic.gdx.physics.box2d.Fixture
-com.badlogic.gdx.physics.box2d.FixtureDef
-com.badlogic.gdx.physics.box2d.Joint
-com.badlogic.gdx.physics.box2d.JointDef
-com.badlogic.gdx.physics.box2d.JointDef$JointType
-com.badlogic.gdx.physics.box2d.JointEdge
-com.badlogic.gdx.physics.box2d.Manifold
-com.badlogic.gdx.physics.box2d.Manifold$ManifoldPoint
-com.badlogic.gdx.physics.box2d.Manifold$ManifoldType
-com.badlogic.gdx.physics.box2d.MassData
-com.badlogic.gdx.physics.box2d.PolygonShape
-com.badlogic.gdx.physics.box2d.QueryCallback
-com.badlogic.gdx.physics.box2d.RayCastCallback
-com.badlogic.gdx.physics.box2d.Shape
-com.badlogic.gdx.physics.box2d.Shape$Type
-com.badlogic.gdx.physics.box2d.Transform
-com.badlogic.gdx.physics.box2d.World
-com.badlogic.gdx.physics.box2d.World$1
-com.badlogic.gdx.physics.box2d.World$2
-com.badlogic.gdx.physics.box2d.WorldManifold
-com.badlogic.gdx.physics.box2d.joints.DistanceJoint
-com.badlogic.gdx.physics.box2d.joints.DistanceJointDef
-com.badlogic.gdx.physics.box2d.joints.FrictionJoint
-com.badlogic.gdx.physics.box2d.joints.FrictionJointDef
-com.badlogic.gdx.physics.box2d.joints.GearJoint
-com.badlogic.gdx.physics.box2d.joints.GearJointDef
-com.badlogic.gdx.physics.box2d.joints.MouseJoint
-com.badlogic.gdx.physics.box2d.joints.MouseJointDef
-com.badlogic.gdx.physics.box2d.joints.PrismaticJoint
-com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef
-com.badlogic.gdx.physics.box2d.joints.PulleyJoint
-com.badlogic.gdx.physics.box2d.joints.PulleyJointDef
-com.badlogic.gdx.physics.box2d.joints.RevoluteJoint
-com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
-com.badlogic.gdx.physics.box2d.joints.RopeJoint
-com.badlogic.gdx.physics.box2d.joints.RopeJointDef
-com.badlogic.gdx.physics.box2d.joints.WeldJoint
-com.badlogic.gdx.physics.box2d.joints.WeldJointDef
-com.badlogic.gdx.physics.box2d.joints.WheelJoint
-com.badlogic.gdx.physics.box2d.joints.WheelJointDef
 com.badlogic.gdx.scenes.scene2d.Action:
     43:43:public com.badlogic.gdx.scenes.scene2d.Actor getActor()
 com.badlogic.gdx.scenes.scene2d.Actor:
@@ -4216,6 +4159,7 @@ com.badlogic.gdx.scenes.scene2d.Stage:
     473:473:public boolean removeCaptureListener(com.badlogic.gdx.scenes.scene2d.EventListener)
     554:554:public com.badlogic.gdx.scenes.scene2d.Actor getScrollFocus()
     558:558:public com.badlogic.gdx.graphics.g2d.Batch getSpriteBatch()
+    566:567:public void setViewport(com.badlogic.gdx.utils.viewport.Viewport)
     581:581:public com.badlogic.gdx.graphics.Camera getCamera()
     609:611:public com.badlogic.gdx.math.Vector2 stageToScreenCoordinates(com.badlogic.gdx.math.Vector2)
     619:619:public com.badlogic.gdx.math.Vector2 toScreenCoordinates(com.badlogic.gdx.math.Vector2,com.badlogic.gdx.math.Matrix4)
@@ -4734,10 +4678,10 @@ com.badlogic.gdx.utils.ArrayMap:
     359:369:public void reverse()
     372:382:public void shuffle()
     387:393:public void truncate(int)
-    436:449:public com.badlogic.gdx.utils.ArrayMap$Values values()
-    455:468:public com.badlogic.gdx.utils.ArrayMap$Keys keys()
+    440:453:public com.badlogic.gdx.utils.ArrayMap$Values values()
+    459:472:public com.badlogic.gdx.utils.ArrayMap$Keys keys()
 com.badlogic.gdx.utils.ArrayMap$Entries:
-    505:506:public void reset()
+    509:510:public void reset()
 com.badlogic.gdx.utils.ArrayMap$Keys
 com.badlogic.gdx.utils.ArrayMap$Values
 com.badlogic.gdx.utils.AtomicQueue
@@ -4927,8 +4871,6 @@ com.badlogic.gdx.utils.IntMap:
     private static final int PRIME2
     private static final int PRIME3
     private static final int EMPTY
-    private com.badlogic.gdx.utils.IntMap$Entries entries1
-    private com.badlogic.gdx.utils.IntMap$Entries entries2
     private com.badlogic.gdx.utils.IntMap$Values values1
     private com.badlogic.gdx.utils.IntMap$Values values2
     private com.badlogic.gdx.utils.IntMap$Keys keys1
@@ -4945,16 +4887,14 @@ com.badlogic.gdx.utils.IntMap:
     443:458:public boolean containsValue(java.lang.Object,boolean)
     486:501:public int findKey(java.lang.Object,boolean,int)
     507:509:public void ensureCapacity(int)
-    583:596:public com.badlogic.gdx.utils.IntMap$Entries entries()
-    602:615:public com.badlogic.gdx.utils.IntMap$Values values()
-    621:634:public com.badlogic.gdx.utils.IntMap$Keys keys()
-com.badlogic.gdx.utils.IntMap$Entries
-com.badlogic.gdx.utils.IntMap$Entry
+    606:619:public com.badlogic.gdx.utils.IntMap$Values values()
+    625:638:public com.badlogic.gdx.utils.IntMap$Keys keys()
 com.badlogic.gdx.utils.IntMap$Keys
-com.badlogic.gdx.utils.IntMap$MapIterator
+com.badlogic.gdx.utils.IntMap$MapIterator:
+    static final int INDEX_ILLEGAL
+    static final int INDEX_ZERO
 com.badlogic.gdx.utils.IntMap$Values
 com.badlogic.gdx.utils.IntSet
-com.badlogic.gdx.utils.IntSet$Entry
 com.badlogic.gdx.utils.IntSet$IntSetIterator
 com.badlogic.gdx.utils.Json:
     private static final boolean debug
@@ -5128,52 +5068,46 @@ com.badlogic.gdx.utils.ObjectIntMap:
     private static final int PRIME1
     private static final int PRIME2
     private static final int PRIME3
-    private com.badlogic.gdx.utils.ObjectIntMap$Entries entries1
-    private com.badlogic.gdx.utils.ObjectIntMap$Entries entries2
     private com.badlogic.gdx.utils.ObjectIntMap$Values values1
     private com.badlogic.gdx.utils.ObjectIntMap$Values values2
     private com.badlogic.gdx.utils.ObjectIntMap$Keys keys1
     private com.badlogic.gdx.utils.ObjectIntMap$Keys keys2
-    60:61:public ObjectIntMap(int)
-    85:90:public ObjectIntMap(com.badlogic.gdx.utils.ObjectIntMap)
-    153:155:public void putAll(com.badlogic.gdx.utils.ObjectIntMap)
-    300:311:public int getAndIncrement(java.lang.Object,int,int)
-    315:323:private int getAndIncrementStash(java.lang.Object,int,int)
-    327:352:public int remove(java.lang.Object,int)
-    356:365:int removeStash(java.lang.Object,int)
-    370:376:void removeStashIndex(int)
-    381:386:public void shrink(int)
-    390:396:public void clear(int)
-    409:412:public boolean containsValue(int)
-    416:425:public boolean containsKey(java.lang.Object)
-    429:432:private boolean containsKeyStash(java.lang.Object)
-    438:441:public java.lang.Object findKey(int)
-    447:449:public void ensureCapacity(int)
-    518:531:public com.badlogic.gdx.utils.ObjectIntMap$Entries entries()
-    537:550:public com.badlogic.gdx.utils.ObjectIntMap$Values values()
-    556:569:public com.badlogic.gdx.utils.ObjectIntMap$Keys keys()
-com.badlogic.gdx.utils.ObjectIntMap$Entries
-com.badlogic.gdx.utils.ObjectIntMap$Entry
+    61:62:public ObjectIntMap(int)
+    86:91:public ObjectIntMap(com.badlogic.gdx.utils.ObjectIntMap)
+    154:156:public void putAll(com.badlogic.gdx.utils.ObjectIntMap)
+    301:312:public int getAndIncrement(java.lang.Object,int,int)
+    316:324:private int getAndIncrementStash(java.lang.Object,int,int)
+    328:353:public int remove(java.lang.Object,int)
+    357:366:int removeStash(java.lang.Object,int)
+    382:387:public void shrink(int)
+    391:397:public void clear(int)
+    410:413:public boolean containsValue(int)
+    417:426:public boolean containsKey(java.lang.Object)
+    430:433:private boolean containsKeyStash(java.lang.Object)
+    439:442:public java.lang.Object findKey(int)
+    448:450:public void ensureCapacity(int)
+    542:555:public com.badlogic.gdx.utils.ObjectIntMap$Values values()
+    561:574:public com.badlogic.gdx.utils.ObjectIntMap$Keys keys()
 com.badlogic.gdx.utils.ObjectIntMap$Keys
-com.badlogic.gdx.utils.ObjectIntMap$MapIterator
 com.badlogic.gdx.utils.ObjectIntMap$Values
 com.badlogic.gdx.utils.ObjectMap:
     private static final int PRIME1
     private static final int PRIME2
     private static final int PRIME3
-    60:61:public ObjectMap(int)
-    85:90:public ObjectMap(com.badlogic.gdx.utils.ObjectMap)
-    163:166:public void putAll(com.badlogic.gdx.utils.ObjectMap)
-    309:318:public java.lang.Object get(java.lang.Object,java.lang.Object)
-    322:325:private java.lang.Object getStash(java.lang.Object,java.lang.Object)
-    388:393:public void shrink(int)
-    397:403:public void clear(int)
-    421:433:public boolean containsValue(java.lang.Object,boolean)
-    461:473:public java.lang.Object findKey(java.lang.Object,boolean)
-    479:481:public void ensureCapacity(int)
+    61:62:public ObjectMap(int)
+    86:91:public ObjectMap(com.badlogic.gdx.utils.ObjectMap)
+    164:167:public void putAll(com.badlogic.gdx.utils.ObjectMap)
+    310:319:public java.lang.Object get(java.lang.Object,java.lang.Object)
+    323:326:private java.lang.Object getStash(java.lang.Object,java.lang.Object)
+    389:394:public void shrink(int)
+    398:404:public void clear(int)
+    422:434:public boolean containsValue(java.lang.Object,boolean)
+    462:474:public java.lang.Object findKey(java.lang.Object,boolean)
+    480:482:public void ensureCapacity(int)
+    522:522:public java.lang.String toString(java.lang.String)
 com.badlogic.gdx.utils.ObjectMap$Values:
-    711:714:public com.badlogic.gdx.utils.Array toArray()
-    719:721:public void toArray(com.badlogic.gdx.utils.Array)
+    724:727:public com.badlogic.gdx.utils.Array toArray()
+    732:734:public void toArray(com.badlogic.gdx.utils.Array)
 com.badlogic.gdx.utils.ObjectSet:
     private static final int PRIME1
     private static final int PRIME2
@@ -5429,11 +5363,11 @@ com.badlogic.gdx.utils.viewport.ExtendViewport
 com.badlogic.gdx.utils.viewport.FillViewport
 com.badlogic.gdx.utils.viewport.FitViewport
 com.badlogic.gdx.utils.viewport.ScalingViewport:
+    44:45:public ScalingViewport(com.badlogic.gdx.utils.Scaling,float,float)
     66:66:public com.badlogic.gdx.utils.Scaling getScaling()
     70:71:public void setScaling(com.badlogic.gdx.utils.Scaling)
 com.badlogic.gdx.utils.viewport.ScreenViewport
-com.badlogic.gdx.utils.viewport.StretchViewport:
-    19:20:public StretchViewport(float,float,com.badlogic.gdx.graphics.Camera)
+com.badlogic.gdx.utils.viewport.StretchViewport
 com.badlogic.gdx.utils.viewport.Viewport:
     49:53:public final void update()
     58:59:public final void update(int,int)
@@ -9128,11 +9062,11 @@ com.railwaygames.solarsmash.screen.Action:
     public static final java.lang.String SHARE
     3:3:public Action()
 com.railwaygames.solarsmash.screen.BoardScreen:
-    918:918:public void dispose()
+    916:916:public void dispose()
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1035:1035:public BoardScreen$Labels()
+    1033:1033:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
-    153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
+    152:152:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     346:346:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
@@ -9149,9 +9083,9 @@ com.railwaygames.solarsmash.screen.GameQueueScreen$SelectGameResultHander$1
 com.railwaygames.solarsmash.screen.GraphicsUtils:
     13:13:public GraphicsUtils()
 com.railwaygames.solarsmash.screen.LevelSelectionScreen$8:
-    376:384:public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch,float)
+    385:393:public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch,float)
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
-    179:179:public void dispose()
+    169:169:public void dispose()
 com.railwaygames.solarsmash.screen.Resources:
     public com.badlogic.gdx.graphics.g2d.TextureAtlas tutorialAtlas
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
@@ -9167,7 +9101,7 @@ com.railwaygames.solarsmash.screen.overlay.HighlightOverlay:
 com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds
 com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds$1
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
-    212:214:public void onSignOut()
+    218:220:public void onSignOut()
 com.railwaygames.solarsmash.screen.tutorial.Overview
 com.railwaygames.solarsmash.screen.tutorial.Tutorial
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
