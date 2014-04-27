@@ -217,6 +217,10 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 
 					for (InventoryItem item : inventoryResult.inventory) {
 						SkuDetails detail = inv.getSkuDetails(item.sku);
+						if (detail == null) {
+							Crashlytics.log(Log.WARN, "PlayStore", "No inventory item found for: " + item.sku);
+							continue;
+						}
 						InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
 								.getTitle(), item.numCoins);
 
