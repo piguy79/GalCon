@@ -7,6 +7,10 @@ var speedIncreasePlanetsHeldByPlayer = function(config, handle, planets, game){
 		
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
+		if(planet.status === "DEAD") {
+			continue;
+		}
+		
 		if((planet.ability && planet.ability == abilityBasedGameType.SPEED_ABILITY) && planet.handle === handle){
 			var speedIncrease = parseFloat(config.values[abilityBasedGameType.SPEED_ABILITY]);
 			count = count + speedIncrease;

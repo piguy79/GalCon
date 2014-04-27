@@ -16,6 +16,10 @@ exports.findCorrectFleetToAttackEnemyPlanet = function(config, planets, player, 
 
 	for(var  i = 0; i < planets.length; i++){
 		var planet = planets[i];
+		if(planet.status === "DEAD") {
+			continue;
+		}
+		
 		if((planet.ability && planet.ability == abilityBasedGameType.ATTACK_INC_ABILITY) && planet.handle == player){
 			attackMultiplier = attackMultiplier + parseFloat(config.values[abilityBasedGameType.ATTACK_INC_ABILITY]);
 			abilityDetected = true;

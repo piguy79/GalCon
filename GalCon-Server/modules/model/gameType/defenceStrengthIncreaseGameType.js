@@ -29,7 +29,7 @@ exports.findCorrectDefenseForAPlanet = function(config, planets, player, game){
 }
 
 var hasTheDefenceAbility = function(planet){
-	return planet.ability && planet.ability === abilityBasedGameType.DEF_INC_ABILITY;
+	return planet.ability && planet.ability === abilityBasedGameType.DEF_INC_ABILITY && planet.status !== "DEAD";
 }
 
 var hasTheSameOwner = function(planet, player){
