@@ -70,7 +70,7 @@ public class Player extends JsonConvertible {
 
 	private boolean hasAbility(String ability, GameBoard gameBoard) {
 		for (Planet planet : gameBoard.planets) {
-			if (planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(ability)) {
+			if (planet.isOwnedBy(handle) && planet.hasAbility() && planet.ability.equals(ability) && planet.isAlive()) {
 				return true;
 			}
 		}
