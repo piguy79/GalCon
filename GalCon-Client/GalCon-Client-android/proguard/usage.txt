@@ -5425,25 +5425,15 @@ com.badlogic.gdx.utils.reflect.Method
 com.badlogic.gdx.utils.reflect.ReflectionException:
     28:29:public ReflectionException(java.lang.String)
     32:33:public ReflectionException(java.lang.Throwable)
-com.badlogic.gdx.utils.viewport.ExtendViewport:
-    39:40:public ExtendViewport(float,float,com.badlogic.gdx.graphics.Camera)
-    45:46:public ExtendViewport(float,float,float,float)
-    93:93:public float getMinWorldWidth()
-    97:98:public void setMinWorldWidth(float)
-    101:101:public float getMinWorldHeight()
-    105:106:public void setMinWorldHeight(float)
-    109:109:public float getMaxWorldWidth()
-    113:114:public void setMaxWorldWidth(float)
-    117:117:public float getMaxWorldHeight()
-    121:122:public void setMaxWorldHeight(float)
+com.badlogic.gdx.utils.viewport.ExtendViewport
 com.badlogic.gdx.utils.viewport.FillViewport
 com.badlogic.gdx.utils.viewport.FitViewport
 com.badlogic.gdx.utils.viewport.ScalingViewport:
-    44:45:public ScalingViewport(com.badlogic.gdx.utils.Scaling,float,float)
     66:66:public com.badlogic.gdx.utils.Scaling getScaling()
     70:71:public void setScaling(com.badlogic.gdx.utils.Scaling)
 com.badlogic.gdx.utils.viewport.ScreenViewport
-com.badlogic.gdx.utils.viewport.StretchViewport
+com.badlogic.gdx.utils.viewport.StretchViewport:
+    19:20:public StretchViewport(float,float,com.badlogic.gdx.graphics.Camera)
 com.badlogic.gdx.utils.viewport.Viewport:
     49:53:public final void update()
     58:59:public final void update(int,int)
@@ -9138,11 +9128,11 @@ com.railwaygames.solarsmash.screen.Action:
     public static final java.lang.String SHARE
     3:3:public Action()
 com.railwaygames.solarsmash.screen.BoardScreen:
-    917:917:public void dispose()
+    918:918:public void dispose()
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1037:1037:public BoardScreen$Labels()
+    1035:1035:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
-    152:152:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
+    153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     346:346:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
@@ -9161,7 +9151,9 @@ com.railwaygames.solarsmash.screen.GraphicsUtils:
 com.railwaygames.solarsmash.screen.LevelSelectionScreen$8:
     376:384:public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch,float)
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
-    182:182:public void dispose()
+    179:179:public void dispose()
+com.railwaygames.solarsmash.screen.Resources:
+    public com.badlogic.gdx.graphics.g2d.TextureAtlas tutorialAtlas
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
     12:14:public AcceptInviteEvent(boolean)
 com.railwaygames.solarsmash.screen.event.DialogEventListener
@@ -9227,9 +9219,9 @@ com.railwaygames.solarsmash.social.FacebookAuthorization$2:
 com.railwaygames.solarsmash.social.FacebookAuthorization$4:
     194:194:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
-    183:183:public void onSignOut()
+    184:184:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:
-    230:230:public void onSignOut()
+    231:231:public void onSignOut()
 org.joda.convert.AnnotationStringConverterFactory
 org.joda.convert.FromString
 org.joda.convert.FromStringConverter
