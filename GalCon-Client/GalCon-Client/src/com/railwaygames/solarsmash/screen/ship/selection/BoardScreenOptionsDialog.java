@@ -225,7 +225,6 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 					};
 				})));
 
-				cancelText.addAction(Actions.moveBy(0, getHeight() * 0.2f, 0.3f));
 				confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
 				addOkButton();

@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
@@ -54,9 +55,8 @@ public class Planet extends JsonConvertible {
 			}
 			this.status = jsonObject.optString("status", "ALIVE");
 			this.isHome = jsonObject.optString("isHome", "N").equals("Y") ? true : false;
-
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Gdx.app.log("PLANET", "Could not parse planet: " + e);
 		}
 	}
 
