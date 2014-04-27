@@ -32,7 +32,8 @@ import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
-public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnablePartialScreenFeedback, UIConnectionResultCallback<Player> {
+public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnablePartialScreenFeedback,
+		UIConnectionResultCallback<Player> {
 	private Stage stage;
 	private Array<Actor> actors = new Array<Actor>();
 
@@ -48,7 +49,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	private Inventory inventoryResult;
 
 	private Resources resources;
-	
+
 	public PartialScreenFeedback previousScreen;
 
 	public NoMoreCoinsDialog(Resources resources) {
@@ -180,7 +181,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 				coinGroup.clear();
 				addCoinImageGroup(coinGroup);
 				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
-						"Coin purchase succeeded!\n\nGo forth and conquer.", resources), new ClickListener(){
+						"Coin purchase succeeded!\n\nGo forth and conquer.", resources), new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
 						startHideSequence(Action.BACK);
 					};
@@ -274,16 +275,21 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	}
 
 	@Override
-	public void show(Stage stage, float width, float height) {
-		actors.clear();
-		this.stage = stage;
-
-		waitImage = new WaitImageButton(resources.skin);
+	public void resize(int width, int height) {
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
 		waitImage.setX(width / 2 - buttonWidth / 2);
 		waitImage.setY(height / 2 - buttonWidth / 2);
+	}
+
+	@Override
+	public void show(Stage stage) {
+		actors.clear();
+		this.stage = stage;
+
+		waitImage = new WaitImageButton(resources.skin);
+
 		stage.addActor(waitImage);
 
 		if (inventoryResult == null) {
@@ -360,6 +366,6 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	@Override
 	public void setPreviousScreen(PartialScreenFeedback previousScreen) {
 		this.previousScreen = previousScreen;
-		
+
 	}
 }

@@ -267,25 +267,46 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	}
 
 	@Override
-	public void show(Stage stage, final float width, float height) {
-		actors.clear();
-
-		waitImage = new WaitImageButton(resources.skin);
+	public void resize(int width, int height) {
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
 		waitImage.setX(width / 2 - buttonWidth / 2);
 		waitImage.setY(height / 2 - buttonWidth / 2);
-		stage.addActor(waitImage);
 
-		createBackButton(stage, height);
-		createRefreshButton(stage, height);
+		GraphicsUtils.setCommonButtonSize(backButton);
+		backButton.setX(10);
+		backButton.setY(height - backButton.getHeight() - 5);
 
-		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
-		messageLabel.setAlignment(Align.center);
 		messageLabel.setWidth(width);
 		messageLabel.setX(width / 2 - messageLabel.getWidth() / 2);
 		messageLabel.setY(0.45f * height);
+
+		float tableHeight = height * 0.89f;
+		scrollList.setX(0);
+		scrollList.setY(0);
+		scrollList.setWidth(width);
+		scrollList.setHeight(tableHeight);
+
+		GraphicsUtils.setCommonButtonSize(refreshButton);
+		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
+		refreshButton.setY(height - refreshButton.getHeight() - 5);
+	}
+
+	@Override
+	public void show(Stage stage) {
+		actors.clear();
+
+		waitImage = new WaitImageButton(resources.skin);
+
+		stage.addActor(waitImage);
+
+		createBackButton(stage);
+		createRefreshButton(stage);
+
+		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
+		messageLabel.setAlignment(Align.center);
+
 		messageLabel.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -300,17 +321,12 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		actors.add(messageLabel);
 		stage.addActor(messageLabel);
 
-		final float tableHeight = height * 0.89f;
 		scrollList = new ScrollList<MinifiedGame>(resources.skin) {
 			@Override
 			public void buildCell(MinifiedGame item, Group group) {
 				createGameEntry(item, group);
 			}
 		};
-		scrollList.setX(0);
-		scrollList.setY(0);
-		scrollList.setWidth(width);
-		scrollList.setHeight(tableHeight);
 
 		actors.add(scrollList);
 		stage.addActor(scrollList);
@@ -321,11 +337,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		UIConnectionWrapper.findAllMaps(mapResultCallback);
 	}
 
-	private void createBackButton(Stage stage, float height) {
+	private void createBackButton(Stage stage) {
 		backButton = new Button(resources.skin, "backButton");
-		GraphicsUtils.setCommonButtonSize(backButton);
-		backButton.setX(10);
-		backButton.setY(height - backButton.getHeight() - 5);
 		backButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -341,11 +354,8 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		stage.addActor(backButton);
 	}
 
-	private void createRefreshButton(final Stage stage, float height) {
+	private void createRefreshButton(final Stage stage) {
 		refreshButton = new Button(resources.skin, "refreshButton");
-		GraphicsUtils.setCommonButtonSize(refreshButton);
-		refreshButton.setX(Gdx.graphics.getWidth() - (refreshButton.getWidth() * 1.1f));
-		refreshButton.setY(height - refreshButton.getHeight() - 5);
 		refreshButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

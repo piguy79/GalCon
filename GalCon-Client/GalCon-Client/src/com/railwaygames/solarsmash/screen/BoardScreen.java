@@ -221,7 +221,6 @@ public class BoardScreen implements ScreenFeedback {
 			width = Gdx.graphics.getWidth();
 			height = Gdx.graphics.getHeight();
 		}
-//		stage.setViewport(new StretchViewport(width, height));
 
 		clearTouchedPlanets();
 		inProgressHarvest.clear();

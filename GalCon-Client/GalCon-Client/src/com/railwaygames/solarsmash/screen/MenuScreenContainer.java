@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
@@ -36,6 +35,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 
 	private Stage stage;
 	private ShaderLabel titleText;
+	private Image bgImage;
 
 	private SignInScreen signInScreen;
 	private MainMenuScreen mainMenuScreen;
@@ -96,15 +96,22 @@ public class MenuScreenContainer implements ScreenFeedback {
 		currentScreen.render(delta);
 	}
 
-	private int height = 0;
-	private int width = 0;
-
 	@Override
 	public void resize(int width, int height) {
-		this.height = height;
-		this.width = width;
+		Gdx.app.log("RESIZE: ", "width" + width + " height" + height);
 
 		stage.getViewport().update(width, height, true);
+
+		bgImage.setX(-2 * width);
+		bgImage.setWidth(width * 4);
+		bgImage.setY(-0.5f * height);
+		bgImage.setHeight(height * 2f);
+		bgImage.setOrigin((float) width * 2.0f, (float) height * 1.0f);
+
+		titleText.setX(width / 2 - titleText.getWidth() / 2);
+		titleText.setY(height * 0.7f);
+
+		currentScreen.resize(width, height);
 	}
 
 	@Override
@@ -112,25 +119,14 @@ public class MenuScreenContainer implements ScreenFeedback {
 		Color bg = resources.skin.get(Constants.UI.DEFAULT_BG_COLOR, Color.class);
 		Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
 
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
 		stage.clear();
-		stage.setViewport(new StretchViewport(width, height));
 
-		Image bgImage = new Image(resources.menuAtlas.findRegion("bg"));
-		bgImage.setX(-2 * width);
-		bgImage.setWidth(width * 4);
-		bgImage.setY(-0.5f * height);
-		bgImage.setHeight(height * 2f);
+		bgImage = new Image(resources.menuAtlas.findRegion("bg"));
 		bgImage.setColor(0.0f, 0.7f, 0.7f, 0.6f);
-		bgImage.setOrigin((float) width * 2.0f, (float) height * 1.0f);
 		bgImage.addAction(forever(rotateBy(360, 150)));
 		stage.addActor(bgImage);
 
 		titleText = new ShaderLabel(resources.fontShader, APP_TITLE, resources.skin, Constants.UI.LARGE_FONT);
-		titleText.setX(width / 2 - titleText.getWidth() / 2);
-		titleText.setY(height * 0.7f);
 		stage.addActor(titleText);
 
 		Gdx.input.setInputProcessor(stage);
@@ -141,13 +137,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 			stage.addActor(titleText);
 		}
 
-		if (height > height) {
-			height = height;
-		}
-		if (width > width) {
-			width = width;
-		}
-		currentScreen.show(stage, width, height);
+		currentScreen.show(stage);
 	}
 
 	@Override
@@ -216,7 +206,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 		} else {
 			stage.addActor(titleText);
 		}
-		currentScreen.show(stage, width, height);
+		currentScreen.show(stage);
+		currentScreen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override

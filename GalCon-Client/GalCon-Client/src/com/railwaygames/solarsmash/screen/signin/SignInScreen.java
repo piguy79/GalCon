@@ -57,24 +57,30 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	private float height;
 
 	@Override
-	public void show(Stage stage, float width, float height) {
-		this.stage = stage;
+	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;
 
-		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
-		signInLabel.setAlignment(Align.center);
 		signInLabel.setWidth(width);
 		signInLabel.setX(width / 2 - signInLabel.getWidth() / 2);
 		signInLabel.setY(0.6f * height);
-		stage.addActor(signInLabel);
 
-		waitImage = new WaitImageButton(resources.skin);
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
 		waitImage.setX(width / 2 - buttonWidth / 2);
 		waitImage.setY(height / 2 - buttonWidth / 2);
+	}
+
+	@Override
+	public void show(Stage stage) {
+		this.stage = stage;
+
+		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
+		signInLabel.setAlignment(Align.center);
+		stage.addActor(signInLabel);
+
+		waitImage = new WaitImageButton(resources.skin);
 		stage.addActor(waitImage);
 
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);

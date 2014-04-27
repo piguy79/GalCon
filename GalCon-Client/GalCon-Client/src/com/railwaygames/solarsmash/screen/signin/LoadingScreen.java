@@ -47,15 +47,19 @@ public class LoadingScreen implements PartialScreenFeedback {
 	}
 
 	@Override
-	public void show(final Stage stage, float width, float height) {
-		this.stage = stage;
-
-		waitImage = new WaitImageButton(resources.skin);
+	public void resize(int width, int height) {
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
 		waitImage.setX(width / 2 - buttonWidth / 2);
 		waitImage.setY(height / 2 - buttonWidth / 2);
+	}
+
+	@Override
+	public void show(final Stage stage) {
+		this.stage = stage;
+
+		waitImage = new WaitImageButton(resources.skin);
 		stage.addActor(waitImage);
 
 		waitImage.start();

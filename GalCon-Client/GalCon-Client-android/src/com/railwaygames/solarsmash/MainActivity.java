@@ -148,6 +148,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	@Override
 	protected void onResume() {
 		super.onResume();
+		useImmersiveMode(true);
 		AdColony.resume(this);
 	}
 

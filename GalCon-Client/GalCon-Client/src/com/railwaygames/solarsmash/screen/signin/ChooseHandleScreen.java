@@ -43,6 +43,8 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	private OnscreenKeyboard keyboard;
 
 	private Resources resources;
+	private float width;
+	private float height;
 
 	public ChooseHandleScreen(Resources resources, GameAction gameAction, OnscreenKeyboard keyboard) {
 		this.resources = resources;
@@ -51,14 +53,21 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		this.keyboard = keyboard;
 	}
 
-	private float width;
-	private float height;
-
 	@Override
-	public void show(Stage stage, float width, float height) {
-		this.stage = stage;
+	public void resize(int width, int height) {
+		float buttonWidth = .25f * (float) width;
+		waitImage.setWidth(buttonWidth);
+		waitImage.setHeight(buttonWidth);
+		waitImage.setX(width / 2 - buttonWidth / 2);
+		waitImage.setY(height / 2 - buttonWidth / 2);
+
 		this.width = width;
 		this.height = height;
+	}
+
+	@Override
+	public void show(Stage stage) {
+		this.stage = stage;
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
@@ -70,11 +79,6 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		}
 
 		waitImage = new WaitImageButton(resources.skin);
-		float buttonWidth = .25f * (float) width;
-		waitImage.setWidth(buttonWidth);
-		waitImage.setHeight(buttonWidth);
-		waitImage.setX(width / 2 - buttonWidth / 2);
-		waitImage.setY(height / 2 - buttonWidth / 2);
 		stage.addActor(waitImage);
 
 		waitImage.start();

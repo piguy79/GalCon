@@ -4,7 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public interface PartialScreenFeedback {
 
-	public void show(Stage stage, float width, float height);
+	public void show(Stage stage);
+
+	public void resize(int width, int height);
 
 	public void hide();
 
@@ -25,5 +27,5 @@ public interface PartialScreenFeedback {
 	public boolean hideTitleArea();
 
 	public boolean canRefresh();
-	
+
 }

@@ -55,6 +55,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private Actor choiceActor;
 	private Button backButton;
 	protected WaitImageButton waitImage;
+	private Actor headerTextActor;
 	private ScrollPaneHighlightReel highlightReel;
 
 	private Array<Actor> actors = new Array<Actor>();
@@ -101,10 +102,10 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				return Integer.valueOf(o1.availableFromXp).compareTo(Integer.valueOf(o2.availableFromXp));
 			}
 		});
-		
-		if(GameLoop.USER.coins == 0){
+
+		if (GameLoop.USER.coins == 0) {
 			returnValue = Action.NO_MORE_COINS;
-		}else{
+		} else {
 			createGameList();
 		}
 
@@ -332,33 +333,41 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	}
 
 	@Override
-	public void show(Stage stage, float width, float height) {
-		this.stage = stage;
-		this.actors.clear();
-
-		waitImage = new WaitImageButton(resources.skin);
+	public void resize(int width, int height) {
 		float buttonWidth = .25f * (float) width;
 		waitImage.setWidth(buttonWidth);
 		waitImage.setHeight(buttonWidth);
 		waitImage.setX(width / 2 - buttonWidth / 2);
 		waitImage.setY(height / 2 - buttonWidth / 2);
-		stage.addActor(waitImage);
 
 		int tableHeight = (int) (height * .7f);
-
-		this.levelSelectionCard = resources.levelSelectionAtlas.findRegion("level_card_gray");
-		this.levelSelectCardShadow = resources.levelSelectionAtlas.findRegion("level_select_card_shadow");
-
-		cardTable = new Table();
 		cardTable.setX(0);
 		cardTable.setY(height * .4f - tableHeight * .42f);
 		cardTable.setWidth(width);
 		cardTable.setHeight(tableHeight);
 
-		backButton = new Button(resources.skin, "backButton");
 		GraphicsUtils.setCommonButtonSize(backButton);
 		backButton.setX(10);
 		backButton.setY(height - backButton.getHeight() - 5);
+
+		headerTextActor.setWidth(width);
+		headerTextActor.setHeight(height);
+	}
+
+	@Override
+	public void show(Stage stage) {
+		this.stage = stage;
+		this.actors.clear();
+
+		waitImage = new WaitImageButton(resources.skin);
+		stage.addActor(waitImage);
+
+		this.levelSelectionCard = resources.levelSelectionAtlas.findRegion("level_card_gray");
+		this.levelSelectCardShadow = resources.levelSelectionAtlas.findRegion("level_select_card_shadow");
+
+		cardTable = new Table();
+
+		backButton = new Button(resources.skin, "backButton");
 		backButton.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -371,7 +380,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 
-		Actor headerTextActor = new Actor() {
+		headerTextActor = new Actor() {
 			public void draw(SpriteBatch batch, float parentAlpha) {
 				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
 				font.setColor(Color.WHITE);
@@ -383,8 +392,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				font.setColor(Color.WHITE);
 			};
 		};
-		headerTextActor.setWidth(width);
-		headerTextActor.setHeight(height);
 
 		actors.add(headerTextActor);
 		stage.addActor(headerTextActor);
