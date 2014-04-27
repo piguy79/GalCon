@@ -88,6 +88,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
+		useImmersiveMode(true);
 
 		gameLoop.refresh();
 	}
