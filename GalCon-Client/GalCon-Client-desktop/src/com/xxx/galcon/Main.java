@@ -19,7 +19,9 @@ public class Main {
 		DesktopSocialAction socialAction = new DesktopSocialAction();
 		DesktopInAppBillingAction inAppBillAction = new DesktopInAppBillingAction();
 
-		new LwjglApplication(new GameLoop(gameAction, socialAction, inAppBillAction,
-				new ShaderTextField.DefaultOnscreenKeyboard()), cfg);
+		GameLoop loop = new GameLoop(gameAction, socialAction, inAppBillAction,
+				new ShaderTextField.DefaultOnscreenKeyboard());
+		new LwjglApplication(loop, cfg);
+		loop.resize(480, 800);
 	}
 }

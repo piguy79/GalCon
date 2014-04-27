@@ -68,6 +68,8 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	@Override
 	public void show(Stage stage) {
 		this.stage = stage;
+		this.width = Gdx.graphics.getWidth();
+		this.height = Gdx.graphics.getHeight();
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
