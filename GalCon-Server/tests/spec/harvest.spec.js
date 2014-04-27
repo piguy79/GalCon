@@ -213,7 +213,7 @@ describe("Harvest an ability planet -", function() {
 		}).then(function(game){
 			var abilityPlanet = _.find(game.planets, function(planet){ return planet.name === ABILITY_PLANET});
 			expect(abilityPlanet.handle).toBe(PLAYER_1_HANDLE);
-			expect(abilityPlanet.harvest).toBe(null);
+			expect(abilityPlanet.harvest).toBe(undefined);
 			done();
 		}).then(null, function(err){
 			console.log(err);
