@@ -321,7 +321,10 @@ public class MenuScreenContainer implements ScreenFeedback {
 			if (action.equals(Action.BACK)) {
 				PartialScreenFeedback previousScreen = ((ReturnablePartialScreenFeedback) currentScreen)
 						.getPreviousScreen();
-				if (previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0) {
+				if(previousScreen == null || previousScreen instanceof NoMoreCoinsDialog){
+					return mainMenuScreen;
+				}
+				else if (previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0) {
 					return mainMenuScreen;
 				} else {
 					return previousScreen;
