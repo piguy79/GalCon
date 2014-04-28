@@ -17,50 +17,30 @@ describe("Perform Move - Standard -", function() {
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
 	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 1);
 	
+	var PLAYER_ROUGE_HANDLE = "ROUGE_PLAYER_1";
+	var PLAYER_ROUGE = elementBuilder.createUser(PLAYER_ROUGE_HANDLE, 1);
+	
 	var MAP_KEY_1 = -100;
 	var MAP_1 = elementBuilder.createMap(MAP_KEY_1, 5, 6);
 	
 
-	
 	beforeEach(function(done) {
-		(new userManager.UserModel(PLAYER_1)).save(function(err, user) {
-			if(err) { console.log(err); }
-			(new userManager.UserModel(PLAYER_2)).save(function(err, user) {
-				if(err) { console.log(err); }
-				(new mapManager.MapModel(MAP_1)).save(function(err, map) {
-					if(err) { console.log(err); }
-					done();
-				});
-			});
-		});
-		
-		this.addMatchers({
-			toBeOwnedBy : function(expected) {
-				return this.actual.handle == expected;
-			},
-			toHaveShipNumber : function(expected) {
-				return this.actual.numberOfShips == expected;
-			},
-			toContainMove : function(expected) {
-				var gameMoves = this.actual;
-				var returnVal = false;
-				gameMoves.forEach(function(move) {
-					if (elementMatcher.moveEquals(move, expected)) {
-						returnVal = true;
-					}
-				});
-
-				return returnVal;
-			}
-		});
+		var p = userManager.UserModel.withPromise(userManager.UserModel.create, [PLAYER_1, PLAYER_2, PLAYER_ROUGE]);
+		p.then(function(){
+			return mapManager.MapModel.withPromise(mapManager.MapModel.create, [MAP_1]);
+		}).then(function(){
+			done();
+		});		
 	});
+	
+	
 	
 	afterEach(function(done) {
 		gameManager.GameModel.remove().where("map").in([MAP_KEY_1]).exec(function(err) {
 			if(err) { console.log(err); }
 			mapManager.MapModel.remove().where("key").in([MAP_KEY_1]).exec(function(err) {
 				if(err) { console.log(err); }
-				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE]).exec(function(err) {
+				userManager.UserModel.remove().where("handle").in([PLAYER_1_HANDLE, PLAYER_2_HANDLE, PLAYER_ROUGE_HANDLE]).exec(function(err) {
 					if(err) { console.log(err); }
 					done();
 				});
@@ -136,6 +116,31 @@ describe("Perform Move - Standard -", function() {
 			done();
 		}).then(null, function(err){
 			expect(err).toBe(undefined);
+			done();
+		});
+	});
+	
+	it("Should not allow a user to cancel who is not part of the game", function(done) {
+		var currentGameId;
+		var p =  apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
+		p.then(function(game) {
+			currentGameId = game._id;
+			return userManager.findUserByHandle(PLAYER_1_HANDLE);
+		}).then(function(user){
+			expect(user.coins).toBe(4);
+		}).then(function() {
+			var longTimeAgo = 100;
+			return gameManager.GameModel.findOneAndUpdate({_id : currentGameId}, {createdDate : longTimeAgo}).exec();
+		}).then(function() {
+			return apiRunner.cancelGame(PLAYER_ROUGE_HANDLE, currentGameId, PLAYER_ROUGE.session.id);
+		}).then(function(result){
+			expect(result.error).toBe("User is not part of this game.");
+			return gameManager.GameModel.findOne({_id : currentGameId}).exec();
+		}).then(function(game){
+			expect(game).toNotBe(null);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
 			done();
 		});
 	});
