@@ -25,6 +25,9 @@
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
+	<pattern>org.apache.harmony.xnet.provider.**</pattern>
+	<pattern>org.apache.harmony.security.provider.**</pattern>
+	<pattern>com.android.org.bouncycastle.jce.provider.**</pattern>
   </forceLinkClasses>
   <frameworkPaths>
       <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
@@ -50,5 +53,6 @@
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
+    <framework>StoreKit</framework>
   </frameworks>  
 </config>

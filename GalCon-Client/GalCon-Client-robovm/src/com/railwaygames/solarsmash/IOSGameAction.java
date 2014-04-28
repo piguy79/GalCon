@@ -27,8 +27,6 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
-import static com.railwaygames.solarsmash.http.UrlConstants.RECOVER_USED_COINS_COUNT;
-import static com.railwaygames.solarsmash.http.UrlConstants.REDUCE_TIME;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
@@ -47,7 +45,6 @@ import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.jirbo.adcolony.AdColonyVideoListener;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.Connection;
@@ -138,9 +135,10 @@ public class IOSGameAction implements GameAction {
 		if (mapCache.getCache() != null) {
 			callback.onConnectionResult(mapCache.getCache());
 		} else {
+			final Map<String, String> args = new HashMap<String, String>();
+			args.put("version", Constants.MAP_VERSION_SUPPORTED);
 			mapCache.setDelegate(callback);
-			new GetJsonRequestTask<Maps>(new HashMap<String, String>(), mapCache, FIND_ALL_MAPS, Maps.class)
-					.execute("");
+			new GetJsonRequestTask<Maps>(args, mapCache, FIND_ALL_MAPS, Maps.class).execute("");
 		}
 	}
 
@@ -247,21 +245,6 @@ public class IOSGameAction implements GameAction {
 		}
 	}
 
-	@Override
-	public void reduceTimeUntilNextGame(UIConnectionResultCallback<Player> callback, String handle) {
-		try {
-			final JSONObject top = JsonConstructor.reduceCall(handle, getSession());
-			new PostJsonRequestTask<Player>(callback, REDUCE_TIME, Player.class).execute(top.toString());
-		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
-		}
-	}
-
-	@Override
-	public void showAd(AdColonyVideoListener listener) {
-		// TODO Auto-generated method stub
-	}
-
 	private InventoryCache inventoryCache = new InventoryCache();
 
 	@Override
@@ -272,16 +255,6 @@ public class IOSGameAction implements GameAction {
 			inventoryCache.setDelegate(callback);
 			new GetJsonRequestTask<Inventory>(new HashMap<String, String>(), inventoryCache, FIND_AVAILABLE_INVENTORY,
 					Inventory.class).execute("");
-		}
-	}
-
-	@Override
-	public void recoverUsedCoinCount(UIConnectionResultCallback<Player> callback, String handle) {
-		try {
-			final JSONObject top = JsonConstructor.user(handle, getSession());
-			new PostJsonRequestTask<Player>(callback, RECOVER_USED_COINS_COUNT, Player.class).execute(top.toString());
-		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -563,5 +536,10 @@ public class IOSGameAction implements GameAction {
 		} catch (JSONException e) {
 			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
+
+	@Override
+	public void showAd() {
+
 	}
 }
