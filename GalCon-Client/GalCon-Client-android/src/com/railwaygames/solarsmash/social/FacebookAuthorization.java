@@ -215,7 +215,7 @@ public class FacebookAuthorization implements Authorizer {
 	    params.putString("link", "http://www.railwaygames.mobi/");
 	    params.putString("to", id);
 	    params.putString("from", GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
-	    params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+	    params.putString("picture", "http://www.railwaygames.mobi/assets/images/logo/android_icon.png");
 	    
 	    WebDialog feedDialog = new WebDialog.FeedDialogBuilder(activity, Session.getActiveSession(), params)
 	    .setOnCompleteListener(new OnCompleteListener() {
