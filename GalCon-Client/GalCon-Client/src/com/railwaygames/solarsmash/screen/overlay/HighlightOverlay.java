@@ -26,7 +26,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -52,7 +51,7 @@ import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.HarvestEvent;
 import com.railwaygames.solarsmash.screen.event.MoveListener;
 import com.railwaygames.solarsmash.screen.event.NextPageEvent;
-import com.railwaygames.solarsmash.screen.hud.BlankHud;
+import com.railwaygames.solarsmash.screen.hud.BasicTextHud;
 import com.railwaygames.solarsmash.screen.hud.MultiPageBottomHud;
 import com.railwaygames.solarsmash.screen.hud.PlanetInfoHud;
 import com.railwaygames.solarsmash.screen.hud.RoundInformationTopHud;
@@ -403,7 +402,7 @@ public abstract class HighlightOverlay extends Overlay {
 	private class TutorialHuds implements Huds<String> {
 
 		private Tutorial tutorial;
-		private Group topHud;
+		private BasicTextHud topHud;
 		private MultiPageBottomHud bottomHud;
 		private int currentPage = 1;
 
@@ -418,7 +417,7 @@ public abstract class HighlightOverlay extends Overlay {
 		@Override
 		public void createTopHud(String object) {
 			Size size = screenCalcs.getTopHudBounds().size;
-			topHud = new BlankHud(resources, size.width, size.height);
+			topHud = new BasicTextHud(resources, size.width, size.height);
 		}
 
 		@Override
@@ -438,6 +437,8 @@ public abstract class HighlightOverlay extends Overlay {
 					currentPage += 1;
 					if (currentPage <= tutorial.getPageCount()) {
 						tutorial.showPage(currentPage);
+						String text = tutorial.getTopHudText(currentPage);
+						topHud.addText(text);
 					} else {
 						hide();
 						remove();

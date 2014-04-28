@@ -68,7 +68,7 @@ public class RoundInformationTopHud extends Group {
 		clear();
 		createBackground(true);
 
-		PlanetInfoHud.createRegenLabels(resources, (int) planet.regen, getWidth(), getHeight(), this);
+		PlanetInfoHud.createRegenLabels(planet.isOwned(), resources, (int) planet.regen, getWidth(), getHeight(), this);
 		PlanetInfoHud.createUnderHarvestLabel(resources, gameBoard, planet, getWidth(), getHeight(), this);
 	}
 

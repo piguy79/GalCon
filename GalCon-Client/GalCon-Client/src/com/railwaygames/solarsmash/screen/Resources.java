@@ -13,6 +13,5 @@ public class Resources {
 	public TextureAtlas menuAtlas;
 	public TextureAtlas levelSelectionAtlas;
 	public TextureAtlas planetAtlas;
-	public TextureAtlas tutorialAtlas;
 	public ShaderProgram fontShader;
 }

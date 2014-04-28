@@ -238,20 +238,20 @@ public class BoardScreen implements ScreenFeedback {
 
 		createLayout();
 
-//		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-//		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
-//			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
-//
-//				@Override
-//				public void onClose() {
-//					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
-//					prefs.flush();
-//					beginOverlay();
-//				}
-//			}).focus(Constants.Tutorial.OVERVIEW);
-//		} else {
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
+			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+				@Override
+				public void onClose() {
+					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
+					prefs.flush();
+					beginOverlay();
+				}
+			}).focus(Constants.Tutorial.OVERVIEW);
+		} else {
 			beginOverlay();
-//		}
+		}
 
 		stage.addListener(createHarvestListener());
 	}

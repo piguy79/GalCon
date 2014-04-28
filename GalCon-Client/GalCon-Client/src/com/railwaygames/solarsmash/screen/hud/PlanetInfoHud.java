@@ -42,7 +42,7 @@ public class PlanetInfoHud extends Group {
 		setWidth(width);
 
 		createBackground();
-		createRegenLabels(resources, (int) planet.regen, getWidth(), getHeight(), this);
+		createRegenLabels(planet.isOwned(), resources, (int) planet.regen, getWidth(), getHeight(), this);
 
 		loadMaps();
 	}
@@ -71,15 +71,19 @@ public class PlanetInfoHud extends Group {
 		}
 	}
 
-	public static void createRegenLabels(Resources resources, int regen, float width, float height, Group parent) {
+	public static void createRegenLabels(boolean isOwned, Resources resources, int regen, float width, float height,
+			Group parent) {
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "Regen rate", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+			String fontSize = Constants.UI.SMALL_FONT;
+			String text = "Ship build rate";
+
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, fontSize);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(0);
 			label.setY(height * 0.7f - bounds.height * 0.5f);
 			label.setWidth(width * 0.4f);
 			label.setAlignment(Align.center, Align.center);
+			label.setWrap(true);
 			parent.addActor(label);
 		}
 		{

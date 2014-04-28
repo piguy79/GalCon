@@ -4,6 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -17,25 +18,59 @@ public class Overview extends Tutorial {
 
 	private Resources resources;
 	private Group group;
+	private TextureAtlas atlas;
 
 	public Overview(Resources resources, Group group) {
 		this.resources = resources;
 		this.group = group;
+
+		resources.assetManager.load("data/images/tutorial.atlas", TextureAtlas.class);
+		resources.assetManager.finishLoading();
+		atlas = resources.assetManager.get("data/images/tutorial.atlas", TextureAtlas.class);
 	}
 
 	@Override
 	public int getPageCount() {
-		return 2;
+		return 11;
 	}
 
 	@Override
 	public void showPage(int page) {
+		group.clear();
+
 		switch (page) {
 		case 1:
 			page1();
 			break;
 		case 2:
-			page2();
+			addImage("overview1");
+			break;
+		case 3:
+			addImage("overview2");
+			break;
+		case 4:
+			addImage("overview2");
+			break;
+		case 5:
+			addImage("overview1");
+			break;
+		case 6:
+			addImage("overview3");
+			break;
+		case 7:
+			addImage("overview4");
+			break;
+		case 8:
+			addImage("overview4");
+			break;
+		case 9:
+			addImage("overview5");
+			break;
+		case 10:
+			addImage("overview4");
+			break;
+		case 11:
+			addImage("overview4");
 			break;
 		default:
 			break;
@@ -46,7 +81,25 @@ public class Overview extends Tutorial {
 	public String getTopHudText(int page) {
 		switch (page) {
 		case 2:
-			return "This is the map";
+			return "This is the your view of the battlefield";
+		case 3:
+			return "These planets are currently owned by a player";
+		case 4:
+			return "Green lines show planets in your control. Red lines show a planet in the enemy's control.";
+		case 5:
+			return "The number on any planet represents the number of ships currently on that planet";
+		case 6:
+			return "To move, tap a planet you own then tap a planet to send ships to. Drag the slider on the bottom";
+		case 7:
+			return "All moves in progress show on the bottom. Tap any move to see it";
+		case 8:
+			return "Every round, all owned planets will build more ships";
+		case 9:
+			return "Double tap on any planet to see how many ships can be built per round";
+		case 10:
+			return "When you are done issueing moves for this round, tap the green button in the bottom right";
+		case 11:
+			return "Good luck commander!";
 		default:
 			return "";
 		}
@@ -67,21 +120,20 @@ public class Overview extends Tutorial {
 		}
 
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.00f,
-				"As we proceed in our unceasing hunt for resources, we continue to be engaged by enemy forces"));
+				"We continue to be engaged by enemy forces as we search for the resources necessary for our survival"));
 
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.3f, 2.25f,
 				"Let me give you a basic introduction to the view of the battefield and of the controls at your disposal"));
 	}
 
-	private void page2() {
-		Image image = new Image(new TextureRegionDrawable(resources.tutorialAtlas.findRegion("overview1")));
+	private void addImage(String imageName) {
+		Image image = new Image(new TextureRegionDrawable(atlas.findRegion(imageName)));
 
-		float xMargin = group.getWidth() * 0.08f;
+		float xMargin = group.getWidth() * 0.09f;
 		float yMargin = group.getHeight() * 0.01f;
 
 		image.setBounds(xMargin, yMargin, group.getWidth() - 2 * xMargin, group.getHeight() - 2 * yMargin);
 
 		group.addActor(image);
-
 	}
 }
