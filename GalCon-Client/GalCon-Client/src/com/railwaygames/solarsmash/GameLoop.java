@@ -119,6 +119,7 @@ public class GameLoop extends Game {
 		resources.menuAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		resources.levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		resources.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
+		resources.tutorialAtlas = assetManager.get("data/images/tutorial.atlas", TextureAtlas.class);
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		boardScreen = new BoardScreen(resources);
