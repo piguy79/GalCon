@@ -11,7 +11,7 @@ public class InventoryItem extends JsonConvertible {
 	public String price;
 	public String name;
 	public int numCoins;
-	
+
 	/**
 	 * Has the user purchased this item without the app yet consuming it?
 	 */

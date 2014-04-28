@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/GalCon-Client"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-robovm.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/google-play-game-services-ios"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/in-app-purchase-ios"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

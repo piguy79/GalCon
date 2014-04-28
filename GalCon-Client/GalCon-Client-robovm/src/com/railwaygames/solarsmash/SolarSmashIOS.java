@@ -38,6 +38,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
 		config.orientationLandscape = false;
 		config.orientationPortrait = true;
+		config.allowIpod = true;
 
 		IOSSocialAction socialAction = new IOSSocialAction();
 		IOSGameAction gameAction = new IOSGameAction(socialAction);
