@@ -25,6 +25,7 @@ public class Player extends JsonConvertible {
 	public String handle;
 	public Integer xp;
 	public Integer coins;
+	public boolean noAd = false;
 	public List<Order> consumedOrders;
 
 	@Override
@@ -39,6 +40,7 @@ public class Player extends JsonConvertible {
 		this.handle = jsonObject.optString(Constants.HANDLE);
 		this.xp = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.optInt(Constants.COINS);
+		this.noAd = jsonObject.optBoolean(Constants.NO_ADS);
 
 		if (jsonObject.has("consumedOrders")) {
 			this.consumedOrders = new ArrayList<Order>();

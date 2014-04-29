@@ -303,6 +303,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 				user.put("coins", GameLoop.USER.coins);
 				user.put("usedCoins", -1);
 				user.put("watchedAd", false);
+				user.put("na", true);
 				usersCollection.update(
 						new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
 			}

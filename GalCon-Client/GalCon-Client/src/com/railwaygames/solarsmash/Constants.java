@@ -171,6 +171,8 @@ public class Constants {
 	public static final String LAST_AD_SHOWN = "lastAdShown";
 	public static final String MAP_VERSION_SUPPORTED = "10";
 	public static final String NO_COIN_INFO = "coinInfo";
+	public static final String NO_ADS = "na";
+
 
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");

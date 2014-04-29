@@ -284,6 +284,10 @@ public class BoardScreen implements ScreenFeedback {
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+		
+		if(GameLoop.USER.noAd){
+			return;
+		}
 
 		if (lastAdShownTime == null || lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());

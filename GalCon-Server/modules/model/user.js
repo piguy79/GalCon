@@ -9,6 +9,7 @@ var userSchema = mongoose.Schema({
 	xp : "Number",
 	wins : "Number",
 	losses : "Number",
+	na : "Boolean",
 	session : {
 		id : "String",
 		expireDate : "Date"
@@ -83,7 +84,10 @@ exports.addCoinsForAnOrder = function(handle, order) {
 											$inc : 
 													{
 														coins : inventoryItem.associatedCoins
-													},  
+													}, 
+											$set :  {
+														na : true
+											},
 											$push : {
 														consumedOrders : order
 													}
