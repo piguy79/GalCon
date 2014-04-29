@@ -1615,7 +1615,6 @@ com.badlogic.gdx.Net$HttpResponse:
     public abstract java.lang.String getHeader(java.lang.String)
     public abstract java.util.Map getHeaders()
 com.badlogic.gdx.Preferences:
-    public abstract void putBoolean(java.lang.String,boolean)
     public abstract void putInteger(java.lang.String,int)
     public abstract void putLong(java.lang.String,long)
     public abstract void putFloat(java.lang.String,float)
@@ -1624,7 +1623,6 @@ com.badlogic.gdx.Preferences:
     public abstract int getInteger(java.lang.String)
     public abstract long getLong(java.lang.String)
     public abstract float getFloat(java.lang.String)
-    public abstract boolean getBoolean(java.lang.String,boolean)
     public abstract int getInteger(java.lang.String,int)
     public abstract long getLong(java.lang.String,long)
     public abstract float getFloat(java.lang.String,float)
@@ -9028,7 +9026,6 @@ com.railwaygames.solarsmash.model.MinifiedGame:
 com.railwaygames.solarsmash.model.Planet:
     public static final java.lang.String ALIVE
     72:72:public java.lang.String getAbilityDescription()
-    179:179:public boolean isOwned()
 com.railwaygames.solarsmash.model.Rederable
 com.railwaygames.solarsmash.model.Ship
 com.railwaygames.solarsmash.model.SocialAuth
@@ -9062,9 +9059,9 @@ com.railwaygames.solarsmash.screen.Action:
     public static final java.lang.String SHARE
     3:3:public Action()
 com.railwaygames.solarsmash.screen.BoardScreen:
-    916:916:public void dispose()
+    914:914:public void dispose()
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1033:1033:public BoardScreen$Labels()
+    1031:1031:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
     152:152:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
@@ -9086,24 +9083,15 @@ com.railwaygames.solarsmash.screen.LevelSelectionScreen$8:
     385:393:public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch,float)
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
     169:169:public void dispose()
-com.railwaygames.solarsmash.screen.Resources:
-    public com.badlogic.gdx.graphics.g2d.TextureAtlas tutorialAtlas
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
     12:14:public AcceptInviteEvent(boolean)
 com.railwaygames.solarsmash.screen.event.DialogEventListener
-com.railwaygames.solarsmash.screen.hud.BlankHud
 com.railwaygames.solarsmash.screen.level.LevelManager:
     12:12:public LevelManager()
 com.railwaygames.solarsmash.screen.overlay.DismissableOverlay:
     32:33:public DismissableOverlay(com.railwaygames.solarsmash.screen.Resources,com.badlogic.gdx.scenes.scene2d.utils.ClickListener)
-com.railwaygames.solarsmash.screen.overlay.HighlightOverlay:
-    147:154:public com.railwaygames.solarsmash.screen.overlay.HighlightOverlay focus(java.lang.String)
-com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds
-com.railwaygames.solarsmash.screen.overlay.HighlightOverlay$TutorialHuds$1
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
     221:223:public void onSignOut()
-com.railwaygames.solarsmash.screen.tutorial.Overview
-com.railwaygames.solarsmash.screen.tutorial.Tutorial
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
     103:103:public com.railwaygames.solarsmash.screen.widget.ActorBar build()
 com.railwaygames.solarsmash.screen.widget.ActorBar$Align
