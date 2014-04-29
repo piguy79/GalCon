@@ -98,7 +98,8 @@ public class Constants {
 
 	public static class Tutorial {
 		public static final String OVERVIEW = "tutorial_overview";
-		public static final String RESOURCES = "resources";
+		public static final String RESOURCES = "t_resources";
+		public static final String HARVEST = "t_harvest";
 	}
 
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect.\n\nTouch the screen\nto try again.";

@@ -40,6 +40,7 @@ import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.Bounds;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.HarvestMove;
+import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
 import com.railwaygames.solarsmash.model.Player;
@@ -330,6 +331,48 @@ public class BoardScreen implements ScreenFeedback {
 
 		showAbilityOverlay();
 		showAbilityCaptureOverlay();
+		showHarvestOverlay();
+		loadMaps();
+	}
+
+	private void loadMaps() {
+		UIConnectionWrapper.findAllMaps(new UIConnectionResultCallback<Maps>() {
+
+			@Override
+			public void onConnectionResult(Maps result) {
+				com.railwaygames.solarsmash.model.Map gameMap = null;
+				for (com.railwaygames.solarsmash.model.Map map : result.allMaps) {
+					if (map.key == gameBoard.map) {
+						gameMap = map;
+					}
+				}
+
+				if (gameMap != null && gameMap.canHarvest) {
+					Overlay txtOverlay = new TextOverlay(
+							"Commander\n\nWe have been developing a technology to enhance the resource extraction process from the moons\n\n"
+									+ "When enabled, you'll get a larger bonus... with the side effect of destroying the moon after a short time\n\n"
+									+ "Double tap a planet with a moon once you control it for more", resources);
+					txtOverlay.setColor(Constants.Colors.OVERLAY_RED);
+					overlay = new DismissableOverlay(resources, txtOverlay, null);
+					stage.addActor(overlay);
+					final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+					prefs.putBoolean(Constants.Tutorial.HARVEST, true);
+					prefs.flush();
+				}
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+
+			}
+		});
+	}
+
+	private void showHarvestOverlay() {
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		if (!prefs.getBoolean(Constants.Tutorial.HARVEST, false)) {
+			loadMaps();
+		}
 	}
 
 	private void showAbilityOverlay() {

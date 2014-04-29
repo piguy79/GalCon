@@ -102,7 +102,7 @@ public class Overview extends Tutorial {
 		case 10:
 			return "Double tap on any planet to see how many ships can be built per round";
 		case 11:
-			return "When you are done issueing moves for this round, tap the green button in the bottom right";
+			return "When you are done issuing moves for this round, tap the green button in the bottom right";
 		case 12:
 			return "Good luck commander!";
 		default:
