@@ -587,7 +587,7 @@ public class FriendScreen implements ScreenFeedback {
 				Constants.UI.DEFAULT_FONT);
 		populateSearchLabelGroup(label);
 
-		if (GameLoop.USER.auth.getID(authProvider) == null) {
+		if (!GameLoop.USER.auth.hasAuth(authProvider)) {
 			socialAction.signIn(new AuthenticationListener() {
 
 				@Override

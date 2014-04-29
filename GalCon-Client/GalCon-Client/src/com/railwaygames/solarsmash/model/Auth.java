@@ -40,5 +40,9 @@ public class Auth extends JsonConvertible {
 		}
 		return authId;
 	}
+	
+	public boolean hasAuth(String authProvider){
+		return auth.get(authProvider) != null;
+	}
 
 }
