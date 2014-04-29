@@ -15,6 +15,7 @@ public class Constants {
 		public static final String XP_AWARDED_TO_WINNER = "xpForWinning";
 		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
 		public static final String AD_TIMEOUT = "adTimeout";
+		public static final String FREE_COINS = "freeCoins";
 
 	}
 
@@ -171,6 +172,10 @@ public class Constants {
 	public static final String CURRENT_RANK = "currentRank";
 	public static final String LAST_AD_SHOWN = "lastAdShown";
 	public static final String MAP_VERSION_SUPPORTED = "10";
+	public static final String NO_COIN_INFO = "coinInfo";
+	public static final String NO_ADS = "na";
+
+
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

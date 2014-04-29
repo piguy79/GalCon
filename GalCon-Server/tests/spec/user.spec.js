@@ -34,7 +34,7 @@ describe("Testing interactions with the user model", function(){
 								{
 									orderId : "1345",
 								    packageName : "package",
-								    productId : "4",
+								    productId : "coins_4",
 								    purchaseTime : "12543",
 								    purchaseState : "DONE",
 								    developerPayload : "",
@@ -52,7 +52,7 @@ describe("Testing interactions with the user model", function(){
 	var testOrder = {
 			orderId : "1345",
 		    packageName : "package",
-		    productId : "4",
+		    productId : "coins_4",
 		    purchaseTime : "12543",
 		    purchaseState : "DONE",
 		    developerPayload : "",
@@ -74,9 +74,10 @@ describe("Testing interactions with the user model", function(){
 		p.then(function(){
 			return user.addCoinsForAnOrder('test',  testOrder);
 		}).then(function(person){
-			expect(person.coins).toBe(4);
+			expect(person.coins).toBe(75);
 			expect(person.consumedOrders.length).toBe(1);
 			expect(_.filter(person.consumedOrders, function(order){return order.orderId === "1345"}).length).toBe(1);
+			expect(person.na).toBe(true);
 			done();
 		}).then(null, function(err){
 			console.log(err);
