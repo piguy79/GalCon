@@ -149,6 +149,8 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
+		
+		this.backGround.setColor(Color.RED);
 
 		return this;
 	}
@@ -431,7 +433,6 @@ public abstract class HighlightOverlay extends Overlay {
 						return false;
 					}
 
-					HighlightOverlay.this.clear();
 					bottomHud.changeButtonText("Next >");
 
 					currentPage += 1;

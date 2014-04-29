@@ -31,12 +31,12 @@ public class Overview extends Tutorial {
 
 	@Override
 	public int getPageCount() {
-		return 11;
+		return 12;
 	}
 
 	@Override
 	public void showPage(int page) {
-		group.clear();
+//		group.clear();
 
 		switch (page) {
 		case 1:
@@ -64,12 +64,15 @@ public class Overview extends Tutorial {
 			addImage("overview4");
 			break;
 		case 9:
-			addImage("overview5");
-			break;
-		case 10:
 			addImage("overview4");
 			break;
+		case 10:
+			addImage("overview5");
+			break;
 		case 11:
+			addImage("overview4");
+			break;
+		case 12:
 			addImage("overview4");
 			break;
 		default:
@@ -85,7 +88,7 @@ public class Overview extends Tutorial {
 		case 3:
 			return "These planets are currently owned by a player";
 		case 4:
-			return "Green lines show planets in your control. Red lines show a planet in the enemy's control.";
+			return "Green lines show planets in your control. Red lines show a planet in the enemy's control";
 		case 5:
 			return "The number on any planet represents the number of ships currently on that planet";
 		case 6:
@@ -93,12 +96,14 @@ public class Overview extends Tutorial {
 		case 7:
 			return "All moves in progress show on the bottom. Tap any move to see it";
 		case 8:
-			return "Every round, all owned planets will build more ships";
+			return "All ships are cloaked while moving. Your enemy can't see your moves and you can't see their moves";
 		case 9:
-			return "Double tap on any planet to see how many ships can be built per round";
+			return "Every round, all owned planets will build more ships";
 		case 10:
-			return "When you are done issueing moves for this round, tap the green button in the bottom right";
+			return "Double tap on any planet to see how many ships can be built per round";
 		case 11:
+			return "When you are done issueing moves for this round, tap the green button in the bottom right";
+		case 12:
 			return "Good luck commander!";
 		default:
 			return "";
