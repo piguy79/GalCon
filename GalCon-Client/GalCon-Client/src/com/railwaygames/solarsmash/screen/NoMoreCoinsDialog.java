@@ -1,10 +1,13 @@
 package com.railwaygames.solarsmash.screen;
 
+import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,6 +23,7 @@ import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.ReturnablePartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
+import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
@@ -51,6 +55,8 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	private Resources resources;
 
 	public PartialScreenFeedback previousScreen;
+	
+	private String coinInfoText = "Free Coins\n\n%s free coins will be credited after all games in progress have been completed and you have 0 coins remaining.";
 
 	public NoMoreCoinsDialog(Resources resources) {
 		super();
@@ -80,8 +86,9 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 		helpButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
+				String formattedInfo = coinInfoText.format(coinInfoText, ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
 				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
-						"Free Coins\n\nFree coins are available after all games in progress have been completed.",
+						formattedInfo,
 						resources), null);
 				stage.addActor(ovrlay);
 			}
@@ -108,6 +115,20 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 		createBackButton(stage, width, height);
 		createHelpButton(stage, width, height);
+		createFirstTimeDialog(stage, width, height);
+	}
+
+	private void createFirstTimeDialog(Stage stage2, float width, float height) {
+		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
+		String lastAdShownTime = prefs.getString(Constants.NO_COIN_INFO);
+		if(GameLoop.USER.coins == 0 && lastAdShownTime.isEmpty()){
+			prefs.putString(Constants.NO_COIN_INFO, "true");
+			prefs.flush();
+			String formattedInfo = coinInfoText.format(coinInfoText, ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
+			Overlay coinInfo = new DismissableOverlay(resources, new TextOverlay(formattedInfo, resources));
+			stage.addActor(coinInfo);
+		}
+		
 	}
 
 	private String coinString(Integer coins) {
