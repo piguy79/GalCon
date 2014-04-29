@@ -1112,10 +1112,12 @@ exports.cancelGame = function(req, res){
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function() {
-		return gameManager.GameModel.findOne({_id : gameId}).exec();
+		return gameManager.GameModel.findOne({_id : gameId}).populate('players').exec();
 	}).then(function(game) {
 		if(game.createdDate.getTime() + 60 * 60 * 1000 > Date.now()) {
 			throw new Error("User tried to cancel game before time allowance");
+		}else if(!hasPlayer(game.players, handle)){
+			throw new Error("User is not part of this game.");
 		}
 		return gameManager.GameModel.findOneAndUpdate({ $and : [{_id : gameId}, { $where : "this.players.length == 1"}]}, {$set : {state : 'C'}}).exec();
 	}).then(function(game){
@@ -1129,6 +1131,13 @@ exports.cancelGame = function(req, res){
 	}).then(function(){
 		res.json({success : true});
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var hasPlayer = function(players, handle){
+	var playerWithHandle = _.filter(players, function(player){
+		return player.handle === handle;
+	});
+	return playerWithHandle.length > 0;
 }
 
 exports.claimGame = function(req, res){

@@ -263,6 +263,8 @@ gameSchema.methods.hasOnlyOnePlayer = function(){
 	return this.players.length == 1;
 }
 
+
+
 var GameModel = db.model('Game', gameSchema);
 
 exports.createGame = function(gameAttributes) {
