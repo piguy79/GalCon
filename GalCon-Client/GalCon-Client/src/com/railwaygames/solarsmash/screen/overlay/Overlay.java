@@ -66,4 +66,10 @@ public class Overlay extends Group {
 
 		backGround.setHeight(height);
 	}
+
+	@Override
+	public void setColor(Color color) {
+		super.setColor(color);
+		backGround.setColor(color);
+	}
 }

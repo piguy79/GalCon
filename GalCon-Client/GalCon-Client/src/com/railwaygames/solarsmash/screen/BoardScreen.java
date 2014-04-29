@@ -327,6 +327,58 @@ public class BoardScreen implements ScreenFeedback {
 		} else {
 			createEndGameOverlay();
 		}
+
+		showAbilityOverlay();
+		showAbilityCaptureOverlay();
+	}
+
+	private void showAbilityOverlay() {
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		if (!prefs.getBoolean(Constants.Tutorial.RESOURCES, false)) {
+			boolean ability = false;
+			for (Planet planet : gameBoard.planets) {
+				if (planet.hasAbility()) {
+					ability = true;
+				}
+			}
+			if (ability) {
+				Overlay txtOverlay = new TextOverlay(
+						"Commander\n\nLong-range sensors indicate that there may be some useful resources nearby in the moons that surround some planets\n\n"
+								+ "I think we should investigate these planets furthur if we can", resources);
+				txtOverlay.setColor(Constants.Colors.OVERLAY_RED);
+				overlay = new DismissableOverlay(resources, txtOverlay, null);
+				stage.addActor(overlay);
+				prefs.putBoolean(Constants.Tutorial.RESOURCES, true);
+				prefs.flush();
+			}
+		}
+	}
+
+	private void showAbilityCaptureOverlay() {
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+
+		String abilities = "";
+		for (Planet planet : gameBoard.planets) {
+			if (planet.hasAbility() && planet.isOwned()) {
+				if (!prefs.getBoolean(Constants.Tutorial.RESOURCES + planet.ability, false)) {
+					if (abilities.length() > 0) {
+						abilities += ", ";
+					}
+					abilities += "increased " + planet.getAbilityDescription();
+					prefs.putBoolean(Constants.Tutorial.RESOURCES + planet.ability, true);
+				}
+			}
+		}
+		if (!abilities.isEmpty()) {
+			prefs.flush();
+
+			Overlay txtOverlay = new TextOverlay(
+					"Commander\n\nIt appears that a new type of resource planet has been captured. "
+							+ "This planet confers the following bonuses\n\n" + abilities, resources);
+			txtOverlay.setColor(Constants.Colors.OVERLAY_RED);
+			overlay = new DismissableOverlay(resources, txtOverlay, null);
+			stage.addActor(overlay);
+		}
 	}
 
 	private void showClaimOverlay() {

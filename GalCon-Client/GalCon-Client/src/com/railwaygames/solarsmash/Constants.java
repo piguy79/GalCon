@@ -26,7 +26,6 @@ public class Constants {
 		public static final String X_SMALL_FONT_RED = "xSmallFontRed";
 		public static final String X_SMALL_FONT_BLACK = "xSmallFontBlack";
 
-
 		public static final String SMALL_FONT = "smallFont";
 		public static final String SMALL_FONT_BLACK = "smallFontBlack";
 
@@ -86,6 +85,7 @@ public class Constants {
 		public static Color USER_SHIP_FILL = Color.GREEN;
 		public static Color ENEMY_SHIP_FILL = new Color(1.0f, 0.2f, 0.2f, 1.0f);
 		public static Color NEUTRAL = Color.valueOf("999B9C");
+		public static Color OVERLAY_RED = new Color(1, 0, 0, 0.7f);
 	}
 
 	public static class Auth {
@@ -98,6 +98,7 @@ public class Constants {
 
 	public static class Tutorial {
 		public static final String OVERVIEW = "tutorial_overview";
+		public static final String RESOURCES = "resources";
 	}
 
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect.\n\nTouch the screen\nto try again.";
@@ -175,7 +176,7 @@ public class Constants {
 	public static final Map<String, String> PLANET_ABILITIES = new HashMap<String, String>() {
 		{
 			put(ABILITY_SPEED, "ship movement speed");
-			put(ABILITY_DEFENCE_INCREASE, "planet defence");
+			put(ABILITY_DEFENCE_INCREASE, "planet defense");
 			put(ABILITY_ATTACK_INCREASE, "attack power");
 			put(ABILITY_REGEN_BLOCK, "block opponents regen");
 		}

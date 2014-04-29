@@ -15,7 +15,8 @@ public class TextOverlay extends Overlay {
 		shaderLabel = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.DEFAULT_FONT);
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
-		shaderLabel.setBounds(0, y, Gdx.graphics.getWidth(), shaderLabel.getHeight());
+		float margin = Gdx.graphics.getWidth() * 0.03f;
+		shaderLabel.setBounds(margin, y, Gdx.graphics.getWidth() - 2 * margin, shaderLabel.getHeight());
 		shaderLabel.setWrap(true);
 		shaderLabel.setAlignment(Align.center, Align.center);
 		addActor(shaderLabel);

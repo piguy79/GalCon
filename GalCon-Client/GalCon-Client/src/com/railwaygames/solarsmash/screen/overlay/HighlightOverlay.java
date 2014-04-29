@@ -150,7 +150,7 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createBottomHud();
 		huds.show();
 		
-		this.backGround.setColor(Color.RED);
+		this.backGround.setColor(Constants.Colors.OVERLAY_RED);
 
 		return this;
 	}
