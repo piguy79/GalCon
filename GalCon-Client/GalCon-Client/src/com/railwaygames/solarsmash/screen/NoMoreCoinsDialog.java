@@ -56,7 +56,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 	public PartialScreenFeedback previousScreen;
 	
-	private String coinInfoText = "Free Coins\n\n%s free coins will be credited after all games in progress have been completed and you have 0 coins remaining.";
+	private String coinInfoText = "Free Coins\n\n%s free coins will be credited after all games in progress have been completed and you have 0 coins remaining.\n\nAny coin purchase will remove ads.";
 
 	public NoMoreCoinsDialog(Resources resources) {
 		super();
