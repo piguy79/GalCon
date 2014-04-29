@@ -42,6 +42,18 @@ public class FriendCombiner {
 		return combinedFriends;
 	}
 	
+	public static List<CombinedFriend> combineFriends(List<MinifiedPlayer> players){
+		List<CombinedFriend> combinedFriends = new ArrayList<CombinedFriend>();
+				
+		
+		for(MinifiedPlayer player : players){
+			GalConFriend galconFriend = new GalConFriend(player.auth.getID(player.auth.defaultAuth), "", player.handle, player.xp);
+			combinedFriends.add(galconFriend);
+		}
+		
+		return combinedFriends;
+	}
+	
 	private static boolean samePerson(Friend friend, MinifiedPlayer player, String authProvider){
 		return friend.id.equals(player.auth.getID(authProvider));
 	}

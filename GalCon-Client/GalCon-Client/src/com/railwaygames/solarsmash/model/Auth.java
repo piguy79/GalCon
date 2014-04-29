@@ -34,11 +34,7 @@ public class Auth extends JsonConvertible {
 	
 	
 	public String getID(String authProvider){
-		String authId = auth.get(authProvider);
-		if(authId == null){
-			return auth.get(defaultAuth);
-		}
-		return authId;
+		return auth.get(authProvider);
 	}
 	
 	public boolean hasAuth(String authProvider){

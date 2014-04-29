@@ -278,7 +278,7 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setVisible(false);
 						}
 
-						displayPeople(FriendCombiner.combineFriends(new ArrayList<Friend>(), result.people, ""), time);
+						displayPeople(FriendCombiner.combineFriends(result.people), time);
 						searchBox.getOnscreenKeyboard().show(false);
 					}
 
