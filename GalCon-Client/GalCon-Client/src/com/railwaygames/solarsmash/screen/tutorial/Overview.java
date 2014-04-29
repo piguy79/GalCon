@@ -84,7 +84,7 @@ public class Overview extends Tutorial {
 	public String getTopHudText(int page) {
 		switch (page) {
 		case 2:
-			return "This is the your view of the battlefield";
+			return "This is your view of the battlefield";
 		case 3:
 			return "These planets are currently owned by a player";
 		case 4:
