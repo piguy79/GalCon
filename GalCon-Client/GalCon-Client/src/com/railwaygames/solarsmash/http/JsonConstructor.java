@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.http;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -155,10 +156,11 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders) throws JSONException {
+	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
-		top.put("playerHandle", playerHandle);
+		top.put("handle", playerHandle);
+		top.put("session", session);
 		JSONArray jsonOrders = createOrdersJson(orders);
 		top.put("orders", jsonOrders);
 

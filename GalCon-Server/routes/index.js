@@ -23,7 +23,11 @@ var VALIDATE_MAP = {
 	mapVersion : validation.isMapVersion,
 	orders : validation.isOrders,
 	move : validation.isValidMoves,
-	gameId : validation.isGameId
+	gameId : validation.isGameId,
+	authProvider : validation.isAuthProvider,
+	socialId : validation.isSocialId,
+	socialIdGroup : validation.isSocialIdGroup,
+	token : validation.isToken
 };
 
 var activeGameQuery = {$or : [{'endGame.winnerHandle' : ''}, {'endGame.winnerHandle' : null}]};
@@ -660,14 +664,20 @@ exports.addCoinsForAnOrder = function(req, res) {
 }
 
 exports.deleteConsumedOrders = function(req, res){
-	var playerHandle = req.body.playerHandle;
+	var handle = req.body.handle;
 	var orders = req.body.orders;
 	
+	if(!validate({session : session, handle : handle}, res)) {
+		return;
+	}
+	
 	if(orders && orders.length >0){
-		var lastPromise = performFunctionToOrders(userManager.deleteConsumedOrder, orders, playerHandle);
-		lastPromise.then(handleUserUpdate(req, res, playerHandle), logErrorAndSetResponse(req, res));
+		var lastPromise = validateSession(session, {"handle" : handle});
+		lastPromise.then(function(){
+			return performFunctionToOrders(userManager.deleteConsumedOrder, orders, handle);
+		}).then(handleUserUpdate(req, res, handle), logErrorAndSetResponse(req, res));
 	}else{
-		var userReturnInfo = handleUserUpdate(req, res, playerHandle);
+		var userReturnInfo = handleUserUpdate(req, res, handle);
 		userReturnInfo(null);
 	}
 }
@@ -927,6 +937,10 @@ exports.findAllInventory = function(req, res){
 exports.exchangeToken = function(req, res) {
 	var authProvider = req.body.authProvider;
 	var token = req.body.token;
+	
+	if(!validate({authProvider : authProvider, token : token}, res)) {
+		return;
+	}
 
 	var p = socialManager.exchangeToken(authProvider, token);
 	p.then(function(session) {
@@ -994,8 +1008,10 @@ exports.findPendingInvites = function(req, res){
 		return;
 	}
 	
-	var p = gameManager.findByInvitee(handle);
-	p.then(function(queue){
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return gameManager.findByInvitee(handle);
+	}).then(function(queue){
 		var returnList = _.map(queue, function(item){
 			return {
 				requester : minifyUser(item.players[0]),
@@ -1052,7 +1068,7 @@ exports.findMatchingFriends = function(req, res){
 	var authProvider = req.body.authProvider;
 	var handle = req.body.handle;
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, authProvider : authProvider, socialIdGroup : authIDs}, res)) {
 		return;
 	}
 	
@@ -1075,7 +1091,7 @@ exports.addProviderToUser = function(req, res){
 	var id = req.body.id;
 	var handle = req.body.handle;
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, authProvider : authProvider, socialId : id}, res)) {
 		return;
 	}
 	
@@ -1106,7 +1122,7 @@ exports.cancelGame = function(req, res){
 	var handle = req.body.handle;
 	var gameId = req.body.gameId;
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
 		return;
 	}
 	
@@ -1145,7 +1161,7 @@ exports.claimGame = function(req, res){
 	var handle = req.body.handle;
 	var gameId = req.body.gameId;
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
 		return;
 	}
 	

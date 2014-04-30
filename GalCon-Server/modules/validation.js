@@ -104,4 +104,22 @@ exports.isValidMoves = function(arg){
 	
 }
 
+exports.isAuthProvider = function(authProvider){
+	var validAuthProviders = ['google', 'facebook'];
+	
+	return _.contains(validAuthProviders, authProvider);
+}
+
+exports.isSocialId = function(id){
+	return id.length < 100;
+}
+
+exports.isSocialIdGroup = function(ids){
+	return _.every(ids, exports.isSocialId);
+}
+
+exports.isToken = function(token){
+	return token.length < 500;
+}
+
 

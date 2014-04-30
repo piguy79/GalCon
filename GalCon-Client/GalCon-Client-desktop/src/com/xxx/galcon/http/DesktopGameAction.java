@@ -318,7 +318,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String playerHandle,
 			List<Order> orders) {
 		try {
-			JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders);
+			JSONObject top = JsonConstructor.deleteConsumedOrders(playerHandle, orders, getSession());
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
