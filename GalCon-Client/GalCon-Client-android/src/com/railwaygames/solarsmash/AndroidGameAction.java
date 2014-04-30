@@ -305,6 +305,7 @@ public class AndroidGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		args.put("handle", handle);
+		args.put("session", getSession());
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, GameBoard.class).execute("");

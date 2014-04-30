@@ -8884,6 +8884,8 @@ com.railwaygames.solarsmash.Constants:
     public static final java.lang.String CURRENT_RANK
     public static final java.lang.String LAST_AD_SHOWN
     public static final java.lang.String MAP_VERSION_SUPPORTED
+    public static final java.lang.String NO_COIN_INFO
+    public static final java.lang.String NO_ADS
     11:11:public Constants()
 com.railwaygames.solarsmash.Constants$Auth
 com.railwaygames.solarsmash.Constants$Colors:
@@ -9025,7 +9027,6 @@ com.railwaygames.solarsmash.model.MinifiedGame:
     99:99:public boolean isClaimAvailable()
 com.railwaygames.solarsmash.model.Planet:
     public static final java.lang.String ALIVE
-    72:72:public java.lang.String getAbilityDescription()
 com.railwaygames.solarsmash.model.Rederable
 com.railwaygames.solarsmash.model.Ship
 com.railwaygames.solarsmash.model.SocialAuth
@@ -9059,11 +9060,11 @@ com.railwaygames.solarsmash.screen.Action:
     public static final java.lang.String SHARE
     3:3:public Action()
 com.railwaygames.solarsmash.screen.BoardScreen:
-    914:914:public void dispose()
+    1013:1013:public void dispose()
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1031:1031:public BoardScreen$Labels()
+    1130:1130:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
-    152:152:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
+    153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     346:346:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:

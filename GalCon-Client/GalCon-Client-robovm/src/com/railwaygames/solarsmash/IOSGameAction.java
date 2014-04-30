@@ -147,6 +147,7 @@ public class IOSGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("id", id);
 		args.put("handle", handle);
+		args.put("session", getSession());
 		new GetJsonRequestTask<GameBoard>(args, callback, FIND_GAME_BY_ID, GameBoard.class).execute("");
 	}
 

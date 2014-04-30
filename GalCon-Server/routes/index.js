@@ -23,7 +23,7 @@ var VALIDATE_MAP = {
 	mapVersion : validation.isMapVersion,
 	orders : validation.isOrders,
 	move : validation.isValidMoves,
-	gameId : validation.isGameId
+	gameId : validation.isMongoId
 };
 
 var activeGameQuery = {$or : [{'endGame.winnerHandle' : ''}, {'endGame.winnerHandle' : null}]};
@@ -37,24 +37,44 @@ exports.searchUsers = function(req, res){
 	var session = req.query['session'];
 	var handle = req.query['handle'];
 	
-	if(!validate({handle : searchTerm, session : session}, res)) {
+	if(!validate({handle : searchTerm, session : session, handle : handle}, res)) {
 		return;
 	}
 	
-	var p = userManager.findUserMatchingSearch(searchTerm, handle);
-	p.then(function(people) {
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		return userManager.findUserMatchingSearch(searchTerm, handle);
+	}).then(function(people) {
 		res.json({items : _.map(people, minifyUser)});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.findGameById = function(req, res) {
-	var searchId = req.query['id'];
+	var gameId = req.query['id'];
+	var session = req.query['session'];
 	var handle = req.query['handle'];
 	
-	var p = gameManager.findById(searchId);
-	p.then(function(game) {
+	if(!validate({session : session, handle : handle, gameId : gameId}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function() {
+		return gameManager.findById(gameId);
+	}).then(function(game) {
+		var found = false;
+		_.each(game.players, function(player) {
+			if(player.handle === handle) {
+				found = true;
+			}
+		});
+		
+		if(!found) {
+			throw new Error("Invalid request made.  Handle '" + handle + "' is not valid for gameId: " + gameId);
+		}
+		
 		if(game.endGame.date && _.indexOf(game.endGame.viewedBy, handle) === -1) {
-			return gameManager.findByIdAndAddViewed(searchId, handle);
+			return gameManager.findByIdAndAddViewed(gameId, handle);
 		}
 		return game;
 	}).then(function(game) {
@@ -64,6 +84,10 @@ exports.findGameById = function(req, res) {
 
 exports.findGamesWithPendingMove = function(req, res) {
 	var handle = req.query['handle'];
+	
+	/*
+	 * We explicitly decided to not add session support here.  This just returns counts of games which is ok.  And it makes PingService calls easier.
+	 */
 	
 	if(!validate({handle : handle}, res)) {
 		return;
@@ -162,7 +186,7 @@ exports.findUserById = function(req, res) {
 	var authProvider = req.query['authProvider']
 	var session = req.query['session'];
 	
-	if(!validate({session : session}, res)) {
+	if(!validate({session : session, authProvider : authProvider, socialId : id}, res)) {
 		return;
 	}
 	var key = 'auth.' + authProvider;
@@ -187,7 +211,7 @@ exports.requestHandleForId = function(req, res) {
 	var authProvider = req.body['authProvider'];
 	var handle = req.body['handle'];
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, authProvider : authProvider, socialId : id}, res)) {
 		return;
 	}
 	
