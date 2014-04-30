@@ -55,7 +55,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	private Resources resources;
 
 	public PartialScreenFeedback previousScreen;
-	
+
 	private String coinInfoText = "Free Coins\n\n%s free coins will be credited after all games in progress have been completed and you have 0 coins remaining.\n\nAny coin purchase will remove ads.";
 
 	public NoMoreCoinsDialog(Resources resources) {
@@ -86,10 +86,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 		helpButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				String formattedInfo = coinInfoText.format(coinInfoText, ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
-				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
-						formattedInfo,
-						resources), null);
+				String formattedInfo = coinInfoText.format(coinInfoText,
+						ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
+				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(formattedInfo, resources),
+						null);
 				stage.addActor(ovrlay);
 			}
 		});
@@ -121,14 +121,15 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	private void createFirstTimeDialog(Stage stage2, float width, float height) {
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String lastAdShownTime = prefs.getString(Constants.NO_COIN_INFO);
-		if(GameLoop.USER.coins == 0 && lastAdShownTime.isEmpty()){
+		if (GameLoop.USER.coins == 0 && lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.NO_COIN_INFO, "true");
 			prefs.flush();
-			String formattedInfo = coinInfoText.format(coinInfoText, ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
+			String formattedInfo = coinInfoText.format(coinInfoText,
+					ConfigResolver.getByConfigKey(Constants.Config.FREE_COINS));
 			Overlay coinInfo = new DismissableOverlay(resources, new TextOverlay(formattedInfo, resources));
 			stage.addActor(coinInfo);
 		}
-		
+
 	}
 
 	private String coinString(Integer coins) {
@@ -263,6 +264,10 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	public void hide() {
 		for (Actor actor : actors) {
 			actor.remove();
+		}
+
+		if (waitImage != null) {
+			waitImage.stop();
 		}
 	}
 

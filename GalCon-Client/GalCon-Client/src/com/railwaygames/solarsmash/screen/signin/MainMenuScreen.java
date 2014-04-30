@@ -316,6 +316,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		for (Actor actor : actors) {
 			actor.remove();
 		}
+
+		if (waitImage != null) {
+			waitImage.stop();
+		}
 	}
 
 	@Override
