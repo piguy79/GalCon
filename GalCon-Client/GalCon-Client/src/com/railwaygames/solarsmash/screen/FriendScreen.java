@@ -497,6 +497,8 @@ public class FriendScreen implements ScreenFeedback {
 		returnCode = null;
 		gameInviteRequest = null;
 		mapKey = null;
+		screenState =1;
+		requestTime = -1L;
 	}
 
 	public MenuScreenContainer getPreviousScreen() {
