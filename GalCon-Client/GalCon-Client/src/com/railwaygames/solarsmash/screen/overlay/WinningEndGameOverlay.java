@@ -38,7 +38,7 @@ public class WinningEndGameOverlay extends EndGameOverlay {
 
 	@Override
 	String getTextForMessageLabel() {
-		return "You have obliterated the enemies fleet.";
+		return "You have obliterated the enemy's fleet.";
 	}
 
 
