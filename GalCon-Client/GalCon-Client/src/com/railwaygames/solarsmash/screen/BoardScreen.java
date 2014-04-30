@@ -336,7 +336,6 @@ public class BoardScreen implements ScreenFeedback {
 		showAbilityOverlay();
 		showAbilityCaptureOverlay();
 		showHarvestOverlay();
-		loadMaps();
 	}
 
 	private void loadMaps() {
