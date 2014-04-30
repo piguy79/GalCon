@@ -271,7 +271,7 @@ public class AndroidGameAction implements GameAction {
 	public void deleteConsumedOrders(final UIConnectionResultCallback<Player> callback, String handle,
 			List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders);
+			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders, getSession());
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top

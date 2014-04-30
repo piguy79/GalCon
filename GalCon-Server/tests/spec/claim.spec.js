@@ -85,7 +85,8 @@ describe("Perform Move - Standard -", function() {
 		var currentGame;
 		
 		var p =  gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
-		p.then(function(){
+		p.then(function(game){
+			currentGameId = game._id;
 			return apiRunner.claimVictory(PLAYER_1.handle, currentGameId, PLAYER_1.session.id);
 		}).then(function(claimedGame){
 			expect(claimedGame.error).toBe('Invalid claim.');
