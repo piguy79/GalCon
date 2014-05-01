@@ -208,15 +208,15 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 	private void retryAddCoins(String msg) {
 		waitImage.stop();
-
-		final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
-			}
-		});
-
-		stage.addActor(ovrlay);
+		if(ordersToConsume != null){
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
+				}
+			});
+			stage.addActor(ovrlay);
+		}
 	}
 
 	@Override
