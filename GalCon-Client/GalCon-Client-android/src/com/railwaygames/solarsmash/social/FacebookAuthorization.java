@@ -50,7 +50,7 @@ public class FacebookAuthorization implements Authorizer {
 		
 		Session current = Session.getActiveSession();
 		if(current != null && current.isOpened()){
-			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, current.getAccessToken());
+			populateAuthIdAndSucceed();
 		}else{
 			Session session = createSession();
 			session.openForRead(createRequest().setCallback(statusCallback));
@@ -77,27 +77,30 @@ public class FacebookAuthorization implements Authorizer {
 
 	@Override
 	public void onActivityResult(int responseCode) {
-       Request.newGraphPathRequest(Session.getActiveSession(), "/me", new Request.Callback() {
-		
-		@Override
-		public void onCompleted(Response response) {
-			if(response.getError() != null){
-				listener.onSignInFailed("Unable to connect to FB.");
-			}else{
-				GraphObject user = response.getGraphObject();
-				GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getProperty("id").toString());
-				
-				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-				prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
-				prefs.flush();
-				
-				listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
-			}
+       populateAuthIdAndSucceed();
+	}
+
+
+	private void populateAuthIdAndSucceed() {
+		Request.newGraphPathRequest(Session.getActiveSession(), "/me", new Request.Callback() {
 			
-		}
-	}).executeAsync();
-      
-       
+			@Override
+			public void onCompleted(Response response) {
+				if(response.getError() != null){
+					listener.onSignInFailed("Unable to connect to FB.");
+				}else{
+					GraphObject user = response.getGraphObject();
+					GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getProperty("id").toString());
+					
+					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+					prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID, GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+					prefs.flush();
+					
+					listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
+				}
+				
+			}
+		}).executeAsync();
 	}
 
 	@Override
@@ -108,7 +111,7 @@ public class FacebookAuthorization implements Authorizer {
         if (session == null) {
            listener.onSignInFailed("Unable to retrieve token.");
         } else if(session.isOpened()){
-           listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession().getAccessToken());
+        	populateAuthIdAndSucceed();
         }
 		
 	}
@@ -119,7 +122,7 @@ public class FacebookAuthorization implements Authorizer {
             if(SessionState.CLOSED_LOGIN_FAILED == state){
             	listener.onSignInFailed("Unable to connect to Facebook.");
             }else if(SessionState.OPENED == state){
-            	listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, session.getAccessToken());
+            	populateAuthIdAndSucceed();
             }
         }
     }

@@ -3,6 +3,7 @@ package com.railwaygames.solarsmash;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -114,6 +115,7 @@ public class ExternalActionWrapper {
 
 					@Override
 					public void onFailure(String msg) {
+						Gdx.app.log("CONSUME_FROM_GOOGLE", msg);
 						callback.onFailure(msg);
 					}
 				});
