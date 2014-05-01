@@ -395,7 +395,7 @@ exports.updatePlayerXp = function(handle, game, xpToAdd, attemptNumber){
 		var maxRank= _.last(ranks);
 		var potentialNewXp = currentUser.xp + parseInt(game.config.values["xpForWinning"]);
 		if(potentialNewXp >= maxRank.endAt){
-			xpToAdd = 0;
+			xpToAdd = maxRank.endAt - currentUser.xp;
 		}
 		return userManager.UserModel.findOneAndUpdate({handle : handle, xp : currentUser.xp}, {$inc : {xp : xpToAdd}}).exec();
 	}).then(function(user){
