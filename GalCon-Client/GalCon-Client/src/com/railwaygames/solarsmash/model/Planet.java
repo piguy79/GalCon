@@ -115,21 +115,32 @@ public class Planet extends JsonConvertible {
 			return ships;
 		}
 
-		int lowestFromExecutedMoves = 10000000;
-		boolean executedMovesFound = false;
+		Integer previousShips = null;
 
+		boolean changedOwner = false;
 		if (isBeingAttacked(gameBoard)) {
 			for (Move move : associatedTargetMoves(gameBoard)) {
-				if (move.executed && !move.battleStats.diedInAirAttack
-						&& move.battleStats.previousShipsOnPlanet < lowestFromExecutedMoves) {
-					executedMovesFound = true;
-					lowestFromExecutedMoves = move.battleStats.previousShipsOnPlanet;
+				if (move.executed && !move.battleStats.diedInAirAttack) {
+					if (!owner.equals(move.battleStats.previousPlanetOwner)) {
+						changedOwner = true;
+					}
+
+					if (previousShips == null) {
+						previousShips = move.battleStats.previousShipsOnPlanet;
+						continue;
+					}
+
+					if (changedOwner) {
+						previousShips = Math.max(previousShips, move.battleStats.previousShipsOnPlanet);
+					} else {
+						previousShips = Math.min(previousShips, move.battleStats.previousShipsOnPlanet);
+					}
 				}
 			}
 		}
 
-		if (executedMovesFound) {
-			return lowestFromExecutedMoves;
+		if (previousShips != null) {
+			return previousShips;
 		}
 		return ships;
 	}

@@ -153,7 +153,9 @@ public class RoundInformationTopHud extends Group {
 				if (move.battleStats.attackMultiplier > 0) {
 					attackMultiplier = (int) (move.battleStats.attackMultiplier * 100.0f);
 				}
-				defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
+				if (move.battleStats.defenceMultiplier > 0) {
+					defenseMultiplier = (int) (move.battleStats.defenceMultiplier * 100.0f);
+				}
 				moveOwner = move.handle;
 			} else {
 				didAirAttackOccur = true;
