@@ -20176,32 +20176,32 @@ com.railwaygames.solarsmash.AndroidGameAction -> com.railwaygames.solarsmash.b:
     258:268:void addCoinsForAnOrder(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.util.List) -> a
     274:285:void deleteConsumedOrders(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.util.List) -> b
     291:302:void invitePlayerForGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String,java.lang.Long) -> a
-    305:313:void findGameById(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> a
-    316:325:void findCurrentGamesByPlayerHandle(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> b
-    328:336:void findGamesWithPendingMove(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> c
-    340:349:void findUserInformation(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> b
-    353:363:void searchForPlayers(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> d
-    369:380:void loadAvailableInventory(com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> b
-    385:393:void findConfigByType(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> e
-    398:408:void requestHandleForId(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String,java.lang.String) -> a
-    526:533:void showAd() -> b
-    539:549:void exchangeTokenForSession(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> c
-    554:565:void resignGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> d
-    569:578:void findFriends(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> f
-    582:591:void findPendingIvites(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> g
-    595:606:void acceptInvite(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> e
-    610:621:void declineInvite(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> f
-    627:638:void findMatchingFriends(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.util.List,java.lang.String,java.lang.String) -> a
-    644:655:void addProviderToUser(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String,java.lang.String) -> b
-    660:669:void cancelGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> g
-    674:683:void claimVictory(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> h
+    305:314:void findGameById(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> a
+    317:326:void findCurrentGamesByPlayerHandle(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> b
+    329:337:void findGamesWithPendingMove(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> c
+    341:350:void findUserInformation(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> b
+    354:364:void searchForPlayers(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> d
+    370:381:void loadAvailableInventory(com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> b
+    386:394:void findConfigByType(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> e
+    399:409:void requestHandleForId(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String,java.lang.String) -> a
+    527:534:void showAd() -> b
+    540:550:void exchangeTokenForSession(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> c
+    555:566:void resignGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> d
+    570:579:void findFriends(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> f
+    583:592:void findPendingIvites(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String) -> g
+    596:607:void acceptInvite(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> e
+    611:622:void declineInvite(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> f
+    628:639:void findMatchingFriends(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.util.List,java.lang.String,java.lang.String) -> a
+    645:656:void addProviderToUser(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String,java.lang.String) -> b
+    661:670:void cancelGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> g
+    675:684:void claimVictory(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String) -> h
     86:86:com.railwaygames.solarsmash.GameLoop access$0(com.railwaygames.solarsmash.AndroidGameAction) -> a
     87:87:com.railwaygames.solarsmash.Config access$1(com.railwaygames.solarsmash.AndroidGameAction) -> b
     83:83:android.net.ConnectivityManager access$2(com.railwaygames.solarsmash.AndroidGameAction) -> c
     85:85:com.railwaygames.solarsmash.http.SocialAction access$3(com.railwaygames.solarsmash.AndroidGameAction) -> d
     176:176:com.railwaygames.solarsmash.http.GameActionCache$MapsCache access$4(com.railwaygames.solarsmash.AndroidGameAction) -> e
     84:84:android.app.Activity access$5(com.railwaygames.solarsmash.AndroidGameAction) -> f
-    365:365:com.railwaygames.solarsmash.http.GameActionCache$InventoryCache access$6(com.railwaygames.solarsmash.AndroidGameAction) -> g
+    366:366:com.railwaygames.solarsmash.http.GameActionCache$InventoryCache access$6(com.railwaygames.solarsmash.AndroidGameAction) -> g
 com.railwaygames.solarsmash.AndroidGameAction$1 -> com.railwaygames.solarsmash.c:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.lang.String val$session -> b
@@ -20210,48 +20210,48 @@ com.railwaygames.solarsmash.AndroidGameAction$10 -> com.railwaygames.solarsmash.
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    310:311:void run() -> run
+    311:312:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$11 -> com.railwaygames.solarsmash.e:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    321:323:void run() -> run
+    322:324:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$12 -> com.railwaygames.solarsmash.f:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    332:334:void run() -> run
+    333:335:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$13 -> com.railwaygames.solarsmash.g:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    346:347:void run() -> run
+    347:348:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$14 -> com.railwaygames.solarsmash.h:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    359:360:void run() -> run
+    360:361:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$15 -> com.railwaygames.solarsmash.i:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
-    375:377:void run() -> run
+    376:378:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$16 -> com.railwaygames.solarsmash.j:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    389:391:void run() -> run
+    390:392:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$17 -> com.railwaygames.solarsmash.k:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    401:403:void run() -> run
+    402:404:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$18 -> com.railwaygames.solarsmash.l:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
-    530:531:void run() -> run
+    531:532:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$19 -> com.railwaygames.solarsmash.m:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    542:544:void run() -> run
+    543:545:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$2 -> com.railwaygames.solarsmash.n:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
@@ -20261,47 +20261,47 @@ com.railwaygames.solarsmash.AndroidGameAction$20 -> com.railwaygames.solarsmash.
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     java.lang.String val$gameId -> c
     org.json.JSONObject val$top -> d
-    558:560:void run() -> run
+    559:561:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$21 -> com.railwaygames.solarsmash.p:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    574:575:void run() -> run
+    575:576:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$22 -> com.railwaygames.solarsmash.q:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    587:588:void run() -> run
+    588:589:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$23 -> com.railwaygames.solarsmash.r:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    602:603:void run() -> run
+    603:604:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$24 -> com.railwaygames.solarsmash.s:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     java.util.Map val$args -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    617:618:void run() -> run
+    618:619:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$25 -> com.railwaygames.solarsmash.t:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    630:632:void run() -> run
+    631:633:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$26 -> com.railwaygames.solarsmash.u:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    647:649:void run() -> run
+    648:650:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$27 -> com.railwaygames.solarsmash.v:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    663:664:void run() -> run
+    664:665:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$28 -> com.railwaygames.solarsmash.w:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     org.json.JSONObject val$top -> c
-    677:678:void run() -> run
+    678:679:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$4 -> com.railwaygames.solarsmash.x:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
@@ -20335,7 +20335,7 @@ com.railwaygames.solarsmash.AndroidGameAction$9 -> com.railwaygames.solarsmash.a
 com.railwaygames.solarsmash.AndroidGameAction$GetJsonRequestTask -> com.railwaygames.solarsmash.ad:
     java.util.Map args -> d
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
-    434:434:java.net.HttpURLConnection establishConnection(java.lang.String[]) -> a
+    435:435:java.net.HttpURLConnection establishConnection(java.lang.String[]) -> a
 com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask -> com.railwaygames.solarsmash.ae:
     java.lang.String path -> b
     com.railwaygames.solarsmash.model.base.JsonConvertible converter -> a
@@ -20343,26 +20343,26 @@ com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask -> com.railwaygame
     com.railwaygames.solarsmash.AndroidGameAction$RequestParams savedParams -> e
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> c
     java.net.HttpURLConnection establishConnection(java.lang.String[]) -> a
-    478:486:com.railwaygames.solarsmash.model.base.JsonConvertible doInBackground(java.lang.String[]) -> b
+    479:487:com.railwaygames.solarsmash.model.base.JsonConvertible doInBackground(java.lang.String[]) -> b
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-    451:451:com.railwaygames.solarsmash.http.UIConnectionResultCallback access$2(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> a
-    453:453:com.railwaygames.solarsmash.AndroidGameAction$RequestParams access$3(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> b
-    447:447:com.railwaygames.solarsmash.AndroidGameAction access$4(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> c
+    452:452:com.railwaygames.solarsmash.http.UIConnectionResultCallback access$2(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> a
+    454:454:com.railwaygames.solarsmash.AndroidGameAction$RequestParams access$3(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> b
+    448:448:com.railwaygames.solarsmash.AndroidGameAction access$4(com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask) -> c
 com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask$1 -> com.railwaygames.solarsmash.af:
     com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask this$1 -> a
     com.railwaygames.solarsmash.model.base.JsonConvertible val$result -> b
-    495:496:void run() -> run
+    496:497:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask$2 -> com.railwaygames.solarsmash.ag:
     com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask this$1 -> a
-    505:510:void run() -> run
+    506:511:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask$3 -> com.railwaygames.solarsmash.ah:
     com.railwaygames.solarsmash.AndroidGameAction$JsonRequestTask this$1 -> a
     com.railwaygames.solarsmash.model.base.JsonConvertible val$result -> b
-    516:517:void run() -> run
+    517:518:void run() -> run
 com.railwaygames.solarsmash.AndroidGameAction$PostJsonRequestTask -> com.railwaygames.solarsmash.ai:
     com.railwaygames.solarsmash.AndroidGameAction this$0 -> a
-    418:418:java.net.HttpURLConnection establishConnection(java.lang.String[]) -> a
+    419:419:java.net.HttpURLConnection establishConnection(java.lang.String[]) -> a
 com.railwaygames.solarsmash.AndroidGameAction$RequestParams -> com.railwaygames.solarsmash.aj:
     java.util.Map args -> a
     java.lang.String path -> b
@@ -20718,9 +20718,9 @@ com.railwaygames.solarsmash.http.InAppBillingAction$Callback -> com.railwaygames
     void onSuccess(java.lang.String) -> a
     void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.http.JsonConstructor -> com.railwaygames.solarsmash.b.j:
-    148:155:org.json.JSONObject addCoinsForAnOrder(java.lang.String,java.util.List,java.lang.String) -> a
-    159:165:org.json.JSONObject deleteConsumedOrders(java.lang.String,java.util.List) -> a
-    169:173:org.json.JSONArray createOrdersJson(java.util.List) -> a
+    149:156:org.json.JSONObject addCoinsForAnOrder(java.lang.String,java.util.List,java.lang.String) -> a
+    160:167:org.json.JSONObject deleteConsumedOrders(java.lang.String,java.util.List,java.lang.String) -> b
+    171:175:org.json.JSONArray createOrdersJson(java.util.List) -> a
 com.railwaygames.solarsmash.http.SocialAction -> com.railwaygames.solarsmash.b.k:
     void signIn(com.railwaygames.solarsmash.http.AuthenticationListener,java.lang.String) -> a
     void onActivityResult(int) -> a
@@ -21060,12 +21060,12 @@ com.railwaygames.solarsmash.model.Planet -> com.railwaygames.solarsmash.e.z:
     68:68:boolean hasAbility() -> a
     76:84:java.util.List associatedTargetMoves(com.railwaygames.solarsmash.model.GameBoard) -> c
     98:110:java.lang.String previousRoundOwner(com.railwaygames.solarsmash.model.GameBoard) -> a
-    114:134:int numberOfShipsToDisplay(com.railwaygames.solarsmash.model.GameBoard,boolean) -> a
-    138:138:boolean isUnderHarvest() -> b
-    146:147:int roundsUntilHarvestIsComplete(com.railwaygames.solarsmash.model.GameBoard) -> b
-    151:151:boolean isAlive() -> c
-    155:175:com.badlogic.gdx.graphics.Color getColor(java.lang.String,boolean) -> a
-    179:179:boolean isOwned() -> d
+    114:145:int numberOfShipsToDisplay(com.railwaygames.solarsmash.model.GameBoard,boolean) -> a
+    149:149:boolean isUnderHarvest() -> b
+    157:158:int roundsUntilHarvestIsComplete(com.railwaygames.solarsmash.model.GameBoard) -> b
+    162:162:boolean isAlive() -> c
+    166:186:com.badlogic.gdx.graphics.Color getColor(java.lang.String,boolean) -> a
+    190:190:boolean isOwned() -> d
 com.railwaygames.solarsmash.model.Player -> com.railwaygames.solarsmash.e.aa:
     com.railwaygames.solarsmash.model.Auth auth -> a
     java.lang.String handle -> b
@@ -21170,30 +21170,29 @@ com.railwaygames.solarsmash.screen.BoardScreen -> com.railwaygames.solarsmash.f.
     261:282:void beginOverlay() -> f
     309:315:com.railwaygames.solarsmash.model.Player findPlayer(java.lang.String) -> b
     319:326:void showRoundInfo() -> g
-    329:340:void beginEndRoundInfo() -> h
-    343:373:void loadMaps() -> i
-    383:402:void showAbilityOverlay() -> j
-    405:429:void showAbilityCaptureOverlay() -> k
-    647:677:void createMoveHud() -> l
-    680:699:void highlight(com.railwaygames.solarsmash.model.Move) -> a
-    758:768:void highlight(com.railwaygames.solarsmash.model.Planet) -> a
-    782:807:void createGrid() -> m
-    810:821:void createPlanetIcons() -> n
-    827:856:void createPlanetTarget(com.railwaygames.solarsmash.screen.widget.PlanetButton) -> a
-    859:885:void createPlanets() -> o
-    932:936:void focusNewPlanet() -> p
-    939:939:boolean planetsAreTheSame(java.util.List) -> a
-    963:964:void clearMoveActions(com.railwaygames.solarsmash.model.Planet) -> b
-    1017:1027:void render(float) -> a
-    1039:1052:void clearTouchedPlanets() -> q
-    1059:1065:void resize(int,int) -> a
-    1069:1070:void show() -> a
-    1087:1087:java.lang.Object getRenderResult() -> b
-    1113:1120:void resetState() -> d
-    1123:1123:com.railwaygames.solarsmash.screen.MenuScreenContainer getPreviousScreen() -> e
-    1127:1128:void setPreviousScreen(com.railwaygames.solarsmash.screen.MenuScreenContainer) -> a
-    1140:1150:void setConnectionError(java.lang.String) -> a
-    1155:1155:void refresh() -> c
+    329:339:void beginEndRoundInfo() -> h
+    382:401:void showAbilityOverlay() -> i
+    404:428:void showAbilityCaptureOverlay() -> j
+    646:676:void createMoveHud() -> k
+    679:698:void highlight(com.railwaygames.solarsmash.model.Move) -> a
+    757:767:void highlight(com.railwaygames.solarsmash.model.Planet) -> a
+    781:806:void createGrid() -> l
+    809:820:void createPlanetIcons() -> m
+    826:855:void createPlanetTarget(com.railwaygames.solarsmash.screen.widget.PlanetButton) -> a
+    858:884:void createPlanets() -> n
+    931:935:void focusNewPlanet() -> o
+    938:938:boolean planetsAreTheSame(java.util.List) -> a
+    962:963:void clearMoveActions(com.railwaygames.solarsmash.model.Planet) -> b
+    1016:1026:void render(float) -> a
+    1038:1051:void clearTouchedPlanets() -> p
+    1058:1064:void resize(int,int) -> a
+    1068:1069:void show() -> a
+    1086:1086:java.lang.Object getRenderResult() -> b
+    1112:1119:void resetState() -> d
+    1122:1122:com.railwaygames.solarsmash.screen.MenuScreenContainer getPreviousScreen() -> e
+    1126:1127:void setPreviousScreen(com.railwaygames.solarsmash.screen.MenuScreenContainer) -> a
+    1139:1149:void setConnectionError(java.lang.String) -> a
+    1154:1154:void refresh() -> c
     103:103:com.railwaygames.solarsmash.screen.overlay.Overlay access$0(com.railwaygames.solarsmash.screen.BoardScreen) -> a
     105:105:com.railwaygames.solarsmash.screen.Resources access$1(com.railwaygames.solarsmash.screen.BoardScreen) -> b
     103:103:void access$2(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.screen.overlay.Overlay) -> a
@@ -21204,50 +21203,50 @@ com.railwaygames.solarsmash.screen.BoardScreen -> com.railwaygames.solarsmash.f.
     328:328:void access$7(com.railwaygames.solarsmash.screen.BoardScreen) -> f
     82:82:com.railwaygames.solarsmash.model.GameBoard access$8(com.railwaygames.solarsmash.screen.BoardScreen) -> g
     87:87:void access$9(com.railwaygames.solarsmash.screen.BoardScreen,java.lang.String) -> b
-    1054:1054:int access$10(com.railwaygames.solarsmash.screen.BoardScreen) -> h
-    1055:1055:int access$11(com.railwaygames.solarsmash.screen.BoardScreen) -> i
-    679:679:void access$12(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Move) -> a
-    1038:1038:void access$13(com.railwaygames.solarsmash.screen.BoardScreen) -> j
-    983:983:void access$14(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Move) -> b
-    966:966:void access$15(com.railwaygames.solarsmash.screen.BoardScreen,int,com.railwaygames.solarsmash.model.Move) -> a
-    962:962:void access$16(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Planet) -> a
-    900:900:void access$17(com.railwaygames.solarsmash.screen.BoardScreen) -> k
+    1053:1053:int access$10(com.railwaygames.solarsmash.screen.BoardScreen) -> h
+    1054:1054:int access$11(com.railwaygames.solarsmash.screen.BoardScreen) -> i
+    678:678:void access$12(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Move) -> a
+    1037:1037:void access$13(com.railwaygames.solarsmash.screen.BoardScreen) -> j
+    982:982:void access$14(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Move) -> b
+    965:965:void access$15(com.railwaygames.solarsmash.screen.BoardScreen,int,com.railwaygames.solarsmash.model.Move) -> a
+    961:961:void access$16(com.railwaygames.solarsmash.screen.BoardScreen,com.railwaygames.solarsmash.model.Planet) -> a
+    899:899:void access$17(com.railwaygames.solarsmash.screen.BoardScreen) -> k
 com.railwaygames.solarsmash.screen.BoardScreen$1 -> com.railwaygames.solarsmash.f.c:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> k
     com.badlogic.gdx.Preferences val$prefs -> l
     248:251:void onClose() -> y
 com.railwaygames.solarsmash.screen.BoardScreen$10 -> com.railwaygames.solarsmash.f.d:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    660:665:void performMove(int,com.railwaygames.solarsmash.model.Move) -> a
-    669:673:void sendMove(java.util.List) -> a
+    659:664:void performMove(int,com.railwaygames.solarsmash.model.Move) -> a
+    668:672:void sendMove(java.util.List) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$11 -> com.railwaygames.solarsmash.f.e:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> k
     com.railwaygames.solarsmash.model.Move val$move -> l
-    686:687:void onClose() -> y
-    691:692:void onCancel() -> z
-    696:697:void onCreateMove(int,com.railwaygames.solarsmash.model.Move) -> a
+    685:686:void onClose() -> y
+    690:691:void onCancel() -> z
+    695:696:void onCreateMove(int,com.railwaygames.solarsmash.model.Move) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$12 -> com.railwaygames.solarsmash.f.f:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    705:743:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
+    704:742:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$12$1 -> com.railwaygames.solarsmash.f.g:
     com.railwaygames.solarsmash.screen.BoardScreen$12 this$1 -> a
     com.railwaygames.solarsmash.screen.event.HarvestEvent val$hEvent -> b
-    721:736:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
+    720:735:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$13 -> com.railwaygames.solarsmash.f.h:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> k
     com.railwaygames.solarsmash.model.Planet val$planet -> l
-    764:766:void onClose() -> y
+    763:765:void onClose() -> y
 com.railwaygames.solarsmash.screen.BoardScreen$14 -> com.railwaygames.solarsmash.f.i:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    774:777:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    773:776:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$15 -> com.railwaygames.solarsmash.f.j:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
     com.railwaygames.solarsmash.screen.widget.PlanetButton val$planetButton -> c
     com.railwaygames.solarsmash.model.Planet val$planet -> d
-    867:876:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    866:875:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$16 -> com.railwaygames.solarsmash.f.k:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    1146:1147:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    1145:1146:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$2 -> com.railwaygames.solarsmash.f.l:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
     com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay val$levelUp -> c
@@ -21257,38 +21256,38 @@ com.railwaygames.solarsmash.screen.BoardScreen$3 -> com.railwaygames.solarsmash.
     323:324:void onClose() -> y
 com.railwaygames.solarsmash.screen.BoardScreen$4 -> com.railwaygames.solarsmash.f.n:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    371:371:void onConnectionError(java.lang.String) -> a
+    370:370:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$5 -> com.railwaygames.solarsmash.f.o:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
     com.railwaygames.solarsmash.screen.overlay.ClaimOverlay val$claimOverlay -> b
-    438:450:void claimFailed() -> a
-    454:459:void claimSuccess() -> b
+    437:449:void claimFailed() -> a
+    453:458:void claimSuccess() -> b
 com.railwaygames.solarsmash.screen.BoardScreen$5$1 -> com.railwaygames.solarsmash.f.p:
     com.railwaygames.solarsmash.screen.BoardScreen$5 this$1 -> a
-    443:447:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    442:446:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$6 -> com.railwaygames.solarsmash.f.q:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    505:507:void transition(java.lang.String) -> a
+    504:506:void transition(java.lang.String) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$7 -> com.railwaygames.solarsmash.f.r:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    513:515:void gameFound(java.lang.String) -> a
+    512:514:void gameFound(java.lang.String) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$8 -> com.railwaygames.solarsmash.f.s:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    530:532:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    529:531:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$9 -> com.railwaygames.solarsmash.f.t:
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    542:612:void transition(java.lang.String) -> a
+    541:611:void transition(java.lang.String) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$9$1 -> com.railwaygames.solarsmash.f.u:
     com.railwaygames.solarsmash.screen.BoardScreen$9 this$1 -> a
-    557:608:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
+    556:607:boolean handle(com.badlogic.gdx.scenes.scene2d.Event) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$9$1$1 -> com.railwaygames.solarsmash.f.v:
     com.railwaygames.solarsmash.screen.BoardScreen$9$1 this$2 -> a
-    604:605:void onConnectionError(java.lang.String) -> a
+    603:604:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$9$1$1$1 -> com.railwaygames.solarsmash.f.w:
     com.railwaygames.solarsmash.screen.BoardScreen$9$1$1 this$3 -> a
-    594:597:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    593:596:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$BoardCalculations -> com.railwaygames.solarsmash.f.x:
     float maxPlanetRadius -> a
     float minPlanetRadius -> b
@@ -21301,7 +21300,7 @@ com.railwaygames.solarsmash.screen.BoardScreen$BoardCalculations -> com.railwayg
     204:204:float getMinPlanetRadius() -> b
     208:208:com.railwaygames.solarsmash.model.Size getTileSize() -> c
 com.railwaygames.solarsmash.screen.BoardScreen$Labels -> com.railwaygames.solarsmash.f.y:
-    1132:1135:java.lang.String waitingLabel(com.railwaygames.solarsmash.model.Social) -> a
+    1131:1134:java.lang.String waitingLabel(com.railwaygames.solarsmash.model.Social) -> a
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations -> com.railwaygames.solarsmash.f.z:
     float HUD_BOTTOM_HEIGHT_RATIO -> a
     float HUD_TOP_HEIGHT_RATIO -> b
@@ -21316,7 +21315,7 @@ com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations -> com.railway
 com.railwaygames.solarsmash.screen.BoardScreen$UpdateBoardScreenResultHandler -> com.railwaygames.solarsmash.f.aa:
     java.lang.String errorMessage -> b
     com.railwaygames.solarsmash.screen.BoardScreen this$0 -> a
-    1104:1108:void onConnectionError(java.lang.String) -> a
+    1103:1107:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud -> com.railwaygames.solarsmash.f.ab:
     com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion bgTexture -> k
@@ -21380,20 +21379,20 @@ com.railwaygames.solarsmash.screen.FriendScreen -> com.railwaygames.solarsmash.f
     458:459:void resize(int,int) -> a
     463:466:void show() -> a
     492:492:java.lang.Object getRenderResult() -> b
-    497:500:void resetState() -> d
-    503:503:com.railwaygames.solarsmash.screen.MenuScreenContainer getPreviousScreen() -> e
-    507:507:com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest() -> f
-    511:512:void setPreviousScreen(com.railwaygames.solarsmash.screen.MenuScreenContainer) -> a
-    515:516:void setMapType(java.lang.String) -> a
-    519:521:void populateSearchLabelGroup(com.badlogic.gdx.scenes.scene2d.Actor) -> a
-    524:545:void showFriends() -> g
-    575:581:void clearActiveTab(java.lang.String,int) -> a
-    584:629:void loadFriends$4cb9f3c2(java.lang.String) -> b
-    632:666:void findFriendsByProvider(java.lang.String) -> c
-    686:686:void refresh() -> c
+    497:502:void resetState() -> d
+    505:505:com.railwaygames.solarsmash.screen.MenuScreenContainer getPreviousScreen() -> e
+    509:509:com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest() -> f
+    513:514:void setPreviousScreen(com.railwaygames.solarsmash.screen.MenuScreenContainer) -> a
+    517:518:void setMapType(java.lang.String) -> a
+    521:523:void populateSearchLabelGroup(com.badlogic.gdx.scenes.scene2d.Actor) -> a
+    526:547:void showFriends() -> g
+    577:583:void clearActiveTab(java.lang.String,int) -> a
+    586:631:void loadFriends$4cb9f3c2(java.lang.String) -> b
+    634:668:void findFriendsByProvider(java.lang.String) -> c
+    688:688:void refresh() -> c
     72:72:void access$0(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.Long) -> a
-    574:574:void access$1$6ca23ee3(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> a
-    523:523:void access$2(com.railwaygames.solarsmash.screen.FriendScreen) -> a
+    576:576:void access$1$6ca23ee3(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> a
+    525:525:void access$2(com.railwaygames.solarsmash.screen.FriendScreen) -> a
     73:73:void access$3(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> b
     181:181:void access$4(com.railwaygames.solarsmash.screen.FriendScreen,com.railwaygames.solarsmash.model.friends.CombinedFriend,com.badlogic.gdx.scenes.scene2d.Group) -> a
     63:63:com.railwaygames.solarsmash.screen.widget.ActionButton access$5(com.railwaygames.solarsmash.screen.FriendScreen) -> b
@@ -21403,7 +21402,7 @@ com.railwaygames.solarsmash.screen.FriendScreen -> com.railwaygames.solarsmash.f
     72:72:java.lang.Long access$9(com.railwaygames.solarsmash.screen.FriendScreen) -> f
     298:298:void access$10(com.railwaygames.solarsmash.screen.FriendScreen,java.util.List,java.lang.Long) -> a
     55:55:com.railwaygames.solarsmash.screen.Resources access$11(com.railwaygames.solarsmash.screen.FriendScreen) -> g
-    518:518:void access$12(com.railwaygames.solarsmash.screen.FriendScreen,com.badlogic.gdx.scenes.scene2d.Actor) -> a
+    520:520:void access$12(com.railwaygames.solarsmash.screen.FriendScreen,com.badlogic.gdx.scenes.scene2d.Actor) -> a
     59:59:com.railwaygames.solarsmash.screen.widget.WaitImageButton access$13(com.railwaygames.solarsmash.screen.FriendScreen) -> h
     69:69:com.railwaygames.solarsmash.screen.widget.ScrollList access$14(com.railwaygames.solarsmash.screen.FriendScreen) -> i
     62:62:com.railwaygames.solarsmash.screen.widget.ShaderLabel access$15(com.railwaygames.solarsmash.screen.FriendScreen) -> j
@@ -21413,47 +21412,47 @@ com.railwaygames.solarsmash.screen.FriendScreen -> com.railwaygames.solarsmash.f
     79:79:com.railwaygames.solarsmash.http.SocialAction access$19(com.railwaygames.solarsmash.screen.FriendScreen) -> l
     73:73:java.lang.String access$20(com.railwaygames.solarsmash.screen.FriendScreen) -> m
     57:57:com.badlogic.gdx.scenes.scene2d.Stage access$21(com.railwaygames.solarsmash.screen.FriendScreen) -> n
-    668:668:void access$22(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> d
+    670:670:void access$22(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> d
     80:80:com.railwaygames.solarsmash.http.GameAction access$23(com.railwaygames.solarsmash.screen.FriendScreen) -> o
-    631:631:void access$24(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> e
+    633:633:void access$24(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> e
     70:70:void access$26(com.railwaygames.solarsmash.screen.FriendScreen,java.util.List) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$1 -> com.railwaygames.solarsmash.f.aj:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
-    549:553:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    551:555:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$10 -> com.railwaygames.solarsmash.f.ak:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
     java.lang.Long val$time -> b
-    542:543:void onConnectionError(java.lang.String) -> a
+    544:545:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$11 -> com.railwaygames.solarsmash.f.al:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
     java.lang.String val$authProvider -> b
-    599:604:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
-    623:624:void onSignInFailed(java.lang.String) -> b_
+    601:606:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
+    625:626:void onSignInFailed(java.lang.String) -> b_
 com.railwaygames.solarsmash.screen.FriendScreen$11$1 -> com.railwaygames.solarsmash.f.am:
     com.railwaygames.solarsmash.screen.FriendScreen$11 this$1 -> a
     java.lang.String val$authProvider -> b
-    616:617:void onConnectionError(java.lang.String) -> a
+    618:619:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$12 -> com.railwaygames.solarsmash.f.an:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
     java.lang.String val$authProvider -> b
     java.lang.Long val$time -> c
-    639:657:void onFriendsLoadedSuccess(java.util.List,java.lang.String) -> a
-    661:664:void onFriendsLoadedFail$552c4e01() -> a
+    641:659:void onFriendsLoadedSuccess(java.util.List,java.lang.String) -> a
+    663:666:void onFriendsLoadedFail$552c4e01() -> a
 com.railwaygames.solarsmash.screen.FriendScreen$12$1 -> com.railwaygames.solarsmash.f.ao:
     com.railwaygames.solarsmash.screen.FriendScreen$12 this$1 -> a
     java.util.List val$friends -> b
     java.lang.String val$authProvider -> c
     java.lang.Long val$time -> d
-    649:653:void onConnectionError(java.lang.String) -> a
+    651:655:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$2 -> com.railwaygames.solarsmash.f.ap:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
-    558:562:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    560:564:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$3 -> com.railwaygames.solarsmash.f.aq:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
-    567:571:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    569:573:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$4 -> com.railwaygames.solarsmash.f.ar:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> O
     1:1:void buildCell(java.lang.Object,com.badlogic.gdx.scenes.scene2d.Group) -> a
@@ -21824,51 +21823,51 @@ com.railwaygames.solarsmash.screen.NoMoreCoinsDialog -> com.railwaygames.solarsm
     java.lang.String coinInfoText -> l
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback coinsCallback -> m
     com.railwaygames.solarsmash.http.UIConnectionResultCallback inventoryCallback -> n
-    234:253:void addCoinImageGroup(com.badlogic.gdx.scenes.scene2d.Group) -> a
-    257:260:void render(float) -> a
-    264:267:void hide() -> a
-    280:280:java.lang.Object getRenderResult() -> b
-    285:286:void resetState() -> c
-    296:296:void onConnectionError(java.lang.String) -> a
-    300:305:void resize(int,int) -> a
-    309:322:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
-    325:345:void loadUser() -> g
-    349:349:boolean hideTitleArea() -> d
-    379:379:boolean canRefresh() -> e
-    384:384:com.railwaygames.solarsmash.PartialScreenFeedback getPreviousScreen() -> f
-    389:391:void setPreviousScreen(com.railwaygames.solarsmash.PartialScreenFeedback) -> a
+    235:254:void addCoinImageGroup(com.badlogic.gdx.scenes.scene2d.Group) -> a
+    258:261:void render(float) -> a
+    265:272:void hide() -> a
+    285:285:java.lang.Object getRenderResult() -> b
+    290:291:void resetState() -> c
+    301:301:void onConnectionError(java.lang.String) -> a
+    305:310:void resize(int,int) -> a
+    314:327:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
+    330:350:void loadUser() -> g
+    354:354:boolean hideTitleArea() -> d
+    384:384:boolean canRefresh() -> e
+    389:389:com.railwaygames.solarsmash.PartialScreenFeedback getPreviousScreen() -> f
+    394:396:void setPreviousScreen(com.railwaygames.solarsmash.PartialScreenFeedback) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
     49:49:void access$1(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,com.railwaygames.solarsmash.model.InventoryItem) -> a
     47:47:com.badlogic.gdx.scenes.scene2d.Group access$2(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> a
-    233:233:void access$3(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,com.badlogic.gdx.scenes.scene2d.Group) -> a
+    234:234:void access$3(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,com.badlogic.gdx.scenes.scene2d.Group) -> a
     55:55:com.railwaygames.solarsmash.screen.Resources access$4(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> b
-    269:269:void access$5(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,java.lang.String) -> a
+    274:274:void access$5(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,java.lang.String) -> a
     41:41:com.badlogic.gdx.scenes.scene2d.Stage access$6(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> c
     53:53:void access$7(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,com.railwaygames.solarsmash.model.Inventory) -> a
     100:100:void access$8(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,com.badlogic.gdx.scenes.scene2d.Stage,com.railwaygames.solarsmash.model.Inventory) -> a
-    352:352:com.railwaygames.solarsmash.http.UIConnectionResultCallback access$9(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> d
+    357:357:com.railwaygames.solarsmash.http.UIConnectionResultCallback access$9(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> d
     59:59:java.lang.String access$10(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> e
-    134:134:java.lang.String access$11$3d2828fb(java.lang.Integer) -> a
-    192:192:com.railwaygames.solarsmash.http.InAppBillingAction$Callback access$12(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> f
+    135:135:java.lang.String access$11$3d2828fb(java.lang.Integer) -> a
+    193:193:com.railwaygames.solarsmash.http.InAppBillingAction$Callback access$12(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> f
     51:51:void access$13(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog,java.lang.Object) -> a
-    324:324:void access$14(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> g
+    329:329:void access$14(com.railwaygames.solarsmash.screen.NoMoreCoinsDialog) -> g
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$1 -> com.railwaygames.solarsmash.f.cz:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
-    195:213:void onSuccess(java.lang.String) -> a
-    217:230:void onFailure(java.lang.String) -> b
+    196:214:void onSuccess(java.lang.String) -> a
+    218:231:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$1$1 -> com.railwaygames.solarsmash.f.da:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$1 this$1 -> a
-    207:208:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    208:209:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$1$2 -> com.railwaygames.solarsmash.f.db:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$1 this$1 -> a
-    226:226:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    227:227:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$2 -> com.railwaygames.solarsmash.f.dc:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
-    364:375:void onConnectionError(java.lang.String) -> a
+    369:380:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$2$1 -> com.railwaygames.solarsmash.f.dd:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$2 this$1 -> a
-    370:371:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    375:376:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$3 -> com.railwaygames.solarsmash.f.de:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
     74:75:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
@@ -21885,18 +21884,18 @@ com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$6 -> com.railwaygames.solar
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$7 -> com.railwaygames.solarsmash.f.di:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
     com.railwaygames.solarsmash.model.InventoryItem val$item -> c
-    179:184:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    180:185:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$8 -> com.railwaygames.solarsmash.f.dj:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
     java.lang.String val$retVal -> b
-    273:274:void run() -> run
+    278:279:void run() -> run
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$9 -> com.railwaygames.solarsmash.f.dk:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog this$0 -> a
-    335:343:void onConnectionError(java.lang.String) -> a
+    340:348:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$9$1 -> com.railwaygames.solarsmash.f.dl:
     com.railwaygames.solarsmash.screen.NoMoreCoinsDialog$9 this$1 -> a
-    339:340:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    344:345:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.Resources -> com.railwaygames.solarsmash.f.dm:
     com.badlogic.gdx.assets.AssetManager assetManager -> a
     com.railwaygames.solarsmash.UISkin skin -> b
@@ -22027,7 +22026,7 @@ com.railwaygames.solarsmash.screen.hud.RoundInformationTopHud -> com.railwaygame
     58:64:com.badlogic.gdx.graphics.Color getColor(java.lang.String) -> a
     68:73:void createPlanetUnderHarvestLabels(com.railwaygames.solarsmash.model.Planet) -> a
     76:108:void createPlanetSavedFromHarvestLabels(com.railwaygames.solarsmash.model.Planet) -> b
-    111:354:void createAttackLabels(java.util.List) -> a
+    111:356:void createAttackLabels(java.util.List) -> a
 com.railwaygames.solarsmash.screen.hud.ShipSelectionHud -> com.railwaygames.solarsmash.f.b.h:
     com.badlogic.gdx.scenes.scene2d.ui.Slider slider -> k
     com.railwaygames.solarsmash.screen.Resources resources -> l
@@ -22515,11 +22514,11 @@ com.railwaygames.solarsmash.screen.signin.MainMenuScreen -> com.railwaygames.sol
     232:237:void resize(int,int) -> a
     241:249:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
     252:312:void loadUser() -> g
-    316:319:void hide() -> a
-    323:324:void resetState() -> c
-    328:328:java.lang.Object getRenderResult() -> b
-    333:333:boolean hideTitleArea() -> d
-    338:338:boolean canRefresh() -> e
+    316:323:void hide() -> a
+    327:328:void resetState() -> c
+    332:332:java.lang.Object getRenderResult() -> b
+    337:337:boolean hideTitleArea() -> d
+    342:342:boolean canRefresh() -> e
     175:175:boolean access$0$7877b306(com.railwaygames.solarsmash.model.GameCount) -> a
     44:44:com.railwaygames.solarsmash.screen.Resources access$1(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> a
     40:40:com.badlogic.gdx.scenes.scene2d.Stage access$2(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> b

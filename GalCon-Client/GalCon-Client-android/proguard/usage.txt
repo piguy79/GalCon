@@ -8936,10 +8936,10 @@ com.railwaygames.solarsmash.http.GameAction:
 com.railwaygames.solarsmash.http.GameActionCache:
     6:6:public GameActionCache()
 com.railwaygames.solarsmash.http.JsonConstructor:
-    16:16:public JsonConstructor()
-    70:74:public static org.json.JSONObject findFriends(java.lang.String)
-    128:133:public static org.json.JSONObject user(java.lang.String,java.lang.String)
-    177:182:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
+    17:17:public JsonConstructor()
+    71:75:public static org.json.JSONObject findFriends(java.lang.String)
+    129:134:public static org.json.JSONObject user(java.lang.String,java.lang.String)
+    179:184:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
 com.railwaygames.solarsmash.http.SetPlayerResultHandler
 com.railwaygames.solarsmash.http.UrlConstants
 com.railwaygames.solarsmash.inappbilling.util.Base64:
@@ -9060,9 +9060,9 @@ com.railwaygames.solarsmash.screen.Action:
     public static final java.lang.String SHARE
     3:3:public Action()
 com.railwaygames.solarsmash.screen.BoardScreen:
-    1013:1013:public void dispose()
+    1012:1012:public void dispose()
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1130:1130:public BoardScreen$Labels()
+    1129:1129:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
     153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
@@ -9070,7 +9070,7 @@ com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
 com.railwaygames.solarsmash.screen.FriendScreen:
     488:488:public void dispose()
 com.railwaygames.solarsmash.screen.FriendScreen$11:
-    595:595:public void onSignOut()
+    597:597:public void onSignOut()
 com.railwaygames.solarsmash.screen.GameListScreen:
     61:61:protected boolean showGamesThatHaveBeenWon()
     65:67:protected void refreshScreen()
