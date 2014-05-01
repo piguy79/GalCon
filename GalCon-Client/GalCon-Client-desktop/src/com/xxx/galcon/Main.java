@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "GalCon-Client";
-		cfg.width = 480;
+		cfg.width = 450;
 		cfg.height = 800;
 
 		DesktopGameAction gameAction = new DesktopGameAction("localhost", 3000);
