@@ -690,6 +690,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 exports.deleteConsumedOrders = function(req, res){
 	var handle = req.body.handle;
 	var orders = req.body.orders;
+	var session = req.body.session;
 	
 	if(!validate({session : session, handle : handle, orders : orders}, res)) {
 		return;
