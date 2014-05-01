@@ -21060,12 +21060,12 @@ com.railwaygames.solarsmash.model.Planet -> com.railwaygames.solarsmash.e.z:
     68:68:boolean hasAbility() -> a
     76:84:java.util.List associatedTargetMoves(com.railwaygames.solarsmash.model.GameBoard) -> c
     98:110:java.lang.String previousRoundOwner(com.railwaygames.solarsmash.model.GameBoard) -> a
-    114:145:int numberOfShipsToDisplay(com.railwaygames.solarsmash.model.GameBoard,boolean) -> a
-    149:149:boolean isUnderHarvest() -> b
-    157:158:int roundsUntilHarvestIsComplete(com.railwaygames.solarsmash.model.GameBoard) -> b
-    162:162:boolean isAlive() -> c
-    166:186:com.badlogic.gdx.graphics.Color getColor(java.lang.String,boolean) -> a
-    190:190:boolean isOwned() -> d
+    114:150:int numberOfShipsToDisplay(com.railwaygames.solarsmash.model.GameBoard,boolean) -> a
+    154:154:boolean isUnderHarvest() -> b
+    162:163:int roundsUntilHarvestIsComplete(com.railwaygames.solarsmash.model.GameBoard) -> b
+    167:167:boolean isAlive() -> c
+    171:191:com.badlogic.gdx.graphics.Color getColor(java.lang.String,boolean) -> a
+    195:195:boolean isOwned() -> d
 com.railwaygames.solarsmash.model.Player -> com.railwaygames.solarsmash.e.aa:
     com.railwaygames.solarsmash.model.Auth auth -> a
     java.lang.String handle -> b
