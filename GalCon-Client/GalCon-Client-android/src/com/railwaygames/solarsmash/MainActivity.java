@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.crashlytics.android.Crashlytics;
@@ -191,6 +192,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	}
 
 	public void loadStoreInventory(final Inventory inventoryResult, final UIConnectionResultCallback<Inventory> callback) {
+		Gdx.app.log("GameAction", "Loading inventory");
 		if (!mHelper.isSetupDone()) {
 			inAppBillingAction.setup(new Callback() {
 
@@ -205,40 +207,44 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 				}
 			});
 		} else {
-			mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
+			try {
+				mHelper.queryInventoryAsync(true, inventoryResult.skus(), new QueryInventoryFinishedListener() {
 
-				@Override
-				public void onQueryInventoryFinished(IabResult result,
-						com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
-					if (result.isFailure()) {
-						callback.onConnectionError("Unable to load inventory from Play Store.");
-						return;
-					}
-
-					List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
-
-					for (InventoryItem item : inventoryResult.inventory) {
-						SkuDetails detail = inv.getSkuDetails(item.sku);
-						if (detail == null) {
-							Crashlytics.log(Log.WARN, "PlayStore", "No inventory item found for: " + item.sku);
-							continue;
-						}
-						InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
-								.getTitle(), item.numCoins);
-
-						if (inv.hasPurchase(detail.getSku())) {
-							Purchase purchase = inv.getPurchase(detail.getSku());
-							combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+					@Override
+					public void onQueryInventoryFinished(IabResult result,
+							com.railwaygames.solarsmash.inappbilling.util.Inventory inv) {
+						if (result.isFailure()) {
+							callback.onConnectionError("Unable to load inventory from Play Store.");
+							return;
 						}
 
-						mappedInventoryItems.add(combinedItem);
-					}
+						List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
-					Inventory inventory = new Inventory();
-					inventory.inventory = mappedInventoryItems;
-					callback.onConnectionResult(inventory);
-				}
-			});
+						for (InventoryItem item : inventoryResult.inventory) {
+							SkuDetails detail = inv.getSkuDetails(item.sku);
+							if (detail == null) {
+								Crashlytics.log(Log.WARN, "PlayStore", "No inventory item found for: " + item.sku);
+								continue;
+							}
+							InventoryItem combinedItem = new InventoryItem(detail.getSku(), detail.getPrice(), detail
+									.getTitle(), item.numCoins);
+
+							if (inv.hasPurchase(detail.getSku())) {
+								Purchase purchase = inv.getPurchase(detail.getSku());
+								combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+							}
+
+							mappedInventoryItems.add(combinedItem);
+						}
+
+						Inventory inventory = new Inventory();
+						inventory.inventory = mappedInventoryItems;
+						callback.onConnectionResult(inventory);
+					}
+				});
+			} catch (IllegalStateException e) {
+				callback.onConnectionError("Could not get items");
+			}
 		}
 	}
 
