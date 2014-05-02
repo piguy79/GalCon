@@ -3,6 +3,7 @@ package com.railwaygames.solarsmash.screen;
 import static com.railwaygames.solarsmash.Constants.CONNECTION_ERROR_MESSAGE;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -79,7 +80,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
+		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 		messageLabel.setAlignment(Align.center);
 		messageLabel.setWidth(width);
 		messageLabel.setX(width / 2 - messageLabel.getWidth() / 2);

@@ -1,6 +1,7 @@
 package com.railwaygames.solarsmash.screen.overlay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.screen.Resources;
@@ -12,7 +13,8 @@ public class TextOverlay extends Overlay {
 
 	public TextOverlay(String text, Resources resources) {
 		super(resources);
-		shaderLabel = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.DEFAULT_FONT);
+		shaderLabel = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.DEFAULT_FONT,
+				Color.WHITE);
 
 		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
 		float margin = Gdx.graphics.getWidth() * 0.03f;

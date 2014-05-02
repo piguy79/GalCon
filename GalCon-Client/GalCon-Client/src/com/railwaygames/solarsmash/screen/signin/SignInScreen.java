@@ -9,6 +9,7 @@ import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -76,7 +77,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	public void show(Stage stage) {
 		this.stage = stage;
 
-		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
+		signInLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 		signInLabel.setAlignment(Align.center);
 		stage.addActor(signInLabel);
 

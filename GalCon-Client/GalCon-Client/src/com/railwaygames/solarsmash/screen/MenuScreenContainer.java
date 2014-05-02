@@ -126,7 +126,8 @@ public class MenuScreenContainer implements ScreenFeedback {
 		bgImage.addAction(forever(rotateBy(360, 150)));
 		stage.addActor(bgImage);
 
-		titleText = new ShaderLabel(resources.fontShader, APP_TITLE, resources.skin, Constants.UI.LARGE_FONT);
+		titleText = new ShaderLabel(resources.fontShader, APP_TITLE, resources.skin, Constants.UI.LARGE_FONT,
+				Color.WHITE);
 		stage.addActor(titleText);
 
 		Gdx.input.setInputProcessor(stage);
@@ -321,10 +322,9 @@ public class MenuScreenContainer implements ScreenFeedback {
 			if (action.equals(Action.BACK)) {
 				PartialScreenFeedback previousScreen = ((ReturnablePartialScreenFeedback) currentScreen)
 						.getPreviousScreen();
-				if(previousScreen == null || previousScreen instanceof NoMoreCoinsDialog){
+				if (previousScreen == null || previousScreen instanceof NoMoreCoinsDialog) {
 					return mainMenuScreen;
-				}
-				else if (previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0) {
+				} else if (previousScreen instanceof LevelSelectionScreen && GameLoop.USER.coins == 0) {
 					return mainMenuScreen;
 				} else {
 					return previousScreen;

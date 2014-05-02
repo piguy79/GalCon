@@ -20,7 +20,8 @@ public abstract class Tutorial {
 	public abstract String getTopHudText(int page);
 
 	protected ShaderLabel createBasicLabel(Resources resources, float y, float delay, String text) {
-		ShaderLabel lbl = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT);
+		ShaderLabel lbl = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT,
+				Color.WHITE);
 		lbl.setWidth(Gdx.graphics.getWidth() * 0.7f);
 		lbl.setX(Gdx.graphics.getWidth() * 0.15f);
 		lbl.setAlignment(Align.center, Align.center);

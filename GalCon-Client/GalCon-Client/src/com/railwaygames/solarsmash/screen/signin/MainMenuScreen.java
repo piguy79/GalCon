@@ -1,6 +1,7 @@
 package com.railwaygames.solarsmash.screen.signin;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -70,7 +71,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		resources.assetManager.load("data/images/loading.pack", TextureAtlas.class);
 		resources.assetManager.finishLoading();
 
-		newLabel = new ShaderLabel(resources.fontShader, Strings.NEW, resources.skin, Constants.UI.DEFAULT_FONT);
+		newLabel = new ShaderLabel(resources.fontShader, Strings.NEW, resources.skin, Constants.UI.DEFAULT_FONT,
+				Color.WHITE);
 		newLabel.setAlignment(Align.center);
 		newLabel.setWidth(width);
 		newLabel.setX(width / 2 - newLabel.getWidth() / 2);
@@ -96,7 +98,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		actors.add(newLabel);
 
 		continueLabel = new ShaderLabel(resources.fontShader, Strings.CONTINUE, resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		continueLabel.setAlignment(Align.center);
 		continueLabel.setWidth(width);
 		continueLabel.setX(width / 2 - continueLabel.getWidth() / 2);
@@ -115,7 +117,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(continueLabel);
 		actors.add(continueLabel);
 
-		inviteLabel = new ShaderLabel(resources.fontShader, Strings.INVITES, resources.skin, Constants.UI.DEFAULT_FONT);
+		inviteLabel = new ShaderLabel(resources.fontShader, Strings.INVITES, resources.skin, Constants.UI.DEFAULT_FONT,
+				Color.WHITE);
 		inviteLabel.setAlignment(Align.center);
 		inviteLabel.setWidth(width);
 		inviteLabel.setX(width / 2 - continueLabel.getWidth() / 2);
@@ -157,7 +160,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(coinImage);
 		actors.add(coinImage);
 
-		coinText = new ShaderLabel(resources.fontShader, createCoinDisplay(), resources.skin, Constants.UI.DEFAULT_FONT);
+		coinText = new ShaderLabel(resources.fontShader, createCoinDisplay(), resources.skin,
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		coinText.setAlignment(Align.left, Align.left);
 
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;

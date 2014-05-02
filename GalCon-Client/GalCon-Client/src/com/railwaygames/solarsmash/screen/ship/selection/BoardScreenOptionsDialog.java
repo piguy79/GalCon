@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -45,7 +44,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		this.gameBoard = gameBoard;
 
 		confirmText = new ShaderLabel(resources.fontShader, "Are you sure you want to", resources.skin,
-				Constants.UI.BASIC_BUTTON_TEXT);
+				Constants.UI.DEFAULT_FONT, Color.BLACK);
 		confirmText.setAlignment(Align.center);
 		confirmText.setY(getHeight() * 0.6f);
 		confirmText.setWidth(getWidth());
@@ -69,7 +68,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bHeight = bWidth * 0.30f;
 		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
 
-		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		resignText.setAlignment(Align.center);
 		resignText.setY(resignButton.getY() + resignButton.getHeight() / 2 - resignText.getHeight() * 0.5f);
 		resignText.setWidth(getWidth());
@@ -89,7 +88,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		cancelButton
 				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.50f - bHeight * 0.5f, bWidth, bHeight);
 
-		cancelText = new ShaderLabel(fontShader, "Cancel Game", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		cancelText = new ShaderLabel(fontShader, "Cancel Game", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		cancelText.setAlignment(Align.center);
 		cancelText.setY(cancelButton.getY() + cancelButton.getHeight() / 2 - cancelText.getHeight() * 0.5f);
 		cancelText.setWidth(getWidth());
@@ -109,7 +108,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		refreshButton
 				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.8f - bHeight * 0.5f, bWidth, bHeight);
 
-		refreshText = new ShaderLabel(fontShader, "Refresh", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		refreshText = new ShaderLabel(fontShader, "Refresh", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		refreshText.setAlignment(Align.center);
 		refreshText.setY(refreshButton.getY() + refreshButton.getHeight() / 2 - refreshText.getHeight() * 0.5f);
 		refreshText.setWidth(getWidth());
@@ -128,7 +127,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bHeight = bWidth * 0.30f;
 		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.2f - bHeight * 0.5f, bWidth, bHeight);
 
-		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		aboutText.setAlignment(Align.center);
 		aboutText.setY(aboutButton.getY() + aboutButton.getHeight() / 2 - aboutText.getHeight() * 0.5f);
 		aboutText.setWidth(getWidth());

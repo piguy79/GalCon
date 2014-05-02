@@ -2,13 +2,12 @@ package com.railwaygames.solarsmash;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -16,70 +15,32 @@ import com.railwaygames.solarsmash.screen.widget.ShaderTextField.ShaderTextField
 
 public class UISkin extends Skin {
 
+	private AssetManager assetManager;
+
+	@Override
+	public BitmapFont getFont(String name) {
+		if (name.equals(Constants.UI.X_LARGE_FONT)) {
+			return Fonts.getInstance(assetManager).xLargeFont();
+		} else if (name.equals(Constants.UI.LARGE_FONT)) {
+			return Fonts.getInstance(assetManager).largeFont();
+		} else if (name.equals(Constants.UI.X_SMALL_FONT)) {
+			return Fonts.getInstance(assetManager).xSmallFont();
+		} else if (name.equals(Constants.UI.DEFAULT_FONT)) {
+			return Fonts.getInstance(assetManager).mediumFont();
+		} else if (name.equals(Constants.UI.SMALL_FONT)) {
+			return Fonts.getInstance(assetManager).smallFont();
+		}
+		return super.getFont(name);
+	}
+
 	public void initialize(AssetManager assetManager) {
+		this.assetManager = assetManager;
 
 		TextureAtlas socialAtlas = assetManager.get("data/images/social.atlas", TextureAtlas.class);
 		TextureAtlas levelSelectionAtlas = assetManager.get("data/images/levelSelection.atlas", TextureAtlas.class);
 		TextureAtlas menusAtlas = assetManager.get("data/images/menus.atlas", TextureAtlas.class);
 		TextureAtlas gameBoardAtlas = assetManager.get("data/images/gameBoard.atlas", TextureAtlas.class);
 
-		/*
-		 * Labels
-		 */
-		add("default", new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.RED));
-		add(Constants.UI.X_LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).xLargeFont(), Color.WHITE));
-		add(Constants.UI.LARGE_FONT, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.WHITE));
-		add(Constants.UI.LARGE_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.BLACK));
-		add(Constants.UI.LARGE_FONT_YELLOW, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.YELLOW));
-		add(Constants.UI.LARGE_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.GREEN));
-		add(Constants.UI.LARGE_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).largeFont(), Color.RED));
-
-		add(Constants.UI.DEFAULT_FONT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.WHITE));
-		add(Constants.UI.DEFAULT_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
-		add(Constants.UI.DEFAULT_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.GREEN));
-		add(Constants.UI.DEFAULT_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.RED));
-		add(Constants.UI.DEFAULT_FONT_YELLOW,
-				new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.YELLOW));
-		add(Constants.UI.X_SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.WHITE));
-		add(Constants.UI.X_SMALL_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), Color.BLACK));
-		add(Constants.UI.SMALL_FONT, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.WHITE));
-		add(Constants.UI.SMALL_FONT_BLACK, new LabelStyle(Fonts.getInstance(assetManager).smallFont(), Color.BLACK));
-
-		add(Constants.UI.X_SMALL_FONT_GREEN, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), new Color(
-				0.1f, 1.0f, 0.1f, 1)));
-		add(Constants.UI.X_SMALL_FONT_RED, new LabelStyle(Fonts.getInstance(assetManager).xSmallFont(), new Color(1.0f,
-				0.3f, 0.3f, 1)));
-		add(Constants.UI.BASIC_BUTTON_TEXT, new LabelStyle(Fonts.getInstance(assetManager).mediumFont(), Color.BLACK));
-
-		/*
-		 * TextField
-		 */
-		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("textFieldBg"));
-			trd.setLeftWidth(20);
-			trd.setRightWidth(20);
-			TextureRegionDrawable cursor = new TextureRegionDrawable(menusAtlas.findRegion("cursor"));
-			add(Constants.UI.TEXT_FIELD, new ShaderTextFieldStyle(Fonts.getInstance(assetManager).mediumFont(),
-					Color.BLACK, cursor, null, trd));
-		}
-		/*
-		 * TextButton
-		 */
-		{
-			TextButtonStyle tbs = new TextButtonStyle();
-			tbs.font = Fonts.getInstance(assetManager).mediumFont();
-			add(Constants.UI.GRAY_BUTTON_TEXT, tbs);
-		}
-		{
-			TextButtonStyle tbs = new TextButtonStyle();
-			tbs.font = Fonts.getInstance(assetManager).mediumFont();
-			add(Constants.UI.GREEN_BUTTON_TEXT, tbs);
-		}
-		{
-			TextButtonStyle tbs = new TextButtonStyle();
-			tbs.font = Fonts.getInstance(assetManager).xSmallFont();
-			add(Constants.UI.GREEN_BUTTON_TEXT_SMALL, tbs);
-		}
 		/*
 		 * Colors
 		 */
@@ -211,14 +172,6 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("dialog_bg"));
 			add(Constants.UI.DIALOG_BG, new ImageButtonStyle(null, null, null, trd, trd, trd));
-		}
-		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("green_button"));
-			add(Constants.UI.GREEN_BUTTON, new ImageButtonStyle(null, null, null, trd, trd, trd));
-		}
-		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("black_grey_button"));
-			add(Constants.UI.GRAY_BUTTON, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("button_yellow"));

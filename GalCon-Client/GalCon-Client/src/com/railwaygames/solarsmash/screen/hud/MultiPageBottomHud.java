@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.hud;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -39,7 +40,7 @@ public class MultiPageBottomHud extends Group {
 		float bHeight = bWidth * 0.4f;
 		nextButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
 
-		nextText = new ShaderLabel(fontShader, "Go", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		nextText = new ShaderLabel(fontShader, "Go", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		nextText.setAlignment(Align.center);
 		nextText.setY(nextButton.getY() + nextButton.getHeight() / 2 - nextText.getHeight() * 0.5f);
 		nextText.setWidth(getWidth());

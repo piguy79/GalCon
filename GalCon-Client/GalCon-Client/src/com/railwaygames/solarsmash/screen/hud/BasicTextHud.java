@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.hud;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -23,7 +24,7 @@ public class BasicTextHud extends Group {
 
 		createBackground(true);
 
-		label = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.SMALL_FONT);
+		label = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.SMALL_FONT, Color.WHITE);
 	}
 
 	private void createBackground(boolean basic) {

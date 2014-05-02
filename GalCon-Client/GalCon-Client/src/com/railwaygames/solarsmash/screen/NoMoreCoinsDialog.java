@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -149,7 +150,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 				String itemText = item.price + "  " + item.numCoins + " " + coinString(item.numCoins);
 
 				ShaderLabel coinLabel = new ShaderLabel(resources.fontShader, itemText, resources.skin,
-						Constants.UI.DEFAULT_FONT);
+						Constants.UI.DEFAULT_FONT, Color.WHITE);
 				coinLabel.setAlignment(Align.center);
 				coinLabel.setWidth(width);
 				coinLabel.setY(rowHeight * 0.4f);
@@ -243,7 +244,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 		group.addActor(coinImage);
 
 		coinText = new ShaderLabel(resources.fontShader, GameLoop.USER.coins.toString(), resources.skin,
-				Constants.UI.LARGE_FONT);
+				Constants.UI.LARGE_FONT, Color.WHITE);
 		coinText.setAlignment(Align.right, Align.right);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
 		float coinTextWidth = coinText.getWidth() * 4;

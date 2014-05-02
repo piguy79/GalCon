@@ -120,6 +120,8 @@ public class GameLoop extends Game {
 		resources.planetAtlas = assetManager.get("data/images/planets.atlas", TextureAtlas.class);
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
+		Fonts.dispose();
+		
 		boardScreen = new BoardScreen(resources);
 		friendScreen = new FriendScreen(resources, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(resources, socialAction, gameAction, inAppBillingAction,

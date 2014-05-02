@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -171,39 +172,41 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			opponent = "vs " + playerInfoText(otherPlayers);
 		}
 
-		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, opponent, resources.skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, opponent, resources.skin,
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		vsLabel.setAlignment(Align.center);
 		vsLabel.setWidth(width);
 		vsLabel.setY(rowHeight * 0.6f);
 		group.addActor(vsLabel);
 
 		String statusText = "";
-		String statusFont = Constants.UI.DEFAULT_FONT_GREEN;
+		Color color = Color.GREEN;
 		if (game.hasBeenDeclined()) {
 			statusText = "-- Invite Declined --";
-			statusFont = Constants.UI.DEFAULT_FONT_RED;
+			color = Color.RED;
 		} else if (game.hasWinner(false)) {
 			if (game.hasWinner(true)) {
 				if (game.winner.equals(GameLoop.USER.handle)) {
 					statusText = "You Won";
 				} else {
 					statusText = "You Lost";
-					statusFont = Constants.UI.DEFAULT_FONT_RED;
+					color = Color.RED;
 				}
 			} else {
 				statusText = "--view winner--";
-				statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
+				color = Color.YELLOW;
 			}
 		} else if (game.moveAvailable) {
 			statusText = "--your move--";
-			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
+			color = Color.YELLOW;
 		} else if (game.claimAvailable) {
 			statusText = "--claim available--";
-			statusFont = Constants.UI.DEFAULT_FONT_YELLOW;
+			color = Color.YELLOW;
 		}
 
 		if (!statusText.isEmpty()) {
-			ShaderLabel yourMoveLabel = new ShaderLabel(resources.fontShader, statusText, resources.skin, statusFont);
+			ShaderLabel yourMoveLabel = new ShaderLabel(resources.fontShader, statusText, resources.skin,
+					Constants.UI.DEFAULT_FONT, color);
 			yourMoveLabel.setAlignment(Align.center);
 			yourMoveLabel.setWidth(width);
 			yourMoveLabel.setY(rowHeight * 0.4f);
@@ -220,7 +223,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			}
 		}
 		ShaderLabel mapLabel = new ShaderLabel(resources.fontShader, mapTitle, resources.skin,
-				Constants.UI.X_SMALL_FONT);
+				Constants.UI.X_SMALL_FONT, Color.WHITE);
 		mapLabel.setAlignment(Align.left);
 		mapLabel.setWidth(width);
 		mapLabel.setY(rowHeight * 0.15f);
@@ -304,7 +307,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		createBackButton(stage);
 		createRefreshButton(stage);
 
-		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT);
+		messageLabel = new ShaderLabel(resources.fontShader, "", resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 		messageLabel.setAlignment(Align.center);
 
 		messageLabel.addListener(new InputListener() {

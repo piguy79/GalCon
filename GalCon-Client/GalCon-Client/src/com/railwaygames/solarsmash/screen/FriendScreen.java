@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -149,7 +150,7 @@ public class FriendScreen implements ScreenFeedback {
 		float height = Gdx.graphics.getHeight();
 
 		noResultsFound = new ShaderLabel(resources.fontShader, "Unable to find a Match ", resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		noResultsFound.setAlignment(Align.center);
 		noResultsFound.setWidth(width);
 		noResultsFound.setY(height / 2);
@@ -180,7 +181,7 @@ public class FriendScreen implements ScreenFeedback {
 
 	private void createPlayerEntry(CombinedFriend item, Group group) {
 		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.getDisplay(), resources.skin,
-				Constants.UI.SMALL_FONT);
+				Constants.UI.SMALL_FONT, Color.WHITE);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWrap(true);
 		playerLabel.setWidth(group.getWidth() * 0.6f);
@@ -209,7 +210,7 @@ public class FriendScreen implements ScreenFeedback {
 		group.addActor(actionImage);
 
 		ShaderLabel actionLabel = new ShaderLabel(resources.fontShader, actionText, resources.skin,
-				Constants.UI.SMALL_FONT);
+				Constants.UI.SMALL_FONT, Color.WHITE);
 		actionLabel.setX(group.getWidth() * 0.8f);
 		actionLabel.setY(startingYPosition);
 		actionLabel.setWidth(group.getWidth() * 0.4f);
@@ -249,7 +250,7 @@ public class FriendScreen implements ScreenFeedback {
 					displayPeople(filteredFriends, requestTime);
 
 					ShaderLabel label = new ShaderLabel(resources.fontShader, "Filtered Friends: ", resources.skin,
-							Constants.UI.DEFAULT_FONT);
+							Constants.UI.DEFAULT_FONT, Color.WHITE);
 					populateSearchLabelGroup(label);
 				}
 
@@ -269,11 +270,11 @@ public class FriendScreen implements ScreenFeedback {
 							noResultsFound.setText("No results found.");
 							noResultsFound.setVisible(true);
 							ShaderLabel label = new ShaderLabel(resources.fontShader, "", resources.skin,
-									Constants.UI.DEFAULT_FONT);
+									Constants.UI.DEFAULT_FONT, Color.WHITE);
 							populateSearchLabelGroup(label);
 						} else {
 							ShaderLabel label = new ShaderLabel(resources.fontShader, "Search Results: ",
-									resources.skin, Constants.UI.DEFAULT_FONT);
+									resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 							populateSearchLabelGroup(label);
 							noResultsFound.setVisible(false);
 						}
@@ -375,7 +376,7 @@ public class FriendScreen implements ScreenFeedback {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		searchBox = new ShaderTextField(resources.fontShader, "", resources.skin, Constants.UI.TEXT_FIELD);
+		searchBox = new ShaderTextField("", resources);
 		searchBox.setMessageText("Search by handle...");
 		searchBox.setWidth(width * 0.75f);
 		searchBox.setHeight(height * .08f);
@@ -497,7 +498,7 @@ public class FriendScreen implements ScreenFeedback {
 		returnCode = null;
 		gameInviteRequest = null;
 		mapKey = null;
-		screenState =1;
+		screenState = 1;
 		requestTime = -1L;
 	}
 
@@ -526,7 +527,7 @@ public class FriendScreen implements ScreenFeedback {
 		waitImage.setVisible(true);
 
 		ShaderLabel label = new ShaderLabel(resources.fontShader, "Recent Opponents: ", resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		populateSearchLabelGroup(label);
 
 		final Long time = System.currentTimeMillis();
@@ -586,7 +587,7 @@ public class FriendScreen implements ScreenFeedback {
 		waitImage.setVisible(true);
 		clearActiveTab("Filter...", 2);
 		ShaderLabel label = new ShaderLabel(resources.fontShader, "Friends: ", resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		populateSearchLabelGroup(label);
 
 		if (!GameLoop.USER.auth.hasAuth(authProvider)) {
@@ -642,7 +643,8 @@ public class FriendScreen implements ScreenFeedback {
 
 				gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
 					public void onConnectionResult(People result) {
-						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people, authProvider);
+						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people,
+								authProvider);
 						loadedFriends = combinedFriends;
 						displayPeople(combinedFriends, time);
 					};

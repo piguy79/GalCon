@@ -36,7 +36,7 @@ public class Overview extends Tutorial {
 
 	@Override
 	public void showPage(int page) {
-//		group.clear();
+		// group.clear();
 
 		switch (page) {
 		case 1:
@@ -113,7 +113,7 @@ public class Overview extends Tutorial {
 	private void page1() {
 		{
 			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Welcome\nCommander", resources.skin,
-					Constants.UI.LARGE_FONT);
+					Constants.UI.LARGE_FONT, Color.WHITE);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
 			lbl.setY(Gdx.graphics.getHeight() * 0.7f - lbl.getHeight() * 0.5f);

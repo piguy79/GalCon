@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.hud;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -30,7 +31,7 @@ public class SingleMoveInfoHud extends Group {
 	private void createLabels() {
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "# of ships", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
@@ -39,7 +40,8 @@ public class SingleMoveInfoHud extends Group {
 			addActor(label);
 		}
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT,
+					Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getX());
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
@@ -51,7 +53,7 @@ public class SingleMoveInfoHud extends Group {
 		}
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds to impact", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
@@ -60,7 +62,8 @@ public class SingleMoveInfoHud extends Group {
 			addActor(label);
 		}
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.LARGE_FONT,
+					Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.4f);
 			label.setY(getHeight() * 0.15f - bounds.height * 0.5f);
@@ -83,7 +86,6 @@ public class SingleMoveInfoHud extends Group {
 	public void updateShips(int shipsToMove) {
 		shipsLabel.setText("" + shipsToMove);
 	}
-
 
 	public void updateDuration(float duration) {
 		durationLabel.setText("" + (int) (Math.ceil(duration)));

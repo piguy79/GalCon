@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -80,7 +81,7 @@ public abstract class EndGameOverlay extends Overlay {
 	}
 
 	protected void createResultLabel(String text) {
-		resultLabel = new ShaderLabel(resources.fontShader, text, resources.skin, getResultFont());
+		resultLabel = new ShaderLabel(resources.fontShader, text, resources.skin, getResultFont(), getResultColor());
 		resultLabel.setX((width / 2) - (resultLabel.getTextBounds().width / 2));
 		resultLabel.setY(height * 0.75f);
 
@@ -88,7 +89,7 @@ public abstract class EndGameOverlay extends Overlay {
 	};
 
 	private void createMessageLabel(String text) {
-		messageLabel = new ShaderLabel(resources.fontShader, text, resources.skin, getMessageFont());
+		messageLabel = new ShaderLabel(resources.fontShader, text, resources.skin, getMessageFont(), getResultColor());
 		messageLabel.setX(width * 0.05f);
 		messageLabel.setAlignment(Align.center);
 		messageLabel.setY(resultLabel.getY() - (height * 0.15f));
@@ -251,6 +252,8 @@ public abstract class EndGameOverlay extends Overlay {
 	abstract String getTextForMessageLabel();
 
 	abstract String getResultFont();
+
+	abstract Color getResultColor();
 
 	abstract String getMessageFont();
 

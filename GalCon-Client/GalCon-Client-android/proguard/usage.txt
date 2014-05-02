@@ -4353,7 +4353,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle
 com.badlogic.gdx.scenes.scene2d.ui.Label:
     50:51:public Label(java.lang.CharSequence,com.badlogic.gdx.scenes.scene2d.ui.Skin)
-    60:61:public Label(java.lang.CharSequence,com.badlogic.gdx.scenes.scene2d.ui.Skin,java.lang.String,com.badlogic.gdx.graphics.Color)
+    54:55:public Label(java.lang.CharSequence,com.badlogic.gdx.scenes.scene2d.ui.Skin,java.lang.String)
     66:67:public Label(java.lang.CharSequence,com.badlogic.gdx.scenes.scene2d.ui.Skin,java.lang.String,java.lang.String)
     114:114:public java.lang.CharSequence getText()
     276:279:public void setFontScale(float)
@@ -4444,7 +4444,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin:
     160:162:public boolean has(java.lang.String,java.lang.Class)
     167:167:public com.badlogic.gdx.utils.ObjectMap getAll(java.lang.Class)
     171:171:public com.badlogic.gdx.graphics.Color getColor(java.lang.String)
-    175:175:public com.badlogic.gdx.graphics.g2d.BitmapFont getFont(java.lang.String)
     194:208:public com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable getTiledDrawable(java.lang.String)
     303:306:public java.lang.String find(java.lang.Object)
     311:311:public com.badlogic.gdx.scenes.scene2d.utils.Drawable newDrawable(java.lang.String)
@@ -4524,19 +4523,8 @@ com.badlogic.gdx.scenes.scene2d.ui.TableToolkit:
     33:33:public bridge synthetic float getWidth(java.lang.Object)
 com.badlogic.gdx.scenes.scene2d.ui.TextArea
 com.badlogic.gdx.scenes.scene2d.ui.TextArea$TextAreaListener
-com.badlogic.gdx.scenes.scene2d.ui.TextButton:
-    35:37:public TextButton(java.lang.String,com.badlogic.gdx.scenes.scene2d.ui.Skin)
-    40:42:public TextButton(java.lang.String,com.badlogic.gdx.scenes.scene2d.ui.Skin,java.lang.String)
-    45:52:public TextButton(java.lang.String,com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle)
-    71:71:public com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle getStyle()
-    91:91:public com.badlogic.gdx.scenes.scene2d.ui.Label getLabel()
-    95:95:public com.esotericsoftware.tablelayout.Cell getLabelCell()
-    99:100:public void setText(java.lang.String)
-    103:103:public java.lang.CharSequence getText()
-    30:30:public bridge synthetic com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle getStyle()
-com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle:
-    117:119:public TextButton$TextButtonStyle(com.badlogic.gdx.scenes.scene2d.utils.Drawable,com.badlogic.gdx.scenes.scene2d.utils.Drawable,com.badlogic.gdx.scenes.scene2d.utils.Drawable,com.badlogic.gdx.graphics.g2d.BitmapFont)
-    122:130:public TextButton$TextButtonStyle(com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle)
+com.badlogic.gdx.scenes.scene2d.ui.TextButton
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle
 com.badlogic.gdx.scenes.scene2d.ui.TextField
 com.badlogic.gdx.scenes.scene2d.ui.TextField$DefaultOnscreenKeyboard
 com.badlogic.gdx.scenes.scene2d.ui.TextField$KeyRepeatTask
@@ -8889,12 +8877,12 @@ com.railwaygames.solarsmash.Constants:
     11:11:public Constants()
 com.railwaygames.solarsmash.Constants$Auth
 com.railwaygames.solarsmash.Constants$Colors:
-    85:85:public Constants$Colors()
+    66:66:public Constants$Colors()
 com.railwaygames.solarsmash.Constants$Config
 com.railwaygames.solarsmash.Constants$Tutorial
 com.railwaygames.solarsmash.Constants$UI
 com.railwaygames.solarsmash.ExternalActionWrapper:
-    21:22:private ExternalActionWrapper()
+    22:23:private ExternalActionWrapper()
 com.railwaygames.solarsmash.MainActivity:
     public static final java.lang.String LOG_NAME
     public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE
@@ -9066,14 +9054,14 @@ com.railwaygames.solarsmash.screen.BoardScreen$Labels:
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
     153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
-    346:346:private BoardScreenPlayerHud$Abilities()
+    347:347:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
-    488:488:public void dispose()
+    489:489:public void dispose()
 com.railwaygames.solarsmash.screen.FriendScreen$11:
-    597:597:public void onSignOut()
+    598:598:public void onSignOut()
 com.railwaygames.solarsmash.screen.GameListScreen:
-    61:61:protected boolean showGamesThatHaveBeenWon()
-    65:67:protected void refreshScreen()
+    62:62:protected boolean showGamesThatHaveBeenWon()
+    66:68:protected void refreshScreen()
 com.railwaygames.solarsmash.screen.GameQueueScreen:
     public com.railwaygames.solarsmash.PartialScreenFeedback previousScreen
 com.railwaygames.solarsmash.screen.GameQueueScreen$SelectGameResultHander
@@ -9083,7 +9071,7 @@ com.railwaygames.solarsmash.screen.GraphicsUtils:
 com.railwaygames.solarsmash.screen.LevelSelectionScreen$8:
     385:393:public void draw(com.badlogic.gdx.graphics.g2d.SpriteBatch,float)
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
-    169:169:public void dispose()
+    170:170:public void dispose()
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
     12:14:public AcceptInviteEvent(boolean)
 com.railwaygames.solarsmash.screen.event.DialogEventListener
@@ -9092,7 +9080,7 @@ com.railwaygames.solarsmash.screen.level.LevelManager:
 com.railwaygames.solarsmash.screen.overlay.DismissableOverlay:
     32:33:public DismissableOverlay(com.railwaygames.solarsmash.screen.Resources,com.badlogic.gdx.scenes.scene2d.utils.ClickListener)
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
-    221:223:public void onSignOut()
+    222:224:public void onSignOut()
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
     103:103:public com.railwaygames.solarsmash.screen.widget.ActorBar build()
 com.railwaygames.solarsmash.screen.widget.ActorBar$Align
@@ -9110,37 +9098,36 @@ com.railwaygames.solarsmash.screen.widget.ShaderTextField:
     private static final char TAB
     private static final char DELETE
     private static final char BULLET
-    89:90:public ShaderTextField(java.lang.String,com.badlogic.gdx.scenes.scene2d.ui.Skin)
-    377:378:public void setMaxLength(int)
-    381:381:public int getMaxLength()
-    391:392:public void setOnlyFontChars(boolean)
-    406:409:public void setPasswordCharacter(char)
-    416:416:public com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle getStyle()
-    712:713:public void setTextFieldListener(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldListener)
-    720:721:public void setTextFieldFilter(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter)
-    725:726:public void setFocusTraversal(boolean)
-    730:730:public java.lang.String getMessageText()
-    810:814:public void setCursorPosition(int)
-    817:817:public int getCursorPosition()
-    830:831:public void setClipboard(com.badlogic.gdx.utils.Clipboard)
-    847:848:public void setRightAligned(boolean)
-    855:857:public void setPasswordMode(boolean)
-    860:861:public void setBlinkTime(float)
-    864:865:public void setDisabled(boolean)
-    872:872:public boolean isPasswordMode()
-    876:876:public com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter getTextFieldFilter()
+    379:380:public void setMaxLength(int)
+    383:383:public int getMaxLength()
+    393:394:public void setOnlyFontChars(boolean)
+    408:411:public void setPasswordCharacter(char)
+    418:418:public com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle getStyle()
+    714:715:public void setTextFieldListener(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldListener)
+    722:723:public void setTextFieldFilter(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter)
+    727:728:public void setFocusTraversal(boolean)
+    732:732:public java.lang.String getMessageText()
+    812:816:public void setCursorPosition(int)
+    819:819:public int getCursorPosition()
+    832:833:public void setClipboard(com.badlogic.gdx.utils.Clipboard)
+    849:850:public void setRightAligned(boolean)
+    857:859:public void setPasswordMode(boolean)
+    862:863:public void setBlinkTime(float)
+    866:867:public void setDisabled(boolean)
+    874:874:public boolean isPasswordMode()
+    878:878:public com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter getTextFieldFilter()
 com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter$DigitsOnlyFilter
 com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle:
-    972:988:public ShaderTextField$ShaderTextFieldStyle(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle)
+    974:990:public ShaderTextField$ShaderTextFieldStyle(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle)
 com.railwaygames.solarsmash.service.PingService:
     public static final int NOTIFICATION_ID
     private static final int SLEEP_TIME
     private static final int LONG_SLEEP_TIME
     private static final java.lang.String DELETE_KEY
 com.railwaygames.solarsmash.social.FacebookAuthorization$2:
-    137:137:public void onSignOut()
+    140:140:public void onSignOut()
 com.railwaygames.solarsmash.social.FacebookAuthorization$4:
-    194:194:public void onSignOut()
+    197:197:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
     184:184:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:

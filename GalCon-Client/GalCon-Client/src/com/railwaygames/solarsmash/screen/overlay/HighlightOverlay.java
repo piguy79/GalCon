@@ -115,7 +115,8 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.show();
 
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin, Constants.UI.LARGE_FONT);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin, Constants.UI.LARGE_FONT,
+					Color.WHITE);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
 			lbl.setY(Gdx.graphics.getHeight() * 0.7f - lbl.getHeight() * 0.5f);
@@ -127,7 +128,7 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 		{
 			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1), resources.skin,
-					Constants.UI.LARGE_FONT);
+					Constants.UI.LARGE_FONT, Color.WHITE);
 			lbl.setWidth(Gdx.graphics.getWidth());
 			lbl.setX(0);
 			lbl.setY(Gdx.graphics.getHeight() * 0.6f - lbl.getHeight() * 0.5f);
@@ -149,7 +150,7 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
-		
+
 		this.backGround.setColor(Constants.Colors.OVERLAY_RED);
 
 		return this;
@@ -290,14 +291,14 @@ public abstract class HighlightOverlay extends Overlay {
 			yIncrease = yIncrease * -1f;
 		}
 
-		String fontColorToUse = Constants.UI.DEFAULT_FONT_RED;
+		Color fontColorToUse = Color.RED;
 		if (planetOwner.equals(GameLoop.USER.handle)) {
-			fontColorToUse = Constants.UI.DEFAULT_FONT_GREEN;
+			fontColorToUse = Color.GREEN;
 		}
 
 		String labelText = gameBoard.gameConfig.getValue(Constants.XP_FROM_PLANET_CAPTURE);
 		final ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + labelText + "xp", resources.skin,
-				fontColorToUse);
+				Constants.UI.DEFAULT_FONT, fontColorToUse);
 		label.setX(tileCenter.x);
 		label.setY(tileCenter.y);
 		addActor(label);
@@ -786,7 +787,8 @@ public abstract class HighlightOverlay extends Overlay {
 		private void updateShipCount(int value) {
 			moveInfoHud.updateShips(value);
 			if (moveShipCount == null) {
-				moveShipCount = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.X_LARGE_FONT);
+				moveShipCount = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.X_LARGE_FONT,
+						Color.WHITE);
 				moveShipCount.setWidth(Gdx.graphics.getWidth());
 				moveShipCount.setX(0);
 				moveShipCount.setY(Gdx.graphics.getHeight() * 0.5f - moveShipCount.getHeight() * 0.5f);

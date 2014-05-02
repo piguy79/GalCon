@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.widget;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.railwaygames.solarsmash.Constants;
@@ -68,18 +69,18 @@ public class XpProgressBar extends Group {
 	private void createXpNeededText() {
 		if (reachedMaxRank()) {
 			ShaderLabel neededText = new ShaderLabel(resources.fontShader, "Max Rank achieved!", resources.skin,
-					Constants.UI.DEFAULT_FONT_YELLOW);
+					Constants.UI.DEFAULT_FONT, Color.YELLOW);
 			neededText.setX(mainXp.getX() + 10);
 			addActor(neededText);
 		} else {
 			int xpNeeded = nextRank.startFrom - GameLoop.USER.xp;
 			ShaderLabel xpNeededLabel = new ShaderLabel(resources.fontShader, xpNeeded + "xp", resources.skin,
-					Constants.UI.DEFAULT_FONT_YELLOW);
+					Constants.UI.DEFAULT_FONT, Color.YELLOW);
 			xpNeededLabel.setX(mainXp.getX() + 10);
 			addActor(xpNeededLabel);
 
 			ShaderLabel neededText = new ShaderLabel(resources.fontShader, "Needed", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			neededText.setX(xpNeededLabel.getX() + (xpNeededLabel.getTextBounds().width * 1.05f));
 			addActor(neededText);
 		}
@@ -88,7 +89,7 @@ public class XpProgressBar extends Group {
 	private void createNextLevelCount() {
 		if (!reachedMaxRank()) {
 			ShaderLabel nextLevel = new ShaderLabel(resources.fontShader, "" + nextRank.level, resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			nextLevel.setX(mainXp.getX() + mainXp.getWidth() + 5);
 			addActor(nextLevel);
 		}
@@ -107,7 +108,7 @@ public class XpProgressBar extends Group {
 	private void createUserWelcome() {
 		String welcome = GameLoop.USER.handle + "[" + usersCurrentRank.level + "]";
 		ShaderLabel userWelcome = new ShaderLabel(resources.fontShader, welcome, resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		userWelcome.setX(mainXp.getX() + 2);
 		userWelcome.setY(mainXp.getHeight());
 		addActor(userWelcome);

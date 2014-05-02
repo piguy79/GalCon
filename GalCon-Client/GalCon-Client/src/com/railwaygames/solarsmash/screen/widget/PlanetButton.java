@@ -51,7 +51,7 @@ public class PlanetButton extends Group {
 
 		showPlanetState(showCurrentState, false);
 
-		label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.DEFAULT_FONT);
+		label = new ShaderLabel(resources.fontShader, "0", resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 		label.setText("" + planet.numberOfShipsToDisplay(gameBoard, showCurrentState));
 		positionLabel();
 		addActor(label);

@@ -108,7 +108,7 @@ public class BoardScreenPlayerHud extends Group {
 
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "+"
 					+ Integer.toString((int) Math.floor(abilities.getValue() * 100)) + "%" + abilities.getKey(),
-					resources.skin, Constants.UI.X_SMALL_FONT);
+					resources.skin, Constants.UI.X_SMALL_FONT, Color.WHITE);
 			if (invert) {
 				label.setBounds(x + bottomWidth, playerHudBg.getHeight() - y - height + margin, bottomWidth * -1,
 						height);
@@ -209,7 +209,7 @@ public class BoardScreenPlayerHud extends Group {
 		float margin = playerHudBg.getWidth() * 0.01f;
 
 		ShaderLabel enemyLabel = new ShaderLabel(resources.fontShader, enemy.handle, resources.skin,
-				Constants.UI.X_SMALL_FONT);
+				Constants.UI.X_SMALL_FONT, Color.WHITE);
 		enemyLabel.setColor(new Color(1.0f, 0.8f, 0.8f, 1.0f));
 		enemyLabel.setWidth(playerHudBg.getWidth() * 0.66f);
 		enemyLabel.setY(playerHudBg.getHeight() - enemyLabel.getTextBounds().height - playerHudBg.getHeight() * 0.07f);
@@ -220,7 +220,7 @@ public class BoardScreenPlayerHud extends Group {
 		Rank enemyRank = ConfigResolver.getRankForXp(enemy.xp);
 		if (enemyRank != null && enemy.xp != -1) {
 			ShaderLabel enemyRankLabel = new ShaderLabel(resources.fontShader, "" + enemyRank.level, resources.skin,
-					Constants.UI.LARGE_FONT);
+					Constants.UI.LARGE_FONT, Color.WHITE);
 			enemyRankLabel.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
 			enemyRankLabel.setWidth(playerHudBg.getWidth() * 0.5f);
 			enemyRankLabel.setY(playerHudBg.getHeight() * 0.5f - enemyRankLabel.getTextBounds().height * 0.8f);
@@ -229,7 +229,8 @@ public class BoardScreenPlayerHud extends Group {
 			playerHudBg.addActor(enemyRankLabel);
 		}
 
-		ShaderLabel vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT);
+		ShaderLabel vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT,
+				Color.WHITE);
 		vs.setWidth(playerHudBg.getWidth());
 		vs.setColor(new Color(1.0f, 1.0f, 1.0f, 0.7f));
 		vs.setY(playerHudBg.getHeight() * 0.5f - vs.getTextBounds().height * 0.6f);
@@ -237,7 +238,7 @@ public class BoardScreenPlayerHud extends Group {
 		playerHudBg.addActor(vs);
 
 		ShaderLabel userLabel = new ShaderLabel(resources.fontShader, user.handle, resources.skin,
-				Constants.UI.X_SMALL_FONT);
+				Constants.UI.X_SMALL_FONT, Color.WHITE);
 		userLabel.setColor(new Color(0.8f, 1.0f, 0.8f, 1.0f));
 		userLabel.setWidth(playerHudBg.getWidth() * 0.66f);
 		userLabel.setY(0);
@@ -247,7 +248,7 @@ public class BoardScreenPlayerHud extends Group {
 
 		Rank userRank = ConfigResolver.getRankForXp(user.xp);
 		ShaderLabel userRankLabel = new ShaderLabel(resources.fontShader, "" + userRank.level, resources.skin,
-				Constants.UI.LARGE_FONT);
+				Constants.UI.LARGE_FONT, Color.WHITE);
 		userRankLabel.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
 		userRankLabel.setWidth(playerHudBg.getWidth() * 0.5f);
 		userRankLabel.setY(playerHudBg.getHeight() * 0.5f - userRankLabel.getTextBounds().height * 0.8f);

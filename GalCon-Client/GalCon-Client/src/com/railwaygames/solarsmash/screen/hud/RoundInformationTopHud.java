@@ -85,7 +85,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Saved!", resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.02f);
 			label.setY(getHeight() * 0.7f - bounds.height * 0.5f);
@@ -96,7 +96,8 @@ public class RoundInformationTopHud extends Group {
 		}
 
 		{
-			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.X_SMALL_FONT);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.X_SMALL_FONT,
+					Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(getWidth() * 0.02f);
 			label.setY(getHeight() * 0.3f - bounds.height * 0.5f);
@@ -223,7 +224,7 @@ public class RoundInformationTopHud extends Group {
 		if (didAirAttackOccur) {
 			{
 				ShaderLabel label = new ShaderLabel(resources.fontShader, "Battle:", resources.skin,
-						Constants.UI.SMALL_FONT);
+						Constants.UI.SMALL_FONT, Color.WHITE);
 				label.setX(getWidth() * 0.01f);
 				label.setY(yPos[index]);
 				label.setWidth(getWidth() * 0.25f);
@@ -233,7 +234,7 @@ public class RoundInformationTopHud extends Group {
 
 			{
 				ShaderLabel label = new ShaderLabel(resources.fontShader, "" + userMoveCount, resources.skin,
-						Constants.UI.SMALL_FONT);
+						Constants.UI.SMALL_FONT, Color.WHITE);
 				label.setColor(Constants.Colors.USER_SHIP_FILL);
 				label.setX(getWidth() * 0.25f);
 				label.setY(yPos[index] + getHeight() * 0.08f);
@@ -244,7 +245,7 @@ public class RoundInformationTopHud extends Group {
 
 			if (userAttackBonus > 0) {
 				ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + userAttackBonus + "%", resources.skin,
-						Constants.UI.SMALL_FONT);
+						Constants.UI.SMALL_FONT, Color.WHITE);
 				label.setColor(Constants.Colors.USER_SHIP_FILL);
 				label.setX(getWidth() * 0.25f);
 				label.setY(yPos[index] + getHeight() * 0.08f);
@@ -255,7 +256,7 @@ public class RoundInformationTopHud extends Group {
 
 			{
 				ShaderLabel label = new ShaderLabel(resources.fontShader, "" + enemyMoveCount, resources.skin,
-						Constants.UI.SMALL_FONT);
+						Constants.UI.SMALL_FONT, Color.WHITE);
 				label.setColor(Constants.Colors.ENEMY_SHIP_FILL);
 				label.setX(getWidth() * 0.25f);
 				label.setY(yPos[index] - getHeight() * 0.13f);
@@ -266,7 +267,7 @@ public class RoundInformationTopHud extends Group {
 
 			if (enemyAttackBonus > 0) {
 				ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + enemyAttackBonus + "%", resources.skin,
-						Constants.UI.SMALL_FONT);
+						Constants.UI.SMALL_FONT, Color.WHITE);
 				label.setColor(Constants.Colors.ENEMY_SHIP_FILL);
 				label.setX(getWidth() * 0.25f);
 				label.setY(yPos[index] - getHeight() * 0.13f);
@@ -280,7 +281,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Attack:", resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.01f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.25f);
@@ -290,7 +291,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseAttack, resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.25f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.05f);
@@ -300,7 +301,7 @@ public class RoundInformationTopHud extends Group {
 		}
 		if (attackMultiplier > 0) {
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + attackMultiplier + "%", resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.25f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.19f);
@@ -312,7 +313,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Defense:", resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.01f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.25f);
@@ -322,7 +323,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + baseDefense, resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.25f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.05f);
@@ -332,7 +333,7 @@ public class RoundInformationTopHud extends Group {
 		}
 		if (defenseMultiplier > 0) {
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "+" + defenseMultiplier + "%", resources.skin,
-					Constants.UI.SMALL_FONT);
+					Constants.UI.SMALL_FONT, Color.WHITE);
 			label.setX(getWidth() * 0.25f);
 			label.setY(yPos[index]);
 			label.setWidth(getWidth() * 0.19f);
@@ -343,7 +344,7 @@ public class RoundInformationTopHud extends Group {
 
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, attackText, resources.skin,
-					Constants.UI.DEFAULT_FONT);
+					Constants.UI.DEFAULT_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setColor(color);
 			label.setX(getWidth() * 0.5f);

@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.hud;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -51,7 +52,7 @@ public class PlanetInfoHud extends Group {
 			float height, Group parent) {
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "Rounds remaining with\nharvest bonus",
-					resources.skin, Constants.UI.X_SMALL_FONT);
+					resources.skin, Constants.UI.X_SMALL_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(width * 0.4f);
 			label.setY(height * 0.75f - bounds.height * 0.5f);
@@ -61,7 +62,8 @@ public class PlanetInfoHud extends Group {
 		}
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, ""
-					+ planet.roundsUntilHarvestIsComplete(gameBoard), resources.skin, Constants.UI.LARGE_FONT);
+					+ planet.roundsUntilHarvestIsComplete(gameBoard), resources.skin, Constants.UI.LARGE_FONT,
+					Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(width * 0.4f);
 			label.setY(height * 0.15f - bounds.height * 0.5f);
@@ -77,7 +79,7 @@ public class PlanetInfoHud extends Group {
 			String fontSize = Constants.UI.SMALL_FONT;
 			String text = "Ship build rate";
 
-			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, fontSize);
+			ShaderLabel label = new ShaderLabel(resources.fontShader, text, resources.skin, fontSize, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(0);
 			label.setY(height * 0.7f - bounds.height * 0.5f);
@@ -88,7 +90,7 @@ public class PlanetInfoHud extends Group {
 		}
 		{
 			ShaderLabel label = new ShaderLabel(resources.fontShader, "" + regen, resources.skin,
-					Constants.UI.LARGE_FONT);
+					Constants.UI.LARGE_FONT, Color.WHITE);
 			TextBounds bounds = label.getTextBounds();
 			label.setX(0);
 			label.setY(height * 0.15f - bounds.height * 0.5f);
@@ -106,7 +108,7 @@ public class PlanetInfoHud extends Group {
 		harvestButton.setBounds(getWidth() * 0.75f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth,
 				bHeight);
 
-		harvestText = new ShaderLabel(fontShader, "Harvest", skin, Constants.UI.BASIC_BUTTON_TEXT);
+		harvestText = new ShaderLabel(fontShader, "Harvest", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		harvestText.setAlignment(Align.center);
 		harvestText.setBounds(getWidth() * 0.75f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
 		harvestText.setY(harvestText.getY() + getHeight() * 0.05f);

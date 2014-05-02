@@ -1,5 +1,6 @@
 package com.railwaygames.solarsmash.screen.widget;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -53,7 +54,8 @@ public class GameInviteGroup extends Group {
 	}
 
 	private void createVsLabel() {
-		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, "vs ", resources.skin, Constants.UI.DEFAULT_FONT);
+		ShaderLabel vsLabel = new ShaderLabel(resources.fontShader, "vs ", resources.skin, Constants.UI.DEFAULT_FONT,
+				Color.WHITE);
 		vsLabel.setAlignment(Align.center);
 		vsLabel.setWidth(width);
 		vsLabel.setY(height * 0.6f);
@@ -63,7 +65,7 @@ public class GameInviteGroup extends Group {
 
 	private void createPlayerLabel() {
 		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.requester.handle, resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWidth(width);
 		playerLabel.setY(height * 0.35f);
@@ -73,7 +75,7 @@ public class GameInviteGroup extends Group {
 
 	private void createLevelLabel() {
 		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, " Map: " + mapTitle, resources.skin,
-				Constants.UI.DEFAULT_FONT);
+				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		levelLabel.setAlignment(Align.center);
 		levelLabel.setWidth(width);
 		levelLabel.setY(height * 0.1f);
@@ -115,9 +117,9 @@ public class GameInviteGroup extends Group {
 		okButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if(GameLoop.USER.coins == 0){
+				if (GameLoop.USER.coins == 0) {
 					fire(new InviteNoCoinsEvent());
-				}else{
+				} else {
 					final Overlay loadingOverlay = new LoadingOverlay(resources);
 					getParent().getStage().addActor(loadingOverlay);
 					UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {

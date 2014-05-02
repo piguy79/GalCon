@@ -15,18 +15,20 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.railwaygames.solarsmash.Fonts;
+import com.railwaygames.solarsmash.screen.Resources;
 
 public class ShaderTextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
@@ -85,16 +87,16 @@ public class ShaderTextField extends Widget implements Disableable {
 
 	ShaderProgram fontShader;
 
-	public ShaderTextField(String text, Skin skin) {
-		this(text, skin.get(ShaderTextFieldStyle.class));
-	}
+	public ShaderTextField(String text, Resources resources) {
+		this.fontShader = resources.fontShader;
 
-	public ShaderTextField(ShaderProgram fontShader, String text, Skin skin, String styleName) {
-		this(text, skin.get(styleName, ShaderTextFieldStyle.class));
-		this.fontShader = fontShader;
-	}
+		TextureRegionDrawable trd = new TextureRegionDrawable(resources.menuAtlas.findRegion("textFieldBg"));
+		trd.setLeftWidth(20);
+		trd.setRightWidth(20);
+		TextureRegionDrawable cursor = new TextureRegionDrawable(resources.menuAtlas.findRegion("cursor"));
+		ShaderTextFieldStyle style = new ShaderTextFieldStyle(Fonts.getInstance(resources.assetManager).mediumFont(),
+				Color.BLACK, cursor, null, trd);
 
-	public ShaderTextField(String text, ShaderTextFieldStyle style) {
 		setStyle(style);
 		this.clipboard = Gdx.app.getClipboard();
 		setText(text);

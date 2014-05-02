@@ -8,6 +8,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -89,14 +90,14 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 
 	private void addHandleFields() {
 		chooseHandleLabel = new ShaderLabel(resources.fontShader, "Galactic explorer,\nchoose a username",
-				resources.skin, Constants.UI.DEFAULT_FONT);
+				resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
 		chooseHandleLabel.setAlignment(Align.center);
 		chooseHandleLabel.setWidth(width);
 		chooseHandleLabel.setX(width / 2 - chooseHandleLabel.getWidth() / 2);
 		chooseHandleLabel.setY(0.55f * height);
 		stage.addActor(chooseHandleLabel);
 
-		handleTextField = new ShaderTextField(resources.fontShader, "", resources.skin, Constants.UI.TEXT_FIELD);
+		handleTextField = new ShaderTextField("", resources);
 		handleTextField.setWidth(width * 0.75f);
 		handleTextField.setHeight(height * .08f);
 		handleTextField.setX(width * 0.5f - handleTextField.getWidth() * 0.6f);

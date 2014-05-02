@@ -23,24 +23,10 @@ public class Constants {
 		public static final String DEFAULT_BG_COLOR = "defaultBgColor";
 
 		public static final String X_SMALL_FONT = "xSmallFont";
-		public static final String X_SMALL_FONT_GREEN = "xSmallFontGreen";
-		public static final String X_SMALL_FONT_RED = "xSmallFontRed";
-		public static final String X_SMALL_FONT_BLACK = "xSmallFontBlack";
-
 		public static final String SMALL_FONT = "smallFont";
-		public static final String SMALL_FONT_BLACK = "smallFontBlack";
-
 		public static final String DEFAULT_FONT = "defaultFont";
-		public static final String DEFAULT_FONT_BLACK = "defaultFontBlack";
-		public static final String DEFAULT_FONT_GREEN = "defaultFontGreen";
-		public static final String DEFAULT_FONT_RED = "defaultFontRed";
-		public static final String DEFAULT_FONT_YELLOW = "defaultFontYellow";
 		public static final String LARGE_FONT = "largeFont";
-		public static final String LARGE_FONT_YELLOW = "largeFontYellow";
-		public static final String LARGE_FONT_GREEN = "largeFontGreen";
-		public static final String LARGE_FONT_RED = "largeFontRed";
 		public static final String X_LARGE_FONT = "xLargeFont";
-		public static final String LARGE_FONT_BLACK = "largeFontBlack";
 
 		public static final String TEXT_FIELD = "textField";
 
@@ -50,11 +36,6 @@ public class Constants {
 		public static final String OK_BUTTON = "okButton";
 		public static final String QUESTION_MARK = "questionMark";
 		public static final String WAIT_BUTTON = "waitButton";
-		public static final String GREEN_BUTTON = "greenButton";
-		public static final String GREEN_BUTTON_TEXT = "greenButtonText";
-		public static final String GREEN_BUTTON_TEXT_SMALL = "greenButtonTextSmall";
-		public static final String GRAY_BUTTON = "grayButton";
-		public static final String GRAY_BUTTON_TEXT = "grayButtonText";
 		public static final String CELL_BG = "cellBg";
 		public static final String COIN = "coin";
 		public static final String DIALOG_BG = "dialogBg";

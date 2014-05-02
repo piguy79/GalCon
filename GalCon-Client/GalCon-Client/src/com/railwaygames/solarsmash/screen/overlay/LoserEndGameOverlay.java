@@ -1,11 +1,11 @@
 package com.railwaygames.solarsmash.screen.overlay;
 
+import com.badlogic.gdx.graphics.Color;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.screen.Resources;
 
 public class LoserEndGameOverlay extends EndGameOverlay {
-	
 
 	public LoserEndGameOverlay(Resources resources, GameBoard gameBoard) {
 		super(resources, gameBoard);
@@ -18,7 +18,7 @@ public class LoserEndGameOverlay extends EndGameOverlay {
 
 	@Override
 	String getResultFont() {
-		return Constants.UI.LARGE_FONT_RED;
+		return Constants.UI.LARGE_FONT;
 	}
 
 	@Override
@@ -28,8 +28,12 @@ public class LoserEndGameOverlay extends EndGameOverlay {
 
 	@Override
 	String getMessageFont() {
-		return Constants.UI.DEFAULT_FONT_RED;
+		return Constants.UI.DEFAULT_FONT;
 	}
 
+	@Override
+	Color getResultColor() {
+		return Color.RED;
+	}
 
 }
