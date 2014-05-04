@@ -1,7 +1,6 @@
 package com.railwaygames.solarsmash.social;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONException;
@@ -12,13 +11,12 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Request.GraphUserListCallback;
-import com.facebook.FacebookException;
 import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
@@ -77,7 +75,7 @@ public class FacebookAuthorization implements Authorizer {
 
 	@Override
 	public void onActivityResult(int responseCode) {
-       populateAuthIdAndSucceed();
+		populateAuthIdAndSucceed();
 	}
 
 
@@ -108,8 +106,9 @@ public class FacebookAuthorization implements Authorizer {
 		this.listener = listener;
 		
 		Session session = Session.getActiveSession();
-        if (session == null) {
-           listener.onSignInFailed("Unable to retrieve token.");
+        if (session == null || session.isClosed()) {
+           session = createSession();
+           session.openForRead(createRequest().setCallback(statusCallback));
         } else if(session.isOpened()){
         	populateAuthIdAndSucceed();
         }
