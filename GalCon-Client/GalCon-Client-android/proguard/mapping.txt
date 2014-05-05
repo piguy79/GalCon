@@ -20537,57 +20537,57 @@ com.railwaygames.solarsmash.MainActivity -> com.railwaygames.solarsmash.MainActi
     com.railwaygames.solarsmash.AndroidInAppBillingAction inAppBillingAction -> e
     com.railwaygames.solarsmash.GameLoop gameLoop -> f
     com.railwaygames.solarsmash.inappbilling.util.IabHelper mHelper -> g
-    64:86:void onCreate(android.os.Bundle) -> onCreate
-    90:94:void onNewIntent(android.content.Intent) -> onNewIntent
-    98:104:void onDestroy() -> onDestroy
-    107:131:void setupInAppBilling(com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
-    144:145:void onPause() -> onPause
-    150:153:void onResume() -> onResume
-    156:158:void displayAd() -> a
-    161:191:void purchaseCoins(com.railwaygames.solarsmash.model.InventoryItem,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
-    194:243:void loadStoreInventory(com.railwaygames.solarsmash.model.Inventory,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
-    246:275:void consumeOrders(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
-    278:287:java.util.List convertOrdersToPurchase(java.util.List) -> a
-    292:293:void onStart() -> onStart
-    297:298:void onStop() -> onStop
-    302:313:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
-    317:320:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-    322:322:com.railwaygames.solarsmash.model.Order access$0$1c235801(com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
+    65:87:void onCreate(android.os.Bundle) -> onCreate
+    91:95:void onNewIntent(android.content.Intent) -> onNewIntent
+    99:105:void onDestroy() -> onDestroy
+    108:132:void setupInAppBilling(com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
+    145:146:void onPause() -> onPause
+    151:154:void onResume() -> onResume
+    157:159:void displayAd() -> a
+    162:192:void purchaseCoins(com.railwaygames.solarsmash.model.InventoryItem,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
+    195:249:void loadStoreInventory(com.railwaygames.solarsmash.model.Inventory,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
+    252:281:void consumeOrders(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
+    284:293:java.util.List convertOrdersToPurchase(java.util.List) -> a
+    298:299:void onStart() -> onStart
+    303:304:void onStop() -> onStop
+    308:319:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    323:326:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    328:328:com.railwaygames.solarsmash.model.Order access$0$1c235801(com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
 com.railwaygames.solarsmash.MainActivity$1 -> com.railwaygames.solarsmash.bq:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> b
-    118:129:void onIabSetupFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult) -> a
+    119:130:void onIabSetupFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult) -> a
 com.railwaygames.solarsmash.MainActivity$2 -> com.railwaygames.solarsmash.br:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.model.InventoryItem val$inventoryItem -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    166:167:void onSuccess(java.lang.String) -> a
-    171:172:void onFailure(java.lang.String) -> b
+    167:168:void onSuccess(java.lang.String) -> a
+    172:173:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.MainActivity$3 -> com.railwaygames.solarsmash.bs:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
-    179:188:void onIabPurchaseFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
+    180:189:void onIabPurchaseFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
 com.railwaygames.solarsmash.MainActivity$4 -> com.railwaygames.solarsmash.bt:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.model.Inventory val$inventoryResult -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
-    199:200:void onSuccess(java.lang.String) -> a
-    204:205:void onFailure(java.lang.String) -> b
+    201:202:void onSuccess(java.lang.String) -> a
+    206:207:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.MainActivity$5 -> com.railwaygames.solarsmash.bu:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     com.railwaygames.solarsmash.model.Inventory val$inventoryResult -> c
-    213:240:void onQueryInventoryFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Inventory) -> a
+    216:243:void onQueryInventoryFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Inventory) -> a
 com.railwaygames.solarsmash.MainActivity$6 -> com.railwaygames.solarsmash.bv:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     java.util.List val$consumedOrders -> b
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> c
-    253:254:void onSuccess(java.lang.String) -> a
-    258:259:void onFailure(java.lang.String) -> b
+    259:260:void onSuccess(java.lang.String) -> a
+    264:265:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.MainActivity$7 -> com.railwaygames.solarsmash.bw:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> b
-    265:272:void onConsumeMultiFinished$4e6360a9(java.util.List) -> a
+    271:278:void onConsumeMultiFinished$4e6360a9(java.util.List) -> a
 com.railwaygames.solarsmash.PartialScreenFeedback -> com.railwaygames.solarsmash.bx:
     void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
     void resize(int,int) -> a
@@ -20872,6 +20872,7 @@ com.railwaygames.solarsmash.model.Auth -> com.railwaygames.solarsmash.e.a:
     19:23:void doConsume(org.json.JSONObject) -> a
     26:33:void putSocialProvider(org.json.JSONObject,java.lang.String) -> b
     37:37:java.lang.String getID(java.lang.String) -> a
+    41:41:boolean hasAuth(java.lang.String) -> b
 com.railwaygames.solarsmash.model.AvailableGames -> com.railwaygames.solarsmash.e.b:
     java.util.List allGames -> a
     18:36:void doConsume(org.json.JSONObject) -> a
@@ -22924,42 +22925,44 @@ com.railwaygames.solarsmash.social.FacebookAuthorization -> com.railwaygames.sol
     android.app.Activity activity -> a
     com.railwaygames.solarsmash.http.AuthenticationListener listener -> b
     com.facebook.Session$StatusCallback statusCallback -> c
-    49:58:void signIn(com.railwaygames.solarsmash.http.AuthenticationListener) -> a
-    80:81:void onActivityResult(int) -> b
-    85:104:void populateAuthIdAndSucceed() -> a
-    108:117:void getToken(com.railwaygames.solarsmash.http.AuthenticationListener) -> b
-    133:157:void getFriends(com.railwaygames.solarsmash.http.FriendsListener) -> a
-    161:187:void requestFriendInfo(com.railwaygames.solarsmash.http.FriendsListener,com.facebook.Session) -> a
-    193:210:void postToFriend(com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String) -> a
-    39:39:com.railwaygames.solarsmash.http.AuthenticationListener access$0(com.railwaygames.solarsmash.social.FacebookAuthorization) -> a
-    84:84:void access$1(com.railwaygames.solarsmash.social.FacebookAuthorization) -> b
-    159:159:void access$2(com.railwaygames.solarsmash.social.FacebookAuthorization,com.railwaygames.solarsmash.http.FriendsListener,com.facebook.Session) -> a
-    213:213:void access$3(com.railwaygames.solarsmash.social.FacebookAuthorization,com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String) -> a
+    47:56:void signIn(com.railwaygames.solarsmash.http.AuthenticationListener) -> a
+    60:65:com.facebook.Session createSession() -> a
+    70:72:com.facebook.Session$OpenRequest createRequest() -> b
+    78:78:void onActivityResult(int) -> b
+    82:105:void populateAuthIdAndSucceed() -> c
+    109:119:void getToken(com.railwaygames.solarsmash.http.AuthenticationListener) -> b
+    135:159:void getFriends(com.railwaygames.solarsmash.http.FriendsListener) -> a
+    163:189:void requestFriendInfo(com.railwaygames.solarsmash.http.FriendsListener,com.facebook.Session) -> a
+    195:212:void postToFriend(com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String) -> a
+    37:37:com.railwaygames.solarsmash.http.AuthenticationListener access$0(com.railwaygames.solarsmash.social.FacebookAuthorization) -> a
+    81:81:void access$1(com.railwaygames.solarsmash.social.FacebookAuthorization) -> b
+    161:161:void access$2(com.railwaygames.solarsmash.social.FacebookAuthorization,com.railwaygames.solarsmash.http.FriendsListener,com.facebook.Session) -> a
+    215:215:void access$3(com.railwaygames.solarsmash.social.FacebookAuthorization,com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String) -> a
 com.railwaygames.solarsmash.social.FacebookAuthorization$1 -> com.railwaygames.solarsmash.g.c:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
     89:102:void onCompleted(com.facebook.Response) -> onCompleted
 com.railwaygames.solarsmash.social.FacebookAuthorization$2 -> com.railwaygames.solarsmash.g.d:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
     com.railwaygames.solarsmash.http.FriendsListener val$listener -> b
-    144:145:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
-    149:151:void onSignInFailed(java.lang.String) -> b_
+    146:147:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
+    151:153:void onSignInFailed(java.lang.String) -> b_
 com.railwaygames.solarsmash.social.FacebookAuthorization$3 -> com.railwaygames.solarsmash.g.e:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
     com.railwaygames.solarsmash.http.FriendsListener val$listener -> b
-    168:182:void onCompleted(java.util.List,com.facebook.Response) -> onCompleted
+    170:184:void onCompleted(java.util.List,com.facebook.Response) -> onCompleted
 com.railwaygames.solarsmash.social.FacebookAuthorization$4 -> com.railwaygames.solarsmash.g.f:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
     com.railwaygames.solarsmash.http.FriendPostListener val$listener -> b
     java.lang.String val$id -> c
-    201:202:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
-    206:207:void onSignInFailed(java.lang.String) -> b_
+    203:204:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
+    208:209:void onSignInFailed(java.lang.String) -> b_
 com.railwaygames.solarsmash.social.FacebookAuthorization$5 -> com.railwaygames.solarsmash.g.g:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
     com.railwaygames.solarsmash.http.FriendPostListener val$listener -> b
-    228:238:void onComplete(android.os.Bundle,com.facebook.FacebookException) -> onComplete
+    230:240:void onComplete(android.os.Bundle,com.facebook.FacebookException) -> onComplete
 com.railwaygames.solarsmash.social.FacebookAuthorization$SessionStatusCallback -> com.railwaygames.solarsmash.g.h:
     com.railwaygames.solarsmash.social.FacebookAuthorization this$0 -> a
-    122:127:void call(com.facebook.Session,com.facebook.SessionState,java.lang.Exception) -> call
+    124:129:void call(com.facebook.Session,com.facebook.SessionState,java.lang.Exception) -> call
 com.railwaygames.solarsmash.social.GooglePlusAuthorization -> com.railwaygames.solarsmash.g.i:
     com.google.android.gms.common.api.GoogleApiClient client -> a
     java.lang.String sScope -> b

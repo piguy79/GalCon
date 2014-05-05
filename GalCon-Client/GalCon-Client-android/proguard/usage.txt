@@ -9125,9 +9125,9 @@ com.railwaygames.solarsmash.service.PingService:
     private static final int LONG_SLEEP_TIME
     private static final java.lang.String DELETE_KEY
 com.railwaygames.solarsmash.social.FacebookAuthorization$2:
-    140:140:public void onSignOut()
+    142:142:public void onSignOut()
 com.railwaygames.solarsmash.social.FacebookAuthorization$4:
-    197:197:public void onSignOut()
+    199:199:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
     184:184:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:
