@@ -8,9 +8,6 @@
 # Java class files
 *.class
 
-#Eclipse files
-.project
-
 #windows files
 Thumbs.db
 
