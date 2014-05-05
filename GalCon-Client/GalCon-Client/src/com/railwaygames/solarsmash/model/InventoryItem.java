@@ -21,7 +21,7 @@ public class InventoryItem extends JsonConvertible {
 		super();
 		this.sku = sku;
 		this.price = price;
-		this.name = name;
+		this.name = name == null ? "" : name;
 		this.numCoins = numCoins;
 	}
 
@@ -35,6 +35,6 @@ public class InventoryItem extends JsonConvertible {
 	}
 
 	public boolean isAvailable() {
-		return sku != null && price != null && name != null;
+		return sku != null && price != null;
 	}
 }

@@ -6,17 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.robovm.apple.foundation.NSArray;
+import org.robovm.apple.foundation.NSBundle;
+import org.robovm.apple.foundation.NSData;
+import org.robovm.apple.foundation.NSDataBase64EncodingOptions;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.foundation.NSURL;
+import org.robovm.apple.storekit.SKPayment;
+import org.robovm.apple.storekit.SKPaymentQueue;
 import org.robovm.apple.storekit.SKPaymentTransaction;
+import org.robovm.apple.storekit.SKPaymentTransactionObserverAdapter;
 import org.robovm.apple.storekit.SKProduct;
 import org.robovm.apple.storekit.SKProductsRequest;
-import org.robovm.apple.storekit.SKProductsRequestDelegate;
+import org.robovm.apple.storekit.SKProductsRequestDelegateAdapter;
 import org.robovm.apple.storekit.SKProductsResponse;
 import org.robovm.apple.storekit.SKRequest;
-import org.robovm.bindings.inapppurchase.InAppPurchaseListener;
-import org.robovm.bindings.inapppurchase.InAppPurchaseManager;
 
 import com.badlogic.gdx.Gdx;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
@@ -27,52 +32,62 @@ import com.railwaygames.solarsmash.model.Order;
 
 public class IOSInAppBillingAction implements InAppBillingAction {
 	private static final String TAG = "IOSInAppBillingAction";
-	private InAppPurchaseManager iapManager;
+
+	private UIConnectionResultCallback<List<Order>> purchaseCallback;
+	private Callback consumeCallback;
+
+	private Map<String, SKProduct> skuToProduct = new HashMap<String, SKProduct>();
 
 	public IOSInAppBillingAction() {
-		iapManager = new InAppPurchaseManager(new InAppPurchaseListener() {
+		SKPaymentTransactionObserverAdapter observer = new SKPaymentTransactionObserverAdapter() {
 			@Override
-			public void productsReceived(SKProduct[] products) {
-				Map<String, SKProduct> appStoreProducts = new HashMap<String, SKProduct>();
+			public void updatedTransactions(SKPaymentQueue queue, NSArray<SKPaymentTransaction> transactions) {
+				Gdx.app.log(TAG, "Size: " + transactions.size());
 
-				for (int i = 0; i < products.length; i++) {
-					appStoreProducts.put(products[i].getProductIdentifier().toString(), products[i]);
+				for (SKPaymentTransaction transaction : transactions) {
+					switch (transaction.getTransactionState()) {
+					case Purchasing:
+						Gdx.app.log(TAG, "PURCHASING: " + transaction.getPayment().getProductIdentifier());
+						break;
+					case Purchased:
+						Gdx.app.log(TAG, "PURCHASED: " + transaction.getPayment().getProductIdentifier());
+						List<Order> orders = new ArrayList<Order>();
+						orders.add(transactionToOrder(transaction));
+						if (purchaseCallback == null) {
+							return;
+						}
+						purchaseCallback.onConnectionResult(orders);
+						break;
+					case Failed:
+						Gdx.app.log(TAG, "FAILED: " + transaction.getError().localizedDescription());
+						if (purchaseCallback == null) {
+							return;
+						}
+						purchaseCallback.onConnectionError(transaction.getError().localizedDescription());
+						break;
+					case Restored:
+						Gdx.app.log(TAG, "RESTORED: " + transaction.description());
+						break;
+					default:
+						break;
+					}
 				}
 			}
 
 			@Override
-			public void productsRequestFailed(SKRequest request, NSError error) {
-				// Something went wrong. Possibly no Internet connection.
-			}
+			public void removedTransactions(SKPaymentQueue queue, NSArray<SKPaymentTransaction> transactions) {
+				for (SKPaymentTransaction transaction : transactions) {
+					Gdx.app.log(TAG, "REMOVING: " + transaction.getPayment().getProductIdentifier());
+				}
 
-			@Override
-			public void transactionCompleted(SKPaymentTransaction transaction) {
-				// Purchase successfully completed.
-				// Get the product identifier and award the product to the user.
-				String productId = transaction.getPayment().getProductIdentifier().toString();
-				if (productId.equals("com.business.game.consumable")) {
-					// awardProduct1();
-				} else if (productId.equals("com.business.game.nonconsumable")) {
-					// awardProduct2();
+				if (consumeCallback != null) {
+					consumeCallback.onSuccess("");
 				}
 			}
+		};
 
-			@Override
-			public void transactionFailed(SKPaymentTransaction transaction) {
-				// Something went wrong. Possibly no Internet connection.
-			}
-
-			@Override
-			public void transcationRestored(SKPaymentTransaction transaction) {
-				// Purchase successfully restored.
-				// Get the product identifier and award the product to the user.
-				// This is only useful for non-consumable products.
-				String productId = transaction.getPayment().getProductIdentifier().toString();
-				if (productId.equals("com.business.game.nonconsumable")) {
-					// awardProduct2();
-				}
-			}
-		});
+		SKPaymentQueue.getDefaultQueue().addStrongRef(observer);
+		SKPaymentQueue.getDefaultQueue().addTransactionObserver(observer);
 	}
 
 	@Override
@@ -84,24 +99,32 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 			products.add(new NSString(productIds.get(i)));
 		}
 
-		Gdx.app.log(TAG, "SERVER PRODUCTS: " + products.toString());
 		SKProductsRequest productsRequest = new SKProductsRequest(new NSSet(products));
-		productsRequest.setDelegate(new SKProductsRequestDelegate.Adapter() {
+		productsRequest.setDelegate(new SKProductsRequestDelegateAdapter() {
+
 			@Override
-			public void receivedResponse(SKProductsRequest request, SKProductsResponse response) {
+			public void didReceiveResponse(SKProductsRequest request, SKProductsResponse response) {
 				NSArray<SKProduct> products = response.getProducts();
 
-				Map<String, SKProduct> productMap = new HashMap<String, SKProduct>();
-				Gdx.app.log(TAG, "Number of ios products: " + products.size());
+				skuToProduct = new HashMap<String, SKProduct>();
 				for (SKProduct product : products) {
-					Gdx.app.log(TAG, "Product id: " + product.getProductIdentifier());
-					productMap.put(product.getProductIdentifier(), product);
+					skuToProduct.put(product.getProductIdentifier(), product);
 				}
 
 				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
+				Map<String, SKPaymentTransaction> skuToTransaction = new HashMap<String, SKPaymentTransaction>();
+				NSArray<SKPaymentTransaction> unconsumedTransactions = SKPaymentQueue.getDefaultQueue()
+						.getTransactions();
+
+				for (SKPaymentTransaction unconsumedTransaction : unconsumedTransactions) {
+					Gdx.app.log(TAG, "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
+					skuToTransaction.put(unconsumedTransaction.getPayment().getProductIdentifier(),
+							unconsumedTransaction);
+				}
+
 				for (InventoryItem serverItem : serverInventory.inventory) {
-					SKProduct iosProduct = productMap.get(serverItem.sku);
+					SKProduct iosProduct = skuToProduct.get(serverItem.sku);
 					if (iosProduct == null) {
 						Gdx.app.log(TAG, "SKU not found in ios store: " + serverItem.sku);
 						continue;
@@ -110,7 +133,10 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 					InventoryItem combinedItem = new InventoryItem(iosProduct.getProductIdentifier(), iosProduct
 							.getPrice().stringValue(), iosProduct.getLocalizedTitle(), serverItem.numCoins);
 
-					// TODO: this currently does not load unconsumed items
+					if (skuToTransaction.containsKey(iosProduct.getProductIdentifier())) {
+						combinedItem.unfulfilledOrder = transactionToOrder(skuToTransaction.get(iosProduct
+								.getProductIdentifier()));
+					}
 
 					mappedInventoryItems.add(combinedItem);
 				}
@@ -121,7 +147,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 			}
 
 			@Override
-			public void requestFailed(SKRequest request, NSError error) {
+			public void didFail(SKRequest request, NSError error) {
 				callback.onConnectionError(error.description());
 			}
 		});
@@ -135,11 +161,52 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 	@Override
 	public void consumeOrders(List<Order> orders, Callback callback) {
-		callback.onSuccess("");
+		String ids = "";
+		NSArray<SKPaymentTransaction> pendingTransactions = SKPaymentQueue.getDefaultQueue().getTransactions();
+		for (SKPaymentTransaction transaction : pendingTransactions) {
+			ids += transaction.getPayment().getProductIdentifier() + " ";
+		}
+
+		Gdx.app.log(TAG, "Consuming: " + ids);
+		this.consumeCallback = callback;
+
+		for (SKPaymentTransaction transaction : pendingTransactions) {
+			SKPaymentQueue.getDefaultQueue().finishTransaction(transaction);
+		}
 	}
 
 	@Override
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<List<Order>> callback) {
-		callback.onConnectionResult(null);
+		Gdx.app.log("PURCHASE", inventoryItem.sku);
+		Gdx.app.log("CANMAKEPAYMENTS", "" + SKPaymentQueue.canMakePayments());
+		this.purchaseCallback = callback;
+		SKPayment payment = SKPayment.fromProduct(skuToProduct.get(inventoryItem.sku));
+		SKPaymentQueue.getDefaultQueue().addPayment(payment);
+	}
+
+	private Order transactionToOrder(SKPaymentTransaction transaction) {
+		Gdx.app.log(TAG, "Converting transaction to order");
+		Order order = new Order();
+
+		NSURL receiptURL = NSBundle.getMainBundle().getAppStoreReceiptURL();
+		NSData dataReceipt = (NSData) NSData.read(receiptURL);
+
+		Gdx.app.log(TAG, "RECEIPT: " + dataReceipt);
+
+		String receipt = dataReceipt.toBase64EncodedString(NSDataBase64EncodingOptions._64CharacterLineLength);
+
+		Gdx.app.log(TAG, "SRECEIPT: " + receipt);
+
+		order.orderId = transaction.getTransactionIdentifier();
+		order.packageName = "";
+		if (transaction.getTransactionDate() != null) {
+			order.purchaseTime = Double.toString(transaction.getTransactionDate().timeIntervalSince1970());
+		}
+		order.purchaseState = transaction.getTransactionState().name();
+		order.developerPayload = "";
+		order.token = receipt;
+		order.productId = transaction.getPayment().getProductIdentifier();
+
+		return order;
 	}
 }

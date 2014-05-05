@@ -239,7 +239,7 @@ public class IOSGameAction implements GameAction {
 	@Override
 	public void deleteConsumedOrders(UIConnectionResultCallback<Player> callback, String handle, List<Order> orders) {
 		try {
-			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders);
+			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders, getSession());
 			new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top.toString());
 		} catch (JSONException e) {
 			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
