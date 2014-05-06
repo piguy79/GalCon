@@ -705,7 +705,8 @@ var validateGoogleOrders = function(orders) {
 }
 
 var validateIOSOrders = function(orders) {
-	var lastP = gapiP;
+	var lastP = new mongoose.Promise();
+	lastP.fulfill();
 	_.each(orders, function(order) {
 		lastP = lastP.then(function() {
 			var newP = new mongoose.Promise();
