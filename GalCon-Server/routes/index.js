@@ -710,17 +710,23 @@ var validateIOSOrders = function(orders) {
 	_.each(orders, function(order) {
 		lastP = lastP.then(function() {
 			var newP = new mongoose.Promise();
-			newP.fulfill();
 			
 			var url = "https://buy.itunes.apple.com/verifyReceipt";
 			url = "https://sandbox.itunes.apple.com/verifyReceipt";
+			var body = {
+				"receipt-data" : order.token
+			}
 			
-			needle.post(url, function(error, response) {
+			needle.post(url, body, function(error, response) {
 				console.log(response);
 				if (!error && response.statusCode == 200) {
 					console.log(response.body);
+					newP.fulfill(response.body);
+				} else {
+					newP.reject("noCredit");
 				}
 			});
+			return newP;
 		});
 	}).then(function(validationResult) {
 		if(validationResult === "credit") {
