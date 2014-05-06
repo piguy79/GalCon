@@ -717,23 +717,23 @@ var validateIOSOrders = function(orders) {
 				"receipt-data" : order.token
 			}
 			
-			needle.post(url, body, function(error, response) {
-				console.log(response);
-				if (!error && response.statusCode == 200) {
-					console.log(response.body);
-					newP.fulfill(response.body);
+			needle.post(url, body, function(err, response, body) {
+				if (!err && response.statusCode == 200) {
+					console.log("iOS Receipt Validation - Result - %j", body);
+					newP.fulfill(body);
 				} else {
-					newP.reject("noCredit");
+					console.log(url + " - Error - %j", err);
+					newP.reject(err.message);
 				}
 			});
 			return newP;
+		}).then(function(validationResult) {
+			if(validationResult === "credit") {
+				return userManager.addCoinsForAnOrder(handle, order);
+			} else {
+				return userManager.findUserByHandle(handle);
+			}
 		});
-	}).then(function(validationResult) {
-		if(validationResult === "credit") {
-			return userManager.addCoinsForAnOrder(handle, order);
-		} else {
-			return userManager.findUserByHandle(handle);
-		}
 	});
 }
 
