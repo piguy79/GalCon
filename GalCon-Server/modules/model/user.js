@@ -26,7 +26,8 @@ var userSchema = mongoose.Schema({
 	    purchaseState : "String",
 	    developerPayload : "String",
 	    token : "String",
-	    associatedCoins : "Number"
+	    associatedCoins : "Number",
+	    platform: "String"
 	}],
 	auth : {
 		google : "String",

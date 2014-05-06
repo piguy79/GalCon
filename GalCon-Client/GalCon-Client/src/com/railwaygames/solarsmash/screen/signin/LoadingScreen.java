@@ -161,7 +161,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 						List<Order> orders = new ArrayList<Order>();
 						for (InventoryItem item : inventory.inventory) {
 							if (item.unfulfilledOrder != null) {
-								orders.add(item.unfulfilledOrder);
+								orders.addAll(item.unfulfilledOrder);
 							}
 						}
 
@@ -208,13 +208,14 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 	private void retryAddCoins(String msg) {
 		waitImage.stop();
-		if(ordersToConsume != null){
-			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
-				}
-			});
+		if (ordersToConsume != null) {
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources),
+					new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
+						}
+					});
 			stage.addActor(ovrlay);
 		}
 	}

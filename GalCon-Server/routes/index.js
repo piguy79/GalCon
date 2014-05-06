@@ -12,8 +12,9 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	moveValidation = require('../modules/move_validation'),
 	inviteValidation = require('../modules/invite_validation'),
 	claimValidation = require('../modules/claim_validation'),
-	googleapis = require('googleapis')
-	,ObjectId = require('mongoose').Types.ObjectId;
+	googleapis = require('googleapis'),
+	ObjectId = require('mongoose').Types.ObjectId,
+	needle = require('needle');
 
 var VALIDATE_MAP = {
 	email : validation.isEmail,
@@ -627,58 +628,13 @@ exports.addCoinsForAnOrder = function(req, res) {
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function() {
 		if(orders && orders.length > 0) {
-			var gapiP = new mongoose.Promise();
-			var gapiClient;
-			googleapis
-				.discover('androidpublisher', 'v1.1')
-				.execute(function(err, client) {
-					if(err) {
-						gapiP.reject(err.message);
-					} else {
-						gapiClient = client;
-						gapiP.fulfill();
-					}
-				});
-			var lastP = gapiP;
-			_.each(orders, function(order) {
-				lastP = lastP.then(function() {
-					var newP = new mongoose.Promise();
-					var clientId = "1066768766862-6nqm53i5ab34js3oo8jcv05bkookob87.apps.googleusercontent.com";
-					var clientSecret = "2R4_ZmTBwBEAmEo7_W8hIyZn";
-					var oAuthClient = new googleapis.OAuth2Client(clientId, clientSecret);
-					oAuthClient.setCredentials({
-						refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
-						access_token: "ya29.1.AADtN_W_-u9YM-kof2kK1nnryrUIQuAgNR_iRwmP9JwNcYaRzcr4uvSQqgFdkg"
-					});
-					gapiClient.androidpublisher.inapppurchases
-						.get({
-							packageName: order.packageName,
-							productId: order.productId,
-							token: order.token
-							})
-						.withAuthClient(oAuthClient)
-						.execute(function(err, result) {
-							if(err) {
-								console.log("Android Publisher API - Error - %j", err);
-								newP.reject(err.message);
-							} else {
-								console.log("Android Publisher API - Result - %j", result);
-								if(result.purchaseState == 0 && result.consumptionState == 0) {
-									newP.fulfill("credit");
-								} else {
-									newP.fulfill("noCredit");
-								}
-							}
-						});
-					return newP;
-				}).then(function(validationResult) {
-					if(validationResult === "credit") {
-						return userManager.addCoinsForAnOrder(handle, order);
-					} else {
-						return userManager.findUserByHandle(handle);
-					}
-				});
-			});
+			var lastP;
+			if(orders[0].platform === "ios") {
+				lastP = validateIOSOrders(orders);
+			} else {
+				lastP = validateGoogleOrders(orders);
+			}
+			
 			return lastP.then(function() {
 				return userManager.findUserByHandle(handle);
 			}).then(function(user) {
@@ -689,6 +645,89 @@ exports.addCoinsForAnOrder = function(req, res) {
 			userReturnInfo(null);
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var validateGoogleOrders = function(orders) {
+	var gapiP = new mongoose.Promise();
+	var gapiClient;
+	googleapis
+		.discover('androidpublisher', 'v1.1')
+		.execute(function(err, client) {
+			if(err) {
+				gapiP.reject(err.message);
+			} else {
+				gapiClient = client;
+				gapiP.fulfill();
+			}
+		});
+	var lastP = gapiP;
+	_.each(orders, function(order) {
+		lastP = lastP.then(function() {
+			var newP = new mongoose.Promise();
+			var clientId = "1066768766862-6nqm53i5ab34js3oo8jcv05bkookob87.apps.googleusercontent.com";
+			var clientSecret = "2R4_ZmTBwBEAmEo7_W8hIyZn";
+			var oAuthClient = new googleapis.OAuth2Client(clientId, clientSecret);
+			oAuthClient.setCredentials({
+				refresh_token: "1/Cw4H-MslYOEbjtjfkAEM6oOBaRGS4GZIu4Rl5jCJ9So",
+				access_token: "ya29.1.AADtN_W_-u9YM-kof2kK1nnryrUIQuAgNR_iRwmP9JwNcYaRzcr4uvSQqgFdkg"
+			});
+			gapiClient.androidpublisher.inapppurchases
+				.get({
+					packageName: order.packageName,
+					productId: order.productId,
+					token: order.token
+					})
+				.withAuthClient(oAuthClient)
+				.execute(function(err, result) {
+					if(err) {
+						console.log("Android Publisher API - Error - %j", err);
+						newP.reject(err.message);
+					} else {
+						console.log("Android Publisher API - Result - %j", result);
+						if(result.purchaseState == 0 && result.consumptionState == 0) {
+							newP.fulfill("credit");
+						} else {
+							newP.fulfill("noCredit");
+						}
+					}
+				});
+			return newP;
+		}).then(function(validationResult) {
+			if(validationResult === "credit") {
+				return userManager.addCoinsForAnOrder(handle, order);
+			} else {
+				return userManager.findUserByHandle(handle);
+			}
+		});
+	});
+	
+	return lastP;
+}
+
+var validateIOSOrders = function(orders) {
+	var lastP = gapiP;
+	_.each(orders, function(order) {
+		lastP = lastP.then(function() {
+			var newP = new mongoose.Promise();
+			newP.fulfill();
+			
+			var url = "https://buy.itunes.apple.com/verifyReceipt";
+			url = "https://sandbox.itunes.apple.com/verifyReceipt";
+			
+			needle.post(url, function(error, response) {
+				console.log(response);
+				if (!error && response.statusCode == 200) {
+					console.log(response.body);
+				}
+			});
+		});
+	}).then(function(validationResult) {
+		if(validationResult === "credit") {
+			return userManager.addCoinsForAnOrder(handle, order);
+		} else {
+			return userManager.findUserByHandle(handle);
+		}
+	});
 }
 
 exports.deleteConsumedOrders = function(req, res){

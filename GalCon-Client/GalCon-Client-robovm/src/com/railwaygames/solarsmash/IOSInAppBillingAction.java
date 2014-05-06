@@ -113,14 +113,22 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 				List<InventoryItem> mappedInventoryItems = new ArrayList<InventoryItem>();
 
-				Map<String, SKPaymentTransaction> skuToTransaction = new HashMap<String, SKPaymentTransaction>();
+				Map<String, List<SKPaymentTransaction>> skuToTransaction = new HashMap<String, List<SKPaymentTransaction>>();
 				NSArray<SKPaymentTransaction> unconsumedTransactions = SKPaymentQueue.getDefaultQueue()
 						.getTransactions();
 
 				for (SKPaymentTransaction unconsumedTransaction : unconsumedTransactions) {
 					Gdx.app.log(TAG, "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
-					skuToTransaction.put(unconsumedTransaction.getPayment().getProductIdentifier(),
-							unconsumedTransaction);
+					String productId = unconsumedTransaction.getPayment().getProductIdentifier();
+
+					List<SKPaymentTransaction> transactions;
+					if (skuToTransaction.containsKey(productId)) {
+						transactions = skuToTransaction.get(productId);
+					} else {
+						transactions = new ArrayList<SKPaymentTransaction>();
+						skuToTransaction.put(productId, transactions);
+					}
+					transactions.add(unconsumedTransaction);
 				}
 
 				for (InventoryItem serverItem : serverInventory.inventory) {
@@ -134,8 +142,17 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 							.getPrice().stringValue(), iosProduct.getLocalizedTitle(), serverItem.numCoins);
 
 					if (skuToTransaction.containsKey(iosProduct.getProductIdentifier())) {
-						combinedItem.unfulfilledOrder = transactionToOrder(skuToTransaction.get(iosProduct
-								.getProductIdentifier()));
+						Gdx.app.log(TAG, "Adding unfulfilled order to inventory: " + serverItem.sku);
+
+						List<SKPaymentTransaction> transactions = skuToTransaction.get(iosProduct
+								.getProductIdentifier());
+						List<Order> orders = new ArrayList<Order>();
+
+						for (SKPaymentTransaction transaction : transactions) {
+							orders.add(transactionToOrder(transaction));
+						}
+
+						combinedItem.unfulfilledOrder = orders;
 					}
 
 					mappedInventoryItems.add(combinedItem);
@@ -190,12 +207,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 		NSURL receiptURL = NSBundle.getMainBundle().getAppStoreReceiptURL();
 		NSData dataReceipt = (NSData) NSData.read(receiptURL);
-
-		Gdx.app.log(TAG, "RECEIPT: " + dataReceipt);
-
-		String receipt = dataReceipt.toBase64EncodedString(NSDataBase64EncodingOptions._64CharacterLineLength);
-
-		Gdx.app.log(TAG, "SRECEIPT: " + receipt);
+		String receipt = dataReceipt.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
 
 		order.orderId = transaction.getTransactionIdentifier();
 		order.packageName = "";
@@ -206,6 +218,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		order.developerPayload = "";
 		order.token = receipt;
 		order.productId = transaction.getPayment().getProductIdentifier();
+		order.platform = "ios";
 
 		return order;
 	}

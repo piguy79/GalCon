@@ -6,8 +6,8 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
-import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
+import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
@@ -44,7 +44,7 @@ public class ExternalActionWrapper {
 						List<Order> orders = new ArrayList<Order>();
 						for (InventoryItem item : inventory.inventory) {
 							if (item.unfulfilledOrder != null) {
-								orders.add(item.unfulfilledOrder);
+								orders.addAll(item.unfulfilledOrder);
 							}
 						}
 

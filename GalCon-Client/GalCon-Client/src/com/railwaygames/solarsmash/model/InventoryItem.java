@@ -1,5 +1,7 @@
 package com.railwaygames.solarsmash.model;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +17,7 @@ public class InventoryItem extends JsonConvertible {
 	/**
 	 * Has the user purchased this item without the app yet consuming it?
 	 */
-	public Order unfulfilledOrder = null;
+	public List<Order> unfulfilledOrder = null;
 
 	public InventoryItem(String sku, String price, String name, int numCoins) {
 		super();

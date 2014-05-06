@@ -15,6 +15,7 @@ public class Order extends JsonConvertible implements JsonConstructable {
 	public String purchaseState;
 	public String developerPayload;
 	public String token;
+	public String platform;
 
 	public Order() {
 	}
@@ -39,6 +40,7 @@ public class Order extends JsonConvertible implements JsonConstructable {
 		jsonObject.put("developerPayload", developerPayload);
 		jsonObject.put("productId", productId);
 		jsonObject.put("token", token);
+		jsonObject.put("platform", platform);
 
 		return jsonObject;
 	}

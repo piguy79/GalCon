@@ -230,8 +230,12 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 									.getTitle(), item.numCoins);
 
 							if (inv.hasPurchase(detail.getSku())) {
-								Purchase purchase = inv.getPurchase(detail.getSku());
-								combinedItem.unfulfilledOrder = purchaseToOrder(purchase);
+								final Purchase purchase = inv.getPurchase(detail.getSku());
+								combinedItem.unfulfilledOrder = new ArrayList<Order>() {
+									{
+										add(purchaseToOrder(purchase));
+									}
+								};
 							}
 
 							mappedInventoryItems.add(combinedItem);
@@ -335,6 +339,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 		order.developerPayload = purchase.getDeveloperPayload();
 		order.token = purchase.getToken();
 		order.productId = purchase.getSku();
+		order.platform = "android";
 
 		return order;
 	}
