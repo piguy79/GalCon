@@ -632,9 +632,9 @@ exports.addCoinsForAnOrder = function(req, res) {
 		if(orders && orders.length > 0) {
 			var lastP;
 			if(orders[0].platform === "ios") {
-				lastP = validateIOSOrders(orders);
+				lastP = validateIOSOrders(orders, handle);
 			} else {
-				lastP = validateGoogleOrders(orders);
+				lastP = validateGoogleOrders(orders, handle);
 			}
 			
 			return lastP.then(function() {
@@ -649,7 +649,7 @@ exports.addCoinsForAnOrder = function(req, res) {
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var validateGoogleOrders = function(orders) {
+var validateGoogleOrders = function(orders, handle) {
 	var gapiP = new mongoose.Promise();
 	var gapiClient;
 	googleapis
@@ -706,7 +706,7 @@ var validateGoogleOrders = function(orders) {
 	return lastP;
 }
 
-var validateIOSOrders = function(orders) {
+var validateIOSOrders = function(orders, handle) {
 	var lastP = new mongoose.Promise();
 	lastP.fulfill();
 	_.each(orders, function(order) {
@@ -726,13 +726,11 @@ var validateIOSOrders = function(orders) {
 						result += '%' + ('0' + body[i].toString(16)).slice(-2);
 					}
 					result = decodeURIComponent(result);
-					console.log("BEFORE: " + result);
 					result = JSON.parse(result);
-					console.log("AFTER: " + result);
 					console.log("iOS Receipt Validation - Result - %j", result);
 					
 					if(result.status == 0) {
-						var productId = receiptContainsTransactionId(result.in_app, order.orderId);
+						var productId = receiptContainsTransactionId(result.receipt.in_app, order.orderId);
 						if(productId) {
 							order.productId = productId;
 							newP.fulfill("credit");
