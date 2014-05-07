@@ -719,8 +719,13 @@ var validateIOSOrders = function(orders) {
 			
 			var encodedPostBody = utf8.encode(JSON.stringify(postBody));
 			
-			needle.post(IOS_RECEIPT_VALIDATION, encodedPostBody, function(err, response, result) {
-				if (!err && response.statusCode == 200) {
+			needle.post(IOS_RECEIPT_VALIDATION, encodedPostBody, function(err, response, body) {
+				if (!err && response.statusCode == 200) {				
+					var i, result = '';
+					for (i = 0; i < body.length; i++) {
+						result += '%' + ('0' + body[i].toString(16)).slice(-2);
+					}
+					result = decodeURIComponent(result);
 					console.log("iOS Receipt Validation - Result - %j", result);
 					
 					if(result.status == 0) {
