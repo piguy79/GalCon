@@ -726,6 +726,9 @@ var validateIOSOrders = function(orders) {
 						result += '%' + ('0' + body[i].toString(16)).slice(-2);
 					}
 					result = decodeURIComponent(result);
+					console.log("BEFORE: " + result);
+					result = JSON.parse(result);
+					console.log("AFTER: " + result);
 					console.log("iOS Receipt Validation - Result - %j", result);
 					
 					if(result.status == 0) {
