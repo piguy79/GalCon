@@ -17,6 +17,7 @@ import org.robovm.apple.storekit.SKPayment;
 import org.robovm.apple.storekit.SKPaymentQueue;
 import org.robovm.apple.storekit.SKPaymentTransaction;
 import org.robovm.apple.storekit.SKPaymentTransactionObserverAdapter;
+import org.robovm.apple.storekit.SKPaymentTransactionState;
 import org.robovm.apple.storekit.SKProduct;
 import org.robovm.apple.storekit.SKProductsRequest;
 import org.robovm.apple.storekit.SKProductsRequestDelegateAdapter;
@@ -119,6 +120,11 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 				for (SKPaymentTransaction unconsumedTransaction : unconsumedTransactions) {
 					Gdx.app.log(TAG, "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
+					if (unconsumedTransaction.getTransactionState() == SKPaymentTransactionState.Failed) {
+						Gdx.app.log(TAG, "FINISHING FAILED: " + unconsumedTransaction.getPayment().getProductIdentifier());
+						SKPaymentQueue.getDefaultQueue().finishTransaction(unconsumedTransaction);
+					}
+
 					String productId = unconsumedTransaction.getPayment().getProductIdentifier();
 
 					List<SKPaymentTransaction> transactions;
@@ -208,6 +214,8 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		NSURL receiptURL = NSBundle.getMainBundle().getAppStoreReceiptURL();
 		NSData dataReceipt = (NSData) NSData.read(receiptURL);
 		String receipt = dataReceipt.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
+
+		Gdx.app.log(TAG, receipt);
 
 		order.orderId = transaction.getTransactionIdentifier();
 		order.packageName = "";

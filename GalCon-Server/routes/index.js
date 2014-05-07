@@ -14,7 +14,8 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	claimValidation = require('../modules/claim_validation'),
 	googleapis = require('googleapis'),
 	ObjectId = require('mongoose').Types.ObjectId,
-	needle = require('needle');
+	needle = require('needle'),
+	IOS_RECEIPT_VALIDATION = process.env.IOS_RECEIPT_VALIDATION || "https://buy.itunes.apple.com/verifyReceipt";
 
 var VALIDATE_MAP = {
 	email : validation.isEmail,
@@ -711,16 +712,28 @@ var validateIOSOrders = function(orders) {
 		lastP = lastP.then(function() {
 			var newP = new mongoose.Promise();
 			
-			var url = "https://buy.itunes.apple.com/verifyReceipt";
-			url = "https://sandbox.itunes.apple.com/verifyReceipt";
-			var body = {
+			var postBody = {
 				"receipt-data" : order.token
 			}
 			
-			needle.post(url, body, function(err, response, body) {
+			var encodedPostBody = utf8.encode(JSON.stringify(body));
+			
+			needle.post(IOS_RECEIPT_VALIDATION, encodedPostBody, function(err, response, result) {
 				if (!err && response.statusCode == 200) {
 					console.log("iOS Receipt Validation - Result - %j", body);
-					newP.fulfill(body);
+					
+					if(result.status == 0) {
+						var productId = receiptContainsTransactionId(result.in_app, order.orderId);
+						if(productId) {
+							order.productId = productId;
+							newP.fulfill("credit");
+						} else {
+							console.log("iOS Transaction id: " + order.orderId + " not found in receipt");
+							newP.fulfill("noCredit");
+						}
+					} else {
+						newP.reject("iOS Receipt validation status shows failure: " + result.status);
+					}
 				} else {
 					console.log(url + " - Error - %j", err);
 					newP.reject(err.message);
@@ -735,6 +748,18 @@ var validateIOSOrders = function(orders) {
 			}
 		});
 	});
+	
+	return lastP;
+}
+
+var receiptContainsTransactionId = function(inAppPurchases, transactionId) {
+	for(i in inAppPurchases) {
+		if(inAppPurchases[i].transaction_id == transactionId) {
+			return inAppPurchases[i].product_id;
+		}
+	}
+	
+	return null;
 }
 
 exports.deleteConsumedOrders = function(req, res){
