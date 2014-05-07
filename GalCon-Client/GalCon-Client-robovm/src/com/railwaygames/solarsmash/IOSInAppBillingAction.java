@@ -121,8 +121,11 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 				for (SKPaymentTransaction unconsumedTransaction : unconsumedTransactions) {
 					Gdx.app.log(TAG, "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
 					if (unconsumedTransaction.getTransactionState() == SKPaymentTransactionState.Failed) {
-						Gdx.app.log(TAG, "FINISHING FAILED: " + unconsumedTransaction.getPayment().getProductIdentifier());
+						Gdx.app.log(TAG, "FINISHING FAILED: "
+								+ unconsumedTransaction.getPayment().getProductIdentifier());
 						SKPaymentQueue.getDefaultQueue().finishTransaction(unconsumedTransaction);
+
+						continue;
 					}
 
 					String productId = unconsumedTransaction.getPayment().getProductIdentifier();
@@ -190,8 +193,13 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 			ids += transaction.getPayment().getProductIdentifier() + " ";
 		}
 
-		Gdx.app.log(TAG, "Consuming: " + ids);
+		Gdx.app.log(TAG, "CONSUMING: " + ids);
 		this.consumeCallback = callback;
+
+		if (ids.trim().isEmpty()) {
+			consumeCallback.onSuccess("");
+			return;
+		}
 
 		for (SKPaymentTransaction transaction : pendingTransactions) {
 			SKPaymentQueue.getDefaultQueue().finishTransaction(transaction);
@@ -214,8 +222,6 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		NSURL receiptURL = NSBundle.getMainBundle().getAppStoreReceiptURL();
 		NSData dataReceipt = (NSData) NSData.read(receiptURL);
 		String receipt = dataReceipt.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
-
-		Gdx.app.log(TAG, receipt);
 
 		order.orderId = transaction.getTransactionIdentifier();
 		order.packageName = "";

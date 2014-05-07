@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.config.Configuration;
@@ -16,7 +17,6 @@ import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
-import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
@@ -167,7 +167,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 
 						if (!orders.isEmpty()) {
 							ordersToConsume = orders;
-							gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, orders);
+							ExternalActionWrapper.addCoinsAndConsumeOrder(orders, callback);
 						} else {
 							doneLoad();
 						}
@@ -193,17 +193,15 @@ public class LoadingScreen implements PartialScreenFeedback {
 		returnResult = Action.DONE;
 	}
 
-	private UIConnectionResultCallback<Player> playerCallback = new UIConnectionResultCallback<Player>() {
+	private Callback callback = new Callback() {
 		@Override
-		public void onConnectionResult(Player player) {
-			GameLoop.USER = player;
+		public void onSuccess(String msg) {
 			doneLoad();
-		};
-
-		@Override
-		public void onConnectionError(String msg) {
-			retryAddCoins(msg);
 		}
+
+		public void onFailure(String msg) {
+			retryAddCoins(msg);
+		};
 	};
 
 	private void retryAddCoins(String msg) {
@@ -213,7 +211,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 					new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							gameAction.addCoinsForAnOrder(playerCallback, GameLoop.USER.handle, ordersToConsume);
+							ExternalActionWrapper.addCoinsAndConsumeOrder(ordersToConsume, callback);
 						}
 					});
 			stage.addActor(ovrlay);

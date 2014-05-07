@@ -91,7 +91,7 @@ public class ExternalActionWrapper {
 		});
 	}
 
-	private static void addCoinsAndConsumeOrder(final List<Order> orders, final Callback callback) {
+	public static void addCoinsAndConsumeOrder(final List<Order> orders, final Callback callback) {
 		gameAction.addCoinsForAnOrder(new UIConnectionResultCallback<Player>() {
 			@Override
 			public void onConnectionResult(final Player player) {
@@ -115,7 +115,7 @@ public class ExternalActionWrapper {
 
 					@Override
 					public void onFailure(String msg) {
-						Gdx.app.log("CONSUME_FROM_GOOGLE", msg);
+						Gdx.app.log("CONSUME", msg);
 						callback.onFailure(msg);
 					}
 				});
