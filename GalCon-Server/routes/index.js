@@ -717,11 +717,11 @@ var validateIOSOrders = function(orders) {
 				"receipt-data" : order.token
 			}
 			
-			var encodedPostBody = utf8.encode(JSON.stringify(body));
+			var encodedPostBody = utf8.encode(JSON.stringify(postBody));
 			
 			needle.post(IOS_RECEIPT_VALIDATION, encodedPostBody, function(err, response, result) {
 				if (!err && response.statusCode == 200) {
-					console.log("iOS Receipt Validation - Result - %j", body);
+					console.log("iOS Receipt Validation - Result - %j", result);
 					
 					if(result.status == 0) {
 						var productId = receiptContainsTransactionId(result.in_app, order.orderId);
