@@ -15,6 +15,7 @@ var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	googleapis = require('googleapis'),
 	ObjectId = require('mongoose').Types.ObjectId,
 	needle = require('needle'),
+	utf8 = require('utf8'),
 	IOS_RECEIPT_VALIDATION = process.env.IOS_RECEIPT_VALIDATION || "https://buy.itunes.apple.com/verifyReceipt";
 
 var VALIDATE_MAP = {
