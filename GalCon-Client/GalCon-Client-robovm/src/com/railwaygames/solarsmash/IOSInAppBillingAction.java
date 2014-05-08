@@ -102,9 +102,9 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 		SKProductsRequest productsRequest = new SKProductsRequest(new NSSet(products));
 		productsRequest.setDelegate(new SKProductsRequestDelegateAdapter() {
-
 			@Override
 			public void didReceiveResponse(SKProductsRequest request, SKProductsResponse response) {
+				Gdx.app.log(TAG, "IOS INVENTORY LOAD");
 				NSArray<SKProduct> products = response.getProducts();
 
 				skuToProduct = new HashMap<String, SKProduct>();
@@ -174,6 +174,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void didFail(SKRequest request, NSError error) {
+				Gdx.app.log(TAG, "INVENTORY FAIL: " + error.description());
 				callback.onConnectionError(error.description());
 			}
 		});

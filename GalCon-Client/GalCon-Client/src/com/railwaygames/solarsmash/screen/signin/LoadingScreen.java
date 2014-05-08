@@ -215,6 +215,8 @@ public class LoadingScreen implements PartialScreenFeedback {
 						}
 					});
 			stage.addActor(ovrlay);
+		} else {
+			doneLoad();
 		}
 	}
 
