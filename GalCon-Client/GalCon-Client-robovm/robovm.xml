@@ -22,6 +22,7 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
+    <lib>../../../robovm-ios-bindings2/crashlytics/libs/libcrashlytics.a</lib>
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>

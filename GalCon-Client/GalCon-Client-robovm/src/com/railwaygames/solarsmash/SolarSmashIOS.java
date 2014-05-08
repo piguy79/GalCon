@@ -2,11 +2,16 @@ package com.railwaygames.solarsmash;
 
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSAutoreleasePool;
+import org.robovm.apple.foundation.NSDate;
+import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
+import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIBackgroundFetchResult;
 import org.robovm.apple.uikit.UIKeyboardType;
+import org.robovm.apple.uikit.UILocalNotification;
 import org.robovm.apple.uikit.UIReturnKeyType;
 import org.robovm.apple.uikit.UITextAutocapitalizationType;
 import org.robovm.apple.uikit.UITextAutocorrectionType;
@@ -14,10 +19,16 @@ import org.robovm.apple.uikit.UITextField;
 import org.robovm.apple.uikit.UITextFieldDelegate;
 import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
 import org.robovm.apple.uikit.UITextSpellCheckingType;
+import org.robovm.bindings.crashlytics.Crashlytics;
 import org.robovm.bindings.gpp.GPPURLHandler;
+import org.robovm.objc.block.VoidBlock1;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
 
 public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKeyboard {
@@ -26,6 +37,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	private IOSApplication iosApplication;
 	private UITextFieldDelegate textDelegate;
 	private UITextField textfield;
+	private IOSGameAction gameAction;
 
 	public static void main(String[] argv) {
 		NSAutoreleasePool pool = new NSAutoreleasePool();
@@ -41,7 +53,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		config.allowIpod = true;
 
 		IOSSocialAction socialAction = new IOSSocialAction();
-		IOSGameAction gameAction = new IOSGameAction(socialAction);
+		gameAction = new IOSGameAction(socialAction);
 		IOSInAppBillingAction inAppBillingAction = new IOSInAppBillingAction();
 
 		textDelegate = new UITextFieldDelegateAdapter() {
@@ -75,6 +87,57 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	@Override
 	public boolean openURL(UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
 		return GPPURLHandler.handleURL(url, sourceApplication, annotation);
+	}
+
+	@Override
+	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+		super.didFinishLaunching(application, launchOptions);
+		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
+		
+		application.cancelAllLocalNotifications();
+		application.setMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalMinimum());
+		application.setApplicationIconBadgeNumber(0);
+		
+		return true;
+	}
+
+	@Override
+	public void performFetch(final UIApplication application,
+			final VoidBlock1<UIBackgroundFetchResult> completionHandler) {
+		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+		String handle = prefs.getString(Constants.HANDLE, "");
+
+		Gdx.app.log("FETCH", "Start fetch");
+
+		if (handle == null || handle.isEmpty()) {
+			completionHandler.invoke(UIBackgroundFetchResult.NoData);
+
+			Gdx.app.log("FETCH", "No handle");
+			return;
+		}
+
+		gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
+
+			@Override
+			public void onConnectionResult(GameCount result) {
+				Gdx.app.log("FETCH", "Complete with result: " + (result.currentGameCount + result.inviteCount));
+
+				UILocalNotification notification = new UILocalNotification();
+				notification.setFireDate(NSDate.date());
+				notification.setApplicationIconBadgeNumber(result.currentGameCount + result.inviteCount);
+				application.presentLocalNotificationNow(notification);
+
+				completionHandler.invoke(UIBackgroundFetchResult.NewData);
+
+				Gdx.app.log("FETCH", "Done newData");
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				Gdx.app.log("FETCH", "Fail: " + msg);
+				completionHandler.invoke(UIBackgroundFetchResult.Failed);
+			}
+		}, handle);
 	}
 
 	/**
