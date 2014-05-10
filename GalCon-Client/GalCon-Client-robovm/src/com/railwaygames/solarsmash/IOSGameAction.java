@@ -361,6 +361,27 @@ public class IOSGameAction implements GameAction {
 
 	}
 
+	public static void processResponse(JsonConvertible converter, NSData data, NSError error) {
+		if (error != null) {
+			converter.errorMessage = "Error connecting";
+		} else {
+			try {
+				String sData = data.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
+				String json = new String(Base64.decode(sData));
+
+				JSONObject returnObject = new JSONObject(json);
+				String errorOccurred = returnObject.optString("error");
+				if (errorOccurred != null && errorOccurred.trim().length() > 0) {
+					converter.errorMessage = errorOccurred;
+				} else {
+					converter.consume(new JSONObject(json));
+				}
+			} catch (Exception e) {
+				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
+			}
+		}
+	}
+
 	private abstract class JsonRequestTask<T extends JsonConvertible> {
 
 		protected String path;
@@ -397,25 +418,7 @@ public class IOSGameAction implements GameAction {
 				VoidNSURLConnectionBlock completionHandlerBlock = new VoidNSURLConnectionBlock() {
 					@Override
 					public void invoke(NSURLResponse response, NSData data, NSError error) {
-						if (error != null) {
-							converter.errorMessage = "Error connecting";
-						} else {
-							try {
-								String sData = data.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
-								String json = new String(Base64.decode(sData));
-
-								JSONObject returnObject = new JSONObject(json);
-								String errorOccurred = returnObject.optString("error");
-								if (errorOccurred != null && errorOccurred.trim().length() > 0) {
-									converter.errorMessage = errorOccurred;
-								} else {
-									converter.consume(new JSONObject(json));
-								}
-							} catch (Exception e) {
-								converter.errorMessage = CONNECTION_ERROR_MESSAGE;
-							}
-						}
-
+						processResponse(converter, data, error);
 						onPostExecute(converter);
 					}
 				};

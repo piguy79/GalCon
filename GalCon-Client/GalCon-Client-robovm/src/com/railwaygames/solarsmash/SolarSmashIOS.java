@@ -1,13 +1,23 @@
 package com.railwaygames.solarsmash;
 
+import static com.railwaygames.solarsmash.Config.HOST;
+import static com.railwaygames.solarsmash.Config.PORT;
+import static com.railwaygames.solarsmash.Config.PROTOCOL;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
+
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSAutoreleasePool;
+import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSDate;
 import org.robovm.apple.foundation.NSDictionary;
+import org.robovm.apple.foundation.NSError.NSErrorPtr;
+import org.robovm.apple.foundation.NSMutableURLRequest;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
+import org.robovm.apple.foundation.NSURLConnection;
+import org.robovm.apple.foundation.NSURLResponse;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIBackgroundFetchResult;
 import org.robovm.apple.uikit.UIKeyboardType;
@@ -27,7 +37,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
 
@@ -88,6 +97,11 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	public boolean openURL(UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
 		return GPPURLHandler.handleURL(url, sourceApplication, annotation);
 	}
+	
+	@Override
+	public void didBecomeActive(UIApplication application) {
+		application.setApplicationIconBadgeNumber(0);
+	}
 
 	@Override
 	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
@@ -96,7 +110,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 
 		application.cancelAllLocalNotifications();
 
-		application.setMinimumBackgroundFetchInterval(60);
+		application.setMinimumBackgroundFetchInterval(5 * 60);
 		application.setApplicationIconBadgeNumber(0);
 
 		return true;
@@ -116,56 +130,70 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 			return;
 		}
 
-		gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
+		IOSConfig config = new IOSConfig();
+		NSMutableURLRequest request = new NSMutableURLRequest();
+		request.setURL(new NSURL(config.getValue(PROTOCOL) + "://" + config.getValue(HOST) + ":"
+				+ config.getValue(PORT) + FIND_GAMES_WITH_A_PENDING_MOVE + "?handle=" + handle));
+		request.setHTTPMethod("GET");
+		request.setTimeoutInterval(20);
 
-			@Override
-			public void onConnectionResult(GameCount result) {
-				Gdx.app.log("FETCH", "Complete with result: " + (result.currentGameCount + result.inviteCount));
+		NSURLResponse.NSURLResponsePtr responsePtr = new NSURLResponse.NSURLResponsePtr();
+		NSErrorPtr errorPtr = new NSErrorPtr();
 
-				String pendingText = "";
-				int pendingGamesCount = result.pendingGameCount;
-				if (pendingGamesCount > 0) {
-					if (pendingGamesCount == 1) {
-						pendingText = "1 game is awaiting your move";
-					} else {
-						pendingText = pendingGamesCount + " games are awaiting your move";
-					}
-				}
+		Gdx.app.log("FETCH", "Starting request");
+		NSData data = NSURLConnection.sendSynchronousRequest$returningResponse$error$(request, responsePtr, errorPtr);
+		Gdx.app.log("FETCH", "Request done");
 
-				String inviteText = "";
-				int inviteCount = result.inviteCount;
-				if (inviteCount > 0) {
-					if (inviteCount == 1) {
-						inviteText = "1 pending invite";
-					} else {
-						inviteText = inviteCount + " pending invites";
-					}
-				}
+		GameCount result = new GameCount();
+		IOSGameAction.processResponse(result, data, errorPtr != null ? errorPtr.get() : null);
 
-				String text = pendingText;
-				if (text.length() > 0 && inviteText.length() > 0) {
-					text += " and ";
-				}
-				text += inviteText;
+		if (result.errorMessage != null && result.errorMessage.length() > 0) {
+			completionHandler.invoke(UIBackgroundFetchResult.Failed);
+			return;
+		}
 
-				UILocalNotification notification = new UILocalNotification();
-				notification.setFireDate(NSDate.date());
-				notification.setApplicationIconBadgeNumber(result.currentGameCount + result.inviteCount);
-				notification.setAlertBody(text);
-				notification.setAlertAction("Solar Smash");
-				notification.setSoundName(UILocalNotification.DefaultSoundName());
-				application.presentLocalNotificationNow(notification);
+		Gdx.app.log("FETCH", "Complete with result: " + (result.pendingGameCount + result.inviteCount));
 
-				Gdx.app.log("FETCH", "Done newData");
-				completionHandler.invoke(UIBackgroundFetchResult.NewData);
+		String pendingText = "";
+		int pendingGamesCount = result.pendingGameCount;
+		if (pendingGamesCount > 0) {
+			if (pendingGamesCount == 1) {
+				pendingText = "1 game is awaiting your move";
+			} else {
+				pendingText = pendingGamesCount + " games are awaiting your move";
 			}
+		}
 
-			@Override
-			public void onConnectionError(String msg) {
-				Gdx.app.log("FETCH", "Fail: " + msg);
-				completionHandler.invoke(UIBackgroundFetchResult.Failed);
+		String inviteText = "";
+		int inviteCount = result.inviteCount;
+		if (inviteCount > 0) {
+			if (inviteCount == 1) {
+				inviteText = "1 pending invite";
+			} else {
+				inviteText = inviteCount + " pending invites";
 			}
-		}, handle);
+		}
+
+		String text = pendingText;
+		if (text.length() > 0 && inviteText.length() > 0) {
+			text += " and ";
+		}
+		text += inviteText;
+
+		if (text.length() > 0) {
+			UILocalNotification notification = new UILocalNotification();
+			notification.setFireDate(NSDate.date());
+			notification.setApplicationIconBadgeNumber(result.pendingGameCount + result.inviteCount);
+			notification.setAlertBody(text);
+			notification.setAlertAction("Solar Smash");
+			notification.setSoundName(UILocalNotification.DefaultSoundName());
+			application.presentLocalNotificationNow(notification);
+			Gdx.app.log("FETCH", "Done newData");
+			completionHandler.invoke(UIBackgroundFetchResult.NewData);
+			return;
+		}
+
+		completionHandler.invoke(UIBackgroundFetchResult.NoData);
 	}
 
 	/**
