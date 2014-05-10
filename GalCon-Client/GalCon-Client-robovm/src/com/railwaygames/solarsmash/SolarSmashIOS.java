@@ -93,26 +93,26 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 		super.didFinishLaunching(application, launchOptions);
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
-		
+
 		application.cancelAllLocalNotifications();
-		application.setMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalMinimum());
+
+		application.setMinimumBackgroundFetchInterval(60);
 		application.setApplicationIconBadgeNumber(0);
-		
+
 		return true;
 	}
 
 	@Override
 	public void performFetch(final UIApplication application,
 			final VoidBlock1<UIBackgroundFetchResult> completionHandler) {
+		Gdx.app.log("FETCH", "Start fetch");
+
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String handle = prefs.getString(Constants.HANDLE, "");
 
-		Gdx.app.log("FETCH", "Start fetch");
-
 		if (handle == null || handle.isEmpty()) {
-			completionHandler.invoke(UIBackgroundFetchResult.NoData);
-
 			Gdx.app.log("FETCH", "No handle");
+			completionHandler.invoke(UIBackgroundFetchResult.NoData);
 			return;
 		}
 
@@ -122,14 +122,42 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 			public void onConnectionResult(GameCount result) {
 				Gdx.app.log("FETCH", "Complete with result: " + (result.currentGameCount + result.inviteCount));
 
+				String pendingText = "";
+				int pendingGamesCount = result.pendingGameCount;
+				if (pendingGamesCount > 0) {
+					if (pendingGamesCount == 1) {
+						pendingText = "1 game is awaiting your move";
+					} else {
+						pendingText = pendingGamesCount + " games are awaiting your move";
+					}
+				}
+
+				String inviteText = "";
+				int inviteCount = result.inviteCount;
+				if (inviteCount > 0) {
+					if (inviteCount == 1) {
+						inviteText = "1 pending invite";
+					} else {
+						inviteText = inviteCount + " pending invites";
+					}
+				}
+
+				String text = pendingText;
+				if (text.length() > 0 && inviteText.length() > 0) {
+					text += " and ";
+				}
+				text += inviteText;
+
 				UILocalNotification notification = new UILocalNotification();
 				notification.setFireDate(NSDate.date());
 				notification.setApplicationIconBadgeNumber(result.currentGameCount + result.inviteCount);
+				notification.setAlertBody(text);
+				notification.setAlertAction("Solar Smash");
+				notification.setSoundName(UILocalNotification.DefaultSoundName());
 				application.presentLocalNotificationNow(notification);
 
-				completionHandler.invoke(UIBackgroundFetchResult.NewData);
-
 				Gdx.app.log("FETCH", "Done newData");
+				completionHandler.invoke(UIBackgroundFetchResult.NewData);
 			}
 
 			@Override

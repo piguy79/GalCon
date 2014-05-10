@@ -23,14 +23,6 @@ public abstract class Config {
 			put(PROTOCOL, "https");
 		}
 	};
-	
-	protected final Map<String, String> IOS_DEV_VALUES = new HashMap<String, String>() {
-		{
-			put(HOST, "stormy-sands-7424.herokuapp.com");
-			put(PORT, "80");
-			put(PROTOCOL, "http");
-		}
-	};
 
 	protected final Map<String, String> PROD_VALUES = new HashMap<String, String>() {
 		{

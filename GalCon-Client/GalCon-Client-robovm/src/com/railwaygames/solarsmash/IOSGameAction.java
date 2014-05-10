@@ -32,7 +32,6 @@ import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,15 @@ import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.robovm.apple.foundation.NSData;
+import org.robovm.apple.foundation.NSDataBase64EncodingOptions;
+import org.robovm.apple.foundation.NSError;
+import org.robovm.apple.foundation.NSURLResponse;
+import org.robovm.objc.ObjCBlock;
+import org.robovm.objc.ObjCBlock.Wrapper;
+import org.robovm.rt.bro.annotation.Callback;
 
+import com.android.org.bouncycastle.util.encoders.Base64;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.railwaygames.solarsmash.config.Configuration;
@@ -311,8 +318,8 @@ public class IOSGameAction implements GameAction {
 		}
 
 		@Override
-		public HttpURLConnection establishConnection(String... params) throws IOException {
-			return Connection.establishPostConnection(config.getValue(PROTOCOL), config.getValue(HOST),
+		public void establishConnection(ObjCBlock completionHandler, String... params) throws IOException {
+			Connection.establishPostConnection(completionHandler, config.getValue(PROTOCOL), config.getValue(HOST),
 					config.getValue(PORT), path, params);
 		}
 	}
@@ -327,10 +334,31 @@ public class IOSGameAction implements GameAction {
 		}
 
 		@Override
-		public HttpURLConnection establishConnection(String... params) throws IOException {
-			return Connection.establishGetConnection(config.getValue(PROTOCOL), config.getValue(HOST),
+		public void establishConnection(ObjCBlock completionHandler, String... params) throws IOException {
+			Connection.establishGetConnection(completionHandler, config.getValue(PROTOCOL), config.getValue(HOST),
 					config.getValue(PORT), path, args);
 		}
+	}
+
+	public interface VoidNSURLConnectionBlock {
+
+		void invoke(NSURLResponse response, NSData data, NSError error);
+
+		static class Callbacks {
+			@Callback
+			static void run(ObjCBlock block, NSURLResponse response, NSData data, NSError error) {
+				((VoidNSURLConnectionBlock) block.object()).invoke(response, data, error);
+			}
+		}
+
+		static class Marshaler {
+			private static final Wrapper WRAPPER = new Wrapper(Callbacks.class);
+
+			public static ObjCBlock toObjCBlock(VoidNSURLConnectionBlock o) {
+				return WRAPPER.toObjCBlock(o);
+			}
+		}
+
 	}
 
 	private abstract class JsonRequestTask<T extends JsonConvertible> {
@@ -359,24 +387,44 @@ public class IOSGameAction implements GameAction {
 			savedParams.args = args;
 		}
 
-		protected abstract HttpURLConnection establishConnection(String... params) throws IOException;
+		protected abstract void establishConnection(ObjCBlock completionHandler, String... params) throws IOException;
 
 		public void execute(final String... params) {
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						savedParams.params = params;
-						System.out.println("Invoking call at path: " + path + ", " + Arrays.toString(params));
-						converter = Connection.doRequest(establishConnection(params), converter);
-					} catch (IOException e) {
-						System.out.println(e);
-						converter.errorMessage = CONNECTION_ERROR_MESSAGE;
-					}
+			try {
+				savedParams.params = params;
+				System.out.println("Invoking call at path: " + path + ", " + Arrays.toString(params));
 
-					onPostExecute(converter);
-				}
-			});
+				VoidNSURLConnectionBlock completionHandlerBlock = new VoidNSURLConnectionBlock() {
+					@Override
+					public void invoke(NSURLResponse response, NSData data, NSError error) {
+						if (error != null) {
+							converter.errorMessage = "Error connecting";
+						} else {
+							try {
+								String sData = data.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
+								String json = new String(Base64.decode(sData));
+
+								JSONObject returnObject = new JSONObject(json);
+								String errorOccurred = returnObject.optString("error");
+								if (errorOccurred != null && errorOccurred.trim().length() > 0) {
+									converter.errorMessage = errorOccurred;
+								} else {
+									converter.consume(new JSONObject(json));
+								}
+							} catch (Exception e) {
+								converter.errorMessage = CONNECTION_ERROR_MESSAGE;
+							}
+						}
+
+						onPostExecute(converter);
+					}
+				};
+
+				establishConnection(VoidNSURLConnectionBlock.Marshaler.toObjCBlock(completionHandlerBlock), params);
+			} catch (IOException e) {
+				System.out.println(e);
+				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
+			}
 		}
 
 		protected void onPostExecute(final JsonConvertible result) {
