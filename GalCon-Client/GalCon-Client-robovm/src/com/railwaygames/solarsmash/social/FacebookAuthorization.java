@@ -35,11 +35,9 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 
 	
 	private FacebookManager facebook;
-	private AuthenticationListener listener;
 
 	@Override
 	public void signIn(final AuthenticationListener listener) {
-		this.listener = listener;
 		setupManager();
 		if(!facebook.isLoggedIn() || !FBSession.getActiveSession().isOpen()){
 			Gdx.app.log("FB", "LOGGING IN TO FB");
@@ -78,9 +76,8 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 	}
 
 	@Override
-	public void getToken(AuthenticationListener listener) {
-		this.listener = listener;
-
+	public void getToken(final AuthenticationListener listener) {
+		signIn(listener);
 	}
 
 	@Override
