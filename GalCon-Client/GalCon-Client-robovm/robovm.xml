@@ -14,7 +14,11 @@
       <skipPngCrush>true</skipPngCrush>
     </resource>
     <resource>
-		<directory>../../../robovm-ios-bindings2/google-play-game-services/resources</directory>
+		<directory>../../../robovm-ios-bindings/google-play-game-services/resources</directory>
+		<skipPngCrush>true</skipPngCrush>
+	</resource>
+	<resource>
+		<directory>../../../robovm-ios-bindings/facebook/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
   </resources>
@@ -22,7 +26,9 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings2/crashlytics/libs/libcrashlytics.a</lib>
+    <lib>../../../robovm-ios-bindings/crashlytics/libs/libcrashlytics.a</lib>
+    <lib>../../../robovm-ios-bindings/facebook/libs/libarclite.a</lib>
+    <lib>../../../robovm-ios-bindings/facebook/libs/libfacebook.a</lib>
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
@@ -31,7 +37,8 @@
 	<pattern>com.android.org.bouncycastle.jce.provider.**</pattern>
   </forceLinkClasses>
   <frameworkPaths>
-      <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
+      <path>../../../robovm-ios-bindings/google-play-game-services/libs/</path>
+      <path>../../../robovm-ios-bindings/facebook/libs/</path>
   </frameworkPaths>
   <frameworks>
     <framework>GoogleOpenSource</framework>

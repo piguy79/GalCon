@@ -4,6 +4,10 @@
 <dict>
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
+    <key>FacebookAppID</key>
+    <string>257147704459293</string>
+     <key>FacebookDisplayName</key>
+    <string>${app.name}</string>
     <key>CFBundleDisplayName</key>
     <string>${app.name}</string>
     <key>CFBundleExecutable</key>
@@ -32,6 +36,16 @@
             <key>CFBundleURLSchemes</key>
             <array>
            		<string>com.railwaygames.solarsmash.SolarSmashIOS</string>
+           		<string>fb***</string>
+           	</array>
+        </dict>
+    </array>
+    <key>URL types</key>
+    <array>
+        <dict>
+            <key>URL Schemes</key>
+            <array>
+           		<string>fb***</string>
            	</array>
         </dict>
     </array>

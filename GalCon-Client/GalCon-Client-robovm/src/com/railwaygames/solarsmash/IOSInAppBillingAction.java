@@ -178,6 +178,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 				callback.onConnectionError(error.description());
 			}
 		});
+		Gdx.app.log(TAG, "Calling start on in ap billinf.");
 		productsRequest.start();
 	}
 

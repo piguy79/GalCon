@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/google-play-game-services-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/in-app-purchase-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/crashlytics-ios"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/facebook-ios"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

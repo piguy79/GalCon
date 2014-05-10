@@ -40,7 +40,7 @@ public class GooglePlusAuthorization implements Authorizer {
 				String t = auth.description();
 				int first = t.indexOf("\"");
 				String token = t.substring(first + 1, t.indexOf("\"", first + 1));
-
+				
 				listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, token);
 			}
 		}
