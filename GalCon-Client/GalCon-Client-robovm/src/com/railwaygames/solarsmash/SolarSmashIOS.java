@@ -109,7 +109,6 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
 
 		application.cancelAllLocalNotifications();
-
 		application.setMinimumBackgroundFetchInterval(5 * 60);
 		application.setApplicationIconBadgeNumber(0);
 
@@ -120,6 +119,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	public void performFetch(final UIApplication application,
 			final VoidBlock1<UIBackgroundFetchResult> completionHandler) {
 		Gdx.app.log("FETCH", "Start fetch");
+		application.cancelAllLocalNotifications();
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String handle = prefs.getString(Constants.HANDLE, "");
