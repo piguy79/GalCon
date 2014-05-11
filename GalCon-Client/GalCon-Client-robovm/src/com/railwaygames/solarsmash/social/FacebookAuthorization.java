@@ -63,6 +63,7 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 				@Override
 				public void onCancel() {
 					Gdx.app.log("FB" ,"Login cancelled.");
+					listener.onSignInFailed("");
 				}
 			});
 		}else{
