@@ -45,6 +45,8 @@ import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSDataBase64EncodingOptions;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSURLResponse;
+import org.robovm.bindings.adcolony.AdColony;
+import org.robovm.bindings.adcolony.AdColonyAdDelegateAdapter;
 import org.robovm.objc.ObjCBlock;
 import org.robovm.objc.ObjCBlock.Wrapper;
 import org.robovm.rt.bro.annotation.Callback;
@@ -592,6 +594,6 @@ public class IOSGameAction implements GameAction {
 
 	@Override
 	public void showAd() {
-
+		AdColony.playVideoAd(SolarSmashIOS.ZONE_ID, new AdColonyAdDelegateAdapter());
 	}
 }

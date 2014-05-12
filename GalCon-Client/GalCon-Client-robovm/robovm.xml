@@ -14,11 +14,11 @@
       <skipPngCrush>true</skipPngCrush>
     </resource>
     <resource>
-		<directory>../../../robovm-ios-bindings/google-play-game-services/resources</directory>
+		<directory>../../../robovm-ios-bindings2/google-play-game-services/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
 	<resource>
-		<directory>../../../robovm-ios-bindings/facebook/resources</directory>
+		<directory>../../../robovm-ios-bindings2/facebook/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
   </resources>
@@ -26,9 +26,10 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings/crashlytics/libs/libcrashlytics.a</lib>
-    <lib>../../../robovm-ios-bindings/facebook/libs/libarclite.a</lib>
-    <lib>../../../robovm-ios-bindings/facebook/libs/libfacebook.a</lib>
+    <lib>../../../robovm-ios-bindings2/crashlytics/libs/libcrashlytics.a</lib>
+    <lib>../../../robovm-ios-bindings2/facebook/libs/libarclite.a</lib>
+    <lib>../../../robovm-ios-bindings2/facebook/libs/libfacebook.a</lib>
+    <lib>../../../robovm-ios-bindings2/adcolony/libs/libadcolony.a</lib>
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
@@ -37,8 +38,8 @@
 	<pattern>com.android.org.bouncycastle.jce.provider.**</pattern>
   </forceLinkClasses>
   <frameworkPaths>
-      <path>../../../robovm-ios-bindings/google-play-game-services/libs/</path>
-      <path>../../../robovm-ios-bindings/facebook/libs/</path>
+      <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
+      <path>../../../robovm-ios-bindings2/facebook/libs/</path>
   </frameworkPaths>
   <frameworks>
     <framework>GoogleOpenSource</framework>
@@ -53,6 +54,9 @@
     <framework>CoreText</framework>
     <framework>CoreMotion</framework>
     <framework>CoreLocation</framework>
+    <framework>CoreMedia</framework>
+	<framework>CoreTelephony</framework>
+	<framework>MessageUI</framework>
     <framework>UIKit</framework>
     <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>
@@ -62,5 +66,12 @@
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
     <framework>StoreKit</framework>
-  </frameworks>  
+  </frameworks>
+  <weakFrameworks>
+	<framework>AdSupport</framework>
+	<framework>Social</framework>
+	<framework>StoreKit</framework>
+	<framework>EventKit</framework>
+	<framework>EventKitUI</framework>
+  </weakFrameworks>  
 </config>

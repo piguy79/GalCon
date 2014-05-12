@@ -5,12 +5,15 @@ import static com.railwaygames.solarsmash.Config.PORT;
 import static com.railwaygames.solarsmash.Config.PROTOCOL;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 
+import java.util.ArrayList;
+
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSDate;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError.NSErrorPtr;
+import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSMutableURLRequest;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
@@ -29,6 +32,8 @@ import org.robovm.apple.uikit.UITextField;
 import org.robovm.apple.uikit.UITextFieldDelegate;
 import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
 import org.robovm.apple.uikit.UITextSpellCheckingType;
+import org.robovm.bindings.adcolony.AdColony;
+import org.robovm.bindings.adcolony.AdColonyDelegateAdapter;
 import org.robovm.bindings.crashlytics.Crashlytics;
 import org.robovm.bindings.gpp.GPPURLHandler;
 import org.robovm.objc.block.VoidBlock1;
@@ -42,6 +47,9 @@ import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboar
 
 public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKeyboard {
 	public static final String LOG_NAME = "GalCon";
+	
+	private static String APP_ID = "app6bd101d5181645c0bc";
+	public static String ZONE_ID = "vz944bae6684b74d6980";
 
 	private IOSApplication iosApplication;
 	private UITextFieldDelegate textDelegate;
@@ -107,6 +115,13 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 		super.didFinishLaunching(application, launchOptions);
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
+		
+		ArrayList<NSString> aZones = new ArrayList<NSString>();
+		aZones.add(new NSString(ZONE_ID));
+		NSArray<NSString> zones = new NSArray<NSString>(aZones);
+		AdColony.configure(APP_ID, zones, new AdColonyDelegateAdapter() {
+
+		}, true);
 
 		application.cancelAllLocalNotifications();
 		application.setMinimumBackgroundFetchInterval(5 * 60);
