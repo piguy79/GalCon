@@ -114,6 +114,9 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	@Override
 	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 		super.didFinishLaunching(application, launchOptions);
+		
+		application.setStatusBarHidden(true);
+		
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
 		
 		ArrayList<NSString> aZones = new ArrayList<NSString>();

@@ -57,7 +57,7 @@
         <integer>2</integer>
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
-    <string>YES</string>
+    <false />
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>
