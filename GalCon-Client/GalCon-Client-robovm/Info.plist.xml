@@ -76,5 +76,17 @@
 	<array>
     	<string>fetch</string>
 	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>icon120@2x</string>
+	    		<string>icon152@2x</string>
+	    		<string>settings@2x</string>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>
