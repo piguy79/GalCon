@@ -1,9 +1,15 @@
 package com.railwaygames.solarsmash.social;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSError;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
-import org.robovm.bindings.gpp.GPPSignIn;
+import org.robovm.apple.foundation.NSURL;
+import org.robovm.bindings.gpp.GPPShare;
+import org.robovm.bindings.gpp.GPPShareDelegate;
 import org.robovm.bindings.gpp.GPPSignInDelegate;
 import org.robovm.bindings.gt.GTMOAuth2Authentication;
 
@@ -14,6 +20,13 @@ import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.FriendPostListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
+import com.railwaygames.solarsmash.model.Friend;
+import com.railwaygames.solarsmash.social.google.GPPSignIn;
+import com.railwaygames.solarsmash.social.google.GTLPlusPeopleFeed;
+import com.railwaygames.solarsmash.social.google.GTLPlusPerson;
+import com.railwaygames.solarsmash.social.google.GTLQueryPlus;
+import com.railwaygames.solarsmash.social.google.GTLServicePlus;
+import com.railwaygames.solarsmash.social.google.GTLServiceTicket;
 
 public class GooglePlusAuthorization implements Authorizer {
 	private GPPSignIn gppSignIn;
@@ -21,6 +34,8 @@ public class GooglePlusAuthorization implements Authorizer {
 	private NSString scopes = new NSString("https://www.googleapis.com/auth/plus.login");
 
 	private AuthenticationListener listener;
+
+	private GPPShareDelegate delegate;
 
 	public class SignInDelegate extends GPPSignInDelegate.Adapter {
 		@Override
@@ -40,7 +55,7 @@ public class GooglePlusAuthorization implements Authorizer {
 				String t = auth.description();
 				int first = t.indexOf("\"");
 				String token = t.substring(first + 1, t.indexOf("\"", first + 1));
-				
+
 				listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, token);
 			}
 		}
@@ -74,14 +89,61 @@ public class GooglePlusAuthorization implements Authorizer {
 	}
 
 	@Override
-	public void getFriends(FriendsListener listener) {
-		// TODO Auto-generated method stub
+	public void getFriends(final FriendsListener listener) {
+		GTLServicePlus plusService = gppSignIn.plusService();
 
+		GTLQueryPlus query = GTLQueryPlus.queryForPeopleListWithUserId("me", "visible");
+		query.setMaxResults(100);
+
+		plusService.executeQuery(query, QueryResultsBlock.Marshaler.toObjCBlock(new QueryResultsBlock() {
+			public void invoke(GTLServiceTicket ticket, GTLPlusPeopleFeed peopleFeed, NSError error) {
+				Gdx.app.log("PEOPLE", "In invoke()");
+				if (error != null) {
+					Gdx.app.log("PEOPLE_ERROR", error.localizedDescription());
+					listener.onFriendsLoadedFail(error.localizedDescription());
+					return;
+				}
+
+				List<Friend> friends = new ArrayList<Friend>();
+				if (peopleFeed != null && peopleFeed.getItems() != null) {
+					for (NSObject oPerson : peopleFeed.getItems()) {
+						GTLPlusPerson person = (GTLPlusPerson) oPerson;
+						friends.add(new Friend(person.getIdentifier(), person.getDisplayName(), ""));
+					}
+				}
+
+				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+			}
+		}));
 	}
 
 	@Override
-	public void postToFriend(FriendPostListener listener, String id) {
-		// TODO Auto-generated method stub
+	public void postToFriend(final FriendPostListener listener, String id) {
+		GPPShare share = GPPShare.sharedInstance();
+
+		delegate = new GPPShareDelegate.Adapter() {
+
+			@Override
+			public void finishedSharingWithError(NSError error) {
+				if (error != null) {
+					Gdx.app.log("GOOGLE", "Finished sharing with error: " + error.localizedDescription());
+					listener.onPostFails(error.localizedDescription());
+				} else {
+					Gdx.app.log("GOOGLE", "Finished sharing");
+					listener.onPostSucceeded();
+				}
+			}
+		};
+		share.setDelegate(delegate);
+
+		List<NSString> ids = new ArrayList<NSString>();
+		ids.add(new NSString(id));
+		share.getNativeShareDialog()
+				.setPreselectedPeopleIDs(new NSArray<NSString>(ids))
+				.setPrefillText(
+						new NSString("Hey, come play me in Solar Smash. Invite me using the handle \""
+								+ GameLoop.USER.handle + "\". Download from http://www.railwaygames.mobi/ "))
+				.setURLToShare(new NSURL("http://www.railwaygames.mobi/")).open();
 
 	}
 }
