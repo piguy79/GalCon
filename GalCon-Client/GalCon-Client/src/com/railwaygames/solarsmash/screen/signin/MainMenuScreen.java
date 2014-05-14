@@ -51,6 +51,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
 	private XpProgressBar xpBar;
+	
+	private Overlay errorOverlay;
 
 	public boolean hideTitleArea = false;
 
@@ -258,6 +260,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void onConnectionResult(final Player result) {
+				if(errorOverlay != null){
+					errorOverlay.remove();
+				}
 				GameLoop.USER = result;
 
 				if (LevelManager.shouldShowLevelUp(result)) {
@@ -289,28 +294,31 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 					@Override
 					public void onConnectionError(String msg) {
-						final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+						errorOverlay = new DismissableOverlay(resources, new TextOverlay(
 								"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
 							@Override
 							public void clicked(InputEvent event, float x, float y) {
 								loadUser();
 							}
 						});
-						stage.addActor(ovrlay);
+						stage.addActor(errorOverlay);
 					}
 				}, GameLoop.USER.handle);
 			}
 
 			@Override
 			public void onConnectionError(String msg) {
-				final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+				if(errorOverlay != null){
+					errorOverlay.remove();
+				}
+				errorOverlay = new DismissableOverlay(resources, new TextOverlay(
 						"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						loadUser();
 					}
 				});
-				stage.addActor(ovrlay);
+				stage.addActor(errorOverlay);
 			}
 		}, GameLoop.USER.handle);
 	}

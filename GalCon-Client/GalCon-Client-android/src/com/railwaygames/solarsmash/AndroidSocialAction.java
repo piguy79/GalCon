@@ -22,6 +22,7 @@ public class AndroidSocialAction implements SocialAction {
 
 	@Override
 	public void onActivityResult(int responseCode) {
+		setupAuthorizer();
 		authorizer.onActivityResult(responseCode);
 	}
 
