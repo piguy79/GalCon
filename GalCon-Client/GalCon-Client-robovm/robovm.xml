@@ -21,6 +21,9 @@
 		<directory>../../../robovm-ios-bindings/facebook/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
+	<resource>
+        <directory>data</directory>
+    </resource>
   </resources>
   <libs>
    	<lib>c++</lib>
