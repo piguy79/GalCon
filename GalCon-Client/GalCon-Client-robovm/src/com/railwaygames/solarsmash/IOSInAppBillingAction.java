@@ -10,6 +10,9 @@ import org.robovm.apple.foundation.NSBundle;
 import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSDataBase64EncodingOptions;
 import org.robovm.apple.foundation.NSError;
+import org.robovm.apple.foundation.NSNumberFormatter;
+import org.robovm.apple.foundation.NSNumberFormatterBehavior;
+import org.robovm.apple.foundation.NSNumberFormatterStyle;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
@@ -140,6 +143,10 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 					transactions.add(unconsumedTransaction);
 				}
 
+				NSNumberFormatter formatter = new NSNumberFormatter();
+				formatter.setFormatterBehavior(NSNumberFormatterBehavior._10_4);
+				formatter.setNumberStyle(NSNumberFormatterStyle.Currency);
+
 				for (InventoryItem serverItem : serverInventory.inventory) {
 					SKProduct iosProduct = skuToProduct.get(serverItem.sku);
 					if (iosProduct == null) {
@@ -147,8 +154,11 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 						continue;
 					}
 
-					InventoryItem combinedItem = new InventoryItem(iosProduct.getProductIdentifier(), iosProduct
-							.getPrice().stringValue(), iosProduct.getLocalizedTitle(), serverItem.numCoins);
+					formatter.setLocale(iosProduct.getPriceLocale());
+					String price = formatter.stringFromNumber$(iosProduct.getPrice());
+
+					InventoryItem combinedItem = new InventoryItem(iosProduct.getProductIdentifier(), price, iosProduct
+							.getLocalizedTitle(), serverItem.numCoins);
 
 					if (skuToTransaction.containsKey(iosProduct.getProductIdentifier())) {
 						Gdx.app.log(TAG, "Adding unfulfilled order to inventory: " + serverItem.sku);
