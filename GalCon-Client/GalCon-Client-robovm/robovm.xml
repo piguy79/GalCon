@@ -29,10 +29,10 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings/crashlytics/libs/libcrashlytics.a</lib>
-    <lib>../../../robovm-ios-bindings/facebook/libs/libarclite.a</lib>
-    <lib>../../../robovm-ios-bindings/facebook/libs/libfacebook.a</lib>
-    <lib>../../../robovm-ios-bindings/adcolony/libs/libadcolony.a</lib>
+    <lib>../../../robovm-ios-bindings2/crashlytics/libs/libcrashlytics.a</lib>
+    <lib>../../../robovm-ios-bindings2/facebook/libs/libarclite.a</lib>
+    <lib>../../../robovm-ios-bindings2/facebook/libs/libfacebook.a</lib>
+    <lib>../../../robovm-ios-bindings2/adcolony/libs/libadcolony.a</lib>
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>

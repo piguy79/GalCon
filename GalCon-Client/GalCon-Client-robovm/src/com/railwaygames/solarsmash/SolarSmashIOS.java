@@ -127,7 +127,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		}, true);
 
 		application.cancelAllLocalNotifications();
-		application.setMinimumBackgroundFetchInterval(5 * 60);
+		application.setMinimumBackgroundFetchInterval(60 * 60);
 		application.setApplicationIconBadgeNumber(0);
 
 		return true;
