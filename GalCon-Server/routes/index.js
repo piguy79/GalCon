@@ -371,9 +371,9 @@ var updateWinnersAndLosers = function(game, handle) {
 					player.xp = potentialNewXp;
 					game.endGame.xp = parseInt(game.config.values["xpForWinning"]);
 				}else if(potentialNewXp > maxRank.endAt){
-					xpToAdd = maxRank.endAt - player.xp;
+					xpToAdd = (maxRank.endAt - 1) - player.xp;
 					player.xp = player.xp + xpToAdd;
-					game.endGame.xp = maxRank.endAt - player.xp;
+					game.endGame.xp = (maxRank.endAt - 1) - player.xp;
 				}
 				
 			} else {

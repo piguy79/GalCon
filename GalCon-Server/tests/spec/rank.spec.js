@@ -120,7 +120,7 @@ describe("Rank - Test correct rank assignment -", function() {
 			var player1 = _.filter(game.players, function(player){
 				return player.handle === PLAYER_1_HANDLE;
 			});
-			expect(player1[0].xp).toBe(7000);
+			expect(player1[0].xp).toBe(6999);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
@@ -147,7 +147,7 @@ describe("Rank - Test correct rank assignment -", function() {
 			var player1 = _.filter(game.players, function(player){
 				return player.handle === PLAYER_1_HANDLE;
 			});
-			expect(player1[0].xp).toBe(7000);
+			expect(player1[0].xp).toBe(6999);
 			done();
 		}).then(null, function(err){
 			expect(true).toBe(false);
