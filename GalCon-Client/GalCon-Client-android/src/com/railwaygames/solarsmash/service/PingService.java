@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -42,8 +44,9 @@ public class PingService extends Service {
 	public static final int NOTIFICATION_ID = 29484;
 	private Looper mServiceLooper;
 	private ServiceHandler mServiceHandler;
-	private static final int SLEEP_TIME = 4 * 60 * 1000;
+	private static final int SLEEP_TIME = 5 * 60 * 1000;
 	private static final int LONG_SLEEP_TIME = 8 * 60 * 60 * 1000;
+	private static final int ONE_HOUR = 1 * 60 * 60 * 1000;
 	private static final String DELETE_KEY = "DELETE";
 	private Config config = new AndroidConfig();
 
@@ -54,14 +57,21 @@ public class PingService extends Service {
 
 		@Override
 		public void handleMessage(Message msg) {
-			if (!isMainActivityActive()) {
-				pingForPendingMove();
+			final int sleepTime;
+			DateTime now = new DateTime();
+			if (now.getHourOfDay() >= 21 || now.getHourOfDay() < 9) {
+				sleepTime = ONE_HOUR;
+			} else {
+				sleepTime = SLEEP_TIME;
+				if (!isMainActivityActive()) {
+					pingForPendingMove();
+				}
 			}
 
 			post(new Runnable() {
 				@Override
 				public void run() {
-					PingService.this.post(SLEEP_TIME);
+					PingService.this.post(sleepTime);
 				}
 			});
 		}
@@ -118,7 +128,7 @@ public class PingService extends Service {
 				if (inviteCount == 1) {
 					inviteText = "1 pending invite";
 				} else {
-					inviteText = inviteCount  + " pending invites";
+					inviteText = inviteCount + " pending invites";
 				}
 			}
 
