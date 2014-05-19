@@ -36,12 +36,16 @@ public class GooglePlusAuthorization implements Authorizer {
 	private AuthenticationListener listener;
 
 	private GPPShareDelegate delegate;
+	private GPPSignInDelegate signInDelegate;
 
 	public class SignInDelegate extends GPPSignInDelegate.Adapter {
 		@Override
 		public void finishedWithAuth(GTMOAuth2Authentication auth, NSError error) {
+			Gdx.app.log("GOOGLE+", "Callback");
+			
 			if (error != null) {
-				listener.onSignInFailed(error.description());
+				Gdx.app.log("GOOGLE+", "Error: " + error.description());
+				listener.onSignInFailed("Could not sign in");
 			} else {
 				GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, gppSignIn.getUserId()
 						.toString());
@@ -62,12 +66,15 @@ public class GooglePlusAuthorization implements Authorizer {
 	}
 
 	public GooglePlusAuthorization() {
+		Gdx.app.log("GOOGLE+", "Setting up authorization");
 		gppSignIn = GPPSignIn.sharedInstance();
 		gppSignIn.setShouldFetchGooglePlusUser(true);
 		gppSignIn.setShouldFetchGoogleUserID(true);
 		gppSignIn.setClientID(clientId);
 		gppSignIn.setScopes(new NSArray<NSString>(scopes));
-		gppSignIn.setDelegate(new SignInDelegate());
+		
+		signInDelegate = new SignInDelegate();
+		gppSignIn.setDelegate(signInDelegate);
 	}
 
 	@Override
@@ -85,36 +92,54 @@ public class GooglePlusAuthorization implements Authorizer {
 	@Override
 	public void onActivityResult(int responseCode) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-	public void getFriends(final FriendsListener listener) {
-		GTLServicePlus plusService = gppSignIn.plusService();
-
-		GTLQueryPlus query = GTLQueryPlus.queryForPeopleListWithUserId("me", "visible");
-		query.setMaxResults(100);
-
-		plusService.executeQuery(query, QueryResultsBlock.Marshaler.toObjCBlock(new QueryResultsBlock() {
-			public void invoke(GTLServiceTicket ticket, GTLPlusPeopleFeed peopleFeed, NSError error) {
-				Gdx.app.log("PEOPLE", "In invoke()");
-				if (error != null) {
-					Gdx.app.log("PEOPLE_ERROR", error.localizedDescription());
-					listener.onFriendsLoadedFail(error.localizedDescription());
-					return;
-				}
-
-				List<Friend> friends = new ArrayList<Friend>();
-				if (peopleFeed != null && peopleFeed.getItems() != null) {
-					for (NSObject oPerson : peopleFeed.getItems()) {
-						GTLPlusPerson person = (GTLPlusPerson) oPerson;
-						friends.add(new Friend(person.getIdentifier(), person.getDisplayName(), ""));
-					}
-				}
-
-				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+	public void getFriends(final FriendsListener fListener) {
+		this.listener = new AuthenticationListener() {
+			
+			@Override
+			public void onSignOut() {
+				// TODO Auto-generated method stub
 			}
-		}));
+			
+			@Override
+			public void onSignInSucceeded(String authProvider, String token) {
+				Gdx.app.log("GOOGLE+", "Sign in succeeded");
+				GTLServicePlus plusService = gppSignIn.plusService();
+
+				GTLQueryPlus query = GTLQueryPlus.queryForPeopleListWithUserId("me", "visible");
+				query.setMaxResults(100);
+
+				plusService.executeQuery(query, QueryResultsBlock.Marshaler.toObjCBlock(new QueryResultsBlock() {
+					public void invoke(GTLServiceTicket ticket, GTLPlusPeopleFeed peopleFeed, NSError error) {
+						Gdx.app.log("PEOPLE", "In invoke()");
+						if (error != null) {
+							Gdx.app.log("PEOPLE_ERROR", error.localizedDescription());
+							fListener.onFriendsLoadedFail(error.localizedDescription());
+							return;
+						}
+
+						List<Friend> friends = new ArrayList<Friend>();
+						if (peopleFeed != null && peopleFeed.getItems() != null) {
+							for (NSObject oPerson : peopleFeed.getItems()) {
+								GTLPlusPerson person = (GTLPlusPerson) oPerson;
+								friends.add(new Friend(person.getIdentifier(), person.getDisplayName(), ""));
+							}
+						}
+
+						fListener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+					}
+				}));
+			}
+			
+			@Override
+			public void onSignInFailed(String failureMessage) {
+				Gdx.app.log("GOOGLE+", "Sign in failed: " + failureMessage);
+				fListener.onFriendsLoadedFail(failureMessage);
+			}
+		};
+		gppSignIn.authenticate();
 	}
 
 	@Override

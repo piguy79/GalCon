@@ -36,7 +36,7 @@
             <key>CFBundleURLSchemes</key>
             <array>
            		<string>com.railwaygames.solarsmash.SolarSmashIOS</string>
-           		<string>fb***</string>
+           		<string>fb257147704459293</string>
            	</array>
         </dict>
     </array>
@@ -45,7 +45,7 @@
         <dict>
             <key>URL Schemes</key>
             <array>
-           		<string>fb***</string>
+           		<string>fb257147704459293</string>
            	</array>
         </dict>
     </array>
@@ -54,7 +54,6 @@
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>
-        <integer>2</integer>
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false />
@@ -85,6 +84,7 @@
 				<string>icon120@2x</string>
 	    		<string>icon152@2x</string>
 	    		<string>settings@2x</string>
+	    		<string>icon57</string>
 			</array>
 		</dict>
 	</dict>

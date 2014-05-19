@@ -14,11 +14,11 @@
       <skipPngCrush>true</skipPngCrush>
     </resource>
     <resource>
-		<directory>../../../robovm-ios-bindings/google-play-game-services/resources</directory>
+		<directory>../../../robovm-ios-bindings2/google-play-game-services/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
 	<resource>
-		<directory>../../../robovm-ios-bindings/facebook/resources</directory>
+		<directory>../../../robovm-ios-bindings2/facebook/resources</directory>
 		<skipPngCrush>true</skipPngCrush>
 	</resource>
 	<resource>
@@ -36,13 +36,10 @@
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
-	<pattern>org.apache.harmony.xnet.provider.**</pattern>
-	<pattern>org.apache.harmony.security.provider.**</pattern>
-	<pattern>com.android.org.bouncycastle.jce.provider.**</pattern>
   </forceLinkClasses>
   <frameworkPaths>
-      <path>../../../robovm-ios-bindings/google-play-game-services/libs/</path>
-      <path>../../../robovm-ios-bindings/facebook/libs/</path>
+      <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
+      <path>../../../robovm-ios-bindings2/facebook/libs/</path>
   </frameworkPaths>
   <frameworks>
     <framework>GoogleOpenSource</framework>

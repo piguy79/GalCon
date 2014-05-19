@@ -44,10 +44,11 @@ import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
+import com.railwaygames.solarsmash.social.facebook.FacebookManager;
 
 public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKeyboard {
 	public static final String LOG_NAME = "GalCon";
-	
+
 	private static String APP_ID = "app6bd101d5181645c0bc";
 	public static String ZONE_ID = "vz944bae6684b74d6980";
 
@@ -103,22 +104,29 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 
 	@Override
 	public boolean openURL(UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
-		return GPPURLHandler.handleURL(url, sourceApplication, annotation);
+		boolean handled = FacebookManager.getInstance().openURL(application, url, sourceApplication, annotation);
+
+		if (!handled) {
+			handled = GPPURLHandler.handleURL(url, sourceApplication, annotation);
+		}
+
+		return handled;
 	}
-	
+
 	@Override
 	public void didBecomeActive(UIApplication application) {
 		application.setApplicationIconBadgeNumber(0);
+		application.setStatusBarHidden(true, false);
 	}
 
 	@Override
 	public boolean didFinishLaunching(UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 		super.didFinishLaunching(application, launchOptions);
-		
+
 		application.setStatusBarHidden(true);
-		
+
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
-		
+
 		ArrayList<NSString> aZones = new ArrayList<NSString>();
 		aZones.add(new NSString(ZONE_ID));
 		NSArray<NSString> zones = new NSArray<NSString>(aZones);

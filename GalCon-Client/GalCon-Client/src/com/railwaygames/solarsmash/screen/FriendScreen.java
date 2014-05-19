@@ -590,7 +590,9 @@ public class FriendScreen implements ScreenFeedback {
 				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		populateSearchLabelGroup(label);
 
+		Gdx.app.log("FRIENDS", GameLoop.USER.auth.auth.toString());
 		if (!GameLoop.USER.auth.hasAuth(authProvider)) {
+			Gdx.app.log("FRIENDS", "Starting sign in for: " + authProvider);
 			socialAction.signIn(new AuthenticationListener() {
 
 				@Override
@@ -599,6 +601,7 @@ public class FriendScreen implements ScreenFeedback {
 
 				@Override
 				public void onSignInSucceeded(final String authProvider, String token) {
+					Gdx.app.log("FRIENDS", "Sign in suceeded");
 					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 					String id = prefs.getString(authProvider + Constants.ID);
 					prefs.flush();
