@@ -2652,17 +2652,19 @@ com.badlogic.gdx.backends.android.AndroidDaydream$2 -> com.badlogic.gdx.backends
     331:332:void run() -> run
 com.badlogic.gdx.backends.android.AndroidFileHandle -> com.badlogic.gdx.backends.android.AndroidFileHandle:
     android.content.res.AssetManager assets -> assets
-    48:50:com.badlogic.gdx.files.FileHandle child(java.lang.String) -> child
-    54:56:com.badlogic.gdx.files.FileHandle sibling(java.lang.String) -> sibling
-    60:67:com.badlogic.gdx.files.FileHandle parent() -> parent
-    71:78:java.io.InputStream read() -> read
-    82:93:com.badlogic.gdx.files.FileHandle[] list() -> list
-    97:118:com.badlogic.gdx.files.FileHandle[] list(java.lang.String) -> list
-    122:129:boolean isDirectory() -> isDirectory
-    133:147:boolean exists() -> exists
-    151:167:long length() -> length
-    171:171:long lastModified() -> lastModified
-    175:176:java.io.File file() -> file
+    50:52:com.badlogic.gdx.files.FileHandle child(java.lang.String) -> child
+    56:58:com.badlogic.gdx.files.FileHandle sibling(java.lang.String) -> sibling
+    62:69:com.badlogic.gdx.files.FileHandle parent() -> parent
+    73:80:java.io.InputStream read() -> read
+    84:95:com.badlogic.gdx.files.FileHandle[] list() -> list
+    99:120:com.badlogic.gdx.files.FileHandle[] list(java.io.FileFilter) -> list
+    124:145:com.badlogic.gdx.files.FileHandle[] list(java.io.FilenameFilter) -> list
+    149:170:com.badlogic.gdx.files.FileHandle[] list(java.lang.String) -> list
+    174:181:boolean isDirectory() -> isDirectory
+    185:199:boolean exists() -> exists
+    203:219:long length() -> length
+    223:223:long lastModified() -> lastModified
+    227:228:java.io.File file() -> file
 com.badlogic.gdx.backends.android.AndroidFiles -> com.badlogic.gdx.backends.android.AndroidFiles:
     java.lang.String sdcard -> sdcard
     java.lang.String localpath -> localpath
@@ -3818,58 +3820,60 @@ com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy$MeasuredDimensi
 com.badlogic.gdx.files.FileHandle -> com.badlogic.gdx.c.a:
     java.io.File file -> file
     com.badlogic.gdx.Files$FileType type -> type
-    85:85:java.lang.String path() -> path
-    90:90:java.lang.String name() -> name
-    94:97:java.lang.String extension() -> extension
-    102:105:java.lang.String nameWithoutExtension() -> nameWithoutExtension
-    111:114:java.lang.String pathWithoutExtension() -> pathWithoutExtension
-    118:118:com.badlogic.gdx.Files$FileType type() -> type
-    124:125:java.io.File file() -> file
-    131:142:java.io.InputStream read() -> read
-    149:149:java.io.BufferedInputStream read(int) -> read
-    155:155:java.io.Reader reader() -> reader
-    162:164:java.io.Reader reader(java.lang.String) -> reader
-    171:171:java.io.BufferedReader reader(int) -> reader
-    178:180:java.io.BufferedReader reader(int,java.lang.String) -> reader
-    187:187:java.lang.String readString() -> readString
-    194:212:java.lang.String readString(java.lang.String) -> readString
-    218:224:byte[] readBytes() -> readBytes
-    229:230:int estimateLength() -> estimateLength
-    239:252:int readBytes(byte[],int,int) -> readBytes
-    260:268:java.io.OutputStream write(boolean) -> write
-    278:278:java.io.OutputStream write(boolean,int) -> write
-    287:295:void write(java.io.InputStream,boolean) -> write
-    305:305:java.io.Writer writer(boolean) -> writer
-    314:326:java.io.Writer writer(boolean,java.lang.String) -> writer
-    335:336:void writeString(java.lang.String,boolean) -> writeString
-    344:351:void writeString(java.lang.String,boolean,java.lang.String) -> writeString
-    360:366:void writeBytes(byte[],boolean) -> writeBytes
-    375:381:void writeBytes(byte[],int,int,boolean) -> writeBytes
-    390:396:com.badlogic.gdx.files.FileHandle[] list() -> list
-    404:420:com.badlogic.gdx.files.FileHandle[] list(java.lang.String) -> list
-    427:428:boolean isDirectory() -> isDirectory
-    435:436:com.badlogic.gdx.files.FileHandle child(java.lang.String) -> child
-    443:444:com.badlogic.gdx.files.FileHandle sibling(java.lang.String) -> sibling
-    448:455:com.badlogic.gdx.files.FileHandle parent() -> parent
-    460:463:void mkdirs() -> mkdirs
-    468:475:boolean exists() -> exists
-    481:483:boolean delete() -> delete
-    489:491:boolean deleteDirectory() -> deleteDirectory
-    497:498:void emptyDirectory() -> emptyDirectory
-    503:506:void emptyDirectory(boolean) -> emptyDirectory
-    517:531:void copyTo(com.badlogic.gdx.files.FileHandle) -> copyTo
-    537:542:void moveTo(com.badlogic.gdx.files.FileHandle) -> moveTo
-    547:557:long length() -> length
-    564:564:long lastModified() -> lastModified
-    569:571:boolean equals(java.lang.Object) -> equals
-    576:579:int hashCode() -> hashCode
-    583:583:java.lang.String toString() -> toString
-    588:590:com.badlogic.gdx.files.FileHandle tempFile(java.lang.String) -> tempFile
-    596:601:com.badlogic.gdx.files.FileHandle tempDirectory(java.lang.String) -> tempDirectory
-    606:619:void emptyDirectory(java.io.File,boolean) -> emptyDirectory
-    622:623:boolean deleteDirectory(java.io.File) -> deleteDirectory
-    628:630:void copyFile(com.badlogic.gdx.files.FileHandle,com.badlogic.gdx.files.FileHandle) -> copyFile
-    636:646:void copyDirectory(com.badlogic.gdx.files.FileHandle,com.badlogic.gdx.files.FileHandle) -> copyDirectory
+    87:87:java.lang.String path() -> path
+    92:92:java.lang.String name() -> name
+    96:99:java.lang.String extension() -> extension
+    104:107:java.lang.String nameWithoutExtension() -> nameWithoutExtension
+    113:116:java.lang.String pathWithoutExtension() -> pathWithoutExtension
+    120:120:com.badlogic.gdx.Files$FileType type() -> type
+    126:127:java.io.File file() -> file
+    133:144:java.io.InputStream read() -> read
+    151:151:java.io.BufferedInputStream read(int) -> read
+    157:157:java.io.Reader reader() -> reader
+    164:166:java.io.Reader reader(java.lang.String) -> reader
+    173:173:java.io.BufferedReader reader(int) -> reader
+    180:182:java.io.BufferedReader reader(int,java.lang.String) -> reader
+    189:189:java.lang.String readString() -> readString
+    196:214:java.lang.String readString(java.lang.String) -> readString
+    220:226:byte[] readBytes() -> readBytes
+    231:232:int estimateLength() -> estimateLength
+    241:254:int readBytes(byte[],int,int) -> readBytes
+    262:270:java.io.OutputStream write(boolean) -> write
+    280:280:java.io.OutputStream write(boolean,int) -> write
+    289:297:void write(java.io.InputStream,boolean) -> write
+    307:307:java.io.Writer writer(boolean) -> writer
+    316:328:java.io.Writer writer(boolean,java.lang.String) -> writer
+    337:338:void writeString(java.lang.String,boolean) -> writeString
+    346:353:void writeString(java.lang.String,boolean,java.lang.String) -> writeString
+    362:368:void writeBytes(byte[],boolean) -> writeBytes
+    377:383:void writeBytes(byte[],int,int,boolean) -> writeBytes
+    392:398:com.badlogic.gdx.files.FileHandle[] list() -> list
+    407:424:com.badlogic.gdx.files.FileHandle[] list(java.io.FileFilter) -> list
+    433:450:com.badlogic.gdx.files.FileHandle[] list(java.io.FilenameFilter) -> list
+    458:474:com.badlogic.gdx.files.FileHandle[] list(java.lang.String) -> list
+    481:482:boolean isDirectory() -> isDirectory
+    489:490:com.badlogic.gdx.files.FileHandle child(java.lang.String) -> child
+    497:498:com.badlogic.gdx.files.FileHandle sibling(java.lang.String) -> sibling
+    502:509:com.badlogic.gdx.files.FileHandle parent() -> parent
+    514:517:void mkdirs() -> mkdirs
+    522:529:boolean exists() -> exists
+    535:537:boolean delete() -> delete
+    543:545:boolean deleteDirectory() -> deleteDirectory
+    551:552:void emptyDirectory() -> emptyDirectory
+    557:560:void emptyDirectory(boolean) -> emptyDirectory
+    571:585:void copyTo(com.badlogic.gdx.files.FileHandle) -> copyTo
+    591:596:void moveTo(com.badlogic.gdx.files.FileHandle) -> moveTo
+    601:611:long length() -> length
+    618:618:long lastModified() -> lastModified
+    623:625:boolean equals(java.lang.Object) -> equals
+    630:633:int hashCode() -> hashCode
+    637:637:java.lang.String toString() -> toString
+    642:644:com.badlogic.gdx.files.FileHandle tempFile(java.lang.String) -> tempFile
+    650:655:com.badlogic.gdx.files.FileHandle tempDirectory(java.lang.String) -> tempDirectory
+    660:673:void emptyDirectory(java.io.File,boolean) -> emptyDirectory
+    676:677:boolean deleteDirectory(java.io.File) -> deleteDirectory
+    682:684:void copyFile(com.badlogic.gdx.files.FileHandle,com.badlogic.gdx.files.FileHandle) -> copyFile
+    690:700:void copyDirectory(com.badlogic.gdx.files.FileHandle,com.badlogic.gdx.files.FileHandle) -> copyDirectory
 com.badlogic.gdx.files.FileHandle$1 -> com.badlogic.gdx.c.b:
     int[] $SwitchMap$com$badlogic$gdx$Files$FileType -> a
 com.badlogic.gdx.graphics.Camera -> com.badlogic.gdx.graphics.a:
@@ -4480,23 +4484,23 @@ com.badlogic.gdx.graphics.g2d.Sprite -> com.badlogic.gdx.graphics.g2d.v:
     107:127:void set(com.badlogic.gdx.graphics.g2d.Sprite) -> a
     132:155:void setBounds(float,float,float,float) -> a
     161:182:void setSize(float,float) -> a
-    236:253:void translate(float,float) -> b
-    257:263:void setColor(com.badlogic.gdx.graphics.Color) -> a
-    283:290:void setColor$4098370b() -> a
-    304:307:void setOrigin(float,float) -> c
-    318:320:void setRotation(float) -> a
-    338:365:void rotate90(boolean) -> a
-    378:381:void setScale(float,float) -> d
-    499:500:void draw(com.badlogic.gdx.graphics.g2d.Batch) -> a
-    510:510:float getX() -> b
-    514:514:float getY() -> c
-    519:519:float getWidth() -> d
-    524:524:float getHeight() -> e
-    530:530:float getOriginX() -> f
-    536:536:float getOriginY() -> g
-    552:558:com.badlogic.gdx.graphics.Color getColor() -> h
-    562:576:void setRegion(float,float,float,float) -> b
-    621:639:void flip(boolean,boolean) -> a
+    252:269:void translate(float,float) -> b
+    273:279:void setColor(com.badlogic.gdx.graphics.Color) -> a
+    299:306:void setColor$4098370b() -> a
+    320:323:void setOrigin(float,float) -> c
+    334:336:void setRotation(float) -> a
+    354:381:void rotate90(boolean) -> a
+    394:397:void setScale(float,float) -> d
+    515:516:void draw(com.badlogic.gdx.graphics.g2d.Batch) -> a
+    526:526:float getX() -> b
+    530:530:float getY() -> c
+    535:535:float getWidth() -> d
+    540:540:float getHeight() -> e
+    546:546:float getOriginX() -> f
+    552:552:float getOriginY() -> g
+    568:574:com.badlogic.gdx.graphics.Color getColor() -> h
+    578:592:void setRegion(float,float,float,float) -> b
+    637:655:void flip(boolean,boolean) -> a
 com.badlogic.gdx.graphics.g2d.SpriteBatch -> com.badlogic.gdx.graphics.g2d.w:
     com.badlogic.gdx.graphics.Mesh mesh -> e
     float[] vertices -> f
@@ -4541,16 +4545,16 @@ com.badlogic.gdx.graphics.g2d.TextureAtlas -> com.badlogic.gdx.graphics.g2d.x:
     com.badlogic.gdx.utils.ObjectSet textures -> c
     com.badlogic.gdx.utils.Array regions -> d
     java.util.Comparator indexComparator -> b
-    231:264:void load(com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData) -> a
-    286:286:com.badlogic.gdx.utils.Array getRegions() -> a
-    293:295:com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion findRegion(java.lang.String) -> a
-    337:339:com.badlogic.gdx.graphics.g2d.Sprite createSprite(java.lang.String) -> b
-    387:397:com.badlogic.gdx.graphics.g2d.NinePatch createPatch(java.lang.String) -> c
-    408:411:void dispose() -> dispose
-    424:427:java.lang.String readValue(java.io.BufferedReader) -> a
-    432:446:int readTuple(java.io.BufferedReader) -> b
+    240:273:void load(com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData) -> a
+    295:295:com.badlogic.gdx.utils.Array getRegions() -> a
+    302:304:com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion findRegion(java.lang.String) -> a
+    346:348:com.badlogic.gdx.graphics.g2d.Sprite createSprite(java.lang.String) -> b
+    396:406:com.badlogic.gdx.graphics.g2d.NinePatch createPatch(java.lang.String) -> c
+    417:420:void dispose() -> dispose
+    433:436:java.lang.String readValue(java.io.BufferedReader) -> a
+    441:452:int readTuple(java.io.BufferedReader) -> b
 com.badlogic.gdx.graphics.g2d.TextureAtlas$1 -> com.badlogic.gdx.graphics.g2d.y:
-    413:413:int compare(java.lang.Object,java.lang.Object) -> compare
+    422:422:int compare(java.lang.Object,java.lang.Object) -> compare
 com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion -> com.badlogic.gdx.graphics.g2d.z:
     int index -> a
     java.lang.String name -> b
@@ -4563,39 +4567,41 @@ com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion -> com.badlogic.gdx.graph
     boolean rotate -> i
     int[] splits -> j
     int[] pads -> k
-    515:518:void flip(boolean,boolean) -> a
-    523:523:float getRotatedPackedWidth() -> a
-    529:529:float getRotatedPackedHeight() -> b
+    521:524:void flip(boolean,boolean) -> a
+    529:529:float getRotatedPackedWidth() -> a
+    535:535:float getRotatedPackedHeight() -> b
 com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasSprite -> com.badlogic.gdx.graphics.g2d.aa:
     com.badlogic.gdx.graphics.g2d.TextureAtlas$AtlasRegion region -> d
     float originalOffsetX -> e
     float originalOffsetY -> f
-    579:586:void setBounds(float,float,float,float) -> a
-    590:591:void setSize(float,float) -> a
-    595:596:void setOrigin(float,float) -> c
-    606:627:void flip(boolean,boolean) -> a
-    632:653:void rotate90(boolean) -> a
-    657:657:float getX() -> b
-    662:662:float getY() -> c
-    667:667:float getOriginX() -> f
-    672:672:float getOriginY() -> g
-    677:677:float getWidth() -> d
-    682:682:float getHeight() -> e
-    686:686:float getWidthRatio() -> p
-    690:690:float getHeightRatio() -> q
+    585:592:void setBounds(float,float,float,float) -> a
+    596:597:void setSize(float,float) -> a
+    601:602:void setOrigin(float,float) -> c
+    612:633:void flip(boolean,boolean) -> a
+    638:659:void rotate90(boolean) -> a
+    663:663:float getX() -> b
+    668:668:float getY() -> c
+    673:673:float getOriginX() -> f
+    678:678:float getOriginY() -> g
+    683:683:float getWidth() -> d
+    688:688:float getHeight() -> e
+    692:692:float getWidthRatio() -> p
+    696:696:float getHeightRatio() -> q
 com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData -> com.badlogic.gdx.graphics.g2d.ab:
     com.badlogic.gdx.utils.Array pages -> a
     com.badlogic.gdx.utils.Array regions -> b
-    187:187:com.badlogic.gdx.utils.Array getPages() -> a
+    196:196:com.badlogic.gdx.utils.Array getPages() -> a
 com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData$Page -> com.badlogic.gdx.graphics.g2d.ac:
     com.badlogic.gdx.files.FileHandle textureFile -> a
     com.badlogic.gdx.graphics.Texture texture -> b
-    boolean useMipMaps -> c
-    com.badlogic.gdx.graphics.Pixmap$Format format -> d
-    com.badlogic.gdx.graphics.Texture$TextureFilter minFilter -> e
-    com.badlogic.gdx.graphics.Texture$TextureFilter magFilter -> f
-    com.badlogic.gdx.graphics.Texture$TextureWrap uWrap -> g
-    com.badlogic.gdx.graphics.Texture$TextureWrap vWrap -> h
+    float width -> c
+    float height -> d
+    boolean useMipMaps -> e
+    com.badlogic.gdx.graphics.Pixmap$Format format -> f
+    com.badlogic.gdx.graphics.Texture$TextureFilter minFilter -> g
+    com.badlogic.gdx.graphics.Texture$TextureFilter magFilter -> h
+    com.badlogic.gdx.graphics.Texture$TextureWrap uWrap -> i
+    com.badlogic.gdx.graphics.Texture$TextureWrap vWrap -> j
 com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData$Region -> com.badlogic.gdx.graphics.g2d.ad:
     com.badlogic.gdx.graphics.g2d.TextureAtlas$TextureAtlasData$Page page -> a
     int index -> b
@@ -4841,7 +4847,7 @@ com.badlogic.gdx.graphics.g3d.utils.TextureProvider -> com.badlogic.gdx.graphics
     com.badlogic.gdx.graphics.Texture load(java.lang.String) -> a
 com.badlogic.gdx.graphics.g3d.utils.TextureProvider$AssetTextureProvider -> com.badlogic.gdx.graphics.a.d.c:
     com.badlogic.gdx.assets.AssetManager assetManager -> a
-    47:47:com.badlogic.gdx.graphics.Texture load(java.lang.String) -> a
+    50:50:com.badlogic.gdx.graphics.Texture load(java.lang.String) -> a
 com.badlogic.gdx.graphics.glutils.ETC1 -> com.badlogic.gdx.graphics.glutils.ETC1:
     int PKM_HEADER_SIZE -> a
     int ETC1_RGB8_OES -> b
@@ -5347,15 +5353,15 @@ com.badlogic.gdx.math.MathUtils -> com.badlogic.gdx.math.aa:
     int ATAN2_DIM -> a
     float INV_ATAN2_DIM_MINUS_1 -> c
     java.util.Random random -> b
-    65:65:float sin(float) -> a
-    70:70:float cos(float) -> b
-    75:75:float sinDeg(float) -> c
-    80:80:float cosDeg(float) -> d
-    108:130:float atan2(float,float) -> a
-    139:139:int random$134621() -> a
-    176:183:int nextPowerOfTwo(int) -> a
-    187:187:boolean isPowerOfTwo(int) -> b
-    205:207:float clamp(float,float,float) -> a
+    63:63:float sin(float) -> a
+    68:68:float cos(float) -> b
+    73:73:float sinDeg(float) -> c
+    78:78:float cosDeg(float) -> d
+    106:128:float atan2(float,float) -> a
+    137:137:int random$134621() -> a
+    174:181:int nextPowerOfTwo(int) -> a
+    185:185:boolean isPowerOfTwo(int) -> b
+    203:205:float clamp(float,float,float) -> a
 com.badlogic.gdx.math.MathUtils$Atan2 -> com.badlogic.gdx.math.ab:
     float[] table -> a
 com.badlogic.gdx.math.MathUtils$Sin -> com.badlogic.gdx.math.ac:
@@ -5440,8 +5446,8 @@ com.badlogic.gdx.math.Vector2 -> com.badlogic.gdx.math.ah:
     196:198:float dst(com.badlogic.gdx.math.Vector2) -> b
     252:252:java.lang.String toString() -> toString
     284:286:float angle() -> a
-    354:358:int hashCode() -> hashCode
-    363:369:boolean equals(java.lang.Object) -> equals
+    359:363:int hashCode() -> hashCode
+    368:374:boolean equals(java.lang.Object) -> equals
 com.badlogic.gdx.math.Vector3 -> com.badlogic.gdx.math.ai:
     float x -> a
     float y -> b
@@ -5461,9 +5467,9 @@ com.badlogic.gdx.math.Vector3 -> com.badlogic.gdx.math.ai:
     312:312:com.badlogic.gdx.math.Vector3 crs(float,float,float) -> b
     328:329:com.badlogic.gdx.math.Vector3 mul(com.badlogic.gdx.math.Matrix4) -> a
     374:376:com.badlogic.gdx.math.Vector3 prj(com.badlogic.gdx.math.Matrix4) -> b
-    561:561:java.lang.String toString() -> toString
-    581:586:int hashCode() -> hashCode
-    591:598:boolean equals(java.lang.Object) -> equals
+    565:565:java.lang.String toString() -> toString
+    585:590:int hashCode() -> hashCode
+    595:602:boolean equals(java.lang.Object) -> equals
 com.badlogic.gdx.math.WindowedMean -> com.badlogic.gdx.math.aj:
     float[] values -> a
     int added_values -> b
@@ -5755,21 +5761,21 @@ com.badlogic.gdx.scenes.scene2d.Stage -> com.badlogic.gdx.f.a.j:
     498:518:void setKeyboardFocus(com.badlogic.gdx.scenes.scene2d.Actor) -> c
     523:523:com.badlogic.gdx.scenes.scene2d.Actor getKeyboardFocus() -> d
     529:549:void setScrollFocus(com.badlogic.gdx.scenes.scene2d.Actor) -> d
-    562:562:com.badlogic.gdx.utils.viewport.Viewport getViewport() -> e
-    571:571:float getWidth() -> f
-    576:576:float getHeight() -> g
-    586:586:com.badlogic.gdx.scenes.scene2d.Group getRoot() -> h
-    595:596:com.badlogic.gdx.scenes.scene2d.Actor hit$72f4a4b8(float,float) -> a
-    602:603:com.badlogic.gdx.math.Vector2 screenToStageCoordinates(com.badlogic.gdx.math.Vector2) -> a
-    623:624:void calculateScissors(com.badlogic.gdx.math.Rectangle,com.badlogic.gdx.math.Rectangle) -> a
-    627:629:void dispose() -> dispose
+    567:567:com.badlogic.gdx.utils.viewport.Viewport getViewport() -> e
+    576:576:float getWidth() -> f
+    581:581:float getHeight() -> g
+    591:591:com.badlogic.gdx.scenes.scene2d.Group getRoot() -> h
+    600:601:com.badlogic.gdx.scenes.scene2d.Actor hit$72f4a4b8(float,float) -> a
+    607:608:com.badlogic.gdx.math.Vector2 screenToStageCoordinates(com.badlogic.gdx.math.Vector2) -> a
+    628:629:void calculateScissors(com.badlogic.gdx.math.Rectangle,com.badlogic.gdx.math.Rectangle) -> a
+    632:634:void dispose() -> dispose
 com.badlogic.gdx.scenes.scene2d.Stage$TouchFocus -> com.badlogic.gdx.f.a.k:
     com.badlogic.gdx.scenes.scene2d.EventListener listener -> a
     com.badlogic.gdx.scenes.scene2d.Actor listenerActor -> b
     com.badlogic.gdx.scenes.scene2d.Actor target -> c
     int pointer -> d
     int button -> e
-    639:641:void reset() -> b
+    644:646:void reset() -> b
 com.badlogic.gdx.scenes.scene2d.Touchable -> com.badlogic.gdx.f.a.l:
     com.badlogic.gdx.scenes.scene2d.Touchable enabled -> a
     com.badlogic.gdx.scenes.scene2d.Touchable disabled -> b
@@ -6556,32 +6562,32 @@ com.badlogic.gdx.utils.IntMap -> com.badlogic.gdx.utils.n:
     215:282:void push(int,java.lang.Object,int,int,int,int,int,int) -> a
     339:375:java.lang.Object remove(int) -> a
     393:401:void removeStashIndex(int) -> b
-    462:471:boolean containsKey(int) -> c
-    512:536:void resize(int) -> d
-    539:540:int hash2(int) -> e
-    544:545:int hash3(int) -> f
-    549:577:java.lang.String toString() -> toString
-    581:581:java.util.Iterator iterator() -> iterator
+    463:472:boolean containsKey(int) -> c
+    513:537:void resize(int) -> d
+    540:541:int hash2(int) -> e
+    545:546:int hash3(int) -> f
+    550:578:java.lang.String toString() -> toString
+    582:582:java.util.Iterator iterator() -> iterator
 com.badlogic.gdx.utils.IntMap$Entries -> com.badlogic.gdx.utils.o:
     com.badlogic.gdx.utils.IntMap$Entry entry -> f
-    729:730:boolean hasNext() -> hasNext
-    734:734:java.util.Iterator iterator() -> iterator
-    704:704:void remove() -> remove
-    704:704:void reset() -> a
-    704:704:java.lang.Object next() -> next
+    730:731:boolean hasNext() -> hasNext
+    735:735:java.util.Iterator iterator() -> iterator
+    705:705:void remove() -> remove
+    705:705:void reset() -> a
+    705:705:java.lang.Object next() -> next
 com.badlogic.gdx.utils.IntMap$Entry -> com.badlogic.gdx.utils.p:
     int key -> a
     java.lang.Object value -> b
-    646:646:java.lang.String toString() -> toString
+    647:647:java.lang.String toString() -> toString
 com.badlogic.gdx.utils.IntMap$MapIterator -> com.badlogic.gdx.utils.q:
     boolean hasNext -> a
     com.badlogic.gdx.utils.IntMap map -> b
     int nextIndex -> c
     int currentIndex -> d
     boolean valid -> e
-    666:672:void reset() -> a
-    675:680:void findNextIndex() -> b
-    686:701:void remove() -> remove
+    667:673:void reset() -> a
+    676:681:void findNextIndex() -> b
+    687:702:void remove() -> remove
 com.badlogic.gdx.utils.Json -> com.badlogic.gdx.utils.r:
     java.lang.String typeName -> a
     boolean usePrototypes -> b
@@ -6616,24 +6622,24 @@ com.badlogic.gdx.utils.JsonReader -> com.badlogic.gdx.utils.w:
     byte[] _json_single_lengths -> d
     byte[] _json_range_lengths -> e
     short[] _json_index_offsets -> f
-    byte[] _json_trans_targs -> g
-    byte[] _json_trans_actions -> h
-    byte[] _json_eof_actions -> i
-    com.badlogic.gdx.utils.Array elements -> j
-    com.badlogic.gdx.utils.Array lastChild -> k
-    com.badlogic.gdx.utils.JsonValue root -> l
-    com.badlogic.gdx.utils.JsonValue current -> m
+    byte[] _json_indicies -> g
+    byte[] _json_trans_targs -> h
+    byte[] _json_trans_actions -> i
+    byte[] _json_eof_actions -> j
+    com.badlogic.gdx.utils.Array elements -> k
+    com.badlogic.gdx.utils.Array lastChild -> l
+    com.badlogic.gdx.utils.JsonValue root -> m
+    com.badlogic.gdx.utils.JsonValue current -> n
     43:59:com.badlogic.gdx.utils.JsonValue parse(java.io.Reader) -> a
     75:77:com.badlogic.gdx.utils.JsonValue parse(com.badlogic.gdx.files.FileHandle) -> a
-    82:456:com.badlogic.gdx.utils.JsonValue parse$49de28d9(char[],int) -> a
-    531:531:byte[] init__json_trans_actions_0() -> a
-    567:583:void addChild(java.lang.String,com.badlogic.gdx.utils.JsonValue) -> a
-    600:603:void pop() -> b
-    606:607:void string(java.lang.String,java.lang.String) -> a
-    610:611:void number(java.lang.String,double) -> a
-    614:615:void number(java.lang.String,long) -> a
-    618:619:void bool(java.lang.String,boolean) -> a
-    622:662:java.lang.String unescape(java.lang.String) -> a
+    82:480:com.badlogic.gdx.utils.JsonValue parse$49de28d9(char[],int) -> a
+    585:601:void addChild(java.lang.String,com.badlogic.gdx.utils.JsonValue) -> a
+    618:621:void pop() -> a
+    624:625:void string(java.lang.String,java.lang.String) -> a
+    628:629:void number(java.lang.String,double) -> a
+    632:633:void number(java.lang.String,long) -> a
+    636:637:void bool(java.lang.String,boolean) -> a
+    640:680:java.lang.String unescape(java.lang.String) -> a
 com.badlogic.gdx.utils.JsonValue -> com.badlogic.gdx.utils.x:
     com.badlogic.gdx.utils.JsonValue$ValueType type -> f
     java.lang.String stringValue -> g
@@ -6721,13 +6727,13 @@ com.badlogic.gdx.utils.JsonWriter$OutputType -> com.badlogic.gdx.utils.af:
     com.badlogic.gdx.utils.JsonWriter$OutputType javascript -> b
     com.badlogic.gdx.utils.JsonWriter$OutputType minimal -> c
     java.util.regex.Pattern javascriptPattern -> d
-    java.util.regex.Pattern minimalValuePattern -> e
-    java.util.regex.Pattern minimalNamePattern -> f
+    java.util.regex.Pattern minimalNamePattern -> e
+    java.util.regex.Pattern minimalValuePattern -> f
     com.badlogic.gdx.utils.JsonWriter$OutputType[] $VALUES -> g
     156:156:com.badlogic.gdx.utils.JsonWriter$OutputType[] values() -> values
     156:156:com.badlogic.gdx.utils.JsonWriter$OutputType valueOf(java.lang.String) -> valueOf
-    169:173:java.lang.String quoteValue(java.lang.Object) -> a
-    177:186:java.lang.String quoteName(java.lang.String) -> a
+    171:176:java.lang.String quoteValue(java.lang.Object) -> a
+    180:187:java.lang.String quoteName(java.lang.String) -> a
 com.badlogic.gdx.utils.Logger -> com.badlogic.gdx.utils.ag:
     java.lang.String tag -> a
     int level -> b
@@ -6759,32 +6765,32 @@ com.badlogic.gdx.utils.ObjectIntMap -> com.badlogic.gdx.utils.ai:
     193:260:void push(java.lang.Object,int,int,java.lang.Object,int,java.lang.Object,int,java.lang.Object) -> a
     279:288:int get(java.lang.Object,int) -> b
     371:377:void removeStashIndex(int) -> a
-    400:405:void clear() -> a
-    453:477:void resize(int) -> b
-    480:481:int hash2(int) -> c
-    485:486:int hash3(int) -> d
-    490:513:java.lang.String toString() -> toString
-    517:517:java.util.Iterator iterator() -> iterator
+    400:406:void clear() -> a
+    454:478:void resize(int) -> b
+    481:482:int hash2(int) -> c
+    486:487:int hash3(int) -> d
+    491:514:java.lang.String toString() -> toString
+    518:518:java.util.Iterator iterator() -> iterator
 com.badlogic.gdx.utils.ObjectIntMap$Entries -> com.badlogic.gdx.utils.aj:
     com.badlogic.gdx.utils.ObjectIntMap$Entry entry -> f
-    649:650:boolean hasNext() -> hasNext
-    654:654:java.util.Iterator iterator() -> iterator
-    629:629:void remove() -> remove
-    629:629:void reset() -> a
-    629:629:java.lang.Object next() -> next
+    650:651:boolean hasNext() -> hasNext
+    655:655:java.util.Iterator iterator() -> iterator
+    630:630:void remove() -> remove
+    630:630:void reset() -> a
+    630:630:java.lang.Object next() -> next
 com.badlogic.gdx.utils.ObjectIntMap$Entry -> com.badlogic.gdx.utils.ak:
     java.lang.Object key -> a
     int value -> b
-    582:582:java.lang.String toString() -> toString
+    583:583:java.lang.String toString() -> toString
 com.badlogic.gdx.utils.ObjectIntMap$MapIterator -> com.badlogic.gdx.utils.al:
     boolean hasNext -> a
     com.badlogic.gdx.utils.ObjectIntMap map -> b
     int nextIndex -> c
     int currentIndex -> d
     boolean valid -> e
-    599:602:void reset() -> a
-    605:610:void findNextIndex() -> b
-    616:626:void remove() -> remove
+    600:603:void reset() -> a
+    606:611:void findNextIndex() -> b
+    617:627:void remove() -> remove
 com.badlogic.gdx.utils.ObjectMap -> com.badlogic.gdx.utils.am:
     int size -> a
     java.lang.Object[] keyTable -> b
@@ -6809,49 +6815,49 @@ com.badlogic.gdx.utils.ObjectMap -> com.badlogic.gdx.utils.am:
     289:298:java.lang.Object get(java.lang.Object) -> a
     330:358:java.lang.Object remove(java.lang.Object) -> b
     376:384:void removeStashIndex(int) -> a
-    407:415:void clear() -> a
-    438:447:boolean containsKey(java.lang.Object) -> c
-    485:509:void resize(int) -> b
-    512:513:int hash2(int) -> c
-    517:518:int hash3(int) -> d
-    526:526:java.lang.String toString() -> toString
-    557:557:java.util.Iterator iterator() -> iterator
-    563:576:com.badlogic.gdx.utils.ObjectMap$Entries entries() -> b
-    582:595:com.badlogic.gdx.utils.ObjectMap$Values values() -> c
-    601:614:com.badlogic.gdx.utils.ObjectMap$Keys keys() -> d
+    407:416:void clear() -> a
+    439:448:boolean containsKey(java.lang.Object) -> c
+    486:510:void resize(int) -> b
+    513:514:int hash2(int) -> c
+    518:519:int hash3(int) -> d
+    527:527:java.lang.String toString() -> toString
+    558:558:java.util.Iterator iterator() -> iterator
+    564:577:com.badlogic.gdx.utils.ObjectMap$Entries entries() -> b
+    583:596:com.badlogic.gdx.utils.ObjectMap$Values values() -> c
+    602:615:com.badlogic.gdx.utils.ObjectMap$Keys keys() -> d
 com.badlogic.gdx.utils.ObjectMap$Entries -> com.badlogic.gdx.utils.an:
     com.badlogic.gdx.utils.ObjectMap$Entry entry -> a
-    690:691:boolean hasNext() -> hasNext
-    695:695:java.util.Iterator iterator() -> iterator
-    670:670:void remove() -> remove
-    670:670:void reset() -> a
-    670:670:java.lang.Object next() -> next
+    691:692:boolean hasNext() -> hasNext
+    696:696:java.util.Iterator iterator() -> iterator
+    671:671:void remove() -> remove
+    671:671:void reset() -> a
+    671:671:java.lang.Object next() -> next
 com.badlogic.gdx.utils.ObjectMap$Entry -> com.badlogic.gdx.utils.ao:
     java.lang.Object key -> a
     java.lang.Object value -> b
-    622:622:java.lang.String toString() -> toString
+    623:623:java.lang.String toString() -> toString
 com.badlogic.gdx.utils.ObjectMap$Keys -> com.badlogic.gdx.utils.ap:
-    743:744:boolean hasNext() -> hasNext
-    748:753:java.lang.Object next() -> next
-    757:757:java.util.Iterator iterator() -> iterator
-    762:765:com.badlogic.gdx.utils.Array toArray() -> b
-    737:737:void remove() -> remove
-    737:737:void reset() -> a
+    744:745:boolean hasNext() -> hasNext
+    749:754:java.lang.Object next() -> next
+    758:758:java.util.Iterator iterator() -> iterator
+    763:766:com.badlogic.gdx.utils.Array toArray() -> b
+    738:738:void remove() -> remove
+    738:738:void reset() -> a
 com.badlogic.gdx.utils.ObjectMap$MapIterator -> com.badlogic.gdx.utils.aq:
     boolean hasNext -> b
     com.badlogic.gdx.utils.ObjectMap map -> c
     int nextIndex -> d
     int currentIndex -> e
     boolean valid -> f
-    639:642:void reset() -> a
-    645:650:void advance() -> c
-    656:667:void remove() -> remove
+    640:643:void reset() -> a
+    646:651:void advance() -> c
+    657:668:void remove() -> remove
 com.badlogic.gdx.utils.ObjectMap$Values -> com.badlogic.gdx.utils.ar:
-    705:706:boolean hasNext() -> hasNext
-    710:715:java.lang.Object next() -> next
-    719:719:java.util.Iterator iterator() -> iterator
-    699:699:void remove() -> remove
-    699:699:void reset() -> a
+    706:707:boolean hasNext() -> hasNext
+    711:716:java.lang.Object next() -> next
+    720:720:java.util.Iterator iterator() -> iterator
+    700:700:void remove() -> remove
+    700:700:void reset() -> a
 com.badlogic.gdx.utils.ObjectSet -> com.badlogic.gdx.utils.as:
     int size -> a
     java.lang.Object[] keyTable -> b
@@ -6867,13 +6873,13 @@ com.badlogic.gdx.utils.ObjectSet -> com.badlogic.gdx.utils.as:
     com.badlogic.gdx.utils.ObjectSet$SetIterator iterator2 -> l
     89:130:boolean add(java.lang.Object) -> a
     191:246:void push(java.lang.Object,int,java.lang.Object,int,java.lang.Object,int,java.lang.Object) -> a
-    329:334:void clear() -> a
-    337:346:boolean contains(java.lang.Object) -> b
-    371:393:void resize(int) -> a
-    396:397:int hash2(int) -> b
-    401:402:int hash3(int) -> c
-    406:406:java.lang.String toString() -> toString
-    410:426:java.lang.String toString(java.lang.String) -> a
+    329:335:void clear() -> a
+    338:347:boolean contains(java.lang.Object) -> b
+    372:394:void resize(int) -> a
+    397:398:int hash2(int) -> b
+    402:403:int hash3(int) -> c
+    407:407:java.lang.String toString() -> toString
+    411:427:java.lang.String toString(java.lang.String) -> a
     31:31:java.util.Iterator iterator() -> iterator
 com.badlogic.gdx.utils.ObjectSet$SetIterator -> com.badlogic.gdx.utils.at:
     boolean hasNext -> a
@@ -6881,12 +6887,12 @@ com.badlogic.gdx.utils.ObjectSet$SetIterator -> com.badlogic.gdx.utils.at:
     int nextIndex -> c
     int currentIndex -> d
     boolean valid -> e
-    467:470:void reset() -> a
-    473:478:void findNextIndex() -> b
-    484:494:void remove() -> remove
-    497:498:boolean hasNext() -> hasNext
-    502:507:java.lang.Object next() -> next
-    511:511:java.util.Iterator iterator() -> iterator
+    468:471:void reset() -> a
+    474:479:void findNextIndex() -> b
+    485:495:void remove() -> remove
+    498:499:boolean hasNext() -> hasNext
+    503:508:java.lang.Object next() -> next
+    512:512:java.util.Iterator iterator() -> iterator
 com.badlogic.gdx.utils.Pool -> com.badlogic.gdx.utils.au:
     int max -> max
     int peak -> peak
@@ -20396,33 +20402,33 @@ com.railwaygames.solarsmash.AndroidInAppBillingAction$4 -> com.railwaygames.sola
 com.railwaygames.solarsmash.AndroidSocialAction -> com.railwaygames.solarsmash.ar:
     com.railwaygames.solarsmash.MainActivity activity -> a
     com.railwaygames.solarsmash.social.Authorizer authorizer -> b
-    25:26:void onActivityResult(int) -> a
-    30:37:void getToken(com.railwaygames.solarsmash.http.AuthenticationListener) -> a
-    49:54:void setupAuthorizer(java.lang.String) -> a
-    58:64:void getFriends(com.railwaygames.solarsmash.http.FriendsListener,java.lang.String) -> a
-    68:74:void signIn(com.railwaygames.solarsmash.http.AuthenticationListener,java.lang.String) -> a
-    78:84:void postToFriends(com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String,java.lang.String) -> a
+    25:27:void onActivityResult(int) -> a
+    31:38:void getToken(com.railwaygames.solarsmash.http.AuthenticationListener) -> a
+    41:47:void setupAuthorizer() -> a
+    50:55:void setupAuthorizer(java.lang.String) -> a
+    59:65:void getFriends(com.railwaygames.solarsmash.http.FriendsListener,java.lang.String) -> a
+    69:75:void signIn(com.railwaygames.solarsmash.http.AuthenticationListener,java.lang.String) -> a
+    79:85:void postToFriends(com.railwaygames.solarsmash.http.FriendPostListener,java.lang.String,java.lang.String) -> a
     17:17:com.railwaygames.solarsmash.social.Authorizer access$0(com.railwaygames.solarsmash.AndroidSocialAction) -> a
 com.railwaygames.solarsmash.AndroidSocialAction$1 -> com.railwaygames.solarsmash.as:
     com.railwaygames.solarsmash.AndroidSocialAction this$0 -> a
     com.railwaygames.solarsmash.http.FriendsListener val$listener -> b
-    61:62:void run() -> run
+    62:63:void run() -> run
 com.railwaygames.solarsmash.AndroidSocialAction$2 -> com.railwaygames.solarsmash.at:
     com.railwaygames.solarsmash.AndroidSocialAction this$0 -> a
     com.railwaygames.solarsmash.http.AuthenticationListener val$listener -> b
-    71:72:void run() -> run
+    72:73:void run() -> run
 com.railwaygames.solarsmash.AndroidSocialAction$3 -> com.railwaygames.solarsmash.au:
     com.railwaygames.solarsmash.AndroidSocialAction this$0 -> a
     com.railwaygames.solarsmash.http.FriendPostListener val$listener -> b
     java.lang.String val$id -> c
-    81:82:void run() -> run
+    82:83:void run() -> run
 com.railwaygames.solarsmash.Autostart -> com.railwaygames.solarsmash.Autostart:
     13:15:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.railwaygames.solarsmash.Config -> com.railwaygames.solarsmash.av:
     java.util.Map LOCALHOST_VALUES -> a
     java.util.Map DEV_VALUES -> b
-    java.util.Map IOS_DEV_VALUES -> c
-    java.util.Map PROD_VALUES -> d
+    java.util.Map PROD_VALUES -> c
     java.lang.String getValue(java.lang.String) -> a
 com.railwaygames.solarsmash.Config$1 -> com.railwaygames.solarsmash.aw:
     com.railwaygames.solarsmash.Config this$0 -> a
@@ -20430,68 +20436,66 @@ com.railwaygames.solarsmash.Config$2 -> com.railwaygames.solarsmash.ax:
     com.railwaygames.solarsmash.Config this$0 -> a
 com.railwaygames.solarsmash.Config$3 -> com.railwaygames.solarsmash.ay:
     com.railwaygames.solarsmash.Config this$0 -> a
-com.railwaygames.solarsmash.Config$4 -> com.railwaygames.solarsmash.az:
-    com.railwaygames.solarsmash.Config this$0 -> a
-com.railwaygames.solarsmash.Connection -> com.railwaygames.solarsmash.ba:
+com.railwaygames.solarsmash.Connection -> com.railwaygames.solarsmash.az:
     31:44:java.net.HttpURLConnection establishGetConnection(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.Map) -> a
     68:104:com.railwaygames.solarsmash.model.base.JsonConvertible doRequest(android.net.ConnectivityManager,java.net.HttpURLConnection,com.railwaygames.solarsmash.model.base.JsonConvertible) -> a
-com.railwaygames.solarsmash.Constants -> com.railwaygames.solarsmash.bb:
+com.railwaygames.solarsmash.Constants -> com.railwaygames.solarsmash.ba:
     java.text.SimpleDateFormat timeRemainingFormat -> a
     java.util.Map PLANET_ABILITIES -> b
     java.util.List gameTypes -> c
-com.railwaygames.solarsmash.Constants$1 -> com.railwaygames.solarsmash.bc:
-com.railwaygames.solarsmash.Constants$2 -> com.railwaygames.solarsmash.bd:
-com.railwaygames.solarsmash.Constants$Colors -> com.railwaygames.solarsmash.be:
+com.railwaygames.solarsmash.Constants$1 -> com.railwaygames.solarsmash.bb:
+com.railwaygames.solarsmash.Constants$2 -> com.railwaygames.solarsmash.bc:
+com.railwaygames.solarsmash.Constants$Colors -> com.railwaygames.solarsmash.bd:
     com.badlogic.gdx.graphics.Color USER_SHIP_FILL -> a
     com.badlogic.gdx.graphics.Color ENEMY_SHIP_FILL -> b
     com.badlogic.gdx.graphics.Color NEUTRAL -> c
     com.badlogic.gdx.graphics.Color OVERLAY_RED -> d
-com.railwaygames.solarsmash.ExternalActionWrapper -> com.railwaygames.solarsmash.bf:
+com.railwaygames.solarsmash.ExternalActionWrapper -> com.railwaygames.solarsmash.be:
     com.railwaygames.solarsmash.http.GameAction gameAction -> a
     com.railwaygames.solarsmash.http.InAppBillingAction inAppBillingAction -> b
     26:28:void setActions(com.railwaygames.solarsmash.http.GameAction,com.railwaygames.solarsmash.http.InAppBillingAction) -> a
     31:32:void showAd() -> a
     35:70:void purchaseCoins(com.railwaygames.solarsmash.model.InventoryItem,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
+    95:129:void addCoinsAndConsumeOrder(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
     132:144:void loadInventory(com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
     19:19:com.railwaygames.solarsmash.http.InAppBillingAction access$0() -> b
     72:72:void access$1(com.railwaygames.solarsmash.model.InventoryItem,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> b
-    94:94:void access$2(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
-    18:18:com.railwaygames.solarsmash.http.GameAction access$3() -> c
-com.railwaygames.solarsmash.ExternalActionWrapper$1 -> com.railwaygames.solarsmash.bg:
+    18:18:com.railwaygames.solarsmash.http.GameAction access$2() -> c
+com.railwaygames.solarsmash.ExternalActionWrapper$1 -> com.railwaygames.solarsmash.bf:
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> a
     com.railwaygames.solarsmash.model.InventoryItem val$inventoryItem -> b
     67:68:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.ExternalActionWrapper$1$1 -> com.railwaygames.solarsmash.bh:
+com.railwaygames.solarsmash.ExternalActionWrapper$1$1 -> com.railwaygames.solarsmash.bg:
     com.railwaygames.solarsmash.ExternalActionWrapper$1 this$1 -> a
     com.railwaygames.solarsmash.model.InventoryItem val$inventoryItem -> b
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> c
     60:61:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.ExternalActionWrapper$2 -> com.railwaygames.solarsmash.bi:
+com.railwaygames.solarsmash.ExternalActionWrapper$2 -> com.railwaygames.solarsmash.bh:
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> a
     89:90:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.ExternalActionWrapper$3 -> com.railwaygames.solarsmash.bj:
+com.railwaygames.solarsmash.ExternalActionWrapper$3 -> com.railwaygames.solarsmash.bi:
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> a
     126:127:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.ExternalActionWrapper$3$1 -> com.railwaygames.solarsmash.bk:
+com.railwaygames.solarsmash.ExternalActionWrapper$3$1 -> com.railwaygames.solarsmash.bj:
     com.railwaygames.solarsmash.ExternalActionWrapper$3 this$1 -> a
     com.railwaygames.solarsmash.model.Player val$player -> b
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> c
     103:114:void onSuccess(java.lang.String) -> a
     118:120:void onFailure(java.lang.String) -> b
-com.railwaygames.solarsmash.ExternalActionWrapper$3$1$1 -> com.railwaygames.solarsmash.bl:
+com.railwaygames.solarsmash.ExternalActionWrapper$3$1$1 -> com.railwaygames.solarsmash.bk:
     com.railwaygames.solarsmash.ExternalActionWrapper$3$1 this$2 -> a
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> b
     111:112:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.ExternalActionWrapper$4 -> com.railwaygames.solarsmash.bm:
+com.railwaygames.solarsmash.ExternalActionWrapper$4 -> com.railwaygames.solarsmash.bl:
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> a
     141:142:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-com.railwaygames.solarsmash.Fonts -> com.railwaygames.solarsmash.bn:
+com.railwaygames.solarsmash.Fonts -> com.railwaygames.solarsmash.bm:
     com.railwaygames.solarsmash.Fonts instance -> a
     com.badlogic.gdx.graphics.g2d.BitmapFont xSmallFont -> b
     com.badlogic.gdx.graphics.g2d.BitmapFont smallFont -> c
@@ -20505,7 +20509,7 @@ com.railwaygames.solarsmash.Fonts -> com.railwaygames.solarsmash.bn:
     71:71:com.badlogic.gdx.graphics.g2d.BitmapFont mediumFont() -> e
     75:75:com.badlogic.gdx.graphics.g2d.BitmapFont largeFont() -> f
     79:79:com.badlogic.gdx.graphics.g2d.BitmapFont xLargeFont() -> g
-com.railwaygames.solarsmash.GameLoop -> com.railwaygames.solarsmash.bo:
+com.railwaygames.solarsmash.GameLoop -> com.railwaygames.solarsmash.bn:
     com.railwaygames.solarsmash.model.Player USER -> a
     com.railwaygames.solarsmash.config.Configuration CONFIG -> b
     com.badlogic.gdx.graphics.GL20 gl -> f
@@ -20525,7 +20529,7 @@ com.railwaygames.solarsmash.GameLoop -> com.railwaygames.solarsmash.bo:
     133:135:void reset() -> g
     139:188:void render() -> b
     191:193:void openBoardScreen() -> h
-com.railwaygames.solarsmash.GameLoop$1 -> com.railwaygames.solarsmash.bp:
+com.railwaygames.solarsmash.GameLoop$1 -> com.railwaygames.solarsmash.bo:
     com.railwaygames.solarsmash.GameLoop this$0 -> a
     com.badlogic.gdx.Screen val$screen -> b
     80:81:void run() -> run
@@ -20545,49 +20549,51 @@ com.railwaygames.solarsmash.MainActivity -> com.railwaygames.solarsmash.MainActi
     151:154:void onResume() -> onResume
     157:159:void displayAd() -> a
     162:192:void purchaseCoins(com.railwaygames.solarsmash.model.InventoryItem,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
-    195:249:void loadStoreInventory(com.railwaygames.solarsmash.model.Inventory,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
-    252:281:void consumeOrders(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
-    284:293:java.util.List convertOrdersToPurchase(java.util.List) -> a
-    298:299:void onStart() -> onStart
-    303:304:void onStop() -> onStop
-    308:319:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
-    323:326:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-    328:328:com.railwaygames.solarsmash.model.Order access$0$1c235801(com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
-com.railwaygames.solarsmash.MainActivity$1 -> com.railwaygames.solarsmash.bq:
+    195:253:void loadStoreInventory(com.railwaygames.solarsmash.model.Inventory,com.railwaygames.solarsmash.http.UIConnectionResultCallback) -> a
+    256:285:void consumeOrders(java.util.List,com.railwaygames.solarsmash.http.InAppBillingAction$Callback) -> a
+    288:297:java.util.List convertOrdersToPurchase(java.util.List) -> a
+    302:303:void onStart() -> onStart
+    307:308:void onStop() -> onStop
+    312:323:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    327:330:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    332:332:com.railwaygames.solarsmash.model.Order access$0$1c235801(com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
+com.railwaygames.solarsmash.MainActivity$1 -> com.railwaygames.solarsmash.bp:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> b
     119:130:void onIabSetupFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult) -> a
-com.railwaygames.solarsmash.MainActivity$2 -> com.railwaygames.solarsmash.br:
+com.railwaygames.solarsmash.MainActivity$2 -> com.railwaygames.solarsmash.bq:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.model.InventoryItem val$inventoryItem -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
     167:168:void onSuccess(java.lang.String) -> a
     172:173:void onFailure(java.lang.String) -> b
-com.railwaygames.solarsmash.MainActivity$3 -> com.railwaygames.solarsmash.bs:
+com.railwaygames.solarsmash.MainActivity$3 -> com.railwaygames.solarsmash.br:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     180:189:void onIabPurchaseFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Purchase) -> a
-com.railwaygames.solarsmash.MainActivity$4 -> com.railwaygames.solarsmash.bt:
+com.railwaygames.solarsmash.MainActivity$4 -> com.railwaygames.solarsmash.bs:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.model.Inventory val$inventoryResult -> b
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> c
     201:202:void onSuccess(java.lang.String) -> a
     206:207:void onFailure(java.lang.String) -> b
-com.railwaygames.solarsmash.MainActivity$5 -> com.railwaygames.solarsmash.bu:
+com.railwaygames.solarsmash.MainActivity$5 -> com.railwaygames.solarsmash.bt:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.UIConnectionResultCallback val$callback -> b
     com.railwaygames.solarsmash.model.Inventory val$inventoryResult -> c
-    216:243:void onQueryInventoryFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Inventory) -> a
+    216:247:void onQueryInventoryFinished(com.railwaygames.solarsmash.inappbilling.util.IabResult,com.railwaygames.solarsmash.inappbilling.util.Inventory) -> a
+com.railwaygames.solarsmash.MainActivity$5$1 -> com.railwaygames.solarsmash.bu:
+    com.railwaygames.solarsmash.MainActivity$5 this$1 -> a
 com.railwaygames.solarsmash.MainActivity$6 -> com.railwaygames.solarsmash.bv:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     java.util.List val$consumedOrders -> b
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> c
-    259:260:void onSuccess(java.lang.String) -> a
-    264:265:void onFailure(java.lang.String) -> b
+    263:264:void onSuccess(java.lang.String) -> a
+    268:269:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.MainActivity$7 -> com.railwaygames.solarsmash.bw:
     com.railwaygames.solarsmash.MainActivity this$0 -> a
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback val$callback -> b
-    271:278:void onConsumeMultiFinished$4e6360a9(java.util.List) -> a
+    275:282:void onConsumeMultiFinished$4e6360a9(java.util.List) -> a
 com.railwaygames.solarsmash.PartialScreenFeedback -> com.railwaygames.solarsmash.bx:
     void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
     void resize(int,int) -> a
@@ -20869,10 +20875,10 @@ com.railwaygames.solarsmash.math.GalConMath -> com.railwaygames.solarsmash.d.a:
 com.railwaygames.solarsmash.model.Auth -> com.railwaygames.solarsmash.e.a:
     java.util.Map auth -> a
     java.lang.String defaultAuth -> b
-    19:23:void doConsume(org.json.JSONObject) -> a
-    26:33:void putSocialProvider(org.json.JSONObject,java.lang.String) -> b
-    37:37:java.lang.String getID(java.lang.String) -> a
-    41:41:boolean hasAuth(java.lang.String) -> b
+    19:22:void doConsume(org.json.JSONObject) -> a
+    25:32:void putSocialProvider(org.json.JSONObject,java.lang.String) -> b
+    35:35:java.lang.String getID(java.lang.String) -> a
+    39:39:boolean hasAuth(java.lang.String) -> b
 com.railwaygames.solarsmash.model.AvailableGames -> com.railwaygames.solarsmash.e.b:
     java.util.List allGames -> a
     18:36:void doConsume(org.json.JSONObject) -> a
@@ -20970,8 +20976,8 @@ com.railwaygames.solarsmash.model.InventoryItem -> com.railwaygames.solarsmash.e
     java.lang.String price -> b
     java.lang.String name -> c
     int numCoins -> d
-    com.railwaygames.solarsmash.model.Order unfulfilledOrder -> e
-    33:35:void doConsume(org.json.JSONObject) -> a
+    java.util.List unfulfilledOrder -> e
+    35:37:void doConsume(org.json.JSONObject) -> a
 com.railwaygames.solarsmash.model.Map -> com.railwaygames.solarsmash.e.s:
     int key -> a
     int availableFromXp -> b
@@ -21029,8 +21035,9 @@ com.railwaygames.solarsmash.model.Order -> com.railwaygames.solarsmash.e.x:
     java.lang.String purchaseState -> e
     java.lang.String developerPayload -> f
     java.lang.String token -> g
-    24:30:void doConsume(org.json.JSONObject) -> a
-    34:43:org.json.JSONObject asJson() -> a
+    java.lang.String platform -> h
+    25:31:void doConsume(org.json.JSONObject) -> a
+    35:45:org.json.JSONObject asJson() -> a
 com.railwaygames.solarsmash.model.People -> com.railwaygames.solarsmash.e.y:
     java.util.List people -> a
     20:33:void doConsume(org.json.JSONObject) -> a
@@ -21378,9 +21385,9 @@ com.railwaygames.solarsmash.screen.FriendScreen -> com.railwaygames.solarsmash.f
     522:524:void populateSearchLabelGroup(com.badlogic.gdx.scenes.scene2d.Actor) -> a
     527:548:void showFriends() -> g
     578:584:void clearActiveTab(java.lang.String,int) -> a
-    587:632:void loadFriends$4cb9f3c2(java.lang.String) -> b
-    635:670:void findFriendsByProvider(java.lang.String) -> c
-    690:690:void refresh() -> c
+    587:635:void loadFriends$4cb9f3c2(java.lang.String) -> b
+    638:673:void findFriendsByProvider(java.lang.String) -> c
+    693:693:void refresh() -> c
     73:73:void access$0(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.Long) -> a
     577:577:void access$1$6ca23ee3(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> a
     526:526:void access$2(com.railwaygames.solarsmash.screen.FriendScreen) -> a
@@ -21403,9 +21410,9 @@ com.railwaygames.solarsmash.screen.FriendScreen -> com.railwaygames.solarsmash.f
     80:80:com.railwaygames.solarsmash.http.SocialAction access$19(com.railwaygames.solarsmash.screen.FriendScreen) -> l
     74:74:java.lang.String access$20(com.railwaygames.solarsmash.screen.FriendScreen) -> m
     58:58:com.badlogic.gdx.scenes.scene2d.Stage access$21(com.railwaygames.solarsmash.screen.FriendScreen) -> n
-    672:672:void access$22(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> d
+    675:675:void access$22(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> d
     81:81:com.railwaygames.solarsmash.http.GameAction access$23(com.railwaygames.solarsmash.screen.FriendScreen) -> o
-    634:634:void access$24(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> e
+    637:637:void access$24(com.railwaygames.solarsmash.screen.FriendScreen,java.lang.String) -> e
     71:71:void access$26(com.railwaygames.solarsmash.screen.FriendScreen,java.util.List) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$1 -> com.railwaygames.solarsmash.f.aj:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
@@ -21418,25 +21425,25 @@ com.railwaygames.solarsmash.screen.FriendScreen$10 -> com.railwaygames.solarsmas
 com.railwaygames.solarsmash.screen.FriendScreen$11 -> com.railwaygames.solarsmash.f.al:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
     java.lang.String val$authProvider -> b
-    602:607:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
-    626:627:void onSignInFailed(java.lang.String) -> b_
+    604:610:void onSignInSucceeded(java.lang.String,java.lang.String) -> a
+    629:630:void onSignInFailed(java.lang.String) -> b_
 com.railwaygames.solarsmash.screen.FriendScreen$11$1 -> com.railwaygames.solarsmash.f.am:
     com.railwaygames.solarsmash.screen.FriendScreen$11 this$1 -> a
     java.lang.String val$authProvider -> b
-    619:620:void onConnectionError(java.lang.String) -> a
+    622:623:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$12 -> com.railwaygames.solarsmash.f.an:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
     java.lang.String val$authProvider -> b
     java.lang.Long val$time -> c
-    642:661:void onFriendsLoadedSuccess(java.util.List,java.lang.String) -> a
-    665:668:void onFriendsLoadedFail$552c4e01() -> a
+    645:664:void onFriendsLoadedSuccess(java.util.List,java.lang.String) -> a
+    668:671:void onFriendsLoadedFail$552c4e01() -> a
 com.railwaygames.solarsmash.screen.FriendScreen$12$1 -> com.railwaygames.solarsmash.f.ao:
     com.railwaygames.solarsmash.screen.FriendScreen$12 this$1 -> a
     java.util.List val$friends -> b
     java.lang.String val$authProvider -> c
     java.lang.Long val$time -> d
-    653:657:void onConnectionError(java.lang.String) -> a
+    656:660:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.FriendScreen$2 -> com.railwaygames.solarsmash.f.ap:
     com.railwaygames.solarsmash.screen.FriendScreen this$0 -> a
@@ -22435,7 +22442,7 @@ com.railwaygames.solarsmash.screen.signin.LoadingScreen -> com.railwaygames.sola
     java.util.List ordersToConsume -> g
     com.railwaygames.solarsmash.http.UIConnectionResultCallback configCallback -> h
     com.railwaygames.solarsmash.http.InAppBillingAction$Callback setupCallback -> i
-    com.railwaygames.solarsmash.http.UIConnectionResultCallback playerCallback -> j
+    com.railwaygames.solarsmash.http.InAppBillingAction$Callback callback -> j
     51:56:void resize(int,int) -> a
     60:68:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
     128:128:void hide() -> a
@@ -22443,7 +22450,8 @@ com.railwaygames.solarsmash.screen.signin.LoadingScreen -> com.railwaygames.sola
     138:138:java.lang.Object getRenderResult() -> b
     143:144:void resetState() -> c
     148:148:boolean hideTitleArea() -> d
-    224:224:boolean canRefresh() -> e
+    191:194:void doneLoad() -> f
+    225:225:boolean canRefresh() -> e
     35:35:com.railwaygames.solarsmash.http.InAppBillingAction access$0(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> a
     90:90:com.railwaygames.solarsmash.http.InAppBillingAction$Callback access$1(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> b
     39:39:com.railwaygames.solarsmash.screen.Resources access$2(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> c
@@ -22453,9 +22461,9 @@ com.railwaygames.solarsmash.screen.signin.LoadingScreen -> com.railwaygames.sola
     151:151:void access$6(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> g
     32:32:com.railwaygames.solarsmash.screen.widget.WaitImageButton access$7(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> h
     190:190:void access$8(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> i
-    209:209:void access$9(com.railwaygames.solarsmash.screen.signin.LoadingScreen,java.lang.String) -> a
+    207:207:void access$9(com.railwaygames.solarsmash.screen.signin.LoadingScreen,java.lang.String) -> a
     41:41:void access$10(com.railwaygames.solarsmash.screen.signin.LoadingScreen,java.util.List) -> a
-    196:196:com.railwaygames.solarsmash.http.UIConnectionResultCallback access$11(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> j
+    196:196:com.railwaygames.solarsmash.http.InAppBillingAction$Callback access$11(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> j
     41:41:java.util.List access$12(com.railwaygames.solarsmash.screen.signin.LoadingScreen) -> k
 com.railwaygames.solarsmash.screen.signin.LoadingScreen$1 -> com.railwaygames.solarsmash.f.f.g:
     com.railwaygames.solarsmash.screen.signin.LoadingScreen this$0 -> a
@@ -22476,8 +22484,8 @@ com.railwaygames.solarsmash.screen.signin.LoadingScreen$2$2 -> com.railwaygames.
     116:117:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.signin.LoadingScreen$3 -> com.railwaygames.solarsmash.f.f.l:
     com.railwaygames.solarsmash.screen.signin.LoadingScreen this$0 -> a
-    205:206:void onConnectionError(java.lang.String) -> a
-    1:1:void onConnectionResult(java.lang.Object) -> a
+    199:200:void onSuccess(java.lang.String) -> a
+    203:204:void onFailure(java.lang.String) -> b
 com.railwaygames.solarsmash.screen.signin.LoadingScreen$4 -> com.railwaygames.solarsmash.f.f.m:
     com.railwaygames.solarsmash.screen.signin.LoadingScreen this$0 -> a
     185:186:void onConnectionError(java.lang.String) -> a
@@ -22488,7 +22496,7 @@ com.railwaygames.solarsmash.screen.signin.LoadingScreen$4$1 -> com.railwaygames.
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.signin.LoadingScreen$5 -> com.railwaygames.solarsmash.f.f.o:
     com.railwaygames.solarsmash.screen.signin.LoadingScreen this$0 -> a
-    215:216:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    214:215:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen -> com.railwaygames.solarsmash.f.f.p:
     java.lang.String returnValue -> c
     com.railwaygames.solarsmash.http.GameAction gameAction -> d
@@ -22502,70 +22510,73 @@ com.railwaygames.solarsmash.screen.signin.MainMenuScreen -> com.railwaygames.sol
     com.railwaygames.solarsmash.screen.widget.ShaderLabel coinText -> l
     com.railwaygames.solarsmash.screen.widget.WaitImageButton waitImage -> a
     com.railwaygames.solarsmash.screen.widget.XpProgressBar xpBar -> m
+    com.railwaygames.solarsmash.screen.overlay.Overlay errorOverlay -> n
     boolean hideTitleArea -> b
-    225:228:void render(float) -> a
-    231:231:java.lang.String createCoinDisplay() -> f
-    236:241:void resize(int,int) -> a
-    245:253:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
-    256:316:void loadUser() -> g
-    320:327:void hide() -> a
-    331:332:void resetState() -> c
-    336:336:java.lang.Object getRenderResult() -> b
-    341:341:boolean hideTitleArea() -> d
-    346:346:boolean canRefresh() -> e
-    179:179:boolean access$0$7877b306(com.railwaygames.solarsmash.model.GameCount) -> a
+    227:230:void render(float) -> a
+    233:233:java.lang.String createCoinDisplay() -> f
+    238:243:void resize(int,int) -> a
+    247:255:void show(com.badlogic.gdx.scenes.scene2d.Stage) -> a
+    258:324:void loadUser() -> g
+    328:335:void hide() -> a
+    339:340:void resetState() -> c
+    344:344:java.lang.Object getRenderResult() -> b
+    349:349:boolean hideTitleArea() -> d
+    354:354:boolean canRefresh() -> e
+    181:181:boolean access$0$7877b306(com.railwaygames.solarsmash.model.GameCount) -> a
     45:45:com.railwaygames.solarsmash.screen.Resources access$1(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> a
     41:41:com.badlogic.gdx.scenes.scene2d.Stage access$2(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> b
-    214:214:void access$3(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,java.lang.String) -> a
+    216:216:void access$3(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,java.lang.String) -> a
     39:39:void access$4(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,java.lang.String) -> b
-    40:40:com.railwaygames.solarsmash.http.GameAction access$5(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> c
-    63:63:void access$6(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,com.railwaygames.solarsmash.model.GameCount) -> a
-    255:255:void access$7(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> d
+    55:55:com.railwaygames.solarsmash.screen.overlay.Overlay access$5(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> c
+    40:40:com.railwaygames.solarsmash.http.GameAction access$6(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> d
+    65:65:void access$7(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,com.railwaygames.solarsmash.model.GameCount) -> a
+    257:257:void access$8(com.railwaygames.solarsmash.screen.signin.MainMenuScreen) -> e
+    55:55:void access$9(com.railwaygames.solarsmash.screen.signin.MainMenuScreen,com.railwaygames.solarsmash.screen.overlay.Overlay) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$1 -> com.railwaygames.solarsmash.f.f.q:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
     com.railwaygames.solarsmash.model.GameCount val$gameCount -> b
     java.lang.String val$noFreeSlots -> c
-    83:83:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    88:94:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    85:85:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    90:96:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$2 -> com.railwaygames.solarsmash.f.f.r:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
-    109:109:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    114:115:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    111:111:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    116:117:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$3 -> com.railwaygames.solarsmash.f.f.s:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
     com.railwaygames.solarsmash.model.GameCount val$gameCount -> b
     java.lang.String val$noFreeSlots -> c
-    129:129:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    134:140:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    131:131:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    136:142:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$4 -> com.railwaygames.solarsmash.f.f.t:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
-    152:152:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
-    157:158:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
+    154:154:boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> a
+    159:160:void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent,float,float,int,int) -> b
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$5 -> com.railwaygames.solarsmash.f.f.u:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
     java.lang.String val$retVal -> b
-    218:219:void run() -> run
+    220:221:void run() -> run
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6 -> com.railwaygames.solarsmash.f.f.v:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen this$0 -> a
-    284:302:void finishLoadingUser() -> a
-    306:314:void onConnectionError(java.lang.String) -> a
+    289:307:void finishLoadingUser() -> a
+    311:322:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
-    282:282:void access$1(com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6) -> a
+    287:287:void access$1(com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6$1 -> com.railwaygames.solarsmash.f.f.w:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6 this$1 -> a
     com.railwaygames.solarsmash.model.Player val$result -> c
     com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay val$levelUp -> d
-    269:273:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    274:278:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6$2 -> com.railwaygames.solarsmash.f.f.x:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6 this$1 -> a
-    292:300:void onConnectionError(java.lang.String) -> a
+    297:305:void onConnectionError(java.lang.String) -> a
     1:1:void onConnectionResult(java.lang.Object) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6$2$1 -> com.railwaygames.solarsmash.f.f.y:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6$2 this$2 -> a
-    296:297:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    301:302:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6$3 -> com.railwaygames.solarsmash.f.f.z:
     com.railwaygames.solarsmash.screen.signin.MainMenuScreen$6 this$1 -> a
-    310:311:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
+    318:319:void clicked$43069389(com.badlogic.gdx.scenes.scene2d.InputEvent) -> a
 com.railwaygames.solarsmash.screen.signin.SignInScreen -> com.railwaygames.solarsmash.f.f.aa:
     com.railwaygames.solarsmash.http.SocialAction socialAction -> a
     com.railwaygames.solarsmash.http.GameAction gameAction -> b
@@ -22902,19 +22913,20 @@ com.railwaygames.solarsmash.service.PingService -> com.railwaygames.solarsmash.s
     android.os.Looper mServiceLooper -> a
     com.railwaygames.solarsmash.service.PingService$ServiceHandler mServiceHandler -> b
     com.railwaygames.solarsmash.Config config -> c
-    171:176:void onCreate() -> onCreate
-    180:186:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
-    190:196:void post(int) -> a
-    200:200:android.os.IBinder onBind(android.content.Intent) -> onBind
-    48:48:com.railwaygames.solarsmash.Config access$0(com.railwaygames.solarsmash.service.PingService) -> a
+    181:186:void onCreate() -> onCreate
+    190:196:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    200:206:void post(int) -> a
+    210:210:android.os.IBinder onBind(android.content.Intent) -> onBind
+    51:51:com.railwaygames.solarsmash.Config access$0(com.railwaygames.solarsmash.service.PingService) -> a
 com.railwaygames.solarsmash.service.PingService$ServiceHandler -> com.railwaygames.solarsmash.service.a:
     com.railwaygames.solarsmash.service.PingService this$0 -> a
-    57:67:void handleMessage(android.os.Message) -> handleMessage
-    151:165:boolean isMainActivityActive() -> a
-    50:50:com.railwaygames.solarsmash.service.PingService access$0(com.railwaygames.solarsmash.service.PingService$ServiceHandler) -> a
+    61:77:void handleMessage(android.os.Message) -> handleMessage
+    161:175:boolean isMainActivityActive() -> a
+    53:53:com.railwaygames.solarsmash.service.PingService access$0(com.railwaygames.solarsmash.service.PingService$ServiceHandler) -> a
 com.railwaygames.solarsmash.service.PingService$ServiceHandler$1 -> com.railwaygames.solarsmash.service.b:
     com.railwaygames.solarsmash.service.PingService$ServiceHandler this$1 -> a
-    64:65:void run() -> run
+    int val$sleepTime -> b
+    74:75:void run() -> run
 com.railwaygames.solarsmash.social.Authorizer -> com.railwaygames.solarsmash.g.a:
     void signIn(com.railwaygames.solarsmash.http.AuthenticationListener) -> a
     void onActivityResult(int) -> b
@@ -23295,6 +23307,7 @@ org.joda.time.ReadableInstant -> b.a.a.v:
 org.joda.time.base.AbstractDateTime -> b.a.a.a.a:
     115:115:int getYear() -> c
     130:130:int getWeekyear() -> d
+    194:194:int getHourOfDay() -> e
 org.joda.time.base.AbstractInstant -> b.a.a.a.b:
     259:266:boolean equals(java.lang.Object) -> equals
     278:278:int hashCode() -> hashCode
