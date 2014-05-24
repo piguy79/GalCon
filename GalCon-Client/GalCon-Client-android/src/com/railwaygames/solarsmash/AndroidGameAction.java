@@ -683,4 +683,20 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
+	@Override
+	public void practiceGame(final UIConnectionResultCallback<GameBoard> callback,
+			String handle, Long mapId) {
+		try {
+			final JSONObject top = JsonConstructor.practiceGame(handle, session, mapId);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<GameBoard>(callback, CLAIM_VICTORY, GameBoard.class).execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+		
+	}
+
 }

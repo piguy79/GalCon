@@ -240,6 +240,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				dialog.hide();
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
+			
+			@Override
+			public void practiceGame(int selectedMapKey) {
+				dialog.hide();
+				startHideSequence(Action.PRACTICE + ":" + selectedMapKey);
+			}
 		});
 	}
 

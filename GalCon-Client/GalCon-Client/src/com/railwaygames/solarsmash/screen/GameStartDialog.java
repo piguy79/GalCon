@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.screen.event.GameStartEvent;
+import com.railwaygames.solarsmash.screen.event.PracticeStartEvent;
 import com.railwaygames.solarsmash.screen.event.SocialGameStartEvent;
 import com.railwaygames.solarsmash.screen.widget.CommonTextButton;
 import com.railwaygames.solarsmash.screen.widget.OKCancelDialog;
@@ -24,10 +25,24 @@ public class GameStartDialog extends OKCancelDialog {
 	}
 
 	private void create() {
+		CommonTextButton practiceButton = new CommonTextButton(resources.skin, "Play a practise game", height * 0.27f,
+				width * 0.8f, resources.fontShader);
+		practiceButton.setX((getWidth() / 2) - (practiceButton.getWidth() / 2));
+		practiceButton.setY(getHeight() * 0.55f);
+
+		practiceButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				fire(new PracticeStartEvent(selectedMapKey));
+			}
+		});
+
+		addActor(practiceButton);
+		
 		CommonTextButton randomPlay = new CommonTextButton(resources.skin, "Play a random opponent", height * 0.27f,
 				width * 0.8f, resources.fontShader);
 		randomPlay.setX((getWidth() / 2) - (randomPlay.getWidth() / 2));
-		randomPlay.setY(getHeight() * 0.55f);
+		randomPlay.setY(getHeight() * 0.18f);
 
 		randomPlay.addListener(new ClickListener() {
 			@Override
@@ -41,7 +56,7 @@ public class GameStartDialog extends OKCancelDialog {
 		CommonTextButton socialPlay = new CommonTextButton(resources.skin, "Play with a friend", height * 0.27f,
 				width * 0.8f, resources.fontShader);
 		socialPlay.setX((getWidth() / 2) - (socialPlay.getWidth() / 2));
-		socialPlay.setY(getHeight() * 0.18f);
+		socialPlay.setY(getHeight() * 0.01f);
 
 		socialPlay.addListener(new ClickListener() {
 			@Override

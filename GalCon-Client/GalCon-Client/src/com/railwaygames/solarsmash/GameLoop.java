@@ -154,6 +154,10 @@ public class GameLoop extends Game {
 						friendScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 						friendScreen.setMapType(action.split(":")[1]);
 						setScreen(friendScreen);
+					} else if(action.split(":")[0].equals(Action.PRACTICE)){
+						String level = action.split(":")[1];
+						gameAction.practiceGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle, Long.valueOf(level));
+						openBoardScreen();
 					}
 				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();

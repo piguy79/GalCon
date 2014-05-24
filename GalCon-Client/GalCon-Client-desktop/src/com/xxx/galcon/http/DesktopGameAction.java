@@ -3,30 +3,8 @@
  */
 package com.xxx.galcon.http;
 
-import static com.railwaygames.solarsmash.http.UrlConstants.ACCEPT_INVITE;
-import static com.railwaygames.solarsmash.http.UrlConstants.ADD_FREE_COINS;
-import static com.railwaygames.solarsmash.http.UrlConstants.ADD_PROVIDER_TO_USER;
-import static com.railwaygames.solarsmash.http.UrlConstants.CANCEL_GAME;
-import static com.railwaygames.solarsmash.http.UrlConstants.CLAIM_VICTORY;
-import static com.railwaygames.solarsmash.http.UrlConstants.DECLINE_INVITE;
-import static com.railwaygames.solarsmash.http.UrlConstants.DELETE_CONSUMED_ORDERS;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_ALL_MAPS;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_AVAILABLE_INVENTORY;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CONFIG_BY_TYPE;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_BY_PLAYER_HANDLE;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
-import static com.railwaygames.solarsmash.http.UrlConstants.FIND_USER_BY_ID;
-import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
-import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
-import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
-import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
-import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
-import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
-import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
+
+import static com.railwaygames.solarsmash.http.UrlConstants.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -562,6 +540,29 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			System.out.println(e);
 		}
 
+	}
+
+	@Override
+	public void practiceGame(UIConnectionResultCallback<GameBoard> callback,
+			String handle, Long mapId) {
+		try {
+			JSONObject top = JsonConstructor.practiceGame(handle, getSession(), mapId);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			GameBoard gameBoard = (GameBoard) callURL(new PostClientRequest(), PRACTICE, args, new GameBoard());
+
+			if (gameBoard == null) {
+				callback.onConnectionError("Invalid claim");
+			} else {
+				callback.onConnectionResult(gameBoard);
+			}
+
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+		
 	}
 
 }

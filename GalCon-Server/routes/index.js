@@ -994,7 +994,7 @@ var addGameFromSegmentPromise = function(games, index, user, time) {
 }
 
 
-var generateGamePromise = function(users, mapToFind, social) {
+var generateGamePromise = function(users, mapToFind, social, ai) {
 	var map;
 	var p = mapManager.findMapByKey(mapToFind);
 	return p.then(function(mapFromKey) {
@@ -1017,7 +1017,8 @@ var generateGamePromise = function(users, mapToFind, social) {
 					rankOfInitialPlayer : rankOfInitialUser.level,
 					map : map.key,
 					gameType : map.gameType[gameTypeIndex],
-					social : social
+					social : social,
+					ai : ai
 				};
 
 		return gameManager.createGame(gameAttributes).then(function(game) {
@@ -1299,4 +1300,45 @@ exports.claimGame = function(req, res){
 		res.json(processGameReturn(gameToReturn, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 	
+}
+
+exports.practiceGame = function(req, res){
+	var handle = req.body.handle;
+	var mapKey = req.body.mapId;
+	var session = req.body.session;
+		
+	if(!validate({session : session, handle : handle, mapKey : mapKey}, res)) {
+		return;
+	}
+	var requestingUser;
+	var currentGame;
+	var openLimit;
+	var aiUser;
+		
+	var p = validateSession(session, {"handle" : handle});
+	p.then(function(){
+		return userManager.findUserByHandle('AI'); 
+	}).then(function(foundUser){
+		aiUser = foundUser;
+		return configManager.findLatestConfig('app');
+	}).then(function(configs){
+		openLimit = configs.values['maxNumberOfOpenGames'];
+		return userManager.findUserByHandle(handle); 
+	}).then(function(user){
+		requestingUser = user;
+		return gameManager.findCollectionOfGames(user,activeGameQuery);
+	}).then(function(games){
+		if(games && games.length >= openLimit){
+			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
+		}
+		return mapManager.findMapByKey(mapKey);
+	}).then(function(map){
+		if(requestingUser.xp < map.availableFromXp){
+			throw new Error("User does not have enough xp to play this map.");
+		}else{
+			return generateGamePromise([requestingUser, aiUser], mapKey, null, true);
+		}
+	}).then(function(generatedGame){
+		res.json(generatedGame);
+	}).then(null, logErrorAndSetResponse(req, res));
 }
