@@ -170,6 +170,11 @@ public class GameLoop extends Game {
 					boardScreen.resetState();
 					boardScreen.getPreviousScreen().resetState();
 					setScreen(boardScreen.getPreviousScreen());
+				}else if(action.equals(Action.MAIN_MENU)){
+					boardScreen.resetState();
+					menuScreenContainer.resetState();
+					menuScreenContainer.resetToMenu();
+					setScreen(menuScreenContainer);
 				}
 			} else if (getScreen() instanceof FriendScreen) {
 				String action = (String) result;

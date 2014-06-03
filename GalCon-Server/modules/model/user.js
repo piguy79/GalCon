@@ -60,7 +60,7 @@ exports.findUserByHandle = function(handle){
 
 
 exports.findUserMatchingSearch = function(searchTerm, handle){
-	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}]}).limit(10).exec();
+	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}, {handle : {$ne : 'AI'}}]}).limit(10).exec();
 }
 
 exports.addCoins = function(coins, handle) {

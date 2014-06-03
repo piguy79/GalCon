@@ -334,4 +334,9 @@ public class MenuScreenContainer implements ScreenFeedback {
 			return null;
 		}
 	}
+	
+	public void resetToMenu(){
+		mainMenuScreen.resetState();
+		currentScreen = mainMenuScreen;
+	}
 }

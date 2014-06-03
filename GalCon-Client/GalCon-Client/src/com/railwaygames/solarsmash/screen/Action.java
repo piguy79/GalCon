@@ -19,4 +19,5 @@ public final class Action {
 	public static final String SHARE = "SHARE";
 	public static final Object NO_MORE_COINS = "NO_MORE_COINS";
 	public static final String PRACTICE = "PRACTICE";
+	public static final String MAIN_MENU = "MAIN_MENU";
 }

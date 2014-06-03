@@ -19,14 +19,12 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.GameQueueItem;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Player;
-import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.GameReturnEvent;
 import com.railwaygames.solarsmash.screen.event.InviteEventListener;
 import com.railwaygames.solarsmash.screen.event.TransitionEvent;
-import com.railwaygames.solarsmash.screen.widget.ActionButton;
 import com.railwaygames.solarsmash.screen.widget.CommonTextButton;
 import com.railwaygames.solarsmash.screen.widget.GameInviteGroup;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
@@ -41,7 +39,7 @@ public abstract class EndGameOverlay extends Overlay {
 
 	private WaitImageButton waitImage;
 	private CommonTextButton rematchButton;
-	private ActionButton backButton;
+	private CommonTextButton backButton;
 
 	private ScrollList<GameQueueItem> scrollList;
 	protected float height;
@@ -62,22 +60,29 @@ public abstract class EndGameOverlay extends Overlay {
 		createResultLabel(getTextForResultLabel());
 		createMessageLabel(getTextForMessageLabel());
 		createWaitImage();
-		createRematchSection();
+		if(!gameBoard.ai){
+			createRematchSection();
+		}else{
+			waitImage.stop();
+		}
 		createBackButton();
 	}
 
 	private void createBackButton() {
-		backButton = new ActionButton(resources.skin, "backButton", new Point(10, 0));
-		backButton.setY(height - (backButton.getHeight() * 1.1f));
+		float buttonHeight = height * 0.1f;
+		float buttonWidth = width * 0.45f;
+		backButton = new CommonTextButton(resources.skin, "Main Menu", buttonHeight, buttonWidth, resources.fontShader);
+		backButton.setX((width / 2) - (backButton.getWidth() / 2));
+		backButton.setY(height * 0.45f);
+
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent clickEvent, float x, float y) {
-				TransitionEvent event = new TransitionEvent(Action.BACK);
+				TransitionEvent event = new TransitionEvent(Action.MAIN_MENU);
 				fire(event);
 			}
 		});
 		addActor(backButton);
-
 	}
 
 	protected void createResultLabel(String text) {

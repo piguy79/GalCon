@@ -8,6 +8,8 @@ var SHIP_COUNT_EFFECT = 0.5;
 var SHIPS_AVAILABLE = 0.8;
 var AGGRESION_EFFECT = 3;
 var ABILITY_PLANET_EFFECT = 2;
+var MAX_SEND_EFFECT = 1.3;
+var AGGRESSIVE_THRESHOLD = 0.7;
 
 exports.createAiMoves = function(game){
 	
@@ -19,7 +21,7 @@ exports.createAiMoves = function(game){
 	var planetsNotOwnedByAi = planetsPartition[1];
 	
 	var movesToMake = [];
-	var aggressiveRound = Math.random() > 0.5;
+	var aggressiveRound = Math.random() > AGGRESSIVE_THRESHOLD;
 	
 	_.each(planetsOwnedByAi, function(ownedPlanet){
 		var scoreByPlanet = _.map(planetsNotOwnedByAi, function(otherPlanet){
@@ -43,7 +45,7 @@ exports.createAiMoves = function(game){
 			return item.score * -1;
 		}), function(planetScore){
 			if(availableShips > 0){
-				var maxSend = Math.round(planetScore.planet.ships * 1.5);
+				var maxSend = planetScore.planet.ships === 0 ? 1 : Math.round(planetScore.planet.ships * MAX_SEND_EFFECT);
 				if((availableShips - maxSend) > 0 ){
 					availableShips = availableShips - maxSend;
 					movesToMake.push(createMove(ownedPlanet, planetScore.planet, maxSend));
@@ -56,7 +58,9 @@ exports.createAiMoves = function(game){
 		});
 	});
 		
-	return movesToMake;
+	return _.filter(movesToMake, function(move){
+		return move.fleet !== 0;
+	});
 }
 
 

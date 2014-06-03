@@ -248,7 +248,6 @@ gameSchema.methods.addMoves = function(moves){
 			move.startingRound = game.round.num;
 			move.curPos = {x : move.curPos.x, y : move.curPos.y};
 			move.prevPos = {x : move.prevPos.x, y : move.prevPos.y};
-			console.log("Adding move: " + move.to + " : "  + move.curPos + " : " + move.prevPos);
 			game.moves.push(move);
 		});
 	}
@@ -326,10 +325,6 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 		if(game.ai){
 			game.addMoves(gameAi.createAiMoves(game));
 			game.round.moved.push('AI');
-			
-			_.each(game.moves, function(move){
-				console.log("AND THE MOVE : " + move.curPos + " fleet: " + move.fleet);
-			});
 		}
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
@@ -498,9 +493,6 @@ var processMoves = function(player, game) {
 			defenceMultiplier : getDefenceMutlipler(currentOpponent,game)
 		};
 
-	_.each(game.moves, function(move){
-		console.log("THE CURPOS " + move.curPos + " FLEET " + move.fleet);
-	});
 	gameTypeAssembler.gameTypes[game.gameType].processMoves(game, multiplierMap);
 	
 	positionAdjuster.adjustMovePositions(game);
