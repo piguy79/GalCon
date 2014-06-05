@@ -62,6 +62,8 @@ public class Constants {
 
 		public static final String LEVEL_CARD_BG = "levelCardBg";
 
+		public static final String COIN_IMAGE = "coin_image";
+
 	}
 
 	public static class Colors {

@@ -25,6 +25,7 @@ import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.GameReturnEvent;
 import com.railwaygames.solarsmash.screen.event.InviteEventListener;
 import com.railwaygames.solarsmash.screen.event.TransitionEvent;
+import com.railwaygames.solarsmash.screen.widget.CommonCoinButton;
 import com.railwaygames.solarsmash.screen.widget.CommonTextButton;
 import com.railwaygames.solarsmash.screen.widget.GameInviteGroup;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
@@ -38,7 +39,7 @@ public abstract class EndGameOverlay extends Overlay {
 	protected ShaderLabel messageLabel;
 
 	private WaitImageButton waitImage;
-	private CommonTextButton rematchButton;
+	private CommonCoinButton rematchButton;
 	private CommonTextButton backButton;
 
 	private ScrollList<GameQueueItem> scrollList;
@@ -244,7 +245,7 @@ public abstract class EndGameOverlay extends Overlay {
 	public void createRematchButton() {
 		float buttonHeight = height * 0.1f;
 		float buttonWidth = width * 0.45f;
-		rematchButton = new CommonTextButton(resources.skin, "Rematch", buttonHeight, buttonWidth, resources.fontShader);
+		rematchButton = new CommonCoinButton(resources.skin, "Rematch", buttonHeight, buttonWidth, resources.fontShader);
 		rematchButton.setX((width / 2) - (rematchButton.getWidth() / 2));
 		rematchButton.setY(height * 0.3f);
 

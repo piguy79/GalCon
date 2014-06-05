@@ -246,8 +246,12 @@ gameSchema.methods.addMoves = function(moves){
 	if(moves){
 		moves.forEach(function(move){
 			move.startingRound = game.round.num;
-			move.curPos = {x : move.curPos.x, y : move.curPos.y};
-			move.prevPos = {x : move.prevPos.x, y : move.prevPos.y};
+			if(move.curPos){
+				move.curPos = {x : move.curPos.x, y : move.curPos.y};
+			}
+			if(move.prevPos){
+				move.prevPos = {x : move.prevPos.x, y : move.prevPos.y};
+			}
 			game.moves.push(move);
 		});
 	}
