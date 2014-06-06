@@ -7,6 +7,7 @@ gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
 userManager = require('./user'),
 configManager = require('./config'),
+mapManager = require('./map'),
 positionAdjuster = require('../movement/PositionAdjuster'),
 _ = require('underscore'),
 abilityBasedGameType = require('./gameType/abilityBasedGameType');
@@ -318,16 +319,24 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 	}
 	
 	var roundExecuted = false;
+	var game;
+	var map;
 	
 	var p = exports.findById(gameId);
-	return p.then(function(game) {
+	return p.then(function(associatedGame){
+		game = associatedGame;
+	}).then(function(){
+		return mapManager.findMapByKey(game.map);
+	}).then(function(associatedMap) {
+		map = associatedMap;
 		game.addMoves(moves);
 		game.addHarvest(harvest);
 		game.round.moved.push(playerHandle);
 		game.moveTime = Date.now();
 		
 		if(game.ai){
-			game.addMoves(gameAi.createAiMoves(game));
+			game.addMoves(gameAi.createAiMoves(game, map));
+			game.addHarvest(gameAi.createHarvest(game, map));
 			game.round.moved.push('AI');
 		}
 			

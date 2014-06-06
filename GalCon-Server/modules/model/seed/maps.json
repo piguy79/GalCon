@@ -1,83 +1,142 @@
-{
-	"maps" : [	
-				{
-					"key" : 1,
-					"availableFromXp" : 0,
-					"title" : "The Beginning",
-					"description" : "Tis a small world",
-					"width" : {
-						"min" : 5,
-						"max" : 6
-					},
-					"canHarvest" : false,
-					"gameType" : ["standardGame"],
-					"version" : 1
+"maps" : [	
+			{
+				"key" : 1,
+				"availableFromXp" : 0,
+				"title" : "The Beginning",
+				"description" : "Tis a small world",
+				"width" : {
+					"min" : 5,
+					"max" : 6
 				},
-				{
-					"key" : 2,
-					"availableFromXp" : 200,
-					"title" : "Moving on",
-					"description" : "Some breathing room",
-					"width" : {
-						"min" : 7,
-						"max" : 8
-					},
-					"canHarvest" : false,
-					"gameType" : ["standardGame"],
-					"version" : 1
+				"canHarvest" : false,
+				"gameType" : ["standardGame"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.8,
+					"agressionEffect" : 1.2,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.3,
+					"aggressiveThreshold" : 0.9
+				}		
+			},
+			{
+				"key" : 2,
+				"availableFromXp" : 200,
+				"title" : "Moving on",
+				"description" : "Some breathing room",
+				"width" : {
+					"min" : 7,
+					"max" : 8
 				},
-				{
-					"key" : 3,
-					"availableFromXp" : 800,
-					"title" : "Speed",
-					"description" : "Don't drop below 50",
-					"width" : {
-						"min" : 6,
-						"max" : 8
-					},
-					"canHarvest" : false,
-					"gameType" : ["speedIncrease"],
-					"version" : 1
+				"canHarvest" : false,
+				"gameType" : ["standardGame"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.8,
+					"agressionEffect" : 1.2,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.3,
+					"aggressiveThreshold" : 0.9
+				}	
+			},
+			{
+				"key" : 3,
+				"availableFromXp" : 800,
+				"title" : "Speed",
+				"description" : "Don't drop below 50",
+				"width" : {
+					"min" : 6,
+					"max" : 8
 				},
-				{
-					"key" : 4,
-					"availableFromXp" : 2000,
-					"title" : "Protect",
-					"description" : "Shields online",
-					"width" : {
-						"min" : 6,
-						"max" : 8
-					},
-					"canHarvest" : false,
-					"gameType" : ["defenceIncrease"],
-					"version" : 1
+				"canHarvest" : false,
+				"gameType" : ["speedIncrease"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.8,
+					"agressionEffect" : 1.4,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.3,
+					"aggressiveThreshold" : 0.8
+				}	
+			},
+			{
+				"key" : 4,
+				"availableFromXp" : 2000,
+				"title" : "Protect",
+				"description" : "Shields online",
+				"width" : {
+					"min" : 6,
+					"max" : 8
 				},
-				{
-					"key" : 5,
-					"availableFromXp" : 3500,
-					"title" : "Annihilation",
-					"description" : "Show of Strength",
-					"width" : {
-						"min" : 6,
-						"max" : 8
-					},
-					"canHarvest" : false,
-					"gameType" : ["attackIncrease"],
-					"version" : 1
+				"canHarvest" : false,
+				"gameType" : ["defenceIncrease"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.8,
+					"agressionEffect" : 1.6,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.4,
+					"aggressiveThreshold" : 0.8
+				}	
+			},
+			{
+				"key" : 5,
+				"availableFromXp" : 3500,
+				"title" : "Annihilation",
+				"description" : "Show of Strength",
+				"width" : {
+					"min" : 6,
+					"max" : 8
 				},
-				{
-					"key" : 6,
-					"availableFromXp" : 6300,
-					"title" : "Power",
-					"description" : "Harvest or Hold",
-					"width" : {
-						"min" : 6,
-						"max" : 8
-					},
-					"canHarvest" : true,
-					"gameType" : ["mixedAbility"],
-					"version" : 1
-				}
-			]
+				"canHarvest" : false,
+				"gameType" : ["attackIncrease"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.85,
+					"agressionEffect" : 1.7,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.5,
+					"aggressiveThreshold" : 0.8
+				}	
+			},
+			{
+				"key" : 6,
+				"availableFromXp" : 6300,
+				"title" : "Power",
+				"description" : "Harvest or Hold",
+				"width" : {
+					"min" : 6,
+					"max" : 8
+				},
+				"canHarvest" : true,
+				"gameType" : ["mixedAbility"],
+				"version" : 1,
+				"aiConfig" : {
+					"distanceEffect" : 1.3,
+					"regenEffect" : 2,
+					"shipCountEffect" : 0.5,
+					"shipsAvailable" : 0.9,
+					"agressionEffect" : 1.5,
+					"abilityPlanetEffect" : 2,
+					"maxSendEffect" : 1.4,
+					"aggressiveThreshold" : 0.7
+				}	
+			}
+]
 	
-}
+
