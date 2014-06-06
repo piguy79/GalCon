@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
@@ -109,7 +110,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		bgImage.setOrigin((float) width * 2.0f, (float) height * 1.0f);
 
 		titleText.setX(width / 2 - titleText.getWidth() / 2);
-		titleText.setY(height * 0.7f);
+		titleText.setY(height * 0.75f);
 
 		currentScreen.resize(width, height);
 	}

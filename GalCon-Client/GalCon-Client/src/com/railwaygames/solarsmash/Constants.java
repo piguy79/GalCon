@@ -60,7 +60,8 @@ public class Constants {
 		public static final String XP_BAR_ARROW = "xpBarArrow";
 
 		public static final String LEVEL_CARD_BG = "levelCardBg";
-
+		public static final String TAB_LEFT = "tabLeft";
+		public static final String TAB_RIGHT = "tabRight";
 	}
 
 	public static class Colors {
@@ -155,8 +156,6 @@ public class Constants {
 	public static final String MAP_VERSION_SUPPORTED = "10";
 	public static final String NO_COIN_INFO = "coinInfo";
 	public static final String NO_ADS = "na";
-
-
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

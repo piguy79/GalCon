@@ -39,6 +39,14 @@ exports.isMapKey = function(mapKey) {
 	return true;
 }
 
+exports.isLeaderboard = function(leaderboard) {
+	if(leaderboard === 'all') {
+		return true;
+	}
+	
+	return exports.isMapKey(leaderboard);
+}
+
 exports.isMapVersion = function(version) {
 	try {
 		validator.isLength(version, 1, 4);

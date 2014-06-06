@@ -63,6 +63,7 @@ import com.railwaygames.solarsmash.http.GameActionCache.MapsCache;
 import com.railwaygames.solarsmash.http.JsonConstructor;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.http.UrlConstants;
 import com.railwaygames.solarsmash.model.AvailableGames;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.GameBoard;
@@ -71,6 +72,7 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Inventory;
+import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
@@ -595,5 +597,12 @@ public class IOSGameAction implements GameAction {
 	@Override
 	public void showAd() {
 		AdColony.playVideoAd(SolarSmashIOS.ZONE_ID, new AdColonyAdDelegateAdapter());
+	}
+
+	@Override
+	public void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id) {
+		final Map<String, String> args = new HashMap<String, String>();
+		new GetJsonRequestTask<Leaderboards>(args, callback, UrlConstants.FIND_LEADERBOARD_BY_ID.replace(":id", id),
+				Leaderboards.class).execute("");
 	}
 }

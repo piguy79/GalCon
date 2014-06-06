@@ -30,7 +30,8 @@ var VALIDATE_MAP = {
 	authProvider : validation.isAuthProvider,
 	socialId : validation.isSocialId,
 	socialIdGroup : validation.isSocialIdGroup,
-	token : validation.isToken
+	token : validation.isToken,
+	leaderboard : validation.isLeaderboard
 };
 
 var activeGameQuery = {$or : [{'endGame.winnerHandle' : ''}, {'endGame.winnerHandle' : null}]};
@@ -1297,6 +1298,18 @@ exports.claimGame = function(req, res){
 		return updateWinnersAndLosers(game, handle);
 	}).then(function(gameToReturn){
 		res.json(processGameReturn(gameToReturn, handle));
-	}).then(null, logErrorAndSetResponse(req, res));
+	}).then(null, logErrorAndSetResponse(req, res));	
+}
+
+exports.leaderboardById = function(req, res) {
+	var id = req.params.id;
 	
+	if(!validate({leaderboard : id}, res)) {
+		return;
+	}
+	
+	var p = leaderboardManager.findTopScores(id, 10);
+	p.then(function(leaderboards) {
+		res.json({boards: leaderboards});
+	});
 }

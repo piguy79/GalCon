@@ -9,11 +9,6 @@ public class ShaderTextButton extends TextButton {
 
 	private ShaderProgram shader;
 
-	public ShaderTextButton(ShaderProgram shader, String text, TextButtonStyle style) {
-		super(text, style);
-		this.shader = shader;
-	}
-
 	public ShaderTextButton(ShaderProgram shader, String text, Skin skin, String style) {
 		super(text, skin, style);
 		this.shader = shader;

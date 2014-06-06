@@ -10,6 +10,7 @@ import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
+import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.Player;
 
@@ -141,5 +142,9 @@ public class ExternalActionWrapper {
 				callback.onConnectionError(msg);
 			}
 		});
+	}
+
+	public static void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id) {
+		gameAction.findLeaderboardById(callback, id);
 	}
 }

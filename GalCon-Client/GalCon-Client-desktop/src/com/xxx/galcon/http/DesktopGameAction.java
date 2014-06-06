@@ -17,6 +17,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_B
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARD_BY_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_USER_BY_ID;
@@ -61,6 +62,7 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Inventory;
+import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
@@ -382,7 +384,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			 * a valid session directly into the local DB.
 			 */
 			MongoClient client = new MongoClient("localhost");
-			DB galcon = client.getDB("galcon");
+			DB galcon = client.getDB("app14217106");
 			DBCollection usersCollection = galcon.getCollection("users");
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
@@ -561,7 +563,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
+	}
 
+	@Override
+	public void findLeaderboardById(final UIConnectionResultCallback<Leaderboards> callback, final String id) {
+		final Map<String, String> args = new HashMap<String, String>();
+		callback.onConnectionResult((Leaderboards) callURL(new GetClientRequest(),
+				FIND_LEADERBOARD_BY_ID.replace(":id", id), args, new Leaderboards()));
 	}
 
 }

@@ -22,6 +22,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_B
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARD_BY_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_USER_BY_ID;
@@ -69,6 +70,7 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Inventory;
+import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
@@ -185,8 +187,7 @@ public class AndroidGameAction implements GameAction {
 			args.put("version", Constants.MAP_VERSION_SUPPORTED);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new GetJsonRequestTask<Maps>(args, mapCache, FIND_ALL_MAPS, Maps.class)
-							.execute("");
+					new GetJsonRequestTask<Maps>(args, mapCache, FIND_ALL_MAPS, Maps.class).execute("");
 				}
 			});
 		}
@@ -683,4 +684,15 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
+	@Override
+	public void findLeaderboardById(final UIConnectionResultCallback<Leaderboards> callback, final String id) {
+		final Map<String, String> args = new HashMap<String, String>();
+
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				new GetJsonRequestTask<Leaderboards>(args, callback, FIND_LEADERBOARD_BY_ID.replace(":id", id),
+						Leaderboards.class).execute("");
+			}
+		});
+	}
 }

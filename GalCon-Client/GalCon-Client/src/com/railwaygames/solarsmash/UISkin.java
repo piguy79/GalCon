@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.railwaygames.solarsmash.screen.widget.ShaderTextField.ShaderTextFieldStyle;
 
 public class UISkin extends Skin {
 
@@ -150,6 +149,15 @@ public class UISkin extends Skin {
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(socialAtlas.findRegion("galcon_search_custom_normal"));
 			add(Constants.UI.GALCON_SEARCH_IMAGE, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("level_card_tab_left"));
+			add(Constants.UI.TAB_LEFT, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(
+					levelSelectionAtlas.findRegion("level_card_tab_right"));
+			add(Constants.UI.TAB_RIGHT, new ButtonStyle(trd, trd, trd));
 		}
 
 		/*

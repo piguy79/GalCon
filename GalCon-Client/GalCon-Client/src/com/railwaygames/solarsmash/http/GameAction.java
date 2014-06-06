@@ -12,6 +12,7 @@ import com.railwaygames.solarsmash.model.GameQueue;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.HarvestMove;
 import com.railwaygames.solarsmash.model.Inventory;
+import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
@@ -91,5 +92,7 @@ public interface GameAction {
 	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
 
 	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId);
+	
+	public void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id);
 
 }

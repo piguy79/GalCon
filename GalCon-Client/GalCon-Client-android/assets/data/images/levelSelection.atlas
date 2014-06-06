@@ -3,9 +3,23 @@ levelSelection.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+level_card_tab_left
+  rotate: false
+  xy: 79, 822
+  size: 285, 99
+  orig: 285, 99
+  offset: 0, 0
+  index: -1
+level_card_tab_right
+  rotate: false
+  xy: 366, 822
+  size: 285, 99
+  orig: 285, 99
+  offset: 0, 0
+  index: -1
 level_select_bg_bottom
   rotate: false
-  xy: 79, 520
+  xy: 2, 520
   size: 800, 300
   orig: 800, 300
   offset: 0, 0
@@ -19,7 +33,7 @@ lock_card_background
   index: -1
 scroll_highlight
   rotate: false
-  xy: 2, 792
+  xy: 2, 893
   size: 75, 28
   orig: 75, 28
   offset: 0, 0

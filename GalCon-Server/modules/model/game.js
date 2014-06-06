@@ -27,7 +27,6 @@ var gameSchema = mongoose.Schema({
 	endGame : {
 		winnerHandle : "String",
 		xp : "Number",
-		leaderboardScoreAmount : "Number",
 		date : "Date",
 		loserHandles : [String],
 		declined : "String",
@@ -533,7 +532,6 @@ exports.addSocialUser = function(gameId, player){
 exports.declineSocialGame = function(gameId, invitee){
 	var endResult = {
 			xp : 0,
-			leaderboardScoreAmount : 0,
 			date : Date.now(),
 			declined : invitee
 		};
@@ -543,9 +541,8 @@ exports.declineSocialGame = function(gameId, invitee){
 										$set : {
 												   'social.status' : 'DECLINED'
 												   ,'endGame.xp' : 0
-												   ,'endGame.leaderboardScoreAmount' : 0
 												   ,'endGame.date' : 0
-												   , 'endGame.winnerHandle' : 'GAME_DECLINE'
+												   ,'endGame.winnerHandle' : 'GAME_DECLINE'
 												   ,'endGame.declined' : invitee
 											   }}).populate('players').exec();
 }

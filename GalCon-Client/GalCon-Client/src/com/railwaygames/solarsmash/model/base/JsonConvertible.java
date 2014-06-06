@@ -6,7 +6,6 @@ package com.railwaygames.solarsmash.model.base;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +43,6 @@ public abstract class JsonConvertible {
 				reason = jsonObject.optString("reason");
 				doConsume(jsonObject);
 			}
-
 		}
 	}
 
