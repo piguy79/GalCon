@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -103,13 +104,20 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 
+		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		if (GameLoop.USER.coins == 0) {
 			returnValue = Action.NO_MORE_COINS;
+		} else if(GameLoop.USER.firstGameEver(prefs)){
+			prefs.putBoolean(Constants.Config.FIRST_GAME_PLAYED, true);
+			prefs.flush();
+			startHideSequence(Action.PRACTICE + ":" + this.allMaps.get(0).key);
 		} else {
 			createGameList();
 		}
 
 	}
+
+	
 
 	private void createScrollhighlightReel() {
 		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
@@ -218,8 +226,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private void createGameStartDialog(int selectedMapKey) {
 		final GameStartDialog dialog = new GameStartDialog(resources, Gdx.graphics.getWidth() * 0.8f,
-				Gdx.graphics.getHeight() * 0.32f, stage, selectedMapKey);
-		float dialogY = Gdx.graphics.getHeight() * 0.45f;
+				Gdx.graphics.getHeight() * 0.55f, stage, selectedMapKey);
+		float dialogY = Gdx.graphics.getHeight() * 0.34f;
 
 		stage.addActor(dialog);
 		dialog.setX(-dialog.getWidth());
@@ -239,6 +247,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			public void startSocialGame(int selectedMapKey) {
 				dialog.hide();
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
+			}
+			
+			@Override
+			public void practiceGame(int selectedMapKey) {
+				dialog.hide();
+				startHideSequence(Action.PRACTICE + ":" + selectedMapKey);
 			}
 		});
 	}

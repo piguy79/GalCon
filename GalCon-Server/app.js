@@ -69,7 +69,7 @@ app.post('/user/addProvider', routes.addProviderToUser);
 app.post('/game/cancel', routes.cancelGame);
 app.post('/game/claim', routes.claimGame);
 app.get('/leaderboards/:id', routes.leaderboardById);
-
+app.post('/game/practice', routes.practiceGame);
 
 
 var port = process.env.PORT || 3000;

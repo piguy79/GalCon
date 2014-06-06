@@ -68,7 +68,8 @@ public class UrlConstants {
 	public static final String EXCHANGE_TOKEN_FOR_SESSION = "/sessions/exchangeToken";
 
 	public static final String GAMES_FOR_A_USER = "/gamesForAUser";
-	
+
 	public static final String FIND_LEADERBOARD_BY_ID = "/leaderboards/:id/";
 
+	public static final String PRACTICE = "/game/practice";
 }

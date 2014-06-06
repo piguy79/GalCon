@@ -3,7 +3,6 @@ var galconMath = require("../math/galconMath");
 exports.adjustMovePositions = function(game) {
 	for(var i = 0; i < game.moves.length; i++){
 		var move = game.moves[i];
-		
 		move.prevPos = move.curPos;
 		
 		var startPos;

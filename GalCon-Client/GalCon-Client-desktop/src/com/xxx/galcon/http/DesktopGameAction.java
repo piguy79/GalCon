@@ -25,6 +25,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
@@ -393,7 +394,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
 						GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 6600)
+						.append("xp", 6999)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
@@ -570,6 +571,28 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		final Map<String, String> args = new HashMap<String, String>();
 		callback.onConnectionResult((Leaderboards) callURL(new GetClientRequest(),
 				FIND_LEADERBOARD_BY_ID.replace(":id", id), args, new Leaderboards()));
+	}
+
+	@Override
+	public void practiceGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId) {
+		try {
+			JSONObject top = JsonConstructor.practiceGame(handle, getSession(), mapId);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			GameBoard gameBoard = (GameBoard) callURL(new PostClientRequest(), PRACTICE, args, new GameBoard());
+
+			if (gameBoard == null) {
+				callback.onConnectionError("Invalid claim");
+			} else {
+				callback.onConnectionResult(gameBoard);
+			}
+
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
+
 	}
 
 }

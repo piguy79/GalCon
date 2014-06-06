@@ -2,10 +2,12 @@ var mongoose = require('./mongooseConnection').mongoose
 ,db = require('./mongooseConnection').db
 , ObjectId = require('mongoose').Types.ObjectId; 
 gamebuilder = require('../gameBuilder'),
+gameAi = require('../gameAi'),
 gameTypeAssembler = require('./gameType/gameTypeAssembler'),
 rank = require('./rank'),
 userManager = require('./user'),
 configManager = require('./config'),
+mapManager = require('./map'),
 positionAdjuster = require('../movement/PositionAdjuster'),
 _ = require('underscore'),
 abilityBasedGameType = require('./gameType/abilityBasedGameType');
@@ -42,6 +44,7 @@ var gameSchema = mongoose.Schema({
 		num : "Number",
 		moved : [String]
 	},
+	ai : "Boolean",
 	planets : [
 		{
 			name : "String",
@@ -243,6 +246,12 @@ gameSchema.methods.addMoves = function(moves){
 	if(moves){
 		moves.forEach(function(move){
 			move.startingRound = game.round.num;
+			if(move.curPos){
+				move.curPos = {x : move.curPos.x, y : move.curPos.y};
+			}
+			if(move.prevPos){
+				move.prevPos = {x : move.prevPos.x, y : move.prevPos.y};
+			}
 			game.moves.push(move);
 		});
 	}
@@ -309,13 +318,26 @@ exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harv
 	}
 	
 	var roundExecuted = false;
+	var game;
+	var map;
 	
 	var p = exports.findById(gameId);
-	return p.then(function(game) {
+	return p.then(function(associatedGame){
+		game = associatedGame;
+	}).then(function(){
+		return mapManager.findMapByKey(game.map);
+	}).then(function(associatedMap) {
+		map = associatedMap;
 		game.addMoves(moves);
 		game.addHarvest(harvest);
 		game.round.moved.push(playerHandle);
 		game.moveTime = Date.now();
+		
+		if(game.ai){
+			game.addMoves(gameAi.createAiMoves(game, map));
+			game.addHarvest(gameAi.createHarvest(game, map));
+			game.round.moved.push('AI');
+		}
 			
 		if (!game.hasOnlyOnePlayer() && game.allPlayersHaveTakenAMove()) {
 		    removeMovesWhichHaveBeenExecuted(game);

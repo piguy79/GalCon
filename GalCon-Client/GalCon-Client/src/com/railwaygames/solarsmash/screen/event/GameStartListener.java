@@ -11,6 +11,8 @@ public abstract class GameStartListener implements EventListener {
 			startGame(((GameStartEvent) event).getSelectedMapKey());
 		}else if (event instanceof SocialGameStartEvent){
 			startSocialGame(((SocialGameStartEvent)event).getSelectedMapKey());
+		} else if(event instanceof PracticeStartEvent){
+			practiceGame(((PracticeStartEvent) event).getSelectedMapKey());
 		}
 		return false;
 	}
@@ -19,7 +21,8 @@ public abstract class GameStartListener implements EventListener {
 	}
 	
 	public void startSocialGame(int selectedMapKey){
-		
 	}
+	
+	public void practiceGame(int selectedMapKey){};
 
 }

@@ -240,7 +240,7 @@ public class BoardScreen implements ScreenFeedback {
 		createLayout();
 
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false)) {
+		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false) && GameLoop.USER.xp == 0) {
 			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
 				@Override

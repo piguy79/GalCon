@@ -92,7 +92,9 @@ public interface GameAction {
 	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
 
 	public void claimVictory(UIConnectionResultCallback<GameBoard> callback, String handle, String gameId);
-	
+
 	public void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id);
+
+	public void practiceGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId);
 
 }

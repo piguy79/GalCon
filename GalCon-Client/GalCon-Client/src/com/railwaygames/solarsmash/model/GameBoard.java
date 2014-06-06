@@ -29,6 +29,7 @@ public class GameBoard extends JsonConvertible {
 	public List<Move> movesInProgress = new ArrayList<Move>();
 	public GameConfig gameConfig = new GameConfig();
 	public Long moveTime;
+	public boolean ai;
 
 	public GameBoard() {
 
@@ -53,6 +54,7 @@ public class GameBoard extends JsonConvertible {
 		}
 		this.id = jsonObject.getString(Constants.ID);
 		this.widthInTiles = jsonObject.getInt(Constants.WIDTH);
+		this.ai = jsonObject.optBoolean(Constants.AI);
 
 		if (jsonObject.has("social")) {
 			this.social = new Social();

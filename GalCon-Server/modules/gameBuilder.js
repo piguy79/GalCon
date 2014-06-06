@@ -24,6 +24,10 @@ function GameBuilder(gameAttributes) {
 		};
 	}
 	
+	if(gameAttributes.ai){
+		this.ai = gameAttributes.ai;
+	}
+	
 	this.round = {
 		num : 0,
 		moved : []

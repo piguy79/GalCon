@@ -107,6 +107,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(levelSelectionAtlas.findRegion("level_card_gray"));
 			add(Constants.UI.LEVEL_CARD_BG, trd, Drawable.class);
 		}
+		{
+			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("coin"));
+			add(Constants.UI.COIN_IMAGE, trd, Drawable.class);
+		}
 
 		/*
 		 * Buttons

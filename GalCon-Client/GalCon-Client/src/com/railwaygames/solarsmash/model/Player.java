@@ -11,7 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.Preferences;
 import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 /**
@@ -113,5 +115,10 @@ public class Player extends JsonConvertible {
 		}
 
 		return count;
+	}
+
+
+	public boolean firstGameEver(Preferences prefs) {
+		return !prefs.getBoolean(Constants.Config.FIRST_GAME_PLAYED) && this.xp == 0;
 	}
 }

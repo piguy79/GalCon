@@ -16,6 +16,7 @@ public class Constants {
 		public static final String MAX_NUM_OF_OPEN_GAMES = "maxNumberOfOpenGames";
 		public static final String AD_TIMEOUT = "adTimeout";
 		public static final String FREE_COINS = "freeCoins";
+		public static final String FIRST_GAME_PLAYED = "firstGame";
 
 	}
 
@@ -60,8 +61,11 @@ public class Constants {
 		public static final String XP_BAR_ARROW = "xpBarArrow";
 
 		public static final String LEVEL_CARD_BG = "levelCardBg";
+
 		public static final String TAB_LEFT = "tabLeft";
 		public static final String TAB_RIGHT = "tabRight";
+
+		public static final String COIN_IMAGE = "coin_image";
 	}
 
 	public static class Colors {
@@ -156,6 +160,8 @@ public class Constants {
 	public static final String MAP_VERSION_SUPPORTED = "10";
 	public static final String NO_COIN_INFO = "coinInfo";
 	public static final String NO_ADS = "na";
+
+	public static final String AI = "ai";
 
 	public static SimpleDateFormat timeRemainingFormat = new SimpleDateFormat("mm:ss");
 

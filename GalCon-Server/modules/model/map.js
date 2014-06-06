@@ -13,8 +13,21 @@ var mapSchema = mongoose.Schema({
 	},
 	canHarvest : "Boolean",
 	gameType : ["String"],
+	aiConfig : {
+		distanceEffect : 'Number',
+		regenEffect : 'Number',
+		shipCountEffect : 'Number',
+		shipsAvailable : 'Number',
+		agressionEffect : 'Number',
+		abilityPlanetEffect : 'Number',
+		maxSendEffect : 'Number',
+		aggressiveThreshold : 'Number'
+	},
 	version : "Number"
 });
+
+
+
 
 mapSchema.set('toObject', { getters: true });
 mapSchema.index({key : 1});

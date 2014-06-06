@@ -204,4 +204,15 @@ public class JsonConstructor {
 		return top;
 
 	}
+	
+	public static JSONObject practiceGame(String handle, String session, Long mapId) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		top.put("mapId", mapId);
+
+		return top;
+
+	}
 }
