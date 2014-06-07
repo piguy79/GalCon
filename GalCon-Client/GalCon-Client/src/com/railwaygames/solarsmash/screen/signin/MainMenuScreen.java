@@ -2,6 +2,7 @@ package com.railwaygames.solarsmash.screen.signin;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -118,6 +119,18 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 
 			public void onConnectionResult(Maps result) {
+				Cell cell = table.getCells().get(1);
+				try {
+					Field f = cell.getClass().getDeclaredField("endRow");
+					f.setAccessible(true);
+					f.setBoolean(cell, false);
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				for (Map map : result.allMaps) {
 					CardGroup card = new LeaderboardCardActor("" + map.key, map.title, resources);
 					table.add(card).expandX().fillX();
@@ -129,6 +142,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		choiceActor = new Actor() {
 			public void draw(Batch batch, float parentAlpha) {
+				if (highlightReel == null) {
+					return;
+				}
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardGroup> cell = table.getCells().get(i);
@@ -310,19 +326,20 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		if (friends == null) {
 			friends = new ArrayList<Friend>();
-//			socialAction.getFriends(new FriendsListener() {
-//				@Override
-//				public void onFriendsLoadedFail(String error) {
-//					// TODO Auto-generated method stub
-//
-//				}
-//
-//				@Override
-//				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
-//					friends.addAll(friends);
-//				}
-//			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
-			
+			// socialAction.getFriends(new FriendsListener() {
+			// @Override
+			// public void onFriendsLoadedFail(String error) {
+			// // TODO Auto-generated method stub
+			//
+			// }
+			//
+			// @Override
+			// public void onFriendsLoadedSuccess(List<Friend> friends, String
+			// authProviderUsed) {
+			// friends.addAll(friends);
+			// }
+			// }, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
