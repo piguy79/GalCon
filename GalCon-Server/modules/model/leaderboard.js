@@ -155,8 +155,13 @@ exports.calculate = function() {
 	});
 }
 
-exports.findTopScores = function(id, count) {
-	return LeaderboardModel.find({'id' : id, 'score' : {$gt : 0}}).sort({'score' : -1}).limit(count).exec();
+exports.findTopScores = function(id, count, limitToIds) {
+	var query = {'id' : id, 'score' : {$gt : 0}};
+	if(limitToIds) {
+		_.extend(query, {'user.id' : {$in : limitToIds}});
+	}
+	console.log(query);
+	return LeaderboardModel.find(query).sort({'score' : -1}).limit(count).exec();
 }
 
 exports.findScore = function(id, handle) {

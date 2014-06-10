@@ -1,6 +1,5 @@
 package com.railwaygames.solarsmash.http;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -66,7 +65,7 @@ public class JsonConstructor {
 
 		return top;
 	}
-	
+
 	public static JSONObject findFriends(String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
@@ -75,7 +74,8 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject requestHandle(String id, String handle, String session, String authProvider) throws JSONException {
+	public static JSONObject requestHandle(String id, String handle, String session, String authProvider)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("id", id);
@@ -95,8 +95,9 @@ public class JsonConstructor {
 		return top;
 
 	}
-	
-	public static JSONObject matchingFriends(List<String> authIds, String handle, String session, String authProvider) throws JSONException {
+
+	public static JSONObject matchingFriends(List<String> authIds, String handle, String session, String authProvider)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", handle);
@@ -110,10 +111,27 @@ public class JsonConstructor {
 		top.put("authIds", jsonFriends);
 
 		return top;
-
 	}
-	
-	public static JSONObject addProvider(String handle, String id, String session, String authProvider) throws JSONException {
+
+	public static JSONObject leaderBoardsForFriends(List<String> authIds, String handle, String session,
+			String authProvider) throws JSONException {
+		JSONObject top = new JSONObject();
+
+		top.put("handle", handle);
+		top.put("session", session);
+		top.put("authProvider", authProvider);
+		JSONArray jsonFriends = new JSONArray();
+
+		for (String authId : authIds) {
+			jsonFriends.put(authId);
+		}
+		top.put("authIds", jsonFriends);
+
+		return top;
+	}
+
+	public static JSONObject addProvider(String handle, String id, String session, String authProvider)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", handle);
@@ -133,8 +151,9 @@ public class JsonConstructor {
 
 		return top;
 	}
-	
-	public static JSONObject invite(String requesterHandle, String inviteeHandle, String session, Long mapKey) throws JSONException {
+
+	public static JSONObject invite(String requesterHandle, String inviteeHandle, String session, Long mapKey)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("requesterHandle", requesterHandle);
@@ -156,7 +175,8 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders, String session) throws JSONException {
+	public static JSONObject deleteConsumedOrders(String playerHandle, List<Order> orders, String session)
+			throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", playerHandle);
@@ -183,7 +203,7 @@ public class JsonConstructor {
 
 		return top;
 	}
-	
+
 	public static JSONObject cancelGame(String handle, String id, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
@@ -193,7 +213,7 @@ public class JsonConstructor {
 
 		return top;
 	}
-	
+
 	public static JSONObject claimGame(String handle, String id, String session) throws JSONException {
 		JSONObject top = new JSONObject();
 
@@ -204,7 +224,7 @@ public class JsonConstructor {
 		return top;
 
 	}
-	
+
 	public static JSONObject practiceGame(String handle, String session, Long mapId) throws JSONException {
 		JSONObject top = new JSONObject();
 
