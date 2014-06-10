@@ -1,4 +1,4 @@
-#! /app/vendor/node/bin
+#! /app/vendor/node/bin/node
 
 var mongoose = require('../modules/model/mongooseConnection').mongoose,
 	leaderboardManager = require('../modules/model/leaderboard');
