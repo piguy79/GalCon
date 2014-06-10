@@ -1,6 +1,6 @@
 #! /app/vendor/node/bin/node
 
-var mongoose = require(‘/app/GalCon-Server/modules/model/mongooseConnection').mongoose,
+var mongoose = require('/app/GalCon-Server/modules/model/mongooseConnection').mongoose,
 	leaderboardManager = require('/app/GalCon-Server/modules/model/leaderboard');
 	
 var p = leaderboardManager.calculate();
