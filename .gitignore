@@ -14,7 +14,7 @@ Thumbs.db
 # generated files
 gen/
 bin/
-!GalCon-Server/bin/
+!/bin/
 
 .settings/
 
