@@ -91,7 +91,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		this.resources = resources;
 	}
 
-	private void loadCards(GameCount gameCount) {
+	private void loadCards(final GameCount gameCount) {
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -102,13 +102,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		float cardWidth = Gdx.graphics.getWidth() * .62f;
 
 		table.pad(0).padLeft((Gdx.graphics.getWidth() - cardWidth) * 0.3f).padRight(Gdx.graphics.getWidth() * 0.25f)
-				.defaults().expandX().space(30).width(cardWidth).height(Gdx.graphics.getHeight() * .53f);
-
-		CardGroup card = new MenuCardActor(gameCount, resources);
-		table.add(card).expandX().fillX();
-
-		card = new LeaderboardCardActor("all", "Overall", resources);
-		table.add(card).expandX().fillX();
+				.defaults().expandX().space(Gdx.graphics.getWidth() * 0.07f).width(cardWidth)
+				.height(Gdx.graphics.getHeight() * .53f);
 
 		gameAction.findAllMaps(new UIConnectionResultCallback<Maps>() {
 			@Override
@@ -118,8 +113,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 
 			public void onConnectionResult(Maps result) {
+				CardGroup card = new MenuCardActor(gameCount, resources);
+				table.add(card).expandX().fillX();
+
+				card = new LeaderboardCardActor("all", "Overall", resources);
+				table.add(card).expandX().fillX();
+
 				for (Map map : result.allMaps) {
-					CardGroup card = new LeaderboardCardActor("" + map.key, map.title, resources);
+					card = new LeaderboardCardActor("" + map.key, map.title, resources);
 					table.add(card).expandX().fillX();
 				}
 
@@ -129,6 +130,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		choiceActor = new Actor() {
 			public void draw(Batch batch, float parentAlpha) {
+				if (highlightReel == null) {
+					return;
+				}
 				float scrollX = scrollPane.getScrollX();
 				for (int i = 0; i < table.getCells().size(); ++i) {
 					Cell<CardGroup> cell = table.getCells().get(i);
@@ -310,19 +314,20 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		if (friends == null) {
 			friends = new ArrayList<Friend>();
-//			socialAction.getFriends(new FriendsListener() {
-//				@Override
-//				public void onFriendsLoadedFail(String error) {
-//					// TODO Auto-generated method stub
-//
-//				}
-//
-//				@Override
-//				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
-//					friends.addAll(friends);
-//				}
-//			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
-			
+			// socialAction.getFriends(new FriendsListener() {
+			// @Override
+			// public void onFriendsLoadedFail(String error) {
+			// // TODO Auto-generated method stub
+			//
+			// }
+			//
+			// @Override
+			// public void onFriendsLoadedSuccess(List<Friend> friends, String
+			// authProviderUsed) {
+			// friends.addAll(friends);
+			// }
+			// }, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
@@ -333,6 +338,24 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				@Override
 				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
 					friends.addAll(friends);
+					List<String> authIds = new ArrayList<String>(friends.size());
+					for (Friend friend : friends) {
+						authIds.add(friend.id);
+					}
+
+					gameAction.findLeaderboardsForFriends(new UIConnectionResultCallback<Leaderboards>() {
+
+						@Override
+						public void onConnectionResult(Leaderboards result) {
+							System.out.println(result);
+						}
+
+						@Override
+						public void onConnectionError(String msg) {
+
+						}
+
+					}, authIds, GameLoop.USER.handle, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 				}
 			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 		}
@@ -458,6 +481,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			table.setX(getWidth() * 0.13f);
 			table.setWidth(getWidth() - getWidth() * 0.06f);
 			table.setHeight(getHeight());
+			table.setY(getY());
 
 			float x = getX();
 			float y = getY();
@@ -468,6 +492,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			int yOffset = (int) (height * 0.1f);
 			x += xOffset;
 			y += yOffset;
+
+			System.out.println("Y: " + y + ", height: " + height);
 
 			tabLeft.setBounds(xOffset, y, width * 0.5f, height * 0.13f);
 			tabTextLeft.setBounds(xOffset, y, width * 0.5f, height * 0.13f);
@@ -605,7 +631,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			continueLabel.setY(0.5f * height);
 
 			if (continueCountLabel != null) {
-				continueCountLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.6f));
+				continueCountLabel.setX((Gdx.graphics.getWidth() / 2) + (continueLabel.getTextBounds().width * 0.4f));
 				continueCountLabel.setY(continueLabel.getY() + (continueLabel.getHeight() * 0.2f));
 			}
 
@@ -613,7 +639,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			inviteLabel.setY(0.2f * height);
 
 			if (inviteCountLabel != null) {
-				inviteCountLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.6f));
+				inviteCountLabel.setX((Gdx.graphics.getWidth() / 2) + (inviteLabel.getTextBounds().width * 0.4f));
 				inviteCountLabel.setY(inviteLabel.getY() + (inviteLabel.getHeight() * 0.2f));
 			}
 		}

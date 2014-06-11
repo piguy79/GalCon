@@ -69,7 +69,9 @@ public class UrlConstants {
 
 	public static final String GAMES_FOR_A_USER = "/gamesForAUser";
 
-	public static final String FIND_LEADERBOARD_BY_ID = "/leaderboards/:id/";
+	public static final String FIND_LEADERBOARD_BY_ID = "/leaderboards/top/:id/";
+	
+	public static final String FIND_LEADERBOARDS_FOR_FRIENDS = "/leaderboards/friends/";
 
 	public static final String PRACTICE = "/game/practice";
 }

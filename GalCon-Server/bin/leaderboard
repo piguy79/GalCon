@@ -1,0 +1,13 @@
+#! /app/vendor/node/bin
+
+var mongoose = require('../modules/model/mongooseConnection').mongoose,
+	leaderboardManager = require('../modules/model/leaderboard');
+	
+var p = leaderboardManager.calculate();
+p.then(function() {
+	console.log("Done");
+	process.exit();
+}, function(err) {
+	console.log(err);
+	process.exit();
+});

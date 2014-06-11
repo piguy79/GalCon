@@ -35,18 +35,19 @@ leaderboardSchema.index({
 var LeaderboardModel = db.model('Leaderboard', leaderboardSchema);
 
 var winPercent = function(map) {
-	var p = userManager.UserModel.find({ $or : [{ wins : { $gt : 0}}, {losses : {$gt : 0}}]},
+	var p = userManager.UserModel.find({ $or : [{ wins : { $gt : 0}}, {losses : {$gt : 0}}], handle : {$ne : 'AI'}},
 	                                   {handle:1, _id:1, wins:1, losses:1}).setOptions({lean:true}).exec();
 	var userWinLossMap = {};
 	
-	var oneYearInMillis = 1000 * 60 * 60 * 24 * 365;
-	var oneYearAgo = Date.now() - oneYearInMillis;
+	var DaysAgoWindowInMillis = 1000 * 60 * 60 * 24 * 180;
+	var DaysAgoWindow = Date.now() - DaysAgoWindowInMillis;
 	
 	var maxGamesPlayed = 0;
 	
 	var gameQuery = {
 		'endGame.winnerHandle' : {$exists : true, $ne : ''},
-		'endGame.date' : {$gt : oneYearAgo}
+		'endGame.date' : {$gt : DaysAgoWindow},
+		'ai' : {$ne : true}
 	};
 	
 	if(map !== 'all') {
@@ -99,12 +100,7 @@ var winPercent = function(map) {
 							bonus = Math.max(0.3333, bonus);
 							bonus = Math.min(0.6666, bonus);
 							
-							var gameTime = game.endGame.date.getTime() - oneYearAgo;
-							
-							if(gameTime > 0) {
-								bonus = bonus * (gameTime / oneYearInMillis);
-								score += bonus;
-							}
+							score += bonus;
 						}
 					});
 					
@@ -155,8 +151,13 @@ exports.calculate = function() {
 	});
 }
 
-exports.findTopScores = function(id, count) {
-	return LeaderboardModel.find({'id' : id, 'score' : {$gt : 0}}).sort({'score' : -1}).limit(count).exec();
+exports.findTopScores = function(id, count, limitToIds) {
+	var query = {'id' : id, 'score' : {$gt : 0}};
+	if(limitToIds) {
+		_.extend(query, {'user.id' : {$in : limitToIds}});
+	}
+	console.log(query);
+	return LeaderboardModel.find(query).sort({'score' : -1}).limit(count).exec();
 }
 
 exports.findScore = function(id, handle) {
@@ -167,6 +168,7 @@ exports.findScore = function(id, handle) {
 }
 
 exports.updateScore = function(id, user, score, record) {
+	console.log("ID: " + id + ", Score: " + score + ", User: %j", user);
 	return LeaderboardModel.findOneAndUpdate({
 		'id' : id,
 		'user.id' : user._id

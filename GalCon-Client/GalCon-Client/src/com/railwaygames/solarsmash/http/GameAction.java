@@ -95,6 +95,8 @@ public interface GameAction {
 
 	public void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id);
 
-	public void practiceGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId);
+	public void findLeaderboardsForFriends(UIConnectionResultCallback<Leaderboards> callback, List<String> authIds,
+			String handle, String authProvider);
 
+	public void practiceGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId);
 }

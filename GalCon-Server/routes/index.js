@@ -1312,7 +1312,62 @@ exports.leaderboardById = function(req, res) {
 	var p = leaderboardManager.findTopScores(id, 10);
 	p.then(function(leaderboards) {
 		res.json({boards: leaderboards});
-	});
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+exports.leaderboardsForFriends = function(req, res) {
+	var authIDs = req.body.authIds;
+	var session = req.body.session;
+	var authProvider = req.body.authProvider;
+	var handle = req.body.handle;
+	
+	if(!validate({session : session, handle : handle, authProvider : authProvider, socialIdGroup : authIDs}, res)) {
+		return;
+	}
+	
+	var p = validateSession(session, {"handle" : handle});
+	var gUsers;
+	var gMaps;
+	p.then(function() {
+		var search = {};
+		var searchKey = "auth." + authProvider;
+		search[searchKey] = {$in : authIDs};
+		return userManager.UserModel.find(search, {_id:1}).exec();
+	}).then(function(users) {
+		gUsers = users;
+		return mapManager.MapModel.find({}, {key:1}).setOptions({lean:true}).exec();
+	}).then(function(maps) {
+		gMaps = maps;
+		return userManager.UserModel.findOne({handle:handle}, {_id:1}).exec();
+	}).then(function(user) {
+		console.log(user);
+		var innerp = new mongoose.Promise();
+		innerp.fulfill();
+		
+		var userIds = _.map(gUsers, function(user) {return user._id;});
+		userIds.push(user._id);
+		
+		var results = [];
+		innerp = innerp.then(function() {
+			return leaderboardManager.findTopScores('all', 10, userIds);
+		}).then(function(leaderboard) {
+			results.push(leaderboard);
+		});
+		
+		_.each(gMaps, function(map) {
+			innerp = innerp.then(function() {
+				return leaderboardManager.findTopScores(map.key, 10, userIds);
+			}).then(function(leaderboard) {
+				results.push(leaderboard);
+			});
+		});
+		
+		innerp.then(function() {
+			res.json({b: results});
+		});
+		
+		return innerp;
+	}).then(null, logErrorAndSetResponse(req, res));
 }
 
 exports.practiceGame = function(req, res){

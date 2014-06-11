@@ -12,8 +12,9 @@
 Thumbs.db
 
 # generated files
-bin/
 gen/
+bin/
+!/bin/
 
 .settings/
 
