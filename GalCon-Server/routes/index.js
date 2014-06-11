@@ -1345,7 +1345,7 @@ exports.leaderboardsForFriends = function(req, res) {
 		innerp.fulfill();
 		
 		var userIds = _.map(gUsers, function(user) {return user._id;});
-		userIds.push(user._id)");
+		userIds.push(user._id);
 		
 		var results = [];
 		innerp = innerp.then(function() {
