@@ -22,6 +22,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_B
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARDS_FOR_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARD_BY_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
@@ -636,7 +637,22 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
 
+	@Override
+	public void findLeaderboardsForFriends(final UIConnectionResultCallback<Leaderboards> callback,
+			List<String> authIds, String handle, String authProvider) {
+		try {
+			final JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(), authProvider);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<Leaderboards>(callback, FIND_LEADERBOARDS_FOR_FRIENDS, Leaderboards.class)
+							.execute(top.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
 	}
 
 	@Override
