@@ -63,7 +63,7 @@
 					"shipCountEffect" : 0.5,
 					"shipsAvailable" : 0.8,
 					"agressionEffect" : 1.2,
-					"abilityPlanetEffect" : 1.1,
+					"abilityPlanetEffect" : 0.3,
 					"maxSendEffect" : 1.2,
 					"aggressiveThreshold" : 0.8
 				}	
@@ -86,7 +86,7 @@
 					"shipCountEffect" : 0.5,
 					"shipsAvailable" : 0.8,
 					"agressionEffect" : 1.2,
-					"abilityPlanetEffect" : 1.1,
+					"abilityPlanetEffect" : 0.4,
 					"maxSendEffect" : 1.2,
 					"aggressiveThreshold" : 0.8
 				}	
@@ -109,7 +109,7 @@
 					"shipCountEffect" : 0.5,
 					"shipsAvailable" : 0.85,
 					"agressionEffect" : 1.3,
-					"abilityPlanetEffect" : 1.2,
+					"abilityPlanetEffect" : 0.5,
 					"maxSendEffect" : 1.3,
 					"aggressiveThreshold" : 0.8
 				}	
@@ -132,7 +132,7 @@
 					"shipCountEffect" : 0.5,
 					"shipsAvailable" : 0.9,
 					"agressionEffect" : 1.5,
-					"abilityPlanetEffect" : 1.2,
+					"abilityPlanetEffect" : 0.6,
 					"maxSendEffect" : 1.4,
 					"aggressiveThreshold" : 0.7
 				}	
