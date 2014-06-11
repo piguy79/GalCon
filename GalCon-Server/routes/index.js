@@ -1332,7 +1332,7 @@ exports.leaderboardsForFriends = function(req, res) {
 		var search = {};
 		var searchKey = "auth." + authProvider;
 		search[searchKey] = {$in : authIDs};
-		return userManager.UserModel.find(search, {_id:1}).setOptions({lean:true}).exec();
+		return userManager.UserModel.find(search, {_id:1}).exec();
 	}).then(function(users) {
 		gUsers = users;
 		return mapManager.MapModel.find({}, {key:1}).setOptions({lean:true}).exec();
@@ -1345,7 +1345,7 @@ exports.leaderboardsForFriends = function(req, res) {
 		innerp.fulfill();
 		
 		var userIds = _.map(gUsers, function(user) {return user._id;});
-		userIds.push(user._id);
+		userIds.push("ObjectId('" + user._id + "')");
 		
 		var results = [];
 		innerp = innerp.then(function() {
