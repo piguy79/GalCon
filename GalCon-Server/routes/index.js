@@ -1338,14 +1338,14 @@ exports.leaderboardsForFriends = function(req, res) {
 		return mapManager.MapModel.find({}, {key:1}).setOptions({lean:true}).exec();
 	}).then(function(maps) {
 		gMaps = maps;
-		return userManager.UserModel.findOne({handle:handle}, {_id:1}).setOptions({lean:true}).exec();
+		return userManager.UserModel.findOne({handle:handle}, {_id:1}).exec();
 	}).then(function(user) {
 		console.log(user);
 		var innerp = new mongoose.Promise();
 		innerp.fulfill();
 		
 		var userIds = _.map(gUsers, function(user) {return user._id;});
-		userIds.push("ObjectId('" + user._id + "')");
+		userIds.push(user._id)");
 		
 		var results = [];
 		innerp = innerp.then(function() {
