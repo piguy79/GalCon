@@ -156,7 +156,7 @@ exports.findTopScores = function(id, count, limitToIds) {
 	if(limitToIds) {
 		_.extend(query, {'user.id' : {$in : limitToIds}});
 	}
-	console.log(query);
+	
 	return LeaderboardModel.find(query).sort({'score' : -1}).limit(count).exec();
 }
 
