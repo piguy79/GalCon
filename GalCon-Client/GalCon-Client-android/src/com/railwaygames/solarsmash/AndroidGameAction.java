@@ -31,11 +31,10 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
-import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
-
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -60,8 +59,7 @@ import com.crashlytics.android.Crashlytics;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.GameAction;
-import com.railwaygames.solarsmash.http.GameActionCache.InventoryCache;
-import com.railwaygames.solarsmash.http.GameActionCache.MapsCache;
+import com.railwaygames.solarsmash.http.GameActionCache;
 import com.railwaygames.solarsmash.http.JsonConstructor;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -90,6 +88,9 @@ public class AndroidGameAction implements GameAction {
 	private SocialAction socialAction;
 	private GameLoop gameLoop;
 	private Config config = new AndroidConfig();
+
+	private static final long ONE_DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
+	private static final long ONE_HOUR_IN_MILLIS = 1000 * 60 * 60;
 
 	private class SilentSignInAuthenticationListener<T extends JsonConvertible> implements AuthenticationListener {
 
@@ -178,7 +179,7 @@ public class AndroidGameAction implements GameAction {
 		this.socialAction = socialAction;
 	}
 
-	private MapsCache mapCache = new MapsCache();
+	private GameActionCache<Maps> mapCache = new GameActionCache<Maps>(ONE_DAY_IN_MILLIS);
 
 	@Override
 	public void findAllMaps(final UIConnectionResultCallback<Maps> callback) {
@@ -367,7 +368,7 @@ public class AndroidGameAction implements GameAction {
 
 	}
 
-	private InventoryCache inventoryCache = new InventoryCache();
+	private GameActionCache<Inventory> inventoryCache = new GameActionCache<Inventory>(ONE_DAY_IN_MILLIS);
 
 	@Override
 	public void loadAvailableInventory(final UIConnectionResultCallback<Inventory> callback) {
@@ -641,19 +642,28 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
+	private GameActionCache<Leaderboards> friendLeaderboardCache = new GameActionCache<Leaderboards>(ONE_HOUR_IN_MILLIS);
+
 	@Override
 	public void findLeaderboardsForFriends(final UIConnectionResultCallback<Leaderboards> callback,
 			List<String> authIds, String handle, String authProvider) {
-		try {
-			final JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(), authProvider);
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					new PostJsonRequestTask<Leaderboards>(callback, FIND_LEADERBOARDS_FOR_FRIENDS, Leaderboards.class)
-							.execute(top.toString());
-				}
-			});
-		} catch (JSONException e) {
-			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+
+		if (friendLeaderboardCache.getCache() != null) {
+			callback.onConnectionResult(friendLeaderboardCache.getCache());
+		} else {
+			friendLeaderboardCache.setDelegate(callback);
+			try {
+				final JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(),
+						authProvider);
+				activity.runOnUiThread(new Runnable() {
+					public void run() {
+						new PostJsonRequestTask<Leaderboards>(friendLeaderboardCache, FIND_LEADERBOARDS_FOR_FRIENDS,
+								Leaderboards.class).execute(top.toString());
+					}
+				});
+			} catch (JSONException e) {
+				Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+			}
 		}
 	}
 
@@ -702,16 +712,28 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
+	private Map<String, GameActionCache<Leaderboards>> leaderboardCaches = new HashMap<String, GameActionCache<Leaderboards>>();
+
 	@Override
 	public void findLeaderboardById(final UIConnectionResultCallback<Leaderboards> callback, final String id) {
-		final Map<String, String> args = new HashMap<String, String>();
+		GameActionCache<Leaderboards> leaderboardCache = leaderboardCaches.get(id);
+		if (leaderboardCache == null) {
+			leaderboardCache = new GameActionCache<Leaderboards>(ONE_HOUR_IN_MILLIS);
+			leaderboardCaches.put(id, leaderboardCache);
+		}
 
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				new GetJsonRequestTask<Leaderboards>(args, callback, FIND_LEADERBOARD_BY_ID.replace(":id", id),
-						Leaderboards.class).execute("");
-			}
-		});
+		if (leaderboardCache.getCache() != null) {
+			callback.onConnectionResult(leaderboardCache.getCache());
+		} else {
+			leaderboardCache.setDelegate(callback);
+			final GameActionCache<Leaderboards> cache = leaderboardCache;
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new GetJsonRequestTask<Leaderboards>(new HashMap<String, String>(), cache, FIND_LEADERBOARD_BY_ID
+							.replace(":id", id), Leaderboards.class).execute("");
+				}
+			});
+		}
 	}
 
 	public void practiceGame(final UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId) {
