@@ -40,7 +40,7 @@ import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Friend;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.model.Leaderboards;
-import com.railwaygames.solarsmash.model.Leaderboards.Leaderboard;
+import com.railwaygames.solarsmash.model.Leaderboards.LeaderboardEntry;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Player;
@@ -70,7 +70,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private SocialAction socialAction;
 
 	private AtlasRegion cardImage;
-	private AtlasRegion cardShadowImage;
 	private ScrollPaneHighlightReel highlightReel;
 	private ShaderLabel coinText;
 	protected WaitImageButton waitImage;
@@ -82,6 +81,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	private Overlay errorOverlay;
 
 	private List<Friend> friends = null;
+	private Leaderboards friendLeaderboards = null;
+	private List<LeaderboardCardActor> leaderboardCards = new ArrayList<LeaderboardCardActor>();
 
 	public boolean hideTitleArea = false;
 
@@ -92,6 +93,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void loadCards(final GameCount gameCount) {
+		leaderboardCards.clear();
+
 		final Table table = new Table();
 		final ScrollPane scrollPane = new ScrollPane(table);
 		scrollPane.setScrollingDisabled(false, true);
@@ -116,12 +119,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				CardGroup card = new MenuCardActor(gameCount, resources);
 				table.add(card).expandX().fillX();
 
-				card = new LeaderboardCardActor("all", "Overall", resources);
-				table.add(card).expandX().fillX();
+				LeaderboardCardActor lcard = new LeaderboardCardActor("all", "Overall", resources);
+				table.add(lcard).expandX().fillX();
+				leaderboardCards.add(lcard);
 
 				for (Map map : result.allMaps) {
-					card = new LeaderboardCardActor("" + map.key, map.title, resources);
-					table.add(card).expandX().fillX();
+					lcard = new LeaderboardCardActor("" + map.key, map.title, resources);
+					table.add(lcard).expandX().fillX();
+					leaderboardCards.add(lcard);
 				}
 
 				createScrollhighlightReel(result.allMaps);
@@ -302,7 +307,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		stage.addActor(waitImage);
 
 		this.cardImage = resources.levelSelectionAtlas.findRegion("level_card_gray");
-		this.cardShadowImage = resources.levelSelectionAtlas.findRegion("level_select_card_shadow");
 
 		leaderboardText = new ShaderLabel(resources.fontShader, "Leaderboards", resources.skin,
 				Constants.UI.DEFAULT_FONT, Color.WHITE);
@@ -347,7 +351,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 						@Override
 						public void onConnectionResult(Leaderboards result) {
-							System.out.println(result);
+							friendLeaderboards = result;
+							for (LeaderboardCardActor actor : leaderboardCards) {
+								actor.refreshFriends();
+							}
 						}
 
 						@Override
@@ -464,8 +471,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private class LeaderboardCardActor extends CardGroup implements UIConnectionResultCallback<Leaderboards> {
-		private Leaderboards leaderboards;
-		private boolean loaded = false;
+		private Leaderboards globalLeaderboards;
 		private final String id;
 		private final String mapTitle;
 		private Table table;
@@ -493,8 +499,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			x += xOffset;
 			y += yOffset;
 
-			System.out.println("Y: " + y + ", height: " + height);
-
 			tabLeft.setBounds(xOffset, y, width * 0.5f, height * 0.13f);
 			tabTextLeft.setBounds(xOffset, y, width * 0.5f, height * 0.13f);
 
@@ -502,7 +506,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			tabTextRight.setBounds(xOffset + width * 0.5f, y, width * 0.5f, height * 0.13f);
 		}
 
-		public LeaderboardCardActor(String id, String mapTitle, Resources resources) {
+		public void refreshFriends() {
+			if (tabLeft.isVisible()) {
+				table.clear();
+				loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+			}
+		}
+
+		public LeaderboardCardActor(final String id, String mapTitle, Resources resources) {
 			super(id.equals("all") ? 0 : Integer.valueOf(id));
 
 			this.id = id;
@@ -524,10 +535,15 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			tabLeft.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
 					if (tabLeft.isVisible()) {
+						table.clear();
 						tabTextLeft.setColor(Color.BLACK);
 						tabTextRight.setColor(Color.WHITE);
 						tabRight.setVisible(true);
 						tabLeft.setVisible(false);
+
+						if (friendLeaderboards != null) {
+							loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+						}
 					}
 				};
 			});
@@ -538,10 +554,17 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			tabRight.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
 					if (tabRight.isVisible()) {
+						table.clear();
 						tabTextLeft.setColor(Color.WHITE);
 						tabTextRight.setColor(Color.BLACK);
 						tabLeft.setVisible(true);
 						tabRight.setVisible(false);
+
+						if (globalLeaderboards != null) {
+							loadLeaderboards(globalLeaderboards.leaderboards.get(id));
+						} else {
+							ExternalActionWrapper.findLeaderboardById(LeaderboardCardActor.this, id);
+						}
 					}
 				};
 			});
@@ -552,27 +575,18 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			addActor(tabRight);
 			addActor(tabTextLeft);
 			addActor(tabTextRight);
-		}
 
-		@Override
-		public void draw(Batch batch, float parentAlpha) {
-			if (!loaded) {
-				loaded = true;
-				ExternalActionWrapper.findLeaderboardById(this, id);
+			if (friendLeaderboards != null) {
+				table.clear();
+				loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+				table.layout();
 			}
-
-			super.draw(batch, parentAlpha);
 		}
 
-		@Override
-		public void onConnectionError(String msg) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void onConnectionResult(Leaderboards result) {
-			this.leaderboards = result;
-
+		private void loadLeaderboards(List<LeaderboardEntry> results) {
+			if (results == null) {
+				return;
+			}
 			ShaderLabel label = new ShaderLabel(resources.fontShader, mapTitle, resources.skin,
 					Constants.UI.DEFAULT_FONT, Color.BLACK);
 			table.add(label).colspan(3).align(Align.center).height(getHeight() * 0.12f);
@@ -588,7 +602,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			table.add(label).left().padRight(getWidth() * 0.02f);
 
 			int i = 1;
-			for (Leaderboard board : result.leaderboards) {
+			for (LeaderboardEntry board : results) {
 				table.row().height(getHeight() * 0.06f);
 				label = new ShaderLabel(resources.fontShader, "" + i, resources.skin, Constants.UI.X_SMALL_FONT,
 						Color.BLACK);
@@ -607,6 +621,18 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				table.add(label).right();
 				i++;
 			}
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onConnectionResult(Leaderboards result) {
+			this.globalLeaderboards = result;
+
+			loadLeaderboards(result.leaderboards.get(id));
 		}
 	}
 
@@ -746,8 +772,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 				int x = (int) getX();
 				int y = (int) getY();
-
-				batch.draw(cardShadowImage, x, y, width, height);
 
 				int xOffset = (int) (width * 0.1f);
 				int yOffset = (int) (height * 0.1f);

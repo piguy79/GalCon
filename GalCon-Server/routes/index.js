@@ -1311,7 +1311,7 @@ exports.leaderboardById = function(req, res) {
 	
 	var p = leaderboardManager.findTopScores(id, 10);
 	p.then(function(leaderboards) {
-		res.json({boards: leaderboards});
+		res.json({boards: [leaderboards]});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -1332,13 +1332,13 @@ exports.leaderboardsForFriends = function(req, res) {
 		var search = {};
 		var searchKey = "auth." + authProvider;
 		search[searchKey] = {$in : authIDs};
-		return userManager.UserModel.find(search, {_id:1}).exec();
+		return userManager.UserModel.find(search, {_id:1}).setOptions({lean:true}).exec();
 	}).then(function(users) {
 		gUsers = users;
 		return mapManager.MapModel.find({}, {key:1}).setOptions({lean:true}).exec();
 	}).then(function(maps) {
 		gMaps = maps;
-		return userManager.UserModel.findOne({handle:handle}, {_id:1}).exec();
+		return userManager.UserModel.findOne({handle:handle}, {_id:1}).setOptions({lean:true}).exec();
 	}).then(function(user) {
 		console.log(user);
 		var innerp = new mongoose.Promise();
@@ -1363,7 +1363,7 @@ exports.leaderboardsForFriends = function(req, res) {
 		});
 		
 		innerp.then(function() {
-			res.json({b: results});
+			res.json({boards: results});
 		});
 		
 		return innerp;
