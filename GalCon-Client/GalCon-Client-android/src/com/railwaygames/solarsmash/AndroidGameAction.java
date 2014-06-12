@@ -34,6 +34,8 @@ import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
+
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -717,7 +719,7 @@ public class AndroidGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.practiceGame(handle, session, mapId);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<GameBoard>(callback, CLAIM_VICTORY, GameBoard.class).execute(top.toString());
+					new PostJsonRequestTask<GameBoard>(callback, PRACTICE, GameBoard.class).execute(top.toString());
 				}
 			});
 		} catch (JSONException e) {
