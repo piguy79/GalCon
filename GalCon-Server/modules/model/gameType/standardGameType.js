@@ -1,7 +1,21 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+gameAi = require('../../gameAi');
 
 exports.processPossibleEndGame = function(game){
-	if(!game.hasOnlyOnePlayer()){
+	if(game.ai){
+		var numPlanetsOwnedByAi = _.filter(game.planets, function(planet){
+			return planet.handle === 'AI';
+		});
+		
+		var otherPlayer = _.filter(game.players, function(player){
+			return player.handle !== 'AI';
+		});
+		
+		if(numPlanetsOwnedByAi && numPlanetsOwnedByAi.length === 0){
+			game.endGame.winnerHandle = otherPlayer[0].handle;
+			game.endGame.date = Date.now();
+		}
+	}else if(!game.hasOnlyOnePlayer()){
 		var playersWhoOwnAPlanet = [];
 		for(var i = 0; i < game.planets.length; i++){
 			var planet = game.planets[i];
