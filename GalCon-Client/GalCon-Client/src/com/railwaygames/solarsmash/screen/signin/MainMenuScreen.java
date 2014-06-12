@@ -512,7 +512,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 		}
 
-		public LeaderboardCardActor(final String id, String mapTitle, Resources resources) {
+		public LeaderboardCardActor(final String id, String mapTitle, final Resources resources) {
 			super(id.equals("all") ? 0 : Integer.valueOf(id));
 
 			this.id = id;
@@ -564,6 +564,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						if (globalLeaderboards != null) {
 							loadLeaderboards(globalLeaderboards.leaderboards.get(id));
 						} else {
+							WaitImageButton waitImage = new WaitImageButton(resources.skin);
+							waitImage.start();
+							table.row();
+							table.add(waitImage).colspan(3).center();
 							ExternalActionWrapper.findLeaderboardById(LeaderboardCardActor.this, id);
 						}
 					}
@@ -639,13 +643,16 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		@Override
 		public void onConnectionError(String msg) {
-			// TODO Auto-generated method stub
+			table.clear();
+			loadHeader();
 		}
 
 		@Override
 		public void onConnectionResult(Leaderboards result) {
 			this.globalLeaderboards = result;
 
+			table.clear();
+			loadHeader();
 			loadLeaderboards(result.leaderboards.get(id));
 		}
 	}
