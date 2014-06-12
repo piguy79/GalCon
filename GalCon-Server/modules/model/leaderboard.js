@@ -13,6 +13,7 @@ var leaderboardSchema = mongoose.Schema({
 		handle : "String"
 	},
 	score : "Number",
+	rank : "Number",
 	record : {
 		w : "Number",
 		l : "Number"
@@ -107,7 +108,7 @@ var winPercent = function(map) {
 					if(gamesPlayed > 0) {
 						score = score / gamesPlayed;
 						
-						// Reduce score for those with < 50 games played on a linear scale
+						// Reduce score for those with < 25 games played on a linear scale
 						if(gamesPlayed < 25) {
 							var keepPercent = gamesPlayed / 25.0;
 							score *= keepPercent;
@@ -124,7 +125,32 @@ var winPercent = function(map) {
 			
 			return calcP;
 		});
-	})
+	}).then(function() {
+		return LeaderboardModel.find({id:map}).sort({'score' : -1}).exec();
+	}).then(function(entries) {
+		var innerp = new mongoose.Promise();
+		innerp.fulfill();
+		var lastRank = 0, lastScore = -1, countAtRank = 1;
+		_.each(entries, function(entry) {
+			var userRank;
+			if(entry.score === lastScore) {
+				countAtRank += 1;
+				userRank = lastRank;
+			} else {
+				lastRank += countAtRank;
+				countAtRank = 1;
+				userRank = lastRank;
+			}
+			lastScore = entry.score;
+			
+			innerp = innerp.then(function() {
+				entry.rank = userRank;
+				return entry.withPromise(entry.save);
+			})
+		});
+		
+		return innerp;
+	});
 }
 
 var recordWinLoss = function(userWinLossMap, id, winOrLossField) {
@@ -151,13 +177,26 @@ exports.calculate = function() {
 	});
 }
 
-exports.findTopScores = function(id, count, limitToIds) {
+exports.findTopScores = function(id, count, handle, limitToIds) {
 	var query = {'id' : id, 'score' : {$gt : 0}};
 	if(limitToIds) {
 		_.extend(query, {'user.id' : {$in : limitToIds}});
 	}
 	
-	return LeaderboardModel.find(query).sort({'score' : -1}).limit(count).exec();
+	var p = LeaderboardModel.find(query).sort({'score' : -1}).limit(count).exec();
+	return p.then(function(entries) {
+		if(!handle) {
+			return entries;
+		}
+		
+		var userp = LeaderboardModel.findOne({'id' : id, 'user.handle' : handle}).exec();
+		return userp.then(function(userEntry) {
+			if(userEntry != null) {
+				entries.push(userEntry);
+			}
+			return entries;
+		});
+	});
 }
 
 exports.findScore = function(id, handle) {

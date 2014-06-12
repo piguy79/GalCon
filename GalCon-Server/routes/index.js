@@ -1326,37 +1326,29 @@ exports.leaderboardsForFriends = function(req, res) {
 	}
 	
 	var p = validateSession(session, {"handle" : handle});
-	var gUsers;
-	var gMaps;
+	var userIds;
 	p.then(function() {
 		var search = {};
 		var searchKey = "auth." + authProvider;
 		search[searchKey] = {$in : authIDs};
 		return userManager.UserModel.find(search, {_id:1}).setOptions({lean:true}).exec();
 	}).then(function(users) {
-		gUsers = users;
+		userIds = _.map(users, function(user) {return user._id;});
 		return mapManager.MapModel.find({}, {key:1}).setOptions({lean:true}).exec();
 	}).then(function(maps) {
-		gMaps = maps;
-		return userManager.UserModel.findOne({handle:handle}, {_id:1}).setOptions({lean:true}).exec();
-	}).then(function(user) {
-		console.log(user);
 		var innerp = new mongoose.Promise();
 		innerp.fulfill();
 		
-		var userIds = _.map(gUsers, function(user) {return user._id;});
-		userIds.push(user._id);
-		
 		var results = [];
 		innerp = innerp.then(function() {
-			return leaderboardManager.findTopScores('all', 10, userIds);
+			return leaderboardManager.findTopScores('all', 10, handle, userIds);
 		}).then(function(leaderboard) {
 			results.push(leaderboard);
 		});
 		
-		_.each(gMaps, function(map) {
+		_.each(maps, function(map) {
 			innerp = innerp.then(function() {
-				return leaderboardManager.findTopScores(map.key, 10, userIds);
+				return leaderboardManager.findTopScores(map.key, 10, handle, userIds);
 			}).then(function(leaderboard) {
 				results.push(leaderboard);
 			});

@@ -318,25 +318,22 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		if (friends == null) {
 			friends = new ArrayList<Friend>();
-			// socialAction.getFriends(new FriendsListener() {
-			// @Override
-			// public void onFriendsLoadedFail(String error) {
-			// // TODO Auto-generated method stub
-			//
-			// }
-			//
-			// @Override
-			// public void onFriendsLoadedSuccess(List<Friend> friends, String
-			// authProviderUsed) {
-			// friends.addAll(friends);
-			// }
-			// }, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+			socialAction.getFriends(new FriendsListener() {
+				@Override
+				public void onFriendsLoadedFail(String error) {
+					Gdx.app.log("FRIENDS", "Could not load FB friends: " + error);
+				}
+
+				@Override
+				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
+					friends.addAll(friends);
+				}
+			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
 
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
-					// TODO Auto-generated method stub
-
+					Gdx.app.log("FRIENDS", "Could not load G+ friends: " + error);
 				}
 
 				@Override
@@ -472,6 +469,8 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private class LeaderboardCardActor extends CardGroup implements UIConnectionResultCallback<Leaderboards> {
 		private Leaderboards globalLeaderboards;
+		private boolean loaded = false;
+		private boolean headerLoaded = false;
 		private final String id;
 		private final String mapTitle;
 		private Table table;
@@ -536,6 +535,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				public void clicked(InputEvent event, float x, float y) {
 					if (tabLeft.isVisible()) {
 						table.clear();
+						loadHeader();
 						tabTextLeft.setColor(Color.BLACK);
 						tabTextRight.setColor(Color.WHITE);
 						tabRight.setVisible(true);
@@ -555,6 +555,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				public void clicked(InputEvent event, float x, float y) {
 					if (tabRight.isVisible()) {
 						table.clear();
+						loadHeader();
 						tabTextLeft.setColor(Color.WHITE);
 						tabTextRight.setColor(Color.BLACK);
 						tabLeft.setVisible(true);
@@ -575,18 +576,25 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			addActor(tabRight);
 			addActor(tabTextLeft);
 			addActor(tabTextRight);
-
-			if (friendLeaderboards != null) {
-				table.clear();
-				loadLeaderboards(friendLeaderboards.leaderboards.get(id));
-				table.layout();
-			}
 		}
 
-		private void loadLeaderboards(List<LeaderboardEntry> results) {
-			if (results == null) {
-				return;
+		@Override
+		public void draw(Batch batch, float parentAlpha) {
+			if (!headerLoaded) {
+				headerLoaded = true;
+				loadHeader();
 			}
+			if (!loaded) {
+				if (!tabLeft.isVisible() && friendLeaderboards != null) {
+					loaded = true;
+					loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+				}
+			}
+
+			super.draw(batch, parentAlpha);
+		}
+
+		private void loadHeader() {
 			ShaderLabel label = new ShaderLabel(resources.fontShader, mapTitle, resources.skin,
 					Constants.UI.DEFAULT_FONT, Color.BLACK);
 			table.add(label).colspan(3).align(Align.center).height(getHeight() * 0.12f);
@@ -600,26 +608,32 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			label = new ShaderLabel(resources.fontShader, "Score", resources.skin, Constants.UI.X_SMALL_FONT,
 					Color.GRAY);
 			table.add(label).left().padRight(getWidth() * 0.02f);
+		}
 
-			int i = 1;
-			for (LeaderboardEntry board : results) {
-				table.row().height(getHeight() * 0.06f);
-				label = new ShaderLabel(resources.fontShader, "" + i, resources.skin, Constants.UI.X_SMALL_FONT,
-						Color.BLACK);
+		private void loadLeaderboards(List<LeaderboardEntry> results) {
+			if (results == null) {
+				return;
+			}
+			table.clear();
+			loadHeader();
+
+			for (LeaderboardEntry entry : results) {
+				table.row().height(getHeight() * 0.055f);
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "" + entry.rank, resources.skin,
+						Constants.UI.X_SMALL_FONT, Color.BLACK);
 				table.add(label).left().padRight(getWidth() * 0.02f);
 
-				label = new ShaderLabel(resources.fontShader, board.handle, resources.skin, Constants.UI.X_SMALL_FONT,
+				label = new ShaderLabel(resources.fontShader, entry.handle, resources.skin, Constants.UI.X_SMALL_FONT,
 						Color.GRAY);
 				label.setColor(Constants.Colors.USER_SHIP_FILL);
 				table.add(label).expandX().left();
 
-				BigDecimal score = new BigDecimal(board.score);
+				BigDecimal score = new BigDecimal(entry.score);
 				score = score.setScale(2, RoundingMode.HALF_UP);
 
 				label = new ShaderLabel(resources.fontShader, score.toString(), resources.skin,
 						Constants.UI.X_SMALL_FONT, Color.BLACK);
 				table.add(label).right();
-				i++;
 			}
 		}
 

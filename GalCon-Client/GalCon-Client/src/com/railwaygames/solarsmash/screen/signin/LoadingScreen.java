@@ -16,6 +16,7 @@ import com.railwaygames.solarsmash.http.InAppBillingAction.Callback;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
+import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.Resources;
@@ -71,7 +72,7 @@ public class LoadingScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionResult(Configuration result) {
 			GameLoop.CONFIG = result;
-			inAppBillingAction.setup(setupCallback);
+			gameAction.findAllMaps(mapsCallback);
 		}
 
 		@Override
@@ -81,6 +82,25 @@ public class LoadingScreen implements PartialScreenFeedback {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					gameAction.findConfigByType(configCallback, "app");
+				}
+			});
+			stage.addActor(ovrlay);
+		}
+	};
+
+	private UIConnectionResultCallback<Maps> mapsCallback = new UIConnectionResultCallback<Maps>() {
+		@Override
+		public void onConnectionResult(Maps result) {
+			inAppBillingAction.setup(setupCallback);
+		}
+
+		@Override
+		public void onConnectionError(String msg) {
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(
+					"Could not connect.\n\nTouch to retry", resources), new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					gameAction.findAllMaps(mapsCallback);
 				}
 			});
 			stage.addActor(ovrlay);
