@@ -53,9 +53,10 @@ public class CommonCoinButton extends Group {
 		
 		coinImage = new Image(skin, Constants.UI.COIN_IMAGE);
 		coinImage.setX(getWidth() * 0.8f);
-		coinImage.setY(getHeight() * 0.15f);
 		coinImage.setWidth(getWidth() * 0.18f);
 		coinImage.setHeight(coinImage.getWidth());
+		coinImage.setY((getHeight() * 0.5f) - (coinImage.getHeight() * 0.5f));
+
 		
 
 		addActor(bg);
