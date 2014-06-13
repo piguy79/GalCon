@@ -162,6 +162,10 @@ public class FacebookAuthorization implements Authorizer {
 		Request friendRequest = Request.newMyFriendsRequest(session, new GraphUserListCallback() {
 			@Override
 			public void onCompleted(List<GraphUser> users, Response response) {
+				if (users == null) {
+					listener.onFriendsLoadedFail("Could not find users");
+					return;
+				}
 				List<Friend> friends = new ArrayList<Friend>();
 				for (GraphUser user : users) {
 					String imageUrl = "";

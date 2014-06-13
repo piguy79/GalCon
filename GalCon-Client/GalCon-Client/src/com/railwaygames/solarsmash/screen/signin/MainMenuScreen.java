@@ -565,9 +565,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 							loadLeaderboards(globalLeaderboards.leaderboards.get(id));
 						} else {
 							WaitImageButton waitImage = new WaitImageButton(resources.skin);
+							float buttonWidth = .1f * (float) table.getWidth();
+							waitImage.setWidth(buttonWidth);
+							waitImage.setHeight(buttonWidth);
 							waitImage.start();
 							table.row();
-							table.add(waitImage).colspan(3).center();
+							table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f);
 							ExternalActionWrapper.findLeaderboardById(LeaderboardCardActor.this, id);
 						}
 					}
@@ -629,7 +632,11 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 				label = new ShaderLabel(resources.fontShader, entry.handle, resources.skin, Constants.UI.X_SMALL_FONT,
 						Color.GRAY);
-				label.setColor(Constants.Colors.USER_SHIP_FILL);
+				if (entry.handle.equals(GameLoop.USER.handle)) {
+					label.setColor(Constants.Colors.USER_SHIP_FILL);
+				} else {
+					label.setColor(Constants.Colors.ENEMY_SHIP_FILL);
+				}
 				table.add(label).expandX().left();
 
 				BigDecimal score = new BigDecimal(entry.score);
