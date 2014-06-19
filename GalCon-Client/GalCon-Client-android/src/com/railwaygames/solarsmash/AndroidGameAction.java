@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -642,23 +643,30 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	private GameActionCache<Leaderboards> friendLeaderboardCache = new GameActionCache<Leaderboards>(ONE_HOUR_IN_MILLIS);
+	private Map<String, GameActionCache<Leaderboards>> friendLeaderboardCaches = new ConcurrentHashMap<String, GameActionCache<Leaderboards>>();
 
 	@Override
 	public void findLeaderboardsForFriends(final UIConnectionResultCallback<Leaderboards> callback,
 			List<String> authIds, String handle, String authProvider) {
 
-		if (friendLeaderboardCache.getCache() != null) {
-			callback.onConnectionResult(friendLeaderboardCache.getCache());
+		GameActionCache<Leaderboards> cache = friendLeaderboardCaches.get(authProvider);
+		if (cache == null) {
+			cache = new GameActionCache<Leaderboards>(ONE_HOUR_IN_MILLIS);
+			friendLeaderboardCaches.put(authProvider, cache);
+		}
+
+		if (cache.getCache() != null) {
+			callback.onConnectionResult(cache.getCache());
 		} else {
-			friendLeaderboardCache.setDelegate(callback);
+			cache.setDelegate(callback);
 			try {
 				final JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(),
 						authProvider);
+				final GameActionCache<Leaderboards> fCache = cache;
 				activity.runOnUiThread(new Runnable() {
 					public void run() {
-						new PostJsonRequestTask<Leaderboards>(friendLeaderboardCache, FIND_LEADERBOARDS_FOR_FRIENDS,
-								Leaderboards.class).execute(top.toString());
+						new PostJsonRequestTask<Leaderboards>(fCache, FIND_LEADERBOARDS_FOR_FRIENDS, Leaderboards.class)
+								.execute(top.toString());
 					}
 				});
 			} catch (JSONException e) {
@@ -712,7 +720,7 @@ public class AndroidGameAction implements GameAction {
 		}
 	}
 
-	private Map<String, GameActionCache<Leaderboards>> leaderboardCaches = new HashMap<String, GameActionCache<Leaderboards>>();
+	private Map<String, GameActionCache<Leaderboards>> leaderboardCaches = new ConcurrentHashMap<String, GameActionCache<Leaderboards>>();
 
 	@Override
 	public void findLeaderboardById(final UIConnectionResultCallback<Leaderboards> callback, final String id) {

@@ -322,49 +322,62 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				@Override
 				public void onFriendsLoadedFail(String error) {
 					Gdx.app.log("FRIENDS", "Could not load FB friends: " + error);
+					loadGooglePlusFriends();
 				}
 
 				@Override
 				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
-					friends.addAll(friends);
+					loadLeaderboardsForFriends(friends, authProviderUsed);
+					loadGooglePlusFriends();
 				}
 			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
-
-			socialAction.getFriends(new FriendsListener() {
-				@Override
-				public void onFriendsLoadedFail(String error) {
-					Gdx.app.log("FRIENDS", "Could not load G+ friends: " + error);
-				}
-
-				@Override
-				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
-					friends.addAll(friends);
-					List<String> authIds = new ArrayList<String>(friends.size());
-					for (Friend friend : friends) {
-						authIds.add(friend.id);
-					}
-
-					gameAction.findLeaderboardsForFriends(new UIConnectionResultCallback<Leaderboards>() {
-
-						@Override
-						public void onConnectionResult(Leaderboards result) {
-							friendLeaderboards = result;
-							for (LeaderboardCardActor actor : leaderboardCards) {
-								actor.refreshFriends();
-							}
-						}
-
-						@Override
-						public void onConnectionError(String msg) {
-
-						}
-
-					}, authIds, GameLoop.USER.handle, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
-				}
-			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 		}
 
 		loadUser();
+	}
+
+	private void loadGooglePlusFriends() {
+		socialAction.getFriends(new FriendsListener() {
+			@Override
+			public void onFriendsLoadedFail(String error) {
+				Gdx.app.log("FRIENDS", "Could not load G+ friends: " + error);
+			}
+
+			@Override
+			public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
+				loadLeaderboardsForFriends(friends, authProviderUsed);
+
+			}
+		}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+	}
+
+	private void loadLeaderboardsForFriends(List<Friend> friends, String authProviderUsed) {
+		List<String> authIds = new ArrayList<String>(friends.size());
+		for (Friend friend : friends) {
+			authIds.add(friend.id);
+		}
+
+		gameAction.findLeaderboardsForFriends(new UIConnectionResultCallback<Leaderboards>() {
+
+			@Override
+			public void onConnectionResult(Leaderboards result) {
+				if (friendLeaderboards == null) {
+					friendLeaderboards = result;
+				} else {
+					friendLeaderboards.merge(result);
+				}
+
+				for (LeaderboardCardActor actor : leaderboardCards) {
+					actor.refreshFriends();
+				}
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				// TODO: handle errors
+			}
+
+		}, authIds, GameLoop.USER.handle, authProviderUsed);
 	}
 
 	private void loadUser() {
@@ -506,7 +519,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		}
 
 		public void refreshFriends() {
-			if (tabLeft.isVisible()) {
+			if (!tabLeft.isVisible()) {
 				table.clear();
 				loadLeaderboards(friendLeaderboards.leaderboards.get(id));
 			}
@@ -565,12 +578,11 @@ public class MainMenuScreen implements PartialScreenFeedback {
 							loadLeaderboards(globalLeaderboards.leaderboards.get(id));
 						} else {
 							WaitImageButton waitImage = new WaitImageButton(resources.skin);
-							float buttonWidth = .1f * (float) table.getWidth();
-							waitImage.setWidth(buttonWidth);
-							waitImage.setHeight(buttonWidth);
+							float buttonWidth = .4f * (float) getWidth();
 							waitImage.start();
 							table.row();
-							table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f);
+							table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f)
+									.prefWidth(buttonWidth).minWidth(buttonWidth);
 							ExternalActionWrapper.findLeaderboardById(LeaderboardCardActor.this, id);
 						}
 					}
@@ -658,9 +670,11 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		public void onConnectionResult(Leaderboards result) {
 			this.globalLeaderboards = result;
 
-			table.clear();
-			loadHeader();
-			loadLeaderboards(result.leaderboards.get(id));
+			if (!tabRight.isVisible()) {
+				table.clear();
+				loadHeader();
+				loadLeaderboards(result.leaderboards.get(id));
+			}
 		}
 	}
 

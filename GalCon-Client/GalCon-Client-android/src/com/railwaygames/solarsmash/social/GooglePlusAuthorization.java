@@ -7,7 +7,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -189,8 +188,12 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				}
 
 				@Override
-				public void onSignInFailed(String failureMessage) {
-					listener.onFriendsLoadedFail(failureMessage);
+				public void onSignInFailed(final String failureMessage) {
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onFriendsLoadedFail(failureMessage);
+						}
+					});
 				}
 			});
 		}
@@ -202,16 +205,20 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 			@Override
 			public void onResult(LoadPeopleResult result) {
 				PersonBuffer personBuffer = result.getPersonBuffer();
-				try{
-					List<Friend> friends = new ArrayList<Friend>();
+				try {
+					final List<Friend> friends = new ArrayList<Friend>();
 					int count = personBuffer.getCount();
 					for (int i = 0; i < count; i++) {
 						Person person = personBuffer.get(i);
 						Friend friend = new Friend(person.getId(), person.getDisplayName(), "");
 						friends.add(friend);
 					}
-					listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
-				}finally{
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+						}
+					});
+				} finally {
 					personBuffer.close();
 				}
 			}
@@ -237,7 +244,11 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 				@Override
 				public void onSignInFailed(String failureMessage) {
-					listener.onPostFails("Unable to login to Google Plus.");
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onPostFails("Unable to login to Google Plus.");
+						}
+					});
 				}
 			});
 		}
@@ -250,7 +261,11 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 				if (result.getStatus().isSuccess()) {
 					sendPost(result.getPersonBuffer());
 				} else {
-					listener.onPostFails("Error Posting to Google Plus.");
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onPostFails("Error Posting to Google Plus.");
+						}
+					});
 				}
 			}
 		});
@@ -265,8 +280,10 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		}
 
 		Intent shareIntent = new PlusShare.Builder(activity)
-				.setText("Hey, come play me in Solar Smash. Invite me using the handle \"" +  GameLoop.USER.handle + "\". Download from http://www.railwaygames.mobi/ " )
-				.setType("text/plain").setRecipients(people).getIntent();
+				.setText(
+						"Hey, come play me in Solar Smash. Invite me using the handle \"" + GameLoop.USER.handle
+								+ "\". Download from http://www.railwaygames.mobi/ ").setType("text/plain")
+				.setRecipients(people).getIntent();
 
 		activity.startActivityForResult(shareIntent, MainActivity.GOOGLE_PLUS_PUBLISH_ACTIVITY_RESULT_CODE);
 	}
