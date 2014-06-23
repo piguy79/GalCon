@@ -612,12 +612,4 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 	}
 
-	@Override
-	public void findLeaderboardsForFriends(
-			UIConnectionResultCallback<Leaderboards> callback,
-			List<String> authIds, String handle, String authProvider) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
