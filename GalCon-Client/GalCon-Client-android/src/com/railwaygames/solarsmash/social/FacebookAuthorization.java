@@ -74,15 +74,23 @@ public class FacebookAuthorization implements Authorizer {
 
 	private void populateAuthIdAndSucceed() {
 		if (GameLoop.USER.auth != null && GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
-			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
-					.getAccessToken());
+			Gdx.app.postRunnable(new Runnable() {
+				public void run() {
+					listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
+							.getAccessToken());
+				}
+			});
 		} else {
 			Request.newGraphPathRequest(Session.getActiveSession(), "/me", new Request.Callback() {
 
 				@Override
 				public void onCompleted(Response response) {
 					if (response.getError() != null) {
-						listener.onSignInFailed("Unable to connect to FB.");
+						Gdx.app.postRunnable(new Runnable() {
+							public void run() {
+								listener.onSignInFailed("Unable to connect to FB.");
+							}
+						});
 					} else {
 						GraphObject user = response.getGraphObject();
 						GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK,
@@ -93,8 +101,12 @@ public class FacebookAuthorization implements Authorizer {
 								GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 						prefs.flush();
 
-						listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session
-								.getActiveSession().getAccessToken());
+						Gdx.app.postRunnable(new Runnable() {
+							public void run() {
+								listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session
+										.getActiveSession().getAccessToken());
+							}
+						});
 					}
 
 				}
@@ -103,7 +115,7 @@ public class FacebookAuthorization implements Authorizer {
 	}
 
 	@Override
-	public void getToken(AuthenticationListener listener) {
+	public void getToken(final AuthenticationListener listener) {
 		this.listener = listener;
 
 		Session session = Session.getActiveSession();
@@ -111,17 +123,24 @@ public class FacebookAuthorization implements Authorizer {
 			session = createSession();
 			session.openForRead(createRequest().setCallback(statusCallback));
 		} else if (session.isOpened()) {
-			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
-					.getAccessToken());
+			Gdx.app.postRunnable(new Runnable() {
+				public void run() {
+					listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
+							.getAccessToken());
+				}
+			});
 		}
-
 	}
 
 	public class SessionStatusCallback implements Session.StatusCallback {
 		@Override
 		public void call(Session session, SessionState state, Exception exception) {
 			if (SessionState.CLOSED_LOGIN_FAILED == state) {
-				listener.onSignInFailed("Unable to connect to Facebook.");
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						listener.onSignInFailed("Unable to connect to Facebook.");
+					}
+				});
 			} else if (SessionState.OPENED == state) {
 				populateAuthIdAndSucceed();
 			}
@@ -141,13 +160,21 @@ public class FacebookAuthorization implements Authorizer {
 
 				@Override
 				public void onSignInSucceeded(String authProvider, String token) {
-					requestFriendInfo(listener, Session.getActiveSession());
+					activity.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							requestFriendInfo(listener, Session.getActiveSession());
+						}
+					});
 				}
 
 				@Override
 				public void onSignInFailed(String failureMessage) {
-					listener.onFriendsLoadedFail("Unable to connect to FB.");
-
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onFriendsLoadedFail("Unable to connect to FB.");
+						}
+					});
 				}
 			});
 		} else {
@@ -163,10 +190,14 @@ public class FacebookAuthorization implements Authorizer {
 			@Override
 			public void onCompleted(List<GraphUser> users, Response response) {
 				if (users == null) {
-					listener.onFriendsLoadedFail("Could not find users");
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onFriendsLoadedFail("Could not find users");
+						}
+					});
 					return;
 				}
-				List<Friend> friends = new ArrayList<Friend>();
+				final List<Friend> friends = new ArrayList<Friend>();
 				for (GraphUser user : users) {
 					String imageUrl = "";
 					JSONObject jsonObject = user.getInnerJSONObject();
@@ -179,12 +210,15 @@ public class FacebookAuthorization implements Authorizer {
 					Friend friend = new Friend(user.getId(), user.getName(), imageUrl);
 					friends.add(friend);
 				}
-				listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						listener.onFriendsLoadedSuccess(friends, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+					}
+				});
 			}
 		});
 		friendRequest.setParameters(parameters);
 		friendRequest.executeAsync();
-
 	}
 
 	@Override
@@ -203,10 +237,13 @@ public class FacebookAuthorization implements Authorizer {
 
 			@Override
 			public void onSignInFailed(String failureMessage) {
-				listener.onPostFails("Unable to connect to FB.");
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						listener.onPostFails("Unable to connect to FB.");
+					}
+				});
 			}
 		});
-
 	}
 
 	private void showPostDialog(final FriendPostListener listener, String id) {
@@ -227,17 +264,28 @@ public class FacebookAuthorization implements Authorizer {
 					public void onComplete(Bundle values, FacebookException error) {
 						if (error != null) {
 							if (error instanceof FacebookOperationCanceledException) {
-								listener.onPostCancelled();
+								Gdx.app.postRunnable(new Runnable() {
+									public void run() {
+										listener.onPostCancelled();
+									}
+								});
 							} else {
-								listener.onPostFails("Unable to post to FB.");
+								Gdx.app.postRunnable(new Runnable() {
+									public void run() {
+										listener.onPostFails("Unable to post to FB.");
+									}
+								});
 							}
 						} else {
-							listener.onPostSucceeded();
+							Gdx.app.postRunnable(new Runnable() {
+								public void run() {
+									listener.onPostSucceeded();
+								}
+							});
 						}
 
 					}
 				}).build();
 		feedDialog.show();
 	}
-
 }

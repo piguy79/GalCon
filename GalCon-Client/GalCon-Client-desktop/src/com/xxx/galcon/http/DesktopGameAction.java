@@ -17,6 +17,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_B
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARDS_FOR_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARD_BY_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
@@ -55,6 +56,7 @@ import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.JsonConstructor;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.http.UrlConstants;
 import com.railwaygames.solarsmash.model.AvailableGames;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.GameBoard;
@@ -385,7 +387,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			 * a valid session directly into the local DB.
 			 */
 			MongoClient client = new MongoClient("localhost");
-			DB galcon = client.getDB("galcon");
+			DB galcon = client.getDB("galcon"); //app14217106");
 			DBCollection usersCollection = galcon.getCollection("users");
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
@@ -509,7 +511,22 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
+	}
 
+	@Override
+	public void findLeaderboardsForFriends(UIConnectionResultCallback<Leaderboards> callback, List<String> authIds,
+			String handle, String authProvider) {
+		try {
+			JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(), authProvider);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((Leaderboards) callURL(new PostClientRequest(), FIND_LEADERBOARDS_FOR_FRIENDS,
+					args, new Leaderboards()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override

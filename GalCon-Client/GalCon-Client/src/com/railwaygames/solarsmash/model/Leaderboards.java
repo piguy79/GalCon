@@ -71,4 +71,59 @@ public class Leaderboards extends JsonConvertible {
 		public int losses;
 		public int rank;
 	}
+
+	public void merge(Leaderboards otherBoards) {
+		if (otherBoards == null) {
+			return;
+		}
+
+		for (java.util.Map.Entry<String, List<LeaderboardEntry>> otherEntriesSet : otherBoards.leaderboards.entrySet()) {
+			String otherId = otherEntriesSet.getKey();
+
+			List<LeaderboardEntry> mergedEntries = new ArrayList<LeaderboardEntry>();
+			List<LeaderboardEntry> thisEntries = leaderboards.get(otherId);
+			List<LeaderboardEntry> otherEntries = otherEntriesSet.getValue();
+
+			if (thisEntries.isEmpty()) {
+				mergedEntries = otherEntries;
+			} else if (otherEntries.isEmpty()) {
+				mergedEntries = thisEntries;
+			} else {
+				int iOther = 0;
+				int iThis = 0;
+				while (iOther < otherEntries.size() && iThis < thisEntries.size()) {
+					if (iOther == otherEntries.size()) {
+						mergedEntries.add(thisEntries.get(iThis));
+						iThis += 1;
+						continue;
+					} else if (iThis == thisEntries.size()) {
+						mergedEntries.add(otherEntries.get(iOther));
+						iOther += 1;
+						continue;
+					}
+
+					LeaderboardEntry otherEntry = otherEntries.get(iOther);
+					LeaderboardEntry thisEntry = thisEntries.get(iThis);
+
+					// look for friend duplicates
+					if (otherEntry.handle.equals(thisEntry.handle)) {
+						mergedEntries.add(otherEntry);
+						iOther += 1;
+						iThis += 1;
+						continue;
+					}
+
+					if (otherEntry.rank < thisEntry.rank) {
+						mergedEntries.add(otherEntry);
+						iOther += 1;
+					} else {
+						mergedEntries.add(thisEntry);
+						iThis += 1;
+					}
+				}
+			}
+
+			leaderboards.put(otherId, mergedEntries);
+		}
+	}
 }
