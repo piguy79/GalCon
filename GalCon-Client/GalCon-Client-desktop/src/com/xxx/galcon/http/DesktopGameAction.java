@@ -394,7 +394,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
 						GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 6999)
+						.append("xp", 0)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
@@ -593,6 +593,14 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			System.out.println(e);
 		}
 
+	}
+
+	@Override
+	public void findLeaderboardsForFriends(
+			UIConnectionResultCallback<Leaderboards> callback,
+			List<String> authIds, String handle, String authProvider) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
