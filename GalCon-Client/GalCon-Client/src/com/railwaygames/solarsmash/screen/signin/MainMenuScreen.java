@@ -309,6 +309,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	public void show(Stage stage) {
 		this.stage = stage;
 		actors.clear();
+		leaderboardCards.clear();
 
 		waitImage = new WaitImageButton(resources.skin);
 		stage.addActor(waitImage);
