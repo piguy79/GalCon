@@ -9,7 +9,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -107,7 +106,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		if (GameLoop.USER.coins == 0) {
 			returnValue = Action.NO_MORE_COINS;
-		} else if(GameLoop.USER.firstGameEver(prefs)){
+		} else if (GameLoop.USER.firstGameEver(prefs)) {
 			prefs.putBoolean(Constants.Config.FIRST_GAME_PLAYED, true);
 			prefs.flush();
 			startHideSequence(Action.PRACTICE + ":" + this.allMaps.get(0).key);
@@ -116,8 +115,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		}
 
 	}
-
-	
 
 	private void createScrollhighlightReel() {
 		float actorWidth = Gdx.graphics.getWidth() * 0.04f;
@@ -147,7 +144,6 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		highlightReel.highlight(allMaps.get(0).key);
 		actors.add(highlightReel);
 		stage.addActor(highlightReel);
-
 	}
 
 	private void createGameList() {
@@ -226,7 +222,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private void createGameStartDialog(int selectedMapKey) {
 		final GameStartDialog dialog = new GameStartDialog(resources, Gdx.graphics.getWidth() * 0.8f,
-				Gdx.graphics.getHeight() * 0.55f, stage, selectedMapKey);
+				Gdx.graphics.getHeight() * 0.45f, stage, selectedMapKey);
 		float dialogY = Gdx.graphics.getHeight() * 0.34f;
 
 		stage.addActor(dialog);
@@ -248,7 +244,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				dialog.hide();
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
-			
+
 			@Override
 			public void practiceGame(int selectedMapKey) {
 				dialog.hide();
@@ -395,7 +391,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		});
 
 		headerTextActor = new Actor() {
-			public void draw(SpriteBatch batch, float parentAlpha) {
+			public void draw(Batch batch, float parentAlpha) {
 				BitmapFont font = Fonts.getInstance(resources.assetManager).mediumFont();
 				font.setColor(Color.WHITE);
 				String text = "Choose Your Galaxy";

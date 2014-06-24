@@ -387,7 +387,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			 * a valid session directly into the local DB.
 			 */
 			MongoClient client = new MongoClient("localhost");
-			DB galcon = client.getDB("galcon"); //app14217106");
+			DB galcon = client.getDB("galcon"); //"app14217106");
 			DBCollection usersCollection = galcon.getCollection("users");
 
 			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth

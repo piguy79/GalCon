@@ -84,14 +84,14 @@ public class Leaderboards extends JsonConvertible {
 			List<LeaderboardEntry> thisEntries = leaderboards.get(otherId);
 			List<LeaderboardEntry> otherEntries = otherEntriesSet.getValue();
 
-			if (thisEntries.isEmpty()) {
+			if (thisEntries == null || thisEntries.isEmpty()) {
 				mergedEntries = otherEntries;
 			} else if (otherEntries.isEmpty()) {
 				mergedEntries = thisEntries;
 			} else {
 				int iOther = 0;
 				int iThis = 0;
-				while (iOther < otherEntries.size() && iThis < thisEntries.size()) {
+				while (iOther < otherEntries.size() || iThis < thisEntries.size()) {
 					if (iOther == otherEntries.size()) {
 						mergedEntries.add(thisEntries.get(iThis));
 						iThis += 1;

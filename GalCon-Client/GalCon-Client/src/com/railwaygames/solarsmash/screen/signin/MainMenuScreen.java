@@ -80,7 +80,6 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private Overlay errorOverlay;
 
-	private List<Friend> friends = null;
 	private Leaderboards friendLeaderboards = null;
 	private List<LeaderboardCardActor> leaderboardCards = new ArrayList<LeaderboardCardActor>();
 
@@ -129,6 +128,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					leaderboardCards.add(lcard);
 				}
 
+				AboutLeaderboardCardActor alcard = new AboutLeaderboardCardActor();
+				table.add(alcard).expandX().fillX();
+
 				createScrollhighlightReel(result.allMaps);
 			};
 		});
@@ -171,9 +173,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		float actorPadding = Gdx.graphics.getWidth() * 0.05f;
 
 		ScrollPaneHighlightReelBuilder builder = new ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder(
-				Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.4f)
+				Gdx.graphics.getHeight() * 0.08f, Gdx.graphics.getWidth() * 0.4f)
 				.align(com.railwaygames.solarsmash.screen.widget.ActorBar.Align.LEFT)
-				.actorSize(Gdx.graphics.getHeight() * 0.02f, actorWidth).actorPadding(actorPadding);
+				.actorSize(Gdx.graphics.getHeight() * 0.015f, actorWidth).actorPadding(actorPadding);
 
 		float totalWidth = 0f;
 
@@ -193,6 +195,11 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			builder.addActorWithKey(map.key, image);
 			totalWidth = totalWidth + actorPadding + actorWidth;
 		}
+
+		image = new Image(resources.skin.getDrawable(Constants.UI.SCROLL_HIGHLIGHT));
+		image.setColor(Color.GRAY);
+		builder.addActorWithKey(10000, image);
+		totalWidth = totalWidth + actorPadding + actorWidth;
 
 		// Account for the first one.
 		totalWidth = totalWidth - actorPadding;
@@ -316,12 +323,17 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 		cardTable = new Table();
 
-		if (friends == null) {
-			friends = new ArrayList<Friend>();
+		loadFbFriends();
+		loadUser();
+	}
+
+	private void loadFbFriends() {
+		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
 					Gdx.app.log("FRIENDS", "Could not load FB friends: " + error);
+					showLeaderboardLoadError();
 					loadGooglePlusFriends();
 				}
 
@@ -331,24 +343,33 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					loadGooglePlusFriends();
 				}
 			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+		} else {
+			loadGooglePlusFriends();
 		}
-
-		loadUser();
 	}
 
 	private void loadGooglePlusFriends() {
-		socialAction.getFriends(new FriendsListener() {
-			@Override
-			public void onFriendsLoadedFail(String error) {
-				Gdx.app.log("FRIENDS", "Could not load G+ friends: " + error);
-			}
+		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE)) {
+			socialAction.getFriends(new FriendsListener() {
+				@Override
+				public void onFriendsLoadedFail(String error) {
+					Gdx.app.log("FRIENDS", "Could not load G+ friends: " + error);
+					showLeaderboardLoadError();
+				}
 
-			@Override
-			public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
-				loadLeaderboardsForFriends(friends, authProviderUsed);
+				@Override
+				public void onFriendsLoadedSuccess(List<Friend> friends, String authProviderUsed) {
+					loadLeaderboardsForFriends(friends, authProviderUsed);
 
-			}
-		}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+				}
+			}, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
+		}
+	}
+
+	private void showLeaderboardLoadError() {
+		for (LeaderboardCardActor actor : leaderboardCards) {
+			actor.showError();
+		}
 	}
 
 	private void loadLeaderboardsForFriends(List<Friend> friends, String authProviderUsed) {
@@ -462,6 +483,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void resetState() {
+		friendLeaderboards = null;
 		returnValue = null;
 	}
 
@@ -478,6 +500,62 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	@Override
 	public boolean canRefresh() {
 		return true;
+	}
+
+	public class AboutLeaderboardCardActor extends CardGroup {
+
+		private Table table;
+		private boolean loaded = false;
+
+		@Override
+		protected void sizeChanged() {
+			super.sizeChanged();
+			table.setX(getWidth() * 0.13f);
+			table.setWidth(getWidth() - getWidth() * 0.06f);
+			table.setHeight(getHeight());
+			table.setY(getY());
+		}
+
+		public AboutLeaderboardCardActor() {
+			super(10000);
+
+			table = new Table();
+			table.defaults().pad(0);
+			table.top();
+
+			addActor(table);
+		}
+
+		@Override
+		public void draw(Batch batch, float parentAlpha) {
+			if (!loaded) {
+				loaded = true;
+				loadCard();
+			}
+
+			super.draw(batch, parentAlpha);
+		}
+
+		private void loadCard() {
+			ShaderLabel label = new ShaderLabel(resources.fontShader, "About\nLeaderboards", resources.skin,
+					Constants.UI.DEFAULT_FONT, Color.BLACK);
+			label.setAlignment(Align.center);
+			table.add(label).align(Align.center);
+
+			table.row();
+			label = new ShaderLabel(
+					resources.fontShader,
+					"The leaderboard scores are calculated hourly. "
+							+ "It takes the following into account: your win/loss record, your opponent's win/loss record, and the number of games played. "
+							+ "Games against the AI are not counted."
+							+ "\n\nThe formula may be tweaked as time goes on.", resources.skin,
+					Constants.UI.X_SMALL_FONT,
+
+					Color.BLACK);
+			label.setWrap(true);
+			label.setAlignment(Align.top, Align.left);
+			table.add(label).expand().top().left().fill();
+		}
 	}
 
 	private class LeaderboardCardActor extends CardGroup implements UIConnectionResultCallback<Leaderboards> {
@@ -522,6 +600,20 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			if (!tabLeft.isVisible()) {
 				table.clear();
 				loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+			}
+		}
+
+		public void showError() {
+			if (!tabLeft.isVisible()) {
+				table.clear();
+				loadHeader();
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "Could not load leaderboards at this time",
+						resources.skin, Constants.UI.X_SMALL_FONT, Color.WHITE);
+				label.setColor(Color.RED);
+				label.setWrap(true);
+				label.setAlignment(Align.top, Align.center);
+				table.row();
+				table.add(label).colspan(3).align(Align.center).expand().fill().top();
 			}
 		}
 
