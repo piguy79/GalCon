@@ -396,7 +396,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void onConnectionError(String msg) {
-				// TODO: handle errors
+				showLeaderboardLoadError();
 			}
 
 		}, authIds, GameLoop.USER.handle, authProviderUsed);
@@ -695,6 +695,13 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			if (!headerLoaded) {
 				headerLoaded = true;
 				loadHeader();
+
+				WaitImageButton waitImage = new WaitImageButton(resources.skin);
+				float buttonWidth = .4f * (float) getWidth();
+				waitImage.start();
+				table.row();
+				table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f).prefWidth(buttonWidth)
+						.minWidth(buttonWidth);
 			}
 			if (!loaded) {
 				if (!tabLeft.isVisible() && friendLeaderboards != null) {

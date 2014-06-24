@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class Leaderboards extends JsonConvertible {
@@ -49,7 +50,7 @@ public class Leaderboards extends JsonConvertible {
 								return 1;
 							}
 
-							if (o2.score > o1.score) {
+							if (o2.score < o1.score) {
 								return -1;
 							}
 
@@ -91,7 +92,13 @@ public class Leaderboards extends JsonConvertible {
 			} else {
 				int iOther = 0;
 				int iThis = 0;
-				while (iOther < otherEntries.size() || iThis < thisEntries.size()) {
+				boolean foundMe = false;
+				int count = -1;
+				while (count++ < 10 && (iOther < otherEntries.size() || iThis < thisEntries.size())) {
+					if (!foundMe && count > 0) {
+						foundMe = mergedEntries.get(count - 1).handle.equals(GameLoop.USER.handle);
+					}
+
 					if (iOther == otherEntries.size()) {
 						mergedEntries.add(thisEntries.get(iThis));
 						iThis += 1;
@@ -119,6 +126,15 @@ public class Leaderboards extends JsonConvertible {
 					} else {
 						mergedEntries.add(thisEntry);
 						iThis += 1;
+					}
+				}
+
+				if (!foundMe) {
+					for (LeaderboardEntry entry : thisEntries) {
+						if (entry.handle.equals(GameLoop.USER.handle)) {
+							mergedEntries.add(entry);
+							break;
+						}
 					}
 				}
 			}
