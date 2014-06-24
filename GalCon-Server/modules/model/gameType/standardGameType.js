@@ -11,8 +11,15 @@ exports.processPossibleEndGame = function(game){
 			return player.handle !== 'AI';
 		});
 		
+		var numPlanetsOwnedByOtherPlayer = _.filter(game.planets, function(planet){
+			return planet.handle === otherPlayer[0].handle;
+		});
+		
 		if(numPlanetsOwnedByAi && numPlanetsOwnedByAi.length === 0){
 			game.endGame.winnerHandle = otherPlayer[0].handle;
+			game.endGame.date = Date.now();
+		}else if(numPlanetsOwnedByOtherPlayer && numPlanetsOwnedByOtherPlayer.length === 0){
+			game.endGame.winnerHandle = 'AI';
 			game.endGame.date = Date.now();
 		}
 	}else if(!game.hasOnlyOnePlayer()){
