@@ -129,7 +129,7 @@ public class Leaderboards extends JsonConvertible {
 					}
 				}
 
-				if (!foundMe) {
+				if (!foundMe && !mergedEntries.get(count - 1).handle.equals(GameLoop.USER.handle)) {
 					for (LeaderboardEntry entry : thisEntries) {
 						if (entry.handle.equals(GameLoop.USER.handle)) {
 							mergedEntries.add(entry);
