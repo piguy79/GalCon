@@ -7,9 +7,10 @@ We could tell the story from the perspective of the commander. Have the segments
 One idea was to have a slighlty different tone or outcome for your current win/loss ratio.
 
 1. Introduction
-    Stories, thats what my father always told me they where. After a millenia of peace we find oursleves, the last of the guardians, unprepared. Our forces slowly reduced overtime to accomadate more intellectual pusuits, the old colonies now abbandoned in favour of the home system. Settlements once thriving left to starve and rot. 
     
-    When the enemeny came, they came in force. Stories of slaughter in the outer colonies finally stirring the council into action. As a race we had left such brutality behind, a relic of a time where once we ruled the stars. Now was the time to resurrect the past, to restore the order we once swore to protect. Now was a time for guardians. 
+Stories, thats what my father always told me they where. After a millenia of peace we find oursleves, the last of the guardians, unprepared. Our forces slowly reduced overtime to accomadate more intellectual pusuits, the old colonies now abbandoned in favour of the home system. Settlements once thriving left to starve and rot. 
+    
+When the enemeny came, they came in force. Stories of slaughter in the outer colonies finally stirring the council into action. As a race we had left such brutality behind, a relic of a time where once we ruled the stars. Now was the time to resurrect the past, to restore the order we once swore to protect. Now was a time for guardians. 
 
 2. Moving on
 3. Speed
