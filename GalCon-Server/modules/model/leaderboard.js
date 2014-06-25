@@ -48,7 +48,8 @@ var winPercent = function(map) {
 	var gameQuery = {
 		'endGame.winnerHandle' : {$exists : true, $ne : ''},
 		'endGame.date' : {$gt : DaysAgoWindow},
-		'ai' : {$ne : true}
+		'ai' : {$ne : true},
+		'round.num' : {$gte : 5}
 	};
 	
 	if(map !== 'all') {
