@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,13 +93,8 @@ public class Leaderboards extends JsonConvertible {
 			} else {
 				int iOther = 0;
 				int iThis = 0;
-				boolean foundMe = false;
 				int count = -1;
-				while (count++ < 10 && (iOther < otherEntries.size() || iThis < thisEntries.size())) {
-					if (!foundMe && count > 0) {
-						foundMe = mergedEntries.get(count - 1).handle.equals(GameLoop.USER.handle);
-					}
-
+				while (count++ < 11 && (iOther < otherEntries.size() || iThis < thisEntries.size())) {
 					if (iOther == otherEntries.size()) {
 						mergedEntries.add(thisEntries.get(iThis));
 						iThis += 1;
@@ -129,7 +125,18 @@ public class Leaderboards extends JsonConvertible {
 					}
 				}
 
-				if (!foundMe && !mergedEntries.get(count - 1).handle.equals(GameLoop.USER.handle)) {
+				boolean foundMe = false;
+				for (ListIterator<LeaderboardEntry> iter = mergedEntries.listIterator(); iter.hasNext();) {
+					if (iter.next().handle.equals(GameLoop.USER.handle)) {
+						if (foundMe) {
+							iter.remove();
+						} else {
+							foundMe = true;
+						}
+					}
+				}
+
+				if (!foundMe) {
 					for (LeaderboardEntry entry : thisEntries) {
 						if (entry.handle.equals(GameLoop.USER.handle)) {
 							mergedEntries.add(entry);
