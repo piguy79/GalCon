@@ -8,9 +8,9 @@ One idea was to have a slighlty different tone or outcome for your current win/l
 
 1. Introduction
     
-Stories, thats what my father always told me they were. Once whole solar systems started falling to this new enemy, the stories felt very real. After a millennia of peace we find ourselves, the last of the guardians, unprepared. Our forces slowly reduced overtime to accommodate more intellectual pursuits, the old colonies now abandoned in favor of the home system. Settlements once thriving left to starve and rot. 
+Stories, thats what my father always told me they were. Once whole solar systems started falling to this new enemy, the stories felt very real. After a millennia of peace we find ourselves, the last of the guardians, unprepared. Our forces slowly reduced overtime to accommodate more intellectual pursuits, the old colonies now abandoned in favor of the home system, settlements once thriving left to starve and rot. 
     
-When the enemy came, they came in force. Stories of slaughter in the outer colonies finally stirring the council into action. As a race we had left such brutality behind, a relic of a time where once we ruled the stars. Now was the time to resurrect the past, to restore the order we once swore to protect. Now is a time for guardians. 
+When the enemy came, they came in force. Stories of slaughter in the outer colonies finally stirring the council into action. As a race we had left such brutality behind, a relic of a time where once we ruled the stars. Now is the time to resurrect the past, to restore the order we once swore to protect. Now is the time for Guardians. 
 
 2. Moving on
 3. Speed
