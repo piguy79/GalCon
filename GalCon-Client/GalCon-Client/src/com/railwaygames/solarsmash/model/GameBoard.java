@@ -113,6 +113,20 @@ public class GameBoard extends JsonConvertible {
 		return ownedPlanetAbilities;
 	}
 
+	public int ownedPlanetRegen(Player player) {
+		int regen = 0;
+		for (int i = 0; i < planets.size(); ++i) {
+			Planet planet = planets.get(i);
+			if (planet.isOwnedBy(player.handle)
+					|| (planet.isHome && planet.isOwnedBy(Constants.OWNER_NO_ONE) && !player.handle
+							.equals(GameLoop.USER.handle))) {
+				regen += planet.regen;
+			}
+		}
+
+		return regen;
+	}
+
 	private List<String> ownedPlanetsUnderHarvest = new ArrayList<String>();
 
 	public List<String> ownedPlanetsUnderHarvest(Player player) {
@@ -140,7 +154,8 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean hasWinner() {
-		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty() && !endGameInformation.winnerHandle.equals("GAME_DECLINE");
+		return endGameInformation.winnerHandle != null && !endGameInformation.winnerHandle.isEmpty()
+				&& !endGameInformation.winnerHandle.equals("GAME_DECLINE");
 	}
 
 	public boolean wasADraw() {

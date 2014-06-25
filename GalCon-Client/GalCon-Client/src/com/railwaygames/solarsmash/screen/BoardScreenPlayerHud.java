@@ -28,12 +28,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
-import com.railwaygames.solarsmash.config.ConfigResolver;
 import com.railwaygames.solarsmash.model.Bounds;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
-import com.railwaygames.solarsmash.model.Rank;
 import com.railwaygames.solarsmash.screen.event.TransitionEvent;
 import com.railwaygames.solarsmash.screen.widget.ActionButton;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
@@ -217,17 +215,14 @@ public class BoardScreenPlayerHud extends Group {
 		enemyLabel.setX(margin);
 		playerHudBg.addActor(enemyLabel);
 
-		Rank enemyRank = ConfigResolver.getRankForXp(enemy.xp);
-		if (enemyRank != null && enemy.xp != -1) {
-			ShaderLabel enemyRankLabel = new ShaderLabel(resources.fontShader, "" + enemyRank.level, resources.skin,
-					Constants.UI.LARGE_FONT, Color.WHITE);
-			enemyRankLabel.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
-			enemyRankLabel.setWidth(playerHudBg.getWidth() * 0.5f);
-			enemyRankLabel.setY(playerHudBg.getHeight() * 0.5f - enemyRankLabel.getTextBounds().height * 0.8f);
-			enemyRankLabel.setAlignment(Align.left);
-			enemyRankLabel.setX(margin);
-			playerHudBg.addActor(enemyRankLabel);
-		}
+		ShaderLabel enemyRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(enemy),
+				resources.skin, Constants.UI.LARGE_FONT, Color.WHITE);
+		enemyRegenLabel.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
+		enemyRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
+		enemyRegenLabel.setY(playerHudBg.getHeight() * 0.5f - enemyRegenLabel.getTextBounds().height * 0.8f);
+		enemyRegenLabel.setAlignment(Align.left);
+		enemyRegenLabel.setX(margin);
+		playerHudBg.addActor(enemyRegenLabel);
 
 		ShaderLabel vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT,
 				Color.WHITE);
@@ -246,15 +241,14 @@ public class BoardScreenPlayerHud extends Group {
 		userLabel.setX(playerHudBg.getWidth() - userLabel.getWidth() - margin);
 		playerHudBg.addActor(userLabel);
 
-		Rank userRank = ConfigResolver.getRankForXp(user.xp);
-		ShaderLabel userRankLabel = new ShaderLabel(resources.fontShader, "" + userRank.level, resources.skin,
-				Constants.UI.LARGE_FONT, Color.WHITE);
-		userRankLabel.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
-		userRankLabel.setWidth(playerHudBg.getWidth() * 0.5f);
-		userRankLabel.setY(playerHudBg.getHeight() * 0.5f - userRankLabel.getTextBounds().height * 0.8f);
-		userRankLabel.setAlignment(Align.right);
-		userRankLabel.setX(playerHudBg.getWidth() * 0.5f);
-		playerHudBg.addActor(userRankLabel);
+		ShaderLabel userRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(user),
+				resources.skin, Constants.UI.LARGE_FONT, Color.WHITE);
+		userRegenLabel.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
+		userRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
+		userRegenLabel.setY(playerHudBg.getHeight() * 0.5f - userRegenLabel.getTextBounds().height * 0.8f);
+		userRegenLabel.setAlignment(Align.right);
+		userRegenLabel.setX(playerHudBg.getWidth() * 0.5f);
+		playerHudBg.addActor(userRegenLabel);
 	}
 
 	private Player getEnemy(GameBoard gameBoard) {
