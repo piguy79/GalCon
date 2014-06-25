@@ -1,18 +1,15 @@
 package com.railwaygames.solarsmash.screen.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.esotericsoftware.tablelayout.Cell;
 import com.railwaygames.solarsmash.Constants;
 
 public abstract class ScrollList<Item> extends ScrollPane {
@@ -26,7 +23,6 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		this.setScrollingDisabled(true, false);
 		this.setFadeScrollBars(false);
 	}
-	
 
 	@Override
 	public Table getWidget() {
@@ -46,8 +42,8 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		getWidget().row();
 		return cell;
 	}
-	
-	public void clearRows(){
+
+	public void clearRows() {
 		getWidget().clearChildren();
 	}
 
@@ -77,7 +73,7 @@ public abstract class ScrollList<Item> extends ScrollPane {
 		super.layout();
 
 		for (Cell cell : getWidget().getCells()) {
-			cell.setWidgetHeight(400);
+			cell.setActorHeight(400);
 		}
 		getWidget().layout();
 	}

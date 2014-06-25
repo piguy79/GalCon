@@ -19,13 +19,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.Cell;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.ExternalActionWrapper;
 import com.railwaygames.solarsmash.GameLoop;
@@ -141,20 +141,20 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					return;
 				}
 				float scrollX = scrollPane.getScrollX();
-				for (int i = 0; i < table.getCells().size(); ++i) {
+				for (int i = 0; i < table.getCells().size; ++i) {
 					Cell<CardGroup> cell = table.getCells().get(i);
-					float adjustX = cell.getWidgetX() - scrollX;
+					float adjustX = cell.getActorX() - scrollX;
 
-					float rightXBound = Math.min(getWidth(), adjustX + cell.getWidgetWidth());
+					float rightXBound = Math.min(getWidth(), adjustX + cell.getActorWidth());
 					float leftXBound = Math.max(0, adjustX);
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
-						if (cell.getWidget().getKey() >= 0) {
+						if (cell.getActor().getKey() >= 0) {
 							leaderboardText.addAction(color(Color.WHITE, 0.3f));
 						} else {
 							leaderboardText.addAction(color(Color.CLEAR, 0.3f));
 						}
-						highlightReel.highlight(cell.getWidget().getKey());
+						highlightReel.highlight(cell.getActor().getKey());
 					}
 				}
 			};

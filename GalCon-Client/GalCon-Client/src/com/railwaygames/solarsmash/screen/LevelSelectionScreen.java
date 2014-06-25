@@ -16,12 +16,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.Cell;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.Fonts;
 import com.railwaygames.solarsmash.GameLoop;
@@ -179,15 +179,15 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		choiceActor = new Actor() {
 			public void draw(Batch batch, float parentAlpha) {
 				float scrollX = scrollPane.getScrollX();
-				for (int i = 0; i < table.getCells().size(); ++i) {
+				for (int i = 0; i < table.getCells().size; ++i) {
 					Cell<CardActor> cell = table.getCells().get(i);
-					float adjustX = cell.getWidgetX() - scrollX;
+					float adjustX = cell.getActorX() - scrollX;
 
-					float rightXBound = Math.min(getWidth(), adjustX + cell.getWidgetWidth());
+					float rightXBound = Math.min(getWidth(), adjustX + cell.getActorWidth());
 					float leftXBound = Math.max(0, adjustX);
 
 					if (rightXBound - leftXBound > getWidth() * .45f) {
-						highlightReel.highlight(cell.getWidget().getMapKey());
+						highlightReel.highlight(cell.getActor().getMapKey());
 					}
 				}
 
