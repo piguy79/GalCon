@@ -59,7 +59,7 @@ public class PingService extends Service {
 		public void handleMessage(Message msg) {
 			final int sleepTime;
 			DateTime now = new DateTime();
-			if (now.getHourOfDay() >= 21 || now.getHourOfDay() < 9) {
+			if (now.getHourOfDay() >= 22 || now.getHourOfDay() < 8) {
 				sleepTime = ONE_HOUR;
 			} else {
 				sleepTime = SLEEP_TIME;
