@@ -91,7 +91,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		this.resources = resources;
 	}
 
+	private boolean loadingCards = false;
+
 	private void loadCards(final GameCount gameCount) {
+		if (loadingCards) {
+			return;
+		}
+		Gdx.app.log("MMS", "Starting loadCards()");
+		loadingCards = true;
 		leaderboardCards.clear();
 
 		final Table table = new Table();
@@ -112,9 +119,11 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			public void onConnectionError(String msg) {
 				// ignore error for now. if maps don't load, leaderboards just
 				// won't show this time
+				loadingCards = false;
 			}
 
 			public void onConnectionResult(Maps result) {
+				Gdx.app.log("MMS", "Starting findAllMaps()->onConnectionResult()");
 				CardGroup card = new MenuCardActor(gameCount, resources);
 				table.add(card).expandX().fillX();
 
@@ -132,6 +141,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				table.add(alcard).expandX().fillX();
 
 				createScrollhighlightReel(result.allMaps);
+				loadingCards = false;
 			};
 		});
 
@@ -307,6 +317,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	@Override
 	public void show(Stage stage) {
+		Gdx.app.log("MMS", "Starting show()");
 		this.stage = stage;
 		actors.clear();
 		leaderboardCards.clear();
@@ -402,7 +413,13 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		}, authIds, GameLoop.USER.handle, authProviderUsed);
 	}
 
+	private boolean loadingUser = false;
+
 	private void loadUser() {
+		if (loadingUser) {
+			return;
+		}
+		loadingUser = true;
 		waitImage.start();
 		gameAction.addFreeCoins(new UIConnectionResultCallback<Player>() {
 
@@ -436,12 +453,14 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 				gameAction.findGamesWithPendingMove(new UIConnectionResultCallback<GameCount>() {
 					public void onConnectionResult(GameCount result) {
+						loadingUser = false;
 						addElementsToStage(result);
 						waitImage.stop();
 					};
 
 					@Override
 					public void onConnectionError(String msg) {
+						loadingUser = false;
 						errorOverlay = new DismissableOverlay(resources, new TextOverlay(
 								"Could not retrieve user.\n\nPlease try again.", resources), new ClickListener() {
 							@Override
@@ -456,6 +475,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 			@Override
 			public void onConnectionError(String msg) {
+				loadingUser = false;
 				if (errorOverlay != null) {
 					errorOverlay.remove();
 				}
