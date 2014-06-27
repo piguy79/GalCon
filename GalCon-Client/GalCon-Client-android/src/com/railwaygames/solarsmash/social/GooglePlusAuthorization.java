@@ -38,7 +38,7 @@ import com.railwaygames.solarsmash.http.FriendsListener;
 import com.railwaygames.solarsmash.model.Friend;
 
 public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks, OnConnectionFailedListener {
-	private GoogleApiClient client;
+	private static GoogleApiClient client;
 	private String sScope = "https://www.googleapis.com/auth/plus.login";
 
 	private Activity activity;
@@ -47,15 +47,22 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	public GooglePlusAuthorization(Activity activity) {
 		this.activity = activity;
+
+		if (client == null) {
+			client = new GoogleApiClient.Builder(activity).addApi(Plus.API).addConnectionCallbacks(this)
+					.addOnConnectionFailedListener(this).addScope(Plus.SCOPE_PLUS_LOGIN).build();
+		}
 	}
 
 	@Override
 	public void signIn(AuthenticationListener listener) {
 		this.listener = listener;
 
-		client = new GoogleApiClient.Builder(activity).addApi(Plus.API).addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this).addScope(Plus.SCOPE_PLUS_LOGIN).build();
-		client.connect();
+		if (!client.isConnected()) {
+			client.connect();
+		} else if (!client.isConnecting()) {
+			onConnected(null);
+		}
 	}
 
 	@Override
