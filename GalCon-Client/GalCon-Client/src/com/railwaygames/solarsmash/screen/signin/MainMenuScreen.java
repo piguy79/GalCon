@@ -548,7 +548,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 					resources.fontShader,
 					"The leaderboard scores are calculated hourly. "
 							+ "It takes the following into account: your win/loss record, your opponent's win/loss record, and the number of games played. "
-							+ "Games against the AI are not counted."
+							+ "Games against the AI are not counted as well as games where people immediately resigned or claimed."
 							+ "\n\nThe formula may be tweaked as time goes on.", resources.skin,
 					Constants.UI.X_SMALL_FONT,
 
