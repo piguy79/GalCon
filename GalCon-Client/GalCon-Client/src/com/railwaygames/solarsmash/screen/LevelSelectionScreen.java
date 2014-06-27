@@ -222,7 +222,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private void createGameStartDialog(int selectedMapKey) {
 		final GameStartDialog dialog = new GameStartDialog(resources, Gdx.graphics.getWidth() * 0.8f,
-				Gdx.graphics.getHeight() * 0.45f, stage, selectedMapKey);
+				Gdx.graphics.getHeight() * 0.42f, stage, selectedMapKey);
 		float dialogY = Gdx.graphics.getHeight() * 0.34f;
 
 		stage.addActor(dialog);
