@@ -27,9 +27,12 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
+
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -51,9 +54,12 @@ import org.robovm.objc.ObjCBlock;
 import org.robovm.objc.ObjCBlock.Wrapper;
 import org.robovm.rt.bro.annotation.Callback;
 
+import android.util.Log;
+
 import com.android.org.bouncycastle.util.encoders.Base64;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.railwaygames.solarsmash.AndroidGameAction.PostJsonRequestTask;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.Connection;
@@ -605,4 +611,16 @@ public class IOSGameAction implements GameAction {
 		new GetJsonRequestTask<Leaderboards>(args, callback, UrlConstants.FIND_LEADERBOARD_BY_ID.replace(":id", id),
 				Leaderboards.class).execute("");
 	}
+	
+	@Override
+	public void practiceGame(final UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId) {
+		try {
+			final JSONObject top = JsonConstructor.practiceGame(handle, handle, mapId);
+			new PostJsonRequestTask<GameBoard>(callback, PRACTICE, GameBoard.class).execute(top.toString());
+		} catch (JSONException e) {
+			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+
+	}
+	
 }
