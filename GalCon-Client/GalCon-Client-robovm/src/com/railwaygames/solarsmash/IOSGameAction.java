@@ -54,12 +54,9 @@ import org.robovm.objc.ObjCBlock;
 import org.robovm.objc.ObjCBlock.Wrapper;
 import org.robovm.rt.bro.annotation.Callback;
 
-import android.util.Log;
-
 import com.android.org.bouncycastle.util.encoders.Base64;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.railwaygames.solarsmash.AndroidGameAction.PostJsonRequestTask;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.Connection;
