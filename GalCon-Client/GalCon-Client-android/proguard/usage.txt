@@ -6221,7 +6221,6 @@ com.google.android.gms.common.api.GoogleApiClient:
     public abstract com.google.android.gms.common.ConnectionResult blockingConnect(long,java.util.concurrent.TimeUnit)
     public abstract void disconnect()
     public abstract void reconnect()
-    public abstract boolean isConnecting()
     public abstract void registerConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
     public abstract boolean isConnectionCallbacksRegistered(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
     public abstract void unregisterConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
@@ -9699,9 +9698,9 @@ com.railwaygames.solarsmash.social.FacebookAuthorization$4:
 com.railwaygames.solarsmash.social.FacebookAuthorization$6:
     231:231:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
-    183:183:public void onSignOut()
+    190:190:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:
-    238:238:public void onSignOut()
+    245:245:public void onSignOut()
 org.joda.convert.AnnotationStringConverterFactory
 org.joda.convert.FromString
 org.joda.convert.FromStringConverter
