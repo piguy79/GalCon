@@ -79,7 +79,9 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		if (Plus.PeopleApi.getCurrentPerson(client) == null) {
+		if(!client.isConnected()){
+			listener.onSignInFailed("Unable to connect to Google.");
+		}else if (Plus.PeopleApi.getCurrentPerson(client) == null) {
 			listener.onSignInFailed("Unable to load ID.");
 		} else {
 			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
