@@ -29,9 +29,6 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings2/crashlytics/libs/libcrashlytics.a</lib>
-    <lib>../../../robovm-ios-bindings2/facebook/libs/libarclite.a</lib>
-    <lib>../../../robovm-ios-bindings2/facebook/libs/libfacebook.a</lib>
     <lib>../../../robovm-ios-bindings2/adcolony/libs/libadcolony.a</lib>
   </libs>
   <forceLinkClasses>
@@ -40,11 +37,14 @@
   <frameworkPaths>
       <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
       <path>../../../robovm-ios-bindings2/facebook/libs/</path>
+      <path>../../../robovm-ios-bindings2/crashlytics/libs/</path>
   </frameworkPaths>
   <frameworks>
     <framework>GoogleOpenSource</framework>
 	<framework>GooglePlayGames</framework>
 	<framework>GooglePlus</framework>
+	<framework>FacebookSDK</framework>
+	<framework>Crashlytics</framework>
     <framework>AddressBook</framework>
     <framework>AssetsLibrary</framework>
     <framework>Foundation</framework>

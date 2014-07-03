@@ -9,6 +9,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/crashlytics-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/facebook-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/adcolony-ios"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/in-app-purchase-ios"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

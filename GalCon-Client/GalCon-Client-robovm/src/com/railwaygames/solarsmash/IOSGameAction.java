@@ -20,6 +20,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_CURRENT_GAMES_B
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PENDING_MOVE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAME_BY_ID;
+import static com.railwaygames.solarsmash.http.UrlConstants.FIND_LEADERBOARDS_FOR_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_MATCHING_FRIENDS;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_PENDING_INVITE;
 import static com.railwaygames.solarsmash.http.UrlConstants.FIND_USER_BY_ID;
@@ -27,6 +28,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.INVITE_USER_TO_PLAY;
 import static com.railwaygames.solarsmash.http.UrlConstants.JOIN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.MATCH_PLAYER_TO_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.PERFORM_MOVES;
+import static com.railwaygames.solarsmash.http.UrlConstants.PRACTICE;
 import static com.railwaygames.solarsmash.http.UrlConstants.REQUEST_HANDLE_FOR_ID;
 import static com.railwaygames.solarsmash.http.UrlConstants.RESIGN_GAME;
 import static com.railwaygames.solarsmash.http.UrlConstants.SEARCH_FOR_USERS;
@@ -36,30 +38,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.robovm.apple.foundation.NSData;
-import org.robovm.apple.foundation.NSDataBase64EncodingOptions;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSURLResponse;
 import org.robovm.bindings.adcolony.AdColony;
 import org.robovm.bindings.adcolony.AdColonyAdDelegateAdapter;
-import org.robovm.objc.ObjCBlock;
-import org.robovm.objc.ObjCBlock.Wrapper;
-import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.objc.block.VoidBlock3;
 
-import com.android.org.bouncycastle.util.encoders.Base64;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.Connection;
 import com.railwaygames.solarsmash.http.GameAction;
-import com.railwaygames.solarsmash.http.GameActionCache.InventoryCache;
-import com.railwaygames.solarsmash.http.GameActionCache.MapsCache;
+import com.railwaygames.solarsmash.http.GameActionCache;
 import com.railwaygames.solarsmash.http.JsonConstructor;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -83,12 +79,13 @@ import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class IOSGameAction implements GameAction {
 
+	private static final long ONE_DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
+	private static final long ONE_HOUR_IN_MILLIS = 1000 * 60 * 60;
+
 	private GameLoop gameLoop;
 	private Config config = new IOSConfig();
 	private String session = "";
 	private SocialAction socialAction;
-
-	private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	public IOSGameAction(SocialAction socialAction) {
 		this.socialAction = socialAction;
@@ -139,7 +136,7 @@ public class IOSGameAction implements GameAction {
 		}
 	}
 
-	private MapsCache mapCache = new MapsCache();
+	private GameActionCache<Maps> mapCache = new GameActionCache<Maps>(ONE_DAY_IN_MILLIS);
 
 	@Override
 	public void findAllMaps(UIConnectionResultCallback<Maps> callback) {
@@ -257,7 +254,7 @@ public class IOSGameAction implements GameAction {
 		}
 	}
 
-	private InventoryCache inventoryCache = new InventoryCache();
+	private GameActionCache<Inventory> inventoryCache = new GameActionCache<Inventory>(ONE_DAY_IN_MILLIS);
 
 	@Override
 	public void loadAvailableInventory(UIConnectionResultCallback<Inventory> callback) {
@@ -322,7 +319,8 @@ public class IOSGameAction implements GameAction {
 		}
 
 		@Override
-		public void establishConnection(ObjCBlock completionHandler, String... params) throws IOException {
+		public void establishConnection(VoidBlock3<NSURLResponse, NSData, NSError> completionHandler, String... params)
+				throws IOException {
 			Connection.establishPostConnection(completionHandler, config.getValue(PROTOCOL), config.getValue(HOST),
 					config.getValue(PORT), path, params);
 		}
@@ -338,31 +336,11 @@ public class IOSGameAction implements GameAction {
 		}
 
 		@Override
-		public void establishConnection(ObjCBlock completionHandler, String... params) throws IOException {
+		public void establishConnection(VoidBlock3<NSURLResponse, NSData, NSError> completionHandler, String... params)
+				throws IOException {
 			Connection.establishGetConnection(completionHandler, config.getValue(PROTOCOL), config.getValue(HOST),
 					config.getValue(PORT), path, args);
 		}
-	}
-
-	public interface VoidNSURLConnectionBlock {
-
-		void invoke(NSURLResponse response, NSData data, NSError error);
-
-		static class Callbacks {
-			@Callback
-			static void run(ObjCBlock block, NSURLResponse response, NSData data, NSError error) {
-				((VoidNSURLConnectionBlock) block.object()).invoke(response, data, error);
-			}
-		}
-
-		static class Marshaler {
-			private static final Wrapper WRAPPER = new Wrapper(Callbacks.class);
-
-			public static ObjCBlock toObjCBlock(VoidNSURLConnectionBlock o) {
-				return WRAPPER.toObjCBlock(o);
-			}
-		}
-
 	}
 
 	public static void processResponse(JsonConvertible converter, NSData data, NSError error) {
@@ -370,8 +348,10 @@ public class IOSGameAction implements GameAction {
 			converter.errorMessage = "Error connecting";
 		} else {
 			try {
-				String sData = data.toBase64EncodedString(new NSDataBase64EncodingOptions(0L));
-				String json = new String(Base64.decode(sData));
+				String json = new String(data.getBytes(), "UTF-8");
+				// String sData = data.toBase64EncodedString(new
+				// NSDataBase64EncodingOptions(0L));
+				// String json = new String(Base64.decode(sData));
 
 				JSONObject returnObject = new JSONObject(json);
 				String errorOccurred = returnObject.optString("error");
@@ -381,6 +361,7 @@ public class IOSGameAction implements GameAction {
 					converter.consume(new JSONObject(json));
 				}
 			} catch (Exception e) {
+				System.out.println(e.getMessage());
 				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 			}
 		}
@@ -412,14 +393,15 @@ public class IOSGameAction implements GameAction {
 			savedParams.args = args;
 		}
 
-		protected abstract void establishConnection(ObjCBlock completionHandler, String... params) throws IOException;
+		protected abstract void establishConnection(VoidBlock3<NSURLResponse, NSData, NSError> completionHandler,
+				String... params) throws IOException;
 
 		public void execute(final String... params) {
 			try {
 				savedParams.params = params;
 				System.out.println("Invoking call at path: " + path + ", " + Arrays.toString(params));
 
-				VoidNSURLConnectionBlock completionHandlerBlock = new VoidNSURLConnectionBlock() {
+				VoidBlock3<NSURLResponse, NSData, NSError> completionHandlerBlock = new VoidBlock3<NSURLResponse, NSData, NSError>() {
 					@Override
 					public void invoke(NSURLResponse response, NSData data, NSError error) {
 						processResponse(converter, data, error);
@@ -427,7 +409,7 @@ public class IOSGameAction implements GameAction {
 					}
 				};
 
-				establishConnection(VoidNSURLConnectionBlock.Marshaler.toObjCBlock(completionHandlerBlock), params);
+				establishConnection(completionHandlerBlock, params);
 			} catch (IOException e) {
 				System.out.println(e);
 				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
@@ -604,5 +586,43 @@ public class IOSGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		new GetJsonRequestTask<Leaderboards>(args, callback, UrlConstants.FIND_LEADERBOARD_BY_ID.replace(":id", id),
 				Leaderboards.class).execute("");
+	}
+
+	private Map<String, GameActionCache<Leaderboards>> friendLeaderboardCaches = new ConcurrentHashMap<String, GameActionCache<Leaderboards>>();
+
+	@Override
+	public void findLeaderboardsForFriends(UIConnectionResultCallback<Leaderboards> callback, List<String> authIds,
+			String handle, String authProvider) {
+		GameActionCache<Leaderboards> cache = friendLeaderboardCaches.get(authProvider);
+		if (cache == null) {
+			cache = new GameActionCache<Leaderboards>(ONE_HOUR_IN_MILLIS);
+			friendLeaderboardCaches.put(authProvider, cache);
+		}
+
+		if (cache.getCache() != null) {
+			callback.onConnectionResult(cache.getCache());
+		} else {
+			cache.setDelegate(callback);
+			try {
+				final JSONObject top = JsonConstructor.leaderBoardsForFriends(authIds, handle, getSession(),
+						authProvider);
+				final GameActionCache<Leaderboards> fCache = cache;
+
+				new PostJsonRequestTask<Leaderboards>(fCache, FIND_LEADERBOARDS_FOR_FRIENDS, Leaderboards.class)
+						.execute(top.toString());
+			} catch (JSONException e) {
+				System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			}
+		}
+	}
+
+	@Override
+	public void practiceGame(UIConnectionResultCallback<GameBoard> callback, String handle, Long mapId) {
+		try {
+			final JSONObject top = JsonConstructor.practiceGame(handle, session, mapId);
+			new PostJsonRequestTask<GameBoard>(callback, PRACTICE, GameBoard.class).execute(top.toString());
+		} catch (JSONException e) {
+			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
 	}
 }

@@ -8,12 +8,12 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PE
 import java.util.ArrayList;
 
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSDate;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSError.NSErrorPtr;
-import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSMutableURLRequest;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
@@ -23,6 +23,7 @@ import org.robovm.apple.foundation.NSURLConnection;
 import org.robovm.apple.foundation.NSURLResponse;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIBackgroundFetchResult;
+import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIKeyboardType;
 import org.robovm.apple.uikit.UILocalNotification;
 import org.robovm.apple.uikit.UIReturnKeyType;
@@ -134,9 +135,13 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 
 		}, true);
 
-		application.cancelAllLocalNotifications();
-		application.setMinimumBackgroundFetchInterval(60 * 60);
-		application.setApplicationIconBadgeNumber(0);
+		String[] version = UIDevice.getCurrentDevice().getSystemVersion().split("\\.");
+		System.out.println(version[0]);
+		if (Integer.parseInt(version[0]) >= 7) {
+			application.cancelAllLocalNotifications();
+			application.setMinimumBackgroundFetchInterval(5 * 60);
+			application.setApplicationIconBadgeNumber(0);
+		}
 
 		return true;
 	}
@@ -167,7 +172,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		NSErrorPtr errorPtr = new NSErrorPtr();
 
 		Gdx.app.log("FETCH", "Starting request");
-		NSData data = NSURLConnection.sendSynchronousRequest$returningResponse$error$(request, responsePtr, errorPtr);
+		NSData data = NSURLConnection.sendSynchronousRequest(request, responsePtr, errorPtr);
 		Gdx.app.log("FETCH", "Request done");
 
 		GameCount result = new GameCount();
@@ -208,11 +213,11 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 
 		if (text.length() > 0) {
 			UILocalNotification notification = new UILocalNotification();
-			notification.setFireDate(NSDate.date());
+			notification.setFireDate(NSDate.now());
 			notification.setApplicationIconBadgeNumber(result.pendingGameCount + result.inviteCount);
 			notification.setAlertBody(text);
 			notification.setAlertAction("Solar Smash");
-			notification.setSoundName(UILocalNotification.DefaultSoundName());
+			// notification.setSoundName(new UILocalNotification());
 			application.presentLocalNotificationNow(notification);
 			Gdx.app.log("FETCH", "Done newData");
 			completionHandler.invoke(UIBackgroundFetchResult.NewData);

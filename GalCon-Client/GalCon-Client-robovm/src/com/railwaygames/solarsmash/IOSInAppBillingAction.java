@@ -63,11 +63,11 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 						purchaseCallback.onConnectionResult(orders);
 						break;
 					case Failed:
-						Gdx.app.log(TAG, "FAILED: " + transaction.getError().localizedDescription());
+						Gdx.app.log(TAG, "FAILED: " + transaction.getError().getLocalizedDescription());
 						if (purchaseCallback == null) {
 							return;
 						}
-						purchaseCallback.onConnectionError(transaction.getError().localizedDescription());
+						purchaseCallback.onConnectionError(transaction.getError().getLocalizedDescription());
 						break;
 					case Restored:
 						Gdx.app.log(TAG, "RESTORED: " + transaction.description());
@@ -188,7 +188,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 				callback.onConnectionError(error.description());
 			}
 		});
-		Gdx.app.log(TAG, "Calling start on in ap billinf.");
+		Gdx.app.log(TAG, "Calling start on in app billing.");
 		productsRequest.start();
 	}
 
@@ -223,7 +223,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		Gdx.app.log("PURCHASE", inventoryItem.sku);
 		Gdx.app.log("CANMAKEPAYMENTS", "" + SKPaymentQueue.canMakePayments());
 		this.purchaseCallback = callback;
-		SKPayment payment = SKPayment.fromProduct(skuToProduct.get(inventoryItem.sku));
+		SKPayment payment = SKPayment.createFromProduct(skuToProduct.get(inventoryItem.sku));
 		SKPaymentQueue.getDefaultQueue().addPayment(payment);
 	}
 
@@ -238,7 +238,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		order.orderId = transaction.getTransactionIdentifier();
 		order.packageName = "";
 		if (transaction.getTransactionDate() != null) {
-			order.purchaseTime = Double.toString(transaction.getTransactionDate().timeIntervalSince1970());
+			order.purchaseTime = Double.toString(transaction.getTransactionDate().getTimeIntervalSince1970());
 		}
 		order.purchaseState = transaction.getTransactionState().name();
 		order.developerPayload = "";

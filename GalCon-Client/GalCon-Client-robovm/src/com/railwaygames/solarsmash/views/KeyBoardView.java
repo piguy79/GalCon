@@ -1,13 +1,13 @@
 package com.railwaygames.solarsmash.views;
 
-import org.robovm.cocoatouch.uikit.UIKeyInput;
-import org.robovm.cocoatouch.uikit.UIKeyboardAppearance;
-import org.robovm.cocoatouch.uikit.UIKeyboardType;
-import org.robovm.cocoatouch.uikit.UIReturnKeyType;
-import org.robovm.cocoatouch.uikit.UITextAutocapitalizationType;
-import org.robovm.cocoatouch.uikit.UITextAutocorrectionType;
-import org.robovm.cocoatouch.uikit.UITextSpellCheckingType;
-import org.robovm.cocoatouch.uikit.UIView;
+import org.robovm.apple.uikit.UIKeyInput;
+import org.robovm.apple.uikit.UIKeyboardAppearance;
+import org.robovm.apple.uikit.UIKeyboardType;
+import org.robovm.apple.uikit.UIReturnKeyType;
+import org.robovm.apple.uikit.UITextAutocapitalizationType;
+import org.robovm.apple.uikit.UITextAutocorrectionType;
+import org.robovm.apple.uikit.UITextSpellCheckingType;
+import org.robovm.apple.uikit.UIView;
 import org.robovm.objc.ObjCRuntime;
 
 public class KeyBoardView extends UIView implements UIKeyInput {

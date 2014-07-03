@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.robovm.bindings.facebook.manager.FBPermission;
-import org.robovm.bindings.facebook.manager.FacebookConfiguration.Builder;
 import org.robovm.bindings.facebook.session.FBSessionDefaultAudience;
 import org.robovm.bindings.facebook.session.FBSessionLoginBehavior;
 

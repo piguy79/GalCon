@@ -18,4 +18,7 @@ public class GTLPlusPeopleFeed extends GTLCollectionObject {
 
 	@Property(selector = "setItems:", strongRef = true)
 	public native void setItems(NSArray<?> items);
+
+	@Property(selector = "items")
+	public native NSArray<?> getItems();
 }
