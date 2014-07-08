@@ -128,7 +128,7 @@ public class Overview extends Tutorial {
 				"We continue to be engaged by enemy forces as we search for the resources necessary for our survival"));
 
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.3f, 2.25f,
-				"First lets refine your skills using the battle simulator"));
+				"First let us refine your skills using the battle simulator"));
 	}
 
 	private void addImage(String imageName) {

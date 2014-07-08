@@ -750,11 +750,16 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		}
 
 		private void loadLeaderboards(List<LeaderboardEntry> results) {
-			if (results == null) {
-				return;
-			}
 			table.clear();
 			loadHeader();
+
+			if (results == null) {
+				table.row().height(getHeight() * 0.055f);
+				ShaderLabel label = new ShaderLabel(resources.fontShader, "No results found", resources.skin,
+						Constants.UI.X_SMALL_FONT, Color.BLACK);
+				table.add(label).colspan(3).align(Align.center);
+				return;
+			}
 
 			for (LeaderboardEntry entry : results) {
 				table.row().height(getHeight() * 0.055f);
