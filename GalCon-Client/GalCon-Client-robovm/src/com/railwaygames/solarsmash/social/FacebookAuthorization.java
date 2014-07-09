@@ -3,6 +3,7 @@ package com.railwaygames.solarsmash.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
@@ -39,12 +40,12 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 	public void signIn(final AuthenticationListener listener) {
 		setupManager();
 		if (!facebook.isLoggedIn() || !FBSession.getActiveSession().isOpen()) {
-			Gdx.app.log("FB", "LOGGING IN TO FB");
+			Foundation.log("FB: LOGGING IN TO FB");
 			facebook.login(new FacebookLoginListener() {
 
 				@Override
 				public void onSuccess(GraphObject user) {
-					Gdx.app.log("FB_USER_LOADED", user.getString("id"));
+					Foundation.log("FB_USER_LOADED: " + user.getString("id"));
 					GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getString("id")
 							.toString());
 
@@ -58,13 +59,13 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 
 				@Override
 				public void onError(String error) {
-					Gdx.app.log("FB_LOGIN", "Failed: " + error);
+					Foundation.log("FB_LOGIN: Failed: " + error);
 					listener.onSignInFailed("Unable to sign in");
 				}
 
 				@Override
 				public void onCancel() {
-					Gdx.app.log("FB", "Login cancelled.");
+					Foundation.log("FB: Login cancelled.");
 					listener.onSignInFailed("");
 				}
 			});
@@ -139,7 +140,7 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
-				Gdx.app.log(TAG, "Session state: " + FBSession.getActiveSession().getState());
+				Foundation.log(TAG + "Session state: " + FBSession.getActiveSession().getState());
 				facebook.request(CommonFacebookRequests
 						.publishFeedToFriend(id, "Solar Smash", "Download Solar Smash now.", "",
 								"Hey, come play me in Solar Smash. Invite me using the handle \""
@@ -150,14 +151,14 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 
 									@Override
 									public void onSuccess(GraphObject result) {
-										Gdx.app.log(TAG, "Result: " + result);
+										Foundation.log(TAG + "Result: " + result);
 										listener.onPostSucceeded();
 
 									}
 
 									@Override
 									public void onError(String error) {
-										Gdx.app.log(TAG, "Error occured: " + error);
+										Foundation.log(TAG + "Error occured: " + error);
 										listener.onPostFails("Unable to post to FB");
 									}
 

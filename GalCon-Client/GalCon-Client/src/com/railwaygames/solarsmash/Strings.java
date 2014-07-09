@@ -6,7 +6,7 @@ public class Strings {
 
 	public static final String AUTH_INTENT_FAIL = "Could not start login process.\nPlease try again";
 
-	public static final String CONNECTION_FAIL = "Conneciton error. Please try again.";
+	public static final String CONNECTION_FAIL = "Connection error. Please try again.";
 
 	public static final String HANDLE_VALID_LENGTH = "Handle must be between\n3 and 16 characters";
 

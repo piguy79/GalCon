@@ -8,6 +8,7 @@ import static com.railwaygames.solarsmash.http.UrlConstants.FIND_GAMES_WITH_A_PE
 import java.util.ArrayList;
 
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSData;
@@ -149,14 +150,14 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	@Override
 	public void performFetch(final UIApplication application,
 			final VoidBlock1<UIBackgroundFetchResult> completionHandler) {
-		Gdx.app.log("FETCH", "Start fetch");
+		Foundation.log("FETCH: Start fetch");
 		application.cancelAllLocalNotifications();
 
 		Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		String handle = prefs.getString(Constants.HANDLE, "");
 
 		if (handle == null || handle.isEmpty()) {
-			Gdx.app.log("FETCH", "No handle");
+			Foundation.log("FETCH: No handle");
 			completionHandler.invoke(UIBackgroundFetchResult.NoData);
 			return;
 		}
@@ -171,9 +172,9 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		NSURLResponse.NSURLResponsePtr responsePtr = new NSURLResponse.NSURLResponsePtr();
 		NSErrorPtr errorPtr = new NSErrorPtr();
 
-		Gdx.app.log("FETCH", "Starting request");
+		Foundation.log("FETCH: Starting request");
 		NSData data = NSURLConnection.sendSynchronousRequest(request, responsePtr, errorPtr);
-		Gdx.app.log("FETCH", "Request done");
+		Foundation.log("FETCH: Request done");
 
 		GameCount result = new GameCount();
 		IOSGameAction.processResponse(result, data, errorPtr != null ? errorPtr.get() : null);
@@ -183,7 +184,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 			return;
 		}
 
-		Gdx.app.log("FETCH", "Complete with result: " + (result.pendingGameCount + result.inviteCount));
+		Foundation.log("FETCH: Complete with result: " + (result.pendingGameCount + result.inviteCount));
 
 		String pendingText = "";
 		int pendingGamesCount = result.pendingGameCount;
@@ -219,7 +220,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 			notification.setAlertAction("Solar Smash");
 			// notification.setSoundName(new UILocalNotification());
 			application.presentLocalNotificationNow(notification);
-			Gdx.app.log("FETCH", "Done newData");
+			Foundation.log("FETCH: Done newData");
 			completionHandler.invoke(UIBackgroundFetchResult.NewData);
 			return;
 		}

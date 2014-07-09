@@ -3,6 +3,7 @@ package com.railwaygames.solarsmash.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSObject;
@@ -42,10 +43,10 @@ public class GooglePlusAuthorization implements Authorizer {
 	public class SignInDelegate extends GPPSignInDelegate.Adapter {
 		@Override
 		public void finishedWithAuth(final GTMOAuth2Authentication auth, NSError error) {
-			Gdx.app.log("GOOGLE+", "Callback");
+			Foundation.log("GOOGLE+ Callback");
 
 			if (error != null) {
-				Gdx.app.log("GOOGLE+", "Error: " + error.description());
+				Foundation.log("GOOGLE+ Error: " + error.description());
 				listener.onSignInFailed("Unable to sign in");
 			} else {
 				GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, gppSignIn.getUserId()
@@ -56,15 +57,15 @@ public class GooglePlusAuthorization implements Authorizer {
 						GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 				prefs.flush();
 
-				Gdx.app.log("GOOGLE+", "Retrieving new access token");
+				Foundation.log("GOOGLE+ Retrieving new access token");
 				auth.authorizeRequest(null, new VoidBlock1<NSError>() {
 					@Override
 					public void invoke(NSError error) {
 						if (error != null) {
-							Gdx.app.log("GOOGLE+", "Failed to get new access token: " + error.getLocalizedDescription());
+							Foundation.log("GOOGLE+ Failed to get new access token: " + error.getLocalizedDescription());
 							listener.onSignInFailed("Could not sign in");
 						} else {
-							Gdx.app.log("GOOGLE+", "Received new access token: " + auth.getAccessToken().toString());
+							Foundation.log("GOOGLE+ Received new access token: " + auth.getAccessToken().toString());
 							listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, auth
 									.getAccessToken().toString());
 						}
@@ -75,7 +76,7 @@ public class GooglePlusAuthorization implements Authorizer {
 	}
 
 	public GooglePlusAuthorization() {
-		Gdx.app.log("GOOGLE+", "Setting up authorization");
+		Foundation.log("GOOGLE+ Setting up authorization");
 		gppSignIn = GPPSignIn.sharedInstance();
 		gppSignIn.setShouldFetchGooglePlusUser(true);
 		gppSignIn.setShouldFetchGoogleUserID(true);
@@ -115,7 +116,7 @@ public class GooglePlusAuthorization implements Authorizer {
 
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
-				Gdx.app.log("GOOGLE+", "Sign in succeeded");
+				Foundation.log("GOOGLE+ Sign in succeeded");
 				GTLServicePlus plusService = gppSignIn.plusService();
 
 				GTLQueryPlus query = GTLQueryPlus.queryForPeopleListWithUserId("me", "visible");
@@ -123,9 +124,9 @@ public class GooglePlusAuthorization implements Authorizer {
 
 				plusService.executeQuery(query, QueryResultsBlock.Marshaler.toObjCBlock(new QueryResultsBlock() {
 					public void invoke(GTLServiceTicket ticket, GTLPlusPeopleFeed peopleFeed, NSError error) {
-						Gdx.app.log("PEOPLE", "In invoke()");
+						Foundation.log("PEOPLE In invoke()");
 						if (error != null) {
-							Gdx.app.log("PEOPLE_ERROR", error.getLocalizedDescription());
+							Foundation.log("PEOPLE_ERROR" + error.getLocalizedDescription());
 							fListener.onFriendsLoadedFail(error.getLocalizedDescription());
 							return;
 						}
@@ -145,7 +146,7 @@ public class GooglePlusAuthorization implements Authorizer {
 
 			@Override
 			public void onSignInFailed(String failureMessage) {
-				Gdx.app.log("GOOGLE+", "Sign in failed: " + failureMessage);
+				Foundation.log("GOOGLE+ Sign in failed: " + failureMessage);
 				fListener.onFriendsLoadedFail(failureMessage);
 			}
 		};
@@ -161,10 +162,10 @@ public class GooglePlusAuthorization implements Authorizer {
 			@Override
 			public void finishedSharingWithError(NSError error) {
 				if (error != null) {
-					Gdx.app.log("GOOGLE", "Finished sharing with error: " + error.getLocalizedDescription());
+					Foundation.log("GOOGLE Finished sharing with error: " + error.getLocalizedDescription());
 					listener.onPostFails(error.getLocalizedDescription());
 				} else {
-					Gdx.app.log("GOOGLE", "Finished sharing");
+					Foundation.log("GOOGLE Finished sharing");
 					listener.onPostSucceeded();
 				}
 			}

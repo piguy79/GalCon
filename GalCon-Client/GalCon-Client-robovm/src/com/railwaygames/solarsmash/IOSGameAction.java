@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSData;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSURLResponse;
@@ -122,7 +123,7 @@ public class IOSGameAction implements GameAction {
 			new PostJsonRequestTask<Session>(callback, EXCHANGE_TOKEN_FOR_SESSION, Session.class).execute(top
 					.toString());
 		} catch (JSONException e) {
-			System.out.println(e);
+			Foundation.log(e.getMessage());
 		}
 	}
 
@@ -132,7 +133,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.matchPlayerToGame(handle, mapToFind, getSession());
 			new PostJsonRequestTask<GameBoard>(callback, MATCH_PLAYER_TO_GAME, GameBoard.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println(e);
+			Foundation.log(e.getMessage());
 		}
 	}
 
@@ -177,7 +178,7 @@ public class IOSGameAction implements GameAction {
 					.execute(top.toString());
 
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -188,7 +189,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.performMove(gameId, moves, harvestMoves, getSession());
 			new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, GameBoard.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -230,7 +231,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.addCoins(handle, getSession());
 			new PostJsonRequestTask<Player>(callback, ADD_FREE_COINS, Player.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -240,7 +241,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.addCoinsForAnOrder(handle, orders, getSession());
 			new PostJsonRequestTask<Player>(callback, ADD_COINS_FOR_AN_ORDER, Player.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -250,7 +251,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.deleteConsumedOrders(handle, orders, getSession());
 			new PostJsonRequestTask<Player>(callback, DELETE_CONSUMED_ORDERS, Player.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -274,7 +275,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.invite(requesterHandle, inviteeHandle, getSession(), mapKey);
 			new PostJsonRequestTask<GameBoard>(callback, INVITE_USER_TO_PLAY, GameBoard.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -361,7 +362,7 @@ public class IOSGameAction implements GameAction {
 					converter.consume(new JSONObject(json));
 				}
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				Foundation.log(e.getMessage());
 				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 			}
 		}
@@ -381,9 +382,9 @@ public class IOSGameAction implements GameAction {
 			try {
 				this.converter = converterClass.newInstance();
 			} catch (InstantiationException e) {
-				System.out.println("Could not create converter class");
+				Foundation.log("Could not create converter class");
 			} catch (IllegalAccessException e) {
-				System.out.println("Could not create converter class");
+				Foundation.log("Could not create converter class");
 			}
 			this.callback = callback;
 
@@ -399,7 +400,7 @@ public class IOSGameAction implements GameAction {
 		public void execute(final String... params) {
 			try {
 				savedParams.params = params;
-				System.out.println("Invoking call at path: " + path + ", " + Arrays.toString(params));
+				Foundation.log("Invoking call at path: " + path + ", " + Arrays.toString(params));
 
 				VoidBlock3<NSURLResponse, NSData, NSError> completionHandlerBlock = new VoidBlock3<NSURLResponse, NSData, NSError>() {
 					@Override
@@ -411,14 +412,14 @@ public class IOSGameAction implements GameAction {
 
 				establishConnection(completionHandlerBlock, params);
 			} catch (IOException e) {
-				System.out.println(e);
+				Foundation.log("Error connecting: " + e.getMessage());
 				converter.errorMessage = CONNECTION_ERROR_MESSAGE;
 			}
 		}
 
 		protected void onPostExecute(final JsonConvertible result) {
 			if (result.errorMessage != null && !result.errorMessage.isEmpty()) {
-				System.out.println("Call failed with error: " + result.errorMessage);
+				Foundation.log("Call failed with error: " + result.errorMessage);
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
 						callback.onConnectionError(result.errorMessage);
@@ -428,7 +429,7 @@ public class IOSGameAction implements GameAction {
 				callback.onConnectionError(result.reason);
 			} else {
 				if (result.sessionExpired) {
-					System.out.println("Session expired, beginning silent sign in");
+					Foundation.log("Session expired, beginning silent sign in");
 					Gdx.app.postRunnable(new Runnable() {
 						public void run() {
 							Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
@@ -439,7 +440,7 @@ public class IOSGameAction implements GameAction {
 						}
 					});
 				} else {
-					System.out.println("Call succeeded");
+					Foundation.log("Call succeeded");
 					Gdx.app.postRunnable(new Runnable() {
 						public void run() {
 							callback.onConnectionResult((T) result);
@@ -473,12 +474,12 @@ public class IOSGameAction implements GameAction {
 
 		@Override
 		public void onSignInSucceeded(String authProvider, String token) {
-			System.out.println("Silent sign in succeeded.  Getting session...");
+			Foundation.log("Silent sign in succeeded.  Getting session...");
 			IOSGameAction.this.exchangeTokenForSession(new UIConnectionResultCallback<Session>() {
 
 				@Override
 				public void onConnectionResult(Session result) {
-					System.out.println("Silent sign in succeeded.  Session retrieved.");
+					Foundation.log("Silent sign in succeeded.  Session retrieved.");
 					IOSGameAction.this.setSession(result.session);
 					if (savedRequestParams.args != null) {
 						savedRequestParams.args.put("session", getSession());
@@ -492,7 +493,7 @@ public class IOSGameAction implements GameAction {
 							new PostJsonRequestTask<T>(savedRequestParams.callback, savedRequestParams.path,
 									savedRequestParams.converter).execute(object.toString());
 						} catch (JSONException e) {
-							System.out.println("Could not reconstructor json request");
+							Foundation.log("Could not reconstructor json request");
 							gameLoop.reset();
 						}
 					}
@@ -500,7 +501,7 @@ public class IOSGameAction implements GameAction {
 
 				@Override
 				public void onConnectionError(String msg) {
-					System.out.println("Silent sign in failed on retreiving token with error: " + msg);
+					Foundation.log("Silent sign in failed on retreiving token with error: " + msg);
 					savedRequestParams.callback.onConnectionError(Strings.CONNECTION_FAIL);
 				}
 			}, authProvider, token);
@@ -508,7 +509,7 @@ public class IOSGameAction implements GameAction {
 
 		@Override
 		public void onSignInFailed(String failureMessage) {
-			System.out.println("Silent sign in failed with error: " + failureMessage);
+			Foundation.log("Silent sign in failed with error: " + failureMessage);
 			gameLoop.reset();
 		}
 	}
@@ -530,7 +531,7 @@ public class IOSGameAction implements GameAction {
 			new PostJsonRequestTask<HandleResponse>(callback, REQUEST_HANDLE_FOR_ID, HandleResponse.class).execute(top
 					.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -541,7 +542,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.matchingFriends(authIds, handle, getSession(), authProvider);
 			new PostJsonRequestTask<People>(callback, FIND_MATCHING_FRIENDS, People.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -552,7 +553,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
 			new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -562,7 +563,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.cancelGame(handle, gameId, getSession());
 			new PostJsonRequestTask<BaseResult>(callback, CANCEL_GAME, BaseResult.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -572,7 +573,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.claimGame(handle, gameId, session);
 			new PostJsonRequestTask<GameBoard>(callback, CLAIM_VICTORY, GameBoard.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 
@@ -611,7 +612,7 @@ public class IOSGameAction implements GameAction {
 				new PostJsonRequestTask<Leaderboards>(fCache, FIND_LEADERBOARDS_FOR_FRIENDS, Leaderboards.class)
 						.execute(top.toString());
 			} catch (JSONException e) {
-				System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+				Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 			}
 		}
 	}
@@ -622,7 +623,7 @@ public class IOSGameAction implements GameAction {
 			final JSONObject top = JsonConstructor.practiceGame(handle, session, mapId);
 			new PostJsonRequestTask<GameBoard>(callback, PRACTICE, GameBoard.class).execute(top.toString());
 		} catch (JSONException e) {
-			System.out.println("This isn't expected to ever realistically happen. So I'm just logging it.");
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
 	}
 }

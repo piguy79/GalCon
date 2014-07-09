@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSBundle;
 import org.robovm.apple.foundation.NSData;
@@ -27,7 +28,6 @@ import org.robovm.apple.storekit.SKProductsRequestDelegateAdapter;
 import org.robovm.apple.storekit.SKProductsResponse;
 import org.robovm.apple.storekit.SKRequest;
 
-import com.badlogic.gdx.Gdx;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
@@ -35,7 +35,7 @@ import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
 
 public class IOSInAppBillingAction implements InAppBillingAction {
-	private static final String TAG = "IOSInAppBillingAction";
+	private static final String TAG = "IOSInAppBillingAction: ";
 
 	private UIConnectionResultCallback<List<Order>> purchaseCallback;
 	private Callback consumeCallback;
@@ -46,15 +46,15 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		SKPaymentTransactionObserverAdapter observer = new SKPaymentTransactionObserverAdapter() {
 			@Override
 			public void updatedTransactions(SKPaymentQueue queue, NSArray<SKPaymentTransaction> transactions) {
-				Gdx.app.log(TAG, "Size: " + transactions.size());
+				Foundation.log(TAG + "Size: " + transactions.size());
 
 				for (SKPaymentTransaction transaction : transactions) {
 					switch (transaction.getTransactionState()) {
 					case Purchasing:
-						Gdx.app.log(TAG, "PURCHASING: " + transaction.getPayment().getProductIdentifier());
+						Foundation.log(TAG + "PURCHASING: " + transaction.getPayment().getProductIdentifier());
 						break;
 					case Purchased:
-						Gdx.app.log(TAG, "PURCHASED: " + transaction.getPayment().getProductIdentifier());
+						Foundation.log(TAG + "PURCHASED: " + transaction.getPayment().getProductIdentifier());
 						List<Order> orders = new ArrayList<Order>();
 						orders.add(transactionToOrder(transaction));
 						if (purchaseCallback == null) {
@@ -63,14 +63,14 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 						purchaseCallback.onConnectionResult(orders);
 						break;
 					case Failed:
-						Gdx.app.log(TAG, "FAILED: " + transaction.getError().getLocalizedDescription());
+						Foundation.log(TAG + "FAILED: " + transaction.getError().getLocalizedDescription());
 						if (purchaseCallback == null) {
 							return;
 						}
 						purchaseCallback.onConnectionError(transaction.getError().getLocalizedDescription());
 						break;
 					case Restored:
-						Gdx.app.log(TAG, "RESTORED: " + transaction.description());
+						Foundation.log(TAG + "RESTORED: " + transaction.description());
 						break;
 					default:
 						break;
@@ -81,7 +81,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 			@Override
 			public void removedTransactions(SKPaymentQueue queue, NSArray<SKPaymentTransaction> transactions) {
 				for (SKPaymentTransaction transaction : transactions) {
-					Gdx.app.log(TAG, "REMOVING: " + transaction.getPayment().getProductIdentifier());
+					Foundation.log(TAG + "REMOVING: " + transaction.getPayment().getProductIdentifier());
 				}
 
 				if (consumeCallback != null) {
@@ -107,7 +107,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 		productsRequest.setDelegate(new SKProductsRequestDelegateAdapter() {
 			@Override
 			public void didReceiveResponse(SKProductsRequest request, SKProductsResponse response) {
-				Gdx.app.log(TAG, "IOS INVENTORY LOAD");
+				Foundation.log(TAG + "IOS INVENTORY LOAD");
 				NSArray<SKProduct> products = response.getProducts();
 
 				skuToProduct = new HashMap<String, SKProduct>();
@@ -122,9 +122,9 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 						.getTransactions();
 
 				for (SKPaymentTransaction unconsumedTransaction : unconsumedTransactions) {
-					Gdx.app.log(TAG, "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
+					Foundation.log(TAG + "UNCONSUMED: " + unconsumedTransaction.getPayment().getProductIdentifier());
 					if (unconsumedTransaction.getTransactionState() == SKPaymentTransactionState.Failed) {
-						Gdx.app.log(TAG, "FINISHING FAILED: "
+						Foundation.log(TAG + "FINISHING FAILED: "
 								+ unconsumedTransaction.getPayment().getProductIdentifier());
 						SKPaymentQueue.getDefaultQueue().finishTransaction(unconsumedTransaction);
 
@@ -150,7 +150,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 				for (InventoryItem serverItem : serverInventory.inventory) {
 					SKProduct iosProduct = skuToProduct.get(serverItem.sku);
 					if (iosProduct == null) {
-						Gdx.app.log(TAG, "SKU not found in ios store: " + serverItem.sku);
+						Foundation.log(TAG + "SKU not found in ios store: " + serverItem.sku);
 						continue;
 					}
 
@@ -161,7 +161,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 							.getLocalizedTitle(), serverItem.numCoins);
 
 					if (skuToTransaction.containsKey(iosProduct.getProductIdentifier())) {
-						Gdx.app.log(TAG, "Adding unfulfilled order to inventory: " + serverItem.sku);
+						Foundation.log(TAG + "Adding unfulfilled order to inventory: " + serverItem.sku);
 
 						List<SKPaymentTransaction> transactions = skuToTransaction.get(iosProduct
 								.getProductIdentifier());
@@ -184,11 +184,11 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void didFail(SKRequest request, NSError error) {
-				Gdx.app.log(TAG, "INVENTORY FAIL: " + error.description());
+				Foundation.log(TAG + "INVENTORY FAIL: " + error.description());
 				callback.onConnectionError(error.description());
 			}
 		});
-		Gdx.app.log(TAG, "Calling start on in app billing.");
+		Foundation.log(TAG + "Calling start on in app billing.");
 		productsRequest.start();
 	}
 
@@ -205,7 +205,7 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 			ids += transaction.getPayment().getProductIdentifier() + " ";
 		}
 
-		Gdx.app.log(TAG, "CONSUMING: " + ids);
+		Foundation.log(TAG + "CONSUMING: " + ids);
 		this.consumeCallback = callback;
 
 		if (ids.trim().isEmpty()) {
@@ -220,15 +220,15 @@ public class IOSInAppBillingAction implements InAppBillingAction {
 
 	@Override
 	public void purchaseCoins(InventoryItem inventoryItem, UIConnectionResultCallback<List<Order>> callback) {
-		Gdx.app.log("PURCHASE", inventoryItem.sku);
-		Gdx.app.log("CANMAKEPAYMENTS", "" + SKPaymentQueue.canMakePayments());
+		Foundation.log("PURCHASE: " + inventoryItem.sku);
+		Foundation.log("CANMAKEPAYMENTS: " + SKPaymentQueue.canMakePayments());
 		this.purchaseCallback = callback;
 		SKPayment payment = SKPayment.createFromProduct(skuToProduct.get(inventoryItem.sku));
 		SKPaymentQueue.getDefaultQueue().addPayment(payment);
 	}
 
 	private Order transactionToOrder(SKPaymentTransaction transaction) {
-		Gdx.app.log(TAG, "Converting transaction to order");
+		Foundation.log(TAG + "Converting transaction to order");
 		Order order = new Order();
 
 		NSURL receiptURL = NSBundle.getMainBundle().getAppStoreReceiptURL();

@@ -110,6 +110,10 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	@Override
 	public void onConnectionResult(AvailableGames result) {
+		if (loadingOverlay != null) {
+			loadingOverlay.remove();
+		}
+
 		returnValue = null;
 		allGames = null;
 		allGames = result;
@@ -234,6 +238,9 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	@Override
 	public void onConnectionError(String msg) {
+		if (loadingOverlay != null) {
+			loadingOverlay.remove();
+		}
 		returnValue = null;
 		allGames = null;
 

@@ -15,9 +15,7 @@ public class LoadingOverlay extends Overlay {
 		waitImage.setX(Gdx.graphics.getWidth() / 2 - buttonWidth / 2);
 		waitImage.setY(Gdx.graphics.getHeight() / 2 - buttonWidth / 2);
 		addActor(waitImage);
-		
+
 		waitImage.start();
 	}
-	
-
 }

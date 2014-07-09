@@ -9,6 +9,7 @@ import org.robovm.apple.foundation.NSMutableURLRequest;
 import org.robovm.apple.foundation.NSOperationQueue;
 import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.foundation.NSURLConnection;
+import org.robovm.apple.foundation.NSURLRequestCachePolicy;
 import org.robovm.apple.foundation.NSURLResponse;
 import org.robovm.objc.block.VoidBlock3;
 
@@ -24,6 +25,7 @@ public class Connection {
 		}
 
 		NSMutableURLRequest request = new NSMutableURLRequest();
+		request.setCachePolicy(NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData);
 		request.setURL(new NSURL(protocol + "://" + host + ":" + port + path + sb.toString()));
 		request.setHTTPMethod("GET");
 		request.setTimeoutInterval(READ_TIMEOUT);
@@ -38,6 +40,7 @@ public class Connection {
 		NSData data = new NSData(bytes);
 
 		NSMutableURLRequest request = new NSMutableURLRequest();
+		request.setCachePolicy(NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData);
 		request.setURL(new NSURL(protocol + "://" + host + ":" + port + path));
 		request.setHTTPMethod("POST");
 		request.setHTTPBody(data);
