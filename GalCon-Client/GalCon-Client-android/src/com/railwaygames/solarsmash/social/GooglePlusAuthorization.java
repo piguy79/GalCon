@@ -79,9 +79,9 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		if(!client.isConnected()){
+		if (!client.isConnected()) {
 			listener.onSignInFailed("Unable to connect to Google.");
-		}else if (Plus.PeopleApi.getCurrentPerson(client) == null) {
+		} else if (Plus.PeopleApi.getCurrentPerson(client) == null) {
 			listener.onSignInFailed("Unable to load ID.");
 		} else {
 			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
@@ -213,6 +213,15 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		Plus.PeopleApi.loadVisible(client, null).setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
 			@Override
 			public void onResult(LoadPeopleResult result) {
+				if (result == null) {
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							listener.onFriendsLoadedFail("Failed to load friends");
+						}
+					});
+					return;
+				}
+
 				PersonBuffer personBuffer = result.getPersonBuffer();
 				try {
 					final List<Friend> friends = new ArrayList<Friend>();
