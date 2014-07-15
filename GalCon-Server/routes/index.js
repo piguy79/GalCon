@@ -276,13 +276,13 @@ exports.findCurrentGamesByPlayerHandle = function(req, res) {
 			var yday = Date.now() - 1000 * 60 * 60 * 24;
 			return gameManager.findCollectionOfGames(user, {$or : [{'endGame.date' : {$exists : false}}, {'endGame.date' : {$gt : yday}}]});
 		}).then(function(games) {
-			var minifiedGames = minfiyGameResponse(games, handle);
+			var minifiedGames = minifyGameResponse(games, handle);
 			res.json({items : minifiedGames});
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var minfiyGameResponse = function(games, handle){
+var minifyGameResponse = function(games, handle){
 	return _.map(games, function(game){
 		var iHaveAMove = _.filter(game.round.moved, function(player) { return player === handle}).length === 0;	
 		var claimAvailable = claimValidation.validateClaim(game, handle);
