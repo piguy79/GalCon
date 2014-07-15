@@ -299,7 +299,8 @@ var minfiyGameResponse = function(games, handle){
 			map : game.map,
 			social : game.social,
 			claimAvailable : claimAvailable,
-			endViewedBy : game.endGame.viewedBy
+			endViewedBy : game.endGame.viewedBy,
+			config : game.config
 		};
 	});
 }
