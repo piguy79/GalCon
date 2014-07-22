@@ -9,14 +9,19 @@ import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
+import org.robovm.apple.glkit.GLKViewController;
+import org.robovm.apple.uikit.UIViewController;
 import org.robovm.bindings.gpp.GPPShare;
 import org.robovm.bindings.gpp.GPPShareDelegate;
 import org.robovm.bindings.gpp.GPPSignInDelegate;
 import org.robovm.bindings.gt.GTMOAuth2Authentication;
+import org.robovm.bindings.gt.GTMOAuth2ViewControllerTouch;
 import org.robovm.objc.block.VoidBlock1;
+import org.robovm.objc.block.VoidBlock3;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
@@ -58,19 +63,19 @@ public class GooglePlusAuthorization implements Authorizer {
 				prefs.flush();
 
 				Foundation.log("GOOGLE+ Retrieving new access token");
-				auth.authorizeRequest(null, new VoidBlock1<NSError>() {
-					@Override
-					public void invoke(NSError error) {
-						if (error != null) {
-							Foundation.log("GOOGLE+ Failed to get new access token: " + error.getLocalizedDescription());
-							listener.onSignInFailed("Could not sign in");
-						} else {
-							Foundation.log("GOOGLE+ Received new access token: " + auth.getAccessToken().toString());
-							listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, auth
-									.getAccessToken().toString());
-						}
-					}
-				});
+//				auth.authorizeRequest(null, new VoidBlock1<NSError>() {
+//					@Override
+//					public void invoke(NSError error) {
+//						if (error != null) {
+//							Foundation.log("GOOGLE+ Failed to get new access token: " + error.getLocalizedDescription());
+//							listener.onSignInFailed("Could not sign in");
+//						} else {
+//							Foundation.log("GOOGLE+ Received new access token: " + auth.getAccessToken().toString());
+//							listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, auth
+//									.getAccessToken().toString());
+//						}
+//					}
+//				});
 			}
 		}
 	}
@@ -92,6 +97,22 @@ public class GooglePlusAuthorization implements Authorizer {
 	public void signIn(AuthenticationListener listener) {
 		this.listener = listener;
 		gppSignIn.authenticate();
+
+//		GTMOAuth2ViewControllerTouch controller = new GTMOAuth2ViewControllerTouch();
+//		controller.initWithScope(scopes, new NSString(clientId), null, GPPSignIn.sharedInstance().getKeychainName(),
+//				new VoidBlock3<GTMOAuth2ViewControllerTouch, GTMOAuth2Authentication, NSError>() {
+//					@Override
+//					public void invoke(GTMOAuth2ViewControllerTouch a, GTMOAuth2Authentication b, NSError error) {
+//						if (error != null) {
+//							Foundation.log("Error using GTMOAuth2ViewControllTouch: "
+//									+ error.getLocalizedFailureReason());
+//						} else {
+//							GPPSignIn.sharedInstance().trySilentAuthentication();
+//						}
+//					}
+//				});
+//		((GLKViewController) ((IOSApplication) Gdx.app).getUIViewController()).setPaused(true);
+//		((IOSApplication) Gdx.app).getUIViewController().presentViewController(controller, false, null);
 	}
 
 	@Override

@@ -106,7 +106,9 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 
-		addGooglePlusButton(width, height);
+		if (socialAction.enableGoogle()) {
+			addGooglePlusButton(width, height);
+		}
 		addFacebookButton(width, height);
 	}
 
@@ -141,7 +143,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 	private void addFacebookButton(float width, float height) {
 		facebookButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
 		facebookButton.setWidth(0.3f * width);
-		facebookButton.setX(width / 2 - googlePlusButton.getWidth() / 2);
+		facebookButton.setX(width / 2 - facebookButton.getWidth() / 2);
 		facebookButton.setY(0.23f * height);
 		facebookButton.setHeight(0.07f * height);
 		stage.addActor(facebookButton);
@@ -200,7 +202,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 	@Override
 	public void onSignInFailed(final String failureMessage) {
-		if (googlePlusButton == null) {
+		if (googlePlusButton == null && facebookButton == null) {
 			addAuthenticationMethodsToStage();
 		}
 
@@ -245,7 +247,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 		waitImage.stop();
 
 		signInLabel.setText(Strings.AUTH_FAIL);
-		if (googlePlusButton == null) {
+		if (googlePlusButton == null && facebookButton == null) {
 			addAuthenticationMethodsToStage();
 		}
 	}

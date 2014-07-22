@@ -101,4 +101,9 @@ public class AndroidSocialAction implements SocialAction {
 			}
 		});
 	}
+
+	@Override
+	public boolean enableGoogle() {
+		return true;
+	}
 }

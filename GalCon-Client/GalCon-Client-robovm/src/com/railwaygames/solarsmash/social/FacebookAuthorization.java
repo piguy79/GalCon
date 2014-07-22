@@ -8,6 +8,7 @@ import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.bindings.facebook.manager.CommonFacebookRequests;
 import org.robovm.bindings.facebook.manager.FBPermission;
 import org.robovm.bindings.facebook.manager.FacebookLoginListener;
 import org.robovm.bindings.facebook.manager.FacebookRequestListener;
@@ -24,7 +25,6 @@ import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.FriendPostListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
 import com.railwaygames.solarsmash.model.Friend;
-import com.railwaygames.solarsmash.social.facebook.CommonFacebookRequests;
 import com.railwaygames.solarsmash.social.facebook.FacebookConfiguration;
 import com.railwaygames.solarsmash.social.facebook.FacebookManager;
 
@@ -87,6 +87,7 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 
 	@Override
 	public void getFriends(final FriendsListener listener) {
+		Foundation.log("FB: getFriends()");
 		signIn(new AuthenticationListener() {
 
 			@Override
@@ -142,12 +143,13 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 			public void onSignInSucceeded(String authProvider, String token) {
 				Foundation.log(TAG + "Session state: " + FBSession.getActiveSession().getState());
 				facebook.request(CommonFacebookRequests
-						.publishFeedToFriend(id, "Solar Smash", "Download Solar Smash now.", "",
+						.publishFeed("Solar Smash", "Download Solar Smash now",
+								"Come conquer the galaxy in this addictive multiplayer strategy game. Invite me using the handle \""
+										+ GameLoop.USER.handle + "\"",
 								"Hey, come play me in Solar Smash. Invite me using the handle \""
 										+ GameLoop.USER.handle + "\"",
 								"http://www.railwaygames.mobi/assets/images/logo/android_icon.png",
-								"http://www.railwaygames.mobi", FBSession.getActiveSession().getAccessTokenData()
-										.getAccessToken(), true, new FacebookRequestListener() {
+								"http://www.railwaygames.mobi", true, new FacebookRequestListener() {
 
 									@Override
 									public void onSuccess(GraphObject result) {

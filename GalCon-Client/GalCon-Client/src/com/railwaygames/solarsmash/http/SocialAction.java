@@ -11,4 +11,6 @@ public interface SocialAction {
 	public void getFriends(FriendsListener listener, String authProvider);
 
 	public void postToFriends(FriendPostListener listener, String authProvider, String id);
+	
+	public boolean enableGoogle();
 }

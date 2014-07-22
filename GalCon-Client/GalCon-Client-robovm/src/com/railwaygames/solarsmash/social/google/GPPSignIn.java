@@ -217,6 +217,15 @@ public class GPPSignIn extends NSObject {
 		objc_setKeychainName(this, keychainName$, keychainName);
 	}
 
+	private static final Selector keychainName = Selector.register("keychainName");
+
+	@Bridge
+	private native static NSString objc_getKeychainName(GPPSignIn __self__, Selector __cmd__);
+
+	public NSString getKeychainName() {
+		return objc_getKeychainName(this, keychainName);
+	}
+
 	// An |NSString| array of moment types used by your app. Use values from the
 	// full list at
 	// https://developers.google.com/+/api/moment-types .

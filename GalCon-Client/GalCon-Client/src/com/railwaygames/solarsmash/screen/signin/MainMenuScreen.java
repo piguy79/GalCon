@@ -361,7 +361,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void loadGooglePlusFriends() {
-		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE)) {
+		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE) && socialAction.enableGoogle()) {
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {

@@ -9698,9 +9698,9 @@ com.railwaygames.solarsmash.social.FacebookAuthorization$4:
 com.railwaygames.solarsmash.social.FacebookAuthorization$6:
     231:231:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
-    190:190:public void onSignOut()
+    192:192:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:
-    245:245:public void onSignOut()
+    256:256:public void onSignOut()
 org.joda.convert.AnnotationStringConverterFactory
 org.joda.convert.FromString
 org.joda.convert.FromStringConverter
@@ -9865,46 +9865,46 @@ org.joda.time.DateTime:
     1442:1446:public org.joda.time.DateTime minusSeconds(int)
     1469:1473:public org.joda.time.DateTime minusMillis(int)
     1485:1492:public org.joda.time.DateTime$Property property(org.joda.time.DateTimeFieldType)
-    1503:1503:public org.joda.time.DateMidnight toDateMidnight()
-    1515:1515:public org.joda.time.YearMonthDay toYearMonthDay()
-    1527:1527:public org.joda.time.TimeOfDay toTimeOfDay()
-    1538:1538:public org.joda.time.LocalDateTime toLocalDateTime()
-    1549:1549:public org.joda.time.LocalDate toLocalDate()
-    1560:1560:public org.joda.time.LocalTime toLocalTime()
-    1577:1577:public org.joda.time.DateTime withEra(int)
-    1593:1593:public org.joda.time.DateTime withCenturyOfEra(int)
-    1609:1609:public org.joda.time.DateTime withYearOfEra(int)
-    1625:1625:public org.joda.time.DateTime withYearOfCentury(int)
-    1641:1641:public org.joda.time.DateTime withYear(int)
-    1663:1663:public org.joda.time.DateTime withWeekyear(int)
-    1679:1679:public org.joda.time.DateTime withMonthOfYear(int)
-    1700:1700:public org.joda.time.DateTime withWeekOfWeekyear(int)
-    1716:1716:public org.joda.time.DateTime withDayOfYear(int)
-    1732:1732:public org.joda.time.DateTime withDayOfMonth(int)
-    1748:1748:public org.joda.time.DateTime withDayOfWeek(int)
-    1765:1765:public org.joda.time.DateTime withHourOfDay(int)
-    1781:1781:public org.joda.time.DateTime withMinuteOfHour(int)
-    1797:1797:public org.joda.time.DateTime withSecondOfMinute(int)
-    1813:1813:public org.joda.time.DateTime withMillisOfSecond(int)
-    1829:1829:public org.joda.time.DateTime withMillisOfDay(int)
-    1840:1840:public org.joda.time.DateTime$Property era()
-    1849:1849:public org.joda.time.DateTime$Property centuryOfEra()
-    1858:1858:public org.joda.time.DateTime$Property yearOfCentury()
-    1867:1867:public org.joda.time.DateTime$Property yearOfEra()
-    1876:1876:public org.joda.time.DateTime$Property year()
-    1885:1885:public org.joda.time.DateTime$Property weekyear()
-    1894:1894:public org.joda.time.DateTime$Property monthOfYear()
-    1903:1903:public org.joda.time.DateTime$Property weekOfWeekyear()
-    1912:1912:public org.joda.time.DateTime$Property dayOfYear()
-    1921:1921:public org.joda.time.DateTime$Property dayOfMonth()
-    1930:1930:public org.joda.time.DateTime$Property dayOfWeek()
-    1941:1941:public org.joda.time.DateTime$Property hourOfDay()
-    1950:1950:public org.joda.time.DateTime$Property minuteOfDay()
-    1959:1959:public org.joda.time.DateTime$Property minuteOfHour()
-    1968:1968:public org.joda.time.DateTime$Property secondOfDay()
-    1977:1977:public org.joda.time.DateTime$Property secondOfMinute()
-    1986:1986:public org.joda.time.DateTime$Property millisOfDay()
-    1995:1995:public org.joda.time.DateTime$Property millisOfSecond()
+    1505:1505:public org.joda.time.DateMidnight toDateMidnight()
+    1517:1517:public org.joda.time.YearMonthDay toYearMonthDay()
+    1529:1529:public org.joda.time.TimeOfDay toTimeOfDay()
+    1540:1540:public org.joda.time.LocalDateTime toLocalDateTime()
+    1551:1551:public org.joda.time.LocalDate toLocalDate()
+    1562:1562:public org.joda.time.LocalTime toLocalTime()
+    1579:1579:public org.joda.time.DateTime withEra(int)
+    1595:1595:public org.joda.time.DateTime withCenturyOfEra(int)
+    1611:1611:public org.joda.time.DateTime withYearOfEra(int)
+    1627:1627:public org.joda.time.DateTime withYearOfCentury(int)
+    1643:1643:public org.joda.time.DateTime withYear(int)
+    1665:1665:public org.joda.time.DateTime withWeekyear(int)
+    1681:1681:public org.joda.time.DateTime withMonthOfYear(int)
+    1702:1702:public org.joda.time.DateTime withWeekOfWeekyear(int)
+    1718:1718:public org.joda.time.DateTime withDayOfYear(int)
+    1734:1734:public org.joda.time.DateTime withDayOfMonth(int)
+    1750:1750:public org.joda.time.DateTime withDayOfWeek(int)
+    1767:1767:public org.joda.time.DateTime withHourOfDay(int)
+    1783:1783:public org.joda.time.DateTime withMinuteOfHour(int)
+    1799:1799:public org.joda.time.DateTime withSecondOfMinute(int)
+    1815:1815:public org.joda.time.DateTime withMillisOfSecond(int)
+    1831:1831:public org.joda.time.DateTime withMillisOfDay(int)
+    1842:1842:public org.joda.time.DateTime$Property era()
+    1851:1851:public org.joda.time.DateTime$Property centuryOfEra()
+    1860:1860:public org.joda.time.DateTime$Property yearOfCentury()
+    1869:1869:public org.joda.time.DateTime$Property yearOfEra()
+    1878:1878:public org.joda.time.DateTime$Property year()
+    1887:1887:public org.joda.time.DateTime$Property weekyear()
+    1896:1896:public org.joda.time.DateTime$Property monthOfYear()
+    1905:1905:public org.joda.time.DateTime$Property weekOfWeekyear()
+    1914:1914:public org.joda.time.DateTime$Property dayOfYear()
+    1923:1923:public org.joda.time.DateTime$Property dayOfMonth()
+    1932:1932:public org.joda.time.DateTime$Property dayOfWeek()
+    1943:1943:public org.joda.time.DateTime$Property hourOfDay()
+    1952:1952:public org.joda.time.DateTime$Property minuteOfDay()
+    1961:1961:public org.joda.time.DateTime$Property minuteOfHour()
+    1970:1970:public org.joda.time.DateTime$Property secondOfDay()
+    1979:1979:public org.joda.time.DateTime$Property secondOfMinute()
+    1988:1988:public org.joda.time.DateTime$Property millisOfDay()
+    1997:1997:public org.joda.time.DateTime$Property millisOfSecond()
 org.joda.time.DateTime$Property
 org.joda.time.DateTimeComparator
 org.joda.time.DateTimeConstants
@@ -9999,31 +9999,34 @@ org.joda.time.DateTimeUtils:
     316:319:public static final org.joda.time.PeriodType getPeriodType(org.joda.time.PeriodType)
     333:336:public static final long getDurationMillis(org.joda.time.ReadableDuration)
     364:377:public static final boolean isContiguous(org.joda.time.ReadablePartial)
-    424:425:public static final void setDefaultTimeZoneNames(java.util.Map)
-    451:452:public static final double toJulianDay(long)
-    471:471:public static final long toJulianDayNumber(long)
-    484:485:public static final long fromJulianDay(double)
+    439:440:public static final void setDefaultTimeZoneNames(java.util.Map)
+    466:467:public static final double toJulianDay(long)
+    486:486:public static final long toJulianDayNumber(long)
+    499:500:public static final long fromJulianDay(double)
 org.joda.time.DateTimeUtils$FixedMillisProvider
 org.joda.time.DateTimeUtils$OffsetMillisProvider
 org.joda.time.DateTimeZone:
     private static final long serialVersionUID
-    174:184:public static void setDefault(org.joda.time.DateTimeZone)
-    237:237:public static org.joda.time.DateTimeZone forOffsetHours(int)
-    254:272:public static org.joda.time.DateTimeZone forOffsetHoursMinutes(int,int)
-    387:387:public static org.joda.time.tz.Provider getProvider()
-    401:406:public static void setProvider(org.joda.time.tz.Provider)
-    486:486:public static org.joda.time.tz.NameProvider getNameProvider()
-    500:505:public static void setNameProvider(org.joda.time.tz.NameProvider)
-    729:729:public final java.lang.String getShortName(long)
-    769:769:public final java.lang.String getName(long)
-    813:816:public final int getOffset(org.joda.time.ReadableInstant)
+    private static final int MAX_MILLIS
+    175:185:public static void setDefault(org.joda.time.DateTimeZone)
+    238:238:public static org.joda.time.DateTimeZone forOffsetHours(int)
+    273:297:public static org.joda.time.DateTimeZone forOffsetHoursMinutes(int,int)
+    415:415:public static org.joda.time.tz.Provider getProvider()
+    429:434:public static void setProvider(org.joda.time.tz.Provider)
+    514:514:public static org.joda.time.tz.NameProvider getNameProvider()
+    528:533:public static void setNameProvider(org.joda.time.tz.NameProvider)
+    758:758:public final java.lang.String getShortName(long)
+    798:798:public final java.lang.String getName(long)
+    842:845:public final int getOffset(org.joda.time.ReadableInstant)
     public abstract int getStandardOffset(long)
-    844:844:public boolean isStandardOffset(long)
-    1026:1033:public long getMillisKeepLocal(org.joda.time.DateTimeZone,long)
-    1143:1150:public boolean isLocalDateTimeGap(org.joda.time.LocalDateTime)
-    1165:1189:public long adjustOffset(long,boolean)
-    1231:1231:public java.util.TimeZone toTimeZone()
-    1266:1266:protected java.lang.Object writeReplace()
+    873:873:public boolean isStandardOffset(long)
+    1055:1062:public long getMillisKeepLocal(org.joda.time.DateTimeZone,long)
+    1172:1179:public boolean isLocalDateTimeGap(org.joda.time.LocalDateTime)
+    1194:1218:public long adjustOffset(long,boolean)
+    1260:1260:public java.util.TimeZone toTimeZone()
+    1295:1295:protected java.lang.Object writeReplace()
+org.joda.time.DateTimeZone$1:
+    private static final long serialVersionUID
 org.joda.time.DateTimeZone$Stub
 org.joda.time.Days
 org.joda.time.Duration
@@ -10400,22 +10403,22 @@ org.joda.time.chrono.BasicChronology:
     private static final int CACHE_MASK
     153:159:public long getDateTimeMillis(int,int,int,int)
     167:177:public long getDateTimeMillis(int,int,int,int,int,int,int)
-    603:606:long getDateMidnightMillis(int,int,int)
+    612:615:long getDateMidnightMillis(int,int,int)
     abstract long getYearDifference(long,long)
     abstract int getDaysInMonthMax(int)
-    682:682:int getMaxMonth(int)
+    691:691:int getMaxMonth(int)
 org.joda.time.chrono.BasicChronology$HalfdayField:
     private static final long serialVersionUID
 org.joda.time.chrono.BasicDayOfMonthDateTimeField:
     private static final long serialVersionUID
-    67:75:public int getMaximumValue(org.joda.time.ReadablePartial)
-    79:92:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
-    103:103:private java.lang.Object readResolve()
+    68:76:public int getMaximumValue(org.joda.time.ReadablePartial)
+    80:93:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
+    104:104:private java.lang.Object readResolve()
 org.joda.time.chrono.BasicDayOfYearDateTimeField:
     private static final long serialVersionUID
-    73:77:public int getMaximumValue(org.joda.time.ReadablePartial)
-    81:88:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
-    100:100:private java.lang.Object readResolve()
+    74:78:public int getMaximumValue(org.joda.time.ReadablePartial)
+    82:89:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
+    101:101:private java.lang.Object readResolve()
 org.joda.time.chrono.BasicFixedMonthChronology
 org.joda.time.chrono.BasicGJChronology:
     private static final long serialVersionUID
@@ -10425,33 +10428,33 @@ org.joda.time.chrono.BasicGJChronology:
 org.joda.time.chrono.BasicMonthOfYearDateTimeField:
     private static final long serialVersionUID
     private static final int MIN
-    59:59:public boolean isLenient()
-    206:223:public int[] add(org.joda.time.ReadablePartial,int,int[],int)
-    238:238:public long addWrapField(long,int)
-    243:280:public long getDifferenceAsLong(long,long)
-    329:329:public int getLeapAmount(long)
-    364:364:private java.lang.Object readResolve()
+    60:60:public boolean isLenient()
+    207:224:public int[] add(org.joda.time.ReadablePartial,int,int[],int)
+    239:239:public long addWrapField(long,int)
+    244:281:public long getDifferenceAsLong(long,long)
+    330:330:public int getLeapAmount(long)
+    365:365:private java.lang.Object readResolve()
 org.joda.time.chrono.BasicSingleEraDateTimeField
 org.joda.time.chrono.BasicWeekOfWeekyearDateTimeField:
     private static final long serialVersionUID
-    92:96:public int getMaximumValue(org.joda.time.ReadablePartial)
-    100:107:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
-    118:118:private java.lang.Object readResolve()
+    93:97:public int getMaximumValue(org.joda.time.ReadablePartial)
+    101:108:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
+    119:119:private java.lang.Object readResolve()
 org.joda.time.chrono.BasicWeekyearDateTimeField:
     private static final long serialVersionUID
     private static final long WEEK_53
-    49:49:public boolean isLenient()
-    92:92:public long addWrapField(long,int)
-    96:115:public long getDifferenceAsLong(long,long)
-    216:216:public int getLeapAmount(long)
-    250:250:private java.lang.Object readResolve()
+    50:50:public boolean isLenient()
+    93:93:public long addWrapField(long,int)
+    97:116:public long getDifferenceAsLong(long,long)
+    217:217:public int getLeapAmount(long)
+    251:251:private java.lang.Object readResolve()
 org.joda.time.chrono.BasicYearDateTimeField:
     private static final long serialVersionUID
-    50:50:public boolean isLenient()
-    71:78:public long addWrapField(long,int)
-    88:91:public long getDifferenceAsLong(long,long)
-    103:106:public int getLeapAmount(long)
-    144:144:private java.lang.Object readResolve()
+    51:51:public boolean isLenient()
+    72:79:public long addWrapField(long,int)
+    89:92:public long getDifferenceAsLong(long,long)
+    104:107:public int getLeapAmount(long)
+    145:145:private java.lang.Object readResolve()
 org.joda.time.chrono.BuddhistChronology
 org.joda.time.chrono.CopticChronology
 org.joda.time.chrono.EthiopicChronology
@@ -10461,26 +10464,26 @@ org.joda.time.chrono.GJChronology$ImpreciseCutoverField
 org.joda.time.chrono.GJChronology$LinkedDurationField
 org.joda.time.chrono.GJDayOfWeekDateTimeField:
     private static final long serialVersionUID
-    132:132:public int getMaximumShortTextLength(java.util.Locale)
-    139:139:private java.lang.Object readResolve()
+    133:133:public int getMaximumShortTextLength(java.util.Locale)
+    140:140:private java.lang.Object readResolve()
 org.joda.time.chrono.GJEraDateTimeField:
     private static final long serialVersionUID
-    51:51:public boolean isLenient()
-    150:150:private java.lang.Object readResolve()
+    52:52:public boolean isLenient()
+    151:151:private java.lang.Object readResolve()
 org.joda.time.chrono.GJLocaleSymbols:
     private static final int FAST_CACHE_SIZE
     211:211:public int getMonthMaxShortTextLength()
     235:235:public int getDayOfWeekMaxShortTextLength()
 org.joda.time.chrono.GJMonthOfYearDateTimeField:
     private static final long serialVersionUID
-    62:62:public int getMaximumShortTextLength(java.util.Locale)
+    63:63:public int getMaximumShortTextLength(java.util.Locale)
 org.joda.time.chrono.GJYearOfEraDateTimeField:
     private static final long serialVersionUID
-    61:61:public long addWrapField(long,int)
-    65:65:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
-    69:69:public int getDifference(long,long)
-    73:73:public long getDifferenceAsLong(long,long)
-    116:116:private java.lang.Object readResolve()
+    62:62:public long addWrapField(long,int)
+    66:66:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
+    70:70:public int getDifference(long,long)
+    74:74:public long getDifferenceAsLong(long,long)
+    117:117:private java.lang.Object readResolve()
 org.joda.time.chrono.GregorianChronology:
     private static final long serialVersionUID
     private static final long MILLIS_PER_YEAR
@@ -10493,15 +10496,15 @@ org.joda.time.chrono.GregorianChronology:
 org.joda.time.chrono.ISOChronology:
     private static final long serialVersionUID
     private static final int FAST_CACHE_SIZE
-    208:208:private java.lang.Object writeReplace()
+    217:217:private java.lang.Object writeReplace()
 org.joda.time.chrono.ISOChronology$Stub
 org.joda.time.chrono.ISOYearOfEraDateTimeField:
     private static final long serialVersionUID
-    63:63:public long addWrapField(long,int)
-    67:67:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
-    71:71:public int getDifference(long,long)
-    75:75:public long getDifferenceAsLong(long,long)
-    110:110:private java.lang.Object readResolve()
+    64:64:public long addWrapField(long,int)
+    68:68:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
+    72:72:public int getDifference(long,long)
+    76:76:public long getDifferenceAsLong(long,long)
+    111:111:private java.lang.Object readResolve()
 org.joda.time.chrono.IslamicChronology
 org.joda.time.chrono.IslamicChronology$LeapYearPatternType
 org.joda.time.chrono.JulianChronology
@@ -10519,17 +10522,17 @@ org.joda.time.chrono.ZonedChronology:
     138:144:private long localToUTC(long)
 org.joda.time.chrono.ZonedChronology$ZonedDateTimeField:
     private static final long serialVersionUID
-    399:399:public boolean isLenient()
-    450:457:public long addWrapField(long,int)
-    482:483:public int getDifference(long,long)
-    489:490:public long getDifferenceAsLong(long,long)
-    509:510:public int getLeapAmount(long)
-    551:552:public int getMinimumValue(long)
-    556:556:public int getMinimumValue(org.joda.time.ReadablePartial)
-    560:560:public int getMinimumValue(org.joda.time.ReadablePartial,int[])
-    573:573:public int getMaximumValue(org.joda.time.ReadablePartial)
-    577:577:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
-    585:585:public int getMaximumShortTextLength(java.util.Locale)
+    400:400:public boolean isLenient()
+    451:458:public long addWrapField(long,int)
+    483:484:public int getDifference(long,long)
+    490:491:public long getDifferenceAsLong(long,long)
+    510:511:public int getLeapAmount(long)
+    552:553:public int getMinimumValue(long)
+    557:557:public int getMinimumValue(org.joda.time.ReadablePartial)
+    561:561:public int getMinimumValue(org.joda.time.ReadablePartial,int[])
+    574:574:public int getMaximumValue(org.joda.time.ReadablePartial)
+    578:578:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
+    586:586:public int getMaximumShortTextLength(java.util.Locale)
 org.joda.time.chrono.ZonedChronology$ZonedDurationField:
     private static final long serialVersionUID
     299:299:public int getValue(long,long)
@@ -10614,7 +10617,7 @@ org.joda.time.field.BaseDurationField:
     141:141:public int getDifference(long,long)
 org.joda.time.field.DecoratedDateTimeField:
     private static final long serialVersionUID
-    74:74:public boolean isLenient()
+    75:75:public boolean isLenient()
 org.joda.time.field.DecoratedDurationField:
     private static final long serialVersionUID
     77:77:public long getValueAsLong(long,long)
@@ -10625,11 +10628,11 @@ org.joda.time.field.DelegatedDateTimeField
 org.joda.time.field.DelegatedDurationField
 org.joda.time.field.DividedDateTimeField:
     private static final long serialVersionUID
-    90:103:public DividedDateTimeField(org.joda.time.field.RemainderDateTimeField,org.joda.time.DateTimeFieldType)
-    153:153:public long addWrapField(long,int)
-    157:157:public int getDifference(long,long)
-    161:161:public long getDifferenceAsLong(long,long)
-    218:218:public int getDivisor()
+    91:104:public DividedDateTimeField(org.joda.time.field.RemainderDateTimeField,org.joda.time.DateTimeFieldType)
+    154:154:public long addWrapField(long,int)
+    158:158:public int getDifference(long,long)
+    162:162:public long getDifferenceAsLong(long,long)
+    219:219:public int getDivisor()
 org.joda.time.field.FieldUtils:
     36:37:private FieldUtils()
     49:52:public static int safeNegate(int)
@@ -10644,19 +10647,19 @@ org.joda.time.field.ImpreciseDateTimeField:
     private static final long serialVersionUID
     public abstract int get(long)
     public abstract long set(long,int)
-    91:91:public int getDifference(long,long)
-    118:133:public long getDifferenceAsLong(long,long)
+    92:92:public int getDifference(long,long)
+    119:134:public long getDifferenceAsLong(long,long)
     public abstract org.joda.time.DurationField getRangeDurationField()
     public abstract long roundFloor(long)
-    145:145:protected final long getDurationUnitMillis()
+    146:146:protected final long getDurationUnitMillis()
 org.joda.time.field.ImpreciseDateTimeField$LinkedDurationField:
     private static final long serialVersionUID
-    164:164:public int getValue(long,long)
-    169:169:public long getValueAsLong(long,long)
-    174:174:public long getMillis(int,long)
-    178:178:public long getMillis(long,long)
-    190:190:public int getDifference(long,long)
-    195:195:public long getDifferenceAsLong(long,long)
+    165:165:public int getValue(long,long)
+    170:170:public long getValueAsLong(long,long)
+    175:175:public long getMillis(int,long)
+    179:179:public long getMillis(long,long)
+    191:191:public int getDifference(long,long)
+    196:196:public long getDifferenceAsLong(long,long)
 org.joda.time.field.LenientDateTimeField
 org.joda.time.field.MillisDurationField:
     private static final long serialVersionUID
@@ -10674,16 +10677,16 @@ org.joda.time.field.MillisDurationField:
     171:171:private java.lang.Object readResolve()
 org.joda.time.field.OffsetDateTimeField:
     private static final long serialVersionUID
-    140:140:public long addWrapField(long,int)
-    161:161:public int getLeapAmount(long)
-    216:216:public int getOffset()
+    141:141:public long addWrapField(long,int)
+    162:162:public int getLeapAmount(long)
+    217:217:public int getOffset()
 org.joda.time.field.PreciseDateTimeField:
     private static final long serialVersionUID
-    95:99:public long addWrapField(long,int)
-    143:143:public int getRange()
+    96:100:public long addWrapField(long,int)
+    144:144:public int getRange()
 org.joda.time.field.PreciseDurationDateTimeField:
     private static final long serialVersionUID
-    66:66:public boolean isLenient()
+    67:67:public boolean isLenient()
 org.joda.time.field.PreciseDurationField:
     private static final long serialVersionUID
     76:76:public long getValueAsLong(long,long)
@@ -10692,8 +10695,8 @@ org.joda.time.field.PreciseDurationField:
     114:115:public long getDifferenceAsLong(long,long)
 org.joda.time.field.RemainderDateTimeField:
     private static final long serialVersionUID
-    118:118:public long addWrapField(long,int)
-    191:191:public int getDivisor()
+    119:119:public long addWrapField(long,int)
+    192:192:public int getDivisor()
 org.joda.time.field.ScaledDurationField:
     private static final long serialVersionUID
     55:55:public int getValue(long)
@@ -10751,16 +10754,16 @@ org.joda.time.field.UnsupportedDurationField:
     272:272:private java.lang.Object readResolve()
 org.joda.time.field.ZeroIsMaxDateTimeField:
     private static final long serialVersionUID
-    68:68:public long addWrapField(long,int)
-    72:72:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
-    76:76:public int getDifference(long,long)
-    80:80:public long getDifferenceAsLong(long,long)
-    97:97:public int getLeapAmount(long)
-    119:119:public int getMinimumValue(long)
-    128:128:public int getMinimumValue(org.joda.time.ReadablePartial)
-    137:137:public int getMinimumValue(org.joda.time.ReadablePartial,int[])
-    167:167:public int getMaximumValue(org.joda.time.ReadablePartial)
-    177:177:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
+    69:69:public long addWrapField(long,int)
+    73:73:public int[] addWrapField(org.joda.time.ReadablePartial,int,int[],int)
+    77:77:public int getDifference(long,long)
+    81:81:public long getDifferenceAsLong(long,long)
+    98:98:public int getLeapAmount(long)
+    120:120:public int getMinimumValue(long)
+    129:129:public int getMinimumValue(org.joda.time.ReadablePartial)
+    138:138:public int getMinimumValue(org.joda.time.ReadablePartial,int[])
+    168:168:public int getMaximumValue(org.joda.time.ReadablePartial)
+    178:178:public int getMaximumValue(org.joda.time.ReadablePartial,int[])
 org.joda.time.format.DateTimeFormat:
     static final int FULL
     static final int LONG
@@ -10770,25 +10773,29 @@ org.joda.time.format.DateTimeFormat:
     static final int DATE
     static final int TIME
     static final int DATETIME
-    194:194:public static org.joda.time.format.DateTimeFormatter forStyle(java.lang.String)
-    212:217:public static java.lang.String patternForStyle(java.lang.String,java.util.Locale)
-    230:230:public static org.joda.time.format.DateTimeFormatter shortDate()
-    242:242:public static org.joda.time.format.DateTimeFormatter shortTime()
-    254:254:public static org.joda.time.format.DateTimeFormatter shortDateTime()
-    267:267:public static org.joda.time.format.DateTimeFormatter mediumDate()
-    279:279:public static org.joda.time.format.DateTimeFormatter mediumTime()
-    291:291:public static org.joda.time.format.DateTimeFormatter mediumDateTime()
-    304:304:public static org.joda.time.format.DateTimeFormatter longDate()
-    316:316:public static org.joda.time.format.DateTimeFormatter longTime()
-    328:328:public static org.joda.time.format.DateTimeFormatter longDateTime()
-    341:341:public static org.joda.time.format.DateTimeFormatter fullDate()
-    353:353:public static org.joda.time.format.DateTimeFormatter fullTime()
-    365:365:public static org.joda.time.format.DateTimeFormatter fullDateTime()
-    377:378:static void appendPatternTo(org.joda.time.format.DateTimeFormatterBuilder,java.lang.String)
-    387:388:protected DateTimeFormat()
-    701:709:private static org.joda.time.format.DateTimeFormatter createFormatterForStyle(java.lang.String)
-    720:737:private static org.joda.time.format.DateTimeFormatter createFormatterForStyleIndex(int,int)
-    747:759:private static int selectStyle(char)
+    private static final int PATTERN_CACHE_SIZE
+    205:205:public static org.joda.time.format.DateTimeFormatter forStyle(java.lang.String)
+    223:228:public static java.lang.String patternForStyle(java.lang.String,java.util.Locale)
+    241:241:public static org.joda.time.format.DateTimeFormatter shortDate()
+    253:253:public static org.joda.time.format.DateTimeFormatter shortTime()
+    265:265:public static org.joda.time.format.DateTimeFormatter shortDateTime()
+    278:278:public static org.joda.time.format.DateTimeFormatter mediumDate()
+    290:290:public static org.joda.time.format.DateTimeFormatter mediumTime()
+    302:302:public static org.joda.time.format.DateTimeFormatter mediumDateTime()
+    315:315:public static org.joda.time.format.DateTimeFormatter longDate()
+    327:327:public static org.joda.time.format.DateTimeFormatter longTime()
+    339:339:public static org.joda.time.format.DateTimeFormatter longDateTime()
+    352:352:public static org.joda.time.format.DateTimeFormatter fullDate()
+    364:364:public static org.joda.time.format.DateTimeFormatter fullTime()
+    376:376:public static org.joda.time.format.DateTimeFormatter fullDateTime()
+    388:389:static void appendPatternTo(org.joda.time.format.DateTimeFormatterBuilder,java.lang.String)
+    398:399:protected DateTimeFormat()
+    712:720:private static org.joda.time.format.DateTimeFormatter createFormatterForStyle(java.lang.String)
+    731:744:private static org.joda.time.format.DateTimeFormatter createFormatterForStyleIndex(int,int)
+    754:761:private static org.joda.time.format.DateTimeFormatter createDateTimeFormatter(int,int)
+    771:783:private static int selectStyle(char)
+org.joda.time.format.DateTimeFormat$1:
+    private static final long serialVersionUID
 org.joda.time.format.DateTimeFormat$StyleFormatter
 org.joda.time.format.DateTimeFormatter:
     146:146:public boolean isPrinter()
@@ -10799,8 +10806,6 @@ org.joda.time.format.DateTimeFormatter:
     236:236:public boolean isOffsetParsed()
     270:270:public org.joda.time.Chronology getChronology()
     281:281:public org.joda.time.Chronology getChronolgy()
-    301:301:public org.joda.time.format.DateTimeFormatter withZoneUTC()
-    321:324:public org.joda.time.format.DateTimeFormatter withZone(org.joda.time.DateTimeZone)
     334:334:public org.joda.time.DateTimeZone getZone()
     368:371:public org.joda.time.format.DateTimeFormatter withPivotYear(java.lang.Integer)
     405:405:public org.joda.time.format.DateTimeFormatter withPivotYear(int)
@@ -10818,29 +10823,20 @@ org.joda.time.format.DateTimeFormatter:
     598:600:public java.lang.String print(long)
     613:615:public java.lang.String print(org.joda.time.ReadablePartial)
     636:650:private void printTo(java.io.Writer,long,org.joda.time.Chronology)
-    699:724:public int parseInto(org.joda.time.ReadWritableInstant,java.lang.String,int)
-    770:770:public org.joda.time.LocalDate parseLocalDate(java.lang.String)
-    788:788:public org.joda.time.LocalTime parseLocalTime(java.lang.String)
-    806:826:public org.joda.time.LocalDateTime parseLocalDateTime(java.lang.String)
-    892:916:public org.joda.time.MutableDateTime parseMutableDateTime(java.lang.String)
+    700:726:public int parseInto(org.joda.time.ReadWritableInstant,java.lang.String,int)
+    772:772:public org.joda.time.LocalDate parseLocalDate(java.lang.String)
+    790:790:public org.joda.time.LocalTime parseLocalTime(java.lang.String)
+    808:828:public org.joda.time.LocalDateTime parseLocalDateTime(java.lang.String)
+    894:918:public org.joda.time.MutableDateTime parseMutableDateTime(java.lang.String)
 org.joda.time.format.DateTimeFormatterBuilder:
     133:137:public org.joda.time.format.DateTimePrinter toPrinter()
-    153:157:public org.joda.time.format.DateTimeParser toParser()
     168:168:public boolean canBuildFormatter()
     178:178:public boolean canBuildPrinter()
     188:188:public boolean canBuildParser()
     197:199:public void clear()
     238:239:public org.joda.time.format.DateTimeFormatterBuilder append(org.joda.time.format.DateTimePrinter)
-    257:258:public org.joda.time.format.DateTimeFormatterBuilder append(org.joda.time.format.DateTimeParser)
     276:278:public org.joda.time.format.DateTimeFormatterBuilder append(org.joda.time.format.DateTimePrinter,org.joda.time.format.DateTimeParser)
-    305:328:public org.joda.time.format.DateTimeFormatterBuilder append(org.joda.time.format.DateTimePrinter,org.joda.time.format.DateTimeParser[])
-    345:347:public org.joda.time.format.DateTimeFormatterBuilder appendOptional(org.joda.time.format.DateTimeParser)
-    357:360:private void checkParser(org.joda.time.format.DateTimeParser)
-    368:371:private void checkPrinter(org.joda.time.format.DateTimePrinter)
-    464:470:public org.joda.time.format.DateTimeFormatterBuilder appendFixedDecimal(org.joda.time.DateTimeFieldType,int)
     516:522:public org.joda.time.format.DateTimeFormatterBuilder appendFixedSignedDecimal(org.joda.time.DateTimeFieldType,int)
-    614:614:public org.joda.time.format.DateTimeFormatterBuilder appendFractionOfMinute(int,int)
-    631:631:public org.joda.time.format.DateTimeFormatterBuilder appendFractionOfHour(int,int)
     648:648:public org.joda.time.format.DateTimeFormatterBuilder appendFractionOfDay(int,int)
     665:665:public org.joda.time.format.DateTimeFormatterBuilder appendMillisOfSecond(int)
     675:675:public org.joda.time.format.DateTimeFormatterBuilder appendMillisOfDay(int)
@@ -10858,15 +10854,13 @@ org.joda.time.format.DateTimeFormatterBuilder$CharacterLiteral:
     1228:1229:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
     1232:1233:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
 org.joda.time.format.DateTimeFormatterBuilder$Composite:
-    2673:2687:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
-    2690:2704:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
-    2707:2721:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
-org.joda.time.format.DateTimeFormatterBuilder$FixedNumber
+    2679:2693:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
+    2696:2710:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
+    2713:2727:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
 org.joda.time.format.DateTimeFormatterBuilder$Fraction:
     1922:1923:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
     1928:1934:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
     1939:1941:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
-org.joda.time.format.DateTimeFormatterBuilder$MatchingParser
 org.joda.time.format.DateTimeFormatterBuilder$PaddedNumber:
     1486:1491:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
     1494:1503:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
@@ -10881,9 +10875,9 @@ org.joda.time.format.DateTimeFormatterBuilder$TextField:
     1793:1797:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
     1809:1817:private java.lang.String print(org.joda.time.ReadablePartial,java.util.Locale)
 org.joda.time.format.DateTimeFormatterBuilder$TimeZoneId:
-    2565:2566:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
-    2570:2570:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
-    2574:2574:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
+    2571:2572:public void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
+    2576:2576:public void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
+    2580:2580:public void printTo(java.io.Writer,org.joda.time.ReadablePartial,java.util.Locale)
 org.joda.time.format.DateTimeFormatterBuilder$TimeZoneName:
     static final int LONG_NAME
     static final int SHORT_NAME
@@ -10909,20 +10903,8 @@ org.joda.time.format.DateTimeParserBucket:
     171:171:public int getOffset()
     187:189:public void setOffset(int)
     226:227:public void setPivotYear(java.lang.Integer)
-    287:290:public java.lang.Object saveState()
-    302:308:public boolean restoreState(java.lang.Object)
     319:319:public long computeMillis()
     331:331:public long computeMillis(boolean)
-    56:56:static synthetic org.joda.time.DateTimeZone access$000(org.joda.time.format.DateTimeParserBucket)
-    56:56:static synthetic java.lang.Integer access$100(org.joda.time.format.DateTimeParserBucket)
-    56:56:static synthetic org.joda.time.format.DateTimeParserBucket$SavedField[] access$200(org.joda.time.format.DateTimeParserBucket)
-    56:56:static synthetic int access$300(org.joda.time.format.DateTimeParserBucket)
-    56:56:static synthetic org.joda.time.DateTimeZone access$002(org.joda.time.format.DateTimeParserBucket,org.joda.time.DateTimeZone)
-    56:56:static synthetic java.lang.Integer access$102(org.joda.time.format.DateTimeParserBucket,java.lang.Integer)
-    56:56:static synthetic org.joda.time.format.DateTimeParserBucket$SavedField[] access$202(org.joda.time.format.DateTimeParserBucket,org.joda.time.format.DateTimeParserBucket$SavedField[])
-    56:56:static synthetic boolean access$402(org.joda.time.format.DateTimeParserBucket,boolean)
-    56:56:static synthetic int access$302(org.joda.time.format.DateTimeParserBucket,int)
-org.joda.time.format.DateTimeParserBucket$SavedState
 org.joda.time.format.DateTimePrinter:
     public abstract void printTo(java.io.Writer,long,org.joda.time.Chronology,int,org.joda.time.DateTimeZone,java.util.Locale)
     public abstract void printTo(java.lang.StringBuffer,org.joda.time.ReadablePartial,java.util.Locale)
@@ -10937,108 +10919,107 @@ org.joda.time.format.FormatUtils:
     323:329:public static void writeUnpaddedInteger(java.io.Writer,long)
     336:343:public static int calculateDigitCount(long)
 org.joda.time.format.ISODateTimeFormat:
-    private static org.joda.time.format.DateTimeFormatter we
-    private static org.joda.time.format.DateTimeFormatter wwe
-    private static org.joda.time.format.DateTimeFormatter dwe
-    private static org.joda.time.format.DateTimeFormatter dye
-    private static org.joda.time.format.DateTimeFormatter ym
-    private static org.joda.time.format.DateTimeFormatter ww
-    private static org.joda.time.format.DateTimeFormatter wwd
-    private static org.joda.time.format.DateTimeFormatter hm
-    private static org.joda.time.format.DateTimeFormatter hms
-    private static org.joda.time.format.DateTimeFormatter hmsl
-    private static org.joda.time.format.DateTimeFormatter dh
-    private static org.joda.time.format.DateTimeFormatter dhm
-    private static org.joda.time.format.DateTimeFormatter dhms
-    private static org.joda.time.format.DateTimeFormatter dhmsl
-    private static org.joda.time.format.DateTimeFormatter dhmsf
-    private static org.joda.time.format.DateTimeFormatter tx
-    private static org.joda.time.format.DateTimeFormatter ttx
-    private static org.joda.time.format.DateTimeFormatter dtx
-    private static org.joda.time.format.DateTimeFormatter wdt
-    private static org.joda.time.format.DateTimeFormatter wdtx
-    private static org.joda.time.format.DateTimeFormatter od
-    private static org.joda.time.format.DateTimeFormatter odt
-    private static org.joda.time.format.DateTimeFormatter odtx
-    private static org.joda.time.format.DateTimeFormatter bd
-    private static org.joda.time.format.DateTimeFormatter bt
-    private static org.joda.time.format.DateTimeFormatter btx
-    private static org.joda.time.format.DateTimeFormatter btt
-    private static org.joda.time.format.DateTimeFormatter bttx
-    private static org.joda.time.format.DateTimeFormatter bdt
-    private static org.joda.time.format.DateTimeFormatter bdtx
-    private static org.joda.time.format.DateTimeFormatter bod
-    private static org.joda.time.format.DateTimeFormatter bodt
-    private static org.joda.time.format.DateTimeFormatter bodtx
-    private static org.joda.time.format.DateTimeFormatter bwd
-    private static org.joda.time.format.DateTimeFormatter bwdt
-    private static org.joda.time.format.DateTimeFormatter bwdtx
-    private static org.joda.time.format.DateTimeFormatter dpe
-    private static org.joda.time.format.DateTimeFormatter tpe
-    private static org.joda.time.format.DateTimeFormatter dp
-    private static org.joda.time.format.DateTimeFormatter ldp
-    private static org.joda.time.format.DateTimeFormatter tp
-    private static org.joda.time.format.DateTimeFormatter ltp
-    private static org.joda.time.format.DateTimeFormatter dtp
-    private static org.joda.time.format.DateTimeFormatter dotp
-    private static org.joda.time.format.DateTimeFormatter ldotp
-    145:146:protected ISODateTimeFormat()
-    230:272:public static org.joda.time.format.DateTimeFormatter forFields(java.util.Collection,boolean,boolean)
-    293:341:private static boolean dateByMonth(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
-    361:378:private static boolean dateByOrdinal(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
-    398:446:private static boolean dateByWeek(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
-    470:524:private static void time(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean,boolean,boolean)
-    535:538:private static void checkNotStrictISO(java.util.Collection,boolean)
-    549:552:private static void appendSeparator(org.joda.time.format.DateTimeFormatterBuilder,boolean)
-    569:578:public static org.joda.time.format.DateTimeFormatter dateParser()
-    595:598:public static org.joda.time.format.DateTimeFormatter localDateParser()
-    613:636:public static org.joda.time.format.DateTimeFormatter dateElementParser()
-    654:661:public static org.joda.time.format.DateTimeFormatter timeParser()
-    680:686:public static org.joda.time.format.DateTimeFormatter localTimeParser()
-    702:751:public static org.joda.time.format.DateTimeFormatter timeElementParser()
-    775:787:public static org.joda.time.format.DateTimeFormatter dateTimeParser()
-    810:821:public static org.joda.time.format.DateTimeFormatter dateOptionalTimeParser()
-    845:855:public static org.joda.time.format.DateTimeFormatter localDateOptionalTimeParser()
-    897:903:public static org.joda.time.format.DateTimeFormatter timeNoMillis()
-    935:941:public static org.joda.time.format.DateTimeFormatter tTimeNoMillis()
-    971:977:public static org.joda.time.format.DateTimeFormatter dateTimeNoMillis()
-    988:994:public static org.joda.time.format.DateTimeFormatter ordinalDate()
-    1007:1013:public static org.joda.time.format.DateTimeFormatter ordinalDateTime()
-    1026:1032:public static org.joda.time.format.DateTimeFormatter ordinalDateTimeNoMillis()
-    1042:1042:public static org.joda.time.format.DateTimeFormatter weekDate()
-    1054:1060:public static org.joda.time.format.DateTimeFormatter weekDateTime()
-    1072:1078:public static org.joda.time.format.DateTimeFormatter weekDateTimeNoMillis()
-    1089:1096:public static org.joda.time.format.DateTimeFormatter basicDate()
-    1109:1119:public static org.joda.time.format.DateTimeFormatter basicTime()
-    1131:1139:public static org.joda.time.format.DateTimeFormatter basicTimeNoMillis()
-    1152:1158:public static org.joda.time.format.DateTimeFormatter basicTTime()
-    1171:1177:public static org.joda.time.format.DateTimeFormatter basicTTimeNoMillis()
-    1189:1195:public static org.joda.time.format.DateTimeFormatter basicDateTime()
-    1207:1213:public static org.joda.time.format.DateTimeFormatter basicDateTimeNoMillis()
-    1224:1230:public static org.joda.time.format.DateTimeFormatter basicOrdinalDate()
-    1243:1249:public static org.joda.time.format.DateTimeFormatter basicOrdinalDateTime()
-    1262:1268:public static org.joda.time.format.DateTimeFormatter basicOrdinalDateTimeNoMillis()
-    1278:1286:public static org.joda.time.format.DateTimeFormatter basicWeekDate()
-    1298:1304:public static org.joda.time.format.DateTimeFormatter basicWeekDateTime()
-    1316:1322:public static org.joda.time.format.DateTimeFormatter basicWeekDateTimeNoMillis()
-    1332:1332:public static org.joda.time.format.DateTimeFormatter year()
-    1342:1348:public static org.joda.time.format.DateTimeFormatter yearMonth()
-    1374:1374:public static org.joda.time.format.DateTimeFormatter weekyear()
-    1384:1390:public static org.joda.time.format.DateTimeFormatter weekyearWeek()
-    1400:1407:public static org.joda.time.format.DateTimeFormatter weekyearWeekDay()
-    1416:1416:public static org.joda.time.format.DateTimeFormatter hour()
-    1426:1432:public static org.joda.time.format.DateTimeFormatter hourMinute()
-    1442:1449:public static org.joda.time.format.DateTimeFormatter hourMinuteSecond()
-    1461:1470:public static org.joda.time.format.DateTimeFormatter hourMinuteSecondMillis()
-    1500:1507:public static org.joda.time.format.DateTimeFormatter dateHour()
-    1517:1524:public static org.joda.time.format.DateTimeFormatter dateHourMinute()
-    1535:1542:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecond()
-    1554:1561:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecondMillis()
-    1573:1580:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecondFraction()
-    1614:1619:private static org.joda.time.format.DateTimeFormatter weekyearElement()
-    1623:1629:private static org.joda.time.format.DateTimeFormatter weekElement()
-    1633:1639:private static org.joda.time.format.DateTimeFormatter dayOfWeekElement()
-    1643:1649:private static org.joda.time.format.DateTimeFormatter dayOfYearElement()
+    67:68:protected ISODateTimeFormat()
+    152:194:public static org.joda.time.format.DateTimeFormatter forFields(java.util.Collection,boolean,boolean)
+    215:263:private static boolean dateByMonth(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
+    283:300:private static boolean dateByOrdinal(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
+    320:368:private static boolean dateByWeek(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean)
+    392:446:private static void time(org.joda.time.format.DateTimeFormatterBuilder,java.util.Collection,boolean,boolean,boolean,boolean)
+    457:460:private static void checkNotStrictISO(java.util.Collection,boolean)
+    471:474:private static void appendSeparator(org.joda.time.format.DateTimeFormatterBuilder,boolean)
+    491:491:public static org.joda.time.format.DateTimeFormatter dateParser()
+    508:508:public static org.joda.time.format.DateTimeFormatter localDateParser()
+    523:523:public static org.joda.time.format.DateTimeFormatter dateElementParser()
+    541:541:public static org.joda.time.format.DateTimeFormatter timeParser()
+    560:560:public static org.joda.time.format.DateTimeFormatter localTimeParser()
+    576:576:public static org.joda.time.format.DateTimeFormatter timeElementParser()
+    600:600:public static org.joda.time.format.DateTimeFormatter dateTimeParser()
+    623:623:public static org.joda.time.format.DateTimeFormatter dateOptionalTimeParser()
+    647:647:public static org.joda.time.format.DateTimeFormatter localDateOptionalTimeParser()
+    671:671:public static org.joda.time.format.DateTimeFormatter time()
+    683:683:public static org.joda.time.format.DateTimeFormatter timeNoMillis()
+    696:696:public static org.joda.time.format.DateTimeFormatter tTime()
+    709:709:public static org.joda.time.format.DateTimeFormatter tTimeNoMillis()
+    733:733:public static org.joda.time.format.DateTimeFormatter dateTimeNoMillis()
+    744:744:public static org.joda.time.format.DateTimeFormatter ordinalDate()
+    757:757:public static org.joda.time.format.DateTimeFormatter ordinalDateTime()
+    770:770:public static org.joda.time.format.DateTimeFormatter ordinalDateTimeNoMillis()
+    792:792:public static org.joda.time.format.DateTimeFormatter weekDateTime()
+    804:804:public static org.joda.time.format.DateTimeFormatter weekDateTimeNoMillis()
+    815:815:public static org.joda.time.format.DateTimeFormatter basicDate()
+    828:828:public static org.joda.time.format.DateTimeFormatter basicTime()
+    840:840:public static org.joda.time.format.DateTimeFormatter basicTimeNoMillis()
+    853:853:public static org.joda.time.format.DateTimeFormatter basicTTime()
+    866:866:public static org.joda.time.format.DateTimeFormatter basicTTimeNoMillis()
+    878:878:public static org.joda.time.format.DateTimeFormatter basicDateTime()
+    890:890:public static org.joda.time.format.DateTimeFormatter basicDateTimeNoMillis()
+    901:901:public static org.joda.time.format.DateTimeFormatter basicOrdinalDate()
+    914:914:public static org.joda.time.format.DateTimeFormatter basicOrdinalDateTime()
+    927:927:public static org.joda.time.format.DateTimeFormatter basicOrdinalDateTimeNoMillis()
+    937:937:public static org.joda.time.format.DateTimeFormatter basicWeekDate()
+    949:949:public static org.joda.time.format.DateTimeFormatter basicWeekDateTime()
+    961:961:public static org.joda.time.format.DateTimeFormatter basicWeekDateTimeNoMillis()
+    971:971:public static org.joda.time.format.DateTimeFormatter year()
+    981:981:public static org.joda.time.format.DateTimeFormatter yearMonth()
+    1000:1000:public static org.joda.time.format.DateTimeFormatter weekyear()
+    1010:1010:public static org.joda.time.format.DateTimeFormatter weekyearWeek()
+    1020:1020:public static org.joda.time.format.DateTimeFormatter weekyearWeekDay()
+    1039:1039:public static org.joda.time.format.DateTimeFormatter hourMinute()
+    1049:1049:public static org.joda.time.format.DateTimeFormatter hourMinuteSecond()
+    1061:1061:public static org.joda.time.format.DateTimeFormatter hourMinuteSecondMillis()
+    1073:1073:public static org.joda.time.format.DateTimeFormatter hourMinuteSecondFraction()
+    1083:1083:public static org.joda.time.format.DateTimeFormatter dateHour()
+    1093:1093:public static org.joda.time.format.DateTimeFormatter dateHourMinute()
+    1104:1104:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecond()
+    1116:1116:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecondMillis()
+    1128:1128:public static org.joda.time.format.DateTimeFormatter dateHourMinuteSecondFraction()
+org.joda.time.format.ISODateTimeFormat$Constants:
+    1132:1132:ISODateTimeFormat$Constants()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$000()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$100()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$200()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$300()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$400()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$500()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$600()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$700()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$800()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$900()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1000()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1100()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1200()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1300()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1400()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1600()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1700()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1800()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$1900()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2100()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2200()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2300()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2400()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2500()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2600()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2700()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2800()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$2900()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3000()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3100()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3200()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3300()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3400()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3500()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3600()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$3800()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4000()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4100()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4200()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4300()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4400()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4500()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4600()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4700()
+    1132:1132:static synthetic org.joda.time.format.DateTimeFormatter access$4800()
 org.joda.time.format.ISOPeriodFormat
 org.joda.time.format.PeriodFormat
 org.joda.time.format.PeriodFormatter
@@ -11075,17 +11056,17 @@ org.joda.time.tz.DateTimeZoneBuilder:
     459:475:public void writeTo(java.lang.String,java.io.DataOutput)
 org.joda.time.tz.DateTimeZoneBuilder$DSTZone:
     private static final long serialVersionUID
-    1191:1191:public int getStandardOffset(long)
-    1298:1301:public void writeTo(java.io.DataOutput)
+    1194:1194:public int getStandardOffset(long)
+    1301:1304:public void writeTo(java.io.DataOutput)
 org.joda.time.tz.DateTimeZoneBuilder$OfYear:
     522:541:public long setInstant(int,int,int)
     659:665:public void writeTo(java.io.DataOutput)
 org.joda.time.tz.DateTimeZoneBuilder$PrecalculatedZone:
     private static final long serialVersionUID
-    1389:1480:static org.joda.time.tz.DateTimeZoneBuilder$PrecalculatedZone create(java.lang.String,boolean,java.util.ArrayList,org.joda.time.tz.DateTimeZoneBuilder$DSTZone)
-    1547:1562:public int getStandardOffset(long)
-    1638:1687:public void writeTo(java.io.DataOutput)
-    1690:1725:public boolean isCachable()
+    1392:1483:static org.joda.time.tz.DateTimeZoneBuilder$PrecalculatedZone create(java.lang.String,boolean,java.util.ArrayList,org.joda.time.tz.DateTimeZoneBuilder$DSTZone)
+    1550:1565:public int getStandardOffset(long)
+    1641:1690:public void writeTo(java.io.DataOutput)
+    1693:1728:public boolean isCachable()
 org.joda.time.tz.DateTimeZoneBuilder$Recurrence:
     754:754:public org.joda.time.tz.DateTimeZoneBuilder$OfYear getOfYear()
     794:797:public void writeTo(java.io.DataOutput)
@@ -11099,6 +11080,7 @@ org.joda.time.tz.FixedDateTimeZone:
     53:53:public int getStandardOffset(long)
     77:84:public java.util.TimeZone toTimeZone()
 org.joda.time.tz.ZoneInfoCompiler
+org.joda.time.tz.ZoneInfoCompiler$1
 org.joda.time.tz.ZoneInfoCompiler$DateTimeOfYear
 org.joda.time.tz.ZoneInfoCompiler$Rule
 org.joda.time.tz.ZoneInfoCompiler$RuleSet

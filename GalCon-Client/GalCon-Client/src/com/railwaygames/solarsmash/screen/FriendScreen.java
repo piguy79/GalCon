@@ -44,6 +44,7 @@ import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.ActionButton;
 import com.railwaygames.solarsmash.screen.widget.ActorBar;
 import com.railwaygames.solarsmash.screen.widget.HighlightActorBar;
+import com.railwaygames.solarsmash.screen.widget.HighlightActorBar.HighlightActorBarBuilder;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
@@ -109,10 +110,16 @@ public class FriendScreen implements ScreenFeedback {
 		float buttonWidth = Gdx.graphics.getWidth() * 0.2f;
 		float buttonHeight = Gdx.graphics.getHeight() * 0.05f;
 
-		HighlightActorBar actorBar = new HighlightActorBar.HighlightActorBarBuilder(Gdx.graphics.getHeight() * 0.1f,
-				Gdx.graphics.getWidth() * 0.6f, resources.skin).actorSize(buttonHeight, buttonWidth)
-				.actorPadding(buttonWidth * 0.1f).actorToHighlight(2).align(ActorBar.Align.RIGHT).addActor(fbButton)
-				.addActor(gpButton).addActor(galButton).build();
+		HighlightActorBarBuilder builder = new HighlightActorBar.HighlightActorBarBuilder(
+				Gdx.graphics.getHeight() * 0.1f, Gdx.graphics.getWidth() * 0.6f, resources.skin)
+				.actorSize(buttonHeight, buttonWidth).actorPadding(buttonWidth * 0.1f).actorToHighlight(1)
+				.align(ActorBar.Align.RIGHT).addActor(fbButton);
+
+		if (socialAction.enableGoogle()) {
+			builder.addActor(gpButton);
+			builder.actorToHighlight(2);
+		}
+		HighlightActorBar actorBar = builder.addActor(galButton).build();
 		actorBar.setX(Gdx.graphics.getWidth() * 0.4f);
 		actorBar.setY(Gdx.graphics.getHeight() - (actorBar.getHeight() * 0.8f));
 
@@ -307,6 +314,14 @@ public class FriendScreen implements ScreenFeedback {
 						return 0;
 					}
 
+					if (o1.getDisplay().equals("Invite friends")) {
+						return 1;
+					}
+
+					if (o2.getDisplay().equals("Invite friends")) {
+						return 1;
+					}
+
 					return Boolean.valueOf(o1.hasGalconAccount()).compareTo(Boolean.valueOf(o2.hasGalconAccount()))
 							* -1;
 				};
@@ -354,7 +369,7 @@ public class FriendScreen implements ScreenFeedback {
 					}
 
 					private TextOverlay createLoadingOverlay() {
-						final TextOverlay overlay = new TextOverlay("Loading sharing dialog.", resources);
+						final TextOverlay overlay = new TextOverlay("Loading sharing dialog", resources);
 						WaitImageButton overlayWait = new WaitImageButton(resources.skin);
 						float buttonWidth = .25f * (float) Gdx.graphics.getWidth();
 						overlayWait.setWidth(buttonWidth);
@@ -645,10 +660,24 @@ public class FriendScreen implements ScreenFeedback {
 				List<String> authIds = createAuthIdList(friends);
 
 				gameAction.findMatchingFriends(new UIConnectionResultCallback<People>() {
+					CombinedFriend invite = new CombinedFriend(null, null) {
+
+						@Override
+						public boolean hasGalconAccount() {
+							return false;
+						}
+
+						@Override
+						public String getDisplay() {
+							return "Invite friends";
+						}
+
+					};
 					public void onConnectionResult(People result) {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people,
 								authProvider);
 						loadedFriends = combinedFriends;
+						loadedFriends.add(0, invite);
 						displayPeople(combinedFriends, time);
 					};
 
@@ -656,6 +685,7 @@ public class FriendScreen implements ScreenFeedback {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends,
 								new ArrayList<MinifiedGame.MinifiedPlayer>(), authProvider);
 						loadedFriends = combinedFriends;
+						loadedFriends.add(0, invite);
 						displayPeople(combinedFriends, time);
 					}
 
