@@ -74,12 +74,8 @@ public class FacebookAuthorization implements Authorizer {
 
 	private void populateAuthIdAndSucceed() {
 		if (GameLoop.USER.auth != null && GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
-			Gdx.app.postRunnable(new Runnable() {
-				public void run() {
-					listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
-							.getAccessToken());
-				}
-			});
+			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
+					.getAccessToken());
 		} else {
 			Request.newGraphPathRequest(Session.getActiveSession(), "/me", new Request.Callback() {
 

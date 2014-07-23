@@ -557,7 +557,7 @@ public class FriendScreen implements ScreenFeedback {
 
 			@Override
 			public void onConnectionError(String msg) {
-				showError("Cound not load recent opponents.");
+				showError("Could not load recent opponents");
 			}
 		}, GameLoop.USER.handle);
 	}
@@ -673,11 +673,14 @@ public class FriendScreen implements ScreenFeedback {
 						}
 
 					};
+
 					public void onConnectionResult(People result) {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends, result.people,
 								authProvider);
 						loadedFriends = combinedFriends;
-						loadedFriends.add(0, invite);
+						if (authProvider.equals(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
+							loadedFriends.add(0, invite);
+						}
 						displayPeople(combinedFriends, time);
 					};
 
@@ -685,7 +688,9 @@ public class FriendScreen implements ScreenFeedback {
 						List<CombinedFriend> combinedFriends = FriendCombiner.combineFriends(friends,
 								new ArrayList<MinifiedGame.MinifiedPlayer>(), authProvider);
 						loadedFriends = combinedFriends;
-						loadedFriends.add(0, invite);
+						if (authProvider.equals(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
+							loadedFriends.add(0, invite);
+						}
 						displayPeople(combinedFriends, time);
 					}
 
