@@ -9594,7 +9594,7 @@ com.railwaygames.solarsmash.model.factory.MoveFactory:
 com.railwaygames.solarsmash.model.factory.PlanetButtonFactory:
     19:20:public PlanetButtonFactory()
 com.railwaygames.solarsmash.model.friends.FriendCombiner:
-    12:12:public FriendCombiner()
+    9:9:public FriendCombiner()
 com.railwaygames.solarsmash.model.tween.ColorTween
 com.railwaygames.solarsmash.model.tween.MoveTween
 com.railwaygames.solarsmash.screen.Action:
@@ -9626,9 +9626,9 @@ com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     341:341:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
-    489:489:public void dispose()
+    504:504:public void dispose()
 com.railwaygames.solarsmash.screen.FriendScreen$11:
-    600:600:public void onSignOut()
+    615:615:public void onSignOut()
 com.railwaygames.solarsmash.screen.GameListScreen:
     62:62:protected boolean showGamesThatHaveBeenWon()
     66:68:protected void refreshScreen()
@@ -9648,7 +9648,7 @@ com.railwaygames.solarsmash.screen.level.LevelManager:
 com.railwaygames.solarsmash.screen.overlay.DismissableOverlay:
     32:33:public DismissableOverlay(com.railwaygames.solarsmash.screen.Resources,com.badlogic.gdx.scenes.scene2d.utils.ClickListener)
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
-    222:224:public void onSignOut()
+    224:226:public void onSignOut()
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
     103:103:public com.railwaygames.solarsmash.screen.widget.ActorBar build()
 com.railwaygames.solarsmash.screen.widget.ActorBar$Align
@@ -9693,10 +9693,10 @@ com.railwaygames.solarsmash.service.PingService:
     private static final int LONG_SLEEP_TIME
     private static final int ONE_HOUR
     private static final java.lang.String DELETE_KEY
-com.railwaygames.solarsmash.social.FacebookAuthorization$4:
-    159:159:public void onSignOut()
-com.railwaygames.solarsmash.social.FacebookAuthorization$6:
-    231:231:public void onSignOut()
+com.railwaygames.solarsmash.social.FacebookAuthorization$3:
+    155:155:public void onSignOut()
+com.railwaygames.solarsmash.social.FacebookAuthorization$5:
+    227:227:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
     192:192:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:

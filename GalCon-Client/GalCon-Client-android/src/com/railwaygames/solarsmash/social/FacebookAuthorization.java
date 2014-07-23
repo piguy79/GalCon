@@ -245,9 +245,10 @@ public class FacebookAuthorization implements Authorizer {
 	private void showPostDialog(final FriendPostListener listener, String id) {
 		Bundle params = new Bundle();
 		params.putString("name", "Solar Smash invite");
-		params.putString("caption", "Download Solar Smash now.");
-		params.putString("description", "Hey, come play me in Solar Smash. Invite me using the handle \""
-				+ GameLoop.USER.handle + "\"");
+		params.putString("caption", "Download Solar Smash now");
+		params.putString("description",
+				"Come conquer the galaxy in this addictive multiplayer strategy game. Invite me using the handle \""
+						+ GameLoop.USER.handle + "\"");
 		params.putString("link", "http://www.railwaygames.mobi/");
 		params.putString("to", id);
 		params.putString("from", GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
