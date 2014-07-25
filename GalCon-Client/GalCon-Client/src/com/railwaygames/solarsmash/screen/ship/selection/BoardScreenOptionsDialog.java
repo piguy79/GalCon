@@ -23,6 +23,7 @@ import com.railwaygames.solarsmash.screen.event.AboutEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
+import com.railwaygames.solarsmash.screen.event.TutorialEvent;
 import com.railwaygames.solarsmash.screen.widget.OKCancelDialog;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
@@ -37,6 +38,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ShaderLabel refreshText;
 	private ImageButton aboutButton;
 	private ShaderLabel aboutText;
+	private ImageButton tutorialButton;
+	private ShaderLabel tutorialText;
 	private GameBoard gameBoard;
 
 	public BoardScreenOptionsDialog(GameBoard gameBoard, Resources resources, float width, float height, Stage stage) {
@@ -59,6 +62,27 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		}
 		createRefreshButton(resources.fontShader, resources.skin);
 		createAboutButton(resources.fontShader, resources.skin);
+		createTutorialButton(resources.fontShader, resources.skin);
+	}
+
+	private void createTutorialButton(ShaderProgram fontShader, UISkin skin) {
+		tutorialButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
+		tutorialButton.setLayoutEnabled(false);
+		float bWidth = getWidth() * 0.66f;
+		float bHeight = bWidth * 0.30f;
+		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.38f - bHeight * 0.5f, bWidth, bHeight);
+
+		tutorialText = new ShaderLabel(fontShader, "Tutorial", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
+		tutorialText.setAlignment(Align.center);
+		tutorialText.setY(tutorialButton.getY() + tutorialButton.getHeight() / 2 - tutorialText.getHeight() * 0.5f);
+		tutorialText.setWidth(getWidth());
+
+		addActor(tutorialButton);
+		addActor(tutorialText);
+
+		tutorialButton.addListener(tutorialListener);
+		tutorialText.addListener(tutorialListener);
+		
 	}
 
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {
@@ -66,7 +90,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		resignButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);
+		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.6f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		resignText.setAlignment(Align.center);
@@ -106,7 +130,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
 		refreshButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.8f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.85f - bHeight * 0.5f, bWidth, bHeight);
 
 		refreshText = new ShaderLabel(fontShader, "Refresh", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		refreshText.setAlignment(Align.center);
@@ -125,7 +149,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		aboutButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.2f - bHeight * 0.5f, bWidth, bHeight);
+		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.15f - bHeight * 0.5f, bWidth, bHeight);
 
 		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		aboutText.setAlignment(Align.center);
@@ -179,6 +203,14 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		public void clicked(InputEvent event, float x, float y) {
 			hide();
 			fire(new AboutEvent());
+		}
+	};
+	
+	private ClickListener tutorialListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			hide();
+			fire(new TutorialEvent());
 		}
 	};
 

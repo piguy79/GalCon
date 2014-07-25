@@ -128,4 +128,9 @@ public class DesktopSocialAction implements SocialAction {
 		listener.onPostSucceeded();
 	}
 
+	@Override
+	public boolean enableGoogle() {
+		return true;
+	}
+
 }

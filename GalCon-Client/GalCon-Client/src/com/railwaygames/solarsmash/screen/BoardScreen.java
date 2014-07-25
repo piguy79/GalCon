@@ -60,6 +60,7 @@ import com.railwaygames.solarsmash.screen.event.OKDialogEvent;
 import com.railwaygames.solarsmash.screen.event.RefreshEvent;
 import com.railwaygames.solarsmash.screen.event.ResignEvent;
 import com.railwaygames.solarsmash.screen.event.TransitionEventListener;
+import com.railwaygames.solarsmash.screen.event.TutorialEvent;
 import com.railwaygames.solarsmash.screen.level.LevelManager;
 import com.railwaygames.solarsmash.screen.overlay.ClaimOverlay;
 import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
@@ -241,20 +242,24 @@ public class BoardScreen implements ScreenFeedback {
 
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false) && GameLoop.USER.xp == 0) {
-			overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
-
-				@Override
-				public void onClose() {
-					prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
-					prefs.flush();
-					beginOverlay();
-				}
-			}).focus(Constants.Tutorial.OVERVIEW);
+			showTutorial(gameBoard, prefs);
 		} else {
 			beginOverlay();
 		}
 
 		stage.addListener(createHarvestListener());
+	}
+
+	private void showTutorial(GameBoard gameBoard, final Preferences prefs) {
+		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+			@Override
+			public void onClose() {
+				prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
+				prefs.flush();
+				beginOverlay();
+			}
+		}).focus(Constants.Tutorial.OVERVIEW);
 	}
 
 	private void beginOverlay() {
@@ -543,8 +548,8 @@ public class BoardScreen implements ScreenFeedback {
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
 					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, width * 0.8f,
-							height * 0.4f, stage);
-					float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.5f));
+							height * 0.6f, stage);
+					float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.3f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
 					stage.addActor(dialog);
@@ -603,6 +608,14 @@ public class BoardScreen implements ScreenFeedback {
 										overlay.remove();
 									};
 								}, GameLoop.USER.handle, gameBoard.id);
+							} else if(event instanceof TutorialEvent){
+								overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
+
+									@Override
+									public void onClose() {
+										
+									}
+								}).focus(Constants.Tutorial.OVERVIEW);
 							}
 							return false;
 						}
