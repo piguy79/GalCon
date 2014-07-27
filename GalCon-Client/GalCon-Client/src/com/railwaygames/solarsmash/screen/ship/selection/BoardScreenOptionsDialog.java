@@ -70,7 +70,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		tutorialButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.38f - bHeight * 0.5f, bWidth, bHeight);
+		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.4f - bHeight * 0.5f, bWidth, bHeight);
 
 		tutorialText = new ShaderLabel(fontShader, "Tutorial", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		tutorialText.setAlignment(Align.center);
@@ -90,7 +90,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		resignButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.6f - bHeight * 0.5f, bWidth, bHeight);
+		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.63f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		resignText.setAlignment(Align.center);
@@ -110,7 +110,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
 		cancelButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.50f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.63f - bHeight * 0.5f, bWidth, bHeight);
 
 		cancelText = new ShaderLabel(fontShader, "Cancel Game", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		cancelText.setAlignment(Align.center);
@@ -149,7 +149,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		aboutButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * 0.66f;
 		float bHeight = bWidth * 0.30f;
-		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.15f - bHeight * 0.5f, bWidth, bHeight);
+		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.16f - bHeight * 0.5f, bWidth, bHeight);
 
 		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		aboutText.setAlignment(Align.center);
