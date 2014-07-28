@@ -26,7 +26,7 @@ public class DesktopSocialAction implements SocialAction {
 			public void run() {
 				Random rand = new Random();
 				try {
-					Thread.sleep(Math.abs((rand.nextInt() % 5 + 1) * 1000));
+					Thread.sleep(Math.abs((rand.nextInt() % 2 + 1) * 1000));
 				} catch (InterruptedException e) {
 
 				}
@@ -126,6 +126,11 @@ public class DesktopSocialAction implements SocialAction {
 	@Override
 	public void postToFriends(FriendPostListener listener, String authProvider, String id) {
 		listener.onPostSucceeded();
+	}
+
+	@Override
+	public boolean enableGoogle() {
+		return true;
 	}
 
 }
