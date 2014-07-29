@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
@@ -47,6 +48,24 @@ public abstract class EndGameOverlay extends Overlay {
 	protected float width;
 
 	private Maps allMaps;
+	
+	private ShaderLabel tipLabel;
+	private List<Tip> tips = new ArrayList<Tip>(){
+		{
+			add(new Tip(0L, "The best defence is a good offense"));
+			add(new Tip(0L, "Planets with larger build rates and a low number of ships make great targets"));
+			add(new Tip(0L, "Invite your friends using the 'Friends' button when selecting a map"));
+			add(new Tip(0L, "Buy any coin pack to remove Ads. This will enable you to have more games in progress"));
+			add(new Tip(0L, "You can move ships between your own planets in order to bolster their defence"));
+			add(new Tip(0L, "Use the number of rounds a ship takes to move to time fleets from multiple planets to attack together."));
+			add(new Tip(0L,"Larger planets have a higher ship build rate. A higher overall build rate will help you overrun the enemy"));
+			add(new Tip(2L,"Planets with moons convey special abilities but have a build rate of 1. Capture them wisely"));
+			add(new MapSpecificTip(3L, "Increased speed enables your ships to move from planet to planet in less turns"));
+			add(new MapSpecificTip(6L,"Harvest an ability planets moon to gain an increase in power. This will destory the moon after a number of rounds"));
+			add(new MapSpecificTip(6L,"Capturing a planet which is under harvest from the enemy will give you a ship bonus."));
+
+		}
+	};
 
 	public EndGameOverlay(Resources resources, GameBoard gameBoard) {
 		super(resources);
@@ -67,6 +86,7 @@ public abstract class EndGameOverlay extends Overlay {
 			waitImage.stop();
 		}
 		createBackButton();
+		createTipLabel();
 	}
 
 	private void createBackButton() {
@@ -279,5 +299,55 @@ public abstract class EndGameOverlay extends Overlay {
 			addActor(overlay);
 		}
 	};
+	
+	private void createTipLabel() {
+		tipLabel = new ShaderLabel(resources.fontShader, "Tip: " + getTip(gameBoard.map).tip, resources.skin, Constants.UI.SMALL_FONT, Color.WHITE);
+		tipLabel.setBounds(Gdx.graphics.getWidth() * 0.05f,Gdx.graphics.getHeight() * 0.15f, Gdx.graphics.getWidth() * 0.9f, tipLabel.getTextBounds().height);
+		tipLabel.setWrap(true);
+		tipLabel.setAlignment(Align.center);
+		
+		addActor(tipLabel);
+		
+	}
+	
+	private Tip getTip(Long map) {
+		List<Tip> tipsToPickFrom = new ArrayList<EndGameOverlay.Tip>();
+		
+		for(Tip tip : tips){
+			if(tip.shouldShowTip(map)){
+				tipsToPickFrom.add(tip);
+			}
+		}
+		int index = (int)(Math.random() * tipsToPickFrom.size());
+		return tipsToPickFrom.get(index);
+	}
+	
+	private class Tip{
+		private Long mapFrom;
+		private String tip;
+		
+		public Tip(Long mapFrom, String tip){
+			this.mapFrom = mapFrom;
+			this.tip = tip;
+		}
+		
+		public boolean shouldShowTip(Long map){
+			return mapFrom <= map;
+		}
+	}
+	
+	private class MapSpecificTip extends Tip{
+		private Long mapMatch;
+		
+		public MapSpecificTip(Long mapMatch, String tip){
+			super(0L, tip);
+			this.mapMatch = mapMatch;
+		}
+		
+		@Override
+		public boolean shouldShowTip(Long map){
+			return map == mapMatch;
+		}
+	}
 
 }

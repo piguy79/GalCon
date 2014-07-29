@@ -70,6 +70,7 @@ import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
+import com.railwaygames.solarsmash.screen.overlay.TipOverlay;
 import com.railwaygames.solarsmash.screen.overlay.WinningEndGameOverlay;
 import com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog;
 import com.railwaygames.solarsmash.screen.ship.selection.HarvestDialog;
@@ -294,6 +295,8 @@ public class BoardScreen implements ScreenFeedback {
 		if(GameLoop.USER.noAd){
 			return;
 		}
+		
+
 
 		if (lastAdShownTime == null || lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());

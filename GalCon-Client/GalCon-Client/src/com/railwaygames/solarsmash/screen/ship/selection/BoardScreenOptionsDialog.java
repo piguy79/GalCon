@@ -49,7 +49,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		confirmText = new ShaderLabel(resources.fontShader, "Are you sure you want to", resources.skin,
 				Constants.UI.DEFAULT_FONT, Color.BLACK);
 		confirmText.setAlignment(Align.center);
-		confirmText.setY(getHeight() * 0.6f);
+		confirmText.setY(getHeight() * 0.7f);
 		confirmText.setWidth(getWidth());
 		confirmText.setColor(Color.CLEAR);
 
@@ -177,6 +177,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			hideAndRemove(refreshText);
 			hideAndRemove(aboutButton);
 			hideAndRemove(aboutText);
+			hideAndRemove(tutorialButton);
+			hideAndRemove(tutorialText);
 
 			confirmText.addAction(sequence(color(Color.BLACK, 0.3f)));
 
@@ -232,6 +234,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			hideAndRemove(refreshText);
 			hideAndRemove(aboutButton);
 			hideAndRemove(aboutText);
+			hideAndRemove(tutorialButton);
+			hideAndRemove(tutorialText);
 
 			if (timeLeft > 0) {
 				cancelButton.addAction(sequence(alpha(0.0f, 0.3f), run(new Runnable() {
