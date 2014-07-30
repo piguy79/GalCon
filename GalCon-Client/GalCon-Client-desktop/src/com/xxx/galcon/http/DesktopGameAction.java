@@ -396,7 +396,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
 						GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 0)
+						.append("xp", 6999)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)

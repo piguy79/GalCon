@@ -1,11 +1,18 @@
 package com.railwaygames.solarsmash.screen.overlay;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.screen.Resources;
+import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class LoserEndGameOverlay extends EndGameOverlay {
+
 
 	public LoserEndGameOverlay(Resources resources, GameBoard gameBoard) {
 		super(resources, gameBoard);
