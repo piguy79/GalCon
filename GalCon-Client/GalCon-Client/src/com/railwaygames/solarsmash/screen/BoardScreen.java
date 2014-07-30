@@ -242,7 +242,7 @@ public class BoardScreen implements ScreenFeedback {
 
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false) && GameLoop.USER.xp == 0) {
-			showTutorial(gameBoard, prefs);
+			showTutorial(gameBoard, null);
 		} else {
 			beginOverlay();
 		}
@@ -250,16 +250,30 @@ public class BoardScreen implements ScreenFeedback {
 		stage.addListener(createHarvestListener());
 	}
 
-	private void showTutorial(GameBoard gameBoard, final Preferences prefs) {
+	private String tutorialState = "";
+
+	private void showTutorial(GameBoard gameBoard, String continuePoint) {
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
 			@Override
-			public void onClose() {
+			public void onClose(String msg) {
+				tutorialState = msg;
+				final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 				prefs.putBoolean(Constants.Tutorial.OVERVIEW, true);
 				prefs.flush();
-				beginOverlay();
+
+				if (tutorialState.equals(Constants.Tutorial.BREAK_SEND_MOVES)) {
+					renderDialog();
+				}
+
+				beginEndRoundInfo();
 			}
-		}).focus(Constants.Tutorial.OVERVIEW);
+
+			@Override
+			public void hide() {
+				// do nothing
+			}
+		}).focus(Constants.Tutorial.OVERVIEW, continuePoint);
 	}
 
 	private void beginOverlay() {
@@ -290,8 +304,8 @@ public class BoardScreen implements ScreenFeedback {
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
-		
-		if(GameLoop.USER.noAd){
+
+		if (GameLoop.USER.noAd) {
 			return;
 		}
 
@@ -324,7 +338,7 @@ public class BoardScreen implements ScreenFeedback {
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
 			@Override
-			public void onClose() {
+			public void onClose(String msg) {
 				beginEndRoundInfo();
 			}
 		}).focus(gameBoard.roundInformation);
@@ -548,7 +562,7 @@ public class BoardScreen implements ScreenFeedback {
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
 					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, width * 0.8f,
-							height * 0.6f, stage);
+							height * 0.45f, stage);
 					float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.3f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
@@ -608,14 +622,8 @@ public class BoardScreen implements ScreenFeedback {
 										overlay.remove();
 									};
 								}, GameLoop.USER.handle, gameBoard.id);
-							} else if(event instanceof TutorialEvent){
-								overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
-
-									@Override
-									public void onClose() {
-										
-									}
-								}).focus(Constants.Tutorial.OVERVIEW);
+							} else if (event instanceof TutorialEvent) {
+								showTutorial(gameBoard, null);
 							}
 							return false;
 						}
@@ -694,18 +702,28 @@ public class BoardScreen implements ScreenFeedback {
 		}
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 			@Override
-			public void onClose() {
+			public void onClose(String msg) {
 				clearTouchedPlanets();
+
+				if (tutorialState.equals(Constants.Tutorial.BREAK_SEND_MOVES)) {
+					showTutorial(gameBoard, Constants.Tutorial.BREAK_SEND_MOVES_CANCEL);
+				}
 			}
 
 			@Override
 			public void onCancel() {
 				deleteMove(move);
+				if (tutorialState.equals(Constants.Tutorial.BREAK_SEND_MOVES)) {
+					showTutorial(gameBoard, Constants.Tutorial.BREAK_SEND_MOVES_CANCEL);
+				}
 			}
 
 			@Override
 			public void onCreateMove(int oldShipsToSend, Move move) {
 				createNewMove(oldShipsToSend, move);
+				if (tutorialState.equals(Constants.Tutorial.BREAK_SEND_MOVES)) {
+					showTutorial(gameBoard, Constants.Tutorial.BREAK_SEND_MOVES_OK);
+				}
 			}
 		}).add(move).focus(move);
 	}
@@ -772,7 +790,7 @@ public class BoardScreen implements ScreenFeedback {
 		}
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 			@Override
-			public void onClose() {
+			public void onClose(String msg) {
 				clearTouchedPlanets();
 				clearMoveActions(planet);
 			}
@@ -783,6 +801,10 @@ public class BoardScreen implements ScreenFeedback {
 		return new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (!tutorialState.equals("")) {
+					event.stop();
+					return;
+				}
 				if (!event.isStopped()) {
 					clearTouchedPlanets();
 				}
@@ -876,15 +898,34 @@ public class BoardScreen implements ScreenFeedback {
 
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
+					if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_USER_PLANET)) {
+						if (!planet.isOwnedBy(GameLoop.USER.handle)) {
+							event.stop();
+							return;
+						}
+					} else if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET)) {
+						if (planet.isOwnedBy(GameLoop.USER.handle)) {
+							event.stop();
+							return;
+						}
+					}
 					planetButton.addGlow();
 					if (touchedPlanets.size() < 2) {
 						touchedPlanets.add(planet);
-						renderDialog();
+						if (tutorialState.equals("")) {
+							renderDialog();
+						}
 					} else {
 						clearTouchedPlanets();
 					}
 
 					event.stop();
+
+					if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_USER_PLANET)) {
+						showTutorial(gameBoard, Constants.Tutorial.BREAK_TOUCH_USER_PLANET);
+					} else if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET)) {
+						showTutorial(gameBoard, Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET);
+					}
 				}
 			});
 			boardTable.addActor(planetButton);
@@ -1122,6 +1163,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	@Override
 	public void resetState() {
+		tutorialState = "";
 		returnCode = null;
 		roundAnimated = -2;
 		clearTouchedPlanets();

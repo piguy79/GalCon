@@ -14,10 +14,12 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 public abstract class Tutorial {
 
 	public abstract int getPageCount();
+	
+	public abstract int getPage(String continuePoint);
 
 	public abstract void showPage(int page);
-
-	public abstract String getTopHudText(int page);
+	
+	public abstract String pauseEvent(int page);
 
 	protected ShaderLabel createBasicLabel(Resources resources, float y, float delay, String text) {
 		ShaderLabel lbl = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.SMALL_FONT,

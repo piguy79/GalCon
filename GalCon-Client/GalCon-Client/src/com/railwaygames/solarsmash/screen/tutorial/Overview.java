@@ -2,14 +2,16 @@ package com.railwaygames.solarsmash.screen.tutorial;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
@@ -18,95 +20,65 @@ public class Overview extends Tutorial {
 
 	private Resources resources;
 	private Group group;
-	private TextureAtlas atlas;
+	private boolean page5Good = false;
 
 	public Overview(Resources resources, Group group) {
 		this.resources = resources;
 		this.group = group;
-
-		resources.assetManager.load("data/images/tutorial.atlas", TextureAtlas.class);
-		resources.assetManager.finishLoading();
-		atlas = resources.assetManager.get("data/images/tutorial.atlas", TextureAtlas.class);
 	}
 
 	@Override
 	public int getPageCount() {
-		return 12;
+		return 6;
+	}
+
+	@Override
+	public int getPage(String continuePoint) {
+		if (Constants.Tutorial.BREAK_TOUCH_USER_PLANET.equals(continuePoint)) {
+			return 3;
+		} else if (Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET.equals(continuePoint)) {
+			return 4;
+		} else if (Constants.Tutorial.BREAK_SEND_MOVES_OK.equals(continuePoint)) {
+			page5Good = true;
+			return 5;
+		} else if (Constants.Tutorial.BREAK_SEND_MOVES_CANCEL.equals(continuePoint)) {
+			page5Good = false;
+			return 5;
+		}
+
+		return 1;
 	}
 
 	@Override
 	public void showPage(int page) {
-		// group.clear();
-
+		List<Actor> toRemove = new ArrayList<Actor>();
+		for (Actor actor : group.getChildren()) {
+			if (actor instanceof Label) {
+				toRemove.add(actor);
+			}
+		}
+		for (Actor actor : toRemove) {
+			actor.remove();
+		}
 		switch (page) {
 		case 1:
 			page1();
 			break;
 		case 2:
-			addImage("overview1");
+			page2();
 			break;
 		case 3:
-			addImage("overview2");
+			page3();
 			break;
 		case 4:
-			addImage("overview2");
+			page4();
 			break;
 		case 5:
-			addImage("overview1");
+			page5();
 			break;
 		case 6:
-			addImage("overview3");
+			page6();
 			break;
-		case 7:
-			addImage("overview4");
-			break;
-		case 8:
-			addImage("overview4");
-			break;
-		case 9:
-			addImage("overview4");
-			break;
-		case 10:
-			addImage("overview5");
-			break;
-		case 11:
-			addImage("overview4");
-			break;
-		case 12:
-			addImage("overview4");
-			break;
-		default:
-			break;
-		}
-	}
-
-	@Override
-	public String getTopHudText(int page) {
-		switch (page) {
-		case 2:
-			return "This is your view of the battlefield";
-		case 3:
-			return "These planets are currently owned by a player";
-		case 4:
-			return "Green lines show planets in your control. Red lines show a planet in the enemy's control";
-		case 5:
-			return "The number on any planet represents the number of ships currently on that planet";
-		case 6:
-			return "To move, tap a planet you own then tap a planet to send ships to. Drag the slider on the bottom";
-		case 7:
-			return "All moves in progress show on the bottom. Tap any move to see it";
-		case 8:
-			return "All ships are cloaked while moving. Your enemy can't see your moves and you can't see their moves";
-		case 9:
-			return "Every round, all owned planets will build more ships";
-		case 10:
-			return "Double tap on any planet to see how many ships can be built per round";
-		case 11:
-			return "When you are done issuing moves for this round, tap the green button in the bottom right";
-		case 12:
-			return "Good luck commander!";
-		default:
-			return "";
 		}
 	}
 
@@ -124,21 +96,78 @@ public class Overview extends Tutorial {
 			group.addActor(lbl);
 		}
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.00f,
-				"We continue to be engaged by enemy forces as we search for the resources necessary for our survival"));
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 0.5f,
+				"The objective: eliminate all of your enemy's planets by attacking them with ships, round after round"));
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.3f, 2.25f,
-				"First let us refine your skills using the battle simulator"));
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 1.75f,
+				"This tutorial will show you the basic gameplay mechanics"));
 	}
 
-	private void addImage(String imageName) {
-		Image image = new Image(new TextureRegionDrawable(atlas.findRegion(imageName)));
+	private void page2() {
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 0.0f,
+				"Green lines show planets in your control. Red lines show a planet in the enemy's control"));
 
-		float xMargin = group.getWidth() * 0.09f;
-		float yMargin = group.getHeight() * 0.01f;
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 1.25f,
+				"Tap one of your planets to begin"));
+	}
 
-		image.setBounds(xMargin, yMargin, group.getWidth() - 2 * xMargin, group.getHeight() - 2 * yMargin);
+	private void page3() {
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f, "Excellent"));
 
-		group.addActor(image);
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+				"Now tap a different planet to send ships for attack"));
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 2.00f,
+				"Hint: Larger planets will build more ships for you per round compared to smaller planets"));
+	}
+
+	private void page4() {
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
+				"Next: sending ships to attack"));
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+				"Drag the bottom slider until you send a number greater than or equal to the number on the defending planet"));
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 2.00f,
+				"Hint: The top right display will show you how many rounds until the ships impact the planet"));
+	}
+
+	private void page5() {
+		if (page5Good) {
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
+					"Great. You can see all moves in progress on the bottom of the screen and can tap each one to inspect it"));
+		} else {
+			group.addActor(createBasicLabel(
+					resources,
+					Gdx.graphics.getHeight() * 0.65f,
+					0.0f,
+					"It appears you canceled the move. You can try again soon and see all moves in progress on the bottom of the screen. Tap any move to inspect it"));
+		}
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+				"You can queue up many moves at one time by following the same steps"));
+	}
+
+	private void page6() {
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
+				"After issuing all of your moves for the round, "
+						+ "click the green button in the bottom right to end your turn"));
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+				"That's all for now.\nGood luck!"));
+	}
+
+	@Override
+	public String pauseEvent(int page) {
+		switch (page) {
+		case 2:
+			return Constants.Tutorial.BREAK_TOUCH_USER_PLANET;
+		case 3:
+			return Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET;
+		case 4:
+			return Constants.Tutorial.BREAK_SEND_MOVES;
+		default:
+			return "";
+		}
 	}
 }

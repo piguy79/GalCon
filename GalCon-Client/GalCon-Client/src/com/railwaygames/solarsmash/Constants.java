@@ -87,6 +87,11 @@ public class Constants {
 		public static final String OVERVIEW = "tutorial_overview";
 		public static final String RESOURCES = "t_resources";
 		public static final String HARVEST = "t_harvest";
+		public static final String BREAK_TOUCH_USER_PLANET = "breakTouchUserPlanet";
+		public static final String BREAK_TOUCH_OTHER_PLANET = "breakTouchOtherPlanet";
+		public static final String BREAK_SEND_MOVES = "breakSendMoves";
+		public static final String BREAK_SEND_MOVES_OK = "breakSendMovesOk";
+		public static final String BREAK_SEND_MOVES_CANCEL = "breakSendMovesCancel";
 	}
 
 	public static final String CONNECTION_ERROR_MESSAGE = "Unable to connect.\n\nTouch the screen\nto try again.";

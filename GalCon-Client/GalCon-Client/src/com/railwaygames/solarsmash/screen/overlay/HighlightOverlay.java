@@ -142,11 +142,11 @@ public abstract class HighlightOverlay extends Overlay {
 		return this;
 	}
 
-	public HighlightOverlay focus(String tutorial) {
+	public HighlightOverlay focus(String tutorial, String continuePoint) {
 		// we want users to use the 'go' button instead
 		this.removeListener(defaultHideListener);
 
-		huds = new TutorialHuds(tutorial);
+		huds = new TutorialHuds(tutorial, continuePoint);
 		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
@@ -159,13 +159,13 @@ public abstract class HighlightOverlay extends Overlay {
 	public void hide() {
 		huds.hide();
 		remove();
-		onClose();
+		onClose("");
 	}
 
 	/**
 	 * Called when the user dismisses the overlay
 	 */
-	public abstract void onClose();
+	public abstract void onClose(String msg);
 
 	/**
 	 * User has clicked the cancel button on the ship selection hud.
@@ -409,12 +409,13 @@ public abstract class HighlightOverlay extends Overlay {
 		private MultiPageBottomHud bottomHud;
 		private int currentPage = 1;
 
-		public TutorialHuds(String tutorialString) {
+		public TutorialHuds(String tutorialString, String continuePoint) {
 			if (tutorialString.equals(Constants.Tutorial.OVERVIEW)) {
 				this.tutorial = new Overview(resources, HighlightOverlay.this);
 			}
 
-			this.tutorial.showPage(1);
+			currentPage = tutorial.getPage(continuePoint);
+			this.tutorial.showPage(currentPage);
 		}
 
 		@Override
@@ -427,6 +428,7 @@ public abstract class HighlightOverlay extends Overlay {
 		public void createBottomHud() {
 			Size size = screenCalcs.getBottomHudBounds().size;
 			bottomHud = new MultiPageBottomHud(resources, size.width, size.height);
+			bottomHud.changeButtonText("Next >");
 			bottomHud.addListener(new EventListener() {
 				@Override
 				public boolean handle(Event event) {
@@ -434,23 +436,19 @@ public abstract class HighlightOverlay extends Overlay {
 						return false;
 					}
 
-					bottomHud.changeButtonText("Next >");
-
+					String pauseEvent = tutorial.pauseEvent(currentPage);
 					currentPage += 1;
-					if (currentPage <= tutorial.getPageCount()) {
+					if (pauseEvent.equals("") && currentPage <= tutorial.getPageCount()) {
 						tutorial.showPage(currentPage);
-						String text = tutorial.getTopHudText(currentPage);
-						topHud.addText(text);
 					} else {
 						hide();
 						remove();
-						onClose();
+						onClose(pauseEvent);
 					}
 
 					return true;
 				}
 			});
-
 		}
 
 		@Override
@@ -660,7 +658,7 @@ public abstract class HighlightOverlay extends Overlay {
 					} else {
 						hide();
 						remove();
-						onClose();
+						onClose("");
 					}
 
 					return true;
@@ -718,7 +716,7 @@ public abstract class HighlightOverlay extends Overlay {
 					if (event instanceof HarvestEvent) {
 						hide();
 						remove();
-						onClose();
+						onClose("");
 					}
 
 					return false;
