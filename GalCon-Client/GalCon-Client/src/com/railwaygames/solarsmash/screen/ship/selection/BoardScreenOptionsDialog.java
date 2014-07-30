@@ -68,9 +68,9 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createTutorialButton(ShaderProgram fontShader, UISkin skin) {
 		tutorialButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		tutorialButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.66f;
-		float bHeight = bWidth * 0.30f;
-		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.4f - bHeight * 0.5f, bWidth, bHeight);
+		float bWidth = getWidth() * 0.71f;
+		float bHeight = bWidth * 0.28f;
+		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.38f - bHeight * 0.5f, bWidth, bHeight);
 
 		tutorialText = new ShaderLabel(fontShader, "Tutorial", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		tutorialText.setAlignment(Align.center);
@@ -88,9 +88,9 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {
 		resignButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		resignButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.66f;
-		float bHeight = bWidth * 0.30f;
-		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.63f - bHeight * 0.5f, bWidth, bHeight);
+		float bWidth = getWidth() * 0.71f;
+		float bHeight = bWidth * 0.28f;
+		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.62f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		resignText.setAlignment(Align.center);
@@ -107,10 +107,10 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createCancelButton(ShaderProgram fontShader, UISkin skin) {
 		cancelButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		cancelButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.66f;
-		float bHeight = bWidth * 0.30f;
+		float bWidth = getWidth() * 0.71f;
+		float bHeight = bWidth * 0.28f;
 		cancelButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.63f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.62f - bHeight * 0.5f, bWidth, bHeight);
 
 		cancelText = new ShaderLabel(fontShader, "Cancel Game", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		cancelText.setAlignment(Align.center);
@@ -127,10 +127,10 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createRefreshButton(ShaderProgram fontShader, UISkin skin) {
 		refreshButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		refreshButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.66f;
-		float bHeight = bWidth * 0.30f;
+		float bWidth = getWidth() * 0.71f;
+		float bHeight = bWidth * 0.28f;
 		refreshButton
-				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.85f - bHeight * 0.5f, bWidth, bHeight);
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.86f - bHeight * 0.5f, bWidth, bHeight);
 
 		refreshText = new ShaderLabel(fontShader, "Refresh", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		refreshText.setAlignment(Align.center);
@@ -147,9 +147,9 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createAboutButton(ShaderProgram fontShader, UISkin skin) {
 		aboutButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		aboutButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.66f;
-		float bHeight = bWidth * 0.30f;
-		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.16f - bHeight * 0.5f, bWidth, bHeight);
+		float bWidth = getWidth() * 0.71f;
+		float bHeight = bWidth * 0.28f;
+		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.14f - bHeight * 0.5f, bWidth, bHeight);
 
 		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		aboutText.setAlignment(Align.center);
