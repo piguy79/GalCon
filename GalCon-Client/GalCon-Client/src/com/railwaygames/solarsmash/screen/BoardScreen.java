@@ -1,7 +1,10 @@
 package com.railwaygames.solarsmash.screen;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.railwaygames.solarsmash.Constants;
@@ -70,13 +74,13 @@ import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
-import com.railwaygames.solarsmash.screen.overlay.TipOverlay;
 import com.railwaygames.solarsmash.screen.overlay.WinningEndGameOverlay;
 import com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog;
 import com.railwaygames.solarsmash.screen.ship.selection.HarvestDialog;
 import com.railwaygames.solarsmash.screen.widget.Line;
 import com.railwaygames.solarsmash.screen.widget.Moon;
 import com.railwaygames.solarsmash.screen.widget.PlanetButton;
+import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class BoardScreen implements ScreenFeedback {
 
@@ -103,6 +107,8 @@ public class BoardScreen implements ScreenFeedback {
 	private MenuScreenContainer previousScreen;
 
 	private Overlay overlay;
+
+	private String tutorialState = "";
 
 	private Resources resources = null;
 
@@ -251,9 +257,13 @@ public class BoardScreen implements ScreenFeedback {
 		stage.addListener(createHarvestListener());
 	}
 
-	private String tutorialState = "";
+	private ShaderLabel tutorialMsg = null;
 
 	private void showTutorial(GameBoard gameBoard, String continuePoint) {
+		if (tutorialMsg != null) {
+			tutorialMsg.clearActions();
+			tutorialMsg.remove();
+		}
 		overlay = (new HighlightOverlay(stage, gameBoard, moveHud, resources, screenCalcs, boardCalcs) {
 
 			@Override
@@ -265,6 +275,30 @@ public class BoardScreen implements ScreenFeedback {
 
 				if (tutorialState.equals(Constants.Tutorial.BREAK_SEND_MOVES)) {
 					renderDialog();
+				}
+
+				if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_USER_PLANET)
+						|| tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET)) {
+
+					String userMsg = "Touch any other planet";
+					if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_USER_PLANET)) {
+						userMsg = "Touch a planet you own";
+					}
+					if (tutorialMsg == null) {
+						tutorialMsg = new ShaderLabel(resources.fontShader, "0", resources.skin,
+								Constants.UI.LARGE_FONT, Color.WHITE);
+						tutorialMsg.setWidth(Gdx.graphics.getWidth());
+						tutorialMsg.setWrap(true);
+						tutorialMsg.setX(0);
+						tutorialMsg.setY(Gdx.graphics.getHeight() * 0.5f - tutorialMsg.getHeight() * 0.5f);
+						tutorialMsg.setAlignment(Align.center, Align.center);
+						tutorialMsg.setTouchable(Touchable.disabled);
+					}
+					boardTable.addActor(tutorialMsg);
+					tutorialMsg.clearActions();
+					tutorialMsg.setText(userMsg);
+					tutorialMsg.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+					tutorialMsg.addAction(forever(sequence(delay(3.0f), alpha(1.0f, 1.2f), alpha(0.0f, 0.6f))));
 				}
 
 				beginEndRoundInfo();
@@ -309,8 +343,6 @@ public class BoardScreen implements ScreenFeedback {
 		if (GameLoop.USER.noAd) {
 			return;
 		}
-		
-
 
 		if (lastAdShownTime == null || lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.LAST_AD_SHOWN, currentTime.toString());
@@ -626,6 +658,8 @@ public class BoardScreen implements ScreenFeedback {
 									};
 								}, GameLoop.USER.handle, gameBoard.id);
 							} else if (event instanceof TutorialEvent) {
+								clearTouchedPlanets();
+								tutorialState = "";
 								showTutorial(gameBoard, null);
 							}
 							return false;

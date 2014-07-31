@@ -41,6 +41,9 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ImageButton tutorialButton;
 	private ShaderLabel tutorialText;
 	private GameBoard gameBoard;
+	
+	private static final float BUTTON_HEIGHT_RATIO = 0.25f;
+	private static final float BUTTON_WIDTH_RATIO = 0.73f;
 
 	public BoardScreenOptionsDialog(GameBoard gameBoard, Resources resources, float width, float height, Stage stage) {
 		super(resources, width, height, stage, OKCancelDialog.Type.CANCEL);
@@ -49,7 +52,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		confirmText = new ShaderLabel(resources.fontShader, "Are you sure you want to", resources.skin,
 				Constants.UI.DEFAULT_FONT, Color.BLACK);
 		confirmText.setAlignment(Align.center);
-		confirmText.setY(getHeight() * 0.7f);
+		confirmText.setY(getHeight() * 0.73f);
 		confirmText.setWidth(getWidth());
 		confirmText.setColor(Color.CLEAR);
 
@@ -68,8 +71,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createTutorialButton(ShaderProgram fontShader, UISkin skin) {
 		tutorialButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		tutorialButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.71f;
-		float bHeight = bWidth * 0.28f;
+		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
+		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.38f - bHeight * 0.5f, bWidth, bHeight);
 
 		tutorialText = new ShaderLabel(fontShader, "Tutorial", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
@@ -88,8 +91,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {
 		resignButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		resignButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.71f;
-		float bHeight = bWidth * 0.28f;
+		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
+		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.62f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
@@ -107,8 +110,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createCancelButton(ShaderProgram fontShader, UISkin skin) {
 		cancelButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		cancelButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.71f;
-		float bHeight = bWidth * 0.28f;
+		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
+		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		cancelButton
 				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.62f - bHeight * 0.5f, bWidth, bHeight);
 
@@ -127,8 +130,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createRefreshButton(ShaderProgram fontShader, UISkin skin) {
 		refreshButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		refreshButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.71f;
-		float bHeight = bWidth * 0.28f;
+		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
+		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		refreshButton
 				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.86f - bHeight * 0.5f, bWidth, bHeight);
 
@@ -147,8 +150,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private void createAboutButton(ShaderProgram fontShader, UISkin skin) {
 		aboutButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
 		aboutButton.setLayoutEnabled(false);
-		float bWidth = getWidth() * 0.71f;
-		float bHeight = bWidth * 0.28f;
+		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
+		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.14f - bHeight * 0.5f, bWidth, bHeight);
 
 		aboutText = new ShaderLabel(fontShader, "About", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);

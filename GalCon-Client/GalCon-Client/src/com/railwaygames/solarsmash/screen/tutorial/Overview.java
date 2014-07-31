@@ -21,10 +21,12 @@ public class Overview extends Tutorial {
 	private Resources resources;
 	private Group group;
 	private boolean page5Good = false;
+	private boolean isMyMove = true;
 
-	public Overview(Resources resources, Group group) {
+	public Overview(Resources resources, Group group, boolean isMyMove) {
 		this.resources = resources;
 		this.group = group;
+		this.isMyMove = isMyMove;
 	}
 
 	@Override
@@ -107,23 +109,30 @@ public class Overview extends Tutorial {
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 0.0f,
 				"Green lines show planets in your control. Red lines show a planet in the enemy's control"));
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 1.25f,
-				"Tap one of your planets to begin"));
+		if (isMyMove) {
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 1.25f,
+					"Tap one of your planets to begin"));
+		}
 	}
 
 	private void page3() {
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f, "Excellent"));
+		if (isMyMove) {
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f, "Excellent"));
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
-				"Now tap a different planet to send ships for attack"));
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+					"Now tap a different planet to send ships for attack"));
+		} else {
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 0.0f,
+					"When it is your turn, you would tap a different planet in order to attack"));
+		}
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 2.00f,
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 1.50f,
 				"Hint: Larger planets will build more ships for you per round compared to smaller planets"));
 	}
 
 	private void page4() {
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
-				"Next: sending ships to attack"));
+				"Next: sending a specific number of ships to attack"));
 
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
 				"Drag the bottom slider until you send a number greater than or equal to the number on the defending planet"));
@@ -133,19 +142,24 @@ public class Overview extends Tutorial {
 	}
 
 	private void page5() {
-		if (page5Good) {
-			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
-					"Great. You can see all moves in progress on the bottom of the screen and can tap each one to inspect it"));
-		} else {
-			group.addActor(createBasicLabel(
-					resources,
-					Gdx.graphics.getHeight() * 0.65f,
-					0.0f,
-					"It appears you canceled the move. You can try again soon and see all moves in progress on the bottom of the screen. Tap any move to inspect it"));
-		}
+		if (isMyMove) {
+			if (page5Good) {
+				group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
+						"Great. You can see all moves in progress on the bottom of the screen and can tap each one to inspect it"));
+			} else {
+				group.addActor(createBasicLabel(
+						resources,
+						Gdx.graphics.getHeight() * 0.65f,
+						0.0f,
+						"It appears you canceled the move. You can try again soon and see all moves in progress on the bottom of the screen. Tap any move to inspect it"));
+			}
 
-		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
-				"You can queue up many moves at one time by following the same steps"));
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+					"You can queue up many moves at one time by following the same steps"));
+		} else {
+			group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.65f, 0.0f,
+					"You can queue up many moves at one time by following the same steps"));
+		}
 	}
 
 	private void page6() {
@@ -159,6 +173,9 @@ public class Overview extends Tutorial {
 
 	@Override
 	public String pauseEvent(int page) {
+		if (!isMyMove) {
+			return "";
+		}
 		switch (page) {
 		case 2:
 			return Constants.Tutorial.BREAK_TOUCH_USER_PLANET;

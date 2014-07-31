@@ -411,7 +411,7 @@ public abstract class HighlightOverlay extends Overlay {
 
 		public TutorialHuds(String tutorialString, String continuePoint) {
 			if (tutorialString.equals(Constants.Tutorial.OVERVIEW)) {
-				this.tutorial = new Overview(resources, HighlightOverlay.this);
+				this.tutorial = new Overview(resources, HighlightOverlay.this, !GameLoop.USER.hasMoved(gameBoard));
 			}
 
 			currentPage = tutorial.getPage(continuePoint);
