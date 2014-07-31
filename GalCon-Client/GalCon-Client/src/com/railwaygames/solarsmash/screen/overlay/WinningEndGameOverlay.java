@@ -15,7 +15,7 @@ public class WinningEndGameOverlay extends EndGameOverlay {
 		createResultXpLabel();
 	}
 
-	private void createResultXpLabel() {
+	void createResultXpLabel() {
 		int xpAwarded = Integer.parseInt(gameBoard.gameConfig.getValue(Constants.Config.XP_AWARDED_TO_WINNER));
 		xpLabel = new ShaderLabel(resources.fontShader, xpAwarded + "XP", resources.skin, Constants.UI.DEFAULT_FONT,
 				Color.GREEN);
