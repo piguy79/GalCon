@@ -772,12 +772,24 @@ public class FriendScreen implements ScreenFeedback {
 	
 
 	private void startFadeSequence(Actor relatedActor) {
-		CoinInfoDisplay display;
+		
 		if(relatedActor instanceof Group){
 			for(Actor actor : ((Group)relatedActor).getChildren()){
 				if(actor instanceof CoinImage){
-					display = new CoinInfoDisplay(resources, (Image)actor);
+					final CoinInfoDisplay display = new CoinInfoDisplay(resources, (Image)actor);
 					setupDisplay(display);
+					display.animate(new Runnable() {
+						
+						@Override
+						public void run() {
+							display.getCoinImage().remove();
+							setFadeComplete(true);
+							if(boardToPlay != null){
+								returnCode = boardToPlay;
+							}
+							
+						}
+					});
 					
 					stage.addActor(display.getCoinImage());
 					stage.addActor(display.getCoinAmountText());
@@ -803,22 +815,6 @@ public class FriendScreen implements ScreenFeedback {
 	}
 
 	private void setupDisplay(final CoinInfoDisplay display) {
-		ParallelAction arc = GraphicsUtils.arcMovement(1.5f, Gdx.graphics.getHeight() * 0.25f, Gdx.graphics.getHeight());	
-		RepeatAction rotate = Actions.forever(Actions.rotateBy(360, 0.75f));
-		
-		display.getCoinImage().addAction(Actions.parallel(rotate, Actions.sequence(Actions.delay(0.8f),
-				arc, Actions.run(new Runnable() {
-			
-			@Override
-			public void run() {
-				display.getCoinImage().remove();
-				setFadeComplete(true);
-				if(boardToPlay != null){
-					returnCode = boardToPlay;
-				}
-				
-			}
-		}))));
 		
 	}
 	

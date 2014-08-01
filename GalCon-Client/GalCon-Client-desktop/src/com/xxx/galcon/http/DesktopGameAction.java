@@ -399,7 +399,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						.append("xp", 6999)
 						.append("wins", 0)
 						.append("losses", 0)
-						.append("coins", 1)
+						.append("coins", 10)
 						.append("usedCoins", -1)
 						.append("watchedAd", false)
 						.append("session",

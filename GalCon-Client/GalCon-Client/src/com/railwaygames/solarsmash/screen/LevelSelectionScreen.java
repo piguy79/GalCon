@@ -104,11 +104,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		waitImage.stop();
 		
 		final CoinInfoDisplay display = new CoinInfoDisplay(resources, button.getCoinImage());		
-		ParallelAction arc = GraphicsUtils.arcMovement(1.5f, Gdx.graphics.getHeight() * 0.25f, Gdx.graphics.getHeight());	
-		RepeatAction rotate = Actions.forever(Actions.rotateBy(360, 0.75f));
-		
-		display.getCoinImage().addAction(Actions.parallel(rotate, Actions.sequence(Actions.delay(0.8f),
-				arc, Actions.run(new Runnable() {
+		display.animate(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -119,7 +115,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				}
 				
 			}
-		}))));
+		});
 		
 		stage.addActor(display.getCoinImage());
 		stage.addActor(display.getCoinAmountText());

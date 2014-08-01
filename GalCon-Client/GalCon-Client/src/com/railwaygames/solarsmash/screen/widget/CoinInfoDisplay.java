@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
+import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
 
 public class CoinInfoDisplay {
@@ -53,6 +56,16 @@ public class CoinInfoDisplay {
 	
 	public Image getCoinImage() {
 		return coinImage;
+	}
+
+	public void animate(Runnable runnable) {
+		ParallelAction arc = GraphicsUtils.arcMovement(1.5f, Gdx.graphics.getHeight() * 0.25f, Gdx.graphics.getHeight());	
+		RepeatAction rotate = Actions.forever(Actions.rotateBy(360, 0.75f));
+		
+		getCoinImage().addAction(Actions.parallel(rotate, Actions.sequence(Actions.delay(0.8f),
+				arc, Actions.run(runnable))));
+		
+		
 	}
 
 }
