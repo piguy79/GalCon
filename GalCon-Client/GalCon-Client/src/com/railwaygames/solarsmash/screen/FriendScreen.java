@@ -234,7 +234,7 @@ public class FriendScreen implements ScreenFeedback {
 		
 		CoinImage actionImage = new CoinImage(resources.skin.getDrawable(imageToUse));
 		actionImage.setWidth(group.getWidth() * 0.1f);
-		actionImage.setHeight(group.getHeight() * 0.5f);
+		actionImage.setHeight(group.getWidth() * 0.1f);
 		actionImage.setX(actionLabel.getX() - (actionImage.getWidth() * 1.1f));
 		actionImage.setY(startingYPosition - (actionImage.getHeight() * 0.2f));
 		group.addActor(actionImage);
