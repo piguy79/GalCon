@@ -11,10 +11,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -28,7 +36,9 @@ import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
 import com.railwaygames.solarsmash.config.ConfigResolver;
+import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
+import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Point;
@@ -37,7 +47,10 @@ import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.ActorBar.Align;
+import com.railwaygames.solarsmash.screen.widget.CoinInfoDisplay;
+import com.railwaygames.solarsmash.screen.widget.CommonCoinButton;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel;
+import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder;
 import com.railwaygames.solarsmash.screen.widget.WaitImageButton;
 
@@ -60,9 +73,14 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 	private Array<Actor> actors = new Array<Actor>();
 	private Resources resources;
+	private GameAction gameAction;
+	
+	private boolean fadeComplete = false;
+	private GameBoard boardToPlay = null;
 
-	public LevelSelectionScreen(Resources resources) {
+	public LevelSelectionScreen(Resources resources, GameAction gameAction) {
 		this.resources = resources;
+		this.gameAction = gameAction;
 	}
 
 	@Override
@@ -81,6 +99,37 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			}
 		});
 	}
+	
+	private void startFadeSequence(final CommonCoinButton button) {
+		waitImage.stop();
+		
+		final CoinInfoDisplay display = new CoinInfoDisplay(resources, button.getCoinImage());		
+		ParallelAction arc = GraphicsUtils.arcMovement(1.5f, Gdx.graphics.getHeight() * 0.25f, Gdx.graphics.getHeight());	
+		RepeatAction rotate = Actions.forever(Actions.rotateBy(360, 0.75f));
+		
+		display.getCoinImage().addAction(Actions.parallel(rotate, Actions.sequence(Actions.delay(0.8f),
+				arc, Actions.run(new Runnable() {
+			
+			@Override
+			public void run() {
+				display.getCoinImage().remove();
+				fadeComplete = true;
+				if(boardToPlay != null){
+					returnValue = boardToPlay;
+				}
+				
+			}
+		}))));
+		
+		stage.addActor(display.getCoinImage());
+		stage.addActor(display.getCoinAmountText());
+		
+		GraphicsUtils.fadeOut(actors, new Runnable() {
+			@Override
+			public void run() {
+			}
+		}, 1);
+	}
 
 	@Override
 	public Object getRenderResult() {
@@ -90,6 +139,8 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	@Override
 	public void resetState() {
 		returnValue = null;
+		boardToPlay = null;
+		fadeComplete = false;
 	}
 
 	@Override
@@ -235,24 +286,70 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 			@Override
 			public void startGame(int selectedMapKey) {
-				dialog.hide();
-				startHideSequence(Action.PLAY + ":" + selectedMapKey);
+				dialog.fade();
+				gameAction.matchPlayerToGame(new UIConnectionResultCallback<GameBoard>() {
+
+					@Override
+					public void onConnectionResult(GameBoard result) {
+						dialog.fade();
+						startFadeSequence(dialog.randomPlay);
+						boardToPlay = result;
+						if(fadeComplete){
+							returnValue = result;
+						}	
+					}
+
+					
+
+					@Override
+					public void onConnectionError(String msg) {
+						showErrorOnPlay(dialog, msg);
+					}
+				}, GameLoop.USER.handle, Long.valueOf(selectedMapKey));
 			}
 
 			@Override
 			public void startSocialGame(int selectedMapKey) {
-				dialog.hide();
+				dialog.fade();
 				startHideSequence(Action.PLAY_WITH_FRIENDS + ":" + selectedMapKey);
 			}
 
 			@Override
 			public void practiceGame(int selectedMapKey) {
-				dialog.hide();
-				startHideSequence(Action.PRACTICE + ":" + selectedMapKey);
+				dialog.fade();
+				startFadeSequence(dialog.practiceButton);
+				gameAction.practiceGame(new UIConnectionResultCallback<GameBoard>() {
+
+					@Override
+					public void onConnectionResult(GameBoard result) {
+						boardToPlay = result;
+						if(fadeComplete){
+							returnValue = result;
+						}
+					}
+
+					@Override
+					public void onConnectionError(String msg) {
+						showErrorOnPlay(dialog, msg);
+						
+					}
+				}, GameLoop.USER.handle, Long.valueOf(selectedMapKey));
+				
 			}
 		});
 	}
 
+	private void showErrorOnPlay(final GameStartDialog dialog, String msg) {
+		dialog.hide();
+		final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				returnValue = Action.BACK;
+			}
+		});
+		stage.addActor(ovrlay);
+	}
+	
 	@Override
 	public void onConnectionError(String msg) {
 		waitImage.stop();
