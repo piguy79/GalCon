@@ -77,10 +77,13 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	
 	private boolean fadeComplete = false;
 	private GameBoard boardToPlay = null;
+	
+	private Overlay blockTouchOverlay;
 
 	public LevelSelectionScreen(Resources resources, GameAction gameAction) {
 		this.resources = resources;
 		this.gameAction = gameAction;
+		blockTouchOverlay = new Overlay(resources, 0);
 	}
 
 	@Override
@@ -103,6 +106,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 	private void startFadeSequence(final CommonCoinButton button) {
 		waitImage.stop();
 		
+		
 		final CoinInfoDisplay display = new CoinInfoDisplay(resources, button.getCoinImage());		
 		display.animate(new Runnable() {
 			
@@ -112,11 +116,12 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 				fadeComplete = true;
 				if(boardToPlay != null){
 					returnValue = boardToPlay;
+					blockTouchOverlay.remove();
 				}
 				
 			}
 		});
-		
+		stage.addActor(blockTouchOverlay);
 		stage.addActor(display.getCoinImage());
 		stage.addActor(display.getCoinAmountText());
 		
@@ -283,15 +288,16 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			@Override
 			public void startGame(int selectedMapKey) {
 				dialog.fade();
+				startFadeSequence(dialog.randomPlay);
 				gameAction.matchPlayerToGame(new UIConnectionResultCallback<GameBoard>() {
 
 					@Override
 					public void onConnectionResult(GameBoard result) {
 						dialog.fade();
-						startFadeSequence(dialog.randomPlay);
 						boardToPlay = result;
 						if(fadeComplete){
 							returnValue = result;
+							blockTouchOverlay.remove();
 						}	
 					}
 
@@ -321,6 +327,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 						boardToPlay = result;
 						if(fadeComplete){
 							returnValue = result;
+							blockTouchOverlay.remove();
 						}
 					}
 
@@ -341,6 +348,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				returnValue = Action.BACK;
+				blockTouchOverlay.remove();
 			}
 		});
 		stage.addActor(ovrlay);
