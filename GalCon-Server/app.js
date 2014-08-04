@@ -4,8 +4,12 @@ if (process.env.NEW_RELIC_LICENSE_KEY) {
 
 var express = require('express'), routes = require('./routes'), http = require('http'), ejs = require('ejs');
 
+http.globalAgent.maxSockets = 25;
+
 var app = module.exports = express();
 var server = http.createServer(app);
+
+app.disable('etag');
 
 // Configuration
 app.configure(function() {
