@@ -61,7 +61,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 		signInScreen = new SignInScreen(resources, socialAction, gameAction);
 		mainMenuScreen = new MainMenuScreen(resources, gameAction, socialAction);
 		chooseHandleScreen = new ChooseHandleScreen(resources, gameAction, keyboard);
-		levelSelectionScreen = new LevelSelectionScreen(resources);
+		levelSelectionScreen = new LevelSelectionScreen(resources, gameAction);
 		currentGameScreen = new GameListScreen(resources);
 		gameQueueScreen = new GameQueueScreen(resources);
 		noMoreCoinsScreen = new NoMoreCoinsDialog(resources);
@@ -277,12 +277,24 @@ public class MenuScreenContainer implements ScreenFeedback {
 	public class LevelSelectionScreenResultHandler implements ScreenResultHandler {
 		@Override
 		public PartialScreenFeedback processValue(Object value) {
-			String action = (String) value;
-			if (action.equals(Action.BACK)) {
-				return mainMenuScreen;
-			} else if (action.equals(Action.NO_MORE_COINS)) {
-				return noMoreCoinsScreen;
-			} else {
+			if(value instanceof String){
+				String action = (String) value;
+				if (action.equals(Action.BACK)) {
+					return mainMenuScreen;
+				} else if (action.equals(Action.NO_MORE_COINS)) {
+					return noMoreCoinsScreen;
+				} else {
+					// clear back to main menu, then proceed to the gameboard
+					currentScreen.hide();
+					currentScreen = mainMenuScreen;
+					currentScreen.resetState();
+					if (currentScreen.hideTitleArea()) {
+						titleText.remove();
+					} else {
+						stage.addActor(titleText);
+					}
+				}
+			}else{
 				// clear back to main menu, then proceed to the gameboard
 				currentScreen.hide();
 				currentScreen = mainMenuScreen;
@@ -293,6 +305,7 @@ public class MenuScreenContainer implements ScreenFeedback {
 					stage.addActor(titleText);
 				}
 			}
+			
 
 			return null;
 		}

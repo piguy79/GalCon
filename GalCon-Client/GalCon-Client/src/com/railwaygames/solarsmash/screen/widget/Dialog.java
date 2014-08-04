@@ -62,4 +62,8 @@ public class Dialog extends Group {
 			}
 		}));
 	}
+	
+	public DialogOverlay getOverlay() {
+		return overlay;
+	}
 }

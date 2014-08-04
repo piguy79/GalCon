@@ -1,15 +1,18 @@
 package com.railwaygames.solarsmash.screen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.screen.event.GameStartEvent;
 import com.railwaygames.solarsmash.screen.event.PracticeStartEvent;
 import com.railwaygames.solarsmash.screen.event.SocialGameStartEvent;
 import com.railwaygames.solarsmash.screen.widget.CommonCoinButton;
+import com.railwaygames.solarsmash.screen.widget.CommonTextButton;
 import com.railwaygames.solarsmash.screen.widget.OKCancelDialog;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
@@ -18,6 +21,9 @@ public class GameStartDialog extends OKCancelDialog {
 	private float height;
 	private float width;
 	private int selectedMapKey;
+	private Array<Actor> actors;
+	public CommonCoinButton practiceButton;
+	public CommonCoinButton randomPlay;
 
 	public GameStartDialog(Resources resources, float width, float height, Stage stage, int selectedMapKey) {
 		super(resources, width, height, stage, Type.CANCEL);
@@ -26,6 +32,15 @@ public class GameStartDialog extends OKCancelDialog {
 		this.selectedMapKey = selectedMapKey;
 
 		create();
+	}
+	
+	@Override
+	public void addActor(final Actor actor){
+		super.addActor(actor);
+		if(actors == null){
+			actors = new Array<Actor>();
+		}
+		actors.add(actor);
 	}
 
 	private void create() {
@@ -37,7 +52,7 @@ public class GameStartDialog extends OKCancelDialog {
 
 		addActor(startGameLabel);
 
-		CommonCoinButton practiceButton = new CommonCoinButton(resources.skin, "battle simulation", height * 0.2f,
+		practiceButton = new CommonCoinButton(resources.skin, "battle simulation", height * 0.2f,
 				width * 0.8f, resources.fontShader);
 		practiceButton.setX((getWidth() / 2) - (practiceButton.getWidth() / 2));
 		practiceButton.setY(getHeight() * 0.58f);
@@ -51,7 +66,7 @@ public class GameStartDialog extends OKCancelDialog {
 
 		addActor(practiceButton);
 
-		CommonCoinButton randomPlay = new CommonCoinButton(resources.skin, "random opponent", height * 0.2f,
+		randomPlay = new CommonCoinButton(resources.skin, "random opponent", height * 0.2f,
 				width * 0.8f, resources.fontShader);
 		randomPlay.setX((getWidth() / 2) - (randomPlay.getWidth() / 2));
 		randomPlay.setY(getHeight() * 0.33f);
@@ -65,7 +80,7 @@ public class GameStartDialog extends OKCancelDialog {
 
 		addActor(randomPlay);
 
-		CommonCoinButton socialPlay = new CommonCoinButton(resources.skin, "friend", height * 0.2f, width * 0.8f,
+		CommonTextButton socialPlay = new CommonTextButton(resources.skin, "friend", height * 0.2f, width * 0.8f,
 				resources.fontShader);
 		socialPlay.setX((getWidth() / 2) - (socialPlay.getWidth() / 2));
 		socialPlay.setY(getHeight() * 0.08f);
@@ -78,5 +93,17 @@ public class GameStartDialog extends OKCancelDialog {
 		});
 
 		addActor(socialPlay);
+	}
+	
+	public void fade() {
+		actors.add(cancelButton);
+		GraphicsUtils.fadeOut(actors, new Runnable() {
+			
+			@Override
+			public void run() {
+				getOverlay().remove();	
+				remove();
+			}
+		}, 1);
 	}
 }

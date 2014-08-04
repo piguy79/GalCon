@@ -145,20 +145,11 @@ public class GameLoop extends Game {
 			if (getScreen() instanceof MenuScreenContainer) {
 				if (result instanceof String) {
 					String action = (String) result;
-					if (action.split(":")[0].equals(Action.PLAY)) {
-						String level = action.split(":")[1];
-						gameAction.matchPlayerToGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle,
-								Long.valueOf(level));
-						openBoardScreen();
-					} else if (action.split(":")[0].equals(Action.PLAY_WITH_FRIENDS)) {
+					if (action.split(":")[0].equals(Action.PLAY_WITH_FRIENDS)) {
 						friendScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 						friendScreen.setMapType(action.split(":")[1]);
 						setScreen(friendScreen);
-					} else if(action.split(":")[0].equals(Action.PRACTICE)){
-						String level = action.split(":")[1];
-						gameAction.practiceGame(new SetGameBoardResultHandler(boardScreen), GameLoop.USER.handle, Long.valueOf(level));
-						openBoardScreen();
-					}
+					} 
 				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					boardScreen.setGameBoard((GameBoard) result);
@@ -177,19 +168,18 @@ public class GameLoop extends Game {
 					setScreen(menuScreenContainer);
 				}
 			} else if (getScreen() instanceof FriendScreen) {
-				String action = (String) result;
-				if (action.equals(Action.BACK)) {
+				if(result instanceof String){
+					String action = (String) result;
+					if (action.equals(Action.BACK)) {
+						friendScreen.resetState();
+						friendScreen.getPreviousScreen().resetState();
+						setScreen(friendScreen.getPreviousScreen());
+					}
+				}else if(result instanceof GameBoard){
 					friendScreen.resetState();
-					friendScreen.getPreviousScreen().resetState();
-					setScreen(friendScreen.getPreviousScreen());
-				}
-				if (action.equals(Action.INVITE_PLAYER)) {
+					boardScreen.resetState();
 					boardScreen.setPreviousScreen(friendScreen.getPreviousScreen());
-					GameInviteRequest gameInviteRequest = friendScreen.getGameInviteRequest();
-					friendScreen.resetState();
-					gameAction.invitePlayerForGame(new SetGameBoardResultHandler(boardScreen),
-							gameInviteRequest.requesterHandle, gameInviteRequest.inviteeHandle,
-							gameInviteRequest.mapKey);
+					boardScreen.setGameBoard((GameBoard) result);
 					setScreen(boardScreen);
 				}
 			}

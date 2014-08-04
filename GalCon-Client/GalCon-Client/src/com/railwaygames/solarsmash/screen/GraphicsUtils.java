@@ -7,8 +7,18 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.railwaygames.solarsmash.Constants;
+import com.railwaygames.solarsmash.UISkin;
+import com.railwaygames.solarsmash.screen.widget.CommonCoinButton;
 
 public class GraphicsUtils {
 
@@ -35,7 +45,13 @@ public class GraphicsUtils {
 			}
 		}
 
-		actors.get(0).addAction(sequence(delay(delayInSeconds + durationInSeconds), run(new Runnable() {
+		float delay = delayInSeconds + durationInSeconds;
+		runDelayAndRemoveActors(actors, runAtEnd, delay);
+	}
+
+	private static void runDelayAndRemoveActors(final Array<Actor> actors,
+			final Runnable runAtEnd, float delay) {
+		actors.get(0).addAction(sequence(delay(delay), run(new Runnable() {
 			@Override
 			public void run() {
 				for (int i = 0; i < actors.size; ++i) {
@@ -46,9 +62,33 @@ public class GraphicsUtils {
 			}
 		})));
 	}
+	
+	public static void fadeOut(final Array<Actor> actors, final Runnable runAtEnd, final float delay){
+		if(actors.size == 0){
+			return;
+		}
+		
+		for(Actor actor : actors){
+			actor.addAction(Actions.fadeOut(delay, pow3));
+		}
+		
+		runDelayAndRemoveActors(actors, runAtEnd, delay);
+	}
 
 	public static final void setCommonButtonSize(Actor actor) {
 		actor.setHeight(actionButtonSize);
 		actor.setWidth(actionButtonSize);
 	}
+	
+	public static ParallelAction arcMovement(float duration, float distanceUp, float distanceDown){
+		MoveByAction moveAcross = Actions.moveBy(Gdx.graphics.getWidth() * 0.25f, 0, duration, Interpolation.linear);
+		
+		MoveByAction moveUp = Actions.moveBy(0, distanceUp, duration * 0.25f, Interpolation.circleOut);
+		MoveByAction moveDown = Actions.moveBy(0, -distanceDown, duration * 0.75f, Interpolation.pow5);
+		SequenceAction yMovements = Actions.sequence(moveUp, moveDown);
+		
+		return Actions.parallel(moveAcross, yMovements);
+	}
+	
+
 }

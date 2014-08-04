@@ -33,6 +33,10 @@ public class CommonCoinButton extends Group {
 		
 	}
 	
+	public Image getCoinImage() {
+		return coinImage;
+	}
+	
 	public void create(){
 		setHeight(height);
 		setWidth(width);

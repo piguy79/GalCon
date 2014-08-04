@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.Constants;
@@ -22,10 +23,12 @@ import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Size;
 import com.railwaygames.solarsmash.screen.Action;
+import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.GameReturnEvent;
 import com.railwaygames.solarsmash.screen.event.InviteEventListener;
 import com.railwaygames.solarsmash.screen.event.TransitionEvent;
+import com.railwaygames.solarsmash.screen.widget.CoinInfoDisplay;
 import com.railwaygames.solarsmash.screen.widget.CommonCoinButton;
 import com.railwaygames.solarsmash.screen.widget.CommonTextButton;
 import com.railwaygames.solarsmash.screen.widget.GameInviteGroup;
@@ -50,6 +53,10 @@ public abstract class EndGameOverlay extends Overlay {
 	private Maps allMaps;
 	
 	private ShaderLabel tipLabel;
+	
+	private boolean fadeComplete = false;
+	private GameBoard boardToPlay = null;
+	
 	private List<Tip> tips = new ArrayList<Tip>(){
 		{
 			add(new Tip(0L, "The best defence is a good offense"));
@@ -244,18 +251,41 @@ public abstract class EndGameOverlay extends Overlay {
 
 	private ClickListener rematchClickListener = new ClickListener() {
 		public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-			rematchButton.remove();
-			waitImage.start();
+			
+			final Overlay coverBoard = new Overlay(resources, 1);
+			getStage().addActor(coverBoard);
+			final CoinInfoDisplay display = new CoinInfoDisplay(resources, rematchButton.getCoinImage());
+			display.animate(new Runnable() {
+				
+				@Override
+				public void run() {
+					fadeComplete = true;
+					if(boardToPlay != null){
+						fire(new GameReturnEvent(boardToPlay.id));
+					}
+				}
+			});
+			
+			getStage().addActor(display.getCoinImage());
+			getStage().addActor(display.getCoinAmountText());
+			
+			addAction(Actions.fadeOut(1));
 			UIConnectionWrapper.invitePlayerForGame(new UIConnectionResultCallback<GameBoard>() {
 				public void onConnectionResult(GameBoard result) {
-					waitImage.stop();
-					fire(new GameReturnEvent(result.id));
+					boardToPlay = result;
+					if(fadeComplete){
+						fire(new GameReturnEvent(result.id));
+					}
 				};
 
 				public void onConnectionError(String msg) {
-					waitImage.stop();
-					Overlay errorOverlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), null);
+					Overlay errorOverlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener(){
+						public void clicked(InputEvent event, float x, float y) {
+							fire(new TransitionEvent(Action.MAIN_MENU));
+						};
+					});
 					addActor(errorOverlay);
+					
 				};
 
 			}, GameLoop.USER.handle, gameBoard.allPlayersExcept(GameLoop.USER.handle).get(0).handle, gameBoard.map);
