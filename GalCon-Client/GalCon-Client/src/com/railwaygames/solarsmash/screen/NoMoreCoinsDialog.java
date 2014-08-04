@@ -2,6 +2,7 @@ package com.railwaygames.solarsmash.screen;
 
 import static com.railwaygames.solarsmash.Constants.GALCON_PREFS;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -110,7 +111,14 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 		actors.add(coinGroup);
 		stage.addActor(coinGroup);
 
-		Actor inAppBillingTable = createInAppBillingButtons(stock.inventory);
+		List<InventoryItem> coinInventory = new ArrayList<InventoryItem>();
+		for (InventoryItem item : stock.inventory) {
+			if (item.sku.startsWith("coins")) {
+				coinInventory.add(item);
+			}
+		}
+
+		Actor inAppBillingTable = createInAppBillingButtons(coinInventory);
 		actors.add(inAppBillingTable);
 		stage.addActor(inAppBillingTable);
 
