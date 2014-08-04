@@ -86,11 +86,12 @@ public class JsonConstructor {
 		return top;
 	}
 
-	public static JSONObject addCoins(String handle, String session) throws JSONException {
+	public static JSONObject addCoins(String handle, String session, String OS) throws JSONException {
 		JSONObject top = new JSONObject();
 
 		top.put("handle", handle);
 		top.put("session", session);
+		top.put("os", OS);
 
 		return top;
 

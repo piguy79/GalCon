@@ -84,6 +84,7 @@ import com.railwaygames.solarsmash.service.PingService;
 
 public class AndroidGameAction implements GameAction {
 	private static final String TAG = "GameAction";
+	private static final String OS = "android";
 	private ConnectivityManager connectivityManager;
 	private Activity activity;
 	private SocialAction socialAction;
@@ -247,7 +248,7 @@ public class AndroidGameAction implements GameAction {
 	@Override
 	public void addFreeCoins(final UIConnectionResultCallback<Player> callback, final String handle) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(handle, getSession());
+			final JSONObject top = JsonConstructor.addCoins(handle, getSession(), OS);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
 					new PostJsonRequestTask<Player>(callback, ADD_FREE_COINS, Player.class).execute(top.toString());
@@ -755,6 +756,5 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
-
 	}
 }

@@ -20,6 +20,10 @@ exports.isSession = function(session) {
 	return true;
 }
 
+exports.isOS = function(os) {
+	return validator.equals(os, "android") || validator.equals(os, "ios");
+}
+
 exports.isEmail = function(email) {
 	return validator.isLength(email, 5, 100) && validator.isEmail(email);	
 }

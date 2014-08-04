@@ -31,7 +31,8 @@ var VALIDATE_MAP = {
 	socialId : validation.isSocialId,
 	socialIdGroup : validation.isSocialIdGroup,
 	token : validation.isToken,
-	leaderboard : validation.isLeaderboard
+	leaderboard : validation.isLeaderboard,
+	os : validation.isOS
 };
 
 var activeGameQuery = {$or : [{'endGame.winnerHandle' : ''}, {'endGame.winnerHandle' : null}]};
@@ -299,8 +300,7 @@ var minifyGameResponse = function(games, handle){
 			map : game.map,
 			social : game.social,
 			claimAvailable : claimAvailable,
-			endViewedBy : game.endGame.viewedBy,
-			config : game.config
+			endViewedBy : game.endGame.viewedBy
 		};
 	});
 }
@@ -584,15 +584,16 @@ exports.resignGame = function(req, res) {
 
 exports.addFreeCoins = function(req, res) {
 	var handle = req.body.handle;
+	var os = req.body.os;
 	var session = req.body.session;
 	
-	if(!validate({session : session, handle : handle}, res)) {
+	if(!validate({session : session, handle : handle, os : os}, res)) {
 		return;
 	}
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function() {
-		var p = userManager.findUserByHandle(handle);
+		var p = userManager.findUserByHandleAndUpdateOs(handle, os);
 		return p.then(function(user) {
 			if(user.coins > 0) {
 				res.json(user);

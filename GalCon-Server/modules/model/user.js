@@ -34,6 +34,7 @@ var userSchema = mongoose.Schema({
 		twitter : "String",
 		facebook : "String"
 	},
+	os : "String",
 	coins : "Number"
 });
 
@@ -58,6 +59,9 @@ exports.findUserByHandle = function(handle){
 	return UserModel.findOne({"handle" : handle}).populate('friends.user').exec();
 }
 
+exports.findUserByHandleAndUpdateOs = function(handle, os){
+	return UserModel.findOneAndUpdate({"handle" : handle}, {"os": os}).exec();
+}
 
 exports.findUserMatchingSearch = function(searchTerm, handle){
 	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}, {handle : {$ne : 'AI'}}]}).limit(10).exec();

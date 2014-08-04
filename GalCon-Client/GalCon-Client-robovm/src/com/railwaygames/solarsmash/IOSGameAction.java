@@ -79,7 +79,7 @@ import com.railwaygames.solarsmash.model.Session;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 public class IOSGameAction implements GameAction {
-
+	private static final String OS = "ios";
 	private static final long ONE_DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 	private static final long ONE_HOUR_IN_MILLIS = 1000 * 60 * 60;
 
@@ -228,7 +228,7 @@ public class IOSGameAction implements GameAction {
 	@Override
 	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String handle) {
 		try {
-			final JSONObject top = JsonConstructor.addCoins(handle, getSession());
+			final JSONObject top = JsonConstructor.addCoins(handle, getSession(), OS);
 			new PostJsonRequestTask<Player>(callback, ADD_FREE_COINS, Player.class).execute(top.toString());
 		} catch (JSONException e) {
 			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");

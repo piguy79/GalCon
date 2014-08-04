@@ -56,7 +56,6 @@ import com.railwaygames.solarsmash.config.Configuration;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.JsonConstructor;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
-import com.railwaygames.solarsmash.http.UrlConstants;
 import com.railwaygames.solarsmash.model.AvailableGames;
 import com.railwaygames.solarsmash.model.BaseResult;
 import com.railwaygames.solarsmash.model.GameBoard;
@@ -274,7 +273,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void addFreeCoins(UIConnectionResultCallback<Player> callback, String playerHandle) {
 		try {
-			JSONObject top = JsonConstructor.addCoins(playerHandle, getSession());
+			JSONObject top = JsonConstructor.addCoins(playerHandle, getSession(), "android");
 
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
@@ -396,7 +395,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
 						GameLoop.USER.auth.getID(authProvider)))
-						.append("xp", 6999)
+						.append("xp", 0)
 						.append("wins", 0)
 						.append("losses", 0)
 						.append("coins", 1)
@@ -609,7 +608,5 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-
 	}
-
 }

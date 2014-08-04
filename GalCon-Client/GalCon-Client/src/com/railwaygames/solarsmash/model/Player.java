@@ -54,7 +54,6 @@ public class Player extends JsonConvertible {
 				this.consumedOrders.add(order);
 			}
 		}
-
 	}
 
 	public void addAuthProvider(String authProvider, String id) {
