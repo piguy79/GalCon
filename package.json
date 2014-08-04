@@ -2,8 +2,8 @@
     "name": "application-name"
   , "version": "0.0.1"
   , "engines" : {
-    "node":"0.10.28",
-    "npm" : "1.4.9"
+    "node":"0.10.30",
+    "npm" : "1.4.21"
   }
   , "private": true
   , "dependencies": {
