@@ -16,9 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -30,7 +27,6 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.ScreenFeedback;
 import com.railwaygames.solarsmash.UIConnectionWrapper;
-import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.FriendPostListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
@@ -90,9 +86,9 @@ public class FriendScreen implements ScreenFeedback {
 
 	private SocialAction socialAction;
 	private GameAction gameAction;
-	
+
 	private Array<Actor> actors = new Array<Actor>();
-	
+
 	private boolean fadeComplete = false;
 	private GameBoard boardToPlay;
 
@@ -231,7 +227,7 @@ public class FriendScreen implements ScreenFeedback {
 		actionLabel.setY(startingYPosition);
 		actionLabel.setAlignment(Align.left);
 		group.addActor(actionLabel);
-		
+
 		CoinImage actionImage = new CoinImage(resources.skin.getDrawable(imageToUse));
 		actionImage.setWidth(group.getWidth() * 0.1f);
 		actionImage.setHeight(group.getWidth() * 0.1f);
@@ -360,21 +356,22 @@ public class FriendScreen implements ScreenFeedback {
 								@Override
 								public void onConnectionResult(GameBoard result) {
 									boardToPlay = result;
-									if(fadeComplete){
+									if (fadeComplete) {
 										returnCode = result;
 									}
 								}
 
 								@Override
 								public void onConnectionError(String msg) {
-									final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources), new ClickListener() {
+									final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg,
+											resources), new ClickListener() {
 										@Override
 										public void clicked(InputEvent event, float x, float y) {
 											returnCode = Action.BACK;
 										}
 									});
 									stage.addActor(ovrlay);
-									
+
 								}
 							}, GameLoop.USER.handle, ((GalConFriend) friend).handle, mapKey);
 
@@ -402,7 +399,6 @@ public class FriendScreen implements ScreenFeedback {
 							}, selectedAuthProvider, friend.authId);
 						}
 					}
-
 
 					private TextOverlay createLoadingOverlay() {
 						final TextOverlay overlay = new TextOverlay("Loading sharing dialog", resources);
@@ -458,6 +454,7 @@ public class FriendScreen implements ScreenFeedback {
 			public void clicked(InputEvent event, float x, float y) {
 				searchBox.getOnscreenKeyboard().show(false);
 				stage.dispose();
+				stage = null;
 				returnCode = Action.BACK;
 			}
 		});
@@ -501,8 +498,10 @@ public class FriendScreen implements ScreenFeedback {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		stage.act(delta);
-		stage.draw();
+		if (stage != null) {
+			stage.act(delta);
+			stage.draw();
+		}
 	}
 
 	@Override
@@ -554,7 +553,10 @@ public class FriendScreen implements ScreenFeedback {
 		this.fadeComplete = false;
 		this.boardToPlay = null;
 		actors = new Array<Actor>();
-		stage.dispose();
+		if (stage != null) {
+			stage.dispose();
+			stage = null;
+		}
 	}
 
 	public MenuScreenContainer getPreviousScreen() {
@@ -766,31 +768,30 @@ public class FriendScreen implements ScreenFeedback {
 	public void refresh() {
 
 	}
-	
 
 	private void startFadeSequence(Actor relatedActor) {
-		
-		if(relatedActor instanceof Group){
-			for(Actor actor : ((Group)relatedActor).getChildren()){
-				if(actor instanceof CoinImage){
-					final CoinInfoDisplay display = new CoinInfoDisplay(resources, (Image)actor);
+
+		if (relatedActor instanceof Group) {
+			for (Actor actor : ((Group) relatedActor).getChildren()) {
+				if (actor instanceof CoinImage) {
+					final CoinInfoDisplay display = new CoinInfoDisplay(resources, (Image) actor);
 					setupDisplay(display);
 					display.animate(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							display.getCoinImage().remove();
 							setFadeComplete(true);
-							if(boardToPlay != null){
+							if (boardToPlay != null) {
 								returnCode = boardToPlay;
 							}
-							
+
 						}
 					});
-					
+
 					stage.addActor(display.getCoinImage());
 					stage.addActor(display.getCoinAmountText());
-					
+
 					searchBox.setMessageText("");
 					GraphicsUtils.fadeOut(actors, new Runnable() {
 						@Override
@@ -800,28 +801,28 @@ public class FriendScreen implements ScreenFeedback {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public boolean isFadeComplete() {
 		return fadeComplete;
 	}
-	
+
 	public void setFadeComplete(boolean fadeComplete) {
 		this.fadeComplete = fadeComplete;
 	}
 
 	private void setupDisplay(final CoinInfoDisplay display) {
-		
+
 	}
-	
-	private void addActor(Actor actor){
+
+	private void addActor(Actor actor) {
 		actors.add(actor);
 		stage.addActor(actor);
 	}
-	
-	private class CoinImage extends Image{
-		public CoinImage(Drawable drawable){
+
+	private class CoinImage extends Image {
+		public CoinImage(Drawable drawable) {
 			super(drawable);
 		}
 	}
