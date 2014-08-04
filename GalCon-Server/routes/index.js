@@ -584,7 +584,7 @@ exports.resignGame = function(req, res) {
 
 exports.addFreeCoins = function(req, res) {
 	var handle = req.body.handle;
-	var os = req.body.os;
+	var os = req.body.os || "";
 	var session = req.body.session;
 	
 	if(!validate({session : session, handle : handle, os : os}, res)) {

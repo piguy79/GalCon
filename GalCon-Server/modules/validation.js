@@ -21,7 +21,7 @@ exports.isSession = function(session) {
 }
 
 exports.isOS = function(os) {
-	return validator.equals(os, "android") || validator.equals(os, "ios");
+	return validator.equals(os, "") || validator.equals(os, "android") || validator.equals(os, "ios");
 }
 
 exports.isEmail = function(email) {
