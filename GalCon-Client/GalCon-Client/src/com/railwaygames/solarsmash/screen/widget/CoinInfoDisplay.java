@@ -59,7 +59,13 @@ public class CoinInfoDisplay {
 	}
 
 	public void animate(Runnable runnable) {
-		ParallelAction arc = GraphicsUtils.arcMovement(1.5f, Gdx.graphics.getHeight() * 0.25f, Gdx.graphics.getHeight());	
+		float baseDuration =1f;
+		float percentageFromBottom = coinImage.getY() / Gdx.graphics.getHeight();
+		float floatUpHeight = Gdx.graphics.getHeight() * 0.25f;
+
+		float fallHeight = coinImage.getY() + floatUpHeight + coinImage.getHeight() ;
+		float distanceAcross = (Gdx.graphics.getWidth() - coinImage.getX()) * 0.5f;
+		ParallelAction arc = GraphicsUtils.arcMovement(baseDuration + (baseDuration * percentageFromBottom), distanceAcross, floatUpHeight, fallHeight);	
 		RepeatAction rotate = Actions.forever(Actions.rotateBy(360, 0.75f));
 		
 		getCoinImage().addAction(Actions.parallel(rotate, Actions.sequence(Actions.delay(0.8f),

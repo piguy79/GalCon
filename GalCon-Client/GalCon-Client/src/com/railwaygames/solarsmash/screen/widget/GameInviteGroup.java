@@ -3,6 +3,7 @@ package com.railwaygames.solarsmash.screen.widget;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.Constants;
@@ -30,6 +31,10 @@ public class GameInviteGroup extends Group {
 	private float height;
 	private GameQueueItem item;
 	private String mapTitle;
+	private Image coinImage;
+	
+	private boolean fadeComplete = false;
+	private GameBoard boardToPlay;
 
 	public GameInviteGroup(Resources resources, GameQueueItem item, Size size, Map map) {
 		this.resources = resources;
@@ -50,6 +55,8 @@ public class GameInviteGroup extends Group {
 
 		if (map != null) {
 			createAcceptButton();
+			
+			addListener(playListener);
 		}
 	}
 
@@ -65,7 +72,7 @@ public class GameInviteGroup extends Group {
 
 	private void createPlayerLabel() {
 		ShaderLabel playerLabel = new ShaderLabel(resources.fontShader, item.requester.handle, resources.skin,
-				Constants.UI.DEFAULT_FONT, Color.WHITE);
+				Constants.UI.SMALL_FONT, Color.WHITE);
 		playerLabel.setAlignment(Align.center);
 		playerLabel.setWidth(width);
 		playerLabel.setY(height * 0.35f);
@@ -75,7 +82,7 @@ public class GameInviteGroup extends Group {
 
 	private void createLevelLabel() {
 		final ShaderLabel levelLabel = new ShaderLabel(resources.fontShader, " Map: " + mapTitle, resources.skin,
-				Constants.UI.DEFAULT_FONT, Color.WHITE);
+				Constants.UI.X_SMALL_FONT, Color.WHITE);
 		levelLabel.setAlignment(Align.center);
 		levelLabel.setWidth(width);
 		levelLabel.setY(height * 0.1f);
@@ -112,31 +119,54 @@ public class GameInviteGroup extends Group {
 
 	public void createAcceptButton() {
 		float centerY = (height / 2) - (GraphicsUtils.actionButtonSize / 2);
-		ActionButton okButton = new ActionButton(resources.skin, "okButton", new Point(width
-				- (GraphicsUtils.actionButtonSize * 1.5f), centerY));
-		okButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (GameLoop.USER.coins == 0) {
-					fire(new InviteNoCoinsEvent());
-				} else {
-					final Overlay loadingOverlay = new LoadingOverlay(resources);
-					getParent().getStage().addActor(loadingOverlay);
-					UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {
-						public void onConnectionResult(GameBoard result) {
-							loadingOverlay.remove();
-							fire(new AcceptInviteEvent(true, result));
-						};
-
-						@Override
-						public void onConnectionError(String msg) {
-							loadingOverlay.remove();
-							fire(new AcceptInviteEvent(false, msg));
-						}
-					}, item.game.id, GameLoop.USER.handle);
-				}
-			}
-		});
-		addActor(okButton);
+		coinImage = new Image(resources.skin, Constants.UI.COIN_IMAGE);
+		coinImage.setBounds(width- (GraphicsUtils.actionButtonSize * 1.5f), centerY, GraphicsUtils.actionButtonSize, GraphicsUtils.actionButtonSize);
+		
+		coinImage.addListener(playListener);
+		addActor(coinImage);
 	}
+	
+	ClickListener playListener = new ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			if (GameLoop.USER.coins == 0) {
+				fire(new InviteNoCoinsEvent());
+			} else {
+				CoinInfoDisplay display = new CoinInfoDisplay(resources, coinImage);
+				display.animate(new Runnable() {
+					
+					@Override
+					public void run() {
+						fadeComplete = true;
+						if(boardToPlay != null){
+							fire(new AcceptInviteEvent(true, boardToPlay));
+						}
+						
+					}
+				});
+				
+				getStage().addActor(display.getCoinImage());
+				getStage().addActor(display.getCoinAmountText());
+				GraphicsUtils.fadeOut(getChildren(), new Runnable() {
+					@Override
+					public void run() {
+					}
+				}, 1);
+				
+				UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {
+					public void onConnectionResult(GameBoard result) {
+						boardToPlay = result;
+						if(fadeComplete){
+							fire(new AcceptInviteEvent(true, result));
+						}
+					};
+
+					@Override
+					public void onConnectionError(String msg) {
+						fire(new AcceptInviteEvent(false, msg));
+					}
+				}, item.game.id, GameLoop.USER.handle);
+			}
+		}
+	};
 }

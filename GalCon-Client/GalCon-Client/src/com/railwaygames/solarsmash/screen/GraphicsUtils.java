@@ -80,8 +80,8 @@ public class GraphicsUtils {
 		actor.setWidth(actionButtonSize);
 	}
 	
-	public static ParallelAction arcMovement(float duration, float distanceUp, float distanceDown){
-		MoveByAction moveAcross = Actions.moveBy(Gdx.graphics.getWidth() * 0.25f, 0, duration, Interpolation.linear);
+	public static ParallelAction arcMovement(float duration,float distanceAcross,  float distanceUp, float distanceDown){
+		MoveByAction moveAcross = Actions.moveBy(distanceAcross, 0, duration, Interpolation.linear);
 		
 		MoveByAction moveUp = Actions.moveBy(0, distanceUp, duration * 0.25f, Interpolation.circleOut);
 		MoveByAction moveDown = Actions.moveBy(0, -distanceDown, duration * 0.75f, Interpolation.pow5);

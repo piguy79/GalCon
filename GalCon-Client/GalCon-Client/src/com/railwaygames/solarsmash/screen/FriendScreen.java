@@ -354,9 +354,6 @@ public class FriendScreen implements ScreenFeedback {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						if (friend.hasGalconAccount()) {
-							//gameInviteRequest = new GameInviteRequest(GameLoop.USER.handle,
-							//		((GalConFriend) friend).handle, mapKey);
-							//returnCode = Action.INVITE_PLAYER;
 							startFadeSequence(event.getListenerActor());
 							gameAction.invitePlayerForGame(new UIConnectionResultCallback<GameBoard>() {
 
