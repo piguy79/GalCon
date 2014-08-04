@@ -168,6 +168,10 @@ public class Overview extends Tutorial {
 						+ "click the green button in the bottom right to end your turn"));
 
 		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.45f, 1.25f,
+				"And remember! All moves are cloaked from your enemy while in flight. "
+						+ "They can't see your moves but your can't see theirs either"));
+
+		group.addActor(createBasicLabel(resources, Gdx.graphics.getHeight() * 0.25f, 2.25f,
 				"That's all for now.\nGood luck!"));
 	}
 
