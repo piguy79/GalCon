@@ -57,10 +57,12 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 	@Override
 	public void resize(int width, int height) {
 		float buttonWidth = .25f * (float) width;
-		waitImage.setWidth(buttonWidth);
-		waitImage.setHeight(buttonWidth);
-		waitImage.setX(width / 2 - buttonWidth / 2);
-		waitImage.setY(height / 2 - buttonWidth / 2);
+		if (waitImage != null) {
+			waitImage.setWidth(buttonWidth);
+			waitImage.setHeight(buttonWidth);
+			waitImage.setX(width / 2 - buttonWidth / 2);
+			waitImage.setY(height / 2 - buttonWidth / 2);
+		}
 
 		this.width = width;
 		this.height = height;
