@@ -4225,7 +4225,6 @@ com.badlogic.gdx.scenes.scene2d.actions.Actions:
     173:173:public static com.badlogic.gdx.scenes.scene2d.actions.RotateToAction rotateTo(float,float)
     177:181:public static com.badlogic.gdx.scenes.scene2d.actions.RotateToAction rotateTo(float,float,com.badlogic.gdx.math.Interpolation)
     186:186:public static com.badlogic.gdx.scenes.scene2d.actions.RotateByAction rotateBy(float)
-    246:250:public static com.badlogic.gdx.scenes.scene2d.actions.AlphaAction fadeOut(float,com.badlogic.gdx.math.Interpolation)
     260:264:public static com.badlogic.gdx.scenes.scene2d.actions.AlphaAction fadeIn(float,com.badlogic.gdx.math.Interpolation)
     268:268:public static com.badlogic.gdx.scenes.scene2d.actions.VisibleAction show()
     272:272:public static com.badlogic.gdx.scenes.scene2d.actions.VisibleAction hide()
@@ -9164,15 +9163,16 @@ com.jirbo.adcolony.ADC:
     public static final int LOG_ERROR
     static final java.lang.String LOGTAG
     static boolean main_activity_paused
-    33:333:ADC()
-    198:198:static boolean should_log(int)
-    200:200:static boolean should_log_dev()
-    201:201:static boolean should_log_debug()
-    227:227:static void log_info(java.lang.String)
-    232:233:static void trace(java.lang.String)
-    236:236:static double get_Real(java.lang.String)
-    242:242:static void track_app_event(java.lang.String)
-    243:243:static void track_app_event(java.lang.String,java.lang.String)
+    33:362:ADC()
+    211:211:static boolean should_log(int)
+    213:213:static boolean should_log_dev()
+    214:214:static boolean should_log_debug()
+    240:240:static void log_info(java.lang.String)
+    245:246:static void trace(java.lang.String)
+    249:249:static double get_Real(java.lang.String)
+    255:255:static void track_app_event(java.lang.String)
+    256:256:static void track_app_event(java.lang.String,java.lang.String)
+    298:299:static void add_native_ad_view(com.jirbo.adcolony.AdColonyNativeAdView)
 com.jirbo.adcolony.ADCAdManager:
     107:107:boolean is_zone_v4vc(java.lang.String)
     122:122:boolean is_ad_available(java.lang.String)
@@ -9180,6 +9180,8 @@ com.jirbo.adcolony.ADCController:
     207:214:void track_app_event(java.lang.String,java.lang.String)
     231:236:synchronized double get_Real(java.lang.String)
     297:298:synchronized void set_reward_credit(java.lang.String,int)
+    342:343:synchronized void prepare_video_ad(com.jirbo.adcolony.AdColonyVideoAd)
+    354:369:synchronized boolean show_video_ad(com.jirbo.adcolony.AdColonyVideoAd)
 com.jirbo.adcolony.ADCController$7
 com.jirbo.adcolony.ADCCustomVideoView:
     static final int STATE_ERROR
@@ -9192,12 +9194,13 @@ com.jirbo.adcolony.ADCCustomVideoView:
     static final int STATE_SUSPEND
     static final int STATE_RESUME
     static final int STATE_SUSPEND_UNSUPPORTED
-    140:165:public int resolveAdjustedSize(int,int)
-    187:188:public void setVideoPath(java.lang.String)
-    204:209:public void setVideoURI(android.net.Uri)
-    277:282:public void setMediaController(android.widget.MediaController)
-    437:438:public void setOnPreparedListener(android.media.MediaPlayer$OnPreparedListener)
-    598:604:public void suspend()
+    110:113:ADCCustomVideoView(android.content.Context,boolean)
+    148:173:public int resolveAdjustedSize(int,int)
+    195:196:public void setVideoPath(java.lang.String)
+    212:217:public void setVideoURI(android.net.Uri)
+    287:292:public void setMediaController(android.widget.MediaController)
+    447:448:public void setOnPreparedListener(android.media.MediaPlayer$OnPreparedListener)
+    608:614:public void suspend()
 com.jirbo.adcolony.ADCData:
     29:483:public ADCData()
     502:527:public static void main(java.lang.String[])
@@ -9225,17 +9228,17 @@ com.jirbo.adcolony.ADCData$Value:
     45:45:boolean is_null()
 com.jirbo.adcolony.ADCDevice:
     18:18:ADCDevice()
-    91:97:static java.lang.String mac_address()
+    86:92:static java.lang.String mac_address()
 com.jirbo.adcolony.ADCDialog:
-    com.jirbo.adcolony.AdColonyVideoAd ad
+    com.jirbo.adcolony.AdColonyInterstitialAd ad
     int dialog_type
-    97:107:public ADCDialog(java.lang.String,int,com.jirbo.adcolony.AdColonyVideoAd)
+    97:107:public ADCDialog(java.lang.String,int,com.jirbo.adcolony.AdColonyInterstitialAd)
 com.jirbo.adcolony.ADCDir
 com.jirbo.adcolony.ADCDownload:
     javax.net.ssl.SSLContext ssl_context
 com.jirbo.adcolony.ADCImage:
-    42:44:ADCImage(java.lang.String,int,int)
-    218:219:int[] get_position()
+    43:45:ADCImage(java.lang.String,int,int)
+    234:235:int[] get_position()
 com.jirbo.adcolony.ADCJSON:
     3:3:ADCJSON()
     9:20:static void save(com.jirbo.adcolony.ADCDataFile,com.jirbo.adcolony.ADCData$Value)
@@ -9244,15 +9247,17 @@ com.jirbo.adcolony.ADCJSON:
 com.jirbo.adcolony.ADCLog:
     108:108:synchronized com.jirbo.adcolony.ADCLog println()
 com.jirbo.adcolony.ADCManifest:
-    5:1541:ADCManifest()
+    5:1808:ADCManifest()
+com.jirbo.adcolony.ADCManifest$Ad:
+    boolean is_native_ad
 com.jirbo.adcolony.ADCManifest$Ads:
-    689:689:void add(com.jirbo.adcolony.ADCManifest$Ad)
+    838:838:void add(com.jirbo.adcolony.ADCManifest$Ad)
 com.jirbo.adcolony.ADCManifest$App:
     29:29:boolean is_ad_available(java.lang.String)
 com.jirbo.adcolony.ADCManifest$Zone:
-    441:441:synchronized int get_available_plays()
+    540:540:synchronized int get_available_plays()
 com.jirbo.adcolony.ADCManifest$Zones:
-    321:321:com.jirbo.adcolony.ADCManifest$Zone first()
+    402:402:com.jirbo.adcolony.ADCManifest$Zone first()
 com.jirbo.adcolony.ADCMonitor:
     public static final int SECONDS_BEFORE_IDLE
     public static final int SECONDS_BEFORE_SUSPEND
@@ -9263,11 +9268,11 @@ com.jirbo.adcolony.ADCNetwork:
     92:98:public static int hex_character_to_value(char)
     103:121:public static java.lang.String url_decoded(java.lang.String)
 com.jirbo.adcolony.ADCParseReader:
-    83:84:void must_consume(char)
-    88:95:boolean consume(java.lang.String)
-    100:101:void must_consume(java.lang.String)
-    107:111:void consume_ws()
-    116:116:public static void main(java.lang.String[])
+    132:133:void must_consume(char)
+    137:144:boolean consume(java.lang.String)
+    149:150:void must_consume(java.lang.String)
+    156:160:void consume_ws()
+    165:165:public static void main(java.lang.String[])
 com.jirbo.adcolony.ADCStreamWriter:
     static final int buffer_size
     39:42:ADCStreamWriter(java.lang.String,java.io.OutputStream)
@@ -9286,10 +9291,9 @@ com.jirbo.adcolony.ADCVideo:
     int actual_video_height
 com.jirbo.adcolony.ADCVideoHUD:
     boolean show_version
-    1107:1109:void load_dec_url()
+    1118:1120:void load_dec_url()
 com.jirbo.adcolony.ADCWriter:
     30:33:void print(java.lang.Object)
-    121:123:void print(boolean)
     126:126:void println(java.lang.Object)
     128:128:void println(double)
     129:129:void println(long)
@@ -9300,52 +9304,86 @@ com.jirbo.adcolony.ADCZoneStateManager:
     63:63:com.jirbo.adcolony.ADCZoneState get(int)
 com.jirbo.adcolony.AdColony:
     boolean block
-    32:35:public AdColony()
-    44:45:public static void disable()
-    110:118:public static void setCustomID(java.lang.String)
-    125:125:public static java.lang.String getCustomID()
-    133:141:public static void setDeviceID(java.lang.String)
-    148:148:public static java.lang.String getDeviceID()
-    199:201:public static void addV4VCListener(com.jirbo.adcolony.AdColonyV4VCListener)
-    205:206:public static void removeV4VCListener(com.jirbo.adcolony.AdColonyV4VCListener)
-    220:221:public static void removeAdAvailabilityListener(com.jirbo.adcolony.AdColonyAdAvailabilityListener)
-    228:233:public static void cancelVideo()
-    240:256:public static java.lang.String statusForZone(java.lang.String)
-    264:265:public static void get_images(java.lang.String)
-    269:270:public static void disableDECOverride()
+    35:404:public AdColony()
+    126:134:public static void setCustomID(java.lang.String)
+    141:141:public static java.lang.String getCustomID()
+    149:157:public static void setDeviceID(java.lang.String)
+    164:164:public static java.lang.String getDeviceID()
+    258:267:public static void onBackPressed()
+    306:314:public static int getRemainingV4VCForZone(java.lang.String)
+    323:325:public static void addV4VCListener(com.jirbo.adcolony.AdColonyV4VCListener)
+    329:330:public static void removeV4VCListener(com.jirbo.adcolony.AdColonyV4VCListener)
+    344:345:public static void removeAdAvailabilityListener(com.jirbo.adcolony.AdColonyAdAvailabilityListener)
+    352:358:public static void cancelVideo()
+    365:381:public static java.lang.String statusForZone(java.lang.String)
+    390:391:public static void get_images(java.lang.String)
+    395:396:public static void disableDECOverride()
 com.jirbo.adcolony.AdColonyAd:
     static final int status_no_request
     static final int status_canceled
     static final int status_no_fill
     static final int status_skipped
     static final int status_shown
-    22:22:public boolean shown()
-    23:23:public boolean notShown()
-    25:25:public boolean canceled()
-    26:26:public boolean noFill()
-    27:27:public boolean skipped()
-    34:38:public int getAvailableViews()
+    39:39:public boolean shown()
+    40:40:public boolean notShown()
+    42:42:public boolean canceled()
+    43:43:public boolean noFill()
+    44:44:public boolean skipped()
+    52:56:public int getAvailableViews()
+com.jirbo.adcolony.AdColonyInterstitialAd:
+    49:50:public com.jirbo.adcolony.AdColonyInterstitialAd withListener(com.jirbo.adcolony.AdColonyAdListener)
+com.jirbo.adcolony.AdColonyNativeAdView:
+    android.widget.TextView title_text
+    android.widget.TextView sponsor_text
+    android.widget.TextView advertiser_text
+    boolean first_ensure
+    boolean playing
+    boolean user_mute
+    boolean volume_button_added
+    boolean skip_interval
+    com.jirbo.adcolony.ADCManifest$Ad ad_info
+    136:175:public AdColonyNativeAdView(android.app.Activity,java.lang.String,int)
+    387:388:public boolean isReady()
+    401:401:public int getNativeAdWidth()
+    410:412:public void setOverlayButtonColor(int)
+    419:421:public void setOverlayButtonTextColor(int)
+    424:425:public void setOverlayButtonTypeface(android.graphics.Typeface,int)
+    484:489:public void destroy()
+    496:507:public android.widget.ImageView getAdvertiserImage()
+    511:511:public java.lang.String getTitle()
+    515:515:public java.lang.String getAdvertiserName()
+    519:519:public java.lang.String getDescription()
+    528:530:public com.jirbo.adcolony.AdColonyNativeAdView withListener(com.jirbo.adcolony.AdColonyNativeAdListener)
+    534:535:public com.jirbo.adcolony.AdColonyNativeAdView withMutedListener(com.jirbo.adcolony.AdColonyNativeAdMutedListener)
+    545:554:public void pause()
+    564:574:public void resume()
+    821:827:public void notifyAddedToListView()
+    831:832:public void prepareForListView()
+com.jirbo.adcolony.AdColonyNativeAdView$NativeVideoView:
+    847:848:AdColonyNativeAdView$NativeVideoView(com.jirbo.adcolony.AdColonyNativeAdView,android.content.Context)
 com.jirbo.adcolony.AdColonyV4VCAd:
-    34:37:public AdColonyV4VCAd(java.lang.String)
-    41:42:public com.jirbo.adcolony.AdColonyV4VCAd withListener(com.jirbo.adcolony.AdColonyAdListener)
-    47:48:public com.jirbo.adcolony.AdColonyV4VCAd withConfirmationDialog(boolean)
-    53:55:public com.jirbo.adcolony.AdColonyV4VCAd withResultsDialog(boolean)
-    60:60:public com.jirbo.adcolony.AdColonyV4VCAd withConfirmationDialog()
-    65:65:public com.jirbo.adcolony.AdColonyV4VCAd withResultsDialog()
-    115:148:public void show()
+    37:43:public AdColonyV4VCAd(java.lang.String)
+    47:48:public com.jirbo.adcolony.AdColonyV4VCAd withListener(com.jirbo.adcolony.AdColonyAdListener)
+    53:54:public com.jirbo.adcolony.AdColonyV4VCAd withConfirmationDialog(boolean)
+    59:61:public com.jirbo.adcolony.AdColonyV4VCAd withResultsDialog(boolean)
+    66:66:public com.jirbo.adcolony.AdColonyV4VCAd withConfirmationDialog()
+    71:71:public com.jirbo.adcolony.AdColonyV4VCAd withResultsDialog()
+    124:158:public void show()
 com.jirbo.adcolony.AdColonyV4VCAd$1
 com.jirbo.adcolony.AdColonyV4VCAd$2
 com.jirbo.adcolony.AdColonyV4VCReward:
     18:18:public boolean success()
     23:23:public java.lang.String name()
     28:28:public int amount()
+com.jirbo.adcolony.AdColonyVideoAd:
+    3:3:public bridge synthetic com.jirbo.adcolony.AdColonyInterstitialAd withListener(com.jirbo.adcolony.AdColonyAdListener)
 com.jirbo.adcolony.AdColonyVideoDialog
 com.jirbo.adcolony.AeSimpleSHA1:
     225:225:AeSimpleSHA1()
 com.jirbo.adcolony.BuildConfig
 com.jirbo.adcolony.Installation:
     private static final java.lang.String INSTALLATION
-    119:119:Installation()
+    114:114:Installation()
 com.jirbo.adcolony.R
 com.jirbo.adcolony.R$anim
 com.jirbo.adcolony.R$attr
@@ -9353,12 +9391,13 @@ com.jirbo.adcolony.R$layout
 com.jirbo.adcolony.R$string
 com.railwaygames.solarsmash.AndroidGameAction:
     private static final java.lang.String TAG
+    private static final java.lang.String OS
     private static final long ONE_DAY_IN_MILLIS
     private static final long ONE_HOUR_IN_MILLIS
-    202:211:public void joinGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String)
+    203:212:public void joinGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String)
 com.railwaygames.solarsmash.AndroidGameAction$3
 com.railwaygames.solarsmash.AndroidGameAction$SilentSignInAuthenticationListener:
-    107:107:public void onSignOut()
+    108:108:public void onSignOut()
 com.railwaygames.solarsmash.AndroidSocialAction:
     private static final long ONE_HOUR_IN_MILLIS
 com.railwaygames.solarsmash.BuildConfig
@@ -9494,8 +9533,8 @@ com.railwaygames.solarsmash.http.GameAction:
 com.railwaygames.solarsmash.http.JsonConstructor:
     16:16:public JsonConstructor()
     70:74:public static org.json.JSONObject findFriends(java.lang.String)
-    147:152:public static org.json.JSONObject user(java.lang.String,java.lang.String)
-    199:204:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
+    148:153:public static org.json.JSONObject user(java.lang.String,java.lang.String)
+    200:205:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
 com.railwaygames.solarsmash.http.SetPlayerResultHandler
 com.railwaygames.solarsmash.http.UrlConstants
 com.railwaygames.solarsmash.inappbilling.util.Base64:
@@ -9577,6 +9616,11 @@ com.railwaygames.solarsmash.math.GalConMath:
     9:9:public GalConMath()
 com.railwaygames.solarsmash.model.GameBoard:
     166:171:public com.railwaygames.solarsmash.model.Move selectedMove()
+com.railwaygames.solarsmash.model.GameInviteRequest:
+    public java.lang.String requesterHandle
+    public java.lang.String inviteeHandle
+    public java.lang.Long mapKey
+    11:15:public GameInviteRequest(java.lang.String,java.lang.String,java.lang.Long)
 com.railwaygames.solarsmash.model.Harvest:
     public static final java.lang.String ACTIVE
 com.railwaygames.solarsmash.model.MinifiedGame:
@@ -9597,38 +9641,23 @@ com.railwaygames.solarsmash.model.friends.FriendCombiner:
     9:9:public FriendCombiner()
 com.railwaygames.solarsmash.model.tween.ColorTween
 com.railwaygames.solarsmash.model.tween.MoveTween
-com.railwaygames.solarsmash.screen.Action:
-    public static final java.lang.String END_TURN
-    public static final java.lang.String DONE
-    public static final java.lang.String COINS
-    public static final java.lang.String REFRESH
-    public static final java.lang.String OPTIONS
-    public static final java.lang.String BACK
-    public static final java.lang.String INVITE_PLAYER
-    public static final java.lang.String PLAY
-    public static final java.lang.String PLAY_WITH_FRIENDS
-    public static final java.lang.String DIALOG_OK
-    public static final java.lang.String DIALOG_CANCEL
-    public static final java.lang.String DIALOG_DELETE
-    public static final java.lang.String DIALOG_UPDATE
-    public static final java.lang.String SHIP_MOVE
-    public static final java.lang.String HARVEST
-    public static final java.lang.String SHARE
-    public static final java.lang.String PRACTICE
-    public static final java.lang.String MAIN_MENU
-    3:3:public Action()
+com.railwaygames.solarsmash.screen.Action
 com.railwaygames.solarsmash.screen.BoardScreen:
-    1012:1012:public void dispose()
+    1103:1103:public void dispose()
+    1231:1241:public void setConnectionError(java.lang.String)
+com.railwaygames.solarsmash.screen.BoardScreen$16
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1129:1129:public BoardScreen$Labels()
+    1221:1221:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
-    153:153:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
+    161:161:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     341:341:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
-    504:504:public void dispose()
+    539:539:public void dispose()
+    567:567:public com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest()
+    808:808:public boolean isFadeComplete()
 com.railwaygames.solarsmash.screen.FriendScreen$11:
-    615:615:public void onSignOut()
+    657:657:public void onSignOut()
 com.railwaygames.solarsmash.screen.GameListScreen:
     62:62:protected boolean showGamesThatHaveBeenWon()
     66:68:protected void refreshScreen()
@@ -9637,16 +9666,23 @@ com.railwaygames.solarsmash.screen.GameQueueScreen:
 com.railwaygames.solarsmash.screen.GameQueueScreen$SelectGameResultHander
 com.railwaygames.solarsmash.screen.GameQueueScreen$SelectGameResultHander$1
 com.railwaygames.solarsmash.screen.GraphicsUtils:
-    13:13:public GraphicsUtils()
+    23:23:public GraphicsUtils()
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
     171:171:public void dispose()
+com.railwaygames.solarsmash.screen.SetGameBoardResultHandler
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
     12:14:public AcceptInviteEvent(boolean)
 com.railwaygames.solarsmash.screen.event.DialogEventListener
+com.railwaygames.solarsmash.screen.hud.BasicTextHud:
+    40:50:public void addText(java.lang.String)
 com.railwaygames.solarsmash.screen.level.LevelManager:
     12:12:public LevelManager()
 com.railwaygames.solarsmash.screen.overlay.DismissableOverlay:
     32:33:public DismissableOverlay(com.railwaygames.solarsmash.screen.Resources,com.badlogic.gdx.scenes.scene2d.utils.ClickListener)
+com.railwaygames.solarsmash.screen.overlay.TipOverlay
+com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog:
+    private static final float BUTTON_HEIGHT_RATIO
+    private static final float BUTTON_WIDTH_RATIO
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
     224:226:public void onSignOut()
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
