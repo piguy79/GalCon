@@ -148,7 +148,7 @@ GameBuilder.prototype.createHomePlanets = function() {
 	var yMidPoint = (this.height - 1) / 2.0;
 	var x = xMidPoint;
 	var y = yMidPoint;
-	while(x == xMidPoint && y == yMidPoint) {
+	while(Math.sqrt(Math.pow(x - xMidPoint, 2) + Math.pow(y - yMidPoint, 2)) <= (this.width - 4)) {
 		x = Math.floor(Math.random() * this.width);
 		y = Math.floor(Math.random() * this.height);
 		
@@ -170,6 +170,10 @@ GameBuilder.prototype.createHomePlanets = function() {
 
 		var distance = Math.sqrt(xDist * xDist + yDist * yDist);
 		if (distance <= minDistanceBetweenPlanets) {
+			continue;
+		}
+		
+		if(Math.sqrt(Math.pow(x - xMidPoint, 2) + Math.pow(y - yMidPoint, 2)) <= (this.width - 4)) {
 			continue;
 		}
 

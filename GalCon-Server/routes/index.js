@@ -1007,8 +1007,10 @@ var generateGamePromise = function(users, mapToFind, social, ai) {
 		var widthToUse = Math.floor(Math.random() * (map.width.max - map.width.min + 1)) + map.width.min;
 		var heightToUse = Math.ceil(widthToUse * 1.33);
 
-		var numPlanets = Math.floor((widthToUse * heightToUse) * .28);
-		numPlanets = Math.max(12, numPlanets);
+		var randomNumPlanetRatio = Math.random() * (0.36 - 0.30) + 0.30;
+		
+		var numPlanets = Math.floor((widthToUse * heightToUse) * randomNumPlanetRatio);
+		numPlanets = Math.max(13, numPlanets);
 
 		var gameTypeIndex = Math.floor(Math.random() * (map.gameType.length));
 		var rankOfInitialUser = rankManager.findRankForAnXp(ranks, users[0].xp);
