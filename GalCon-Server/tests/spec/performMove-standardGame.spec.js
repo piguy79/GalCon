@@ -1,5 +1,6 @@
 var mongoose = require('../../modules/model/mongooseConnection').mongoose,
 	apiRunner = require('../fixtures/apiRunner'), 
+	gameRunner = require('../fixtures/gameRunner'), 
 	elementBuilder = require('../fixtures/elementbuilder'), 
 	elementMatcher = require('../fixtures/elementMatcher'),
 	gameManager = require('../../modules/model/game'),
@@ -72,7 +73,7 @@ describe("Perform Move - Standard -", function() {
 
 	var createMovesWithValidationSteps = function(moves, planets) {
 		var currentGameId;
-		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		
 		return p.then(function(game) {
 			currentGameId = game._id;
@@ -81,8 +82,6 @@ describe("Perform Move - Standard -", function() {
 			return apiRunner.performMove(currentGameId, moves, PLAYER_1_HANDLE);
 		}).then(function(game) {
 			expect(game.round.num).toBe(0);
-			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
-		}).then(function() {
 			return apiRunner.performMove(currentGameId, [], PLAYER_2_HANDLE);
 		}).then(function(game) {
 			expect(game.round.num).toBe(1);

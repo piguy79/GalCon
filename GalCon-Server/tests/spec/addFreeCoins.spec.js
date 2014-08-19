@@ -1,5 +1,6 @@
 var needle = require("needle"), 
 	apiRunner = require('../fixtures/apiRunner'), 
+	gameRunner = require('../fixtures/gameRunner'),
 	elementBuilder = require('../fixtures/elementbuilder'), 
 	userManager = require('../../modules/model/user'),
 	configManager = require('../../modules/model/config'),
@@ -67,7 +68,7 @@ describe("Add Free Coins", function() {
 	});
 	
 	it("Attempt to add free coins when games are still in progress should not give the user credit for coins", function(done) {
-		var p = apiRunner.matchPlayerToGame(PLAYER_3_HANDLE, MAP_KEY_1, PLAYER_3.session.id);
+		var p = gameRunner.createGameForPlayers(PLAYER_3, PLAYER_1, MAP_KEY_1);
 		p.then(function() {
 			return apiRunner.addFreeCoins(PLAYER_3_HANDLE, PLAYER_3.session.id);
 		}).then(function(player) {

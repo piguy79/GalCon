@@ -123,7 +123,7 @@ describe("Perform Move - Standard -", function() {
 		var currentGameId;
 		var currentGame;
 		
-		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
+		var p = gameRunner.createGameAwaitingAccept(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		p.then(function(game){
 			currentGameId = game._id;
 			var moveTimeOlderThenTimeout = game.moveTime - parseInt(game.config.values['claimTimeout']);
