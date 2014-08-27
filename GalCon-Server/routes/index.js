@@ -872,71 +872,24 @@ exports.matchPlayerToGame = function(req, res) {
 	
 	var p = validateSession(session, {"handle" : handle});
 	p.then(function(){
-		return configManager.findLatestConfig('app');
-	}).then(function(configs){
-		openLimit = configs.values['maxNumberOfOpenGames'];
-		return userManager.findUserByHandle(handle); 
+		return userManager.findUserByHandle(handle);
 	}).then(function(user){
 		callingUser = user;
-		return gameManager.findCollectionOfGames(user, activeGameQuery);
-	}).then(function(games){
-		if(games && games.length >= openLimit){
-			throw new Error(handle + " has max number of games in progress[" + openLimit + "]");
-		}
-		return mapManager.findMapByKey(mapToFind);
-	}).then(function(map){
-		if(callingUser.xp < map.availableFromXp){
-			throw new Error(handle + " does not have access to this map.");
-		}
-		var p = userManager.findUserByHandle(handle);
-		return p.then(function(user) {
-			if(user.coins < 1) {
-				throw new Error(user.handle + " attempted to start game with " + user.coins + " coins");
-			}
-			return findOrCreateGamePromise(user, Date.now(), mapToFind);
-		}).then(function(game) { 
-			res.json(processGameReturn(game, handle));
-		});
+		return rankManager.findAllRanks();
+	}).then(function(ranks){
+		var currentRank = rankManager.findRankForAnXp(ranks, callingUser.xp);
+		var rankRange = rankManager.findRankRange(ranks, currentRank.level);
+		return userManager.findUserForRandomGame(callingUser, rankRange.lowerBound.startFrom, rankRange.upperBound.endAt);
+	}).then(function(users){
+		var randomIndex = Math.floor(Math.random() * users.length);
+		return validateUserAndInvite(handle, users[randomIndex].handle, mapToFind);
+	}).then(function(game){
+		res.json(processGameReturn(game, handle));
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var findOrCreateGamePromise = function(user, time, mapToFind) {
-	var p = gameManager.findGameForMapInTimeLimit(mapToFind, time - 300000, user.handle);
-	return p.then(function(games) {
-		var joinP = joinGamePromise(games, user, time);
-		return joinP.then(function(game) {
-			if(game) {
-				return game;
-			}
-			var gameP = gameManager.findGameAtAMap(mapToFind, user.handle);
-			return gameP.then(function(games) {
-				var innerJoinP = joinGamePromise(games, user, time);
-				return innerJoinP.then(function(game) {
-					if(game) {
-						return game;
-					} 
-					return generateGamePromise([user], mapToFind);
-				});
-			});
-		});
-	});
-}
 
-var joinGamePromise = function(games, user, time) {
-	if(games.length < 1) {
-		var p = new mongoose.Promise();
-		p.fulfill(null);
-		return p;
-	}
-	
-	var joinP = rankManager.findAllRanks();
-	return joinP.then(function(ranks){
-		var rankOfUser = rankManager.findRankForAnXp(ranks, user.xp);
-		return 	attemptToJoinGamePromise(games, user, time, rankOfUser);	
-	}).then(function(game) {
-		return game;
-	});
-}
+
 
 function ErrorWithResponse(message, responseObj) {
 	this.name = "ErrorWithReponse";
@@ -967,34 +920,6 @@ var logErrorAndSetResponse = function(req, res) {
 	}
 }
 
-var attemptToJoinGamePromise = function(games, user, time, rankOfUser) {
-	var gamesByRelativeRank = _.sortBy(games, function(game) {
-		return Math.abs(rankOfUser.level - game.rankOfInitialPlayer);
-	});
-	return addGameFromSegmentPromise(gamesByRelativeRank, 0, user, time);
-}
-
-var addGameFromSegmentPromise = function(games, index, user, time) {
-	if (index >= games.lengh) {
-		return null;
-	}
-	
-	var gameId = games[index]._id;
-
-	return gameManager.addUser(gameId, user).then(function(game) {
-		if (game !== null) {
-			return gameManager.findById(gameId).then(function(returnGame) {
-				user.coins--;
-				var p = user.withPromise(user.save);
-				return p.then(function() {
-					return returnGame;
-				});
-			});
-		} else {
-			return addGameFromSegmentPromise(games, index + 1, user, time);
-		}
-	});
-}
 
 
 var generateGamePromise = function(users, mapToFind, social, ai) {
@@ -1077,6 +1002,31 @@ exports.inviteUserToGame = function(req, res){
 		
 	var p = validateSession(session, {"handle" : requesterHandle});
 	p.then(function(){
+		return validateUserAndInvite(requesterHandle,inviteeHandle, mapKey);
+	}).then(function(generatedGame){
+		currentGame = generatedGame;
+		return userManager.findUserByHandle(inviteeHandle);
+	}).then(function(user){
+		inviteeUser = user;
+		return userManager.findUserByHandle(inviteeHandle);
+	}).then(function(user){
+		requestingUser = user;
+		return userManager.updateFriend(requestingUser, user);
+	}).then(function(savedUser){
+		res.json(currentGame);
+	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var validateUserAndInvite = function(requesterHandle, inviteeHandle, mapKey){
+	var p = new mongoose.Promise();
+	p.fulfill();
+	
+	var requestingUser;
+	var inviteeUser;
+	var currentGame;
+	var openLimit;
+	
+	return p.then(function(){
 		return configManager.findLatestConfig('app');
 	}).then(function(configs){
 		openLimit = configs.values['maxNumberOfOpenGames'];
@@ -1105,12 +1055,7 @@ exports.inviteUserToGame = function(req, res){
 			inviteeUser = inviteUser;
 			return generateGamePromise([requestingUser], mapKey, inviteeHandle);
 		}
-	}).then(function(generatedGame){
-		currentGame = generatedGame;
-		return userManager.updateFriend(requestingUser, inviteeUser);
-	}).then(function(savedUser){
-		res.json(currentGame);
-	}).then(null, logErrorAndSetResponse(req, res));
+	});
 }
 
 exports.findPendingInvites = function(req, res){
