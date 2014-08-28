@@ -13,20 +13,18 @@ import org.json.JSONObject;
 
 import com.badlogic.gdx.Preferences;
 import com.railwaygames.solarsmash.Constants;
-import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
 /**
  * Class representing a Player.
- * 
- * @author conormullen
- * 
  */
 public class Player extends JsonConvertible {
 	public Auth auth;
 	public String handle;
 	public Integer xp;
 	public Integer coins;
+	public Integer wins;
+	public Integer losses;
 	public boolean noAd = false;
 	public List<Order> consumedOrders;
 
@@ -43,6 +41,8 @@ public class Player extends JsonConvertible {
 		this.xp = jsonObject.getInt(Constants.XP);
 		this.coins = jsonObject.optInt(Constants.COINS);
 		this.noAd = jsonObject.optBoolean(Constants.NO_ADS);
+		this.wins = jsonObject.optInt("wins", 0);
+		this.losses = jsonObject.optInt("losses", 0);
 
 		if (jsonObject.has("consumedOrders")) {
 			this.consumedOrders = new ArrayList<Order>();

@@ -24,6 +24,8 @@ public class UISkin extends Skin {
 			return Fonts.getInstance(assetManager).largeFont();
 		} else if (name.equals(Constants.UI.X_SMALL_FONT)) {
 			return Fonts.getInstance(assetManager).xSmallFont();
+		} else if (name.equals(Constants.UI.MEDIUM_LARGE_FONT)) {
+			return Fonts.getInstance(assetManager).mediumLargeFont();
 		} else if (name.equals(Constants.UI.DEFAULT_FONT)) {
 			return Fonts.getInstance(assetManager).mediumFont();
 		} else if (name.equals(Constants.UI.SMALL_FONT)) {

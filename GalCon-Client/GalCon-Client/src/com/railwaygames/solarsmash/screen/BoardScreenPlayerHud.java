@@ -58,22 +58,22 @@ public class BoardScreenPlayerHud extends Group {
 		createBackButton();
 		createPlayerHudBg();
 
-		Player enemy = getEnemy(gameBoard);
-		Player user = getUser(gameBoard);
+		Player enemy = gameBoard.getEnemy();
+		Player user = gameBoard.getUser();
 
-		createUserLabels(enemy, user);
-		showWhoNeedsToMove(enemy, user);
-		createResourceBonusLabels(enemy, user);
+		createUserLabels(user, enemy);
+		showWhoNeedsToMove(user, enemy);
+		createResourceBonusLabels(user, enemy);
 
 		createOptionsButton();
 	}
 
-	private void createResourceBonusLabels(Player enemy, Player user) {
+	private void createResourceBonusLabels(Player user, Player enemy) {
 		Map<String, Double> playerAbilities = Abilities.aggregate(gameBoard, enemy);
-		createResourceBonusLabels(playerAbilities, false);
+		createResourceBonusLabels(playerAbilities, true);
 
 		playerAbilities = Abilities.aggregate(gameBoard, user);
-		createResourceBonusLabels(playerAbilities, true);
+		createResourceBonusLabels(playerAbilities, false);
 	}
 
 	private void createResourceBonusLabels(Map<String, Double> playerAbilities, boolean invert) {
@@ -165,12 +165,12 @@ public class BoardScreenPlayerHud extends Group {
 		}
 	}
 
-	private void showWhoNeedsToMove(Player enemy, Player user) {
+	private void showWhoNeedsToMove(Player user, Player enemy) {
 		float shipHeight = playerHudBg.getWidth() * 0.08f;
 
-		if (!enemy.hasMoved(gameBoard)) {
+		if (!user.hasMoved(gameBoard)) {
 			Image ship = new Image(resources.skin, "shipImage");
-			ship.setColor(Constants.Colors.ENEMY_SHIP_FILL);
+			ship.setColor(Constants.Colors.USER_SHIP_FILL);
 			ship.setX(playerHudBg.getWidth() * 0.53f);
 			ship.setY(playerHudBg.getHeight() * 0.7f);
 
@@ -184,9 +184,9 @@ public class BoardScreenPlayerHud extends Group {
 			playerHudBg.addActor(ship);
 		}
 
-		if (!user.hasMoved(gameBoard)) {
+		if (!enemy.hasMoved(gameBoard)) {
 			Image ship = new Image(resources.skin, "shipImage");
-			ship.setColor(Constants.Colors.USER_SHIP_FILL);
+			ship.setColor(Constants.Colors.ENEMY_SHIP_FILL);
 			ship.setX(playerHudBg.getWidth() * 0.37f);
 			ship.setY(playerHudBg.getHeight() * 0.0f);
 
@@ -203,26 +203,26 @@ public class BoardScreenPlayerHud extends Group {
 		ship.addAction(forever(sequence(delay(1.0f), color(Color.WHITE, 0.8f), color(originalColor, 0.8f), delay(2.0f))));
 	}
 
-	private void createUserLabels(Player enemy, Player user) {
+	private void createUserLabels(Player user, Player enemy) {
 		float margin = playerHudBg.getWidth() * 0.01f;
 
-		ShaderLabel enemyLabel = new ShaderLabel(resources.fontShader, enemy.handle, resources.skin,
+		ShaderLabel userLabel = new ShaderLabel(resources.fontShader, user.handle, resources.skin,
 				Constants.UI.X_SMALL_FONT, Color.WHITE);
-		enemyLabel.setColor(new Color(1.0f, 0.8f, 0.8f, 1.0f));
-		enemyLabel.setWidth(playerHudBg.getWidth() * 0.66f);
-		enemyLabel.setY(playerHudBg.getHeight() - enemyLabel.getTextBounds().height - playerHudBg.getHeight() * 0.07f);
-		enemyLabel.setAlignment(Align.left);
-		enemyLabel.setX(margin);
-		playerHudBg.addActor(enemyLabel);
+		userLabel.setColor(new Color(0.8f, 1.0f, 0.8f, 1.0f));
+		userLabel.setWidth(playerHudBg.getWidth() * 0.66f);
+		userLabel.setY(playerHudBg.getHeight() - userLabel.getTextBounds().height - playerHudBg.getHeight() * 0.07f);
+		userLabel.setAlignment(Align.left);
+		userLabel.setX(margin);
+		playerHudBg.addActor(userLabel);
 
-		ShaderLabel enemyRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(enemy),
+		ShaderLabel userRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(user),
 				resources.skin, Constants.UI.LARGE_FONT, Color.WHITE);
-		enemyRegenLabel.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
-		enemyRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
-		enemyRegenLabel.setY(playerHudBg.getHeight() * 0.5f - enemyRegenLabel.getTextBounds().height * 0.8f);
-		enemyRegenLabel.setAlignment(Align.left);
-		enemyRegenLabel.setX(margin);
-		playerHudBg.addActor(enemyRegenLabel);
+		userRegenLabel.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
+		userRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
+		userRegenLabel.setY(playerHudBg.getHeight() * 0.5f - userRegenLabel.getTextBounds().height * 0.8f);
+		userRegenLabel.setAlignment(Align.left);
+		userRegenLabel.setX(margin);
+		playerHudBg.addActor(userRegenLabel);
 
 		ShaderLabel vs = new ShaderLabel(resources.fontShader, "vs", resources.skin, Constants.UI.X_SMALL_FONT,
 				Color.WHITE);
@@ -232,48 +232,23 @@ public class BoardScreenPlayerHud extends Group {
 		vs.setAlignment(Align.center);
 		playerHudBg.addActor(vs);
 
-		ShaderLabel userLabel = new ShaderLabel(resources.fontShader, user.handle, resources.skin,
+		ShaderLabel enemyLabel = new ShaderLabel(resources.fontShader, enemy.handle, resources.skin,
 				Constants.UI.X_SMALL_FONT, Color.WHITE);
-		userLabel.setColor(new Color(0.8f, 1.0f, 0.8f, 1.0f));
-		userLabel.setWidth(playerHudBg.getWidth() * 0.66f);
-		userLabel.setY(0);
-		userLabel.setAlignment(Align.right);
-		userLabel.setX(playerHudBg.getWidth() - userLabel.getWidth() - margin);
-		playerHudBg.addActor(userLabel);
+		enemyLabel.setColor(new Color(1.0f, 0.8f, 0.8f, 1.0f));
+		enemyLabel.setWidth(playerHudBg.getWidth() * 0.66f);
+		enemyLabel.setY(0);
+		enemyLabel.setAlignment(Align.right);
+		enemyLabel.setX(playerHudBg.getWidth() - enemyLabel.getWidth() - margin);
+		playerHudBg.addActor(enemyLabel);
 
-		ShaderLabel userRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(user),
+		ShaderLabel enemyRegenLabel = new ShaderLabel(resources.fontShader, "" + gameBoard.ownedPlanetRegen(enemy),
 				resources.skin, Constants.UI.LARGE_FONT, Color.WHITE);
-		userRegenLabel.setColor(new Color(0.4f, 1.0f, 0.4f, 0.4f));
-		userRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
-		userRegenLabel.setY(playerHudBg.getHeight() * 0.5f - userRegenLabel.getTextBounds().height * 0.8f);
-		userRegenLabel.setAlignment(Align.right);
-		userRegenLabel.setX(playerHudBg.getWidth() * 0.5f);
-		playerHudBg.addActor(userRegenLabel);
-	}
-
-	private Player getEnemy(GameBoard gameBoard) {
-		List<Player> players = gameBoard.players;
-		if (players.size() < 2) {
-			Player waitingForOpponent = new Player();
-			waitingForOpponent.xp = -1;
-			waitingForOpponent.handle = BoardScreen.Labels.waitingLabel(gameBoard.social);
-			return waitingForOpponent;
-		}
-
-		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
-			return players.get(1);
-		}
-
-		return players.get(0);
-	}
-
-	private Player getUser(GameBoard gameBoard) {
-		List<Player> players = gameBoard.players;
-		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
-			return players.get(0);
-		}
-
-		return players.get(1);
+		enemyRegenLabel.setColor(new Color(1.0f, 0.4f, 0.4f, 0.4f));
+		enemyRegenLabel.setWidth(playerHudBg.getWidth() * 0.5f);
+		enemyRegenLabel.setY(playerHudBg.getHeight() * 0.5f - enemyRegenLabel.getTextBounds().height * 0.8f);
+		enemyRegenLabel.setAlignment(Align.right);
+		enemyRegenLabel.setX(playerHudBg.getWidth() * 0.5f);
+		playerHudBg.addActor(enemyRegenLabel);
 	}
 
 	private void createPlayerHudBg() {

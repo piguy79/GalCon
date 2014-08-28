@@ -12,14 +12,14 @@ bottom_bar
   index: -1
 bottom_bar_expand_button
   rotate: false
-  xy: 874, 68
+  xy: 875, 68
   size: 85, 151
   orig: 85, 151
   offset: 0, 0
   index: -1
 bottom_bar_ship_button
   rotate: false
-  xy: 436, 32
+  xy: 437, 32
   size: 165, 152
   orig: 165, 152
   offset: 0, 0
@@ -55,8 +55,8 @@ player_hud_attack
 player_hud_bg
   rotate: false
   xy: 2, 69
-  size: 432, 115
-  orig: 432, 115
+  size: 433, 115
+  orig: 433, 115
   offset: 0, 0
   index: -1
 ship_selection_dialog_bg
@@ -68,14 +68,14 @@ ship_selection_dialog_bg
   index: -1
 slash_line
   rotate: false
-  xy: 603, 2
+  xy: 604, 2
   size: 121, 182
   orig: 121, 182
   offset: 0, 0
   index: -1
 transfer
   rotate: false
-  xy: 726, 11
+  xy: 727, 11
   size: 146, 208
   orig: 146, 208
   offset: 0, 0

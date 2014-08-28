@@ -310,6 +310,39 @@ exports.findCollectionOfGames = function(user, filters){
 	return GameModel.find(query, '_id players endGame createdDate round map social config moveTime').populate('players').exec();
 }
 
+exports.findUserRecordOfLastNGames = function(userId, handle, numberOfGames) {
+	var p = GameModel.find({players : {$in : [userId]}, 'endGame.date' : {$exists: true}}, {endGame:1})
+			.sort({'endGame.date' : -1})
+			.limit(numberOfGames)
+			.setOptions({lean:true}).exec();
+	return p.then(function(games) {
+		var wins = 0, losses = 0;
+		_.each(games, function(game) {
+			if(game.endGame.winnerHandle === handle) {
+				wins += 1;
+			} else {
+				losses += 1
+			}
+		});
+		
+		return {wins: wins, losses: losses};
+	});
+}
+
+exports.findUserVsUserRecord = function(userId1, userId2, handle1, handle2) {
+	var p = GameModel.find({players : {$all : [userId1, userId2]}, 'endGame.date' : {$exists : true}}, {endGame:1})
+		.setOptions({lean:true}).exec();
+	return p.then(function(games) {
+		var victoryMap = {};
+		_.each(games, function(game) {
+			var count = victoryMap[game.endGame.winnerHandle] || 0;
+			victoryMap[game.endGame.winnerHandle] = count + 1;
+		});
+		
+		return victoryMap;
+	});
+}
+
 exports.performMoves = function(gameId, moves, playerHandle, attemptNumber, harvest) {
 	if(attemptNumber > 5) {
 		var p = new mongoose.Promise();

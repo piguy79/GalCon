@@ -37,8 +37,10 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.math.GalConMath;
 import com.railwaygames.solarsmash.model.GameBoard;
+import com.railwaygames.solarsmash.model.GameBoard.Record;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
+import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.RoundInformation;
 import com.railwaygames.solarsmash.model.Size;
@@ -114,32 +116,132 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createBottomHud();
 		huds.show();
 
+		if (roundInformation.round == 0 && gameBoard.players.size() > 1) {
+			Player player1 = gameBoard.getUser();
+			createPlayerLabels(player1, 0.7f, Align.left);
+
+			Player player2 = gameBoard.getEnemy();
+			createPlayerLabels(player2, 0.3f, Align.right);
+
+			Integer p1Wins = gameBoard.handleToVictoriesVsOpponent.get(player1.handle);
+			p1Wins = p1Wins == null ? 0 : p1Wins;
+			Integer p2Wins = gameBoard.handleToVictoriesVsOpponent.get(player2.handle);
+			p2Wins = p2Wins == null ? 0 : p2Wins;
+			{
+				ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Head to Head Record", resources.skin,
+						Constants.UI.SMALL_FONT, Color.WHITE);
+				lbl.setWidth(Gdx.graphics.getWidth());
+				lbl.setX(0);
+				lbl.setY(Gdx.graphics.getHeight() * 0.45f - lbl.getHeight() * 0.5f);
+				lbl.setAlignment(Align.center, Align.center);
+				lbl.setTouchable(Touchable.disabled);
+				lbl.setColor(Color.CLEAR);
+				lbl.addAction(color(Color.WHITE, 0.66f));
+				addActor(lbl);
+			}
+			{
+				ShaderLabel lbl = new ShaderLabel(resources.fontShader, winLossRecordString(p1Wins, p2Wins),
+						resources.skin, Constants.UI.MEDIUM_LARGE_FONT, Color.WHITE);
+				lbl.setWidth(Gdx.graphics.getWidth());
+				lbl.setX(0);
+				lbl.setY(Gdx.graphics.getHeight() * 0.42f - lbl.getHeight() * 0.5f);
+				lbl.setAlignment(Align.center, Align.center);
+				lbl.setTouchable(Touchable.disabled);
+				lbl.setColor(Color.CLEAR);
+				lbl.addAction(color(Color.WHITE, 0.66f));
+				addActor(lbl);
+			}
+
+		} else {
+			{
+				ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin,
+						Constants.UI.LARGE_FONT, Color.WHITE);
+				lbl.setWidth(Gdx.graphics.getWidth());
+				lbl.setX(0);
+				lbl.setY(Gdx.graphics.getHeight() * 0.7f - lbl.getHeight() * 0.5f);
+				lbl.setAlignment(Align.center, Align.center);
+				lbl.setTouchable(Touchable.disabled);
+				lbl.setColor(Color.CLEAR);
+				lbl.addAction(color(Color.WHITE, 0.66f));
+				addActor(lbl);
+			}
+			{
+				ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1),
+						resources.skin, Constants.UI.LARGE_FONT, Color.WHITE);
+				lbl.setWidth(Gdx.graphics.getWidth());
+				lbl.setX(0);
+				lbl.setY(Gdx.graphics.getHeight() * 0.6f - lbl.getHeight() * 0.5f);
+				lbl.setAlignment(Align.center, Align.center);
+				lbl.setTouchable(Touchable.disabled);
+				lbl.setColor(Color.CLEAR);
+				lbl.addAction(delay(0.33f, color(Color.WHITE, 0.66f)));
+				addActor(lbl);
+			}
+		}
+
+		return this;
+	}
+
+	private void createPlayerLabels(Player player, float y, int align) {
+		Record last10Record = gameBoard.handleToVictoriesInLast10.get(player.handle);
+		float margin = Gdx.graphics.getWidth() * 0.05f;
+		float width = Gdx.graphics.getWidth() - 2.0f * margin;
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin, Constants.UI.LARGE_FONT,
-					Color.WHITE);
-			lbl.setWidth(Gdx.graphics.getWidth());
-			lbl.setX(0);
-			lbl.setY(Gdx.graphics.getHeight() * 0.7f - lbl.getHeight() * 0.5f);
-			lbl.setAlignment(Align.center, Align.center);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, player.handle, resources.skin,
+					Constants.UI.MEDIUM_LARGE_FONT, Color.WHITE);
+			lbl.setWidth(width);
+			lbl.setX(margin);
+			lbl.setY(Gdx.graphics.getHeight() * y - lbl.getHeight() * 0.5f);
+			lbl.setAlignment(align, align);
+			lbl.setTouchable(Touchable.disabled);
+			lbl.setColor(Color.CLEAR);
+			if (player.handle.equals(GameLoop.USER.handle)) {
+				lbl.addAction(color(Constants.Colors.USER_SHIP_FILL, 0.66f));
+			} else {
+				lbl.addAction(color(Constants.Colors.ENEMY_SHIP_FILL, 0.66f));
+			}
+			addActor(lbl);
+		}
+		{
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Overall: " + extractWinLossRecord(player),
+					resources.skin, Constants.UI.SMALL_FONT, Color.WHITE);
+			lbl.setWidth(width);
+			lbl.setX(margin);
+			lbl.setY(Gdx.graphics.getHeight() * (y - 0.06f) - lbl.getHeight() * 0.5f);
+			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
 			lbl.addAction(color(Color.WHITE, 0.66f));
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "" + (roundInformation.round + 1), resources.skin,
-					Constants.UI.LARGE_FONT, Color.WHITE);
-			lbl.setWidth(Gdx.graphics.getWidth());
-			lbl.setX(0);
-			lbl.setY(Gdx.graphics.getHeight() * 0.6f - lbl.getHeight() * 0.5f);
-			lbl.setAlignment(Align.center, Align.center);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Last 10: "
+					+ winLossRecordString(last10Record.wins, last10Record.losses), resources.skin,
+					Constants.UI.SMALL_FONT, Color.WHITE);
+			lbl.setWidth(width);
+			lbl.setX(margin);
+			lbl.setY(Gdx.graphics.getHeight() * (y - 0.09f) - lbl.getHeight() * 0.5f);
+			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
-			lbl.addAction(delay(0.33f, color(Color.WHITE, 0.66f)));
+			lbl.addAction(color(Color.WHITE, 0.66f));
 			addActor(lbl);
 		}
+	}
 
-		return this;
+	private String extractWinLossRecord(Player player) {
+		int losses = 0;
+		int wins = 0;
+		if (player != null) {
+			losses = player.losses;
+			wins = player.wins;
+		}
+
+		return winLossRecordString(wins, losses);
+	}
+
+	private String winLossRecordString(int wins, int losses) {
+		return "(" + wins + " - " + losses + ")";
 	}
 
 	public HighlightOverlay focus(String tutorial, String continuePoint) {

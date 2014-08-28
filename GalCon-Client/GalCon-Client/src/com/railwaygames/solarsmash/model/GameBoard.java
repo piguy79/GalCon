@@ -2,6 +2,8 @@ package com.railwaygames.solarsmash.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -13,6 +15,7 @@ import org.json.JSONObject;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
+import com.railwaygames.solarsmash.screen.BoardScreen;
 
 public class GameBoard extends JsonConvertible {
 	public String id;
@@ -30,6 +33,8 @@ public class GameBoard extends JsonConvertible {
 	public GameConfig gameConfig = new GameConfig();
 	public Long moveTime;
 	public boolean ai;
+	public java.util.Map<String, Integer> handleToVictoriesVsOpponent = new HashMap<String, Integer>();
+	public java.util.Map<String, Record> handleToVictoriesInLast10 = new HashMap<String, Record>();
 
 	public GameBoard() {
 
@@ -80,6 +85,28 @@ public class GameBoard extends JsonConvertible {
 				Move move = new Move();
 				move.consume(jsonMove);
 				movesInProgress.add(move);
+			}
+		}
+		JSONObject stats = jsonObject.optJSONObject("stats");
+		if (stats != null) {
+			JSONObject jsonVictoryMap = stats.optJSONObject("victoryMap");
+			if (jsonVictoryMap != null) {
+				for (Iterator<?> iter = jsonVictoryMap.keys(); iter.hasNext();) {
+					String key = (String) iter.next();
+					handleToVictoriesVsOpponent.put(key, jsonVictoryMap.getInt(key));
+				}
+			}
+
+			for (Iterator<?> iter = stats.keys(); iter.hasNext();) {
+				String key = (String) iter.next();
+				if (!key.equals("victoryMap")) {
+					JSONObject jsonPlayerStats = stats.getJSONObject(key);
+					JSONObject jsonRecord = jsonPlayerStats.optJSONObject("last10");
+					if (jsonRecord != null) {
+						handleToVictoriesInLast10.put(key,
+								new Record(jsonRecord.getInt("wins"), jsonRecord.getInt("losses")));
+					}
+				}
 			}
 		}
 
@@ -171,6 +198,29 @@ public class GameBoard extends JsonConvertible {
 		return null;
 	}
 
+	public Player getEnemy() {
+		if (players.size() < 2) {
+			Player waitingForOpponent = new Player();
+			waitingForOpponent.xp = -1;
+			waitingForOpponent.handle = BoardScreen.Labels.waitingLabel(social);
+			return waitingForOpponent;
+		}
+
+		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+			return players.get(1);
+		}
+
+		return players.get(0);
+	}
+
+	public Player getUser() {
+		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+			return players.get(0);
+		}
+
+		return players.get(1);
+	}
+
 	public boolean isClaimAvailable() {
 		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
 				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw();
@@ -179,5 +229,15 @@ public class GameBoard extends JsonConvertible {
 	private boolean moveTimeIsPastTimeout() {
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 		return (currentTime - moveTime) >= Long.parseLong(gameConfig.getValue("claimTimeout"));
+	}
+
+	public static class Record {
+		public int wins;
+		public int losses;
+
+		public Record(int wins, int losses) {
+			this.wins = wins;
+			this.losses = losses;
+		}
 	}
 }

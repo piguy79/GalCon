@@ -87,8 +87,32 @@ exports.findGameById = function(req, res) {
 		}
 		return game;
 	}).then(function(game) {
-		res.json(processGameReturn(game, handle));
+		return processGameReturn(game, handle);
+	}).then(function(game) {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var getPlayerStats = function(game) {
+	var stats = {};
+	var p = new mongoose.Promise();
+	p.complete();
+	_.each(game.players, function(player) {
+		p = p.then(function() {
+			var wonP = gameManager.findUserRecordOfLastNGames(player._id, player.handle, 10);
+			return wonP.then(function(last10Record) {
+				stats[player.handle] = {last10 : last10Record};
+			});
+		});
+	});
+	return p.then(function() {
+		var p1 = game.players[0];
+		var p2 = game.players[1];
+		return gameManager.findUserVsUserRecord(p1._id, p2._id, p1.handle, p2.handle);
+	}).then(function(victoryMap) {
+		stats.victoryMap = victoryMap;
+		return stats;
+	})
 }
 
 exports.findGamesWithPendingMove = function(req, res) {
@@ -342,7 +366,9 @@ exports.performMoves = function(req, res) {
 				}
 				return game;
 			}).then(function(gameToReturn){
-				res.json(processGameReturn(gameToReturn, handle));
+				return processGameReturn(gameToReturn, handle);
+			}).then(function(game) {
+				res.json(game);
 			});
 		}
 	}).then(null, logErrorAndSetResponse(req, res));
@@ -413,34 +439,38 @@ var updatePlayerXpOnWin = function(handle, xpToAdd, winToAdd, lossToAdd, attempt
 }
 
 processGameReturn = function(game, playerWhoCalledTheUrl) {
-	for (var i = 0; i < game.moves.length; i++) {
-		var move = game.moves[i];
+	var p = getPlayerStats(game);
+	return p.then(function(stats) {
+		for (var i = 0; i < game.moves.length; i++) {
+			var move = game.moves[i];
 
-		if ((move.handle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
-			decrementPlanetShipNumber(game, move);
+			if ((move.handle == playerWhoCalledTheUrl) && move.startingRound == game.round.num) {
+				decrementPlanetShipNumber(game, move);
+			}
 		}
-	}
 	
-	_.each(game.players, function(player){
-		player.session = undefined;
-		player.friends = undefined;
-		player.auth = undefined;
-		player.consumedOrders = undefined;
-		player._id = undefined;
-	});
+		_.each(game.players, function(player){
+			player.session = undefined;
+			player.friends = undefined;
+			player.auth = undefined;
+			player.consumedOrders = undefined;
+			player._id = undefined;
+		});
 	
-	_.each(game.planets, function(planet) {
-		if(planet.harvest && planet.harvest.startingRound === game.round.num && planet.handle !== playerWhoCalledTheUrl) {
-			planet.harvest = undefined;
-		}
-	});
+		_.each(game.planets, function(planet) {
+			if(planet.harvest && planet.harvest.startingRound === game.round.num && planet.handle !== playerWhoCalledTheUrl) {
+				planet.harvest = undefined;
+			}
+		});
 	
-	game.moves = _.reject(game.moves, function(move){
-		return move.handle !== playerWhoCalledTheUrl && move.executed === false;
-	});
-	
+		game.moves = _.reject(game.moves, function(move){
+			return move.handle !== playerWhoCalledTheUrl && move.executed === false;
+		});
 
-	return game;
+		var gameObj = game.toObject();
+		gameObj.stats = stats;
+		return gameObj;
+	});
 }
 
 decrementPlanetShipNumber = function(game, move) {
@@ -472,7 +502,9 @@ exports.joinGame = function(req, res) {
 		game = savedGame;
 		return user.withPromise(user.save);
 	}).then(function() {
-		res.json(processGameReturn(game, handle));
+		return processGameReturn(game, handle);
+	}).then(function(game) {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -514,7 +546,9 @@ exports.acceptInvite = function(req, res){
 			return userManager.updateFriend(currentUser, requestingUser);
 		}
 	}).then(function(){
-		res.json(processGameReturn(currentGame, handle))
+		return processGameReturn(currentGame, handle);
+	}).then(function(game) {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
@@ -895,7 +929,9 @@ exports.matchPlayerToGame = function(req, res) {
 			}
 			return findOrCreateGamePromise(user, Date.now(), mapToFind);
 		}).then(function(game) { 
-			res.json(processGameReturn(game, handle));
+			return processGameReturn(game, handle);
+		}).then(function(game) {
+			res.json(game);
 		});
 	}).then(null, logErrorAndSetResponse(req, res));
 }
@@ -1302,7 +1338,9 @@ exports.claimGame = function(req, res){
 		}
 		return updateWinnersAndLosers(game, handle);
 	}).then(function(gameToReturn){
-		res.json(processGameReturn(gameToReturn, handle));
+		return processGameReturn(gameToReturn, handle);
+	}).then(function(game) {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));	
 }
 
@@ -1403,6 +1441,8 @@ exports.practiceGame = function(req, res){
 			return generateGamePromise([requestingUser, aiUser], mapKey, null, true);
 		}
 	}).then(function(generatedGame){
-		res.json(generatedGame);
+		return processGameReturn(generatedGame);
+	}).then(function(game) {
+		res.json(game);
 	}).then(null, logErrorAndSetResponse(req, res));
 }

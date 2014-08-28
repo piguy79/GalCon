@@ -26,6 +26,7 @@ public class Constants {
 		public static final String X_SMALL_FONT = "xSmallFont";
 		public static final String SMALL_FONT = "smallFont";
 		public static final String DEFAULT_FONT = "defaultFont";
+		public static final String MEDIUM_LARGE_FONT = "mediumLargeFont";
 		public static final String LARGE_FONT = "largeFont";
 		public static final String X_LARGE_FONT = "xLargeFont";
 
