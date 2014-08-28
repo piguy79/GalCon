@@ -1,5 +1,6 @@
 var needle = require("needle"), 
 	apiRunner = require('../fixtures/apiRunner'), 
+	gameRunner = require('../fixtures/gameRunner')
 	elementBuilder = require('../fixtures/elementbuilder'), 
 	elementMatcher = require('../fixtures/elementMatcher'),
 	gameManager = require('../../modules/model/game'),
@@ -53,9 +54,9 @@ describe("Find current games -", function() {
 		p.complete();
 		
 		p.then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
+			return gameRunner.createGameAwaitingAccept(PLAYER_2, PLAYER_1, MAP_KEY_1);
 		}).then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_2, PLAYER_2.session.id);
+			return gameRunner.createGameAwaitingAccept(PLAYER_2, PLAYER_1, MAP_KEY_2);
 		}).then(function() {
 			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(games) {
@@ -71,9 +72,9 @@ describe("Find current games -", function() {
 		p.complete();
 		
 		p.then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
+			return gameRunner.createGameAwaitingAccept(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		}).then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_2, PLAYER_1.session.id);
+			return gameRunner.createGameAwaitingAccept(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		}).then(function() {
 			return apiRunner.findCurrentGamesByPlayerHandle(PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(games) {

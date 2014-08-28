@@ -50,7 +50,7 @@ describe("Perform Move - Standard -", function() {
 
 	it("Should allow a user to cancel when they are the only player", function(done) {
 		var currentGameId;
-		var p =  apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
+		var p =  gameRunner.createGameAwaitingAccept(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		p.then(function(game) {
 			currentGameId = game._id;
 			return userManager.findUserByHandle(PLAYER_1_HANDLE);

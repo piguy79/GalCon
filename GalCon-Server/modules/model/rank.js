@@ -33,5 +33,15 @@ exports.findRankForAnXp = function(ranks, xp){
 	return matchingRank[0];
 }
 
+exports.findRankRange = function(ranks, level){
+	var maxRank = ranks[ranks.length-1];
+	var range = 5;
+	var lowerBound = level - range > 1 ? level-range : 2;
+	var upperBound = level + range <= maxRank.level ? level + range : maxRank.level; 
+	
+	return {lowerBound : ranks[lowerBound-1], upperBound : ranks[upperBound-1]};
+	
+}
+
 
 exports.RankModel = RankModel;

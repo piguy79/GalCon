@@ -5,6 +5,7 @@ var needle = require("needle"),
 	gameManager = require('../../modules/model/game'),
 	userManager = require('../../modules/model/user'),
 	mapManager = require('../../modules/model/map'),
+	rankManager = require('../../modules/model/rank'),
 	mongoose = require('mongoose'),
 	gameRunner = require('../fixtures/gameRunner'),
 	_ = require('underscore');
@@ -155,6 +156,49 @@ describe("Rank - Test correct rank assignment -", function() {
 			done();
 		});
 
+	});
+	
+	it("Should Give me the range with a low bounds of rank 2", function(done) {
+		var p =  rankManager.findAllRanks();
+		p.then(function(ranks){
+			var rankRange = rankManager.findRankRange(ranks, 3);
+			expect(rankRange.lowerBound.level).toBe(2);
+			expect(rankRange.upperBound.level).toBe(8);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+
+	});
+	
+	it("Should Give max rank of 15", function(done) {
+		var p =  rankManager.findAllRanks();
+		p.then(function(ranks){
+			var rankRange = rankManager.findRankRange(ranks, 14);
+			expect(rankRange.lowerBound.level).toBe(9);
+			expect(rankRange.upperBound.level).toBe(15);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
+	});
+	
+	it("Should give correct results when not touching the bounds", function(done) {
+		var p =  rankManager.findAllRanks();
+		p.then(function(ranks){
+			var rankRange = rankManager.findRankRange(ranks, 8);
+			expect(rankRange.lowerBound.level).toBe(3);
+			expect(rankRange.upperBound.level).toBe(13);
+			done();
+		}).then(null, function(err){
+			expect(true).toBe(false);
+			console.log(err);
+			done();
+		});
 	});
 	
 	

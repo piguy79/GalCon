@@ -2,11 +2,22 @@ var apiRunner = require('../fixtures/apiRunner'),
 	mongoose = require('mongoose');
 
 exports.createGameForPlayers = function(player1, player2, map){
-	var p = new mongoose.Promise();  		
-	var runnerPromise = apiRunner.matchPlayerToGame(player1.handle, map, player1.session.id);
+	var p = new mongoose.Promise();  	
+	var runnerPromise = apiRunner.invite(player1.handle, player2.handle, map, player1.session.id);
 	runnerPromise.then(function(game){
-		return apiRunner.matchPlayerToGame(player2.handle, map, player2.session.id);
+		return apiRunner.acceptInvite(game._id, player2.handle, player2.session.id);
 	}).then(function(game){
+		p.complete(game);
+	}, function(err){
+		p.reject(err);
+	});
+	return p;
+}
+
+exports.createGameAwaitingAccept = function(player1, player2, map){
+	var p = new mongoose.Promise();  	
+	var runnerPromise = apiRunner.invite(player1.handle, player2.handle, map, player1.session.id);
+	runnerPromise.then(function(game){
 		p.complete(game);
 	}, function(err){
 		p.reject(err);

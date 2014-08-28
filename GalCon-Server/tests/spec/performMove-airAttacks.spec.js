@@ -1,5 +1,6 @@
 var mongoose = require('../../modules/model/mongooseConnection').mongoose,
 	apiRunner = require('../fixtures/apiRunner'), 
+	gameRunner = require('../fixtures/gameRunner'), 
 	elementBuilder = require('../fixtures/elementbuilder'), 
 	elementMatcher = require('../fixtures/elementMatcher'),
 	gameManager = require('../../modules/model/game'),
@@ -85,8 +86,7 @@ describe("Perform Move - Air Attacks -", function() {
 			map = ATTACK_MAP_KEY_1;
 		}
 		
-		var p = apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, map, PLAYER_1.session.id);
-		
+		var p = gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, map);
 		return p.then(function(game) {
 			currentGameId = game._id;
 			return gameManager.GameModel.findOneAndUpdate({"_id": currentGameId}, {$set: {planets: planets}}).exec();
@@ -94,8 +94,6 @@ describe("Perform Move - Air Attacks -", function() {
 			return apiRunner.performMove(currentGameId, player1Moves, PLAYER_1_HANDLE);
 		}).then(function(game) {
 			expect(game.round.num).toBe(0);
-			return apiRunner.joinGame(currentGameId, PLAYER_2_HANDLE);
-		}).then(function() {
 			return apiRunner.performMove(currentGameId, player2Moves, PLAYER_2_HANDLE);
 		}).then(function(game) {
 			expect(game.round.num).toBe(1);

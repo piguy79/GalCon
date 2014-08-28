@@ -130,4 +130,36 @@ exports.updateFriend = function(user, updateFriend){
 	}
 }
 
+
+exports.findUserForRandomGame = function(user, lowerXp, upperXp){
+	var p = new mongoose.Promise();
+	p.fulfill()
+	
+	var twoDaysAgo = daysAgo(2);
+	var threeDaysAgo = daysAgo(3);
+	console.log(threeDaysAgo);
+	
+	return p.then(function(){
+		return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : lowerXp, $lte : upperXp}, 'session.expireDate' : {$gte : twoDaysAgo}}, 'handle').setOptions({lean : true}).exec();
+	}).then(function(users){
+		if(users && users.length >= 20){
+			return users;
+		}else{
+			return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : 200}, 'session.expireDate' : {$gte : threeDaysAgo}}, 'handle').setOptions({lean : true}).exec();
+		}
+	}).then(function(users){
+		if(users && users.length > 0){
+			return users;
+		}else{
+			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}}, 'handle').setOptions({lean : true}).exec();
+		}
+	});
+}
+
+var daysAgo = function(numDays){
+	var date = new Date();
+	var daysAgo = date - 1000 * 60 * 60 * 24 * numDays;
+	return new Date(daysAgo);
+}
+
 exports.UserModel = UserModel;

@@ -1,5 +1,6 @@
 var needle = require("needle"), 
 	apiRunner = require('../fixtures/apiRunner'), 
+	gameRunner = require('../fixtures/gameRunner'), 
 	elementBuilder = require('../fixtures/elementbuilder'), 
 	elementMatcher = require('../fixtures/elementMatcher'),
 	gameManager = require('../../modules/model/game'),
@@ -48,27 +49,13 @@ describe("Resign game -", function() {
 		});
 	});
 
-	it("Should not be able to resign random game", function(done) {
-		var p = new mongoose.Promise();
-		p.complete();
-		
-		p.then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
-		}).then(function() {
-			return apiRunner.resignGame("123456789abcdef12345", PLAYER_2_HANDLE, PLAYER_2.session.id);
-		}).then(function(response) {
-			expect(response.error).toBeDefined();
-		}).then(null, function(err) {
-			expect(err.toString()).toBe(null);
-		}).then(done);
-	});
 	
 	it("Should not be able to resign a game that you are not playing in", function(done) {
 		var p = new mongoose.Promise();
 		p.complete();
 		
 		p.then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
+			return gameRunner.createGameAwaitingAccept(PLAYER_2, PLAYER_1, MAP_KEY_1);
 		}).then(function(game) {
 			return apiRunner.resignGame(game._id, PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(response) {
@@ -83,9 +70,7 @@ describe("Resign game -", function() {
 		p.complete();
 		
 		p.then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_1_HANDLE, MAP_KEY_1, PLAYER_1.session.id);
-		}).then(function() {
-			return apiRunner.matchPlayerToGame(PLAYER_2_HANDLE, MAP_KEY_1, PLAYER_2.session.id);
+			return gameRunner.createGameForPlayers(PLAYER_1, PLAYER_2, MAP_KEY_1);
 		}).then(function(game) {
 			return apiRunner.resignGame(game._id, PLAYER_1_HANDLE, PLAYER_1.session.id);
 		}).then(function(response) {

@@ -142,3 +142,18 @@ exports.claimVictory = function(handle, gameId, session) {
 
 	return needleWithPromise(needle.post, "/game/claim", postData);
 };
+
+exports.invite = function(requesterHandle, inviteeHandle, mapKey, session){
+	var postData = {
+			requesterHandle : requesterHandle,
+			inviteeHandle : inviteeHandle,
+			mapKey : mapKey,
+			session : session
+	};
+	
+	return needleWithPromise(needle.post, "/gamequeue/invite", postData);
+};
+
+exports.acceptInvite = function(gameId, handle, session){
+	return needleWithPromise(needle.get, "/gamequeue/accept?gameId=" + gameId + "&handle=" + handle + "&session=" + session);
+};
