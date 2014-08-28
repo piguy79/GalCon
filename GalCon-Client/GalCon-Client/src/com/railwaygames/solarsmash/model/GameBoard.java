@@ -230,7 +230,7 @@ public class GameBoard extends JsonConvertible {
 
 	public boolean isClaimAvailable() {
 		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
-				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw();
+				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw() && players.size() > 1;
 	}
 
 	private boolean moveTimeIsPastTimeout() {
