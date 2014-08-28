@@ -604,7 +604,7 @@ public class BoardScreen implements ScreenFeedback {
 					returnCode = action;
 				} else if (action.equals(Action.OPTIONS)) {
 					BoardScreenOptionsDialog dialog = new BoardScreenOptionsDialog(gameBoard, resources, width * 0.8f,
-							height * 0.45f, stage);
+							height * 0.55f, stage);
 					float dialogY = height - (dialog.getHeight() + (dialog.getHeight() * 0.3f));
 					dialog.setX(-dialog.getWidth());
 					dialog.setY(dialogY);
