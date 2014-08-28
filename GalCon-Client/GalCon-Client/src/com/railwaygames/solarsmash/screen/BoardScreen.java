@@ -387,9 +387,8 @@ public class BoardScreen implements ScreenFeedback {
 			createEndGameOverlay();
 		}
 
-		showAbilityOverlay();
+		showAbilityAndHarvestOverlay();
 		showAbilityCaptureOverlay();
-		showHarvestOverlay();
 	}
 
 	private void loadMaps() {
@@ -408,7 +407,8 @@ public class BoardScreen implements ScreenFeedback {
 					Overlay txtOverlay = new TextOverlay(
 							"Commander\n\nWe have been developing a technology to enhance the resource extraction process from the moons\n\n"
 									+ "When enabled, you'll get a larger bonus... with the side effect of destroying the moon after a short time\n\n"
-									+ "Double tap a planet with a moon once you control it for more", resources);
+									+ "Once you control a planet with a moon, double tap it for more information",
+							resources);
 					txtOverlay.setColor(Constants.Colors.OVERLAY_RED);
 					overlay = new DismissableOverlay(resources, txtOverlay, null);
 					stage.addActor(overlay);
@@ -432,7 +432,7 @@ public class BoardScreen implements ScreenFeedback {
 		}
 	}
 
-	private void showAbilityOverlay() {
+	private void showAbilityAndHarvestOverlay() {
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 		if (!prefs.getBoolean(Constants.Tutorial.RESOURCES, false)) {
 			boolean ability = false;
@@ -446,11 +446,18 @@ public class BoardScreen implements ScreenFeedback {
 						"Commander\n\nLong-range sensors indicate that there may be some useful resources nearby in the moons that surround some planets\n\n"
 								+ "I think we should investigate these planets furthur if we can", resources);
 				txtOverlay.setColor(Constants.Colors.OVERLAY_RED);
-				overlay = new DismissableOverlay(resources, txtOverlay, null);
+				overlay = new DismissableOverlay(resources, txtOverlay, new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						showHarvestOverlay();
+					}
+				});
 				stage.addActor(overlay);
 				prefs.putBoolean(Constants.Tutorial.RESOURCES, true);
 				prefs.flush();
 			}
+		} else {
+			showHarvestOverlay();
 		}
 	}
 
