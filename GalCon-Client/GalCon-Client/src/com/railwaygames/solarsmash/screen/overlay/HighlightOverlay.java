@@ -119,7 +119,7 @@ public abstract class HighlightOverlay extends Overlay {
 		String playerHandle1 = gameBoard.getUser().handle;
 		String playerHandle2 = gameBoard.getEnemy().handle;
 		
-		if (roundInformation.round == 0 && gameBoard.players.size() > 1) {
+		if (roundInformation.round == 0) {
 			createPlayerLabels(playerHandle1, 0.7f, Align.left);
 			createPlayerLabels(playerHandle2, 0.3f, Align.right);
 

@@ -103,7 +103,7 @@ var getPlayerStats = function(game) {
 		players.push(player);
 	});
 	
-	if(players.length < 2 && game.social.invitee) {
+	if(players.length < 2 && game.social && game.social.invitee) {
 		p = p.then(function() {
 			return userManager.findUserByHandle(game.social.invitee);
 		}).then(function(user) {
@@ -111,16 +111,20 @@ var getPlayerStats = function(game) {
 		});
 	}
 	
-	_.each(players, function(player) {
-		p = p.then(function() {
-			var wonP = gameManager.findUserRecordOfLastNGames(player._id, player.handle, 10);
-			return wonP.then(function(last10Record) {
-				var overall = {wins: player.wins, losses: player.losses};
-				stats[player.handle] = {last10 : last10Record, overall : overall};
+	return p.then(function() {
+		var innerp = new mongoose.Promise();
+		innerp.complete();
+		_.each(players, function(player) {
+			innerp = innerp.then(function() {
+				var wonP = gameManager.findUserRecordOfLastNGames(player._id, player.handle, 10);
+				return wonP.then(function(last10Record) {
+					var overall = {wins: player.wins, losses: player.losses};
+					stats[player.handle] = {last10 : last10Record, overall : overall};
+				});
 			});
 		});
-	});
-	return p.then(function() {
+		return innerp;
+	}).then(function() {
 		if(players.length > 1) {
 			var p1 = players[0];
 			var p2 = players[1];
