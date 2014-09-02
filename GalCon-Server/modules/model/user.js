@@ -151,7 +151,7 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 		if(users && users.length > 0){
 			return users;
 		}else{
-			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}}, 'handle').setOptions({lean : true}).exec();
+			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}, handle : {$ne : user.handle}}, 'handle').setOptions({lean : true}).exec();
 		}
 	});
 }
