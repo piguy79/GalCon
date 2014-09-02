@@ -97,18 +97,36 @@ var getPlayerStats = function(game) {
 	var stats = {};
 	var p = new mongoose.Promise();
 	p.complete();
+	
+	var players = [];
 	_.each(game.players, function(player) {
+		players.push(player);
+	});
+	
+	if(players.length < 2 && game.social.invitee) {
+		p = p.then(function() {
+			return userManager.findUserByHandle(game.social.invitee);
+		}).then(function(user) {
+			players.push(user);
+		});
+	}
+	
+	_.each(players, function(player) {
 		p = p.then(function() {
 			var wonP = gameManager.findUserRecordOfLastNGames(player._id, player.handle, 10);
 			return wonP.then(function(last10Record) {
-				stats[player.handle] = {last10 : last10Record};
+				var overall = {wins: player.wins, losses: player.losses};
+				stats[player.handle] = {last10 : last10Record, overall : overall};
 			});
 		});
 	});
 	return p.then(function() {
-		var p1 = game.players[0];
-		var p2 = game.players[1];
-		return gameManager.findUserVsUserRecord(p1._id, p2._id, p1.handle, p2.handle);
+		if(players.length > 1) {
+			var p1 = players[0];
+			var p2 = game.players[1];
+			return gameManager.findUserVsUserRecord(p1._id, p2._id, p1.handle, p2.handle);
+		}
+		return null;
 	}).then(function(victoryMap) {
 		stats.victoryMap = victoryMap;
 		return stats;

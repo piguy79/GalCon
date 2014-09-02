@@ -35,6 +35,7 @@ public class GameBoard extends JsonConvertible {
 	public boolean ai;
 	public java.util.Map<String, Integer> handleToVictoriesVsOpponent = new HashMap<String, Integer>();
 	public java.util.Map<String, Record> handleToVictoriesInLast10 = new HashMap<String, Record>();
+	public java.util.Map<String, Record> handleToOverallRecord = new HashMap<String, Record>();
 
 	public GameBoard() {
 
@@ -104,6 +105,12 @@ public class GameBoard extends JsonConvertible {
 					JSONObject jsonRecord = jsonPlayerStats.optJSONObject("last10");
 					if (jsonRecord != null) {
 						handleToVictoriesInLast10.put(key,
+								new Record(jsonRecord.getInt("wins"), jsonRecord.getInt("losses")));
+					}
+
+					jsonRecord = jsonPlayerStats.optJSONObject("overall");
+					if (jsonRecord != null) {
+						handleToOverallRecord.put(key,
 								new Record(jsonRecord.getInt("wins"), jsonRecord.getInt("losses")));
 					}
 				}

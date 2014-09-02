@@ -115,17 +115,17 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
-
+		
+		String playerHandle1 = gameBoard.getUser().handle;
+		String playerHandle2 = gameBoard.getEnemy().handle;
+		
 		if (roundInformation.round == 0 && gameBoard.players.size() > 1) {
-			Player player1 = gameBoard.getUser();
-			createPlayerLabels(player1, 0.7f, Align.left);
+			createPlayerLabels(playerHandle1, 0.7f, Align.left);
+			createPlayerLabels(playerHandle2, 0.3f, Align.right);
 
-			Player player2 = gameBoard.getEnemy();
-			createPlayerLabels(player2, 0.3f, Align.right);
-
-			Integer p1Wins = gameBoard.handleToVictoriesVsOpponent.get(player1.handle);
+			Integer p1Wins = gameBoard.handleToVictoriesVsOpponent.get(playerHandle1);
 			p1Wins = p1Wins == null ? 0 : p1Wins;
-			Integer p2Wins = gameBoard.handleToVictoriesVsOpponent.get(player2.handle);
+			Integer p2Wins = gameBoard.handleToVictoriesVsOpponent.get(playerHandle2);
 			p2Wins = p2Wins == null ? 0 : p2Wins;
 			{
 				ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Head to Head Record", resources.skin,
@@ -151,7 +151,6 @@ public abstract class HighlightOverlay extends Overlay {
 				lbl.addAction(color(Color.WHITE, 0.66f));
 				addActor(lbl);
 			}
-
 		} else {
 			{
 				ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Round", resources.skin,
@@ -182,12 +181,12 @@ public abstract class HighlightOverlay extends Overlay {
 		return this;
 	}
 
-	private void createPlayerLabels(Player player, float y, int align) {
-		Record last10Record = gameBoard.handleToVictoriesInLast10.get(player.handle);
+	private void createPlayerLabels(String handle, float y, int align) {
+		Record last10Record = gameBoard.handleToVictoriesInLast10.get(handle);
 		float margin = Gdx.graphics.getWidth() * 0.05f;
 		float width = Gdx.graphics.getWidth() - 2.0f * margin;
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, player.handle, resources.skin,
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, handle, resources.skin,
 					Constants.UI.MEDIUM_LARGE_FONT, Color.WHITE);
 			lbl.setWidth(width);
 			lbl.setX(margin);
@@ -195,7 +194,7 @@ public abstract class HighlightOverlay extends Overlay {
 			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
-			if (player.handle.equals(GameLoop.USER.handle)) {
+			if (handle.equals(GameLoop.USER.handle)) {
 				lbl.addAction(color(Constants.Colors.USER_SHIP_FILL, 0.66f));
 			} else {
 				lbl.addAction(color(Constants.Colors.ENEMY_SHIP_FILL, 0.66f));
@@ -203,7 +202,7 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Overall: " + extractWinLossRecord(player),
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Overall: " + extractWinLossRecord(handle),
 					resources.skin, Constants.UI.SMALL_FONT, Color.WHITE);
 			lbl.setWidth(width);
 			lbl.setX(margin);
@@ -229,12 +228,13 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 	}
 
-	private String extractWinLossRecord(Player player) {
+	private String extractWinLossRecord(String handle) {
 		int losses = 0;
 		int wins = 0;
-		if (player != null) {
-			losses = player.losses;
-			wins = player.wins;
+		Record record = gameBoard.handleToOverallRecord.get(handle);
+		if (record != null) {
+			losses = record.losses;
+			wins = record.wins;
 		}
 
 		return winLossRecordString(wins, losses);
