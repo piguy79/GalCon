@@ -123,7 +123,7 @@ var getPlayerStats = function(game) {
 	return p.then(function() {
 		if(players.length > 1) {
 			var p1 = players[0];
-			var p2 = game.players[1];
+			var p2 = players[1];
 			return gameManager.findUserVsUserRecord(p1._id, p2._id, p1.handle, p2.handle);
 		}
 		return null;
