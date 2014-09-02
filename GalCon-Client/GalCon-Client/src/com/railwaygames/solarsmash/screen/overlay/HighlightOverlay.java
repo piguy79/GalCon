@@ -40,7 +40,6 @@ import com.railwaygames.solarsmash.model.GameBoard;
 import com.railwaygames.solarsmash.model.GameBoard.Record;
 import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Planet;
-import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.RoundInformation;
 import com.railwaygames.solarsmash.model.Size;
@@ -115,10 +114,10 @@ public abstract class HighlightOverlay extends Overlay {
 		huds.createTopHud(null);
 		huds.createBottomHud();
 		huds.show();
-		
+
 		String playerHandle1 = gameBoard.getUser().handle;
-		String playerHandle2 = gameBoard.getEnemy().handle;
-		
+		String playerHandle2 = gameBoard.getEnemy().handle.replace("[", "").replace("]", "");
+
 		if (roundInformation.round == 0) {
 			createPlayerLabels(playerHandle1, 0.7f, Align.left);
 			createPlayerLabels(playerHandle2, 0.3f, Align.right);
@@ -183,6 +182,9 @@ public abstract class HighlightOverlay extends Overlay {
 
 	private void createPlayerLabels(String handle, float y, int align) {
 		Record last10Record = gameBoard.handleToVictoriesInLast10.get(handle);
+		int wins = last10Record == null ? 0 : last10Record.wins;
+		int losses = last10Record == null ? 0 : last10Record.losses;
+
 		float margin = Gdx.graphics.getWidth() * 0.05f;
 		float width = Gdx.graphics.getWidth() - 2.0f * margin;
 		{
@@ -214,9 +216,8 @@ public abstract class HighlightOverlay extends Overlay {
 			addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Last 10: "
-					+ winLossRecordString(last10Record.wins, last10Record.losses), resources.skin,
-					Constants.UI.SMALL_FONT, Color.WHITE);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Last 10: " + winLossRecordString(wins, losses),
+					resources.skin, Constants.UI.SMALL_FONT, Color.WHITE);
 			lbl.setWidth(width);
 			lbl.setX(margin);
 			lbl.setY(Gdx.graphics.getHeight() * (y - 0.09f) - lbl.getHeight() * 0.5f);

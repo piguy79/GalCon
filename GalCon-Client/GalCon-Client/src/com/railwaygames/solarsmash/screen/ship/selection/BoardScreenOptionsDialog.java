@@ -21,7 +21,7 @@ import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.model.GameBoard;
-import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.GameBoard.Record;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.event.AboutEvent;
 import com.railwaygames.solarsmash.screen.event.CancelGameEvent;
@@ -46,7 +46,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	private ShaderLabel tutorialText;
 	private GameBoard gameBoard;
 	private Group statsGroup;
-	
+
 	private static final float BUTTON_HEIGHT_RATIO = 0.22f;
 	private static final float BUTTON_WIDTH_RATIO = 0.73f;
 
@@ -62,7 +62,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		confirmText.setColor(Color.CLEAR);
 
 		addActor(confirmText);
-		
+
 		statsGroup = new Group();
 		statsGroup.setWidth(width);
 		statsGroup.setHeight(height);
@@ -78,17 +78,17 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		createTutorialButton(resources.fontShader, resources.skin);
 		createPlayerStats();
 	}
-	
+
 	private void createPlayerStats() {
-		Player player1 = gameBoard.getUser();
-		createPlayerLabels(player1, 0.96f, Align.left);
+		String playerHandle1 = gameBoard.getUser().handle;
+		String playerHandle2 = gameBoard.getEnemy().handle.replace("[", "").replace("]", "");
 
-		Player player2 = gameBoard.getEnemy();
-		createPlayerLabels(player2, 0.76f, Align.right);
+		createPlayerLabels(playerHandle1, 0.96f, Align.left);
+		createPlayerLabels(playerHandle2, 0.76f, Align.right);
 
-		Integer p1Wins = gameBoard.handleToVictoriesVsOpponent.get(player1.handle);
+		Integer p1Wins = gameBoard.handleToVictoriesVsOpponent.get(playerHandle1);
 		p1Wins = p1Wins == null ? 0 : p1Wins;
-		Integer p2Wins = gameBoard.handleToVictoriesVsOpponent.get(player2.handle);
+		Integer p2Wins = gameBoard.handleToVictoriesVsOpponent.get(playerHandle2);
 		p2Wins = p2Wins == null ? 0 : p2Wins;
 		{
 			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Head to Head Record", resources.skin,
@@ -115,20 +115,20 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			statsGroup.addActor(lbl);
 		}
 	}
-	
-	private void createPlayerLabels(Player player, float y, int align) {
+
+	private void createPlayerLabels(String handle, float y, int align) {
 		float margin = getWidth() * 0.05f;
 		float width = getWidth() - 2.0f * margin;
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, player.handle, resources.skin,
-					Constants.UI.DEFAULT_FONT, Color.WHITE);
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, handle, resources.skin, Constants.UI.DEFAULT_FONT,
+					Color.WHITE);
 			lbl.setWidth(width);
 			lbl.setX(margin);
 			lbl.setY(getHeight() * y - lbl.getHeight() * 0.5f);
 			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
-			if (player.handle.equals(GameLoop.USER.handle)) {
+			if (handle.equals(GameLoop.USER.handle)) {
 				lbl.addAction(color(Constants.Colors.USER_SHIP_FILL, 0.66f));
 			} else {
 				lbl.addAction(color(Constants.Colors.ENEMY_SHIP_FILL, 0.66f));
@@ -136,7 +136,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			statsGroup.addActor(lbl);
 		}
 		{
-			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Overall: " + extractWinLossRecord(player),
+			ShaderLabel lbl = new ShaderLabel(resources.fontShader, "Overall: " + extractWinLossRecord(handle),
 					resources.skin, Constants.UI.X_SMALL_FONT, Color.WHITE);
 			lbl.setWidth(width);
 			lbl.setX(margin);
@@ -148,13 +148,14 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			statsGroup.addActor(lbl);
 		}
 	}
-	
-	private String extractWinLossRecord(Player player) {
+
+	private String extractWinLossRecord(String handle) {
 		int losses = 0;
 		int wins = 0;
-		if (player != null) {
-			losses = player.losses;
-			wins = player.wins;
+		Record record = gameBoard.handleToOverallRecord.get(handle);
+		if (record != null) {
+			losses = record.losses;
+			wins = record.wins;
 		}
 
 		return winLossRecordString(wins, losses);
@@ -169,7 +170,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		tutorialButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
-		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.28f - bHeight * 0.5f, bWidth, bHeight);
+		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.28f - bHeight * 0.5f, bWidth,
+				bHeight);
 
 		tutorialText = new ShaderLabel(fontShader, "Tutorial", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		tutorialText.setAlignment(Align.center);
@@ -188,7 +190,8 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 		resignButton.setLayoutEnabled(false);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
-		resignButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.44f - bHeight * 0.5f, bWidth, bHeight);
+		resignButton
+				.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.44f - bHeight * 0.5f, bWidth, bHeight);
 
 		resignText = new ShaderLabel(fontShader, "Resign", skin, Constants.UI.DEFAULT_FONT, Color.BLACK);
 		resignText.setAlignment(Align.center);
@@ -306,7 +309,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			fire(new AboutEvent());
 		}
 	};
-	
+
 	private ClickListener tutorialListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
