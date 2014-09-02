@@ -12,6 +12,6 @@ public class Strings {
 
 	public static final String CONTINUE = "Continue";
 	public static final String NEW = "New";
-	public static final String INVITES = "Invites";
+	public static final String INVITES = "Challenges";
 
 }
