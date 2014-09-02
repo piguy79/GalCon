@@ -125,11 +125,8 @@ public class PingService extends Service {
 			String inviteText = "";
 			int inviteCount = result.inviteCount;
 			if (inviteCount > 0) {
-				if (inviteCount == 1) {
-					inviteText = "1 pending invite";
-				} else {
-					inviteText = inviteCount + " pending invites";
-				}
+				
+					inviteText = "You have challenges waiting";
 			}
 
 			String text = pendingText;
