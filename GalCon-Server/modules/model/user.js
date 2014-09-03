@@ -137,7 +137,6 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 	
 	var twoDaysAgo = daysAgo(2);
 	var threeDaysAgo = daysAgo(3);
-	console.log(threeDaysAgo);
 	
 	return p.then(function(){
 		return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : lowerXp, $lte : upperXp}, 'session.expireDate' : {$gte : twoDaysAgo}}, 'handle').setOptions({lean : true}).exec();
@@ -157,9 +156,8 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 }
 
 var daysAgo = function(numDays){
-	var date = new Date();
-	var daysAgo = date - 1000 * 60 * 60 * 24 * numDays;
-	return new Date(daysAgo);
+	var daysAgo = new Date().now() - 1000 * 60 * 60 * 24 * numDays;
+	return daysAgo;
 }
 
 exports.UserModel = UserModel;
