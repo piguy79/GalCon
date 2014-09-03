@@ -135,9 +135,8 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 	var p = new mongoose.Promise();
 	p.fulfill()
 	
-	var twoDaysAgo = new Date(daysAgo(2));
-	var threeDaysAgo = new Date(daysAgo(3));
-	console.log("three Days ago " + threeDaysAgo);
+	var twoDaysAgo = daysAgo(2);
+	var threeDaysAgo = daysAgo(3);
 	
 	return p.then(function(){
 		return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : lowerXp, $lte : upperXp}, 'session.expireDate' : {$gte : twoDaysAgo}}, 'handle').setOptions({lean : true}).exec();
