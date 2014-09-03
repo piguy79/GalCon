@@ -137,20 +137,21 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 	
 	var twoDaysAgo = daysAgo(2);
 	var threeDaysAgo = daysAgo(3);
+	console.log("three Days ago " + threeDaysAgo);
 	
 	return p.then(function(){
-		return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : lowerXp, $lte : upperXp}, 'session.expireDate' : {$gte : twoDaysAgo}}).setOptions({lean : true}).exec();
+		return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : lowerXp, $lte : upperXp}, 'session.expireDate' : {$gte : twoDaysAgo}}, 'handle').setOptions({lean : true}).exec();
 	}).then(function(users){
 		if(users && users.length >= 20){
 			return users;
 		}else{
-			return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : 200}, 'session.expireDate' : {$gte : threeDaysAgo}}).setOptions({lean : true}).exec();
+			return UserModel.find({handle : {$nin : ['AI', user.handle]}, xp : {$gte : 200}, 'session.expireDate' : {$gte : threeDaysAgo}}, 'handle').setOptions({lean : true}).exec();
 		}
 	}).then(function(users){
 		if(users && users.length > 0){
 			return users;
 		}else{
-			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}, handle : {$ne : user.handle}}).setOptions({lean : true}).exec();
+			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}, handle : {$ne : user.handle}}, 'handle').setOptions({lean : true}).exec();
 		}
 	});
 }
