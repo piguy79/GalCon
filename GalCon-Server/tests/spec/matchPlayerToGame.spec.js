@@ -9,8 +9,11 @@ describe("Player Matching", function() {
 	var PLAYER_1_HANDLE = "TEST_PLAYER_1";
 	var PLAYER_1 = elementBuilder.createUser(PLAYER_1_HANDLE, 1, {xp : 5000});
 	
+	var date = new Date();
+	var twoDaysAgo = date - 1000 * 60 * 60 * 24 * 2;
+	twoDaysAgo = new Date(twoDaysAgo + (1000 * 60));
 	var PLAYER_2_HANDLE = "TEST_PLAYER_2";
-	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 5, {xp : 4000});
+	var PLAYER_2 = elementBuilder.createUser(PLAYER_2_HANDLE, 5, {xp : 4000, expireDate : twoDaysAgo});
 	
 	var date = new Date();
 	var threeDaysAgo = date - 1000 * 60 * 60 * 24 * 3;

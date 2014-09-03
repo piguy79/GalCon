@@ -156,7 +156,7 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 }
 
 var daysAgo = function(numDays){
-	return new Date(Date.now() - (1000 * 60 * 60 * 24 * numDays));
+	return Date.now() - 1000 * 60 * 60 * 24 * numDays;
 }
 
 exports.UserModel = UserModel;
