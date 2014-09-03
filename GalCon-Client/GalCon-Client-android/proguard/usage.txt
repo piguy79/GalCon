@@ -9486,7 +9486,7 @@ com.railwaygames.solarsmash.Constants:
     11:11:public Constants()
 com.railwaygames.solarsmash.Constants$Auth
 com.railwaygames.solarsmash.Constants$Colors:
-    71:71:public Constants$Colors()
+    72:72:public Constants$Colors()
 com.railwaygames.solarsmash.Constants$Config
 com.railwaygames.solarsmash.Constants$Tutorial
 com.railwaygames.solarsmash.Constants$UI
@@ -9615,7 +9615,7 @@ com.railwaygames.solarsmash.inappbilling.util.SkuDetails:
 com.railwaygames.solarsmash.math.GalConMath:
     9:9:public GalConMath()
 com.railwaygames.solarsmash.model.GameBoard:
-    166:171:public com.railwaygames.solarsmash.model.Move selectedMove()
+    200:205:public com.railwaygames.solarsmash.model.Move selectedMove()
 com.railwaygames.solarsmash.model.GameInviteRequest:
     public java.lang.String requesterHandle
     public java.lang.String inviteeHandle
@@ -9643,15 +9643,15 @@ com.railwaygames.solarsmash.model.tween.ColorTween
 com.railwaygames.solarsmash.model.tween.MoveTween
 com.railwaygames.solarsmash.screen.Action
 com.railwaygames.solarsmash.screen.BoardScreen:
-    1103:1103:public void dispose()
-    1231:1241:public void setConnectionError(java.lang.String)
-com.railwaygames.solarsmash.screen.BoardScreen$16
+    1110:1110:public void dispose()
+    1238:1248:public void setConnectionError(java.lang.String)
+com.railwaygames.solarsmash.screen.BoardScreen$17
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1221:1221:public BoardScreen$Labels()
+    1228:1228:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
     161:161:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
-    341:341:private BoardScreenPlayerHud$Abilities()
+    316:316:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
     539:539:public void dispose()
     567:567:public com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest()
