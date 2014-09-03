@@ -2,15 +2,15 @@
     "name": "application-name"
   , "version": "0.0.1"
   , "engines" : {
-    "node":"0.10.30",
-    "npm" : "1.4.21"
+    "node":"0.10.31",
+    "npm" : "1.4.23"
   }
   , "private": true
   , "dependencies": {
 	  "express": "3.5.1",
 	  "ejs" : "1.0.0",
 	  "jade": ">= 0.0.1",
-	  "mongoose" : "3.8.5",
+	  "mongoose" : "3.8.15",
 	  "needle" : "0.7.1",
 	  "underscore" : "1.6.0",
 	  "googleapis" : "0.7.0",
