@@ -135,8 +135,8 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 	var p = new mongoose.Promise();
 	p.fulfill()
 	
-	var twoDaysAgo = daysAgo(2);
-	var threeDaysAgo = daysAgo(3);
+	var twoDaysAgo = new Date(daysAgo(2));
+	var threeDaysAgo = new Date(daysAgo(3));
 	console.log("three Days ago " + threeDaysAgo);
 	
 	return p.then(function(){
