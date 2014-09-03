@@ -1063,10 +1063,10 @@ exports.inviteUserToGame = function(req, res){
 		return userManager.findUserByHandle(inviteeHandle);
 	}).then(function(user){
 		inviteeUser = user;
-		return userManager.findUserByHandle(inviteeHandle);
+		return userManager.findUserByHandle(requesterHandle);
 	}).then(function(user){
 		requestingUser = user;
-		return userManager.updateFriend(requestingUser, user);
+		return userManager.updateFriend(requestingUser, inviteeUser);
 	}).then(function(savedUser){
 		res.json(currentGame);
 	}).then(null, logErrorAndSetResponse(req, res));

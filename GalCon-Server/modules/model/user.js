@@ -150,13 +150,13 @@ exports.findUserForRandomGame = function(user, lowerXp, upperXp){
 		if(users && users.length > 0){
 			return users;
 		}else{
-			return UserModel.find({handle : {$in : ['mull', 'PiGuy']}, handle : {$ne : user.handle}}, 'handle').setOptions({lean : true}).exec();
+			return UserModel.find({$and : [{handle : {$in : ['mull', 'PiGuy']}}, {handle : {$ne : user.handle}}]}, 'handle').setOptions({lean : true}).exec();
 		}
 	});
 }
 
 var daysAgo = function(numDays){
-	return Date.now() - 1000 * 60 * 60 * 24 * numDays;
+	return new Date(Date.now() - (1000 * 60 * 60 * 24 * numDays));
 }
 
 exports.UserModel = UserModel;
