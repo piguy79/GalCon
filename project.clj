@@ -11,5 +11,5 @@
   :plugins [[environ/environ.lein "0.2.1"]]
   :hooks [environ.leiningen.hooks]
   :uberjar-name "galcon-admin-standalone.jar"
-  :source-paths ["GalCon-Admin/src/main/clojure"]
+  :source-paths ["GalCon-Admin/src/"]
   :profiles {:production {:env {:production true}}})
