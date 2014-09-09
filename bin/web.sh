@@ -3,6 +3,7 @@
 if [ "$NODE_DEPLOYMENT" == "true" ]; then
   echo "Deploying NodeJS APP."
   node GalCon-Server/app.js
-else
+elif [ "$CLOJURE_DEPLOYMENT" == "true" ]; then
   echo "Deploying Clojure APP"
+  java $JVM_OPTS -cp target/galcon-admin-standalone.jar clojure.main -m galcon-admin.web
 fi
