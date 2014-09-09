@@ -1,5 +1,5 @@
 (defproject galcon-admin "1.0.0-SNAPSHOT"
-  :description "Clojure web app for Galcon"
+  :description "Clojure web app for Galcon "
   :url "http://salty-anchorage-3387.herokuapp.com"
   :license {:name "Eclipse Public License v1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
