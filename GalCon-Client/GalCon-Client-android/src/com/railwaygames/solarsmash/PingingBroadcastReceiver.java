@@ -53,19 +53,29 @@ public class PingingBroadcastReceiver extends BroadcastReceiver {
 			long lastCheckTime = prefs.getLong(LAST_CHECK_KEY, 0);
 
 			if (lastCheckTime < System.currentTimeMillis() - ONE_HOUR) {
+				Log.i("PINGSERVICE", "Issueing call from USER_PRESENT");
 				updateLastCheckTime(context, System.currentTimeMillis());
 				new NetworkTask().execute(context);
 			}
 		} else if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+			Log.i("PINGSERVICE", "Setting up normal sleep alarm");
 			setupAlarm(context, SLEEP_TIME);
 		} else if (intent.getExtras() != null && intent.getExtras().containsKey(DELETE_KEY)) {
+			Log.i("PINGSERVICE", "Setting up long sleep alarm");
 			setupAlarm(context, LONG_SLEEP_TIME);
 			updateLastCheckTime(context, System.currentTimeMillis() + LONG_SLEEP_TIME);
 			NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 			manager.cancel(NOTIFICATION_ID);
 
 		} else if (!isMainActivityActive(context)) {
-			new NetworkTask().execute(context);
+			SharedPreferences prefs = context.getSharedPreferences(Constants.GALCON_PREFS, Context.MODE_PRIVATE);
+			long lastCheckTime = prefs.getLong(LAST_CHECK_KEY, 0);
+
+			if (lastCheckTime < System.currentTimeMillis() - SLEEP_TIME) {
+				Log.i("PINGSERVICE", "Issueing call from from alarm manager");
+				updateLastCheckTime(context, System.currentTimeMillis());
+				new NetworkTask().execute(context);
+			}
 		}
 	}
 
@@ -140,9 +150,9 @@ public class PingingBroadcastReceiver extends BroadcastReceiver {
 		}
 		text += inviteText;
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.snooze)
-				.setContentTitle(Constants.APP_TITLE).setContentText(text).setAutoCancel(true)
-				.setDefaults(Notification.DEFAULT_ALL).setOnlyAlertOnce(true);
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+				.setSmallIcon(R.drawable.notification).setContentTitle(Constants.APP_TITLE).setContentText(text)
+				.setAutoCancel(true).setDefaults(Notification.DEFAULT_ALL).setOnlyAlertOnce(true);
 
 		Intent resultIntent = new Intent(context, MainActivity.class);
 		resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -154,8 +164,7 @@ public class PingingBroadcastReceiver extends BroadcastReceiver {
 		deleteIntent.putExtra(DELETE_KEY, DELETE_KEY);
 		mBuilder.setDeleteIntent(PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT
 				| PendingIntent.FLAG_ONE_SHOT));
-		mBuilder.addAction(R.drawable.notification, "Long Snooze",
-				PendingIntent.getBroadcast(context, 0, deleteIntent, 0));
+		mBuilder.addAction(R.drawable.snooze, "Long Snooze", PendingIntent.getBroadcast(context, 0, deleteIntent, 0));
 
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
