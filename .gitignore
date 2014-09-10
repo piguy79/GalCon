@@ -29,3 +29,6 @@ npm-debug.log
 #Showing up on Conors Mac
 *.DS_Store
 
+#Leiningen files
+.lein-env
+
