@@ -80,7 +80,6 @@ import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.model.Session;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
-import com.railwaygames.solarsmash.service.PingService;
 
 public class AndroidGameAction implements GameAction {
 	private static final String TAG = "GameAction";
@@ -237,7 +236,7 @@ public class AndroidGameAction implements GameAction {
 					new PostJsonRequestTask<GameBoard>(callback, PERFORM_MOVES, GameBoard.class).execute(top.toString());
 					NotificationManager mNotificationManager = (NotificationManager) activity
 							.getSystemService(Context.NOTIFICATION_SERVICE);
-					mNotificationManager.cancel(PingService.NOTIFICATION_ID);
+					mNotificationManager.cancel(PingingBroadcastReceiver.NOTIFICATION_ID);
 				}
 			});
 		} catch (JSONException e) {

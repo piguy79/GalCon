@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -33,7 +36,6 @@ import com.railwaygames.solarsmash.model.Inventory;
 import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
-import com.railwaygames.solarsmash.service.PingService;
 
 public class MainActivity extends AndroidApplication implements AdColonyAdListener, AdColonyAdAvailabilityListener {
 	public static final String LOG_NAME = "GalCon";
@@ -55,6 +57,7 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	private GameLoop gameLoop;
 
 	private IabHelper mHelper = null;
+	private AlarmManager alarmMgr;
 
 	public MainActivity() {
 		super();
@@ -82,8 +85,12 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 				new ShaderTextField.DefaultOnscreenKeyboard());
 		initialize(gameLoop, cfg);
 
-		Intent intent = new Intent(this, PingService.class);
-		startService(intent);
+		PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent(
+				"com.railwaygames.solarsmash.service.PingService"), 0);
+
+		alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarmMgr.cancel(alarmIntent);
+		alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, 5 * 60 * 1000, 5 * 60 * 1000, alarmIntent);
 	}
 
 	@Override

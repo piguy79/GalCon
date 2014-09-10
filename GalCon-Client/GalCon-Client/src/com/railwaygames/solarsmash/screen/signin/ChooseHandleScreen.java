@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.PartialScreenFeedback;
@@ -23,6 +24,9 @@ import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.HandleResponse;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Resources;
+import com.railwaygames.solarsmash.screen.overlay.DismissableOverlay;
+import com.railwaygames.solarsmash.screen.overlay.Overlay;
+import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
@@ -211,6 +215,17 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionError(String msg) {
 			waitImage.stop();
+			final Overlay ovrlay = new DismissableOverlay(resources, new TextOverlay(msg, resources),
+					new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+							String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
+							String id = prefs.getString(authProvider + Constants.ID);
+							gameAction.findUserInformation(findUserHandler, id, authProvider);
+						}
+					});
+			stage.addActor(ovrlay);
 		}
 	}
 
