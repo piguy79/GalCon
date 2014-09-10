@@ -10,6 +10,6 @@
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]]
   :hooks [environ.leiningen.hooks]
-  :uberjar-name "galcon-admin-standalone.jar"
   :source-paths ["GalCon-Admin/src/"]
+  :uberjar-name "galcon-admin-standalone.jar"
   :profiles {:production {:env {:production true}}})
