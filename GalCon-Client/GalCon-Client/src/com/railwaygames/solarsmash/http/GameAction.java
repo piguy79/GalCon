@@ -28,6 +28,8 @@ import com.railwaygames.solarsmash.model.Session;
  */
 public interface GameAction {
 
+	public void shouldEnableAds(boolean enable);
+
 	public void setGameLoop(GameLoop gameLoop);
 
 	public String getSession();

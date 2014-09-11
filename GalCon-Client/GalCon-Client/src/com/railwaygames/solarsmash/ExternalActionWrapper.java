@@ -147,4 +147,8 @@ public class ExternalActionWrapper {
 	public static void findLeaderboardById(UIConnectionResultCallback<Leaderboards> callback, String id) {
 		gameAction.findLeaderboardById(callback, id);
 	}
+
+	public static void shouldEnableAds(boolean enable) {
+		gameAction.shouldEnableAds(enable);
+	}
 }

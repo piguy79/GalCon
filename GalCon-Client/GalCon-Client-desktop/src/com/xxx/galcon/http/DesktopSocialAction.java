@@ -35,10 +35,10 @@ public class DesktopSocialAction implements SocialAction {
 					public void run() {
 						int rand = (int) (Math.random() * 10000);
 						String id = "me" + rand + ":google";
-						GameLoop.USER.addAuthProvider(provider, id);
+						GameLoop.getUser().addAuthProvider(provider, id);
 
 						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-						prefs.putString(provider + Constants.ID, GameLoop.USER.auth.getID(provider));
+						prefs.putString(provider + Constants.ID, GameLoop.getUser().auth.getID(provider));
 						prefs.flush();
 
 						listener.onSignInSucceeded(provider, "FAKE_TOKEN");

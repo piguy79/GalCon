@@ -45,6 +45,10 @@ public class GameLoop extends Game {
 
 	public static void setUser(Player player) {
 		GameLoop.USER = player;
+
+		if (GameLoop.USER != null) {
+			ExternalActionWrapper.shouldEnableAds(!GameLoop.USER.noAd);
+		}
 	}
 
 	public static Player getUser() {

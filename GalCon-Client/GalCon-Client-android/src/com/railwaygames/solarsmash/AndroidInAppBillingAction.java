@@ -2,8 +2,6 @@ package com.railwaygames.solarsmash;
 
 import java.util.List;
 
-import android.app.Activity;
-
 import com.railwaygames.solarsmash.http.InAppBillingAction;
 import com.railwaygames.solarsmash.http.UIConnectionResultCallback;
 import com.railwaygames.solarsmash.model.Inventory;
@@ -12,9 +10,9 @@ import com.railwaygames.solarsmash.model.Order;
 
 public class AndroidInAppBillingAction implements InAppBillingAction {
 
-	private Activity activity;
+	private MainActivity activity;
 
-	public AndroidInAppBillingAction(Activity activity) {
+	public AndroidInAppBillingAction(MainActivity activity) {
 		this.activity = activity;
 	}
 
@@ -24,7 +22,7 @@ public class AndroidInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).loadStoreInventory(inventory, callback);
+				activity.loadStoreInventory(inventory, callback);
 			}
 		});
 	}
@@ -35,7 +33,7 @@ public class AndroidInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).setupInAppBilling(callback);
+				activity.setupInAppBilling(callback);
 			}
 		});
 	}
@@ -46,7 +44,7 @@ public class AndroidInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).consumeOrders(orders, callback);
+				activity.consumeOrders(orders, callback);
 			}
 		});
 	}
@@ -57,7 +55,7 @@ public class AndroidInAppBillingAction implements InAppBillingAction {
 
 			@Override
 			public void run() {
-				((MainActivity) activity).purchaseCoins(inventoryItem, callback);
+				activity.purchaseCoins(inventoryItem, callback);
 			}
 		});
 	}

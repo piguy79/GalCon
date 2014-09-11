@@ -59,6 +59,8 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 	private IabHelper mHelper = null;
 	private AlarmManager alarmMgr;
 
+	private boolean adsEnabled = false;
+
 	public MainActivity() {
 		super();
 	}
@@ -68,8 +70,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 		super.onCreate(savedInstanceState);
 
 		Crashlytics.start(this);
-
-		setupAdColony();
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.hideStatusBar = true;
@@ -145,24 +145,31 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 		if (!AdColony.isTablet()) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
+		adsEnabled = true;
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		AdColony.pause();
+		if (adsEnabled) {
+			AdColony.pause();
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		useImmersiveMode(true);
-		AdColony.resume(this);
+		if (adsEnabled) {
+			AdColony.resume(this);
+		}
 	}
 
 	public void displayAd() {
-		AdColonyVideoAd ad = new AdColonyVideoAd(ZONE_ID).withListener(this);
-		ad.show();
+		if (adsEnabled) {
+			AdColonyVideoAd ad = new AdColonyVideoAd(ZONE_ID).withListener(this);
+			ad.show();
+		}
 	}
 
 	public void purchaseCoins(final InventoryItem inventoryItem, final UIConnectionResultCallback<List<Order>> callback) {
@@ -353,7 +360,6 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 
 	@Override
 	public void onAdColonyAdAvailabilityChange(boolean arg0, String arg1) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -364,7 +370,12 @@ public class MainActivity extends AndroidApplication implements AdColonyAdListen
 
 	@Override
 	public void onAdColonyAdStarted(AdColonyAd arg0) {
-		// TODO Auto-generated method stub
 
+	}
+
+	public void shouldEnableAds(boolean enable) {
+		if (enable && !adsEnabled) {
+			setupAdColony();
+		}
 	}
 }

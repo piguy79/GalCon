@@ -47,7 +47,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -85,7 +84,7 @@ public class AndroidGameAction implements GameAction {
 	private static final String TAG = "GameAction";
 	private static final String OS = "android";
 	private ConnectivityManager connectivityManager;
-	private Activity activity;
+	private MainActivity activity;
 	private SocialAction socialAction;
 	private GameLoop gameLoop;
 	private Config config = new AndroidConfig();
@@ -174,7 +173,7 @@ public class AndroidGameAction implements GameAction {
 		this.gameLoop = gameLoop;
 	}
 
-	public AndroidGameAction(Activity activity, SocialAction socialAction, ConnectivityManager connectivityManager) {
+	public AndroidGameAction(MainActivity activity, SocialAction socialAction, ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
 		this.activity = activity;
 		this.socialAction = socialAction;
@@ -755,5 +754,14 @@ public class AndroidGameAction implements GameAction {
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
+
+	@Override
+	public void shouldEnableAds(final boolean enable) {
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				activity.shouldEnableAds(enable);
+			}
+		});
 	}
 }

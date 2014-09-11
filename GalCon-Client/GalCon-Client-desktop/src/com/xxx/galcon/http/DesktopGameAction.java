@@ -207,7 +207,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
-		args.put("handle", GameLoop.USER.handle);
+		args.put("handle", GameLoop.getUser().handle);
 		People people = (People) callURL(new GetClientRequest(), SEARCH_FOR_USERS, args, new People());
 		if (people.valid) {
 			callback.onConnectionResult(people);
@@ -299,21 +299,21 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 			String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.getUser().auth
 					.getID(authProvider)));
 
 			for (Order order : orders) {
-				GameLoop.USER.coins = GameLoop.USER.coins
+				GameLoop.getUser().coins = GameLoop.getUser().coins
 						+ DesktopInAppBillingAction.storeItems.get(order.productId).numCoins;
-				user.put("coins", GameLoop.USER.coins);
+				user.put("coins", GameLoop.getUser().coins);
 				user.put("usedCoins", -1);
 				user.put("watchedAd", false);
 				user.put("na", true);
 				usersCollection.update(
-						new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
+						new BasicDBObject("auth." + authProvider, GameLoop.getUser().auth.getID(authProvider)), user);
 			}
 			client.close();
-			callback.onConnectionResult(GameLoop.USER);
+			callback.onConnectionResult(GameLoop.getUser());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -389,12 +389,12 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			DB galcon = client.getDB("galcon");
 			DBCollection usersCollection = galcon.getCollection("users");
 
-			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.USER.auth
+			DBObject user = usersCollection.findOne(new BasicDBObject("auth." + authProvider, GameLoop.getUser().auth
 					.getID(authProvider)));
 			if (user == null) {
 
 				BasicDBObject newUser = new BasicDBObject("auth", new BasicDBObject(authProvider,
-						GameLoop.USER.auth.getID(authProvider)))
+						GameLoop.getUser().auth.getID(authProvider)))
 						.append("xp", 6999)
 						.append("wins", 0)
 						.append("losses", 0)
@@ -412,7 +412,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 						new BasicDBObject("id", session.session).append("expireDate",
 								new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000)));
 				usersCollection.update(
-						new BasicDBObject("auth." + authProvider, GameLoop.USER.auth.getID(authProvider)), user);
+						new BasicDBObject("auth." + authProvider, GameLoop.getUser().auth.getID(authProvider)), user);
 			}
 			client.close();
 
@@ -608,5 +608,10 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
+	}
+
+	@Override
+	public void shouldEnableAds(boolean enable) {
+
 	}
 }
