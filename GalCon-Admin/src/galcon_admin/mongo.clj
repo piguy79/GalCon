@@ -11,11 +11,11 @@
 (def connection (mg/connect-via-uri (or (System/getenv "MONGOHQ_URL") "mongodb://localhost:27017/galcon")))
 
 (defn find-user [handle]
-(mc/find-one (:db connection) "users" {:handle handle}))
+(first (mc/find-maps (:db connection) "users" {:handle handle})))
 
 (defn find-active-users-since [time]
   (let [date (c/to-date (c/from-long time))]
-  (mc/find-maps (:db connection) "users" { "session.expireDate" { $gte date}})))
+  (mc/find-maps (:db connection) "users" { "session.expireDate" { $gte date}}) true))
 
 
 
