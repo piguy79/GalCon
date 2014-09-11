@@ -142,7 +142,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 			String authProvider = prefs.getString(Constants.Auth.SOCIAL_AUTH_PROVIDER);
 			waitImage.start();
-			gameAction.requestHandleForId(userHandleResponseHandler, GameLoop.USER.auth.auth.get(authProvider),
+			gameAction.requestHandleForId(userHandleResponseHandler, GameLoop.getUser().auth.auth.get(authProvider),
 					handleTextField.getText(), authProvider);
 		}
 	}
@@ -199,7 +199,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 				result = "signIn";
 			} else {
 				if (player.handle != null && !player.handle.isEmpty()) {
-					GameLoop.USER = player;
+					GameLoop.setUser(player);
 					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 					prefs.putString(Constants.HANDLE, player.handle);
 					prefs.flush();
@@ -238,7 +238,7 @@ public class ChooseHandleScreen implements PartialScreenFeedback {
 				prefs.putString(Constants.HANDLE, response.player.handle);
 				prefs.flush();
 
-				GameLoop.USER = response.player;
+				GameLoop.setUser(response.player);
 				startHideSequence();
 			}
 

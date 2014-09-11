@@ -96,7 +96,7 @@ public class ExternalActionWrapper {
 		gameAction.addCoinsForAnOrder(new UIConnectionResultCallback<Player>() {
 			@Override
 			public void onConnectionResult(final Player player) {
-				GameLoop.USER = player;
+				GameLoop.setUser(player);
 
 				inAppBillingAction.consumeOrders(player.consumedOrders, new Callback() {
 					@Override
@@ -111,7 +111,7 @@ public class ExternalActionWrapper {
 							public void onConnectionError(String msg) {
 								callback.onFailure(msg);
 							}
-						}, GameLoop.USER.handle, player.consumedOrders);
+						}, GameLoop.getUser().handle, player.consumedOrders);
 					}
 
 					@Override
@@ -126,7 +126,7 @@ public class ExternalActionWrapper {
 			public void onConnectionError(String msg) {
 				callback.onFailure(msg);
 			}
-		}, GameLoop.USER.handle, orders);
+		}, GameLoop.getUser().handle, orders);
 	}
 
 	public static void loadInventory(final UIConnectionResultCallback<Inventory> callback) {

@@ -49,7 +49,7 @@ public class GameStartDialog extends OKCancelDialog {
 	private void create() {
 		createStartGameLabel();
 		createPracticeButton();
-		if(ConfigResolver.getRankForXp(GameLoop.USER.xp).level >= 2){
+		if(ConfigResolver.getRankForXp(GameLoop.getUser().xp).level >= 2){
 			createRandomButton();
 			createSocialButton();
 		}else{

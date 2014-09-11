@@ -16,18 +16,16 @@ import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.InAppBillingAction;
 import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.model.GameBoard;
-import com.railwaygames.solarsmash.model.GameInviteRequest;
 import com.railwaygames.solarsmash.model.Player;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.BoardScreen;
 import com.railwaygames.solarsmash.screen.FriendScreen;
 import com.railwaygames.solarsmash.screen.MenuScreenContainer;
 import com.railwaygames.solarsmash.screen.Resources;
-import com.railwaygames.solarsmash.screen.SetGameBoardResultHandler;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
 
 public class GameLoop extends Game {
-	public static Player USER;
+	private static Player USER;
 	public static Configuration CONFIG;
 
 	private GL20 gl;
@@ -44,6 +42,14 @@ public class GameLoop extends Game {
 	private InAppBillingAction inAppBillingAction;
 
 	private OnscreenKeyboard keyboard;
+
+	public static void setUser(Player player) {
+		GameLoop.USER = player;
+	}
+
+	public static Player getUser() {
+		return GameLoop.USER;
+	}
 
 	public GameLoop(GameAction gameAction, SocialAction socialAction, InAppBillingAction inAppBillingAction,
 			OnscreenKeyboard keyboard) {
@@ -121,7 +127,7 @@ public class GameLoop extends Game {
 		resources.fontShader = createShader("data/shaders/font-vs.glsl", "data/shaders/font-fs.glsl");
 
 		Fonts.dispose();
-		
+
 		boardScreen = new BoardScreen(resources);
 		friendScreen = new FriendScreen(resources, socialAction, gameAction);
 		menuScreenContainer = new MenuScreenContainer(resources, socialAction, gameAction, inAppBillingAction,
@@ -149,7 +155,7 @@ public class GameLoop extends Game {
 						friendScreen.setPreviousScreen((MenuScreenContainer) getScreen());
 						friendScreen.setMapType(action.split(":")[1]);
 						setScreen(friendScreen);
-					} 
+					}
 				} else if (result instanceof GameBoard) {
 					boardScreen.resetState();
 					boardScreen.setGameBoard((GameBoard) result);
@@ -161,21 +167,21 @@ public class GameLoop extends Game {
 					boardScreen.resetState();
 					boardScreen.getPreviousScreen().resetState();
 					setScreen(boardScreen.getPreviousScreen());
-				}else if(action.equals(Action.MAIN_MENU)){
+				} else if (action.equals(Action.MAIN_MENU)) {
 					boardScreen.resetState();
 					menuScreenContainer.resetState();
 					menuScreenContainer.resetToMenu();
 					setScreen(menuScreenContainer);
 				}
 			} else if (getScreen() instanceof FriendScreen) {
-				if(result instanceof String){
+				if (result instanceof String) {
 					String action = (String) result;
 					if (action.equals(Action.BACK)) {
 						friendScreen.resetState();
 						friendScreen.getPreviousScreen().resetState();
 						setScreen(friendScreen.getPreviousScreen());
 					}
-				}else if(result instanceof GameBoard){
+				} else if (result instanceof GameBoard) {
 					friendScreen.resetState();
 					boardScreen.resetState();
 					boardScreen.setPreviousScreen(friendScreen.getPreviousScreen());

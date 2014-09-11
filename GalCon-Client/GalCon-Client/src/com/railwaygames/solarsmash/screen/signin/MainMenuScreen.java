@@ -295,7 +295,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private String createCoinDisplay() {
-		return "" + GameLoop.USER.coins;
+		return "" + GameLoop.getUser().coins;
 	}
 
 	@Override
@@ -341,7 +341,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void loadFbFriends() {
-		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
+		if (GameLoop.getUser().auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
@@ -362,7 +362,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 	}
 
 	private void loadGooglePlusFriends() {
-		if (GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE) && socialAction.enableGoogle()) {
+		if (GameLoop.getUser().auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE) && socialAction.enableGoogle()) {
 			socialAction.getFriends(new FriendsListener() {
 				@Override
 				public void onFriendsLoadedFail(String error) {
@@ -411,7 +411,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				showLeaderboardLoadError();
 			}
 
-		}, authIds, GameLoop.USER.handle, authProviderUsed);
+		}, authIds, GameLoop.getUser().handle, authProviderUsed);
 	}
 
 	private boolean loadingUser = false;
@@ -429,7 +429,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				if (errorOverlay != null) {
 					errorOverlay.remove();
 				}
-				GameLoop.USER = result;
+				GameLoop.setUser(result);
 
 				if (LevelManager.shouldShowLevelUp(result)) {
 					hideTitleArea = true;
@@ -471,7 +471,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						});
 						stage.addActor(errorOverlay);
 					}
-				}, GameLoop.USER.handle);
+				}, GameLoop.getUser().handle);
 			}
 
 			@Override
@@ -489,7 +489,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 				});
 				stage.addActor(errorOverlay);
 			}
-		}, GameLoop.USER.handle);
+		}, GameLoop.getUser().handle);
 	}
 
 	@Override
@@ -770,7 +770,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 				label = new ShaderLabel(resources.fontShader, entry.handle, resources.skin, Constants.UI.X_SMALL_FONT,
 						Color.GRAY);
-				if (entry.handle.equals(GameLoop.USER.handle)) {
+				if (entry.handle.equals(GameLoop.getUser().handle)) {
 					label.setColor(Constants.Colors.USER_SHIP_FILL);
 				} else {
 					label.setColor(Constants.Colors.ENEMY_SHIP_FILL);

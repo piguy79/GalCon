@@ -248,7 +248,7 @@ public class BoardScreen implements ScreenFeedback {
 		createLayout();
 
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false) && GameLoop.USER.xp == 0) {
+		if (!prefs.getBoolean(Constants.Tutorial.OVERVIEW, false) && GameLoop.getUser().xp == 0) {
 			showTutorial(gameBoard, null);
 		} else {
 			beginOverlay();
@@ -312,15 +312,15 @@ public class BoardScreen implements ScreenFeedback {
 	}
 
 	private void beginOverlay() {
-		if (!GameLoop.USER.hasMoved(gameBoard)) {
+		if (!GameLoop.getUser().hasMoved(gameBoard)) {
 			showAd();
 
-			if (LevelManager.shouldShowLevelUp(findPlayer(GameLoop.USER.handle))) {
-				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.USER.handle));
+			if (LevelManager.shouldShowLevelUp(findPlayer(GameLoop.getUser().handle))) {
+				final LevelUpOverlay levelUp = new LevelUpOverlay(resources, findPlayer(GameLoop.getUser().handle));
 				levelUp.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						LevelManager.storeLevel(findPlayer(GameLoop.USER.handle));
+						LevelManager.storeLevel(findPlayer(GameLoop.getUser().handle));
 						levelUp.remove();
 						showRoundInfo();
 					}
@@ -340,7 +340,7 @@ public class BoardScreen implements ScreenFeedback {
 		String lastAdShownTime = prefs.getString(Constants.LAST_AD_SHOWN);
 		Long currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 
-		if (GameLoop.USER.noAd) {
+		if (GameLoop.getUser().noAd) {
 			return;
 		}
 
@@ -503,7 +503,7 @@ public class BoardScreen implements ScreenFeedback {
 						overlay = new TextOverlay("Refreshing", resources);
 						stage.addActor(overlay);
 						UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"),
-								gameBoard.id, GameLoop.USER.handle);
+								gameBoard.id, GameLoop.getUser().handle);
 					}
 				});
 				stage.addActor(claimFailOverlay);
@@ -515,7 +515,7 @@ public class BoardScreen implements ScreenFeedback {
 				overlay = new TextOverlay("Refreshing", resources);
 				stage.addActor(overlay);
 				UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
-						GameLoop.USER.handle);
+						GameLoop.getUser().handle);
 			}
 		});
 		stage.addActor(claimOverlay);
@@ -553,7 +553,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void createEndGameOverlay() {
 		if (gameBoard.hasWinner()) {
 			EndGameOverlay endGameOverlay;
-			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.USER.handle)) {
+			if (gameBoard.endGameInformation.winnerHandle.equals(GameLoop.getUser().handle)) {
 				endGameOverlay = new WinningEndGameOverlay(resources, gameBoard);
 			} else {
 				endGameOverlay = new LoserEndGameOverlay(resources, gameBoard);
@@ -571,7 +571,7 @@ public class BoardScreen implements ScreenFeedback {
 				@Override
 				public void gameFound(String gameId) {
 					UIConnectionWrapper.findGameById(new UpdateBoardScreenResultHandler("Could not refresh"), gameId,
-							GameLoop.USER.handle);
+							GameLoop.getUser().handle);
 				}
 			});
 			stage.addActor(endGameOverlay);
@@ -618,14 +618,14 @@ public class BoardScreen implements ScreenFeedback {
 								overlay = new TextOverlay("Resigning Game", resources);
 								stage.addActor(overlay);
 								UIConnectionWrapper.resignGame(new UpdateBoardScreenResultHandler("Could not resign"),
-										gameBoard.id, GameLoop.USER.handle);
+										gameBoard.id, GameLoop.getUser().handle);
 								return true;
 							} else if (event instanceof RefreshEvent) {
 								overlay = new TextOverlay("Refreshing", resources);
 								stage.addActor(overlay);
 								UIConnectionWrapper.findGameById(
 										new UpdateBoardScreenResultHandler("Could not refresh"), gameBoard.id,
-										GameLoop.USER.handle);
+										GameLoop.getUser().handle);
 								return true;
 							} else if (event instanceof AboutEvent) {
 								final Overlay ovrlay = new DismissableOverlay(
@@ -652,7 +652,7 @@ public class BoardScreen implements ScreenFeedback {
 												public void clicked(InputEvent event, float x, float y) {
 													UIConnectionWrapper.findGameById(
 															new UpdateBoardScreenResultHandler("Could not refresh"),
-															gameBoard.id, GameLoop.USER.handle);
+															gameBoard.id, GameLoop.getUser().handle);
 													overlay.remove();
 												};
 											});
@@ -663,7 +663,7 @@ public class BoardScreen implements ScreenFeedback {
 									public void onConnectionError(String msg) {
 										overlay.remove();
 									};
-								}, GameLoop.USER.handle, gameBoard.id);
+								}, GameLoop.getUser().handle, gameBoard.id);
 							} else if (event instanceof TutorialEvent) {
 								clearTouchedPlanets();
 								tutorialState = "";
@@ -680,7 +680,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void createMoves() {
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.executed || !move.belongsToPlayer(GameLoop.USER)) {
+			if (move.executed || !move.belongsToPlayer(GameLoop.getUser())) {
 				continue;
 			}
 			Image movetoDisplay = MoveFactory.createShipForDisplay(move.angleOfMovement(gameBoard),
@@ -694,7 +694,7 @@ public class BoardScreen implements ScreenFeedback {
 			}
 
 			Color color = Constants.Colors.USER_SHIP_FILL;
-			if (!move.belongsToPlayer(GameLoop.USER)) {
+			if (!move.belongsToPlayer(GameLoop.getUser())) {
 				color = Constants.Colors.ENEMY_SHIP_FILL;
 			}
 
@@ -712,7 +712,7 @@ public class BoardScreen implements ScreenFeedback {
 				screenCalcs.getBottomHudBounds().size.height);
 
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.belongsToPlayer(GameLoop.USER)) {
+			if (move.belongsToPlayer(GameLoop.getUser())) {
 				moveHud.addMove(move);
 			}
 		}
@@ -887,7 +887,7 @@ public class BoardScreen implements ScreenFeedback {
 	private void createPlanetIcons() {
 		Set<String> targettedPlanets = new HashSet<String>();
 		for (Move move : gameBoard.movesInProgress) {
-			if (move.belongsToPlayer(GameLoop.USER) && !move.executed) {
+			if (move.belongsToPlayer(GameLoop.getUser()) && !move.executed) {
 				targettedPlanets.add(move.to);
 			}
 		}
@@ -915,7 +915,7 @@ public class BoardScreen implements ScreenFeedback {
 		}
 
 		Image targetImage;
-		if (button.planet.isOwnedBy(GameLoop.USER.handle)) {
+		if (button.planet.isOwnedBy(GameLoop.getUser().handle)) {
 			targetImage = new Image(resources.skin, "transfer");
 		} else {
 			targetImage = new Image(resources.skin, "crosshairs");
@@ -943,12 +943,12 @@ public class BoardScreen implements ScreenFeedback {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_USER_PLANET)) {
-						if (!planet.isOwnedBy(GameLoop.USER.handle)) {
+						if (!planet.isOwnedBy(GameLoop.getUser().handle)) {
 							event.stop();
 							return;
 						}
 					} else if (tutorialState.equals(Constants.Tutorial.BREAK_TOUCH_OTHER_PLANET)) {
-						if (planet.isOwnedBy(GameLoop.USER.handle)) {
+						if (planet.isOwnedBy(GameLoop.getUser().handle)) {
 							event.stop();
 							return;
 						}
@@ -996,7 +996,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private void renderDialog() {
 		if (touchedPlanets.size() > 1) {
-			if (GameLoop.USER.hasMoved(gameBoard)) {
+			if (GameLoop.getUser().hasMoved(gameBoard)) {
 				if (planetsAreTheSame(touchedPlanets)) {
 					highlight(touchedPlanets.get(0));
 				} else {
@@ -1018,7 +1018,7 @@ public class BoardScreen implements ScreenFeedback {
 
 	private boolean userPlanetInSelection() {
 		for (Planet planet : touchedPlanets) {
-			if (planet.isOwnedBy(GameLoop.USER.handle)) {
+			if (planet.isOwnedBy(GameLoop.getUser().handle)) {
 				return true;
 			}
 		}
@@ -1049,7 +1049,7 @@ public class BoardScreen implements ScreenFeedback {
 	private Planet touchedUserPlanet(List<Planet> planets) {
 		for (Planet planet : planets) {
 
-			if (planet.owner != null && planet.owner.equals(GameLoop.USER.handle)) {
+			if (planet.owner != null && planet.owner.equals(GameLoop.getUser().handle)) {
 				return planet;
 			}
 		}

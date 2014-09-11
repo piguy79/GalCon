@@ -156,9 +156,9 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		});
 
 		final Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
-		if (GameLoop.USER.coins == 0) {
+		if (GameLoop.getUser().coins == 0) {
 			returnValue = Action.NO_MORE_COINS;
-		} else if (GameLoop.USER.firstGameEver(prefs)) {
+		} else if (GameLoop.getUser().firstGameEver(prefs)) {
 			prefs.putBoolean(Constants.Config.FIRST_GAME_PLAYED, true);
 			prefs.flush();
 			startHideSequence(Action.PRACTICE + ":" + this.allMaps.get(0).key);
@@ -307,7 +307,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 					public void onConnectionError(String msg) {
 						showErrorOnPlay(dialog, msg);
 					}
-				}, GameLoop.USER.handle, Long.valueOf(selectedMapKey));
+				}, GameLoop.getUser().handle, Long.valueOf(selectedMapKey));
 			}
 
 			@Override
@@ -336,7 +336,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 						showErrorOnPlay(dialog, msg);
 						
 					}
-				}, GameLoop.USER.handle, Long.valueOf(selectedMapKey));
+				}, GameLoop.getUser().handle, Long.valueOf(selectedMapKey));
 				
 			}
 		});
@@ -376,7 +376,7 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 
 		public CardActor(Map map, Resources resources) {
 			this.map = map;
-			if (GameLoop.USER.xp >= map.availableFromXp) {
+			if (GameLoop.getUser().xp >= map.availableFromXp) {
 				mapAvailable = true;
 				this.mapTex = resources.levelAtlas.findRegion("" + map.key);
 			} else {

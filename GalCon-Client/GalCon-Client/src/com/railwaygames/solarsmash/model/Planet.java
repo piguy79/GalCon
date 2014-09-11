@@ -180,9 +180,9 @@ public class Planet extends JsonConvertible {
 
 		Color color = DEFAULT_PLANET_COLOR;
 
-		if (!owner.equals(OWNER_NO_ONE) && handle.equals(GameLoop.USER.handle)) {
+		if (!owner.equals(OWNER_NO_ONE) && handle.equals(GameLoop.getUser().handle)) {
 			return OWNED_BY_ME_COLOR;
-		} else if (!owner.equals(OWNER_NO_ONE) && !handle.equals(GameLoop.USER.handle)) {
+		} else if (!owner.equals(OWNER_NO_ONE) && !handle.equals(GameLoop.getUser().handle)) {
 			return OWNED_BY_OPPONENT_COLOR;
 		} else if (isHome) {
 			return OWNED_BY_OPPONENT_COLOR;

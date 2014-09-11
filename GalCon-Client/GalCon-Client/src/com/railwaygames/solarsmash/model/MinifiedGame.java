@@ -76,7 +76,7 @@ public class MinifiedGame extends JsonConvertible {
 			return result;
 		}
 
-		return result && endViewedBy.contains(GameLoop.USER.handle);
+		return result && endViewedBy.contains(GameLoop.getUser().handle);
 	}
 
 	public List<MinifiedPlayer> allPlayersExcept(String playerHandleToExclude) {

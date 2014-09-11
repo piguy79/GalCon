@@ -25,7 +25,7 @@ public class MoveFactory {
 
 		float startX = -1, startY = -1, endX = 1, endY = -1;
 		for (Planet planet : availablePlanets) {
-			if (planet.isOwnedBy(GameLoop.USER.handle) && move.from == null) {
+			if (planet.isOwnedBy(GameLoop.getUser().handle) && move.from == null) {
 				move.from = planet.name;
 				move.shipsToMove = fleetToSend;
 				startX = planet.position.x;
@@ -47,7 +47,7 @@ public class MoveFactory {
 			move.previousPosition = pos;
 			move.currentPosition = pos;
 			move.duration = GalConMath.distance(startX, startY, endX, endY);
-			move.handle = GameLoop.USER.handle;
+			move.handle = GameLoop.getUser().handle;
 
 			return move;
 		}

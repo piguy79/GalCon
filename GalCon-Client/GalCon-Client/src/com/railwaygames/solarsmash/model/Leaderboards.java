@@ -127,7 +127,7 @@ public class Leaderboards extends JsonConvertible {
 
 				boolean foundMe = false;
 				for (ListIterator<LeaderboardEntry> iter = mergedEntries.listIterator(); iter.hasNext();) {
-					if (iter.next().handle.equals(GameLoop.USER.handle)) {
+					if (iter.next().handle.equals(GameLoop.getUser().handle)) {
 						if (foundMe) {
 							iter.remove();
 						} else {
@@ -138,7 +138,7 @@ public class Leaderboards extends JsonConvertible {
 
 				if (!foundMe) {
 					for (LeaderboardEntry entry : thisEntries) {
-						if (entry.handle.equals(GameLoop.USER.handle)) {
+						if (entry.handle.equals(GameLoop.getUser().handle)) {
 							mergedEntries.add(entry);
 							break;
 						}

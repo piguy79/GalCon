@@ -25,7 +25,7 @@ public class JsonConstructor {
 	public static JSONObject performMove(String gameId, List<Move> moves, List<HarvestMove> harvestMoves, String session)
 			throws JSONException {
 		JSONObject top = new JSONObject();
-		top.put("playerHandle", GameLoop.USER.handle);
+		top.put("playerHandle", GameLoop.getUser().handle);
 		top.put("id", gameId);
 		top.put("session", session);
 		JSONArray jsonMoves = new JSONArray();

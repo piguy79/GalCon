@@ -166,6 +166,6 @@ public class PlanetInfoHud extends Group {
 
 	private boolean isHarvestAvailable() {
 		return !planet.isUnderHarvest() && planet.hasAbility() && planet.isAlive()
-				&& !GameLoop.USER.hasMoved(gameBoard) && planet.isOwnedBy(GameLoop.USER.handle);
+				&& !GameLoop.getUser().hasMoved(gameBoard) && planet.isOwnedBy(GameLoop.getUser().handle);
 	}
 }

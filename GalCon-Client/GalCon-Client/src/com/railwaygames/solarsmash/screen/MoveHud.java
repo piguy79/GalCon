@@ -58,7 +58,7 @@ public class MoveHud extends Table {
 	}
 
 	private void addPerformMoveButton() {
-		if (!GameLoop.USER.hasMoved(gameBoard)) {
+		if (!GameLoop.getUser().hasMoved(gameBoard)) {
 			final ActionButton performMove = new ActionButton(resources.skin, "performMoveButton", new Point(getX()
 					+ (getWidth() * 0.83f), getY() + (getHeight() * 0.05f)));
 			performMove.addListener(new ClickListener() {
@@ -66,7 +66,7 @@ public class MoveHud extends Table {
 				public void clicked(InputEvent event, float x, float y) {
 					List<Move> newMoves = new ArrayList<Move>();
 					for (Move move : gameBoard.movesInProgress) {
-						if (move.belongsToPlayer(GameLoop.USER)
+						if (move.belongsToPlayer(GameLoop.getUser())
 								&& move.startingRound == gameBoard.roundInformation.round) {
 							newMoves.add(move);
 						}
@@ -119,7 +119,7 @@ public class MoveHud extends Table {
 	}
 
 	public void addMove(Move move) {
-		if (move.handle.equals(GameLoop.USER.handle) && move.duration > 0) {
+		if (move.handle.equals(GameLoop.getUser().handle) && move.duration > 0) {
 			addMoveToMap(move);
 			renderMoves();
 		}

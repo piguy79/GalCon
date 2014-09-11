@@ -128,7 +128,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
-			if (handle.equals(GameLoop.USER.handle)) {
+			if (handle.equals(GameLoop.getUser().handle)) {
 				lbl.addAction(color(Constants.Colors.USER_SHIP_FILL, 0.66f));
 			} else {
 				lbl.addAction(color(Constants.Colors.ENEMY_SHIP_FILL, 0.66f));

@@ -373,7 +373,7 @@ public class FriendScreen implements ScreenFeedback {
 									stage.addActor(ovrlay);
 
 								}
-							}, GameLoop.USER.handle, ((GalConFriend) friend).handle, mapKey);
+							}, GameLoop.getUser().handle, ((GalConFriend) friend).handle, mapKey);
 
 						} else {
 							final TextOverlay overlay = createLoadingOverlay();
@@ -601,7 +601,7 @@ public class FriendScreen implements ScreenFeedback {
 			public void onConnectionError(String msg) {
 				showError("Could not load recent opponents");
 			}
-		}, GameLoop.USER.handle);
+		}, GameLoop.getUser().handle);
 	}
 
 	private ClickListener allClickListener = new ClickListener() {
@@ -647,8 +647,8 @@ public class FriendScreen implements ScreenFeedback {
 				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		populateSearchLabelGroup(label);
 
-		Gdx.app.log("FRIENDS", GameLoop.USER.auth.auth.toString());
-		if (!GameLoop.USER.auth.hasAuth(authProvider)) {
+		Gdx.app.log("FRIENDS", GameLoop.getUser().auth.auth.toString());
+		if (!GameLoop.getUser().auth.hasAuth(authProvider)) {
 			Gdx.app.log("FRIENDS", "Starting sign in for: " + authProvider);
 			socialAction.signIn(new AuthenticationListener() {
 
@@ -670,7 +670,7 @@ public class FriendScreen implements ScreenFeedback {
 					gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
 						@Override
 						public void onConnectionResult(Player result) {
-							GameLoop.USER = result;
+							GameLoop.setUser(result);
 							findFriendsByProvider(authProvider);
 						}
 
@@ -678,7 +678,7 @@ public class FriendScreen implements ScreenFeedback {
 						public void onConnectionError(String msg) {
 							showError("Unable to connect " + authProvider);
 						}
-					}, GameLoop.USER.handle, id, authProvider);
+					}, GameLoop.getUser().handle, id, authProvider);
 				}
 
 				@Override
@@ -736,7 +736,7 @@ public class FriendScreen implements ScreenFeedback {
 						displayPeople(combinedFriends, time);
 					}
 
-				}, authIds, GameLoop.USER.handle, authProviderUsed);
+				}, authIds, GameLoop.getUser().handle, authProviderUsed);
 
 			}
 

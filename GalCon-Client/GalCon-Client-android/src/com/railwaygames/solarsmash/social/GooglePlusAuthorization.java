@@ -84,12 +84,12 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 		} else if (Plus.PeopleApi.getCurrentPerson(client) == null) {
 			listener.onSignInFailed("Unable to load ID.");
 		} else {
-			GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
+			GameLoop.getUser().addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE,
 					Plus.PeopleApi.getCurrentPerson(client).getId());
 
 			Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 			prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE + Constants.ID,
-					GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
+					GameLoop.getUser().auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 			prefs.flush();
 
 			new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(client));
@@ -299,7 +299,7 @@ public class GooglePlusAuthorization implements Authorizer, ConnectionCallbacks,
 
 		Intent shareIntent = new PlusShare.Builder(activity)
 				.setText(
-						"Hey, come play me in Solar Smash. Invite me using the handle \"" + GameLoop.USER.handle
+						"Hey, come play me in Solar Smash. Invite me using the handle \"" + GameLoop.getUser().handle
 								+ "\". Download from http://www.railwaygames.mobi/ ").setType("text/plain")
 				.setRecipients(people).getIntent();
 

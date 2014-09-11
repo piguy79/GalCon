@@ -64,7 +64,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 
 	protected void refreshScreen() {
 		waitImage.start();
-		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.USER.handle);
+		UIConnectionWrapper.findCurrentGamesByPlayerHandle(this, GameLoop.getUser().handle);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 	public void takeActionOnGameboard(MinifiedGame toTakeActionOn, String playerHandle) {
 		loadingOverlay = new LoadingOverlay(resources);
 		stage.addActor(loadingOverlay);
-		UIConnectionWrapper.findGameById(new SelectGameResultHander(), toTakeActionOn.id, GameLoop.USER.handle);
+		UIConnectionWrapper.findGameById(new SelectGameResultHander(), toTakeActionOn.id, GameLoop.getUser().handle);
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 				scrollList.addRow(game, new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						takeActionOnGameboard(game, GameLoop.USER.handle);
+						takeActionOnGameboard(game, GameLoop.getUser().handle);
 					}
 				});
 			}
@@ -169,7 +169,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		float rowHeight = group.getHeight();
 
 		String opponent;
-		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.USER.handle);
+		List<MinifiedPlayer> otherPlayers = game.allPlayersExcept(GameLoop.getUser().handle);
 		if (otherPlayers.size() == 0) {
 			opponent = BoardScreen.Labels.waitingLabel(game.social);
 		} else {
@@ -190,7 +190,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			color = Color.RED;
 		} else if (game.hasWinner(false)) {
 			if (game.hasWinner(true)) {
-				if (game.winner.equals(GameLoop.USER.handle)) {
+				if (game.winner.equals(GameLoop.getUser().handle)) {
 					statusText = "You Won";
 				} else {
 					statusText = "You Lost";
@@ -371,7 +371,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
 				stage.addActor(loadingOverlay);
-				UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.USER.handle);
+				UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.getUser().handle);
 			}
 		});
 		actors.add(refreshButton);
@@ -388,7 +388,7 @@ public class GameListScreen implements PartialScreenFeedback, UIConnectionResult
 		@Override
 		public void onConnectionResult(Maps result) {
 			allMaps = result;
-			UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.USER.handle);
+			UIConnectionWrapper.findCurrentGamesByPlayerHandle(GameListScreen.this, GameLoop.getUser().handle);
 		}
 
 		@Override

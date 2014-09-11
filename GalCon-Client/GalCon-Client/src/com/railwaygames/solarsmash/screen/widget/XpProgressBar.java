@@ -25,8 +25,8 @@ public class XpProgressBar extends Group {
 		this.resources = resources;
 		this.height = height;
 		this.width = width;
-		usersCurrentRank = ConfigResolver.getRankForXp(GameLoop.USER.xp);
-		nextRank = ConfigResolver.getNextRank(GameLoop.USER.xp);
+		usersCurrentRank = ConfigResolver.getRankForXp(GameLoop.getUser().xp);
+		nextRank = ConfigResolver.getNextRank(GameLoop.getUser().xp);
 
 		createMainImage();
 		createCoverImage();
@@ -53,7 +53,7 @@ public class XpProgressBar extends Group {
 			coverXp.setWidth(0);
 		} else {
 			float total = nextRank.startFrom - usersCurrentRank.startFrom;
-			float userInRange = GameLoop.USER.xp - usersCurrentRank.startFrom;
+			float userInRange = GameLoop.getUser().xp - usersCurrentRank.startFrom;
 			float percentage = userInRange / total;
 			float percentageNotEarned = 100 - (percentage * 100);
 
@@ -73,7 +73,7 @@ public class XpProgressBar extends Group {
 			neededText.setX(mainXp.getX() + 10);
 			addActor(neededText);
 		} else {
-			int xpNeeded = nextRank.startFrom - GameLoop.USER.xp;
+			int xpNeeded = nextRank.startFrom - GameLoop.getUser().xp;
 			ShaderLabel xpNeededLabel = new ShaderLabel(resources.fontShader, xpNeeded + "xp", resources.skin,
 					Constants.UI.DEFAULT_FONT, Color.YELLOW);
 			xpNeededLabel.setX(mainXp.getX() + 10);
@@ -106,7 +106,7 @@ public class XpProgressBar extends Group {
 	}
 
 	private void createUserWelcome() {
-		String welcome = GameLoop.USER.handle + "[" + usersCurrentRank.level + "]";
+		String welcome = GameLoop.getUser().handle + "[" + usersCurrentRank.level + "]";
 		ShaderLabel userWelcome = new ShaderLabel(resources.fontShader, welcome, resources.skin,
 				Constants.UI.DEFAULT_FONT, Color.WHITE);
 		userWelcome.setX(mainXp.getX() + 2);

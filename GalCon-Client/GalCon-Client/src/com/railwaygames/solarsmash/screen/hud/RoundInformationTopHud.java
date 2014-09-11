@@ -55,9 +55,9 @@ public class RoundInformationTopHud extends Group {
 	}
 
 	private Color getColor(String handle) {
-		if (handle.equals(GameLoop.USER.handle)) {
+		if (handle.equals(GameLoop.getUser().handle)) {
 			return Constants.Colors.USER_SHIP_FILL;
-		} else if (!handle.equals(Constants.OWNER_NO_ONE) && !handle.equals(GameLoop.USER.handle)) {
+		} else if (!handle.equals(Constants.OWNER_NO_ONE) && !handle.equals(GameLoop.getUser().handle)) {
 			return Constants.Colors.ENEMY_SHIP_FILL;
 		}
 
@@ -78,7 +78,7 @@ public class RoundInformationTopHud extends Group {
 
 		String text = "Denizens rejoice and grant a " + gameBoard.gameConfig.getValue("harvestSavior")
 				+ " ship bonus for saving their moon from destruction";
-		if (!planet.owner.equals(GameLoop.USER.handle)) {
+		if (!planet.owner.equals(GameLoop.getUser().handle)) {
 			text = "Enemy has saved this moon from destruction and has been granted a "
 					+ gameBoard.gameConfig.getValue("harvestSavior") + " ship bonus";
 		}
@@ -161,7 +161,7 @@ public class RoundInformationTopHud extends Group {
 			} else {
 				didAirAttackOccur = true;
 			}
-			if (move.handle.equals(GameLoop.USER.handle)) {
+			if (move.handle.equals(GameLoop.getUser().handle)) {
 				userMoveCount += move.battleStats.startFleet;
 				if (move.battleStats.attackMultiplier > 0) {
 					userAttackBonus = (int) (move.battleStats.attackMultiplier * 100.0f);
@@ -194,19 +194,19 @@ public class RoundInformationTopHud extends Group {
 			color = planet.getColor(currentOwner, false);
 			attackColor = getColor(moveOwner);
 			defenseColor = getColor(currentOwner);
-		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.USER.handle)
-				&& previousOwner.equals(GameLoop.USER.handle)) {
+		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.getUser().handle)
+				&& previousOwner.equals(GameLoop.getUser().handle)) {
 			attackText = "Planet\nLost";
 			color = planet.getColor(currentOwner, false);
 			attackColor = getColor(moveOwner);
 			defenseColor = getColor(previousOwner);
-		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.USER.handle)
-				&& !previousOwner.equals(GameLoop.USER.handle)) {
+		} else if (!previousOwner.equals(currentOwner) && !moveOwner.equals(GameLoop.getUser().handle)
+				&& !previousOwner.equals(GameLoop.getUser().handle)) {
 			attackText = "Planet\nCaptured";
 			color = planet.getColor(currentOwner, false);
 			attackColor = getColor(moveOwner);
 			defenseColor = getColor(previousOwner);
-		} else if (!previousOwner.equals(currentOwner) && moveOwner.equals(GameLoop.USER.handle)) {
+		} else if (!previousOwner.equals(currentOwner) && moveOwner.equals(GameLoop.getUser().handle)) {
 			attackText = "Planet\nCaptured";
 			color = planet.getColor(moveOwner, false);
 			attackColor = getColor(moveOwner);

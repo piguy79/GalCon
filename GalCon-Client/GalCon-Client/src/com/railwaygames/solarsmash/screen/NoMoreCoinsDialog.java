@@ -130,7 +130,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	private void createFirstTimeDialog(Stage stage2, float width, float height) {
 		Preferences prefs = Gdx.app.getPreferences(GALCON_PREFS);
 		String lastAdShownTime = prefs.getString(Constants.NO_COIN_INFO);
-		if (GameLoop.USER.coins == 0 && lastAdShownTime.isEmpty()) {
+		if (GameLoop.getUser().coins == 0 && lastAdShownTime.isEmpty()) {
 			prefs.putString(Constants.NO_COIN_INFO, "true");
 			prefs.flush();
 			String formattedInfo = coinInfoText.format(coinInfoText,
@@ -251,7 +251,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 		group.addActor(coinImage);
 
-		coinText = new ShaderLabel(resources.fontShader, GameLoop.USER.coins.toString(), resources.skin,
+		coinText = new ShaderLabel(resources.fontShader, GameLoop.getUser().coins.toString(), resources.skin,
 				Constants.UI.LARGE_FONT, Color.WHITE);
 		coinText.setAlignment(Align.right, Align.right);
 		float yMidPoint = coinImage.getY() + coinImage.getHeight() / 2;
@@ -265,7 +265,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 	@Override
 	public void render(float delta) {
 		if (coinText != null) {
-			coinText.setText(GameLoop.USER.coins.toString());
+			coinText.setText(GameLoop.getUser().coins.toString());
 		}
 	}
 
@@ -301,7 +301,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 	@Override
 	public void onConnectionResult(Player result) {
-		GameLoop.USER = result;
+		GameLoop.setUser(result);
 	}
 
 	@Override
@@ -340,7 +340,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 
 			@Override
 			public void onConnectionResult(Player result) {
-				GameLoop.USER = result;
+				GameLoop.setUser(result);
 				ExternalActionWrapper.loadInventory(inventoryCallback);
 			}
 
@@ -355,7 +355,7 @@ public class NoMoreCoinsDialog implements PartialScreenFeedback, ReturnableParti
 				});
 				stage.addActor(ovrlay);
 			}
-		}, GameLoop.USER.handle);
+		}, GameLoop.getUser().handle);
 	}
 
 	@Override

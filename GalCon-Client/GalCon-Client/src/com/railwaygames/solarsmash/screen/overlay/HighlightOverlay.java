@@ -196,7 +196,7 @@ public abstract class HighlightOverlay extends Overlay {
 			lbl.setAlignment(align, align);
 			lbl.setTouchable(Touchable.disabled);
 			lbl.setColor(Color.CLEAR);
-			if (handle.equals(GameLoop.USER.handle)) {
+			if (handle.equals(GameLoop.getUser().handle)) {
 				lbl.addAction(color(Constants.Colors.USER_SHIP_FILL, 0.66f));
 			} else {
 				lbl.addAction(color(Constants.Colors.ENEMY_SHIP_FILL, 0.66f));
@@ -315,7 +315,7 @@ public abstract class HighlightOverlay extends Overlay {
 				boardCalcs);
 
 		Color color = Constants.Colors.USER_SHIP_FILL;
-		if (!move.belongsToPlayer(GameLoop.USER)) {
+		if (!move.belongsToPlayer(GameLoop.getUser())) {
 			color = Constants.Colors.ENEMY_SHIP_FILL;
 		}
 		moveToDisplay.setColor(color);
@@ -333,7 +333,7 @@ public abstract class HighlightOverlay extends Overlay {
 			}
 
 			if (move.executed && !move.battleStats.previousPlanetOwner.equals(move.handle)
-					&& toPlanetButton.planet.isOwnedBy(GameLoop.USER.handle)
+					&& toPlanetButton.planet.isOwnedBy(GameLoop.getUser().handle)
 					&& toPlanetButton.planet.isOwnedBy(move.handle)
 					&& !planetsConquered.contains(toPlanetButton.planet.name)) {
 				planetsConquered.add(toPlanetButton.planet.name);
@@ -395,7 +395,7 @@ public abstract class HighlightOverlay extends Overlay {
 		}
 
 		Color fontColorToUse = Color.RED;
-		if (planetOwner.equals(GameLoop.USER.handle)) {
+		if (planetOwner.equals(GameLoop.getUser().handle)) {
 			fontColorToUse = Color.GREEN;
 		}
 
@@ -514,7 +514,7 @@ public abstract class HighlightOverlay extends Overlay {
 
 		public TutorialHuds(String tutorialString, String continuePoint) {
 			if (tutorialString.equals(Constants.Tutorial.OVERVIEW)) {
-				this.tutorial = new Overview(resources, HighlightOverlay.this, !GameLoop.USER.hasMoved(gameBoard));
+				this.tutorial = new Overview(resources, HighlightOverlay.this, !GameLoop.getUser().hasMoved(gameBoard));
 			}
 
 			currentPage = tutorial.getPage(continuePoint);
@@ -613,9 +613,9 @@ public abstract class HighlightOverlay extends Overlay {
 				for (int i = 0; i < planetMoves.getValue().size(); ++i) {
 					Move move = planetMoves.getValue().get(i);
 					Planet planet = gameBoard.getPlanet(move.to);
-					if (!move.handle.equals(GameLoop.USER.handle)
+					if (!move.handle.equals(GameLoop.getUser().handle)
 							&& move.battleStats.previousPlanetOwner.equals(planet.owner)
-							&& !planet.owner.equals(GameLoop.USER.handle)) {
+							&& !planet.owner.equals(GameLoop.getUser().handle)) {
 						continue;
 					}
 
@@ -717,7 +717,7 @@ public abstract class HighlightOverlay extends Overlay {
 										move.angleOfMovement(gameBoard), move.previousPosition, resources, boardCalcs);
 
 								Color color = Constants.Colors.USER_SHIP_FILL;
-								if (!move.belongsToPlayer(GameLoop.USER)) {
+								if (!move.belongsToPlayer(GameLoop.getUser())) {
 									color = Constants.Colors.ENEMY_SHIP_FILL;
 								}
 								moveToDisplay.setColor(color);
@@ -846,7 +846,7 @@ public abstract class HighlightOverlay extends Overlay {
 			moveHud.removeMoves();
 
 			for (Move move : gameBoard.movesInProgress) {
-				if (move.belongsToPlayer(GameLoop.USER) && move.to.equals(planet.name) && !move.executed) {
+				if (move.belongsToPlayer(GameLoop.getUser()) && move.to.equals(planet.name) && !move.executed) {
 					Planet fromPlanet = gameBoard.getPlanet(move.from);
 					PlanetButton fromPlanetButton = PlanetButtonFactory.createPlanetButton(fromPlanet, gameBoard, true,
 							boardCalcs, resources);
@@ -905,7 +905,7 @@ public abstract class HighlightOverlay extends Overlay {
 
 		@Override
 		public void createBottomHud() {
-			if (move.startingRound != gameBoard.roundInformation.round || GameLoop.USER.hasMoved(gameBoard)) {
+			if (move.startingRound != gameBoard.roundInformation.round || GameLoop.getUser().hasMoved(gameBoard)) {
 				return;
 			}
 

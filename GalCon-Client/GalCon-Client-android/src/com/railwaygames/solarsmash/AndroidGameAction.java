@@ -360,7 +360,7 @@ public class AndroidGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
-		args.put("handle", GameLoop.USER.handle);
+		args.put("handle", GameLoop.getUser().handle);
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				new GetJsonRequestTask<People>(args, callback, SEARCH_FOR_USERS, People.class).execute("");

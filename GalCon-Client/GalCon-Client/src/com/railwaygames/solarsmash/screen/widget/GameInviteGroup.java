@@ -32,7 +32,7 @@ public class GameInviteGroup extends Group {
 	private GameQueueItem item;
 	private String mapTitle;
 	private Image coinImage;
-	
+
 	private boolean fadeComplete = false;
 	private GameBoard boardToPlay;
 
@@ -55,7 +55,7 @@ public class GameInviteGroup extends Group {
 
 		if (map != null) {
 			createAcceptButton();
-			
+
 			addListener(playListener);
 		}
 	}
@@ -111,7 +111,7 @@ public class GameInviteGroup extends Group {
 						loadingOverlay.remove();
 						fire(new DeclineInviteEvent(false));
 					}
-				}, item.game.id, GameLoop.USER.handle);
+				}, item.game.id, GameLoop.getUser().handle);
 			}
 		});
 		addActor(declineButton);
@@ -120,31 +120,32 @@ public class GameInviteGroup extends Group {
 	public void createAcceptButton() {
 		float centerY = (height / 2) - (GraphicsUtils.actionButtonSize / 2);
 		coinImage = new Image(resources.skin, Constants.UI.COIN_IMAGE);
-		coinImage.setBounds(width- (GraphicsUtils.actionButtonSize * 1.5f), centerY, GraphicsUtils.actionButtonSize, GraphicsUtils.actionButtonSize);
-		
+		coinImage.setBounds(width - (GraphicsUtils.actionButtonSize * 1.5f), centerY, GraphicsUtils.actionButtonSize,
+				GraphicsUtils.actionButtonSize);
+
 		coinImage.addListener(playListener);
 		addActor(coinImage);
 	}
-	
+
 	ClickListener playListener = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			if (GameLoop.USER.coins == 0) {
+			if (GameLoop.getUser().coins == 0) {
 				fire(new InviteNoCoinsEvent());
 			} else {
 				CoinInfoDisplay display = new CoinInfoDisplay(resources, coinImage);
 				display.animate(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						fadeComplete = true;
-						if(boardToPlay != null){
+						if (boardToPlay != null) {
 							fire(new AcceptInviteEvent(true, boardToPlay));
 						}
-						
+
 					}
 				});
-				
+
 				getStage().addActor(display.getCoinImage());
 				getStage().addActor(display.getCoinAmountText());
 				GraphicsUtils.fadeOut(getChildren(), new Runnable() {
@@ -152,11 +153,11 @@ public class GameInviteGroup extends Group {
 					public void run() {
 					}
 				}, 1);
-				
+
 				UIConnectionWrapper.acceptInvite(new UIConnectionResultCallback<GameBoard>() {
 					public void onConnectionResult(GameBoard result) {
 						boardToPlay = result;
-						if(fadeComplete){
+						if (fadeComplete) {
 							fire(new AcceptInviteEvent(true, result));
 						}
 					};
@@ -165,7 +166,7 @@ public class GameInviteGroup extends Group {
 					public void onConnectionError(String msg) {
 						fire(new AcceptInviteEvent(false, msg));
 					}
-				}, item.game.id, GameLoop.USER.handle);
+				}, item.game.id, GameLoop.getUser().handle);
 			}
 		}
 	};

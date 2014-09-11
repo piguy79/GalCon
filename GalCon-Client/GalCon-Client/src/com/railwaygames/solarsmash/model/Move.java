@@ -45,7 +45,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	@Override
 	public JSONObject asJson() throws JSONException {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("handle", GameLoop.USER.handle);
+		jsonObject.put("handle", GameLoop.getUser().handle);
 		jsonObject.put("from", from);
 		jsonObject.put("to", to);
 		jsonObject.put("fleet", shipsToMove);
@@ -106,7 +106,7 @@ public class Move extends JsonConvertible implements JsonConstructable {
 	}
 
 	public int durationWithAbilityApplied(GameBoard gameBoard) {
-		float speedIncrease = 1.0f + GameLoop.USER.abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
+		float speedIncrease = 1.0f + GameLoop.getUser().abilityIncreaseToApply(Constants.ABILITY_SPEED, gameBoard);
 
 		int rounds = (int) Math.ceil(duration / speedIncrease);
 		if (rounds <= 0) {

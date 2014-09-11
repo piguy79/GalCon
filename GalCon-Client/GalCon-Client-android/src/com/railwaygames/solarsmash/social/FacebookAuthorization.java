@@ -73,7 +73,8 @@ public class FacebookAuthorization implements Authorizer {
 	}
 
 	private void populateAuthIdAndSucceed() {
-		if (GameLoop.USER.auth != null && GameLoop.USER.auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
+		if (GameLoop.getUser().auth != null
+				&& GameLoop.getUser().auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
 			listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, Session.getActiveSession()
 					.getAccessToken());
 		} else {
@@ -89,12 +90,12 @@ public class FacebookAuthorization implements Authorizer {
 						});
 					} else {
 						GraphObject user = response.getGraphObject();
-						GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK,
+						GameLoop.getUser().addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK,
 								user.getProperty("id").toString());
 
 						Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 						prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID,
-								GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+								GameLoop.getUser().auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 						prefs.flush();
 
 						Gdx.app.postRunnable(new Runnable() {
@@ -248,10 +249,10 @@ public class FacebookAuthorization implements Authorizer {
 		params.putString("caption", "Download Solar Smash now");
 		params.putString("description",
 				"Come conquer the galaxy in this addictive multiplayer strategy game. Invite me using the handle \""
-						+ GameLoop.USER.handle + "\"");
+						+ GameLoop.getUser().handle + "\"");
 		params.putString("link", "http://www.railwaygames.mobi/");
 		params.putString("to", id);
-		params.putString("from", GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+		params.putString("from", GameLoop.getUser().auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 		params.putString("picture", "http://www.railwaygames.mobi/assets/images/logo/android_icon.png");
 
 		WebDialog feedDialog = new WebDialog.FeedDialogBuilder(activity, Session.getActiveSession(), params)

@@ -131,7 +131,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 			public void clicked(InputEvent event, float x, float y) {
 				loadingOverlay = new LoadingOverlay(resources);
 				stage.addActor(loadingOverlay);
-				UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+				UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.getUser().handle);
 			}
 		});
 		actors.add(refreshButton);
@@ -182,7 +182,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 						resources), new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.getUser().handle);
 					}
 				});
 				stage.addActor(overlay);
@@ -199,7 +199,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 						resources), new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+						UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.getUser().handle);
 					}
 				});
 				stage.addActor(overlay);
@@ -245,7 +245,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 					new TextOverlay("Unable to load game.", resources), new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+							UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.getUser().handle);
 						}
 					});
 			stage.addActor(overlay);
@@ -325,7 +325,7 @@ public class GameQueueScreen implements PartialScreenFeedback {
 		@Override
 		public void onConnectionResult(Maps result) {
 			allMaps = result;
-			UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.USER.handle);
+			UIConnectionWrapper.findPendingInvites(gamequeueCallback, GameLoop.getUser().handle);
 		}
 
 		@Override

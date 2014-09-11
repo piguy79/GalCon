@@ -152,8 +152,8 @@ public class GameBoard extends JsonConvertible {
 		for (int i = 0; i < planets.size(); ++i) {
 			Planet planet = planets.get(i);
 			if (planet.isOwnedBy(player.handle)
-					|| (planet.isHome && planet.isOwnedBy(Constants.OWNER_NO_ONE) && !player.handle
-							.equals(GameLoop.USER.handle))) {
+					|| (planet.isHome && planet.isOwnedBy(Constants.OWNER_NO_ONE) && !player.handle.equals(GameLoop
+							.getUser().handle))) {
 				regen += planet.regen;
 			}
 		}
@@ -213,7 +213,7 @@ public class GameBoard extends JsonConvertible {
 			return waitingForOpponent;
 		}
 
-		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+		if (players.get(0).handle.equals(GameLoop.getUser().handle)) {
 			return players.get(1);
 		}
 
@@ -221,7 +221,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public Player getUser() {
-		if (players.get(0).handle.equals(GameLoop.USER.handle)) {
+		if (players.get(0).handle.equals(GameLoop.getUser().handle)) {
 			return players.get(0);
 		}
 
@@ -229,7 +229,7 @@ public class GameBoard extends JsonConvertible {
 	}
 
 	public boolean isClaimAvailable() {
-		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.USER.handle)
+		return roundInformation.players.size() == 1 && roundInformation.players.contains(GameLoop.getUser().handle)
 				&& moveTimeIsPastTimeout() && !hasWinner() && !wasADraw() && players.size() > 1;
 	}
 
