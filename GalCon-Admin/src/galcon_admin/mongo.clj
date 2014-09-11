@@ -8,7 +8,7 @@
             [monger.conversion :refer [from-db-object]])
   (:import [com.mongodb MongoOptions ServerAddress]))
 
-(def connection (mg/connect-via-uri (or (System/getenv "MONGOHQ_URL" "mongodb://localhost:27017/galcon")))
+(def connection (mg/connect-via-uri (or (System/getenv "MONGOHQ_URL") "mongodb://localhost:27017/galcon")))
 
 (defn find-user [handle]
 (mc/find-one (:db connection) "users" {:handle handle}))
