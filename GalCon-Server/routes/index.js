@@ -1169,7 +1169,6 @@ exports.findFriends = function(req, res){
 
 var minifyUser = function(user){
 	return {
-		auth : user.auth,
 		handle : user.handle,
 		xp : user.xp
 	};
@@ -1198,7 +1197,7 @@ exports.findMatchingFriends = function(req, res){
 	
 }
 
-exports.addProviderToUser = function(req, res){
+exports.addProviderToUser = function(req, res) {
 	var session = req.body.session;
 	var authProvider = req.body.authProvider;
 	var id = req.body.id;
