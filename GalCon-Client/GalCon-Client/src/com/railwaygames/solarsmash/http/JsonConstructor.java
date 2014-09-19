@@ -139,9 +139,17 @@ public class JsonConstructor {
 		top.put("session", session);
 		top.put("authProvider", authProvider);
 		top.put("id", id);
+		top.put("v", "2");
 
 		return top;
+	}
 
+	public static JSONObject addProviderWithOverride(String handle, String id, String session, String authProvider,
+			String keepSession, String deleteSession) throws JSONException {
+		JSONObject top = JsonConstructor.addProvider(handle, id, session, authProvider);
+		top.put("keepSession", keepSession);
+		top.put("deleteSession", deleteSession);
+		return top;
 	}
 
 	public static JSONObject user(String handle, String session) throws JSONException {

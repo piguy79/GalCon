@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
 	wins : "Number",
 	losses : "Number",
 	na : "Boolean",
+	abandoned : "Boolean",
 	session : {
 		id : "String",
 		expireDate : "Date"
@@ -32,7 +33,8 @@ var userSchema = mongoose.Schema({
 	auth : {
 		google : "String",
 		twitter : "String",
-		facebook : "String"
+		facebook : "String",
+		local : "String"
 	},
 	os : "String",
 	coins : "Number"
@@ -42,6 +44,7 @@ userSchema.set('toObject', { getters: true });
 userSchema.index({'auth.google' : 1});
 userSchema.index({'auth.twitter' : 1});
 userSchema.index({'auth.facebook' : 1});
+userSchema.index({'auth.local' : 1});
 userSchema.index({handle: 1});
 userSchema.index({"sessions.sessionId" : 1});
 

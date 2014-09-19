@@ -32,6 +32,8 @@ public class Constants {
 
 		public static final String TEXT_FIELD = "textField";
 
+		public static final String CLEAR_BUTTON = "clearButton";
+		public static final String GRAY_BUTTON = "grayButton";
 		public static final String BASIC_BUTTON = "basicButton";
 		public static final String BASIC_BUTTON_TEXT = "basicButtonText";
 
@@ -67,6 +69,7 @@ public class Constants {
 		public static final String TAB_RIGHT = "tabRight";
 
 		public static final String COIN_IMAGE = "coin_image";
+		public static final String GRAY_IMAGE_BG = "grayImageBg";
 	}
 
 	public static class Colors {
@@ -79,6 +82,7 @@ public class Constants {
 	public static class Auth {
 		public static final String SOCIAL_AUTH_PROVIDER = "socialAuthProvider";
 		public static final String SOCIAL_AUTH_PROVIDER_GOOGLE = "google";
+		public static final String SOCIAL_AUTH_PROVIDER_LOCAL = "local";
 		public static final String SOCIAL_AUTH_PROVIDER_FACEBOOK = "facebook";
 		public static final String LAST_SESSION_ID = "lastSessionId";
 		public static final String EMAIL = "email";

@@ -18,6 +18,7 @@ import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 import com.railwaygames.solarsmash.model.Session;
 
 /**
@@ -88,8 +89,11 @@ public interface GameAction {
 	public void findMatchingFriends(UIConnectionResultCallback<People> callback, List<String> authIds, String handle,
 			String authProvider);
 
-	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+	public void addProviderToUser(UIConnectionResultCallback<PlayerList> callback, String handle, String id,
 			String authProvider);
+
+	public void addProviderToUserWithOverride(UIConnectionResultCallback<PlayerList> callback, String handle,
+			String id, String authProvider, String keepSession, String deleteSession);
 
 	public void cancelGame(UIConnectionResultCallback<BaseResult> callback, String handle, String gameId);
 

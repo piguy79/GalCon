@@ -9,18 +9,27 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class TextOverlay extends Overlay {
 
-	private ShaderLabel shaderLabel;
+	private ShaderLabel label;
+	private String text;
 
 	public TextOverlay(String text, Resources resources) {
 		super(resources);
-		shaderLabel = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.DEFAULT_FONT,
-				Color.WHITE);
+		label = new ShaderLabel(resources.fontShader, text, resources.skin, Constants.UI.DEFAULT_FONT, Color.WHITE);
+		text = this.text;
 
-		float y = Gdx.graphics.getHeight() / 2 - shaderLabel.getHeight() / 2;
+		float y = Gdx.graphics.getHeight() / 2 - label.getHeight() / 2;
 		float margin = Gdx.graphics.getWidth() * 0.03f;
-		shaderLabel.setBounds(margin, y, Gdx.graphics.getWidth() - 2 * margin, shaderLabel.getHeight());
-		shaderLabel.setWrap(true);
-		shaderLabel.setAlignment(Align.center, Align.center);
-		addActor(shaderLabel);
+		label.setBounds(margin, y, Gdx.graphics.getWidth() - 2 * margin, label.getHeight());
+		label.setWrap(true);
+		label.setAlignment(Align.center, Align.center);
+		addActor(label);
+	}
+
+	protected ShaderLabel getLabel() {
+		return label;
+	}
+
+	public String getOriginalText() {
+		return text;
 	}
 }

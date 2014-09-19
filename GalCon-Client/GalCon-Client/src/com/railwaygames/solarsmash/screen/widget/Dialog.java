@@ -1,13 +1,12 @@
 package com.railwaygames.solarsmash.screen.widget;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.screen.Resources;
 import com.railwaygames.solarsmash.screen.overlay.DialogOverlay;
@@ -15,7 +14,6 @@ import com.railwaygames.solarsmash.screen.overlay.DialogOverlay;
 public class Dialog extends Group {
 
 	protected Resources resources;
-	private AtlasRegion dialogTextureBg;
 	private Image background;
 	private DialogOverlay overlay;
 
@@ -31,9 +29,7 @@ public class Dialog extends Group {
 	}
 
 	private void addBackground() {
-		dialogTextureBg = resources.menuAtlas.findRegion("dialog_bg_no_shadow");
-		TextureRegionDrawable tex = new TextureRegionDrawable(dialogTextureBg);
-		background = new Image(tex);
+		background = new Image(resources.skin, Constants.UI.GRAY_IMAGE_BG);
 		background.setWidth(getWidth());
 		background.setHeight(getHeight());
 		addActor(background);
@@ -62,7 +58,13 @@ public class Dialog extends Group {
 			}
 		}));
 	}
-	
+
+	@Override
+	public boolean remove() {
+		overlay.remove();
+		return super.remove();
+	}
+
 	public DialogOverlay getOverlay() {
 		return overlay;
 	}

@@ -41,11 +41,8 @@ public class MinifiedGame extends JsonConvertible {
 		if (playersJson != null) {
 			for (int i = 0; i < playersJson.length(); i++) {
 				JSONObject player = playersJson.getJSONObject(i);
-				JSONObject authJson = player.getJSONObject("auth");
 
 				MinifiedPlayer minifiedPlayer = new MinifiedPlayer();
-				minifiedPlayer.auth = new Auth();
-				minifiedPlayer.auth.consume(authJson);
 				minifiedPlayer.handle = player.getString("handle");
 				minifiedPlayer.xp = player.getInt("xp");
 				this.players.add(minifiedPlayer);

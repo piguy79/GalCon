@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -18,7 +18,7 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class MultiPageBottomHud extends Group {
 	private Resources resources;
-	private ImageButton nextButton;
+	private Button nextButton;
 	private ShaderLabel nextText;
 
 	private AtlasRegion bgRegion;
@@ -34,8 +34,7 @@ public class MultiPageBottomHud extends Group {
 	}
 
 	private void createNextButton(ShaderProgram fontShader, UISkin skin) {
-		nextButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		nextButton.setLayoutEnabled(false);
+		nextButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * 0.3f;
 		float bHeight = bWidth * 0.4f;
 		nextButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth, bHeight);

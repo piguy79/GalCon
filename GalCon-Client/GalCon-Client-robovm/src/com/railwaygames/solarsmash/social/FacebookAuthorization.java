@@ -46,12 +46,12 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 				@Override
 				public void onSuccess(GraphObject user) {
 					Foundation.log("FB_USER_LOADED: " + user.getString("id"));
-					GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, user.getString("id")
-							.toString());
+					GameLoop.getUser().addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK,
+							user.getString("id").toString());
 
 					Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 					prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK + Constants.ID,
-							GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+							GameLoop.getUser().auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
 					prefs.flush();
 					listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK, FBSession
 							.getActiveSession().getAccessTokenData().getAccessToken());
@@ -142,33 +142,31 @@ public class FacebookAuthorization extends UIApplicationDelegateAdapter implemen
 			@Override
 			public void onSignInSucceeded(String authProvider, String token) {
 				Foundation.log(TAG + "Session state: " + FBSession.getActiveSession().getState());
-				facebook.request(CommonFacebookRequests
-						.publishFeed("Solar Smash", "Download Solar Smash now",
-								"Come conquer the galaxy in this addictive multiplayer strategy game. Invite me using the handle \""
-										+ GameLoop.USER.handle + "\"",
-								"Hey, come play me in Solar Smash. Invite me using the handle \""
-										+ GameLoop.USER.handle + "\"",
-								"http://www.railwaygames.mobi/assets/images/logo/android_icon.png",
-								"http://www.railwaygames.mobi", true, new FacebookRequestListener() {
+				facebook.request(CommonFacebookRequests.publishFeed("Solar Smash", "Download Solar Smash now",
+						"Come conquer the galaxy in this addictive multiplayer strategy game. Invite me using the handle \""
+								+ GameLoop.getUser().handle + "\"",
+						"Hey, come play me in Solar Smash. Invite me using the handle \"" + GameLoop.getUser().handle
+								+ "\"", "http://www.railwaygames.mobi/assets/images/logo/android_icon.png",
+						"http://www.railwaygames.mobi", true, new FacebookRequestListener() {
 
-									@Override
-									public void onSuccess(GraphObject result) {
-										Foundation.log(TAG + "Result: " + result);
-										listener.onPostSucceeded();
+							@Override
+							public void onSuccess(GraphObject result) {
+								Foundation.log(TAG + "Result: " + result);
+								listener.onPostSucceeded();
 
-									}
+							}
 
-									@Override
-									public void onError(String error) {
-										Foundation.log(TAG + "Error occured: " + error);
-										listener.onPostFails("Unable to post to FB");
-									}
+							@Override
+							public void onError(String error) {
+								Foundation.log(TAG + "Error occured: " + error);
+								listener.onPostFails("Unable to post to FB");
+							}
 
-									@Override
-									public void onCancel() {
-										listener.onPostCancelled();
-									}
-								}));
+							@Override
+							public void onCancel() {
+								listener.onPostCancelled();
+							}
+						}));
 			}
 
 			@Override

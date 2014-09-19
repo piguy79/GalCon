@@ -1194,7 +1194,6 @@ exports.findMatchingFriends = function(req, res){
 		var result = _.map(users, minifyUser);
 		res.json({items : result});
 	}).then(null, logErrorAndSetResponse(req, res));
-	
 }
 
 exports.addProviderToUser = function(req, res) {
@@ -1202,31 +1201,52 @@ exports.addProviderToUser = function(req, res) {
 	var authProvider = req.body.authProvider;
 	var id = req.body.id;
 	var handle = req.body.handle;
+	var keepSession = req.body.keepSession;
+	var deleteSession = req.body.deleteSession;
+	var version = req.body.v || "1";
 	
 	if(!validate({session : session, handle : handle, authProvider : authProvider, socialId : id}, res)) {
 		return;
 	}
 	
+	var authObj = {};
+	var key = "auth." + authProvider;
+	authObj[key] = id;
+	
+	var authUser;
+	
 	var p = validateSession(session, {"handle" : handle});
-	p.then(function(){
-		var searchObj = {};
-		var searchKey = "auth." + authProvider;
-		searchObj[searchKey] = id;
-		return userManager.UserModel.findOne(searchObj).exec();
-	}).then(function(user){
-		console.log('USER exists with auth Provider ' + authProvider);
-		if(user && user.handle !== handle){
-			//"A user already exists with this authProvider linked.
-			return userManager.findUserByHandle(handle);
-		}else{
-			var setObj = {};
-			var setKey = "auth." + authProvider;
-			setObj[setKey] = id;
-			return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : setObj}).exec();
+	p.then(function() {
+		return userManager.UserModel.findOne(authObj).exec();
+	}).then(function(user) {
+		if(keepSession) {
+			return swapAuth(authObj, keepSession, deleteSession);
+		} else {
+			if (user && user.handle !== handle) {
+				authUser = user;
+				console.log('USER exists with auth Provider ' + authProvider);
+				// "A user already exists with this authProvider linked.
+				return userManager.findUserByHandle(handle);
+			} else {
+				return userManager.UserModel.findOneAndUpdate({handle : handle}, {$set : authObj}).exec();
+			}
 		}
-	}).then(function(user){
-		res.json(user);
+	}).then(function(user) {
+		if(version === "2" && authUser && user.handle !== authUser.handle) {
+			res.json({"options" : [user, authUser]});
+		} else {
+			res.json(user);
+		}
 	}).then(null, logErrorAndSetResponse(req, res));
+}
+
+var swapAuth = function(authObj, keepSession, deleteSession) {
+	var p = userManager.UserModel.findOneAndUpdate(
+			{'session.id' : deleteSession}, 
+			{abandoned : true, $set : {auth : []}}).exec();
+	return p.then(function() {
+		return userManager.UserModel.findOneAndUpdate({'session.id' : keepSession}, {$set : authObj}).exec();
+	});
 }
 
 exports.cancelGame = function(req, res){

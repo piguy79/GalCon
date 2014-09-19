@@ -5,98 +5,115 @@ filter: Linear,Linear
 repeat: none
 arrow_left_small_black
   rotate: false
-  xy: 948, 743
+  xy: 948, 405
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_right_small_black
   rotate: false
-  xy: 948, 685
+  xy: 948, 347
   size: 40, 56
   orig: 40, 56
   offset: 0, 0
   index: -1
 arrow_solid_line
   rotate: false
-  xy: 779, 27
+  xy: 779, 19
   size: 113, 30
   orig: 113, 30
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 804, 192
+  xy: 804, 546
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
-back_arrow_white
-  rotate: false
-  xy: 894, 38
-  size: 125, 152
-  orig: 125, 152
-  offset: 0, 0
-  index: -1
 bg
   rotate: false
-  xy: 2, 59
+  xy: 2, 413
   size: 800, 609
   orig: 800, 609
   offset: 0, 0
   index: -1
 bg_dark_gray_10x10
   rotate: false
-  xy: 779, 11
+  xy: 1006, 1008
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
+button_clear
+  rotate: false
+  xy: 945, 565
+  size: 50, 49
+  split: 24, 25, 24, 24
+  orig: 50, 49
+  offset: 0, 0
+  index: -1
+button_gray
+  rotate: false
+  xy: 804, 430
+  size: 50, 50
+  split: 24, 25, 25, 24
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+button_yellow
+  rotate: false
+  xy: 856, 430
+  size: 50, 50
+  split: 24, 25, 25, 24
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
 coin
   rotate: false
-  xy: 804, 334
+  xy: 804, 688
   size: 146, 149
   orig: 146, 149
   offset: 0, 0
   index: -1
 count_label
   rotate: false
-  xy: 804, 109
+  xy: 918, 463
   size: 81, 81
   orig: 81, 81
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 952, 301
+  xy: 989, 840
   size: 15, 182
   orig: 15, 182
   offset: 0, 0
   index: -1
 dialog_bg
   rotate: false
-  xy: 2, 670
+  xy: 2, 59
   size: 944, 352
   orig: 944, 352
   offset: 0, 0
   index: -1
 highlight_bar
   rotate: false
-  xy: 795, 19
+  xy: 779, 51
   size: 168, 6
   orig: 168, 6
   offset: 0, 0
   index: -1
 ok_button_disabled
   rotate: false
-  xy: 804, 485
+  xy: 804, 839
   size: 183, 183
   orig: 183, 183
   offset: 0, 0
   index: -1
 options
   rotate: false
-  xy: 948, 801
+  xy: 952, 616
   size: 47, 221
   orig: 47, 221
   offset: 0, 0
@@ -108,6 +125,13 @@ slider_bg
   orig: 775, 55
   offset: 0, 0
   index: -1
+xp_bar_arrow
+  rotate: false
+  xy: 804, 482
+  size: 112, 62
+  orig: 112, 62
+  offset: 0, 0
+  index: -1
 
 menus2.png
 format: RGBA8888
@@ -115,65 +139,79 @@ filter: Linear,Linear
 repeat: none
 arrow_left
   rotate: false
-  xy: 2, 447
+  xy: 2, 296
   size: 600, 568
   orig: 600, 568
   offset: 0, 0
   index: -1
-button_yellow
+back_arrow_white
   rotate: false
-  xy: 604, 475
-  size: 400, 138
-  orig: 400, 138
+  xy: 848, 101
+  size: 125, 152
+  orig: 125, 152
   offset: 0, 0
   index: -1
-dialog_bg_no_shadow
+black_grey_button
   rotate: false
-  xy: 2, 104
-  size: 813, 341
-  orig: 813, 341
+  xy: 604, 255
+  size: 373, 80
+  orig: 373, 80
+  offset: 0, 0
+  index: -1
+cancel_button
+  rotate: false
+  xy: 2, 43
+  size: 251, 251
+  orig: 251, 251
   offset: 0, 0
   index: -1
 end_turn
   rotate: false
-  xy: 817, 333
+  xy: 852, 881
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
 forward
   rotate: false
-  xy: 817, 191
+  xy: 852, 739
   size: 139, 140
   orig: 139, 140
   offset: 0, 0
   index: -1
 green_button
   rotate: false
-  xy: 721, 2
+  xy: 255, 73
   size: 300, 100
   orig: 300, 100
   offset: 0, 0
   index: -1
+ok_button
+  rotate: false
+  xy: 595, 2
+  size: 251, 251
+  orig: 251, 251
+  offset: 0, 0
+  index: -1
+rect_button_blank
+  rotate: false
+  xy: 255, 175
+  size: 338, 119
+  orig: 338, 119
+  offset: 0, 0
+  index: -1
+textFieldBg
+  rotate: false
+  xy: 2, 866
+  size: 848, 155
+  orig: 848, 155
+  offset: 0, 0
+  index: -1
 wait
   rotate: false
-  xy: 604, 615
+  xy: 604, 337
   size: 400, 400
   orig: 400, 400
-  offset: 0, 0
-  index: -1
-xp_bar_arrow
-  rotate: false
-  xy: 817, 127
-  size: 112, 62
-  orig: 112, 62
-  offset: 0, 0
-  index: -1
-xp_bar_main
-  rotate: false
-  xy: 2, 17
-  size: 717, 85
-  orig: 717, 85
   offset: 0, 0
   index: -1
 
@@ -181,78 +219,45 @@ menus3.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-black_grey_button
-  rotate: false
-  xy: 2, 55
-  size: 373, 80
-  orig: 373, 80
-  offset: 0, 0
-  index: -1
-cancel_button
-  rotate: false
-  xy: 455, 2
-  size: 251, 251
-  orig: 251, 251
-  offset: 0, 0
-  index: -1
-ok_button
-  rotate: false
-  xy: 708, 93
-  size: 251, 251
-  orig: 251, 251
-  offset: 0, 0
-  index: -1
 pattern
   rotate: false
-  xy: 2, 137
+  xy: 504, 255
   size: 451, 116
   orig: 451, 116
   offset: 0, 0
   index: -1
-rect_button_blank
+question_mark
   rotate: false
-  xy: 504, 346
-  size: 338, 119
-  orig: 338, 119
+  xy: 721, 2
+  size: 251, 251
+  orig: 251, 251
   offset: 0, 0
   index: -1
 refresh
   rotate: false
-  xy: 504, 467
+  xy: 504, 373
   size: 374, 375
   orig: 374, 375
   offset: 0, 0
   index: -1
-textFieldBg
-  rotate: false
-  xy: 2, 844
-  size: 848, 155
-  orig: 848, 155
-  offset: 0, 0
-  index: -1
 transparent_square
   rotate: false
-  xy: 2, 342
+  xy: 2, 248
   size: 500, 500
   orig: 500, 500
   offset: 0, 0
   index: -1
 xp_bar_cover
   rotate: false
-  xy: 2, 255
+  xy: 2, 161
   size: 663, 85
   orig: 663, 85
   offset: 0, 0
   index: -1
-
-menus4.png
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-question_mark
+xp_bar_main
   rotate: false
-  xy: 2, 2
-  size: 251, 251
-  orig: 251, 251
+  xy: 2, 74
+  size: 717, 85
+  orig: 717, 85
   offset: 0, 0
   index: -1

@@ -117,7 +117,7 @@ exports.isValidMoves = function(arg){
 }
 
 exports.isAuthProvider = function(authProvider){
-	var validAuthProviders = ['google', 'facebook'];
+	var validAuthProviders = ['google', 'facebook', 'local'];
 	
 	return _.contains(validAuthProviders, authProvider);
 }

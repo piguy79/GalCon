@@ -748,12 +748,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.7324116"
-     inkscape:cx="272.81349"
-     inkscape:cy="1125.0379"
+     inkscape:zoom="0.621875"
+     inkscape:cx="396.98492"
+     inkscape:cy="704.32161"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
-     showgrid="false"
+     inkscape:current-layer="layer10"
+     showgrid="true"
      inkscape:window-width="1680"
      inkscape:window-height="1002"
      inkscape:window-x="0"
@@ -939,12 +939,12 @@
          ry="16.458334" />
     </g>
     <rect
-       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#ffff80;stroke-width:1.671;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#ffcc00;fill-opacity:1;fill-rule:nonzero;stroke:#ffff80;stroke-width:4.0710001;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect4008"
        width="288.75"
        height="98.75"
-       x="833.13776"
-       y="805.22961"
+       x="825"
+       y="590"
        ry="16.458334"
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/button_yellow.png"
        inkscape:export-xdpi="123.81687"
@@ -959,6 +959,17 @@
        inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/gameBoard/player_hud_bg.png"
        inkscape:export-xdpi="85.720001"
        inkscape:export-ydpi="85.720001" />
+    <rect
+       inkscape:export-ydpi="123.81687"
+       inkscape:export-xdpi="123.81687"
+       inkscape:export-filename="/Users/mpietal/Documents/development/GalCon/GalCon-TexturePacker/images/menus/button_clear.png"
+       ry="16.458334"
+       y="784.32507"
+       x="-395.40497"
+       height="98.75"
+       width="288.75"
+       id="rect3311"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.671;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -2159,6 +2170,32 @@
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="ccccc" />
     </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:#787878;fill-opacity:0.82352941999999996;stroke:#ffffff;stroke-width:4.071;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path4278"
+       sodipodi:cx="-300"
+       sodipodi:cy="155"
+       sodipodi:rx="75"
+       sodipodi:ry="75"
+       d="m -225,155 a 75,75 0 1 1 -150,0 75,75 0 1 1 150,0 z"
+       transform="translate(30,-90)"
+       inkscape:export-filename="/Users/mpietal/Downloads/button_gray.png"
+       inkscape:export-xdpi="29.209999"
+       inkscape:export-ydpi="29.209999" />
+    <path
+       inkscape:export-ydpi="29.209999"
+       inkscape:export-xdpi="29.209999"
+       inkscape:export-filename="/Users/mpietal/Downloads/button_yellow.png"
+       transform="translate(150,75)"
+       d="m -225,155 a 75,75 0 1 1 -150,0 75,75 0 1 1 150,0 z"
+       sodipodi:ry="75"
+       sodipodi:rx="75"
+       sodipodi:cy="155"
+       sodipodi:cx="-300"
+       id="path4284"
+       style="fill:#ffcc00;fill-opacity:1;stroke:#ffff80;stroke-width:4.0710001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
   </g>
   <g
      inkscape:groupmode="layer"

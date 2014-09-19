@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -113,6 +114,10 @@ public class UISkin extends Skin {
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("coin"));
 			add(Constants.UI.COIN_IMAGE, trd, Drawable.class);
 		}
+		{
+			NinePatchDrawable trd = new NinePatchDrawable(createNinePatch(menusAtlas.findRegion("button_gray")));
+			add(Constants.UI.GRAY_IMAGE_BG, trd, Drawable.class);
+		}
 
 		/*
 		 * Buttons
@@ -188,8 +193,16 @@ public class UISkin extends Skin {
 			add(Constants.UI.DIALOG_BG, new ImageButtonStyle(null, null, null, trd, trd, trd));
 		}
 		{
-			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("button_yellow"));
-			add(Constants.UI.BASIC_BUTTON, new ImageButtonStyle(trd, trd, trd, trd, trd, trd));
+			NinePatchDrawable trd = new NinePatchDrawable(createNinePatch(menusAtlas.findRegion("button_yellow")));
+			add(Constants.UI.BASIC_BUTTON, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			NinePatchDrawable trd = new NinePatchDrawable(createNinePatch(menusAtlas.findRegion("button_clear")));
+			add(Constants.UI.CLEAR_BUTTON, new ButtonStyle(trd, trd, trd));
+		}
+		{
+			NinePatchDrawable trd = new NinePatchDrawable(createNinePatch(menusAtlas.findRegion("button_gray")));
+			add(Constants.UI.GRAY_BUTTON, new ButtonStyle(trd, trd, trd));
 		}
 		{
 			TextureRegionDrawable trd = new TextureRegionDrawable(menusAtlas.findRegion("count_label"));
@@ -208,5 +221,18 @@ public class UISkin extends Skin {
 
 		trd = new TextureRegionDrawable(menusAtlas.findRegion("options"));
 		add("optionsButton", new ImageButtonStyle(null, null, null, trd, trd, trd));
+	}
+
+	private NinePatch createNinePatch(AtlasRegion region) {
+		int[] splits = region.splits;
+		NinePatch patch = null;
+		if (splits != null) {
+			patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+			int[] pads = ((AtlasRegion) region).pads;
+			if (pads != null)
+				patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
+		}
+
+		return patch;
 	}
 }

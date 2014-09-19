@@ -13,6 +13,7 @@ import com.railwaygames.solarsmash.http.SocialAction;
 import com.railwaygames.solarsmash.social.Authorizer;
 import com.railwaygames.solarsmash.social.FacebookAuthorization;
 import com.railwaygames.solarsmash.social.GooglePlusAuthorization;
+import com.railwaygames.solarsmash.social.LocalAuthorization;
 
 public class AndroidSocialAction implements SocialAction {
 
@@ -56,6 +57,8 @@ public class AndroidSocialAction implements SocialAction {
 			authorizer = new GooglePlusAuthorization(activity);
 		} else if (Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK.equals(authProvider)) {
 			authorizer = new FacebookAuthorization(activity);
+		} else if (Constants.Auth.SOCIAL_AUTH_PROVIDER_LOCAL.equals(authProvider)) {
+			authorizer = new LocalAuthorization();
 		}
 	}
 

@@ -19,6 +19,7 @@ public class Auth extends JsonConvertible {
 		auth = new HashMap<String, String>();
 		putSocialProvider(jsonObject, Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE);
 		putSocialProvider(jsonObject, Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK);
+		putSocialProvider(jsonObject, Constants.Auth.SOCIAL_AUTH_PROVIDER_LOCAL);
 	}
 
 	private void putSocialProvider(JSONObject jsonObject, String authProvider) throws JSONException {

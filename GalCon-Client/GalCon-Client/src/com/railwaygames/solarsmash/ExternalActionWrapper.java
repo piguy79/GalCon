@@ -13,6 +13,7 @@ import com.railwaygames.solarsmash.model.InventoryItem;
 import com.railwaygames.solarsmash.model.Leaderboards;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 
 public class ExternalActionWrapper {
 
@@ -150,5 +151,10 @@ public class ExternalActionWrapper {
 
 	public static void shouldEnableAds(boolean enable) {
 		gameAction.shouldEnableAds(enable);
+	}
+
+	public static void addProviderToUserWithOverride(UIConnectionResultCallback<PlayerList> callback, String handle,
+			String id, String authProvider, String keepSession, String deleteSession) {
+		gameAction.addProviderToUserWithOverride(callback, handle, id, authProvider, keepSession, deleteSession);
 	}
 }

@@ -77,6 +77,7 @@ import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 import com.railwaygames.solarsmash.model.Session;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
@@ -675,20 +676,36 @@ public class AndroidGameAction implements GameAction {
 	}
 
 	@Override
-	public void addProviderToUser(final UIConnectionResultCallback<Player> callback, String handle, String id,
+	public void addProviderToUser(final UIConnectionResultCallback<PlayerList> callback, String handle, String id,
 			String authProvider) {
 		try {
 			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-					new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top
+					new PostJsonRequestTask<PlayerList>(callback, ADD_PROVIDER_TO_USER, PlayerList.class).execute(top
 							.toString());
 				}
 			});
 		} catch (JSONException e) {
 			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
+	}
 
+	@Override
+	public void addProviderToUserWithOverride(final UIConnectionResultCallback<PlayerList> callback, String handle,
+			String id, String authProvider, String keepSession, String deleteSession) {
+		try {
+			final JSONObject top = JsonConstructor.addProviderWithOverride(handle, id, getSession(), authProvider,
+					keepSession, deleteSession);
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new PostJsonRequestTask<PlayerList>(callback, ADD_PROVIDER_TO_USER, PlayerList.class).execute(top
+							.toString());
+				}
+			});
+		} catch (JSONException e) {
+			Log.wtf(LOG_NAME, "This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
 	}
 
 	@Override

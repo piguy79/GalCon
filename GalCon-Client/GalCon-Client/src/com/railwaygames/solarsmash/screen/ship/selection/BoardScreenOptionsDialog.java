@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.railwaygames.solarsmash.Constants;
@@ -33,16 +33,16 @@ import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 
 public class BoardScreenOptionsDialog extends OKCancelDialog {
 
-	private ImageButton resignButton;
+	private Button resignButton;
 	private ShaderLabel resignText;
-	private ImageButton cancelButton;
+	private Button cancelButton;
 	private ShaderLabel cancelText;
 	private ShaderLabel confirmText;
-	private ImageButton refreshButton;
+	private Button refreshButton;
 	private ShaderLabel refreshText;
-	private ImageButton aboutButton;
+	private Button aboutButton;
 	private ShaderLabel aboutText;
-	private ImageButton tutorialButton;
+	private Button tutorialButton;
 	private ShaderLabel tutorialText;
 	private GameBoard gameBoard;
 	private Group statsGroup;
@@ -166,8 +166,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	}
 
 	private void createTutorialButton(ShaderProgram fontShader, UISkin skin) {
-		tutorialButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		tutorialButton.setLayoutEnabled(false);
+		tutorialButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		tutorialButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.28f - bHeight * 0.5f, bWidth,
@@ -186,8 +185,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	}
 
 	private void createResignButton(ShaderProgram fontShader, UISkin skin) {
-		resignButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		resignButton.setLayoutEnabled(false);
+		resignButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		resignButton
@@ -206,8 +204,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	}
 
 	private void createCancelButton(ShaderProgram fontShader, UISkin skin) {
-		cancelButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		cancelButton.setLayoutEnabled(false);
+		cancelButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		cancelButton
@@ -226,8 +223,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	}
 
 	private void createRefreshButton(ShaderProgram fontShader, UISkin skin) {
-		refreshButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		refreshButton.setLayoutEnabled(false);
+		refreshButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		refreshButton
@@ -246,8 +242,7 @@ public class BoardScreenOptionsDialog extends OKCancelDialog {
 	}
 
 	private void createAboutButton(ShaderProgram fontShader, UISkin skin) {
-		aboutButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		aboutButton.setLayoutEnabled(false);
+		aboutButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * BUTTON_WIDTH_RATIO;
 		float bHeight = bWidth * BUTTON_HEIGHT_RATIO;
 		aboutButton.setBounds(getWidth() * 0.5f - bWidth * 0.5f, getHeight() * 0.12f - bHeight * 0.5f, bWidth, bHeight);

@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -31,7 +31,7 @@ public class PlanetInfoHud extends Group {
 	private Planet planet;
 	private GameBoard gameBoard;
 
-	private ImageButton harvestButton;
+	private Button harvestButton;
 	private ShaderLabel harvestText;
 
 	public PlanetInfoHud(Planet planet, GameBoard gameBoard, Resources resources, float width, float height) {
@@ -101,8 +101,7 @@ public class PlanetInfoHud extends Group {
 	}
 
 	private void createHarvestButton(ShaderProgram fontShader, UISkin skin) {
-		harvestButton = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		harvestButton.setLayoutEnabled(false);
+		harvestButton = new Button(skin, Constants.UI.BASIC_BUTTON);
 		float bWidth = getWidth() * 0.3f;
 		float bHeight = bWidth * 0.4f;
 		harvestButton.setBounds(getWidth() * 0.75f - bWidth * 0.5f, getHeight() * 0.5f - bHeight * 0.5f, bWidth,

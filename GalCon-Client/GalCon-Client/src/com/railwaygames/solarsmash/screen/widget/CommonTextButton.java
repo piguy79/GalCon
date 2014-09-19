@@ -3,14 +3,14 @@ package com.railwaygames.solarsmash.screen.widget;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.UISkin;
 
 public class CommonTextButton extends Group {
 
-	private ImageButton bg;
+	private Button bg;
 	private ShaderLabel label;
 	private String text;
 	private float height;
@@ -40,8 +40,7 @@ public class CommonTextButton extends Group {
 		label.setY((getHeight() / 2) - (label.getTextBounds().height / 1.25f));
 		label.setWidth(getWidth());
 
-		bg = new ImageButton(skin, Constants.UI.BASIC_BUTTON);
-		bg.setLayoutEnabled(false);
+		bg = new Button(skin, Constants.UI.BASIC_BUTTON);
 		bg.setX(0);
 		bg.setY(0);
 		bg.setWidth(getWidth());
@@ -49,7 +48,5 @@ public class CommonTextButton extends Group {
 
 		addActor(bg);
 		addActor(label);
-
 	}
-
 }

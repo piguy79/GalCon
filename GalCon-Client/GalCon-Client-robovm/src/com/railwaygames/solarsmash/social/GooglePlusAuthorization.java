@@ -9,19 +9,14 @@ import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.foundation.NSURL;
-import org.robovm.apple.glkit.GLKViewController;
-import org.robovm.apple.uikit.UIViewController;
 import org.robovm.bindings.gpp.GPPShare;
 import org.robovm.bindings.gpp.GPPShareDelegate;
 import org.robovm.bindings.gpp.GPPSignInDelegate;
 import org.robovm.bindings.gt.GTMOAuth2Authentication;
-import org.robovm.bindings.gt.GTMOAuth2ViewControllerTouch;
 import org.robovm.objc.block.VoidBlock1;
-import org.robovm.objc.block.VoidBlock3;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.railwaygames.solarsmash.Constants;
 import com.railwaygames.solarsmash.GameLoop;
 import com.railwaygames.solarsmash.http.AuthenticationListener;
@@ -54,28 +49,28 @@ public class GooglePlusAuthorization implements Authorizer {
 				Foundation.log("GOOGLE+ Error: " + error.description());
 				listener.onSignInFailed("Unable to sign in");
 			} else {
-				GameLoop.USER.addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, gppSignIn.getUserId()
+				GameLoop.getUser().addAuthProvider(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, gppSignIn.getUserId()
 						.toString());
 
 				Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
 				prefs.putString(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE + Constants.ID,
-						GameLoop.USER.auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
+						GameLoop.getUser().auth.getID(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
 				prefs.flush();
 
 				Foundation.log("GOOGLE+ Retrieving new access token");
-//				auth.authorizeRequest(null, new VoidBlock1<NSError>() {
-//					@Override
-//					public void invoke(NSError error) {
-//						if (error != null) {
-//							Foundation.log("GOOGLE+ Failed to get new access token: " + error.getLocalizedDescription());
-//							listener.onSignInFailed("Could not sign in");
-//						} else {
-//							Foundation.log("GOOGLE+ Received new access token: " + auth.getAccessToken().toString());
-//							listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, auth
-//									.getAccessToken().toString());
-//						}
-//					}
-//				});
+				auth.authorizeRequest(null, new VoidBlock1<NSError>() {
+					@Override
+					public void invoke(NSError error) {
+						if (error != null) {
+							Foundation.log("GOOGLE+ Failed to get new access token: " + error.getLocalizedDescription());
+							listener.onSignInFailed("Could not sign in");
+						} else {
+							Foundation.log("GOOGLE+ Received new access token: " + auth.getAccessToken().toString());
+							listener.onSignInSucceeded(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE, auth
+									.getAccessToken().toString());
+						}
+					}
+				});
 			}
 		}
 	}

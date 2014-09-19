@@ -73,6 +73,7 @@ import com.railwaygames.solarsmash.screen.overlay.HighlightOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.LoserEndGameOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
+import com.railwaygames.solarsmash.screen.overlay.ProgressTextOverlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.overlay.WinningEndGameOverlay;
 import com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog;
@@ -730,7 +731,7 @@ public class BoardScreen implements ScreenFeedback {
 
 			@Override
 			public void sendMove(List<Move> moves) {
-				overlay = new TextOverlay("Uploading ship movements", resources);
+				overlay = new ProgressTextOverlay("Uploading ship movements", resources);
 				stage.addActor(overlay);
 				UIConnectionWrapper.performMoves(new UpdateBoardScreenResultHandler("Could not send moves"),
 						gameBoard.id, moves, inProgressHarvest);

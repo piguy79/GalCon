@@ -27,6 +27,7 @@ public class Player extends JsonConvertible {
 	public Integer losses;
 	public boolean noAd = false;
 	public List<Order> consumedOrders;
+	public String sessionId;
 
 	@Override
 	protected void doConsume(JSONObject jsonObject) throws JSONException {
@@ -35,6 +36,10 @@ public class Player extends JsonConvertible {
 			JSONObject authObject = jsonObject.getJSONObject("auth");
 			this.auth = new Auth();
 			auth.consume(authObject);
+		}
+
+		if (jsonObject.has("session")) {
+			sessionId = jsonObject.getJSONObject("session").optString("id");
 		}
 
 		this.handle = jsonObject.optString(Constants.HANDLE);
@@ -115,7 +120,6 @@ public class Player extends JsonConvertible {
 
 		return count;
 	}
-
 
 	public boolean firstGameEver(Preferences prefs) {
 		return !prefs.getBoolean(Constants.Config.FIRST_GAME_PLAYED) && this.xp == 0;

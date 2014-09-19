@@ -39,6 +39,7 @@ import com.railwaygames.solarsmash.model.GameInviteRequest;
 import com.railwaygames.solarsmash.model.MinifiedGame;
 import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.model.friends.CombinedFriend;
 import com.railwaygames.solarsmash.model.friends.FriendCombiner;
@@ -51,6 +52,8 @@ import com.railwaygames.solarsmash.screen.widget.ActorBar;
 import com.railwaygames.solarsmash.screen.widget.CoinInfoDisplay;
 import com.railwaygames.solarsmash.screen.widget.HighlightActorBar;
 import com.railwaygames.solarsmash.screen.widget.HighlightActorBar.HighlightActorBarBuilder;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnSuccess;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
@@ -666,12 +669,44 @@ public class FriendScreen implements ScreenFeedback {
 					addProvider(authProvider, id);
 				}
 
-				private void addProvider(final String authProvider, String id) {
-					gameAction.addProviderToUser(new UIConnectionResultCallback<Player>() {
+				private void addProvider(final String authProvider, final String id) {
+					gameAction.addProviderToUser(new UIConnectionResultCallback<PlayerList>() {
 						@Override
-						public void onConnectionResult(Player result) {
-							GameLoop.setUser(result);
-							findFriendsByProvider(authProvider);
+						public void onConnectionResult(final PlayerList result) {
+							if (result.players.size() > 1) {
+								float height = Gdx.graphics.getHeight();
+								float width = Gdx.graphics.getWidth();
+
+								final PlayerListDialog dialog = new PlayerListDialog(result, id, authProvider,
+										resources, width * 0.8f, height * 0.5f, stage, new OnSuccess() {
+											@Override
+											public void run(final Player player) {
+												DismissableOverlay overlay = new DismissableOverlay(resources,
+														new TextOverlay("Successfully linked account", resources),
+														new ClickListener() {
+															@Override
+															public void clicked(InputEvent event, float x, float y) {
+																reset(player);
+															}
+														});
+												stage.addActor(overlay);
+											}
+										});
+								float dialogY = height * 0.2f;
+								dialog.setX(-dialog.getWidth());
+								dialog.setY(dialogY);
+								stage.addActor(dialog);
+								dialog.show(new Point(width * 0.1f, dialogY));
+							} else {
+								DismissableOverlay overlay = new DismissableOverlay(resources, new TextOverlay(
+										"Successfully linked account", resources), new ClickListener() {
+									@Override
+									public void clicked(InputEvent event, float x, float y) {
+										reset(result.players.get(0));
+									}
+								});
+								stage.addActor(overlay);
+							}
 						}
 
 						@Override
@@ -689,6 +724,15 @@ public class FriendScreen implements ScreenFeedback {
 		} else {
 			findFriendsByProvider(authProvider);
 		}
+	}
+
+	private void reset(Player player) {
+		GameLoop.setUser(player);
+		gameAction.setSession(player.sessionId);
+		hide();
+		resetState();
+		show();
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	private void findFriendsByProvider(final String authProvider) {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -34,6 +34,7 @@ import com.railwaygames.solarsmash.PartialScreenFeedback;
 import com.railwaygames.solarsmash.Strings;
 import com.railwaygames.solarsmash.UISkin;
 import com.railwaygames.solarsmash.config.ConfigResolver;
+import com.railwaygames.solarsmash.http.AuthenticationListener;
 import com.railwaygames.solarsmash.http.FriendsListener;
 import com.railwaygames.solarsmash.http.GameAction;
 import com.railwaygames.solarsmash.http.SocialAction;
@@ -45,6 +46,8 @@ import com.railwaygames.solarsmash.model.Leaderboards.LeaderboardEntry;
 import com.railwaygames.solarsmash.model.Map;
 import com.railwaygames.solarsmash.model.Maps;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
+import com.railwaygames.solarsmash.model.Point;
 import com.railwaygames.solarsmash.screen.Action;
 import com.railwaygames.solarsmash.screen.GraphicsUtils;
 import com.railwaygames.solarsmash.screen.Resources;
@@ -54,6 +57,8 @@ import com.railwaygames.solarsmash.screen.overlay.LevelUpOverlay;
 import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.CountLabel;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnSuccess;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
@@ -261,7 +266,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 		coinText.setBounds(10 + (coinImage.getWidth() * 1.1f), yMidPoint - coinText.getHeight() / 2, coinTextWidth,
 				coinText.getHeight());
 		stage.addActor(coinText);
-		actors.add(coinText);		
+		actors.add(coinText);
 
 		addProgressBar();
 	}
@@ -381,7 +386,7 @@ public class MainMenuScreen implements PartialScreenFeedback {
 
 	private void showLeaderboardLoadError() {
 		for (LeaderboardCardActor actor : leaderboardCards) {
-			actor.showError();
+			actor.showError("Could not load leaderboards at this time");
 		}
 	}
 
@@ -625,12 +630,12 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 		}
 
-		public void showError() {
+		public void showError(String msg) {
 			if (!tabLeft.isVisible()) {
 				table.clear();
 				loadHeader();
-				ShaderLabel label = new ShaderLabel(resources.fontShader, "Could not load leaderboards at this time",
-						resources.skin, Constants.UI.X_SMALL_FONT, Color.WHITE);
+				ShaderLabel label = new ShaderLabel(resources.fontShader, msg, resources.skin,
+						Constants.UI.X_SMALL_FONT, Color.WHITE);
 				label.setColor(Color.RED);
 				label.setWrap(true);
 				label.setAlignment(Align.top, Align.center);
@@ -668,8 +673,10 @@ public class MainMenuScreen implements PartialScreenFeedback {
 						tabRight.setVisible(true);
 						tabLeft.setVisible(false);
 
-						if (friendLeaderboards != null) {
-							loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+						if (!checkForLocalAuthOnly()) {
+							if (friendLeaderboards != null) {
+								loadLeaderboards(friendLeaderboards.leaderboards.get(id));
+							}
 						}
 					}
 				};
@@ -711,18 +718,24 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			addActor(tabTextRight);
 		}
 
+		private void addWaitImage() {
+			WaitImageButton waitImage = new WaitImageButton(resources.skin);
+			float buttonWidth = .4f * (float) getWidth();
+			waitImage.start();
+			table.row();
+			table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f).prefWidth(buttonWidth)
+					.minWidth(buttonWidth);
+		}
+
 		@Override
 		public void draw(Batch batch, float parentAlpha) {
 			if (!headerLoaded) {
 				headerLoaded = true;
 				loadHeader();
 
-				WaitImageButton waitImage = new WaitImageButton(resources.skin);
-				float buttonWidth = .4f * (float) getWidth();
-				waitImage.start();
-				table.row();
-				table.add(waitImage).colspan(3).center().height(table.getHeight() * 0.4f).prefWidth(buttonWidth)
-						.minWidth(buttonWidth);
+				if (!checkForLocalAuthOnly()) {
+					addWaitImage();
+				}
 			}
 			if (!loaded) {
 				if (!tabLeft.isVisible() && friendLeaderboards != null) {
@@ -732,6 +745,128 @@ public class MainMenuScreen implements PartialScreenFeedback {
 			}
 
 			super.draw(batch, parentAlpha);
+		}
+
+		private boolean checkForLocalAuthOnly() {
+			if (!GameLoop.getUser().auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE)
+					&& !GameLoop.getUser().auth.hasAuth(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK)) {
+				float buttonWidth = .4f * (float) getWidth();
+				Button googlePlusButton = new Button(resources.skin, Constants.UI.GOOGLE_PLUS_SIGN_IN_NORMAL);
+				table.row();
+				table.add(googlePlusButton).colspan(3).center().height(table.getHeight() * 0.12f)
+						.prefWidth(buttonWidth).minWidth(buttonWidth).padTop(table.getHeight() * 0.1f);
+				googlePlusButton.addListener(createAddProviderListener(Constants.Auth.SOCIAL_AUTH_PROVIDER_GOOGLE));
+
+				Button facebookButton = new Button(resources.skin, Constants.UI.FACEBOOK_SIGN_IN_BUTTON);
+				table.row();
+				table.add(facebookButton).colspan(3).center().height(table.getHeight() * 0.12f).prefWidth(buttonWidth)
+						.minWidth(buttonWidth).padTop(table.getHeight() * 0.1f);
+				facebookButton.addListener(createAddProviderListener(Constants.Auth.SOCIAL_AUTH_PROVIDER_FACEBOOK));
+
+				return true;
+			}
+
+			return false;
+		}
+
+		private InputListener createAddProviderListener(final String authProvider) {
+			return new InputListener() {
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					return true;
+				}
+
+				@Override
+				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+					table.clear();
+					loadHeader();
+					addWaitImage();
+					socialAction.signIn(new AuthenticationListener() {
+
+						@Override
+						public void onSignOut() {
+						}
+
+						@Override
+						public void onSignInSucceeded(String authProvider, String token) {
+							Gdx.app.log("MMS", "Sign in suceeded");
+							Preferences prefs = Gdx.app.getPreferences(Constants.GALCON_PREFS);
+							String id = prefs.getString(authProvider + Constants.ID);
+							prefs.flush();
+
+							addProvider(authProvider, id);
+						}
+
+						@Override
+						public void onSignInFailed(String failureMessage) {
+							table.clear();
+							loadHeader();
+							checkForLocalAuthOnly();
+							showError("Unable to connect " + authProvider);
+						}
+
+						private void addProvider(final String authProvider, final String id) {
+							gameAction.addProviderToUser(new UIConnectionResultCallback<PlayerList>() {
+								@Override
+								public void onConnectionResult(final PlayerList result) {
+									if (result.players.size() > 1) {
+										float height = Gdx.graphics.getHeight();
+										float width = Gdx.graphics.getWidth();
+
+										final PlayerListDialog dialog = new PlayerListDialog(result, id, authProvider,
+												resources, width * 0.8f, height * 0.5f, stage, new OnSuccess() {
+													@Override
+													public void run(final Player player) {
+														DismissableOverlay overlay = new DismissableOverlay(resources,
+																new TextOverlay("Successfully linked account",
+																		resources), new ClickListener() {
+																	@Override
+																	public void clicked(InputEvent event, float x,
+																			float y) {
+																		reset(player);
+																	}
+																});
+														stage.addActor(overlay);
+													}
+												});
+										float dialogY = height * 0.2f;
+										dialog.setX(-dialog.getWidth());
+										dialog.setY(dialogY);
+										stage.addActor(dialog);
+										dialog.show(new Point(width * 0.1f, dialogY));
+									} else {
+										DismissableOverlay overlay = new DismissableOverlay(resources, new TextOverlay(
+												"Successfully linked account", resources), new ClickListener() {
+											@Override
+											public void clicked(InputEvent event, float x, float y) {
+												reset(result.players.get(0));
+											}
+										});
+										stage.addActor(overlay);
+									}
+								}
+
+								@Override
+								public void onConnectionError(String msg) {
+									table.clear();
+									loadHeader();
+									checkForLocalAuthOnly();
+									showError("Unable to connect " + authProvider);
+								}
+							}, GameLoop.getUser().handle, id, authProvider);
+						}
+					}, authProvider);
+				}
+			};
+		}
+
+		private void reset(Player player) {
+			GameLoop.setUser(player);
+			gameAction.setSession(player.sessionId);
+			hide();
+			resetState();
+			show(stage);
+			resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 
 		private void loadHeader() {

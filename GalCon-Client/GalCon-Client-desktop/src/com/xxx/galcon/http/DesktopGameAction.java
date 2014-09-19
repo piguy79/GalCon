@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +71,7 @@ import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 import com.railwaygames.solarsmash.model.Session;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 import com.xxx.galcon.http.request.ClientRequest;
@@ -375,8 +377,13 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	@Override
 	public void exchangeTokenForSession(UIConnectionResultCallback<Session> callback, String authProvider, String token) {
 		try {
+			String sessionId = "";
+			for (int i = 0; i < 64; ++i) {
+				sessionId += (int) Math.floor(Math.random() * 10.0f);
+			}
+
 			Session session = new Session();
-			session.session = "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c00000";
+			session.session = sessionId;
 			session.errorMessage = "";
 
 			setSession(session.session);
@@ -440,7 +447,6 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
-
 	}
 
 	@Override
@@ -529,7 +535,7 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 	}
 
 	@Override
-	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+	public void addProviderToUser(UIConnectionResultCallback<PlayerList> callback, String handle, String id,
 			String authProvider) {
 		try {
 			JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
@@ -537,12 +543,28 @@ public class DesktopGameAction extends BaseDesktopGameAction implements GameActi
 			Map<String, String> args = new HashMap<String, String>();
 			args.put("json", top.toString());
 
-			callback.onConnectionResult((Player) callURL(new PostClientRequest(), ADD_PROVIDER_TO_USER, args,
-					new Player()));
+			callback.onConnectionResult((PlayerList) callURL(new PostClientRequest(), ADD_PROVIDER_TO_USER, args,
+					new PlayerList()));
 		} catch (JSONException e) {
 			System.out.println(e);
 		}
+	}
 
+	@Override
+	public void addProviderToUserWithOverride(UIConnectionResultCallback<PlayerList> callback, String handle,
+			String id, String authProvider, String keepSession, String deleteSession) {
+		try {
+			JSONObject top = JsonConstructor.addProviderWithOverride(handle, id, getSession(), authProvider,
+					keepSession, deleteSession);
+
+			Map<String, String> args = new HashMap<String, String>();
+			args.put("json", top.toString());
+
+			callback.onConnectionResult((PlayerList) callURL(new PostClientRequest(), ADD_PROVIDER_TO_USER, args,
+					new PlayerList()));
+		} catch (JSONException e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
