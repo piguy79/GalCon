@@ -13,7 +13,7 @@ var authIdRequest = {
 };
 
 var isValid = function(authProvider, token) {
-	if (!_.contains(['google','facebook'], authProvider)) {
+	if (!_.contains(['google','facebook', 'local'], authProvider)) {
 		console.log("Invalid auth provider: " + authProvider);
 		return false;
 	}
