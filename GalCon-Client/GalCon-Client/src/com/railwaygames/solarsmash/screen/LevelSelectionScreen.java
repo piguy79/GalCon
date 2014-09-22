@@ -161,11 +161,28 @@ public class LevelSelectionScreen implements PartialScreenFeedback, UIConnection
 		} else if (GameLoop.getUser().firstGameEver(prefs)) {
 			prefs.putBoolean(Constants.Config.FIRST_GAME_PLAYED, true);
 			prefs.flush();
-			startHideSequence(Action.PRACTICE + ":" + this.allMaps.get(0).key);
+			playfirstGame();
 		} else {
 			createGameList();
 		}
 
+	}
+
+	private void playfirstGame() {
+		gameAction.practiceGame(new UIConnectionResultCallback<GameBoard>() {
+
+			@Override
+			public void onConnectionResult(GameBoard result) {
+					returnValue = result;
+			}
+
+			@Override
+			public void onConnectionError(String msg) {
+				returnValue = Action.BACK;
+				
+			}
+		}, GameLoop.getUser().handle, Long.valueOf(this.allMaps.get(0).key));
+		
 	}
 
 	private void createScrollhighlightReel() {
