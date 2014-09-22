@@ -1167,8 +1167,9 @@ exports.findFriends = function(req, res){
 	}).then(null, logErrorAndSetResponse(req, res));
 }
 
-var minifyUser = function(user){
+var minifyUser = function(user) {
 	return {
+		auth : user.auth,
 		handle : user.handle,
 		xp : user.xp
 	};

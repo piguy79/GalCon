@@ -22,16 +22,18 @@ import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 
 public class PlayerListDialog extends Dialog {
 
-	private OnSuccess onSuccess;
+	private OnClick onClick;
 
-	public interface OnSuccess {
-		public void run(Player player);
+	public interface OnClick {
+		public void onSuccess(Player player);
+
+		public void onFail();
 	}
 
 	public PlayerListDialog(PlayerList playerList, String authId, String authProvider, Resources resources,
-			float width, float height, Stage stage, OnSuccess onSuccess) {
+			float width, float height, Stage stage, OnClick onClick) {
 		super(resources, width, height, stage);
-		this.onSuccess = onSuccess;
+		this.onClick = onClick;
 		float margin = width * 0.05f;
 		{
 			ShaderLabel title = new ShaderLabel(resources.fontShader, "Choose a player", resources.skin,
@@ -119,7 +121,7 @@ public class PlayerListDialog extends Dialog {
 				overlay.remove();
 				PlayerListDialog.this.remove();
 
-				onSuccess.run(result.players.get(0));
+				onClick.onSuccess(result.players.get(0));
 			}
 
 			@Override
@@ -131,6 +133,7 @@ public class PlayerListDialog extends Dialog {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						PlayerListDialog.this.hide();
+						onClick.onFail();
 					}
 				});
 				getStage().addActor(dOverlay);

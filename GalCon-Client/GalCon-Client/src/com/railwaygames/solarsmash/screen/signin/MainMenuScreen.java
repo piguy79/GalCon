@@ -58,7 +58,7 @@ import com.railwaygames.solarsmash.screen.overlay.Overlay;
 import com.railwaygames.solarsmash.screen.overlay.TextOverlay;
 import com.railwaygames.solarsmash.screen.widget.CountLabel;
 import com.railwaygames.solarsmash.screen.widget.PlayerListDialog;
-import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnSuccess;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnClick;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel;
 import com.railwaygames.solarsmash.screen.widget.ScrollPaneHighlightReel.ScrollPaneHighlightReelBuilder;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
@@ -814,9 +814,9 @@ public class MainMenuScreen implements PartialScreenFeedback {
 										float width = Gdx.graphics.getWidth();
 
 										final PlayerListDialog dialog = new PlayerListDialog(result, id, authProvider,
-												resources, width * 0.8f, height * 0.5f, stage, new OnSuccess() {
+												resources, width * 0.8f, height * 0.5f, stage, new OnClick() {
 													@Override
-													public void run(final Player player) {
+													public void onSuccess(final Player player) {
 														DismissableOverlay overlay = new DismissableOverlay(resources,
 																new TextOverlay("Successfully linked account",
 																		resources), new ClickListener() {
@@ -827,6 +827,13 @@ public class MainMenuScreen implements PartialScreenFeedback {
 																	}
 																});
 														stage.addActor(overlay);
+													}
+
+													@Override
+													public void onFail() {
+														table.clear();
+														loadHeader();
+														checkForLocalAuthOnly();
 													}
 												});
 										float dialogY = height * 0.2f;

@@ -53,7 +53,7 @@ import com.railwaygames.solarsmash.screen.widget.CoinInfoDisplay;
 import com.railwaygames.solarsmash.screen.widget.HighlightActorBar;
 import com.railwaygames.solarsmash.screen.widget.HighlightActorBar.HighlightActorBarBuilder;
 import com.railwaygames.solarsmash.screen.widget.PlayerListDialog;
-import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnSuccess;
+import com.railwaygames.solarsmash.screen.widget.PlayerListDialog.OnClick;
 import com.railwaygames.solarsmash.screen.widget.ScrollList;
 import com.railwaygames.solarsmash.screen.widget.ShaderLabel;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField;
@@ -678,9 +678,9 @@ public class FriendScreen implements ScreenFeedback {
 								float width = Gdx.graphics.getWidth();
 
 								final PlayerListDialog dialog = new PlayerListDialog(result, id, authProvider,
-										resources, width * 0.8f, height * 0.5f, stage, new OnSuccess() {
+										resources, width * 0.8f, height * 0.5f, stage, new OnClick() {
 											@Override
-											public void run(final Player player) {
+											public void onSuccess(final Player player) {
 												DismissableOverlay overlay = new DismissableOverlay(resources,
 														new TextOverlay("Successfully linked account", resources),
 														new ClickListener() {
@@ -690,6 +690,10 @@ public class FriendScreen implements ScreenFeedback {
 															}
 														});
 												stage.addActor(overlay);
+											}
+											@Override
+											public void onFail() {
+												
 											}
 										});
 								float dialogY = height * 0.2f;

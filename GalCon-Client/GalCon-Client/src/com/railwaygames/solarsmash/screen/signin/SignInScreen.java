@@ -199,7 +199,6 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 				signInLabel.setText("");
 				waitImage.start();
 				socialAction.signIn(SignInScreen.this, authProvider);
-
 			}
 		};
 	}
@@ -258,6 +257,7 @@ public class SignInScreen implements PartialScreenFeedback, AuthenticationListen
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				localProviderOKButton.setTouchable(Touchable.disabled);
 				localProviderOKButton.addAction(Actions.highlightButtonClick());
 				localProviderOKText.addAction(Actions.highlightButtonClick());
 
