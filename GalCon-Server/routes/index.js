@@ -1244,8 +1244,10 @@ exports.addProviderToUser = function(req, res) {
 var swapAuth = function(authObj, keepSession, deleteSession) {
 	var p = userManager.UserModel.findOneAndUpdate(
 			{'session.id' : deleteSession}, 
-			{abandoned : true, $set : {auth : []}}).exec();
-	return p.then(function() {
+			{abandoned : true, $set : {auth : []}}
+			{'new':false}).exec();
+	return p.then(function(oldUser) {
+		authObj['auth.local'] = oldUser.auth.local;
 		return userManager.UserModel.findOneAndUpdate({'session.id' : keepSession}, {$set : authObj}).exec();
 	});
 }

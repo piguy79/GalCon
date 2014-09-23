@@ -691,9 +691,10 @@ public class FriendScreen implements ScreenFeedback {
 														});
 												stage.addActor(overlay);
 											}
+
 											@Override
 											public void onFail() {
-												
+
 											}
 										});
 								float dialogY = height * 0.2f;
