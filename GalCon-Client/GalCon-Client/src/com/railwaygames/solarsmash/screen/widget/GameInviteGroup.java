@@ -56,7 +56,6 @@ public class GameInviteGroup extends Group {
 		if (map != null) {
 			createAcceptButton();
 
-			addListener(playListener);
 		}
 	}
 
