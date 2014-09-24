@@ -84,6 +84,6 @@ public class IOSSocialAction implements SocialAction {
 
 	@Override
 	public boolean enableGoogle() {
-		return false;
+		return true;
 	}
 }

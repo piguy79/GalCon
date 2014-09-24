@@ -29,6 +29,7 @@ import com.railwaygames.solarsmash.model.GameCount;
 public class PingingBroadcastReceiver extends BroadcastReceiver {
 	public static final int NOTIFICATION_ID = 29484;
 	private static final int SLEEP_TIME = 5 * 60 * 1000;
+	private static final int SHORT_SLEEP_TIME = 1 * 60 * 60 * 1000;
 	private static final int LONG_SLEEP_TIME = 8 * 60 * 60 * 1000;
 	private static final int ONE_HOUR = 1 * 60 * 60 * 1000;
 	private static final String LAST_CHECK_KEY = "LAST_CHECK_KEY";
@@ -62,11 +63,12 @@ public class PingingBroadcastReceiver extends BroadcastReceiver {
 			setupAlarm(context, SLEEP_TIME);
 		} else if (intent.getExtras() != null && intent.getExtras().containsKey(DELETE_KEY)) {
 			Log.i("PINGSERVICE", "Setting up long sleep alarm");
-			setupAlarm(context, LONG_SLEEP_TIME);
-			updateLastCheckTime(context, System.currentTimeMillis() + LONG_SLEEP_TIME);
+			int sleepTime = intent.getExtras().getInt(DELETE_KEY);
+			setupAlarm(context, sleepTime);
+			updateLastCheckTime(context, System.currentTimeMillis() + sleepTime);
+
 			NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 			manager.cancel(NOTIFICATION_ID);
-
 		} else if (!isMainActivityActive(context)) {
 			SharedPreferences prefs = context.getSharedPreferences(Constants.GALCON_PREFS, Context.MODE_PRIVATE);
 			long lastCheckTime = prefs.getLong(LAST_CHECK_KEY, 0);
@@ -160,11 +162,18 @@ public class PingingBroadcastReceiver extends BroadcastReceiver {
 		mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
 				| PendingIntent.FLAG_ONE_SHOT));
 
+		Intent shortSleepIntent = new Intent(context, PingingBroadcastReceiver.class);
+		shortSleepIntent.putExtra(DELETE_KEY, SHORT_SLEEP_TIME);
+		mBuilder.addAction(R.drawable.snooze, "1 hour",
+				PendingIntent.getBroadcast(context, 0, shortSleepIntent, 0));
+
+		mBuilder.setDeleteIntent(PendingIntent.getBroadcast(context, 0, shortSleepIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT));
+
 		Intent deleteIntent = new Intent(context, PingingBroadcastReceiver.class);
-		deleteIntent.putExtra(DELETE_KEY, DELETE_KEY);
-		mBuilder.setDeleteIntent(PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT
-				| PendingIntent.FLAG_ONE_SHOT));
-		mBuilder.addAction(R.drawable.snooze, "Long Snooze", PendingIntent.getBroadcast(context, 0, deleteIntent, 0));
+		deleteIntent.putExtra(DELETE_KEY, LONG_SLEEP_TIME);
+		mBuilder.addAction(R.drawable.snooze, "8 hours",
+				PendingIntent.getBroadcast(context, 0, deleteIntent, 0));
 
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);

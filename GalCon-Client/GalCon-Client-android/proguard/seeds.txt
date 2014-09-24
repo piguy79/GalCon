@@ -6429,14 +6429,12 @@ com.jirbo.adcolony.AdColonyFullscreen
 com.jirbo.adcolony.AdColonyFullscreen: AdColonyFullscreen()
 com.jirbo.adcolony.AdColonyOverlay
 com.jirbo.adcolony.AdColonyOverlay: AdColonyOverlay()
-com.railwaygames.solarsmash.Autostart
-com.railwaygames.solarsmash.Autostart: Autostart()
 com.railwaygames.solarsmash.MainActivity
 com.railwaygames.solarsmash.MainActivity: MainActivity()
+com.railwaygames.solarsmash.PingingBroadcastReceiver
+com.railwaygames.solarsmash.PingingBroadcastReceiver: PingingBroadcastReceiver()
 com.railwaygames.solarsmash.screen.widget.OKCancelDialog$Type: com.railwaygames.solarsmash.screen.widget.OKCancelDialog$Type[] values()
 com.railwaygames.solarsmash.screen.widget.OKCancelDialog$Type: com.railwaygames.solarsmash.screen.widget.OKCancelDialog$Type valueOf(java.lang.String)
-com.railwaygames.solarsmash.service.PingService
-com.railwaygames.solarsmash.service.PingService: PingService()
 org.joda.convert.JDKStringConverter: org.joda.convert.JDKStringConverter[] values()
 org.joda.convert.JDKStringConverter: org.joda.convert.JDKStringConverter valueOf(java.lang.String)
 org.joda.convert.factory.BooleanArrayStringConverterFactory$BooleanArrayStringConverter: org.joda.convert.factory.BooleanArrayStringConverterFactory$BooleanArrayStringConverter[] values()

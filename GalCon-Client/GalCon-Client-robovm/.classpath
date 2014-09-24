@@ -4,10 +4,10 @@
 	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_CONTAINER"/>
 	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_COCOA_TOUCH_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GalCon-Client"/>
-	<classpathentry kind="lib" path="libs/gdx-backend-robovm.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/google-play-game-services-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/crashlytics-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/facebook-ios"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/adcolony-ios"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-robovm"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

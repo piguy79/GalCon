@@ -194,7 +194,7 @@ public class GooglePlusAuthorization implements Authorizer {
 				.setPreselectedPeopleIDs(new NSArray<NSString>(ids))
 				.setPrefillText(
 						new NSString("Hey, come play me in Solar Smash. Invite me using the handle \""
-								+ GameLoop.USER.handle + "\". Download from http://www.railwaygames.mobi/ "))
+								+ GameLoop.getUser().handle + "\". Download from http://www.railwaygames.mobi/ "))
 				.setURLToShare(new NSURL("http://www.railwaygames.mobi/")).open();
 
 	}

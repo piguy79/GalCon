@@ -195,8 +195,6 @@ android.support.v4.app.NotificationCompat:
     public static final int PRIORITY_HIGH
     public static final int PRIORITY_MAX
     34:819:public NotificationCompat()
-android.support.v4.app.NotificationCompat$Action:
-    824:828:public NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent)
 android.support.v4.app.NotificationCompat$BigPictureStyle:
     659:661:public NotificationCompat$BigPictureStyle(android.support.v4.app.NotificationCompat$Builder)
     668:669:public android.support.v4.app.NotificationCompat$BigPictureStyle setBigContentTitle(java.lang.CharSequence)
@@ -227,7 +225,6 @@ android.support.v4.app.NotificationCompat$Builder:
     456:462:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
     477:478:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
     539:540:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
-    560:561:public android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
     573:579:public android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
     587:587:public android.app.Notification getNotification()
 android.support.v4.app.NotificationCompat$InboxStyle:
@@ -4225,7 +4222,6 @@ com.badlogic.gdx.scenes.scene2d.actions.Actions:
     173:173:public static com.badlogic.gdx.scenes.scene2d.actions.RotateToAction rotateTo(float,float)
     177:181:public static com.badlogic.gdx.scenes.scene2d.actions.RotateToAction rotateTo(float,float,com.badlogic.gdx.math.Interpolation)
     186:186:public static com.badlogic.gdx.scenes.scene2d.actions.RotateByAction rotateBy(float)
-    260:264:public static com.badlogic.gdx.scenes.scene2d.actions.AlphaAction fadeIn(float,com.badlogic.gdx.math.Interpolation)
     268:268:public static com.badlogic.gdx.scenes.scene2d.actions.VisibleAction show()
     272:272:public static com.badlogic.gdx.scenes.scene2d.actions.VisibleAction hide()
     276:278:public static com.badlogic.gdx.scenes.scene2d.actions.VisibleAction visible(boolean)
@@ -4409,7 +4405,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Cell:
     420:421:public com.badlogic.gdx.scenes.scene2d.ui.Cell padBottom(com.badlogic.gdx.scenes.scene2d.ui.Value)
     425:426:public com.badlogic.gdx.scenes.scene2d.ui.Cell padRight(com.badlogic.gdx.scenes.scene2d.ui.Value)
     440:444:public com.badlogic.gdx.scenes.scene2d.ui.Cell pad(float,float,float,float)
-    448:449:public com.badlogic.gdx.scenes.scene2d.ui.Cell padTop(float)
     453:454:public com.badlogic.gdx.scenes.scene2d.ui.Cell padLeft(float)
     458:459:public com.badlogic.gdx.scenes.scene2d.ui.Cell padBottom(float)
     482:483:public com.badlogic.gdx.scenes.scene2d.ui.Cell fillY()
@@ -4704,10 +4699,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Value$8
 com.badlogic.gdx.scenes.scene2d.ui.Value$9
 com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 com.badlogic.gdx.scenes.scene2d.ui.Widget:
+    65:67:public void setLayoutEnabled(boolean)
     93:93:public boolean needsLayout()
     112:114:public void pack()
     117:118:public void setFillParent(boolean)
 com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup:
+    67:70:public void setLayoutEnabled(boolean)
+    73:81:private void setLayoutEnabled(com.badlogic.gdx.scenes.scene2d.Group,boolean)
     111:111:public boolean needsLayout()
     133:141:public void pack()
     144:145:public void setFillParent(boolean)
@@ -4757,6 +4755,7 @@ com.badlogic.gdx.scenes.scene2d.utils.Layout:
     public abstract void invalidate()
     public abstract void pack()
     public abstract void setFillParent(boolean)
+    public abstract void setLayoutEnabled(boolean)
 com.badlogic.gdx.scenes.scene2d.utils.ScissorStack:
     32:32:public ScissorStack()
     105:106:public static void calculateScissors(com.badlogic.gdx.graphics.Camera,com.badlogic.gdx.math.Matrix4,com.badlogic.gdx.math.Rectangle,com.badlogic.gdx.math.Rectangle)
@@ -5465,7 +5464,6 @@ com.badlogic.gdx.utils.Timer:
     private static final int FOREVER
     50:51:public void postTask(com.badlogic.gdx.utils.Timer$Task)
     77:80:public void stop()
-    95:100:public void clear()
     150:151:public static void post(com.badlogic.gdx.utils.Timer$Task)
     168:169:public static void schedule(com.badlogic.gdx.utils.Timer$Task,float,float,int)
 com.badlogic.gdx.utils.Timer$Task:
@@ -9389,15 +9387,17 @@ com.jirbo.adcolony.R$anim
 com.jirbo.adcolony.R$attr
 com.jirbo.adcolony.R$layout
 com.jirbo.adcolony.R$string
+com.railwaygames.solarsmash.Actions:
+    9:9:public Actions()
 com.railwaygames.solarsmash.AndroidGameAction:
     private static final java.lang.String TAG
     private static final java.lang.String OS
     private static final long ONE_DAY_IN_MILLIS
     private static final long ONE_HOUR_IN_MILLIS
-    203:212:public void joinGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String)
+    202:211:public void joinGame(com.railwaygames.solarsmash.http.UIConnectionResultCallback,java.lang.String,java.lang.String)
 com.railwaygames.solarsmash.AndroidGameAction$3
 com.railwaygames.solarsmash.AndroidGameAction$SilentSignInAuthenticationListener:
-    108:108:public void onSignOut()
+    107:107:public void onSignOut()
 com.railwaygames.solarsmash.AndroidSocialAction:
     private static final long ONE_HOUR_IN_MILLIS
 com.railwaygames.solarsmash.BuildConfig
@@ -9486,12 +9486,12 @@ com.railwaygames.solarsmash.Constants:
     11:11:public Constants()
 com.railwaygames.solarsmash.Constants$Auth
 com.railwaygames.solarsmash.Constants$Colors:
-    72:72:public Constants$Colors()
+    75:75:public Constants$Colors()
 com.railwaygames.solarsmash.Constants$Config
 com.railwaygames.solarsmash.Constants$Tutorial
 com.railwaygames.solarsmash.Constants$UI
 com.railwaygames.solarsmash.ExternalActionWrapper:
-    23:24:private ExternalActionWrapper()
+    24:25:private ExternalActionWrapper()
 com.railwaygames.solarsmash.MainActivity:
     public static final java.lang.String LOG_NAME
     public static final int GOOGLE_PLUS_SIGN_IN_ACTIVITY_RESULT_CODE
@@ -9500,6 +9500,13 @@ com.railwaygames.solarsmash.MainActivity:
     static final java.lang.String APP_ID
     static final java.lang.String ZONE_ID
     static final java.lang.String ENCODED_APPLICATION_ID
+com.railwaygames.solarsmash.PingingBroadcastReceiver:
+    public static final int NOTIFICATION_ID
+    private static final int SLEEP_TIME
+    private static final int LONG_SLEEP_TIME
+    private static final int ONE_HOUR
+    private static final java.lang.String LAST_CHECK_KEY
+    private static final java.lang.String DELETE_KEY
 com.railwaygames.solarsmash.R
 com.railwaygames.solarsmash.R$attr
 com.railwaygames.solarsmash.R$color
@@ -9533,8 +9540,8 @@ com.railwaygames.solarsmash.http.GameAction:
 com.railwaygames.solarsmash.http.JsonConstructor:
     16:16:public JsonConstructor()
     70:74:public static org.json.JSONObject findFriends(java.lang.String)
-    148:153:public static org.json.JSONObject user(java.lang.String,java.lang.String)
-    200:205:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
+    156:161:public static org.json.JSONObject user(java.lang.String,java.lang.String)
+    208:213:public static org.json.JSONObject reduceCall(java.lang.String,java.lang.String)
 com.railwaygames.solarsmash.http.SetPlayerResultHandler
 com.railwaygames.solarsmash.http.UrlConstants
 com.railwaygames.solarsmash.inappbilling.util.Base64:
@@ -9624,7 +9631,7 @@ com.railwaygames.solarsmash.model.GameInviteRequest:
 com.railwaygames.solarsmash.model.Harvest:
     public static final java.lang.String ACTIVE
 com.railwaygames.solarsmash.model.MinifiedGame:
-    99:99:public boolean isClaimAvailable()
+    96:96:public boolean isClaimAvailable()
 com.railwaygames.solarsmash.model.Planet:
     public static final java.lang.String ALIVE
 com.railwaygames.solarsmash.model.Rederable
@@ -9643,21 +9650,21 @@ com.railwaygames.solarsmash.model.tween.ColorTween
 com.railwaygames.solarsmash.model.tween.MoveTween
 com.railwaygames.solarsmash.screen.Action
 com.railwaygames.solarsmash.screen.BoardScreen:
-    1110:1110:public void dispose()
-    1238:1248:public void setConnectionError(java.lang.String)
+    1111:1111:public void dispose()
+    1239:1249:public void setConnectionError(java.lang.String)
 com.railwaygames.solarsmash.screen.BoardScreen$17
 com.railwaygames.solarsmash.screen.BoardScreen$Labels:
-    1228:1228:public BoardScreen$Labels()
+    1229:1229:public BoardScreen$Labels()
 com.railwaygames.solarsmash.screen.BoardScreen$ScreenCalculations:
-    161:161:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
+    162:162:public com.railwaygames.solarsmash.model.Bounds getWorldBounds()
 com.railwaygames.solarsmash.screen.BoardScreenPlayerHud$Abilities:
     316:316:private BoardScreenPlayerHud$Abilities()
 com.railwaygames.solarsmash.screen.FriendScreen:
-    539:539:public void dispose()
-    567:567:public com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest()
-    808:808:public boolean isFadeComplete()
+    542:542:public void dispose()
+    570:570:public com.railwaygames.solarsmash.model.GameInviteRequest getGameInviteRequest()
+    857:857:public boolean isFadeComplete()
 com.railwaygames.solarsmash.screen.FriendScreen$11:
-    657:657:public void onSignOut()
+    660:660:public void onSignOut()
 com.railwaygames.solarsmash.screen.GameListScreen:
     62:62:protected boolean showGamesThatHaveBeenWon()
     66:68:protected void refreshScreen()
@@ -9668,7 +9675,7 @@ com.railwaygames.solarsmash.screen.GameQueueScreen$SelectGameResultHander$1
 com.railwaygames.solarsmash.screen.GraphicsUtils:
     23:23:public GraphicsUtils()
 com.railwaygames.solarsmash.screen.MenuScreenContainer:
-    171:171:public void dispose()
+    170:170:public void dispose()
 com.railwaygames.solarsmash.screen.SetGameBoardResultHandler
 com.railwaygames.solarsmash.screen.event.AcceptInviteEvent:
     12:14:public AcceptInviteEvent(boolean)
@@ -9683,8 +9690,10 @@ com.railwaygames.solarsmash.screen.overlay.TipOverlay
 com.railwaygames.solarsmash.screen.ship.selection.BoardScreenOptionsDialog:
     private static final float BUTTON_HEIGHT_RATIO
     private static final float BUTTON_WIDTH_RATIO
+com.railwaygames.solarsmash.screen.signin.MainMenuScreen$LeaderboardCardActor$3$1:
+    788:788:public void onSignOut()
 com.railwaygames.solarsmash.screen.signin.SignInScreen:
-    224:226:public void onSignOut()
+    398:400:public void onSignOut()
 com.railwaygames.solarsmash.screen.widget.ActorBar$ActorBarBuilder:
     103:103:public com.railwaygames.solarsmash.screen.widget.ActorBar build()
 com.railwaygames.solarsmash.screen.widget.ActorBar$Align
@@ -9723,16 +9732,10 @@ com.railwaygames.solarsmash.screen.widget.ShaderTextField:
 com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldFilter$DigitsOnlyFilter
 com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle:
     974:990:public ShaderTextField$ShaderTextFieldStyle(com.railwaygames.solarsmash.screen.widget.ShaderTextField$ShaderTextFieldStyle)
-com.railwaygames.solarsmash.service.PingService:
-    public static final int NOTIFICATION_ID
-    private static final int SLEEP_TIME
-    private static final int LONG_SLEEP_TIME
-    private static final int ONE_HOUR
-    private static final java.lang.String DELETE_KEY
 com.railwaygames.solarsmash.social.FacebookAuthorization$3:
-    155:155:public void onSignOut()
+    156:156:public void onSignOut()
 com.railwaygames.solarsmash.social.FacebookAuthorization$5:
-    227:227:public void onSignOut()
+    228:228:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$5:
     192:192:public void onSignOut()
 com.railwaygames.solarsmash.social.GooglePlusAuthorization$7:
@@ -10355,6 +10358,7 @@ org.joda.time.base.AbstractDateTime:
     162:162:public int getDayOfYear()
     173:173:public int getDayOfMonth()
     184:184:public int getDayOfWeek()
+    194:194:public int getHourOfDay()
     203:203:public int getMinuteOfDay()
     212:212:public int getMinuteOfHour()
     221:221:public int getSecondOfDay()

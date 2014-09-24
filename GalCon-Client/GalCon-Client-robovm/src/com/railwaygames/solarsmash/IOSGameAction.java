@@ -75,6 +75,7 @@ import com.railwaygames.solarsmash.model.Move;
 import com.railwaygames.solarsmash.model.Order;
 import com.railwaygames.solarsmash.model.People;
 import com.railwaygames.solarsmash.model.Player;
+import com.railwaygames.solarsmash.model.PlayerList;
 import com.railwaygames.solarsmash.model.Session;
 import com.railwaygames.solarsmash.model.base.JsonConvertible;
 
@@ -87,9 +88,11 @@ public class IOSGameAction implements GameAction {
 	private Config config = new IOSConfig();
 	private String session = "";
 	private SocialAction socialAction;
+	private SolarSmashIOS solarSmashIOS;
 
-	public IOSGameAction(SocialAction socialAction) {
+	public IOSGameAction(SolarSmashIOS solarSmashIOS, SocialAction socialAction) {
 		this.socialAction = socialAction;
+		this.solarSmashIOS = solarSmashIOS;
 	}
 
 	@Override
@@ -207,7 +210,7 @@ public class IOSGameAction implements GameAction {
 		final Map<String, String> args = new HashMap<String, String>();
 		args.put("searchTerm", searchTerm);
 		args.put("session", getSession());
-		args.put("handle", GameLoop.USER.handle);
+		args.put("handle", GameLoop.getUser().handle);
 		new GetJsonRequestTask<People>(args, callback, SEARCH_FOR_USERS, People.class).execute("");
 	}
 
@@ -547,11 +550,12 @@ public class IOSGameAction implements GameAction {
 	}
 
 	@Override
-	public void addProviderToUser(UIConnectionResultCallback<Player> callback, String handle, String id,
+	public void addProviderToUser(UIConnectionResultCallback<PlayerList> callback, String handle, String id,
 			String authProvider) {
 		try {
 			final JSONObject top = JsonConstructor.addProvider(handle, id, getSession(), authProvider);
-			new PostJsonRequestTask<Player>(callback, ADD_PROVIDER_TO_USER, Player.class).execute(top.toString());
+			new PostJsonRequestTask<PlayerList>(callback, ADD_PROVIDER_TO_USER, PlayerList.class).execute(top
+					.toString());
 		} catch (JSONException e) {
 			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}
@@ -622,6 +626,25 @@ public class IOSGameAction implements GameAction {
 		try {
 			final JSONObject top = JsonConstructor.practiceGame(handle, session, mapId);
 			new PostJsonRequestTask<GameBoard>(callback, PRACTICE, GameBoard.class).execute(top.toString());
+		} catch (JSONException e) {
+			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
+		}
+	}
+
+	@Override
+	public void shouldEnableAds(boolean enable) {
+		solarSmashIOS.shouldEnableAds(enable);
+
+	}
+
+	@Override
+	public void addProviderToUserWithOverride(UIConnectionResultCallback<PlayerList> callback, String handle,
+			String id, String authProvider, String keepSession, String deleteSession) {
+		try {
+			final JSONObject top = JsonConstructor.addProviderWithOverride(handle, id, getSession(), authProvider,
+					keepSession, deleteSession);
+			new PostJsonRequestTask<PlayerList>(callback, ADD_PROVIDER_TO_USER, PlayerList.class).execute(top
+					.toString());
 		} catch (JSONException e) {
 			Foundation.log("This isn't expected to ever realistically happen. So I'm just logging it.");
 		}

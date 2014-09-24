@@ -29,7 +29,6 @@
    	<lib>c++</lib>
     <lib>libs/ios/libgdx.a</lib>
     <lib>libs/ios/libObjectAL.a</lib>
-    <lib>../../../robovm-ios-bindings2/adcolony/libs/libadcolony.a</lib>
   </libs>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
@@ -38,8 +37,10 @@
       <path>../../../robovm-ios-bindings2/google-play-game-services/libs/</path>
       <path>../../../robovm-ios-bindings2/facebook/libs/</path>
       <path>../../../robovm-ios-bindings2/crashlytics/libs/</path>
+      <path>../../../robovm-ios-bindings2/adcolony/libs/</path>
   </frameworkPaths>
   <frameworks>
+    <framework>AdColony</framework>
     <framework>GoogleOpenSource</framework>
 	<framework>GooglePlayGames</framework>
 	<framework>GooglePlus</framework>

@@ -37,7 +37,7 @@ import org.robovm.apple.uikit.UITextSpellCheckingType;
 import org.robovm.bindings.adcolony.AdColony;
 import org.robovm.bindings.adcolony.AdColonyDelegateAdapter;
 import org.robovm.bindings.crashlytics.Crashlytics;
-import org.robovm.bindings.gpp.GPPURLHandler;
+import org.robovm.bindings.gt.GTMOAuth2ViewControllerTouch;
 import org.robovm.objc.block.VoidBlock1;
 
 import com.badlogic.gdx.Gdx;
@@ -47,6 +47,7 @@ import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 import com.railwaygames.solarsmash.model.GameCount;
 import com.railwaygames.solarsmash.screen.widget.ShaderTextField.OnscreenKeyboard;
 import com.railwaygames.solarsmash.social.facebook.FacebookManager;
+import com.railwaygames.solarsmash.social.google.GPPSignIn;
 
 public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKeyboard {
 	public static final String LOG_NAME = "GalCon";
@@ -58,6 +59,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 	private UITextFieldDelegate textDelegate;
 	private UITextField textfield;
 	private IOSGameAction gameAction;
+	private boolean adsEnabled = false;
 
 	public static void main(String[] argv) {
 		NSAutoreleasePool pool = new NSAutoreleasePool();
@@ -73,7 +75,7 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		config.allowIpod = true;
 
 		IOSSocialAction socialAction = new IOSSocialAction();
-		gameAction = new IOSGameAction(socialAction);
+		gameAction = new IOSGameAction(this, socialAction);
 		IOSInAppBillingAction inAppBillingAction = new IOSInAppBillingAction();
 
 		textDelegate = new UITextFieldDelegateAdapter() {
@@ -103,13 +105,30 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		iosApplication = new IOSApplication(new GameLoop(gameAction, socialAction, inAppBillingAction, this), config);
 		return iosApplication;
 	}
+	
+	@Override
+	public boolean handleOpenURL(UIApplication application, NSURL url) {
+		Foundation.log("handleOpenURL call->" + url.getAbsoluteString());
+		return super.handleOpenURL(application, url);
+	}
 
 	@Override
 	public boolean openURL(UIApplication application, NSURL url, String sourceApplication, NSObject annotation) {
 		boolean handled = FacebookManager.getInstance().openURL(application, url, sourceApplication, annotation);
 
+		Foundation.log("openURL call->" + url.getAbsoluteString());
 		if (!handled) {
-			handled = GPPURLHandler.handleURL(url, sourceApplication, annotation);
+			if (url.getAbsoluteString().startsWith("googlechrome-x-callback:")) {
+				return false;
+			} else if (url.getAbsoluteString().startsWith("https://accounts.google.com/o/oauth2/auth")) {
+//				NSNotificationCenter.getDefaultCenter().postNotification(
+//						new NSString("ApplicationOpenGoogleAuthNotification"), url);
+				
+				GTMOAuth2ViewControllerTouch controller = new GTMOAuth2ViewControllerTouch();
+				controller.initWithScope(new NSString(""), new NSString(""), new NSString(""), GPPSignIn.sharedInstance().getKeychainName(), null);
+				iosApplication.getUIViewController().presentViewController(controller, true, null);
+				return false;
+			}
 		}
 
 		return handled;
@@ -128,13 +147,6 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 		application.setStatusBarHidden(true);
 
 		Crashlytics.start("16b0d935ae5ad2229665b4beef8cc396294f878d");
-
-		ArrayList<NSString> aZones = new ArrayList<NSString>();
-		aZones.add(new NSString(ZONE_ID));
-		NSArray<NSString> zones = new NSArray<NSString>(aZones);
-		AdColony.configure(APP_ID, zones, new AdColonyDelegateAdapter() {
-
-		}, true);
 
 		String[] version = UIDevice.getCurrentDevice().getSystemVersion().split("\\.");
 		System.out.println(version[0]);
@@ -256,6 +268,22 @@ public class SolarSmashIOS extends IOSApplication.Delegate implements OnscreenKe
 				textfield.removeFromSuperview();
 				textfield = null;
 			}
+		}
+	}
+
+	private void setupAdColony() {
+		ArrayList<NSString> aZones = new ArrayList<NSString>();
+		aZones.add(new NSString(ZONE_ID));
+		NSArray<NSString> zones = new NSArray<NSString>(aZones);
+		AdColony.configure(APP_ID, zones, new AdColonyDelegateAdapter() {
+
+		}, true);
+		adsEnabled = true;
+	}
+
+	public void shouldEnableAds(boolean enable) {
+		if (enable && !adsEnabled) {
+			setupAdColony();
 		}
 	}
 }
