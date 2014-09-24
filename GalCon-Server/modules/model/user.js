@@ -67,7 +67,7 @@ exports.findUserByHandleAndUpdateOs = function(handle, os){
 }
 
 exports.findUserMatchingSearch = function(searchTerm, handle){
-	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}, {handle : {$ne : 'AI'}}]}).limit(10).exec();
+	return UserModel.find({ $and : [{"handle" : new RegExp('^'+searchTerm+'.*', "i")}, {handle : {$ne : handle}}, {handle : {$ne : 'AI'}}], abandoned : {$ne : true}}).limit(10).exec();
 }
 
 exports.addCoins = function(coins, handle) {
